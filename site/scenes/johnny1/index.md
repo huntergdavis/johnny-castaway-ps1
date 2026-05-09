@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 1
 slug: johnny1
 status: validated
-description: "JOHNNY.ADS scene 1: The End. Validated on PS1 with full-screen black-backdrop playback."
+description: "JOHNNY.ADS scene 1: the Day 11 finale, ending with the "The End" title card. Validated 2026-05-08."
 image: /assets/img/johnny1-ps1-the-end.png
 image_alt: "JOHNNY 1 on PS1: the original Sierra 'The End' scroll graphic — Johnny waves from his island at sunset, palm tree silhouetted."
 image_width: 1127
@@ -36,12 +36,9 @@ previous JOHNNY1 loop BSOD.
 - High-tide pack: <code>FG/JOHNNY1.FG2</code>
 - Low-tide pack: <code>FG/JOHN1LOW.FG2</code>
 
-## What this scene probably is
+## What this scene is
 
-Day 11 final: frog clock, sunset silhouette, plane overhead, Johnny
-parachutes down, then the `The End` title card.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+The Day 11 finale: frog clock transition, sunset silhouette of Johnny on the island, a plane overhead, Johnny parachutes down, then the "The End" title card. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior HIGH-confidence caption-mapping guess.
 
 ## Validation Notes
 

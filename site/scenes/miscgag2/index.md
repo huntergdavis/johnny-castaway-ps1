@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MISCGAG 2 — Towel, toe, shark
+title: MISCGAG 2 — Goes to bathe; a shark scares him off
 ads: MISCGAG
 tag: 2
 slug: miscgag2
 status: validated
-description: "MISCGAG.ADS scene 2: Towel, toe, shark. Validated after generic multi-view pack regeneration."
+description: "MISCGAG.ADS scene 2: Johnny goes to take a bath in the surf and a shark turns up and scares him off. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -17,11 +17,9 @@ Validated on 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-b
 - High pack: <code>MISCGAG2.FG2</code>
 - Low pack: <code>MISC2LOW.FG2</code> (regenerated for parity; the scene's story flags do not randomize low tide)
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny lays out a towel, dips a toe in the water, a shark snaps; bathing gear ends up scattered.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny heads down to the surf to take a bath. A shark turns up in the water and scares him off before he can settle in. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the prior "towel, toe, shark" caption-mapping had the towel and shark right but missed the bath-and-scare-off framing.
 
 ## Validation Notes
 

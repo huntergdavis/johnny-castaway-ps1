@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: VISITOR 1 — Lilliputians arrive
+title: VISITOR 1 — Misses a speedboat passing by
 ads: VISITOR
 tag: 1
 slug: visitor1
 status: validated
-description: "VISITOR.ADS scene 1: Lilliputians arrive. Validated on PS1 after generic multi-view capture stitching."
+description: "VISITOR.ADS scene 1: Johnny looks around the island and completely misses a speedboat driving by behind him. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -15,11 +15,9 @@ Validated on 2026-05-04.
 - ADS dispatch: <code>VISITOR.ADS scene 1</code>
 - Slug: <code>visitor1</code>
 
-## What This Scene Is
+## What this scene is
 
-A three-mast ship arrives and the Lilliputians tie Johnny down.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+A speedboat zips past the island; Johnny is looking around in the wrong direction and never sees it. The boat continues on without stopping. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "lilliputians arrive" caption-mapping guess was wrong (the lilliputian gags are in the BUILDING family).
 
 ## Validation Notes
 

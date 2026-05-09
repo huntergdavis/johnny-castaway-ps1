@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MARY 2 — First encounter
+title: MARY 2 — Mary visits while Johnny fishes; he mistakes her for a fish, catches a boot
 ads: MARY
 tag: 2
 slug: mary2
 status: validated
-description: "MARY.ADS scene 2: First encounter. Validated after wide multi-view stitch and fish thought-bubble repair."
+description: "MARY.ADS scene 2: Mary the mermaid swims up while Johnny is fishing; he mistakes her for a fish on the line, then reels in a boot. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-03 after visual and audible signoff, including
@@ -16,11 +16,9 @@ far-right and true far-left runtime stress playback.
 - ADS dispatch: <code>MARY.ADS scene 2</code>
 - Slug: <code>mary2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 1.) Mermaid surfaces with a necklace, gives Johnny a life preserver, proposes a date.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny is fishing when Mary the mermaid swims up. He mistakes her for a fish on the line — and after the confusion clears, he ends up reeling in a boot instead. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "first encounter" caption-mapping had the meet-cute right but missed the boot beat. (This is also where the "He catches a boot" line in the FISHING.ADS caption audit actually belongs — explaining the mismatch flagged on FISHING 2.)
 
 ### Validation note
 

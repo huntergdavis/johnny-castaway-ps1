@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: JOHNNY 6 — Office daydream
+title: JOHNNY 6 — At his office desk, daydreaming of the island
 ads: JOHNNY
 tag: 6
 slug: johnny6
 status: validated
-description: "JOHNNY.ADS scene 6: Office daydream. Validated with black-backdrop playback."
+description: "JOHNNY.ADS scene 6: Johnny is back at his office desk, daydreaming about his time on the island. Validated 2026-05-08."
 image: /assets/img/johnny6-ps1-date-dream.png
 image_alt: "JOHNNY 6 on PS1: Johnny dreams about his island date — pixel art rendering on PlayStation."
 image_width: 1127
@@ -36,11 +36,9 @@ background behind it.
 - High-tide pack: <code>FG/JOHNNY6.FG2</code>
 - Low-tide pack: <code>FG/JOHN6LOW.FG2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 10 final.) Johnny dreams of being back in an office: clock, typing, then dreams of the island and the mermaid; ends sad.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny is back at his office desk, daydreaming about his time on the island — the inverse-castaway gag. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "office daydream" caption-mapping with the direction made explicit (he's at the office longing for the island, not on the island longing for the office).
 
 ## Validation Notes
 

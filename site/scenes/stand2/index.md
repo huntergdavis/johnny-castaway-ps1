@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 2 — Adjusts pants
+title: STAND 2 — Standing, adjusting pants
 ads: STAND
 tag: 2
 slug: stand2
 status: validated
-description: "STAND.ADS scene 2: Adjusts pants. Validated on PS1."
+description: "STAND.ADS scene 2: Johnny stands and hitches up his pants. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -15,11 +15,9 @@ Validated on 2026-05-04.
 - ADS dispatch: <code>STAND.ADS scene 2</code>
 - Slug: <code>stand2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Very short idle stance at SPOT_A W: adjusts pants.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands on the island and hitches up his pants — one of the idle standing-pose beats in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "adjusts pants" caption-mapping.
 
 ## Validation notes
 

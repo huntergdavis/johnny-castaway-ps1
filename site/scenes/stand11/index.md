@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 11 — Shades under the palm
+title: STAND 11 — Left side of island, looks around
 ads: STAND
 tag: 11
 slug: stand11
 status: validated
-description: "STAND.ADS scene 11: Shades under the palm. Validated on PS1."
+description: "STAND.ADS scene 11: Johnny stands on the left side of the island and looks around. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_E NW: shades hand over eyes and looks out under the palm.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny stands on the left side of the island and looks around — a left-position idle pose in the STAND family (compare STAND 8, the right-side variant). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "shades under the palm" caption-mapping guess was wrong (no shading-eyes pose in the on-PS1 pack).
 
 ## Validation notes
 

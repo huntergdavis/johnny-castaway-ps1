@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: WALKSTUF 2 — Walk transition
+title: WALKSTUF 2 — Works on the raft
 ads: WALKSTUF
 tag: 2
 slug: walkstuf2
 status: validated
 last_verified: "2026-05-04"
-description: "WALKSTUF.ADS scene 2: Walk transition. Validated 2026-05-04."
+description: "WALKSTUF.ADS scene 2: Johnny works on his raft. Validated 2026-05-08."
 ---
 
 Validated 2026-05-04. Visual + audible signoff on the existing on-disc
@@ -18,11 +18,9 @@ nighttime route.
 - ADS dispatch: <code>WALKSTUF.ADS scene 2</code>
 - Slug: <code>walkstuf2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; weak caption fit.) Pure walk-around transition; the audit notes no fitting caption.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny works on his raft, building it up — one of the visible-progress beats that drives the raft-stage variant flag. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "walk transition" caption-mapping was vague (this scene is specifically the raft-build work, not a generic walk loop).
 
 ### How this scene gets validated
 

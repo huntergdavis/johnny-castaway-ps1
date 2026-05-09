@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: ACTIVITY 7 — Bathes; seagull steals clothes
+title: ACTIVITY 7 — Reads a book upside-down
 ads: ACTIVITY
 tag: 7
 slug: activity7
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 7: Bathes; seagull steals clothes. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 7: Johnny sits reading a book, but the book is upside-down. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
@@ -19,11 +19,10 @@ island from base-diff against the static-Johnny base.
 - ADS dispatch: <code>ACTIVITY.ADS scene 7</code>
 - Slug: <code>activity7</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny bathes in the ocean; a seagull picks up his clothes and flies off.
+Johnny sits and reads a book — except the book is upside-down. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "bathes / seagull steals clothes" caption-mapping guess was wrong.
 
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
 ### How this scene gets validated
 

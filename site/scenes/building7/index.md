@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: BUILDING 7 — Builds up the raft
+title: BUILDING 7 — Builds a fire, grills a fish, eats it
 ads: BUILDING
 tag: 7
 slug: building7
 status: validated
-description: "BUILDING.ADS scene 7: Builds up the raft. Validated on PS1."
+description: "BUILDING.ADS scene 7: Johnny builds a fire, grills a fish on it, and eats the fish. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-05 after regenerating high/low packs through the generic
@@ -23,11 +23,9 @@ scene.
 - ADS dispatch: <code>BUILDING.ADS scene 7</code>
 - Slug: <code>building7</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny gathers wood and adds it to the raft.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny builds a small fire on the beach, grills a fish on it, and eats the fish. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "builds up the raft" caption-mapping guess was wrong (the raft-building gag is elsewhere).
 
 ### How this scene gets validated
 

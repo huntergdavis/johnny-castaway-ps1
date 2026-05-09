@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: FISHING 1 — Johnny casts a line
+title: FISHING 1 — Catches a starfish, throws it back
 ads: FISHING
 tag: 1
 slug: fishing1
 status: validated
-description: "FISHING.ADS scene 1: Johnny casts a line. Validated under the FISHING 1 bar."
+description: "FISHING.ADS scene 1: Johnny fishes; the line hooks a starfish, which he throws back. Validated under the FISHING 1 bar."
 image: /assets/img/fishing1-ps1-cast.png
 image_alt: "FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame."
 image_width: 1127

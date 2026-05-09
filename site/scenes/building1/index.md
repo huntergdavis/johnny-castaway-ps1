@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: BUILDING 1 — Sand castle (crumbles)
+title: BUILDING 1 — Sandcastle slumps, Johnny stomps it
 ads: BUILDING
 tag: 1
 slug: building1
 status: validated
-description: "BUILDING.ADS scene 1: Sand castle (crumbles). Validated on PS1 after generic multi-view capture."
+description: "BUILDING.ADS scene 1: Johnny tries to build a sandcastle; it slumps mid-build, and he stomps on it. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
@@ -18,11 +18,9 @@ high-tide/night validation route.
 - ADS dispatch: <code>BUILDING.ADS scene 1</code>
 - Slug: <code>building1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny walks to the water's edge and builds a sand castle; it crumbles.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny tries to build a sandcastle on the beach. It slumps mid-build, and he stomps on it in frustration. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior caption-mapping guess ("sand castle crumbles").
 
 ### How this scene gets validated
 

@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: WALKSTUF 3 — Walk transition
+title: WALKSTUF 3 — Jogs around the island
 ads: WALKSTUF
 tag: 3
 slug: walkstuf3
 status: validated
 last_verified: "2026-05-04"
-description: "WALKSTUF.ADS scene 3: Walk transition. Validated 2026-05-04."
+description: "WALKSTUF.ADS scene 3: Johnny jogs around the island. Validated 2026-05-08."
 ---
 
 Validated 2026-05-04. Visual + audible signoff on commit
@@ -18,11 +18,9 @@ Validated 2026-05-04. Visual + audible signoff on commit
 - ADS dispatch: <code>WALKSTUF.ADS scene 3</code>
 - Slug: <code>walkstuf3</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; weak caption fit.) Pure walk-around transition; the audit notes no fitting caption.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny jogs around the island, doing laps — the exercise loop. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "walk transition" caption-mapping was vague (this is also where the audit's "jogs around the island" caption actually belongs — WALKSTUF 1 was misattributed to the jogging gag when it's actually the yacht-party-and-pass-out beat).
 
 ### How this scene gets validated
 

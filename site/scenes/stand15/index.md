@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 15 — Spyglass, left edge
+title: STAND 15 — Looks around with a spyglass
 ads: STAND
 tag: 15
 slug: stand15
 status: validated
-description: "STAND.ADS scene 15: Spyglass, left edge. Validated on PS1."
+description: "STAND.ADS scene 15: Johnny stands and looks around with a spyglass. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_A S: spyglass on the left edge of the island.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny stands and looks around the horizon with a spyglass — the spyglass-search idle pose in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "spyglass, left edge" caption-mapping (the look-around with the spyglass is the headline beat).
 
 ## Validation notes
 

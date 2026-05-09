@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: VISITOR 5 — Visitor takes Johnny
+title: VISITOR 5 — Throws a coconut at a plane; it crashes
 ads: VISITOR
 tag: 5
 slug: visitor5
 status: validated
-description: "VISITOR.ADS scene 5: Visitor takes Johnny. Validated on PS1/DuckStation with readable coconut impact timing."
+description: "VISITOR.ADS scene 5: Johnny sees a plane overhead, throws a coconut at it, and the plane crashes. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -15,11 +15,9 @@ Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-b
 - ADS dispatch: <code>VISITOR.ADS scene 5</code>
 - Slug: <code>visitor5</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; weak caption fit.) Final left-island variant — a visitor takes Johnny off the island. Caption mapping is uncertain.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+A plane flies overhead. Johnny grabs a coconut and throws it at the plane — and the coconut hits hard enough that the plane crashes. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "visitor takes Johnny" caption-mapping guess was wrong (this scene is also where the audit's "coconut plane hit" caption actually belongs — VISITOR 4 was misattributed).
 
 ### How this scene gets validated
 

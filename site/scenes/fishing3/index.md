@@ -1,16 +1,18 @@
 ---
 layout: scene
-title: FISHING 3 — An octopus interlude
+title: FISHING 3 — Octopus steals the fish and walks off
 ads: FISHING
 tag: 3
 slug: fishing3
 status: validated
-description: "FISHING.ADS scene 3: An octopus interlude. Validated under the FISHING 1 bar."
+description: "FISHING.ADS scene 3: Johnny pulls up an octopus, which steals his fish and walks off. Validated under the FISHING 1 bar."
 ---
 
 ## What happens
 
-Johnny fishes; an octopus comes up out of the water and wraps a tentacle around him. There's a brief struggle, and then the octopus disappears back under and Johnny goes back to fishing as if nothing happened.
+Johnny fishes, and an octopus comes up on the line — but instead of being the catch, the octopus snatches the fish that was on the hook and walks off with it. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail.
+
+(The on-screen caption block below — preserved from the Sierra original — says "He catches a crab. It snaps his nose," which is a different fishing gag in the game. The caption-to-scene mapping in the original audit appears to be approximate; the on-PS1 pack for FISHING.ADS scene 3 plays the octopus-steals-fish beat.)
 
 Third scene to clear the FISHING 1 bar. The loop holds together, the tide-state variant draws the right water line, and the octopus sequence was visually and audibly signed off on PS1/DuckStation on 2026-05-01.
 

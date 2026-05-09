@@ -1,18 +1,18 @@
 ---
 layout: scene
-title: ACTIVITY 5 — Climb / look / dive
+title: ACTIVITY 5 — Rain dance, struck by lightning
 ads: ACTIVITY
 tag: 5
 slug: activity5
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 5: Climb / look / dive. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 5: Johnny puts on a costume, performs a rain dance, and gets struck by lightning. Validated 2026-05-05."
 ---
 
-Validated 2026-05-05. Visual + audible signoff on the climb/look/dive
-gag. High/low packs use the JOHNNY 2-style split — upper thought-bubble
+Validated 2026-05-05. Visual + audible signoff on the rain-dance gag.
+High/low packs use the JOHNNY 2-style split — upper thought-bubble
 lane on full base-diff so the storm-cloud bubble + connector dots
-survive, and lower third on keyed overlay so the post-dive splash band
+survive, and lower third on keyed overlay so the post-strike splash
 cleans up without ghost trails. Source frame 46 (the storm-cloud
 bubble) gets +30 vblanks of hold so the gag is readable.
 
@@ -21,11 +21,14 @@ bubble) gets +30 vblanks of hold so the gag is readable.
 - ADS dispatch: <code>ACTIVITY.ADS scene 5</code>
 - Slug: <code>activity5</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) A composite climb-look-dive sequence; the SPOT_E variant.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny puts on a costume and performs a rain dance, then gets struck
+by lightning. The storm-cloud thought bubble appears mid-dance (frame
+46, held +30 vblanks for readability) and the lightning-strike splash
+follows. Confirmed by direct on-PS1 playback observation while
+capturing the chapter-select thumbnail; the earlier "climb / look /
+dive" caption-mapping guess was wrong.
 
 ### How this scene gets validated
 

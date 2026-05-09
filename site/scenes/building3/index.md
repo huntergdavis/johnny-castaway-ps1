@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: BUILDING 3 — Builds a fire
+title: BUILDING 3 — Rolls over and takes a nap
 ads: BUILDING
 tag: 3
 slug: building3
 status: validated
-description: "BUILDING.ADS scene 3: Builds a fire. Validated on PS1 after generic multi-view capture."
+description: "BUILDING.ADS scene 3: Johnny lies down on the sand, rolls over, and takes a nap. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
@@ -18,11 +18,9 @@ normal low-tide/night validation route.
 - ADS dispatch: <code>BUILDING.ADS scene 3</code>
 - Slug: <code>building3</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny gathers sticks, builds a fire, and warms his hands.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny lies down on the sand, rolls over, and takes a long nap. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "builds a fire" caption-mapping guess was wrong (the long sleeping/idle beat was already implicit in the engineering trailer).
 
 ### How this scene gets validated
 

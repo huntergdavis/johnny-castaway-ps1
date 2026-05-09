@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MISCGAG 1 — Pocket fan, melts
+title: MISCGAG 1 — Heat melts Johnny
 ads: MISCGAG
 tag: 1
 slug: miscgag1
 status: validated
-description: "MISCGAG.ADS scene 1: Pocket fan, melts. Validated after generic multi-view pack regeneration."
+description: "MISCGAG.ADS scene 1: Johnny gets so hot in the sun that he melts. Validated 2026-05-08."
 ---
 
 Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -15,11 +15,9 @@ Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1
 - ADS dispatch: <code>MISCGAG.ADS scene 1</code>
 - Slug: <code>miscgag1</code>
 
-## What This Scene Is
+## What this scene is
 
-Johnny pulls out a pocket fan, uses it in the heat, and melts into a puddle.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny gets so hot in the sun that he melts down into a puddle. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the prior "pocket fan, melts" caption-mapping had the melting right but the pocket-fan beat doesn't appear in the on-PS1 pack.
 
 ## Validation Notes
 

@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: JOHNNY 5 — Imagines a 3pm date
+title: JOHNNY 5 — Sends an SOS bottle
 ads: JOHNNY
 tag: 5
 slug: johnny5
 status: validated
-description: "JOHNNY.ADS scene 5: Imagines a 3pm date. Validated after splash capture and SOS-note timing repair."
+description: "JOHNNY.ADS scene 5: Johnny writes a fresh SOS and sends the bottle out. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-03 after visual and audible signoff.
@@ -15,11 +15,9 @@ Validated on 2026-05-03 after visual and audible signoff.
 - ADS dispatch: <code>JOHNNY.ADS scene 5</code>
 - Slug: <code>johnny5</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny writes a message and imagines a clock reading 3pm — preparing for the date.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny writes a fresh SOS message, corks it into a bottle, and sends it out from the shore. Distinct from JOHNNY 2 (which is the gag where a bottle washes up first and he puts a note inside it). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "imagines a 3pm date" caption-mapping guess was wrong.
 
 ### Validation note
 

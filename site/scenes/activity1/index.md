@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: ACTIVITY 1 — Climbs the palm and dives
+title: ACTIVITY 1 — Climbs the palm and belly-flops
 ads: ACTIVITY
 tag: 1
 slug: activity1
 status: validated
-description: "ACTIVITY.ADS scene 1: Climbs the palm and dives. Validated on PS1."
+description: "ACTIVITY.ADS scene 1: Johnny climbs the palm and belly-flops into the water. Validated on PS1."
 ---
 
 Validated on 2026-05-05 after rebuilding high/low packs from a capped
@@ -20,11 +20,12 @@ pixels and tree-occlusion ghosts are gone in both loops.
 - ADS dispatch: <code>ACTIVITY.ADS scene 1</code>
 - Slug: <code>activity1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny climbs the palm tree and does a dive off it — the perfect-flip variant.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny climbs the palm tree and belly-flops into the water — the
+sloppy-impact variant. (Compare ACTIVITY 4, which is the clean-dive
+variant of the same climb-and-water arc.) Confirmed by direct on-PS1
+playback observation while capturing the chapter-select thumbnail.
 
 ### How this scene gets validated
 

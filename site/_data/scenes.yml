@@ -19,7 +19,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after rebuilding high/low packs from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`); source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops
+  notes: palm-climb-then-belly-flop (the sloppy-impact variant of the same climb-and-water arc; ACTIVITY 4 is the clean-dive variant). Visual + audible signoff after rebuilding high/low packs from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`); source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops. Pack content (belly-flop) confirmed from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: ACTIVITY
   tag: 4
   slug: activity4
@@ -28,7 +28,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route, reads-with-seagull-on-head
+  notes: palm-climb-then-clean-dive (the clean-dive variant of the same climb-and-water arc; ACTIVITY 1 is the belly-flop variant). Visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route. Earlier "reads-with-seagull-on-head" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: ACTIVITY
   tag: 5
   slug: activity5
@@ -37,7 +37,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff on the climb/look/dive gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff, lower third on keyed overlay) plus +30 vblanks of hold on source frame 46 so the storm-cloud thought bubble is readable
+  notes: rain-dance-then-lightning-strike (Johnny in costume performs a rain dance, the storm-cloud thought bubble triggers, lightning hits); visual + audible signoff on the gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff, lower third on keyed overlay) plus +30 vblanks of hold on source frame 46 so the storm-cloud thought bubble is readable. Earlier "climb/look/dive" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: ACTIVITY
   tag: 6
   slug: activity6
@@ -46,7 +46,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop
+  notes: reads-falls-asleep-coconut-bonk (Johnny sits under the palm reading, dozes off, and a coconut drops on his head); visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop
 - ads: ACTIVITY
   tag: 7
   slug: activity7
@@ -55,7 +55,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop
+  notes: reads-book-upside-down (Johnny sits and reads a book — but the book is upside-down). Visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the reads-book-upside-down loop. The earlier "bathes / seagull steals clothes" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: ACTIVITY
   tag: 8
   slug: activity8
@@ -64,7 +64,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base
+  notes: bathes-then-walks-behind-tree (Johnny takes a bath, then walks behind the palm tree to hide his nakedness); visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base
 - ads: ACTIVITY
   tag: 9
   slug: activity9
@@ -75,7 +75,7 @@
   - host capture/test island positions `x=-500,y=54`, `x=-154,y=54`, `x=500,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers
+  notes: rain-dance-boat-naked (Johnny in costume rain-dances, a boat carrying a couple passes by, he drops the costume, and the embarrassed couple sails on); visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers
 - ads: ACTIVITY
   tag: 10
   slug: activity10
@@ -84,7 +84,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book
+  notes: reads-seagull-steals-book (Johnny sits reading; a seagull swoops in and snatches the book); visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book
 - ads: ACTIVITY
   tag: 11
   slug: activity11
@@ -93,7 +93,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop
+  notes: bird-steals-clothes (a bird swoops in and steals Johnny's clothes off the island); visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop
 - ads: ACTIVITY
   tag: 12
   slug: activity12
@@ -102,7 +102,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive
+  notes: bird-on-head-clubs-self (a bird lands on Johnny's head and he clobbers his own head with a club trying to hit it). Visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route. The earlier "belly-flop dive" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: BUILDING
   tag: 1
   slug: building1
@@ -117,7 +117,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route
+  notes: sandcastle-slumps-stomp (Johnny tries to build a sandcastle, it slumps mid-build, and he stomps on it in frustration); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route
 - ads: BUILDING
   tag: 2
   slug: building2
@@ -132,7 +132,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form
+  notes: lilliputian-sandcastle-airport (Johnny builds a sandcastle, tiny lilliputians take it over and launch airplanes from it); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form
 - ads: BUILDING
   tag: 3
   slug: building3
@@ -147,7 +147,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route
+  notes: rolls-over-and-naps (Johnny lies down on the sand, rolls over, and takes a nap); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route
 - ads: BUILDING
   tag: 4
   slug: building4
@@ -162,7 +162,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
+  notes: lilliputians-tie-up-sleeping-johnny (Gulliver-style: Johnny sleeps on the sand, tiny lilliputians tie him down with ropes); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
 - ads: BUILDING
   tag: 5
   slug: building5
@@ -177,7 +177,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route
+  notes: builds-fire-sits-by-it (Johnny gathers driftwood, builds a small fire on the beach, and sits next to it). Visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; played cleanly on the normal high-tide/night validation route. The earlier "raft/mermaid repair" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: BUILDING
   tag: 6
   slug: building6
@@ -192,7 +192,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; edge-sleep scene played cleanly on the normal high-tide/night validation route
+  notes: lilliputians-tie-up-no-bird (Johnny sleeps on the sand and lilliputians tie him down — same Gulliver gag as BUILDING 4 but without the bird beat). Visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; played cleanly on the normal high-tide/night validation route. The earlier "edge sleep" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: BUILDING
   tag: 7
   slug: building7
@@ -207,7 +207,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene
+  notes: fire-grill-fish-eat (Johnny builds a fire, grills a fish on it, and eats the fish); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene
 - ads: FISHING
   tag: 1
   slug: fishing1
@@ -220,7 +220,7 @@
   - holiday
   - raft-stage
   last_verified: v0.3.6-ps1
-  notes: reference scene; template for remaining
+  notes: fishes-catches-starfish-throws-back (Johnny casts a line, hooks a starfish, and tosses it back into the water — the gag the on-screen caption literally calls out). Reference scene; template for remaining.
 - ads: FISHING
   tag: 2
   slug: fishing2
@@ -233,7 +233,7 @@
   - holiday
   - raft-stage
   last_verified: '2026-04-23'
-  notes: ''
+  notes: fishes-pulls-up-titanic-life-preserver (Johnny casts a line and reels in a round life-preserver ring stenciled TITANIC). The earlier "a life raft drifts past" mapping was wrong (the object is hooked on the line, not a passing raft); on-screen caption mentions a boot, which appears to be a different fishing gag — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: FISHING
   tag: 3
   slug: fishing3
@@ -246,7 +246,7 @@
   - holiday
   - raft-stage
   last_verified: '2026-05-01'
-  notes: visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline
+  notes: octopus-steals-fish-walks-off (Johnny fishes, an octopus comes up on the line, snatches the fish that was on the hook, and walks off with it). Visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline. The earlier "octopus interlude" mapping had the octopus right but missed the fish-steal beat; on-screen caption ("crab snaps his nose") appears to be a different fishing gag — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: FISHING
   tag: 4
   slug: fishing4
@@ -259,7 +259,7 @@
   - holiday
   - raft-stage
   last_verified: '2026-05-01'
-  notes: visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix
+  notes: shark-pulls-johnny-speedboat (Johnny hooks a shark and gets pulled around the ocean by it like a water-skier behind a speedboat); visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix
 - ads: FISHING
   tag: 5
   slug: fishing5
@@ -272,7 +272,7 @@
   - holiday
   - raft-stage
   last_verified: '2026-05-02'
-  notes: visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed
+  notes: shark-eats-and-spits-out (Johnny goes fishing, gets eaten by a shark, then spat back out onto the island); visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed
 - ads: FISHING
   tag: 6
   slug: fishing6
@@ -285,7 +285,7 @@
   - holiday
   - raft-stage
   last_verified: '2026-05-01'
-  notes: visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue
+  notes: fish-spits-water-thrown-back (Johnny reels in a fish; it squirts water in his face and he tosses it back); visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue
 - ads: FISHING
   tag: 7
   slug: fishing7
@@ -300,7 +300,7 @@
   - host capture/test island position `x=-300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
+  notes: fishes-right-side-catches-starfish-throws-back (Johnny fishes off the right side of the island, hooks a starfish, and throws it back); visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
 - ads: FISHING
   tag: 8
   slug: fishing8
@@ -315,7 +315,7 @@
   - host capture/test island position `x=-300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe
+  notes: fishes-right-side-catches-fish (Johnny fishes off the right side of the island and reels in a fish); visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe
 - ads: JOHNNY
   tag: 1
   slug: johnny1
@@ -326,7 +326,7 @@
   - black backdrop
   - high/low pack parity
   last_verified: '2026-05-02'
-  notes: visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
+  notes: the-end-scroll (the Day 11 finale: frog clock, sunset silhouette, plane overhead, Johnny parachutes down, and the "The End" title card); visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
 - ads: JOHNNY
   tag: 2
   slug: johnny2
@@ -337,7 +337,7 @@
   - captured island position `x=-64,y=54`
   - high/low pack parity
   last_verified: '2026-05-02'
-  notes: visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles
+  notes: bottle-washes-up-sos-note (a bottle washes up on the shore; Johnny puts an SOS note into it and tosses it back); visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles
 - ads: JOHNNY
   tag: 3
   slug: johnny3
@@ -351,7 +351,7 @@
   - raft-stage
   - variable island position
   last_verified: '2026-05-02'
-  notes: visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required
+  notes: writes-letter-to-suzy (Johnny writes a letter to Suzy and sends it off); visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required
 - ads: JOHNNY
   tag: 4
   slug: johnny4
@@ -363,7 +363,7 @@
   - high/low pack parity
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin
+  notes: own-sos-returns (Johnny's own SOS bottle washes back onto the shore); visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin
 - ads: JOHNNY
   tag: 5
   slug: johnny5
@@ -375,7 +375,7 @@
   - high/low pack parity
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows
+  notes: sends-sos-bottle (Johnny writes a fresh SOS and sends the bottle out); visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows
 - ads: JOHNNY
   tag: 6
   slug: johnny6
@@ -386,7 +386,7 @@
   - black backdrop
   - high/low pack parity
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted
+  notes: office-desk-daydreams-island (Johnny is back at his office desk, daydreaming about his time on the island — the inverse-castaway gag); visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted
 - ads: MARY
   tag: 1
   slug: mary1
@@ -401,7 +401,7 @@
   - validation route `x=-124,y=37`
   - raft-stage `5`
   last_verified: '2026-05-03'
-  notes: visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required
+  notes: date-with-mary-the-mermaid (Johnny goes on a date with Mary the mermaid at the shoreline); visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required
 - ads: MARY
   tag: 2
   slug: mary2
@@ -416,7 +416,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
+  notes: mary-visits-fishing-mistaken-for-fish-boot (Mary swims up while Johnny is fishing; he mistakes her for a fish on the line, then ends up reeling in a boot); 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
 - ads: MARY
   tag: 3
   slug: mary3
@@ -431,7 +431,7 @@
   - host capture/test island position `x=80,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames
+  notes: exchange-gifts-plan-date (Mary and Johnny exchange gifts at the shoreline and make plans to go on a date); visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames
 - ads: MARY
   tag: 4
   slug: mary4
@@ -446,7 +446,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed
+  notes: raft-work-hurts-mary (Johnny works on his raft to get home; Mary sees this and is heartbroken that he plans to leave); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed
 - ads: MARY
   tag: 5
   slug: mary5
@@ -462,7 +462,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition
+  notes: packs-raft-says-goodbye (Johnny finishes packing the raft and says goodbye to Mary before sailing off); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition
 - ads: MISCGAG
   tag: 1
   slug: miscgag1
@@ -477,7 +477,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
+  notes: heat-melts-johnny (Johnny gets so hot in the sun that he melts); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
 - ads: MISCGAG
   tag: 2
   slug: miscgag2
@@ -492,7 +492,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
+  notes: bathe-shark-scare (Johnny goes down to take a bath in the surf and a shark turns up and scares him off); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
 - ads: STAND
   tag: 1
   slug: stand1
@@ -507,7 +507,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected
+  notes: stands-at-edge (Johnny stands at the edge of the island, idle); visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected
 - ads: STAND
   tag: 2
   slug: stand2
@@ -521,7 +521,7 @@
   - raft-stage
   - validation route `x=-154,y=54`
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude
+  notes: stands-adjusts-pants (Johnny stands and hitches up his pants — an idle standing-pose beat); visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude
 - ads: STAND
   tag: 3
   slug: stand3
@@ -535,7 +535,7 @@
   - raft-stage
   - validation route `x=-154,y=54`
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly
+  notes: stands-edge-adjusts-hat (Johnny stands at the edge of the island and adjusts his hat — an idle standing-pose beat); visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly
 - ads: STAND
   tag: 4
   slug: stand4
@@ -550,7 +550,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route
+  notes: stands-front-adjusts-hat (Johnny stands at the front of the island and adjusts his hat — front-position variant of the standing-pose hat-adjust beat); visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route
 - ads: STAND
   tag: 5
   slug: stand5
@@ -565,7 +565,7 @@
   - validation route `x=-154,y=54`
   - no-stitch host export with full-frame foreground-only overlay
   last_verified: '2026-05-04'
-  notes: visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
+  notes: stands-front-looks-out (Johnny stands at the front of the island and looks out over the ocean); visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
 - ads: STAND
   tag: 6
   slug: stand6
@@ -580,7 +580,7 @@
   - validation route `x=-154,y=54`
   - no-stitch host export with full-frame foreground-only overlay
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
+  notes: stands-looks-ocean-scratches-head (Johnny looks out at the ocean and scratches his head — a confused-looking idle pose); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 7
   slug: stand7
@@ -595,7 +595,7 @@
   - validation route `x=-154,y=54`
   - no-stitch host export with full-frame foreground-only overlay
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
+  notes: stands-looks-right-lifts-hat (Johnny looks to the right and lifts his hat); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 8
   slug: stand8
@@ -611,7 +611,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
+  notes: stands-right-looks-around-scratches-head (Johnny stands on the right side of the island, looks around, and scratches his head); visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
 - ads: STAND
   tag: 9
   slug: stand9
@@ -627,7 +627,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced
+  notes: stands-by-tree-looks-adjusts-pants (Johnny stands by the palm tree, looks around, and adjusts his pants); visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced
 - ads: STAND
   tag: 10
   slug: stand10
@@ -643,7 +643,7 @@
   - existing committed FG2 pack (host export quirk)
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
+  notes: stands-looks-at-raft-and-around (Johnny looks at his raft and then looks around); visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 11
   slug: stand11
@@ -659,7 +659,7 @@
   - existing committed FG2 pack (host export quirk)
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.
+  notes: stands-left-looks-around (Johnny stands on the left side of the island and looks around); visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 12
   slug: stand12
@@ -675,7 +675,7 @@
   - existing committed FG2 pack (host export quirk)
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.
+  notes: stands-looks-forward-adjusts-hat (Johnny looks forward and adjusts his hat); visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 15
   slug: stand15
@@ -691,7 +691,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick
+  notes: stands-spyglass-looks-around (Johnny stands and looks around with a spyglass); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick
 - ads: STAND
   tag: 16
   slug: stand16
@@ -707,7 +707,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick
+  notes: stands-spyglass-right (Johnny stands on the right side of the island and looks around with a spyglass); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick
 - ads: SUZY
   tag: 1
   slug: suzy1
@@ -718,7 +718,7 @@
   - scene-specific `SUZBEACH.SCR` backdrop
   - high/low pack parity
   last_verified: '2026-05-04'
-  notes: visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
+  notes: suzy-finds-letter-from-johnny (Suzy back home finds a letter that Johnny sent her from the island); visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
 - ads: SUZY
   tag: 2
   slug: suzy2
@@ -730,7 +730,7 @@
   - high/low pack parity
   - static-base foreground overlay for `MRAFT.BMP`
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
+  notes: raft-arrives-meets-suzy (Johnny drifts in on his raft and is reunited with Suzy); visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
 - ads: VISITOR
   tag: 1
   slug: visitor1
@@ -745,7 +745,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival
+  notes: misses-speedboat-going-by (Johnny looks around the island and completely misses a speedboat driving by); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival
 - ads: VISITOR
   tag: 3
   slug: visitor3
@@ -760,7 +760,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: 'visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'
+  notes: waves-small-boat-actually-huge (Johnny waves down what he thinks is a small boat in the distance, only to discover it's actually a huge boat much closer than it looked); 'visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'
 - ads: VISITOR
   tag: 4
   slug: visitor4
@@ -775,7 +775,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label
+  notes: shakes-tree-coconut-rolls-into-ocean (Johnny shakes the palm tree; a coconut falls and rolls right off the island into the ocean); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label
 - ads: VISITOR
   tag: 5
   slug: visitor5
@@ -790,7 +790,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
+  notes: throws-coconut-at-plane-it-crashes (Johnny sees a plane overhead, throws a coconut at it, and the plane crashes); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
 - ads: VISITOR
   tag: 6
   slug: visitor6
@@ -806,7 +806,7 @@
   - production variable island position
   - full-host impact-delta injection
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels
+  notes: shakes-tree-cracks-coconut-eats (Johnny shakes the palm tree, drops a coconut, cracks it open against the trunk, and eats it); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels
 - ads: VISITOR
   tag: 7
   slug: visitor7
@@ -822,7 +822,7 @@
   - production variable island position
   - coconut impact hold redistribution
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration
+  notes: cracks-coconut-eats-no-shake (Johnny already has a coconut; cracks it on the palm trunk and eats — no-shake variant of VISITOR 6). Visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration. Pack content (no-shake coconut-eat) confirmed from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: WALKSTUF
   tag: 1
   slug: walkstuf1
@@ -831,7 +831,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him
+  notes: yacht-party-drunk-pass-out (Johnny parties with a yacht full of people, returns to the island drunk, and passes out); visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him
 - ads: WALKSTUF
   tag: 2
   slug: walkstuf2
@@ -840,7 +840,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-04'
-  notes: visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route
+  notes: works-on-raft (Johnny works on his raft); visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route
 - ads: WALKSTUF
   tag: 3
   slug: walkstuf3
@@ -849,4 +849,4 @@
   sfx: done
   variants: []
   last_verified: '2026-05-04'
-  notes: visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed
+  notes: jogs-around-island (Johnny jogs laps around the island — the exercise loop); visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed

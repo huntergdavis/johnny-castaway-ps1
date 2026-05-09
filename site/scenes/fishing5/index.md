@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: FISHING 5 — Eaten by a shark
+title: FISHING 5 — Eaten by a shark, then spat back out
 ads: FISHING
 tag: 5
 slug: fishing5
 status: validated
-description: "FISHING.ADS scene 5: Eaten by a shark. Validated after shark capture cleanup."
+description: "FISHING.ADS scene 5: Johnny goes fishing, gets eaten by a shark, then spat back out. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-02 after the shark interaction was rebuilt with a
@@ -18,11 +18,9 @@ pixels, and SFX timing remained aligned.
 - ADS dispatch: <code>FISHING.ADS scene 5</code>
 - Slug: <code>fishing5</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny hooks a shark; the shark eats him, then spits him back onto the beach.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny casts a line, a shark eats him whole — and then promptly spits him back out. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior "eaten by a shark" caption-mapping guess (which missed the spit-out beat that gives the gag its punchline).
 
 ### Validation note
 

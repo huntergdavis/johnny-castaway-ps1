@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: BUILDING 4 — Sand castle vs. lilliputians
+title: BUILDING 4 — Lilliputians tie Johnny down while he sleeps
 ads: BUILDING
 tag: 4
 slug: building4
 status: validated
-description: "BUILDING.ADS scene 4: Sand castle vs. lilliputians. Validated on PS1 after generic multi-view capture and terminal cleanup."
+description: "BUILDING.ADS scene 4: Johnny sleeps on the sand and lilliputians tie him down with ropes (Gulliver-style). Validated 2026-05-08."
 ---
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
@@ -18,11 +18,9 @@ frame so the final Johnny/bird foreground row restores cleanly.
 - ADS dispatch: <code>BUILDING.ADS scene 4</code>
 - Slug: <code>building4</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny builds a castle; tiny figures attack it. He retreats up the palm.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny sleeps on the sand and tiny lilliputians swarm in and tie him down with ropes — straight Gulliver. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "sand castle vs. lilliputians" caption-mapping guess had the lilliputians right but the action wrong.
 
 ### How this scene gets validated
 

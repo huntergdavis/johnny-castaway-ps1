@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 4 — Taps foot
+title: STAND 4 — Standing at front of island, adjusts hat
 ads: STAND
 tag: 4
 slug: stand4
 status: validated
-description: "STAND.ADS scene 4: Taps foot. Validated on PS1."
+description: "STAND.ADS scene 4: Johnny stands at the front of the island and adjusts his hat. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -15,11 +15,9 @@ Validated on 2026-05-04.
 - ADS dispatch: <code>STAND.ADS scene 4</code>
 - Slug: <code>stand4</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Short idle at SPOT_B SW: taps a foot nervously.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands at the front of the island and adjusts his hat — front-position variant of the STAND family's hat-adjust pose (compare STAND 3, the edge-of-island variant). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "taps foot" caption-mapping guess was wrong (no foot-tap in the on-PS1 pack).
 
 ## Validation notes
 
