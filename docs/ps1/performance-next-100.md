@@ -57,6 +57,14 @@ packs to padded compact FGP3/v4 restore-minus-current data while preserving the
 VISITOR3, BUILDING2, BUILDING4, ACTIVITY9 low, and FISHING1 broad canaries
 stayed exact-flat.
 
+Latest JOHNNY1 current-fit read-table decision: do not promote or retry
+hand-authored `131..147`, `145..161`, or `138..154` retained read groups.
+The v177 probes kept both tides exact-flat at `2070` scene, `1974/1945`,
+`overrun_vb=29`, `blocking_vb=26`, `prefetch_overrun_vb=26`, `loop_reads=7`,
+`loop_read_vb=56`, and `due_misses=0`, with `group_hits=0` in every run.
+These rows remain evidence for generated append ownership or a larger
+retained-window design, not for another local table edit.
+
 Latest promoted WALKSTUF3 low compact-FGP3/v4 baseline: convert
 `WALK3LOW.FG2` to padded compact FGP3/v4 restore-minus-current data while
 preserving the `994669` byte CD footprint. The compaction chain trims active
@@ -1836,6 +1844,7 @@ pre-v0.8.0 row.
 | Whole-TU link-order moves | Do not retry the simple `cdrom_ps1.c`-next-to-foreground order; it was timing-flat despite large symbol movement. Use targeted hot-section padding or cold-section isolation instead. |
 | Runtime dirty/upload heuristics | Pack-emitted masks or upload plans replace hot runtime checks. |
 | Hard-coded read groups | Append-start trace or generated group metadata proves the group can fire; sectors `106..117` and `384..396` were exact no-ops even with extra retained capacity. |
+| JOHNNY1 current-fit read groups | Do not retry `131..147`, `145..161`, or `138..154` as local hand tables. The v177 probes stayed exact-flat on both tides with `group_hits=0`; retry only with generated append ownership, larger retained windows, or a different data shape. |
 | Upload coordinate static tables | Do not retry; static tables grew `grDrawBackground` and did not move timing. |
 | Async CD | Async state ownership and polling metrics exist in a trace build. |
 | `Setloc` skipping | Full frame hashes and work-identity gates prove every frame rendered. |
