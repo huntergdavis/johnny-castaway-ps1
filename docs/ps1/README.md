@@ -23,22 +23,22 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.4064%` over target / `99.6077%` target speed across all 126
+`+0.4056%` over target / `99.6084%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy
-follow-ups; the raw signed optimization matrix is `-0.3620%` / `100.3915%`.
+follow-ups; the raw signed optimization matrix is `-0.3629%` / `100.3922%`.
 That is about `16.99` public over-target points removed and `12.51` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-f124-sparse-motion-v188`, adds a
-sparse-in-place frame `124` state-hull motion-copy payload to both tides on top
-of the v181/v182 motion baseline. It preserves both `1555450` byte pack
+The latest VISITOR3 follow-up, `visitor3-f118-hull-sparse-v189`, adds a
+sparse-in-place frame `118` hull motion-copy payload to both tides on top of
+the v181/v182/v188 motion baseline. It preserves both `1555450` byte pack
 footprints, later offsets, fixed LBAs `22472/23232`, and the `215040` byte
-PS-EXE bucket while keeping loop timing flat at `1104/1030` high and
-`1108/1028` low. It cuts another `14592` active payload bytes per tide,
-blocking `128 -> 126` high / `143 -> 142` low, and loop-read time
-`130 -> 128` high / `152 -> 151` low.
+PS-EXE bucket while keeping low loop timing flat at `1108/1028` and nudging
+high to `1104/1031`. It cuts another `13901` active payload bytes per tide,
+blocking `126 -> 120` high / `142 -> 139` low, and loop-read time
+`128 -> 122` high / `151 -> 148` low.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

@@ -307,15 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.4% over target / 99.6% target speed** (`0.4064%`
-exact public over target / `99.6077%` exact public target speed); the raw
-signed optimization matrix is `-0.3620%` / `100.3915%`.
+the public average is **+0.4% over target / 99.6% target speed** (`0.4056%`
+exact public over target / `99.6084%` exact public target speed); the raw
+signed optimization matrix is `-0.3629%` / `100.3922%`.
 
 ## Scene Battle Card
 
 As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-f124-sparse-motion-v188`,
+`visitor3-f118-hull-sparse-v189`,
 `activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
@@ -824,7 +824,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
-   largest gap at `+74/+80` VBlanks after the VISITOR3 motion-copy passes; its
+   largest gap at `+73/+80` VBlanks after the VISITOR3 motion-copy passes; its
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
    data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and

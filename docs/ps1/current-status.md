@@ -3,11 +3,12 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
+**Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy perf follow-ups through high frame 115; all 63 scenes remain validated, and the public
-headless battle card is `+0.4064%` over target / `99.6077%` target speed).
+motion-copy perf follow-ups through sparse frame 118 hull motion; all 63 scenes
+remain validated, and the public headless battle card is `+0.4056%` over
+target / `99.6084%` target speed).
 
 ## Overall
 
@@ -189,12 +190,12 @@ green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
 `95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 motion-copy
-payload pass adds a high-tide frame `115` state-hull motion-copy payload on top
-of the v181 yacht translation payloads, preserves both `1555450` byte pack
-footprints and LBAs `22472/23232`, moves high `1105/1031 -> 1104/1030`, cuts
-blocking `129 -> 128`, and cuts loop-read time `132 -> 130`; low remains on
-v181 at `1108/1028`. The public battle card is now
-`+0.4064%` over target / `99.6077%` target speed while preserving fixed pack LBAs and the
+payload pass adds a sparse-in-place frame `118` hull motion payload on top of
+the v181 yacht translation payloads, high frame `115`, and shared frame `124`,
+preserves both `1555450` byte pack footprints and LBAs `22472/23232`, nudges
+high to `1104/1031`, keeps low at `1108/1028`, cuts blocking to `120/139`, and
+cuts loop-read time to `122/148`. The public battle card is now `+0.4056%`
+over target / `99.6084%` target speed while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.99`

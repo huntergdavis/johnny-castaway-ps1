@@ -64,12 +64,12 @@ BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
 compact-FGP3/v4 pass, the BUILDING6 compact-FGP3/v4 pass, the ACTIVITY9 high
 compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the JOHNNY1
 compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, and the
-VISITOR3 motion-copy passes. The latest VISITOR3 sparse frame-124 pass is a
-work-reduction promotion: public speed stays flat, but blocking drops to
-`126/142` with fixed pack layout. The two yellow
+VISITOR3 motion-copy passes. The latest VISITOR3 sparse frame-118 hull pass is
+a CD-pressure promotion: high nudges to `1104/1031`, low stays `1108/1028`,
+and blocking drops to `120/139` with fixed pack layout. The two yellow
 rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
-(`92.8%` / `93.3%`); the orange band (95–99%) holds `walkstuf1` high/low
+(`92.8%` / `93.4%`); the orange band (95–99%) holds `walkstuf1` high/low
 (`95.6%` / `95.8%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
@@ -93,7 +93,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
+Current battle-card rollup as of <time datetime="2026-05-09">2026-05-09</time>:
 
 | Metric | Value |
 |---|---:|
@@ -105,10 +105,10 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.4%` (`0.4064%` exact, public-capped) |
-| Timing-bearing average target speed | `99.6%` (`99.6077%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-09T00:18:52` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-f124-sparse-motion-v188`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.4%` (`0.4056%` exact, public-capped) |
+| Timing-bearing average target speed | `99.6%` (`99.6084%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-09T00:42:18` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-f118-hull-sparse-v189`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -1803,29 +1803,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-09T00:18:52</td>
-      <td>visitor3-f124-sparse-motion-v188</td>
-      <td>+7.2%</td>
-      <td class="spd-yellow">93.3%</td>
-      <td>1104/1030</td>
-      <td>126</td>
+      <td>2026-05-09T00:42:18</td>
+      <td>visitor3-f118-hull-sparse-v189</td>
+      <td>+7.1%</td>
+      <td class="spd-yellow">93.4%</td>
+      <td>1104/1031</td>
+      <td>120</td>
       <td>0</td>
       <td>22</td>
-      <td>sparse frame 124 motion-copy payload plus frame 115 and 119..123 motion baseline; fixed offsets LBA and PS-EXE bucket</td>
+      <td>sparse frame 118 hull motion-copy payload plus frame 124, frame 115, and 119..123 motion baseline; fixed offsets LBA and PS-EXE bucket</td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-09T00:18:52</td>
-      <td>visitor3-f124-sparse-motion-v188</td>
+      <td>2026-05-09T00:42:18</td>
+      <td>visitor3-f118-hull-sparse-v189</td>
       <td>+7.8%</td>
       <td class="spd-yellow">92.8%</td>
       <td>1108/1028</td>
-      <td>142</td>
+      <td>139</td>
       <td>0</td>
       <td>25</td>
-      <td>sparse frame 124 motion-copy payload plus 119..123 motion baseline; fixed offsets LBA and PS-EXE bucket</td>
+      <td>sparse frame 118 hull motion-copy payload plus frame 124 and 119..123 motion baseline; fixed offsets LBA and PS-EXE bucket</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>

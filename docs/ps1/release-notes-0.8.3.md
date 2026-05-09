@@ -7,11 +7,11 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4064%` public over target / `99.6077%` public target speed after the MARY3,
+`+0.4056%` public over target / `99.6084%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy follow-ups. The raw signed optimization
-matrix is `-0.3620%` over target / `100.3915%` target speed.
+matrix is `-0.3629%` over target / `100.3922%` target speed.
 
 ## Headline
 
@@ -88,6 +88,16 @@ motion-copy shape to high-tide frame `115` only, improving high from
 `1105/1031` to `1104/1030`, cutting blocking `129 -> 128`, and cutting
 loop-read time `132 -> 130`. Low remains on the v181 row after larger both-tide
 and high-only windows regressed held slack or hidden refill.
+
+The follow-up `visitor3-f124-sparse-motion-v188` promoted as an
+offset-preserving work-reduction pass: frame `124` in both tides became a
+sparse-in-place state-hull motion-copy payload, cutting another `14592` active
+bytes per tide and reducing blocking to `126/142` without changing loop timing.
+
+The follow-up `visitor3-f118-hull-sparse-v189` then promoted the same
+offset-preserving lane for frame `118`. It keeps fixed LBAs and the `215040`
+byte PS-EXE bucket, trims another `13901` active bytes per tide, nudges high to
+`1104/1031`, keeps low at `1108/1028`, and cuts blocking to `120/139`.
 
 ## Verification
 

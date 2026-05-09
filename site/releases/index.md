@@ -40,9 +40,9 @@ headless performance baseline.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
   ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-  VISITOR3 motion-copy passes, all 126 timing-bearing rows average `+0.4064%`
-  public over target / `99.6077%` public target speed; the raw signed CSV is
-  `-0.3620%` / `100.3915%` for optimization work.
+  VISITOR3 motion-copy passes, all 126 timing-bearing rows average `+0.4056%`
+  public over target / `99.6084%` public target speed; the raw signed CSV is
+  `-0.3629%` / `100.3922%` for optimization work.
 - **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
   VISITOR3 tides and high-tide frame `115` now move already-composited
   background rows and draw only residual foreground payloads. High improves
