@@ -24,7 +24,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/captions/' | relative_url }}">Closed captions</a>
-    <p>How the caption corpus, the ADS-tag map, and the on-screen text band fit together. Includes the 30 HIGH / 21 MED / 12 LOW confidence breakdown from the 2026-04-26 audit.</p>
+    <p>How the caption corpus, the ADS-tag map, and the on-screen text band fit together. Includes the 30 HIGH / 21 MED / 12 LOW confidence breakdown from the 2026-04-26 audit and the v0.8.4-ps1 runtime corrections section noting which audit ratings the on-PS1 chapter-select walk overturned.</p>
   </li>
   <li>
     <a href="{{ '/docs/holidays/' | relative_url }}">Holidays</a>
