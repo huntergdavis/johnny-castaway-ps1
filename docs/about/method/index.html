@@ -200,25 +200,25 @@ capture and a low-tide capture: a sequence of full PNG frames, one
 per displayed game frame, plus a <code class="language-plaintext highlighter-rouge">frame-meta.json</code> with timing data
 and a <code class="language-plaintext highlighter-rouge">sound-events.jsonl</code> containing every <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code> op
 the TTM interpreter fired, with frame index, sound number, and
-pan / volume. This is run by <code class="language-plaintext highlighter-rouge">scripts/capture-host-scene.sh</code>.</li>
-  <li><strong>Pack compile.</strong> <code class="language-plaintext highlighter-rouge">scripts/build-scene-foreground-pack.py</code> turns a
+pan / volume. This is run by <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/capture-host-scene.sh"><code class="language-plaintext highlighter-rouge">scripts/capture-host-scene.sh</code></a>.</li>
+  <li><strong>Pack compile.</strong> <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-scene-foreground-pack.py"><code class="language-plaintext highlighter-rouge">scripts/build-scene-foreground-pack.py</code></a> turns a
 capture into one FG2 binary. Each output frame becomes either a
 base full-render (the first frame, or any frame the differ flagged
 as a forced base) or a diff-from-prior. Diffs are stored as runs
 of indexed-pixel spans: <code class="language-plaintext highlighter-rouge">(y, x_start, length, indexed_bytes)</code>.
 Sound events fold into a per-frame event table.</li>
-  <li><strong>CD packaging.</strong> <code class="language-plaintext highlighter-rouge">mkpsxiso</code> consumes <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>
+  <li><strong>CD packaging.</strong> <a href="/johnny-castaway-ps1/docs/glossary/#mkpsxiso"><code class="language-plaintext highlighter-rouge">mkpsxiso</code></a> consumes <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/cd_layout.xml"><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code></a>
 and lays out the disc image. Each routed scene contributes two
 pack entries (high-tide, low-tide) plus the small fixed payload
 – the executable, <code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code>/<code class="language-plaintext highlighter-rouge">.001</code> for static metadata
 lookup, the SCR/PSB/SND assets the runtime still consults, and
 the title raw.</li>
-  <li><strong>PS1 replay.</strong> <code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code> opens the matching pack
+  <li><strong>PS1 replay.</strong> <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> opens the matching pack
 for the selected scene+tide, decodes its header and per-frame
 index, and during the scene loop stamps each frame’s diff spans
 on top of the prior composite. Background, wave animation, and
 holiday overlays come from the PS1’s own narrow runtime;
-sound events fire through <code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code> on a per-pack event
+sound events fire through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/sound_ps1.c"><code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code></a> on a per-pack event
 cursor with a fixed 3-frame delay so SPU key-on lines up with
 the visible trigger.</li>
 </ul>
@@ -299,7 +299,7 @@ or the dated worklogs under
 pad driver (<code class="language-plaintext highlighter-rouge">InitPAD</code> / <code class="language-plaintext highlighter-rouge">StartPAD</code>) does not auto-poll under
 DuckStation in the project’s runtime context. The fix was to lift
 the SPI controller driver from spicyjpeg’s <code class="language-plaintext highlighter-rouge">pads</code> example and run
-it directly: timer-2 plus SIO0 IRQ at 250 Hz, in <code class="language-plaintext highlighter-rouge">src/spi.c</code>.
+it directly: timer-2 plus SIO0 IRQ at 250 Hz, in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/spi.c"><code class="language-plaintext highlighter-rouge">src/spi.c</code></a>.
 That driver, as published, sends a 4-byte poll TX. Under DuckStation
 the controller bytes never make it back; the read returns
 <code class="language-plaintext highlighter-rouge">0xFFFF</code>. The console only delivers button bytes when the full
@@ -320,7 +320,7 @@ atlas. New on-screen text should not regress to <code class="language-plaintext 
 
 <p><strong>VRAM corruption across scenes – <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code> wipes
 <code class="language-plaintext highlighter-rouge">currDirty</code>.</strong> The dirty-rectangle bookkeeping in
-<code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code> tracks per-frame dirty regions in <code class="language-plaintext highlighter-rouge">currDirty</code>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code></a> tracks per-frame dirty regions in <code class="language-plaintext highlighter-rouge">currDirty</code>
 and <code class="language-plaintext highlighter-rouge">prevDirty</code>. On a normal frame, <code class="language-plaintext highlighter-rouge">currDirty</code> is the spans the
 foreground touched this frame; <code class="language-plaintext highlighter-rouge">prevDirty</code> is what it touched last
 frame and now needs background restoration. The pause menu opens
