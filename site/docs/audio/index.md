@@ -247,14 +247,14 @@ A few audio quality items the author knows are open:
 ## Ocean ambience (v0.6.0-ps1)
 
 The runtime carries one looping background track — a 20-second
-ocean-loop sample on a dedicated SPU voice slot reserved at boot.
+[ocean-ambience]({{ '/docs/glossary/#ocean-ambience' | relative_url }}) sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
 [memcard]({{ '/docs/glossary/#memcard' | relative_url }}) alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.
 
 The on-disc artifact is `OCEAN.VAG` (~126 KB, 4-bit ADPCM at
-11.025 kHz mono). Source is BigSoundBank.com sound 0266 (CC0); the
+11.025 kHz mono). Source is [BigSoundBank.com sound 0266](https://bigsoundbank.com/sea-waves-s0266.html) ("Sea: Waves", CC0; full attribution at [/credits/#ocean-ambience]({{ '/credits/' | relative_url }}#ocean-ambience)); the
 encoding pipeline lives in `scratch/ocean-ambience/`. The seam is
 hidden by an equal-power crossfade with the recording's natural
 continuation, so the SPU's hardware loop reads as unbroken ocean

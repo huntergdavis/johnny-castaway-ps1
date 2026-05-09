@@ -102,7 +102,7 @@
       <h1>Audio pipeline</h1>
       <p class="subtitle">SPU layout, sample preload, captured PLAY_SAMPLE replay, and where DuckStation's HLE diverges from the real hardware.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1941 words
+          ~7 min read · 1947 words
         </p>
       
       <hr class="rule" />
@@ -400,14 +400,14 @@ did not. This is a design question, not a technical one.</li>
 <h2 id="ocean-ambience-v060-ps1">Ocean ambience (v0.6.0-ps1)</h2>
 
 <p>The runtime carries one looping background track — a 20-second
-ocean-loop sample on a dedicated SPU voice slot reserved at boot.
+<a href="/johnny-castaway-ps1/docs/glossary/#ocean-ambience">ocean-ambience</a> sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
 <a href="/johnny-castaway-ps1/docs/glossary/#memcard">memcard</a> alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.</p>
 
 <p>The on-disc artifact is <code class="language-plaintext highlighter-rouge">OCEAN.VAG</code> (~126 KB, 4-bit ADPCM at
-11.025 kHz mono). Source is BigSoundBank.com sound 0266 (CC0); the
+11.025 kHz mono). Source is <a href="https://bigsoundbank.com/sea-waves-s0266.html">BigSoundBank.com sound 0266</a> (“Sea: Waves”, CC0; full attribution at <a href="/johnny-castaway-ps1/credits/#ocean-ambience">/credits/#ocean-ambience</a>); the
 encoding pipeline lives in <code class="language-plaintext highlighter-rouge">scratch/ocean-ambience/</code>. The seam is
 hidden by an equal-power crossfade with the recording’s natural
 continuation, so the SPU’s hardware loop reads as unbroken ocean
