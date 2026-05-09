@@ -7,7 +7,29 @@ slug: activity5
 status: validated
 last_verified: "2026-05-05"
 description: "ACTIVITY.ADS scene 5: Johnny puts on a costume, performs a rain dance, and gets struck by lightning. Validated 2026-05-05."
+image: /assets/img/activity5-ps1-rain-dance.png
+image_alt: "ACTIVITY 5 on PS1 at night: Johnny in costume mid-rain-dance with a storm-cloud thought bubble hovering over the palm tree."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity5-ps1-rain-dance.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="ACTIVITY 5 on PS1 at night: Johnny in costume mid-rain-dance with a storm-cloud thought bubble hovering over the palm tree." />
+  <figcaption>
+    ACTIVITY 5 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny is in costume mid-dance; the storm-cloud thought bubble
+    (source frame 46, held +30 vblanks for readability) is the
+    cue right before the lightning strike. The pack uses the
+    JOHNNY 2-style upper-bubble + lower-overlay split so the
+    bubble survives base-diff and the post-strike splash cleans
+    up without ghost trails.
+  </figcaption>
+</figure>
 
 Validated 2026-05-05. Visual + audible signoff on the rain-dance gag.
 High/low packs use the JOHNNY 2-style split — upper thought-bubble
