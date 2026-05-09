@@ -21,8 +21,8 @@ canonical_baseurl: "/johnny-castaway-ps1"
 # Pinned values for P1. Phase P3 will replace these via _data/release.yml
 # written by the GitHub Actions workflow at build time.
 release:
-  version: "0.8.3"
-  tag: "v0.8.3-ps1"
+  version: "0.8.4"
+  tag: "v0.8.4-ps1"
   # ISO date the current `tag` shipped (matches the date on
   # /releases/). Surfaced on the home status strip and in the
   # SoftwareApplication JSON-LD `dateModified` field. Update
