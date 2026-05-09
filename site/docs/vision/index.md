@@ -90,7 +90,7 @@ depend on it.
 The pipeline lives at
 [`scripts/vision_classifier.py`]({{ site.github_url }}/blob/main/scripts/vision_classifier.py)
 with a one-command runner at
-`scripts/run-vision-reference-pipeline.sh`. Three primary subcommands:
+[`scripts/run-vision-reference-pipeline.sh`]({{ site.github_url }}/blob/main/scripts/run-vision-reference-pipeline.sh). Three primary subcommands:
 
 ```bash
 # Build the reference bank (one-time, or after reference recapture)
