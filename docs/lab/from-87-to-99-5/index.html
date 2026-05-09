@@ -212,7 +212,7 @@ that loop actually looked like.</p>
 
 <h2 id="the-headless-harness">The headless harness</h2>
 
-<p><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <a href="/johnny-castaway-ps1/docs/glossary/#bootmode"><code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
 
 <p>Two numbers from the log do most of the work:</p>
 
