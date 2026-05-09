@@ -422,7 +422,7 @@ component-completeness phases:
 - [PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
   sectors) at `{{ site.release.tag }}` after legacy ADS/TTM/FG1
   paths were stripped from the linker pass.
-- Routed CD image: **~76&nbsp;MB** at `{{ site.release.tag }}`
+- Routed CD image: **~79&nbsp;MB** at `{{ site.release.tag }}`
   (mostly FG2 pack payload routed selectively onto the disc).
 - Generated FG2 corpus on disk: **126 packs** (high-tide +
   low-tide for all 63 scenes), **~343&nbsp;MB**, routed onto
