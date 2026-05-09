@@ -6,7 +6,36 @@ tag: 3
 slug: mary3
 status: validated
 description: "MARY.ADS scene 3: Mary and Johnny exchange gifts at the shoreline and make plans to go on a date. Validated 2026-05-08."
+image: /assets/img/mary3-ps1-mermaid-shore.png
+image_alt: "MARY 3 on PS1 at night: Johnny stands at the center of the island under the palm tree, Mary the mermaid surfacing in the water at the lower-left shoreline."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/mary3-ps1-mermaid-shore.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="MARY 3 on PS1 at night: Johnny stands at the center of the island under the palm tree, Mary the mermaid surfacing in the water at the lower-left shoreline." />
+  <figcaption>
+    MARY 3 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The shoreline meet-up before the gift exchange and date plans:
+    Johnny is on the island, Mary's mermaid tail just breaking the
+    water on the left. (For the date itself see
+    <a href="{{ '/scenes/mary1/' | relative_url }}">MARY 1</a>.)
+    MARY 3 also forced two infrastructure fixes — the host capture
+    ledger now clears stale sprite-surface refs before BMP/layer
+    surfaces are freed, and the PS1 runtime drops optional prefetch
+    buffers plus uses a small streaming scratch path when a large
+    clean snapshot would otherwise fragment memory. Both rows are
+    currently metadata-only on
+    <a href="{{ '/perf/' | relative_url }}">/perf/</a> pending an
+    active-loop timing refresh against the v0.7.2+ prefetch-relief
+    baseline.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-03.
 
