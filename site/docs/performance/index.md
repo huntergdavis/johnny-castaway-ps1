@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.4% over target / 99.6% target speed** (`0.4404%`
-exact public over target / `99.5782%` exact public target speed); the raw
-signed optimization matrix is `-0.3281%` / `100.3620%`.
+the public average is **+0.4% over target / 99.6% target speed** (`0.4353%`
+exact public over target / `99.5831%` exact public target speed); the raw
+signed optimization matrix is `-0.3331%` / `100.3669%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
 `activity9-high-compact-fgp3-v167`,
@@ -517,7 +518,7 @@ rows are historical only.
     <tr>
       <td><code>activity9</code></td>
       <td>+1.0% / 99.0% (2082/2062); due 1; blk 24</td>
-      <td>+1.3% / 98.7% (2085/2058); due 3; blk 29</td>
+      <td>+0.7% / 99.3% (2075/2061); due 1; blk 17</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -855,8 +856,8 @@ Next plausible wins, in priority order:
    now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
    the bottom of the orange band after compact-pack promotion. The remaining
    hard rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
-   VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low, and
-   ACTIVITY9 low, where hand-authored read groups and scalar window changes have
+   VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
+   where hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work.
 
 The author considers the current build comfortable for the validated scenes,

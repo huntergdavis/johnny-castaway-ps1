@@ -23,21 +23,22 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.4404%` over target / `99.5782%` target speed across all 126
+`+0.4353%` over target / `99.5831%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
-compact, and JOHNNY1 compact follow-ups; the raw signed optimization matrix is `-0.3281%` /
-`100.3620%`. That is about `16.96` public over-target
+compact, JOHNNY1 compact, and ACTIVITY9 low compact follow-ups; the raw signed optimization matrix is `-0.3331%` /
+`100.3669%`. That is about `16.96` public over-target
 points removed and `12.48` public target-speed points added since the compact
 full-matrix baseline.
 
-The latest JOHNNY1 follow-up, `johnny1-compact-fgp3-v173`, converts both
-black-backdrop packs to compact FGP3/v4 restore-minus-current data inside the
-original `448370` byte footprints. High and low both move `1977/1943 ->
-1974/1945`, cut blocking `31 -> 26`, hidden refill `31 -> 26`, loop reads
-`16 -> 7`, and loop-read time `95 -> 56`; VISITOR3, BUILDING2, BUILDING4,
-ACTIVITY9 low, and FISHING1 canaries stayed exact-flat. The previous WALKSTUF3
-low compact pass remains green at `2310/2295`.
+The latest ACTIVITY9 low follow-up, `activity9-low-compact-fgp3-v174`,
+converts `ACTV9LOW.FG2` to compact FGP3/v4 restore-minus-current data inside
+the original `1745484` byte footprint. Low moves `2085/2058 -> 2075/2061`,
+cuts blocking `29 -> 17`, keeps hidden refill flat at `12`, cuts loop reads
+`59 -> 47`, and due misses `3 -> 1`; VISITOR3, BUILDING2, BUILDING4,
+ACTIVITY9 high, and FISHING1 canaries stayed on their accepted profiles. The
+previous JOHNNY1 compact pass keeps both black-backdrop tides at `1974/1945`
+with lower CD pressure.
 VISITOR3 local threshold/read-table probes remain closed until generated
 scheduler ownership, safe upload/precomposed payloads, or another
 pack/data-shape reduction is ready.

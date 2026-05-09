@@ -5,9 +5,9 @@
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, WALKSTUF3 low, and JOHNNY1 compact-FGP3 perf follow-ups; all 63
-scenes remain validated, and the public headless battle card is `+0.4404%`
-over target / `99.5782%` target speed).
+ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, and ACTIVITY9 low compact-FGP3 perf
+follow-ups; all 63 scenes remain validated, and the public headless battle card
+is `+0.4353%` over target / `99.5831%` target speed).
 
 ## Overall
 
@@ -177,8 +177,11 @@ footprint, moves high `2520/2442 -> 2482/2457` and low `2515/2437 ->
 loop reads `74/73 -> 42/42`, and keeps LBAs `10754/11460`. The latest
 ACTIVITY9 high compact-FGP3/v4 pass keeps the original `1745484` byte
 footprint and LBA `3108`, moves high `2094/2056 -> 2082/2062`, cuts blocking
-`37 -> 24`, hidden refill `23 -> 17`, loop reads `52 -> 25`, and keeps low
-tide exact-flat as a canary. The latest WALKSTUF3 low compact-FGP3/v4 pass
+`37 -> 24`, hidden refill `23 -> 17`, and loop reads `52 -> 25`. The later
+ACTIVITY9 low compact-FGP3/v4 pass keeps the original `1745484` byte footprint
+and LBA `3961`, moves low `2085/2058 -> 2075/2061`, cuts blocking `29 -> 17`,
+loop reads `59 -> 47`, loop-read time `289 -> 232`, and due misses `3 -> 1`.
+The latest WALKSTUF3 low compact-FGP3/v4 pass
 keeps the original `994669` byte footprint and LBA `26906`, moves low
 `2321/2293 -> 2310/2295`, cuts blocking
 `41 -> 26`, hidden refill `21 -> 17`, loop reads `72 -> 29`, and moves low into
@@ -186,7 +189,7 @@ green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
 `95 -> 56`, and keeps LBAs `13982/14201`. The public battle card is now
-`+0.4404%` over target / `99.5782%` target speed while preserving fixed pack LBAs and the
+`+0.4353%` over target / `99.5831%` target speed while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.96`
@@ -211,7 +214,7 @@ pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
 stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
 `1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and
-`1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2085/2058`, WALKSTUF1
+`1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap

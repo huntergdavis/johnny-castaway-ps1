@@ -26,8 +26,10 @@ moves high into green. The BUILDING6 compact-FGP3/v4 pass cuts both
 tides to `2482/2457` and `2485/2456`, clearing due misses and moving both rows
 to the bottom of the orange band while preserving fixed pack LBAs. The latest
 ACTIVITY9 high compact-FGP3/v4 pass moves high to `2082/2062`, cuts blocking
-`37 -> 24`, and moves the row into green while low tide stays exact-flat as a
-canary. The latest WALKSTUF3 low compact-FGP3/v4 pass moves low to
+`37 -> 24`, and moves the row into green. The latest ACTIVITY9 low
+compact-FGP3/v4 pass moves low to `2075/2061`, cuts blocking `29 -> 17`, loop
+reads `59 -> 47`, and moves the row into green. The latest WALKSTUF3 low
+compact-FGP3/v4 pass moves low to
 `2310/2295`, cuts blocking `41 -> 26`, and moves the row into green. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
 The live ledger is at
