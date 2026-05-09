@@ -6,7 +6,28 @@ tag: 5
 slug: building5
 status: validated
 description: "BUILDING.ADS scene 5: Johnny builds a small fire on the beach and sits next to it. Validated 2026-05-08."
+image: /assets/img/building5-ps1-fire.png
+image_alt: "BUILDING 5 on PS1 at night: Johnny sits at the left shoreline next to a small fire, the moon visible above."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/building5-ps1-fire.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="BUILDING 5 on PS1 at night: Johnny sits at the left shoreline next to a small fire, the moon visible above." />
+  <figcaption>
+    BUILDING 5 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny is at the shoreline next to the small driftwood fire he
+    just lit. The on-PS1 loop also overturned the original
+    <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
+    "fixes the raft (mermaid)" guess — that gag belongs to a
+    different scene; this is the campfire beat.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 after regenerating high/low packs through the
 generic normal/far-left/far-right foreground-only multi-view stitch. The
