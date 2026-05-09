@@ -183,9 +183,14 @@ to detect.</p>
 <p>The first rule is simple: the agent has to read the files.</p>
 
 <p>Not “you know C”. Not “this is probably a Jekyll site”. The actual files.
-<code class="language-plaintext highlighter-rouge">src/pause_menu.c</code>. <code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code>. <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>. <code class="language-plaintext highlighter-rouge">holidays.yml</code>.
-The generated pages under <code class="language-plaintext highlighter-rouge">site/docs/holidays/calendar/</code>. The build script.
-The release script. If the task touches a subsystem, the agent reads the
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu.c</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a>.
+The generated pages under <a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/site/docs/holidays/calendar/"><code class="language-plaintext highlighter-rouge">site/docs/holidays/calendar/</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh">The build script</a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/release.sh">The release script</a>.
+If the task touches a subsystem, the agent reads the
 subsystem before it writes.</p>
 
 <p>That does two things. It gives the model real names and real constraints. It
@@ -253,7 +258,7 @@ ugly:</p>
 
 <ul>
   <li>“Only edit these files.”</li>
-  <li>“Do not touch <code class="language-plaintext highlighter-rouge">src/holidays.c</code>.”</li>
+  <li>“Do not touch <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a>.”</li>
   <li>“Index 0 is transparent.”</li>
   <li>“Build must pass.”</li>
   <li>“If you cannot find the function, say that.”</li>
