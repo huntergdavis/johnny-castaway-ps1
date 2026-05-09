@@ -6,7 +6,29 @@ tag: 3
 slug: fishing3
 status: validated
 description: "FISHING.ADS scene 3: Johnny pulls up an octopus, which steals his fish and walks off. Validated under the FISHING 1 bar."
+image: /assets/img/fishing3-ps1-octopus-steals.png
+image_alt: "FISHING 3 on PS1 at night: a red octopus stands on the shoreline next to Johnny's fishing line on the left side of the island, walking off with the fish."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/fishing3-ps1-octopus-steals.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="FISHING 3 on PS1 at night: a red octopus stands on the shoreline next to Johnny's fishing line on the left side of the island, walking off with the fish." />
+  <figcaption>
+    FISHING 3 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The octopus has come up on the line and is walking off the
+    shoreline with the fish that was on the hook. This is one of
+    the canonical caption-mismap scenes — the on-screen
+    "He catches a crab. It snaps his nose." caption preserved
+    below describes a different fishing gag entirely; see the
+    <a href="{{ '/faq/' | relative_url }}">FAQ Q on caption-vs-scene-title divergence</a>.
+  </figcaption>
+</figure>
 
 ## What happens
 
