@@ -172,7 +172,7 @@ The corpus and on-screen captions themselves did not change in
 `v0.8.4-ps1`. What changed is the website's *description* of which
 caption belongs to which scene — the per-scene `index.md` titles +
 bodies, the `scenes.yml` notes, the `scene-status.md` Notes column,
-and the in-game Scene Explorer's display strings (regenerated from
+and the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})'s display strings (regenerated from
 those sources). The `captionSceneMap[]` array in
 [`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
 was not updated as part of `v0.8.4-ps1`; the runtime continues to

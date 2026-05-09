@@ -387,7 +387,7 @@ component-completeness phases:
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
 - Latest content release: **`v0.8.4-ps1`** — custom on-PS1 thumbnails
-  for all 63 chapter-select grid slots, with scene titles and bodies
+  for all 63 [chapter-select]({{ '/docs/glossary/#scene-explorer' | relative_url }}) grid slots, with scene titles and bodies
   reconciled against the on-PS1 packs. The earlier caption-mapping
   audit got several scenes mismapped (boot / octopus / coconut-plane /
   jog) — corrected from direct on-PS1 observation. New 5-surface

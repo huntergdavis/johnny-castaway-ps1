@@ -16,7 +16,7 @@ date: 2026-05-08
 
 `v0.8.4-ps1` is the smallest-feeling release the project has shipped in
 months, and the only release that took watching every scene play on
-real hardware to ship. Before this loop, the in-game Scene Explorer's
+real hardware to ship. Before this loop, the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})'s
 chapter-select grid showed an auto-generated frame for each pack —
 whatever the build pipeline picked at thumbnail-bake time. After this
 loop, every grid slot is a frame the human author chose while the pack
