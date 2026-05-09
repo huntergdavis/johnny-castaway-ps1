@@ -73,9 +73,13 @@ active-loop improvement. The v179 7-sector terminal atlas for frames `142..144`
 still regressed both tides (`1118 -> 1132` high, `1126 -> 1129` low) and added
 low hidden refill debt. The pack file sizes, LBAs, and PS-EXE bucket stayed
 fixed, so the closure is about setup-owned CD phase/lifetime, not broad layout.
-The next VISITOR3 swing needs either data that is cheaper to present
+The v180 no-source tail-duplication isolate also failed: repointing frames
+`139..144` to zero-tail copies without any setup segment regressed high to
+`1122/1027`, low to `1130/1024`, and added `prefetch_overrun_vb=3` on both
+tides. The next VISITOR3 swing needs either data that is cheaper to present
 (precomposed/background-owned upload with compression/ownership metadata) or a
-real deadline-aware scheduler sidecar; another manual setup segment is closed.
+real deadline-aware scheduler sidecar; another manual setup segment or
+layout-only terminal tail repoint is closed.
 
 Latest promoted WALKSTUF3 low compact-FGP3/v4 baseline: convert
 `WALK3LOW.FG2` to padded compact FGP3/v4 restore-minus-current data while
@@ -1829,6 +1833,7 @@ pre-v0.8.0 row.
 | VISITOR3 runtime dirty-upload narrowing | Do not retry as a source-side optimization. The live uploader already has row-level dirty X metadata, but exact narrow intervals for current VISITOR3 would create about `131996` upload rects over the loop, and scratch-packed x-band variants have already failed from code-size, copy, and cadence cost. Upload-byte work must be pack-emitted or precomposed, not packed from tile rows during `grDrawBackground()`. |
 | VISITOR3 v140 current-window read-plan refresh | Do not promote or retry another hand-authored source table. The refreshed read-plan from v127 found `0` candidates that are append-start fireable, current-window-sized, and low-risk. The rows that fit and fire are the late tight-cluster class, including the already-rejected high `315..331` and low `333..349` shapes, and remain `high-risk:scheduler-only`. |
 | VISITOR3 setup-owned tail atlas | Do not retry manual zero-tail atlases through setup segments. The v178 25-sector atlas removed reads but regressed high and failed low full-scene/hidden-refill gates; the v179 7-sector terminal atlas still regressed both tides. Tail residency needs phase-transition preload, a real scheduler sidecar, or precomposed data, not another scene-start setup segment. |
+| VISITOR3 pack-only tail duplication | Do not retry as a layout-only tail move. The v180 no-source duplication of frames `139..144` kept pack sizes/LBAs fixed but regressed high/low to `1122/1027` and `1130/1024`, added `prefetch_overrun_vb=3` on both tides, and raised blocking by `+4` on both. The terminal payload phase is negative unless paired with scheduler ownership or precomposed data. |
 | VISITOR3 `20 KiB` retained window with `12` VBlank slack | Do not promote or retry as scalar window/slack tuning. It improved total scene duration by shortening setup/load shape, but active loop regressed on both tides: high `1118 -> 1131`, blocking `150 -> 210`, reads `27 -> 39`; low `1126 -> 1139`, blocking `170 -> 212`, reads `31 -> 41`. Hidden refill stayed `0` and layout stayed fixed, so the failure is scheduler/CD ownership, not binary layout. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |
