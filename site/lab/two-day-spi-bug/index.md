@@ -30,7 +30,7 @@ real work. The worst kind of bug: plausible, intermittent, and blocking.
 ## The false comfort of examples
 
 The fallback was spicyjpeg's direct SIO0 polling example. Good code, clear
-license, close to the metal. The project uses a derived version in `src/spi.c`.
+license, close to the metal. The project uses a derived version in [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c).
 
 The example uses a 4-byte poll transmission. On this setup - PSn00bSDK 0.24
 and DuckStation - that was not enough. The emulator did not deliver the actual

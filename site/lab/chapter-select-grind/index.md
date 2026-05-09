@@ -135,7 +135,7 @@ through Scene Explorer reported 11 broken slots: `STAND 2-5` plus the
 last six grid positions. The SCR files existed on disk at the right
 sizes; the in-game loader was returning "file not on disc."
 
-The bug was in `config/ps1/cd_layout.xml`. The manifest only listed
+The bug was in [`config/ps1/cd_layout.xml`]({{ site.github_url }}/blob/main/config/ps1/cd_layout.xml). The manifest only listed
 42 of the 63 thumbnail SCRs — the 21 newly-created ones (`SXBL2-7`,
 `SXMG1-2`, `SXST1-5`, `SXSU1-2`, `SXVI1`, `SXVI3-7`) were on disk but
 never made it onto the CD because nothing referenced them. Files exist
