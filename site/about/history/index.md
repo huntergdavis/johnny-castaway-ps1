@@ -358,7 +358,7 @@ component-completeness phases:
   scene endpoints instead of teleporting, with palm-tree occlusion,
   wave motion, holiday restamping, and a persistent walk-erase buffer
   that survived a long DuckStation soak.
-- **Freeplay/debug mode.** `v0.5.0-ps1` made Johnny controllable.
+- **[Freeplay/debug mode]({{ '/docs/glossary/#freeplay' | relative_url }}).** `v0.5.0-ps1` made Johnny controllable.
   The mode launches from the pause menu, shows the original meanwhile
   frog during teardown/rebuild, lets the player walk with D-pad or
   analog, fish, clear the screen, and change world state immediately.

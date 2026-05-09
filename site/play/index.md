@@ -70,7 +70,7 @@ optional and reachable with **Start**.
 | Cross             | Confirm / select                                 |
 | Circle            | Back from any menu or submenu                    |
 
-Inside the pause menu you can: enter or exit Freeplay, choose a
+Inside the pause menu you can: enter or exit [Freeplay]({{ '/docs/glossary/#freeplay' | relative_url }}), choose a
 Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits,
 Visitors, Activities, or Misc & Suzy), open the
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
