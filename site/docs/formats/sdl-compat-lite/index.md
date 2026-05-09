@@ -272,4 +272,32 @@ sidecars. (1) and (3) are in progress.
 
 ## Source on GitHub
 
+The contract is a written spec, two divergent implementations, and a
+small set of gameplay-code consumers. The body cites all of them; this
+section collects them.
+
 - [`docs/ps1/research/SDL_COMPAT_LITE_SPEC.md`]({{ site.github_url }}/blob/main/docs/ps1/research/SDL_COMPAT_LITE_SPEC.md)
+  — the canonical spec; the "Direct from the schema" next-targets list
+  above is verbatim from this file.
+
+**Implementations** (one per build):
+
+- [`src/graphics.c`]({{ site.github_url }}/blob/main/src/graphics.c)
+  — host SDL2 surfaces and blits.
+- [`src/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c)
+  — PS1 PSn00bSDK GPU + tile renderer.
+
+**Gameplay-code consumers** (the four modules that hold to the
+contract instead of writing two divergent renderers):
+
+- [`src/ttm.c`]({{ site.github_url }}/blob/main/src/ttm.c)
+  — clip zone, copy/save/restore zone, pixel/line/rect/circle,
+  draw sprite, clear/load screen, BMP load.
+- [`src/walk.c`]({{ site.github_url }}/blob/main/src/walk.c)
+  — clear screen, draw sprite (flip).
+- [`src/island.c`]({{ site.github_url }}/blob/main/src/island.c)
+  — load screen, BMP load/release, draw sprite (flip).
+- [`src/ads.c`]({{ site.github_url }}/blob/main/src/ads.c)
+  — layer allocation/release, frame begin/present, background
+  restore. The replay sprite path is the largest current contract
+  violation (named in the section above).

@@ -102,7 +102,7 @@
       <h1>SDL compat lite</h1>
       <p class="subtitle">The narrow set of gr* graphics functions gameplay code is allowed to call. Both the host SDL2 build and the PS1 PSn00bSDK build implement this surface.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1530 words
+          ~6 min read · 1660 words
         </p>
       
       <hr class="rule" />
@@ -579,8 +579,40 @@ two graphics implementations get selected.</li>
 
 <h2 id="source-on-github">Source on GitHub</h2>
 
+<p>The contract is a written spec, two divergent implementations, and a
+small set of gameplay-code consumers. The body cites all of them; this
+section collects them.</p>
+
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/SDL_COMPAT_LITE_SPEC.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/SDL_COMPAT_LITE_SPEC.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/SDL_COMPAT_LITE_SPEC.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/SDL_COMPAT_LITE_SPEC.md</code></a>
+— the canonical spec; the “Direct from the schema” next-targets list
+above is verbatim from this file.</li>
+</ul>
+
+<p><strong>Implementations</strong> (one per build):</p>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics.c"><code class="language-plaintext highlighter-rouge">src/graphics.c</code></a>
+— host SDL2 surfaces and blits.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code></a>
+— PS1 PSn00bSDK GPU + tile renderer.</li>
+</ul>
+
+<p><strong>Gameplay-code consumers</strong> (the four modules that hold to the
+contract instead of writing two divergent renderers):</p>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ttm.c"><code class="language-plaintext highlighter-rouge">src/ttm.c</code></a>
+— clip zone, copy/save/restore zone, pixel/line/rect/circle,
+draw sprite, clear/load screen, BMP load.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.c"><code class="language-plaintext highlighter-rouge">src/walk.c</code></a>
+— clear screen, draw sprite (flip).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/island.c"><code class="language-plaintext highlighter-rouge">src/island.c</code></a>
+— load screen, BMP load/release, draw sprite (flip).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ads.c"><code class="language-plaintext highlighter-rouge">src/ads.c</code></a>
+— layer allocation/release, frame begin/present, background
+restore. The replay sprite path is the largest current contract
+violation (named in the section above).</li>
 </ul>
 
   </div>
