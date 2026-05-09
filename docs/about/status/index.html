@@ -98,11 +98,11 @@
     <article class="page">
   
     <header class="page-header">
-      <p class="eyebrow">Component-level state at v0.8.3-ps1</p>
+      <p class="eyebrow">Component-level state at v0.8.4-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1596 words
+          ~6 min read · 1647 words
         </p>
       
       <hr class="rule" />
@@ -116,11 +116,14 @@ under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
-<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> is the current release: every row in the live per-scene
+<code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed, and the
-headless timing-bearing average is +0.6% over target / 99.7% target speed.
-The current dead-readgroup prune baseline keeps the 13-case canary set
-exact-flat while shrinking the foreground hot path.
+chapter-select grid in the in-game Scene Explorer ships a custom
+on-PS1-captured thumbnail for every one of the 63 scenes (with scene
+titles and bodies reconciled against what the discs actually play). The
+headless timing-bearing average is the same +0.5576% public over target
+/ 99.4669% public target speed as v0.8.3-ps1 — no perf or pack content
+changed.
 The live ledger is at
 <a href="/johnny-castaway-ps1/scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in
@@ -305,10 +308,12 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the WALKSTUF1 compact
-foreground performance pass. <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> is the VISITOR3 guarded-read
-performance pass. <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the clean-rect pressure stability
-point release. <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene performance
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> is the chapter-select-
+thumbnails content release — 63 custom on-PS1-captured grid slots and
+a scene-page reconciliation pass against the actual on-PS1 packs.
+<code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the WALKSTUF1 compact foreground performance pass.
+<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> is the VISITOR3 guarded-read performance pass.
+<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the clean-rect pressure stability point release. <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene performance
 baseline. <code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code>
 fixes stale-backdrop story-loop walks. <code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> adds the original-four
 auto holiday default and persisted holiday mode. <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> validates all

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.8.3-ps1
+eyebrow: Component-level state at v0.8.4-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,11 +13,14 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.8.2-ps1` is the current release: every row in the live per-scene
+`v0.8.4-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed, and the
-headless timing-bearing average is +0.6% over target / 99.7% target speed.
-The current dead-readgroup prune baseline keeps the 13-case canary set
-exact-flat while shrinking the foreground hot path.
+chapter-select grid in the in-game Scene Explorer ships a custom
+on-PS1-captured thumbnail for every one of the 63 scenes (with scene
+titles and bodies reconciled against what the discs actually play). The
+headless timing-bearing average is the same +0.5576% public over target
+/ 99.4669% public target speed as v0.8.3-ps1 — no perf or pack content
+changed.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -122,10 +125,12 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.3-ps1` is the WALKSTUF1 compact
-  foreground performance pass. `v0.8.2-ps1` is the VISITOR3 guarded-read
-  performance pass. `v0.8.1-ps1` is the clean-rect pressure stability
-  point release. `v0.8.0-ps1` is the complete-scene performance
+- **Milestone release cadence.** `v0.8.4-ps1` is the chapter-select-
+  thumbnails content release — 63 custom on-PS1-captured grid slots and
+  a scene-page reconciliation pass against the actual on-PS1 packs.
+  `v0.8.3-ps1` is the WALKSTUF1 compact foreground performance pass.
+  `v0.8.2-ps1` is the VISITOR3 guarded-read performance pass.
+  `v0.8.1-ps1` is the clean-rect pressure stability point release. `v0.8.0-ps1` is the complete-scene performance
   baseline. `v0.7.2-ps1`
   fixes stale-backdrop story-loop walks. `v0.7.1-ps1` adds the original-four
   auto holiday default and persisted holiday mode. `v0.7.0-ps1` validates all
