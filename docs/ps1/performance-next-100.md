@@ -48,17 +48,22 @@ the v181 row at `scene_vb=1408`, `loop_vb=1108`, `target_vb=1028`,
 broad no-regression gate is
 `scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
 
-Latest rejected VISITOR3 v183 probes: low-tide precursor motion-copy expansion
-and C-side fastspan row copies are closed for now. Low frames `114..118` saved
-`59543` active payload bytes on paper, but regressed low from `1108/1028` to
-`1129/1027` and added hidden refill. Split-frame tests showed no single
-precursor frame promotes; frame `117` was closest at `1110/1028` with
-`blocking_vb 143 -> 141`, but sparse-in-place offset preservation still
-regressed to `1111/1028`, so offset compaction was not the root cause. A
+Latest rejected VISITOR3 v183-v184 probes: low-tide precursor motion-copy
+expansion, C-side fastspan row copies, terminal zero trimming, compact-origin
+rebasing, low precursor hull motion, and terminal hand-authored read groups are
+closed for now. Low frames `114..118` saved `59543` active payload bytes on
+paper, but regressed low from `1108/1028` to `1129/1027` and added hidden
+refill. Split-frame tests showed no single precursor frame promotes; sparse
+frame `117` stayed negative, and the later v184 hull-mode retry still regressed
+the closest low frame to `1110/1028` despite lowering blocking `143 -> 141`. A
 runtime same-tile fast path for motion spans crossed the PS-EXE bucket
-`215040 -> 217088` and did not improve key metrics. The next VISITOR3 swing
-must either change the data shape enough to reduce both CD and CPU, or add
-deadline-aware scheduling without growing the hot executable bucket.
+`215040 -> 217088` and did not improve key metrics. Terminal zero-run trimming
+found `0` bytes, compact-origin rebasing found only a `12`-byte high frame `113`
+host-side saving and no terminal saving, and v184 terminal `16`-sector read
+groups reduced high reads/blocking but regressed high loop `1104 -> 1108` and
+low loop `1108 -> 1112`. The next VISITOR3 swing must either change the data
+shape enough to reduce both CD and CPU, or add deadline-aware scheduling without
+growing the hot executable bucket.
 
 ## VISITOR3 white-whale backlog
 
@@ -419,6 +424,15 @@ already-closed late tight clusters. Close VISITOR3 runtime dirty-upload and
 hand read-table work until generated scheduler ownership or safe
 background-owned/precomposed upload data exists.
 
+Latest VISITOR3 v184 terminal read-group retry: after the v182 motion baseline,
+hand-authored `16`-sector terminal groups did fire and reduce some read pressure,
+but still hurt visible cadence. High terminal `{277,293}` lowered blocking
+`128 -> 125`, loop reads `23 -> 21`, and due misses `22 -> 21`, yet regressed
+high loop `1104 -> 1108`; low terminal `{297,313}` regressed low loop
+`1108 -> 1112`, blocking `143 -> 144`, and due misses only `25 -> 24`. The
+two-group variant was no better. Do not retry VISITOR3 terminal hand tables
+without generated frame-deadline ownership or a data-shape change.
+
 Current VISITOR3 v150 late-cluster setup/group closure: retesting the top
 low-tide `333..349` cluster confirms the planner's `high-risk:scheduler-only`
 classification. A low-tide retained read group saved reads (`31 -> 29`) but
@@ -506,8 +520,9 @@ payloads with empty holds.
 
 The VISITOR3 zero-runtime-code entry-origin shift gate is closed too. Re-centering
 each FGP3/v4 entry and subtracting the shift from compact cleanup/draw
-coordinates saves `0` bytes on both current tides (`737600 -> 737600`), so
-there is no pack payload or CD-duration win to benchmark.
+coordinates saved only `12` high-tide bytes in the latest v184 current-baseline
+scan, saved `0` low-tide bytes, and found no terminal-frame payload reduction,
+so there is no meaningful pack payload or CD-duration win to benchmark.
 
 The VISITOR3 duplicate-payload table-reuse gate is closed under the current
 scheduler. Exact duplicate FGP3/v4 bodies exist, but the phase-preserving
@@ -1937,12 +1952,13 @@ pre-v0.8.0 row.
 | VISITOR3 setup-owned tail atlas | Do not retry manual zero-tail atlases through setup segments. The v178 25-sector atlas removed reads but regressed high and failed low full-scene/hidden-refill gates; the v179 7-sector terminal atlas still regressed both tides. Tail residency needs phase-transition preload, a real scheduler sidecar, or precomposed data, not another scene-start setup segment. |
 | VISITOR3 pack-only tail duplication | Do not retry as a layout-only tail move. The v180 no-source duplication of frames `139..144` kept pack sizes/LBAs fixed but regressed high/low to `1122/1027` and `1130/1024`, added `prefetch_overrun_vb=3` on both tides, and raised blocking by `+4` on both. The terminal payload phase is negative unless paired with scheduler ownership or precomposed data. |
 | VISITOR3 motion-copy frames `119..123` plus high frame `115` | Done; keep as the current VISITOR3 baseline. The v181 scene-specific compact motion marker moves already-composited background rows, restores exposed clean spans, and draws only residual pixels; v182 applies the same family of state-hull motion-copy payload to high-tide frame `115`. Both packs stay `1555450` bytes, LBAs stay `22472/23232`, and the PS-EXE bucket stays `215040`; high improves `1118/1028 -> 1104/1030`, blocking `150 -> 128`, reads `27 -> 23`, and due misses `26 -> 22`; low improves `1126/1025 -> 1108/1028`, blocking `170 -> 143`, reads `31 -> 27`, and due misses `29 -> 25`. Next retries should expand motion-copy through generated eligibility, not hand-tail repoints. |
+| VISITOR3 v184 terminal zero/origin/read probes | Do not promote or retry as scalar pack surgery or hand tables. Terminal zero-run trimming saved `0` bytes; compact-origin rebasing saved only `12` high-tide bytes at frame `113`, saved `0` low-tide bytes, and no terminal bytes; low hull-mode precursor retries still regressed frame `117` to `1110/1028`; and terminal `16`-sector read groups cut some reads but regressed high `1104 -> 1108` and low `1108 -> 1112`. Next VISITOR3 work needs a custom data format, precomposed ownership, or generated deadline scheduling. |
 | VISITOR3 `20 KiB` retained window with `12` VBlank slack | Do not promote or retry as scalar window/slack tuning. It improved total scene duration by shortening setup/load shape, but active loop regressed on both tides: high `1118 -> 1131`, blocking `150 -> 210`, reads `27 -> 39`; low `1126 -> 1139`, blocking `170 -> 212`, reads `31 -> 41`. Hidden refill stayed `0` and layout stayed fixed, so the failure is scheduler/CD ownership, not binary layout. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
 | VISITOR3 no-op empty-hold recast | Do not promote. The pack-side scanner found `0` current VISITOR3 high/low FGP3/v4 payload entries with both cleanup and draw pixel counts at zero, so active payload stays `737600 -> 737600` and no binary runtime probe is available. The old prune win removed entries that still carry real cleanup/draw work under the current data shape. |
-| VISITOR3 entry-origin recentering | Do not promote. A host-side size gate over current VISITOR3 high/low FGP3/v4 compact cleanup/draw streams found no legal origin shift that reduces compact-u16 metadata; both tides stay `active_payload 737600 -> 737600`, `saved=0`, `changed_entries=0`. |
+| VISITOR3 entry-origin recentering | Do not promote. The latest v184 host-side size gate over the current motion baseline found only a `12`-byte high-tide saving at frame `113`, `0` low-tide saving, and no terminal-frame reduction. It is not enough to change CD duration or justify a runtime gate. |
 | Dirty upload rect cap `8 -> 24` | Do not promote. VISITOR3 analyzer estimated only a tiny loop-level upload-byte reduction from eliminating the three cap-hit frames, and the runtime probe was exact-flat on VISITOR3 high/low (`1357/1023` and `1361/1023`) with no key metric improvement. Move upload work to generated selective upload-ready payloads or restore/compose coalescing rather than global rect-cap tweaks. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |

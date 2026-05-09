@@ -87,12 +87,14 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest rejected VISITOR3 v183 note: low-tide precursor motion-copy frames
-`114..118` and a C-side motion fastspan copy path are log-only failures. The
-low pack rewrites saved payload bytes but regressed active timing, and the
-runtime fastspan crossed the `215040` byte PS-EXE bucket. The next VISITOR3
-work should use custom data-shape, dictionary, precomposed-strip, or generated
-scheduler ideas rather than another wider precursor motion window.
+Latest rejected VISITOR3 v183-v184 note: low-tide precursor motion-copy frames
+`114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,
+low hull-motion retries, and terminal hand-authored read groups are log-only
+failures. The pack rewrites either saved no meaningful bytes or regressed active
+timing, the read groups saved some reads but hurt cadence, and the runtime
+fastspan crossed the `215040` byte PS-EXE bucket. The next VISITOR3 work should
+use custom data-shape, dictionary, precomposed-strip, or generated scheduler
+ideas rather than another wider precursor motion window or hand read table.
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
