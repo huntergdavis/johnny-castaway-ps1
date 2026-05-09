@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,7 +96,7 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Reference</p>
       <h1>Regression testing</h1>
@@ -104,10 +104,10 @@
         <p class="reading-time" aria-label="Estimated reading time">
           ~7 min read · 1761 words
         </p>
-
+      
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The regtest harness runs a PS1 disc image
 through DuckStation’s headless <code class="language-plaintext highlighter-rouge">duckstation-regtest</code> binary inside Docker,
@@ -119,8 +119,8 @@ captures in roughly 3.6 seconds.</p>
 
 <p>The regtest harness is <strong>secondary tooling</strong> in the current rollout. The
 primary acceptance bar is human visual + audible signoff on the
-scene-playback (<a href="../glossary/#fgpilot">fgpilot</a>) path — see
-<a href="../dev-workflow/">Development workflow</a>. Regtest
+scene-playback (<a href="/johnny-castaway-ps1/docs/glossary/#fgpilot">fgpilot</a>) path — see
+<a href="/johnny-castaway-ps1/docs/dev-workflow/">Development workflow</a>. Regtest
 is retained for targeted diagnostics: regression hunts, deterministic
 frame-timing investigations, and per-scene snapshot generation when a
 human review needs frozen artifacts. It is not the gate; it is a
@@ -128,12 +128,12 @@ diagnostic.</p>
 
 <p>The same headless DuckStation pipeline, run in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against
 a deterministic boot, drives the
-<a href="../../perf/">headless-perf battle card</a> — the
-second ledger that lives alongside <a href="../../scenes/">visual signoff</a>.
+<a href="/johnny-castaway-ps1/perf/">headless-perf battle card</a> — the
+second ledger that lives alongside <a href="/johnny-castaway-ps1/scenes/">visual signoff</a>.
 Regtest proves <em>it boots and renders something</em>; the perf matrix
 proves <em>it hits target rate</em>. Different bars; same harness. The
 reference manual for the perf work is at
-<a href="../performance/">/docs/performance/</a>.</p>
+<a href="/johnny-castaway-ps1/docs/performance/">/docs/performance/</a>.</p>
 
 <p>If you paid for this, you were cheated. Open source and free.</p>
 
@@ -178,8 +178,8 @@ reference manual for the perf work is at
 <table>
   <thead>
     <tr>
-      <th scope="col">Artifact</th>
-      <th scope="col">What</th>
+      <th>Artifact</th>
+      <th>What</th>
     </tr>
   </thead>
   <tbody>
@@ -217,7 +217,7 @@ disc + same BIOS + same frame count → same hashes, every time.</p>
   <li>Docker (rootless, or your user in the <code class="language-plaintext highlighter-rouge">docker</code> group).</li>
   <li>A real PS1 BIOS file — typically <code class="language-plaintext highlighter-rouge">scph1001.bin</code>.</li>
   <li>A built CD image (<code class="language-plaintext highlighter-rouge">jcreborn.cue</code> + <code class="language-plaintext highlighter-rouge">jcreborn.bin</code>). See
-<a href="../build/">Build &amp; toolchain</a>.</li>
+<a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a>.</li>
 </ul>
 
 <h3 id="build-the-regtest-docker-image">Build the regtest Docker image</h3>
@@ -255,7 +255,7 @@ build is 15–30 minutes; rebuilds are fully cached. Image tag:
 <h3 id="scripted-controller-input">Scripted controller input</h3>
 
 <p><code class="language-plaintext highlighter-rouge">v0.5.x</code> adds an opt-in pad-script layer for headless menu and flow tests.
-The canonical runbook is <a href="../scripted-input/">Scripted input harness</a>.
+The canonical runbook is <a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>.
 The PS1 build embeds <code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> at compile time and only
 uses it when <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> includes <code class="language-plaintext highlighter-rouge">pad-script</code> or <code class="language-plaintext highlighter-rouge">pad-script-log</code>.
 Scripted buttons are merged into the same active-high pad mask as the real
@@ -269,10 +269,10 @@ do not know whether a human or a test script pressed Start.</p>
 
 <p>It stages a temporary boot mode, waits 30 seconds, presses Start, walks the
 major pause-menu screens, emits delayed
-<a href="../glossary/#jcpadshot"><code class="language-plaintext highlighter-rouge">JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code></a> markers, runs DuckStation
+<a href="/johnny-castaway-ps1/docs/glossary/#jcpadshot"><code class="language-plaintext highlighter-rouge">JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code></a> markers, runs DuckStation
 regtest headlessly, copies the first captured PNG at or after each marker
 into <code class="language-plaintext highlighter-rouge">site/assets/img/help/menu/</code>, and rewrites
-<a href="../../help/menu/">Menu help guide</a>. The staged boot files
+<a href="/johnny-castaway-ps1/help/menu/">Menu help guide</a>. The staged boot files
 are restored before the script exits.</p>
 
 <p>Pad-script commands are deliberately small:</p>
@@ -351,9 +351,9 @@ and only reviewing the actual scene window. The wrapper materializes a
 <table>
   <thead>
     <tr>
-      <th scope="col">Option</th>
-      <th scope="col">Default</th>
-      <th scope="col">Description</th>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
     </tr>
   </thead>
   <tbody>
@@ -581,27 +581,27 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../build/">Build &amp; toolchain</a> — how the disc
+  <li><a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a> — how the disc
 image is produced before regtest can run.</li>
-  <li><a href="../dev-workflow/">Development workflow</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/dev-workflow/">Development workflow</a> — the
 primary acceptance loop. Regtest is secondary tooling.</li>
-  <li><a href="../../perf/">Performance battle card</a> — the same
+  <li><a href="/johnny-castaway-ps1/perf/">Performance battle card</a> — the same
 headless DuckStation pipeline run in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against
 every scene/tide variant.</li>
-  <li><a href="../performance/">Performance reference</a> —
+  <li><a href="/johnny-castaway-ps1/docs/performance/">Performance reference</a> —
 what the <code class="language-plaintext highlighter-rouge">loop_vb</code> / <code class="language-plaintext highlighter-rouge">target_vb</code> / <code class="language-plaintext highlighter-rouge">blocking_vb</code> columns the
 harness emits actually mean.</li>
-  <li><a href="../scripted-input/">Scripted input harness</a>
+  <li><a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>
 — pad-script routes the regtest binary consumes via
 <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT pad-script</code>.</li>
-  <li><a href="../glossary/#soak-test">Glossary: soak-test</a> —
+  <li><a href="/johnny-castaway-ps1/docs/glossary/#soak-test">Glossary: soak-test</a> —
 the long-run randomized DuckStation pass that catches
 state-coupling bugs the per-commit regtest gate doesn’t. The
-v0.8.1 <a href="../../lab/v081-mary4-freeze/">MARY 4 freeze retrospective</a>
+v0.8.1 <a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/">MARY 4 freeze retrospective</a>
 is the canonical example.</li>
-  <li><a href="../api/">API mapping</a> — the SDL2 → PSn00bSDK
+  <li><a href="/johnny-castaway-ps1/docs/api/">API mapping</a> — the SDL2 → PSn00bSDK
 surface the regtest binary is exercising.</li>
-  <li><a href="../../lab/regression-as-lifestyle/">Lab: regression as a lifestyle</a>
+  <li><a href="/johnny-castaway-ps1/lab/regression-as-lifestyle/">Lab: regression as a lifestyle</a>
 — the magazine treatment of why regression testing isn’t a CI
 feature on this project but a way of working. Reciprocal of
 the link from there to here.</li>
@@ -634,23 +634,23 @@ in the body’s Command-line options section.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/regtest/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -664,18 +664,18 @@ in the body’s Command-line options section.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

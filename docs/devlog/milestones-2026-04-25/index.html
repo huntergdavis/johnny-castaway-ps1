@@ -18,29 +18,29 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
   <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-worklog/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/freeplay-debug-mode/" />
 
@@ -102,21 +102,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../" aria-current="page">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../../docs/">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/" aria-current="page">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -136,18 +136,18 @@
       </time>
     </p>
     <h1>Milestones — April 25, 2026</h1>
-
+    
     <p class="reading-time" aria-label="Estimated reading time">
       ~4 min read · 1022 words
     </p>
     <hr class="rule" />
   </header>
 
-
+  
   <aside class="editor-note">
     <p><strong>Editor's note.</strong> A status snapshot from a single-day batch that pushed the PS1 port across several long-standing unknowns: working TTY, an instrumentable perf module, an on-PS1 pause menu, a hand-rolled SPI controller driver, and memcard-backed user settings.</p>
   </aside>
-
+  
 
   <div class="page-body">
     <p>A single-day batch that pushed the PS1 port across several long-standing
@@ -208,7 +208,7 @@ Docker image. Frames dump on a fixed interval, TTY captures to stdout,
 state hashes capture at exit. Combined, this gives a single command
 that produces both visual diff inputs and machine-readable perf
 baselines for a regression run.</li>
-  <li>See the <a href="../../source/docs/ps1/performance-optimization-plan/">performance optimization plan</a>
+  <li>See the <a href="/johnny-castaway-ps1/source/docs/ps1/performance-optimization-plan/">performance optimization plan</a>
 for the optimization backlog being driven by these numbers.</li>
 </ul>
 
@@ -238,7 +238,7 @@ register writes.</li>
   <li><strong>Day/Night and Holiday overrides (shipped)</strong>: flow into
 <code class="language-plaintext highlighter-rouge">fgLoopApplyVariant</code> in <code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code> with priority
 <code class="language-plaintext highlighter-rouge">explicit menu override &gt; Set Time/Date soft override &gt; random</code>.</li>
-  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu.c/h</code>. Design: <a href="../../source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
+  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu.c/h</code>. Design: <a href="/johnny-castaway-ps1/source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
 </ul>
 
 <h2 id="4-holiday-expansion--4--35-design">4. Holiday expansion — 4 → 35 design</h2>
@@ -252,7 +252,7 @@ an average of about three.</li>
 Pirate Day, Star Wars Day, Moon Landing Day) so the screensaver
 always feels seasonally alive rather than dead-stretches between the
 four legacy events.</li>
-  <li>Design: <a href="../../source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>.
+  <li>Design: <a href="/johnny-castaway-ps1/source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>.
 Implementation is not in this batch.</li>
 </ul>
 
@@ -312,12 +312,12 @@ intended for external perf-debugging agents.</li>
 <h2 id="pointers">Pointers</h2>
 
 <ul>
-  <li>Design backbone: <a href="../../source/docs/ps1/pause-menu-design/">pause menu design</a>,
-<a href="../../source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>,
-<a href="../../source/docs/ps1/performance-optimization-plan/">performance optimization plan</a></li>
-  <li>Status frame: <a href="../../source/docs/ps1/current-status/">current status</a>,
-<a href="../../source/docs/ps1/scene-status/">scene status</a></li>
-  <li>Workflow: <a href="../../source/docs/ps1/development-workflow/">development workflow</a></li>
+  <li>Design backbone: <a href="/johnny-castaway-ps1/source/docs/ps1/pause-menu-design/">pause menu design</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/performance-optimization-plan/">performance optimization plan</a></li>
+  <li>Status frame: <a href="/johnny-castaway-ps1/source/docs/ps1/current-status/">current status</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/scene-status/">scene status</a></li>
+  <li>Workflow: <a href="/johnny-castaway-ps1/source/docs/ps1/development-workflow/">development workflow</a></li>
 </ul>
 
   </div>
@@ -325,32 +325,32 @@ intended for external perf-debugging agents.</li>
   <footer class="post-footer">
     <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
       <div class="scene-pager-prev">
-
-          <a href="../water-animation-worklog/" rel="prev">
+        
+          <a href="/johnny-castaway-ps1/devlog/water-animation-worklog/" rel="prev">
             <span class="scene-pager-dir" aria-hidden="true">← older</span>
             <span class="scene-pager-tag"><time datetime="2026-04-21">2026-04-21</time></span>
           </a>
-
+        
       </div>
       <div class="scene-pager-up">
-        <a href="../">↑ devlog index</a>
+        <a href="/johnny-castaway-ps1/devlog/">↑ devlog index</a>
       </div>
       <div class="scene-pager-next">
-
-          <a href="../freeplay-debug-mode/" rel="next">
+        
+          <a href="/johnny-castaway-ps1/devlog/freeplay-debug-mode/" rel="next">
             <span class="scene-pager-dir" aria-hidden="true">newer →</span>
             <span class="scene-pager-tag"><time datetime="2026-05-01">2026-05-01</time></span>
           </a>
-
+        
       </div>
       <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
     </nav>
 
-
+    
     <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/milestones-2026-04-25.md">view source on GitHub</a>
     </p>
-
+    
   </footer>
 </article>
 
@@ -366,23 +366,23 @@ intended for external perf-debugging agents.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-04-25-milestones-2026-04-25.md" rel="noopener">Edit this page on GitHub</a> →
@@ -396,18 +396,18 @@ intended for external perf-debugging agents.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../../docs/glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

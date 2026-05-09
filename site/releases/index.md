@@ -22,6 +22,46 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.4-ps1` — Custom chapter-select thumbnails for all 63 scenes
+<time datetime="2026-05-08"><em>2026-05-08</em></time>
+
+A content-and-UX point release. The in-game Scene Explorer now ships a
+custom on-PS1-captured thumbnail for every one of the 63 scenes, and the
+scene-page metadata across the website is reconciled against what the
+discs actually play.
+
+- **Every Scene Explorer slot has a custom thumbnail.** Each pack was
+  booted under DuckStation, played to a representative frame, captured
+  at native resolution, and encoded as a 320×240 RGB555 SCR. No scene
+  falls back to the auto-generated frame.
+- **Scene titles and bodies match the on-PS1 packs.** Many of the prior
+  caption-mapping audit guesses were wrong once watched on hardware. Per-
+  scene commits lift the "(Guess.)" hedging on every page where it
+  appeared.
+- **Several caption-to-scene mismaps caught.** "He catches a boot" is
+  MARY 2, not FISHING 2; the octopus-steals-fish gag is FISHING 3, not
+  the audit's "crab snaps his nose"; coconut-plane-hit is VISITOR 5, not
+  VISITOR 4; jogs-around-island is WALKSTUF 3, not WALKSTUF 1.
+- **One missing-manifest bug fixed mid-loop.** `config/ps1/cd_layout.xml`
+  only listed 42 of 63 SCRs; the other 21 were on disk but never made it
+  onto the CD. Manifest now lists all 63.
+- **`scripts/apply-scene-correction.py` is the new in-loop tool.** Single
+  command updates all five sources of truth per scene (page index.md,
+  scenes.yml notes, scene-status.md Notes, thumbnail SCR, progress
+  tracker) in one pass, with idempotent failure mode so a re-run can't
+  silently clobber a prior fix.
+
+No perf code or pack content changed; the 120 timing-bearing rows on
+[/perf/]({{ '/perf/' | relative_url }}) average the same `+0.5576%` public
+over target / `99.4669%` public target speed as v0.8.3-ps1. Scene
+validation scope is unchanged: 63 / 63 remain signed off.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.4-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
 <time datetime="2026-05-08"><em>2026-05-08</em></time>
 

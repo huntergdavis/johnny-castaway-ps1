@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,7 +96,7 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Reference</p>
       <h1>Pause menu</h1>
@@ -104,18 +104,18 @@
         <p class="reading-time" aria-label="Estimated reading time">
           ~4 min read · 1025 words
         </p>
-
+      
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The pause menu is the PS1 build’s in-game
 control room. It opens with <strong>Start</strong>, dims the framebuffer with a translucent
 quad, draws a compact panel, and renders text using the embedded 8x8 ASCII
-font that also powers <a href="../captions/">closed captions</a>.</p>
+font that also powers <a href="/johnny-castaway-ps1/docs/captions/">closed captions</a>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> made the menu more important because it is now the front door
-for <a href="../freeplay/">Freeplay and debug mode</a>. The
+for <a href="/johnny-castaway-ps1/docs/freeplay/">Freeplay and debug mode</a>. The
 design rule is simple: no submenu should need more than a handful of rows on
 the PS1 screen. Anything that grows into a catalog becomes a selector page
 with a title, description, source asset, frame count, and memory note.</p>
@@ -144,8 +144,8 @@ with a title, description, source asset, frame count, and memory note.</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Button</th>
-      <th scope="col">Action</th>
+      <th>Button</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
@@ -203,8 +203,8 @@ instead of trying to carry every toggle in one tall list:</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Entry</th>
-      <th scope="col">Purpose</th>
+      <th>Entry</th>
+      <th>Purpose</th>
     </tr>
   </thead>
   <tbody>
@@ -214,7 +214,7 @@ instead of trying to carry every toggle in one tall list:</p>
     </tr>
     <tr>
       <td>Scene Set</td>
-      <td>Constrain the screensaver-loop’s random pool to a category — <code class="language-plaintext highlighter-rouge">All Scenes</code> (default), <code class="language-plaintext highlighter-rouge">Fishing Only</code>, <code class="language-plaintext highlighter-rouge">Johnny Stories</code>, <code class="language-plaintext highlighter-rouge">Mary Visits</code>, <code class="language-plaintext highlighter-rouge">Visitors</code>, <code class="language-plaintext highlighter-rouge">Activities</code>, or <code class="language-plaintext highlighter-rouge">Misc &amp; Suzy</code>. Left/Right previews; Cross or Start commits and fires a <a href="../glossary/#frog-clock">frog-clock</a> loading transition. Drives the <a href="../glossary/#scene-picker">scene picker</a> policy.</td>
+      <td>Constrain the screensaver-loop’s random pool to a category — <code class="language-plaintext highlighter-rouge">All Scenes</code> (default), <code class="language-plaintext highlighter-rouge">Fishing Only</code>, <code class="language-plaintext highlighter-rouge">Johnny Stories</code>, <code class="language-plaintext highlighter-rouge">Mary Visits</code>, <code class="language-plaintext highlighter-rouge">Visitors</code>, <code class="language-plaintext highlighter-rouge">Activities</code>, or <code class="language-plaintext highlighter-rouge">Misc &amp; Suzy</code>. Left/Right previews; Cross or Start commits and fires a <a href="/johnny-castaway-ps1/docs/glossary/#frog-clock">frog-clock</a> loading transition. Drives the <a href="/johnny-castaway-ps1/docs/glossary/#scene-picker">scene picker</a> policy.</td>
     </tr>
     <tr>
       <td>Freeplay ON/OFF</td>
@@ -245,8 +245,8 @@ the freeplay island, and hands control to <code class="language-plaintext highli
 does the same in reverse before the screensaver loop resumes.</p>
 
 <p>The player-facing screenshot guide lives at
-<a href="../../help/menu/">Menu help guide</a>. It is generated by the
-<a href="../scripted-input/">scripted controller-input harness</a>,
+<a href="/johnny-castaway-ps1/help/menu/">Menu help guide</a>. It is generated by the
+<a href="/johnny-castaway-ps1/docs/scripted-input/">scripted controller-input harness</a>,
 so the documentation doubles as a regression test for Start, D-pad
 navigation, Cross selection, Circle back, and the major menu states.</p>
 
@@ -255,8 +255,8 @@ navigation, Cross selection, Circle back, and the major menu states.</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Page</th>
-      <th scope="col">What it does</th>
+      <th>Page</th>
+      <th>What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -293,8 +293,8 @@ shows the skip text and keeps running.</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Setting</th>
-      <th scope="col">Behavior</th>
+      <th>Setting</th>
+      <th>Behavior</th>
     </tr>
   </thead>
   <tbody>
@@ -357,14 +357,14 @@ work even if the player has never opened the menu in the current boot.</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Page</th>
-      <th scope="col">Purpose</th>
+      <th>Page</th>
+      <th>Purpose</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Save Settings</td>
-      <td>Writes supported options to <a href="../glossary/#memcard">memcard</a>.</td>
+      <td>Writes supported options to <a href="/johnny-castaway-ps1/docs/glossary/#memcard">memcard</a>.</td>
     </tr>
     <tr>
       <td>Reset Current Scene</td>
@@ -399,25 +399,25 @@ with captions and other small text overlays.</p>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../freeplay/">Freeplay mode</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/freeplay/">Freeplay mode</a> — the
 direct-control Johnny mode reached from the pause menu’s
 Freeplay sub-screen.</li>
-  <li><a href="../captions/">Closed captions</a> —
+  <li><a href="/johnny-castaway-ps1/docs/captions/">Closed captions</a> —
 the menu owns the shared 8x8 font atlas and the
 Captions: ON / OFF toggle.</li>
-  <li><a href="../holidays/">Holidays</a> — the World
+  <li><a href="/johnny-castaway-ps1/docs/holidays/">Holidays</a> — the World
 Options sub-screen’s <code class="language-plaintext highlighter-rouge">Holiday: &lt;name&gt;</code> cycler walks
 <code class="language-plaintext highlighter-rouge">gHolidays[]</code> via <code class="language-plaintext highlighter-rouge">holidayNextId</code> / <code class="language-plaintext highlighter-rouge">holidayPrevId</code>.</li>
-  <li><a href="../audio/">Audio pipeline</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/audio/">Audio pipeline</a> — the
 Sound Test sub-screen drives the same SPU voice rotation the
 scene runtime uses.</li>
-  <li><a href="../scripted-input/">Scripted input harness</a>
+  <li><a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>
 — how the auto-builder for <code class="language-plaintext highlighter-rouge">/help/menu/</code> walks the menu
 routes deterministically.</li>
-  <li><a href="../../help/menu/">Help: menu screenshots</a>
+  <li><a href="/johnny-castaway-ps1/help/menu/">Help: menu screenshots</a>
 — captured screens of every sub-screen, generated by the
 scripted input harness.</li>
-  <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
+  <li><a href="/johnny-castaway-ps1/lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
 — war story for the controller-poll fix the menu’s
 Start / D-pad / Cross input depends on.</li>
 </ul>
@@ -448,23 +448,23 @@ Start / D-pad / Cross input depends on.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/pause-menu/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -478,18 +478,18 @@ Start / D-pad / Cross input depends on.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,7 +96,7 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Reference + log</p>
       <h1>Performance work</h1>
@@ -104,10 +104,10 @@
         <p class="reading-time" aria-label="Estimated reading time">
           ~15 min read · 3922 words
         </p>
-
+      
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page is the running summary of perf
 work on the PS1 port at v0.8.4-ps1: where the bottleneck is, what
@@ -115,7 +115,7 @@ got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
 bottom. The retrospective on how the matrix moved from the compact baseline
 to the current battle card —
-<a href="../../lab/from-87-to-99-5/"><em>From 87 to 99.5: the post-validation performance loop</em></a>
+<a href="/johnny-castaway-ps1/lab/from-87-to-99-5/"><em>From 87 to 99.5: the post-validation performance loop</em></a>
 — is in the Lab. If you paid for this, you were cheated. Open source and free.</p>
 
 <details class="page-toc">
@@ -150,7 +150,7 @@ CD’s, and it gets spent in seek latency, not transfer time.</p>
 <p>The frame budget at 60 Hz is 16.6 ms. <em>Johnny Castaway</em> is a 1992 VGA
 screensaver — at the source level, foreground content changes roughly four
 times per second. The PS1 still has to draw a frame at 60 Hz, but it can
-hold the same content frame after frame for many <a href="../glossary/#vblank">VBlanks</a> at a stretch. The
+hold the same content frame after frame for many <a href="/johnny-castaway-ps1/docs/glossary/#vblank">VBlanks</a> at a stretch. The
 VBlank cadence is the rendering loop’s heartbeat; the <em>interesting</em> timing
 is which VBlanks have actual work in them and which are held idle.</p>
 
@@ -176,7 +176,7 @@ gated so it adds zero cost when off.</p>
 <p>Three signal sources:</p>
 
 <ul>
-  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
+  <li><strong>TTY printf</strong> at scene-start and <a href="/johnny-castaway-ps1/docs/glossary/#scene-end">scene-end</a> with structured <a href="/johnny-castaway-ps1/docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
 <code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
 on-demand records cross the TTY surface; per-frame text is forbidden in
 hot paths because it perturbs timing.</li>
@@ -206,8 +206,8 @@ At the time of writing it contains 600+ experiment rows going back to
 <p>The full scene/tide battle card is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
 and is rendered as the live, sortable, color-coded battle card at
-<a href="../../perf/">/perf/</a>. It is not the human
-scene-promotion ledger at <a href="../../scenes/">/scenes/</a>;
+<a href="/johnny-castaway-ps1/perf/">/perf/</a>. It is not the human
+scene-promotion ledger at <a href="/johnny-castaway-ps1/scenes/">/scenes/</a>;
 the two ledgers stay separate on purpose — different bars,
 different cadences, different failure modes.</p>
 
@@ -431,7 +431,7 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
+<p>That is <strong>0.0% public over target</strong>, or <strong><a href="/johnny-castaway-ps1/docs/glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 120 timing-bearing battle-card rows,
 the public average is <strong>+0.6% over target / 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5576%</code>
 exact public over target / <code class="language-plaintext highlighter-rouge">99.4669%</code> exact public target speed); the raw
@@ -514,7 +514,7 @@ carry active-loop timing; <code class="language-plaintext highlighter-rouge">suz
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
 run is <code class="language-plaintext highlighter-rouge">2026-05-08T06:36:32</code>; per-row freshness and stats version are shown on
-the <a href="../../perf/">battle card</a>. The values below are
+the <a href="/johnny-castaway-ps1/perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
 <code class="language-plaintext highlighter-rouge">0.0% / 100.0%</code>; their raw signed values remain in
@@ -996,30 +996,30 @@ scene playback first.</li>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../../perf/">Performance battle card</a> — the
+  <li><a href="/johnny-castaway-ps1/perf/">Performance battle card</a> — the
 live timing matrix this reference manual describes the columns
 of. 126 scene/tide variants, sortable, color-coded.</li>
-  <li><a href="../../lab/from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
+  <li><a href="/johnny-castaway-ps1/lab/from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
 — the retrospective on the optimization arc, including which
 experiments landed and which got rejected.</li>
-  <li><a href="../../lab/v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn’t</a>
+  <li><a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn’t</a>
 — the soak-loop war story; matrix and soak are not redundant.</li>
-  <li><a href="../hardware/">Hardware</a> — what the
+  <li><a href="/johnny-castaway-ps1/docs/hardware/">Hardware</a> — what the
 optimizations are running against.</li>
-  <li><a href="../build/">Build &amp; toolchain</a> — how the
+  <li><a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a> — how the
 PS1 binary is produced.</li>
-  <li><a href="../infrastructure/">Build infrastructure</a> —
+  <li><a href="/johnny-castaway-ps1/docs/infrastructure/">Build infrastructure</a> —
 the wrapper around the perf iterate script.</li>
-  <li><a href="../audio/">Audio pipeline</a> — the SPU side,
+  <li><a href="/johnny-castaway-ps1/docs/audio/">Audio pipeline</a> — the SPU side,
 which has its own scheduling concerns.</li>
-  <li><a href="../walks/">Story-loop walks</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/walks/">Story-loop walks</a> — the
 walk subsystem’s persistent clean buffer is part of the same
 pressure-accounting envelope the matrix above measures; the v0.8.0
 clean-rect retry path and v0.8.1 wave-band/split-rect pressure
 changes are documented there.</li>
-  <li><a href="../vision/">Vision-classifier work</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/vision/">Vision-classifier work</a> — the
 validation layer that runs against perf-experiment outputs.</li>
-  <li><a href="../../devlog/">Devlog</a> — perf work shows up
+  <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a> — perf work shows up
 day-by-day there.</li>
 </ul>
 
@@ -1048,23 +1048,23 @@ day-by-day there.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/performance/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -1078,18 +1078,18 @@ day-by-day there.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

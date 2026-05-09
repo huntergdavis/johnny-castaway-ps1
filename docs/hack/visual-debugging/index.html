@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../" aria-current="page">Hack</a></li>
-        <li><a href="../../docs/">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/" aria-current="page">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,14 +96,14 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Curious hacker path</p>
       <h1>Visual Debugging</h1>
       <p class="subtitle">When text lies, draw pixels.</p>
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>For a long stretch of this project, text logging was not trustworthy on the
 PS1 path. The runtime could destabilize under enough unbounded TTY output. The
@@ -119,15 +119,15 @@ debugging artifacts became historical evidence.</p>
 
 <ul>
   <li>A telemetry overlay drawn by the runtime for frame counters, pack state, resource state, and perf flags.</li>
-  <li>Headless DuckStation captures driven by the <a href="../../docs/regtest/">regtest harness</a>.</li>
-  <li>Scripted PS1 controller routes driven by the <a href="../../docs/scripted-input/">scripted input harness</a>, which can open menus, enter Freeplay, and drop screenshot markers without a human at the keyboard.</li>
-  <li>Frozen host references under <a href="../../archaeology/regtest-references/cases/">regtest reference cases</a>.</li>
+  <li>Headless DuckStation captures driven by the <a href="/johnny-castaway-ps1/docs/regtest/">regtest harness</a>.</li>
+  <li>Scripted PS1 controller routes driven by the <a href="/johnny-castaway-ps1/docs/scripted-input/">scripted input harness</a>, which can open menus, enter Freeplay, and drop screenshot markers without a human at the keyboard.</li>
+  <li>Frozen host references under <a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">regtest reference cases</a>.</li>
   <li>Side-by-side review HTML that makes frame drift reviewable by a human.</li>
-  <li>The <a href="../../scenes/">scene ledger</a>, where each scene’s status is explained in public.</li>
+  <li>The <a href="/johnny-castaway-ps1/scenes/">scene ledger</a>, where each scene’s status is explained in public.</li>
 </ul>
 
-<p>The <a href="../../docs/vision/">vision docs</a> cover the screenshot
-detection side. The <a href="../../archaeology/vision-artifacts/">vision artifacts page</a>
+<p>The <a href="/johnny-castaway-ps1/docs/vision/">vision docs</a> cover the screenshot
+detection side. The <a href="/johnny-castaway-ps1/archaeology/vision-artifacts/">vision artifacts page</a>
 preserves the older detection work.</p>
 
 <h2 id="the-rule">The Rule</h2>
@@ -147,7 +147,7 @@ what changed. Only then change code.</p>
 <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> can say <code class="language-plaintext highlighter-rouge">wait 30s</code>, <code class="language-plaintext highlighter-rouge">tap START</code>, <code class="language-plaintext highlighter-rouge">tap DOWN</code>, <code class="language-plaintext highlighter-rouge">tap CROSS</code>, and
 <code class="language-plaintext highlighter-rouge">shot freeplay-options 30</code>. The PS1 runtime presses those buttons through its
 real pad path, DuckStation captures frames, and the reporter pulls the first
-PNG at or after each <a href="../../docs/glossary/#jcpadshot"><code class="language-plaintext highlighter-rouge">JCPADSHOT</code></a> marker. That is how the menu help page is
+PNG at or after each <a href="/johnny-castaway-ps1/docs/glossary/#jcpadshot"><code class="language-plaintext highlighter-rouge">JCPADSHOT</code></a> marker. That is how the menu help page is
 made, and it is also how a flaky “I pressed this and it crashed” report turns
 into a repeatable artifact.</p>
 
@@ -157,36 +157,36 @@ holiday overlay placement errors that would have blended into the island if
 all anyone had was a log line.</p>
 
 <p>For the essay version, read
-<a href="../../lab/regression-as-lifestyle/">Regression as a lifestyle</a>
-and <a href="../../lab/the-63-scene-grind/">The 63-scene grind</a>.</p>
+<a href="/johnny-castaway-ps1/lab/regression-as-lifestyle/">Regression as a lifestyle</a>
+and <a href="/johnny-castaway-ps1/lab/the-63-scene-grind/">The 63-scene grind</a>.</p>
 
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../start-here/">Hack: start here</a>
+  <li><a href="/johnny-castaway-ps1/hack/start-here/">Hack: start here</a>
 — first-day flow if you haven’t already done the build and
 boot loop.</li>
-  <li><a href="../learn-c/">Hack: learn C from Johnny</a>
+  <li><a href="/johnny-castaway-ps1/hack/learn-c/">Hack: learn C from Johnny</a>
 — “make state visible” applied to the source: small structs,
 explicit ownership, telemetry overlays.</li>
-  <li><a href="../memory-wars/">Hack: memory wars</a>
+  <li><a href="/johnny-castaway-ps1/hack/memory-wars/">Hack: memory wars</a>
 — visual debugging mattered most when the bug was a stale
 buffer or fragmented heap that text logs couldn’t surface.</li>
-  <li><a href="../performance-loop/">Hack: performance loop</a>
+  <li><a href="/johnny-castaway-ps1/hack/performance-loop/">Hack: performance loop</a>
 — the headless iteration that consumes the screenshots and
 state hashes the visual stack produces.</li>
-  <li><a href="../port-to-a-new-platform/">Hack: port to a new platform</a>
+  <li><a href="/johnny-castaway-ps1/hack/port-to-a-new-platform/">Hack: port to a new platform</a>
 — the visual debugging discipline travels even when the
 toolchain doesn’t.</li>
-  <li><a href="../../docs/regtest/">Regression testing</a> —
+  <li><a href="/johnny-castaway-ps1/docs/regtest/">Regression testing</a> —
 the headless DuckStation harness that drives most of the
 screenshot capture above.</li>
-  <li><a href="../../docs/scripted-input/">Scripted input harness</a>
+  <li><a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>
 — the <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> example in the workflow section.</li>
-  <li><a href="../../docs/vision/">Vision-classifier</a> —
+  <li><a href="/johnny-castaway-ps1/docs/vision/">Vision-classifier</a> —
 the per-frame detection layer that runs on top of the
 screenshots.</li>
-  <li><a href="../../docs/glossary/">Glossary</a> —
+  <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a> —
 vocabulary anchor for <code class="language-plaintext highlighter-rouge">BOOTMODE</code>, <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code>, <code class="language-plaintext highlighter-rouge">regtest</code>,
 <code class="language-plaintext highlighter-rouge">JCPADSHOT</code>, and the rest of the harness vocabulary used
 above.</li>
@@ -207,23 +207,23 @@ above.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/hack/visual-debugging/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -237,18 +237,18 @@ above.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../../docs/glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>
