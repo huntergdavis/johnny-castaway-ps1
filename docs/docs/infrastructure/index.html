@@ -102,7 +102,7 @@
       <h1>Build infrastructure & dev environment</h1>
       <p class="subtitle">How a one-person fan port keeps a reproducible cross-compile pipeline together — Docker, CMake, mkpsxiso, and a release script that tags itself.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2054 words
+          ~8 min read · 2113 words
         </p>
       
       <hr class="rule" />
@@ -388,7 +388,7 @@ the time of writing. The ones that matter for daily build work:</p>
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></td>
-      <td>Clean rebuild of executable + CD image. The “make me a fresh disc” button.</td>
+      <td>Clean rebuild of the PS1 executable (<code class="language-plaintext highlighter-rouge">jcreborn.elf</code> + <code class="language-plaintext highlighter-rouge">jcreborn.exe</code>). Does not produce the CD image — <code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is the next step.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></td>
@@ -557,8 +557,20 @@ decides what’s worth automating.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.regtest"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.regtest</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/release.sh"><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/make-cd-image.sh"><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/rebuild-and-let-run.sh"><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></a>
+— the day-to-day build pipeline (executable, CD image, all-in-one
+wrapper).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-host.sh"><code class="language-plaintext highlighter-rouge">scripts/build-host.sh</code></a>
+— separate SDL2 host capture binary.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-docker-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-docker-image.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-regtest-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-regtest-image.sh</code></a>
+— the two <code class="language-plaintext highlighter-rouge">docker build</code> wrappers (dev image + regtest image).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+— the headless DuckStation harness runner.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/release.sh"><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></a>
+— full release flow (bump VERSION, tag, push, attach assets).</li>
 </ul>
 
   </div>
