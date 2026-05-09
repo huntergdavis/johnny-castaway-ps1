@@ -121,10 +121,13 @@ add the scene to the active routing function:
   `.FG2` based on `islandState.lowTide`.
 
 [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c) —
-add the slug to `kProvenScenes` **only after full human visual + audible
-signoff**. Pending scenes can still be launched explicitly with
-`fgpilot <slug>` once the routing function knows about them, but they
-shouldn't enter the random screensaver rotation until they're certified.
+add the slug to `kAllScenes[]` so the screensaver picker can draw it.
+There used to be a separate `kProvenScenes` array gated on human
+visual + audible signoff; that gate was retired once the full
+63-scene set ran cleanly post-v0.7.0-ps1, so the picker now draws
+from everything in `kAllScenes`. New scenes land here as soon as
+their FG2 pack ships on the CD layout. Pending scenes can still be
+launched explicitly with `fgpilot <slug>` for bring-up work.
 
 ### 3. Build + launch
 
