@@ -232,7 +232,7 @@ onto the CD because nothing referenced them. The CD ISO is built from
 thumbnail-builder script wrote `SX*.SCR` files into the host
 filesystem, but only 42 of the 63 had ever been added to the manifest;
 the other 21 were silent passengers on disk that the build skipped.
-The user found this by walking Scene Explorer and reporting "stand 2-5
+The user found this by walking [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }}) and reporting "stand 2-5
 and 58-63 don't load."
 
 The site-engineering takeaway is small but concrete: when one source

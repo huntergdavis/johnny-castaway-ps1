@@ -15,7 +15,7 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 `v0.8.4-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed, and the
-chapter-select grid in the in-game Scene Explorer ships a custom
+chapter-select grid in the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }}) ships a custom
 on-PS1-captured thumbnail for every one of the 63 scenes (with scene
 titles and bodies reconciled against what the discs actually play). The
 headless timing-bearing average is the same +0.5576% public over target
