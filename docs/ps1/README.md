@@ -23,25 +23,24 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3930%` over target / `99.6194%` target speed across all 126
+`+0.3829%` over target / `99.6284%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
 low/high setup-segment, high frame-126/frame-125 re-anchor, and high
 setup-prime follow-ups; the raw signed optimization matrix is
-`-0.3755%` / `100.4032%`.
-That is about `17.01` public over-target points removed and `12.52` public
+`-0.3856%` / `100.4122%`.
+That is about `17.02` public over-target points removed and `12.53` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-high-setup-prime288-v213`, expands
-the high-only setup-prime cap from `232 KiB` to `288 KiB` on top of the
+The latest VISITOR3 follow-up, `visitor3-high-setup-prime320-v214`, expands
+the high-only setup-prime cap from `288 KiB` to `320 KiB` on top of the
 motion-copy/re-anchor/setup baseline. It preserves both `1555450` byte pack
 footprints, later offsets, fixed LBAs `22472/23232`, and the `215040` byte
-PS-EXE bucket while moving high `1101/1030 -> 1099/1032`. It cuts overrun
-`71 -> 67`, blocking `106 -> 96`, loop reads `20 -> 17`, loop-read time
-`106 -> 96`, and due misses `20 -> 17`, with the accepted setup tradeoff
-`scene_vb 1414 -> 1423`. Low remains on the v204 profile at `1102/1032` with
-blocking `124`, loop-read time `131`, and due misses `22`.
+PS-EXE bucket while moving high `1099/1032 -> 1089/1035`. It cuts overrun
+`67 -> 54`, blocking `96 -> 83`, loop reads `17 -> 15`, loop-read time
+`96 -> 83`, and due misses `17 -> 15`. Low remains on the v204 profile at
+`1102/1032` with blocking `124`, loop-read time `131`, and due misses `22`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

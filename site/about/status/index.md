@@ -31,8 +31,8 @@ compact-FGP3/v4 pass moves low to `2075/2061`, cuts blocking `29 -> 17`, loop
 reads `59 -> 47`, and moves the row into green. The latest WALKSTUF3 low
 compact-FGP3/v4 pass moves low to
 `2310/2295`, cuts blocking `41 -> 26`, and moves the row into green. The
-latest VISITOR3 pass keeps high at `1101/1030`, moves low to `1102/1032`,
-cuts high blocking `114 -> 106` and low blocking `139 -> 124`, and trades
+latest VISITOR3 pass moves high to `1089/1035`, moves low to `1102/1032`,
+cuts high blocking `114 -> 83` and low blocking `139 -> 124`, and trades
 setup time for lower active-loop CD pressure through high/low persistent
 segments plus high-only re-anchor payloads. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
