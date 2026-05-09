@@ -46,9 +46,17 @@ matrix, and a row in the green band that fails visual review
 doesn't ship. The two ledgers stay separate on purpose — different
 bars, different cadences, different failure modes.
 
-Milestone release cadence: every **10** scenes reaching `✅ / ✅`. Smaller
-stability releases happen between scene milestones when there's something
-worth shipping.
+Milestone release cadence was historically every **10** scenes reaching
+`✅ / ✅`, with smaller stability releases between milestones when there
+was something worth shipping. That cadence drove the v0.4–v0.7 line up
+through the v0.7.0-ps1 release that capped the 63/63 validation grind
+([retrospective]({{ '/lab/the-63-scene-grind/' | relative_url }})).
+With every scene now signed off, the 0.8.x line ships against
+performance, stability, and content bars instead — a per-release theme
+under
+[/releases/]({{ '/releases/' | relative_url }}). The visual-signoff
+gate above is still the gate any new or re-validated scene would have
+to clear.
 
 ## Prerequisites
 
