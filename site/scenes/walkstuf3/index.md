@@ -36,3 +36,13 @@ visuals come out frame-identical and the SFX cues land on the same
 ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
+
+## Notable runtime history
+
+`WALKSTUF 3` is one of the four canonical caption-mapping mismatches
+the v0.8.4-ps1 chapter-select grind caught. The original audit
+attached "jogs around the island" to `WALKSTUF 1`, but watching every
+pack play on hardware showed `WALKSTUF 1` is the yacht-party-and-pass-
+out beat — the jogging gag is here. The
+[chapter-select-grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
+walks through the named mismaps and how the on-PS1 loop surfaced them.

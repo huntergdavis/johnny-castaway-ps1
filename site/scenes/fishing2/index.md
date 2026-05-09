@@ -35,6 +35,18 @@ This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relati
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
 
+## Notable runtime history
+
+`FISHING 2` is one of the four canonical caption-mapping mismatches the
+v0.8.4-ps1 chapter-select grind caught: the on-PS1 pack plays the
+Titanic life-preserver beat above, but the on-screen caption block
+below ("He catches a boot") describes a different fishing gag. The
+"boot" caption actually belongs to `MARY 2` — Mary the mermaid swims
+up while Johnny is fishing, he mistakes her for a fish, and the boot
+is what he ends up reeling in instead. The
+[chapter-select-grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
+walks through the named mismaps and how the on-PS1 loop surfaced them.
+
 ## Caption
 
 This scene has on-screen caption text. Confidence: HIGH in the [caption audit]({{ '/docs/captions/' | relative_url }}).

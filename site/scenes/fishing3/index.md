@@ -34,6 +34,17 @@ This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relati
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
 
+## Notable runtime history
+
+`FISHING 3` is one of the four canonical caption-mapping mismatches
+the v0.8.4-ps1 chapter-select grind caught: the on-PS1 pack plays the
+octopus-steals-fish beat above, but the on-screen caption block below
+("He catches a crab. It snaps his nose.") describes a different
+fishing gag entirely. The
+[chapter-select-grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
+walks through the named mismaps and how the on-PS1 loop surfaced them
+once every pack was watched on hardware.
+
 ## Caption
 
 On-screen caption text. Confidence: HIGH in the [caption audit]({{ '/docs/captions/' | relative_url }}).
