@@ -102,7 +102,7 @@
       <h1>Audio pipeline</h1>
       <p class="subtitle">SPU layout, sample preload, captured PLAY_SAMPLE replay, and where DuckStation's HLE diverges from the real hardware.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1899 words
+          ~7 min read · 1941 words
         </p>
       
       <hr class="rule" />
@@ -453,7 +453,13 @@ drives the ambience loop. Pairs with the Ocean ambience H2 above.</li>
 
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/audio-optimization-spec.md"><code class="language-plaintext highlighter-rouge">docs/ps1/audio-optimization-spec.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/sound_ps1.c"><code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/sound_ps1.c"><code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code></a> —
+the SPU adapter; voice keying, master-volume register writes, the
+ocean ambience SPU slot, the VAG transfer wrappers.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> —
+scene-replay-side audio dispatch; consumes captured <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code>
+events from FG2 packs and fires <code class="language-plaintext highlighter-rouge">soundPlay()</code> with the 3-frame
+key-on delay the body discusses.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/wav2vag.py"><code class="language-plaintext highlighter-rouge">scripts/wav2vag.py</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/convert-sounds.sh"><code class="language-plaintext highlighter-rouge">scripts/convert-sounds.sh</code></a></li>
 </ul>

@@ -297,6 +297,12 @@ are noted in case the project ever needs them.
 ## View source on GitHub
 
 - [`docs/ps1/audio-optimization-spec.md`]({{ site.github_url }}/blob/main/docs/ps1/audio-optimization-spec.md)
-- [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c)
+- [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c) —
+  the SPU adapter; voice keying, master-volume register writes, the
+  ocean ambience SPU slot, the VAG transfer wrappers.
+- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) —
+  scene-replay-side audio dispatch; consumes captured `0xC051 PLAY_SAMPLE`
+  events from FG2 packs and fires `soundPlay()` with the 3-frame
+  key-on delay the body discusses.
 - [`scripts/wav2vag.py`]({{ site.github_url }}/blob/main/scripts/wav2vag.py)
 - [`scripts/convert-sounds.sh`]({{ site.github_url }}/blob/main/scripts/convert-sounds.sh)
