@@ -102,7 +102,7 @@
       <h1>Dirty region template</h1>
       <p class="subtitle">The renderer's bookkeeping cheat-sheet. For each TTM, which rectangles get touched, which need a clean-background restore, and which scenes are clear-screen heavy.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1310 words
+          ~5 min read · 1380 words
         </p>
       
       <hr class="rule" />
@@ -541,8 +541,19 @@ rather than a gameplay-visible behavior.</li>
 <h2 id="source-on-github">Source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/DIRTY_REGION_TEMPLATE_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/DIRTY_REGION_TEMPLATE_SCHEMA.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/extract-dirty-region-templates.py"><code class="language-plaintext highlighter-rouge">scripts/extract-dirty-region-templates.py</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/DIRTY_REGION_TEMPLATE_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/DIRTY_REGION_TEMPLATE_SCHEMA.md</code></a>
+— canonical schema; the “Current limitations” section above quotes
+it verbatim.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/extract-dirty-region-templates.py"><code class="language-plaintext highlighter-rouge">scripts/extract-dirty-region-templates.py</code></a>
+— offline extractor that derives templates from TTM bytecode.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code></a>
+— runtime consumer; <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code>, <code class="language-plaintext highlighter-rouge">currDirty</code> /
+<code class="language-plaintext highlighter-rouge">prevDirty</code>, and <code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame</code>. The fix for the
+<code class="language-plaintext highlighter-rouge">prevDirty</code> bug above is documented at the head of this file.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ads.c"><code class="language-plaintext highlighter-rouge">src/ads.c</code></a>
+— the legacy actor-recovery / “replay continuity” code the
+Current limitations section names. On the SDL compat lite kill
+list as the long-term direction.</li>
 </ul>
 
   </div>
