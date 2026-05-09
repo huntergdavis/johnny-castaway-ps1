@@ -304,27 +304,30 @@ Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
 pack-emitted upload pixels are not safe under the current FGP3 data. The
 analyzer now reports draw-covered x-band feasibility; both VISITOR3 tides show
-`0` selected draw-covered bytes for the default `96`-frame selective plan and
-the `74`-frame budgeted plan. The modeled `3858104` byte win depends on
+`0` selected draw-covered bytes for the default `117`-frame selective plan and
+the current budgeted high `75` / low `74` frame plans. The modeled win depends on
 restored background/cleanup pixels, which are dynamic at runtime. Do not build
 that as a raw append; continue with a safe pixel-source/data-shape change,
 compression plus ownership, or generated scheduler metadata.
 
-Current VISITOR3 v140 upload/read-plan closure: after the v127 tail-trim
-stageguard pass, the same analyzer finds more padded payload budget but the
-safety constraint is unchanged. The default selective x-band model selects
-`117` frames and needs `3394200` bytes for `10602536` modeled upload bytes
-saved. The current same-footprint budgeted model selects high `75` frames
-using `888880 / 891012` bytes for `6290232` saved bytes, and low `74` frames
-using `853848 / 854114` bytes for `6166528` saved bytes, but both tides still
-have `0` draw-covered selected x-band bytes. Runtime dirty-upload narrowing is
-not a substitute: exact interval upload would create about `131996` loop rects,
-and prior scratch-packed x-band probes already proved the copy/code-size cost
-is worse than full-width tile bands. The refreshed v140 read-plan also found no
-candidate that is append-start fireable, current-window-sized, and low-risk;
-the fireable current-fit rows are the already-closed late tight clusters. Close
-VISITOR3 runtime dirty-upload and hand read-table work until generated
-scheduler ownership or safe background-owned/precomposed upload data exists.
+Current VISITOR3 v175 upload/read-plan closure: after the ACTIVITY9 low
+compact-FGP3/v4 promotion, the same analyzer still finds enough padded payload
+budget but the safety constraint is unchanged. Artifacts:
+`scratch/visitor3-preprocess-safety-v175/visitor3-high.json` and
+`scratch/visitor3-preprocess-safety-v175/visitor3-low.json`. The default
+selective x-band model selects `117` frames and needs `3394200` bytes for
+`10602536` modeled upload bytes saved. The current same-footprint budgeted
+model selects high `75` frames using `888880 / 891012` bytes for `6290232`
+saved bytes, and low `74` frames using `853848 / 854114` bytes for `6166528`
+saved bytes, but both tides still have `0` draw-covered selected x-band bytes.
+Runtime dirty-upload narrowing is not a substitute: exact interval upload would
+create about `131996` loop rects, and prior scratch-packed x-band probes already
+proved the copy/code-size cost is worse than full-width tile bands. The current
+read-plan matrix also found no candidate that is append-start fireable,
+current-window-sized, and low-risk; the fireable current-fit rows are the
+already-closed late tight clusters. Close VISITOR3 runtime dirty-upload and
+hand read-table work until generated scheduler ownership or safe
+background-owned/precomposed upload data exists.
 
 Current VISITOR3 v150 late-cluster setup/group closure: retesting the top
 low-tide `333..349` cluster confirms the planner's `high-risk:scheduler-only`
