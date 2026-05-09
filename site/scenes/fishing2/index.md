@@ -6,7 +6,18 @@ tag: 2
 slug: fishing2
 status: validated
 description: "FISHING.ADS scene 2: Johnny fishes and reels in a Titanic-stenciled life preserver ring. Validated under the FISHING 1 bar."
+image: /assets/img/fishing2-ps1-titanic.png
+image_alt: "FISHING 2 on PS1: Johnny pulls a TITANIC-stenciled life preserver ring out of the water on his fishing line."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/fishing2-ps1-titanic.png' | relative_url }}"
+       width="961" height="720" loading="lazy" decoding="async"
+       alt="FISHING 2 running on PS1: Johnny on the island reeling a TITANIC-stenciled life preserver ring out of the water on his fishing line." />
+  <figcaption>FISHING 2 on PS1 hardware. The line comes up with a Titanic life-preserver ring instead of a fish — the gag the on-PS1 pack actually plays, not the "He catches a boot" caption in the audit.</figcaption>
+</figure>
 
 ## What happens
 
