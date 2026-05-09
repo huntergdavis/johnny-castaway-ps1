@@ -26,20 +26,22 @@ restore-minus-current pack baseline. The public battle card is now
 `+0.3962%` over target / `99.6166%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
-compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy
-plus setup-segment follow-ups; the raw signed optimization matrix is
+compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
+low/high setup-segment follow-ups; the raw signed optimization matrix is
 `-0.3723%` / `100.4004%`.
 That is about `17.00` public over-target points removed and `12.52` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-low-segment281-305-v204`, adds a
-persistent low-tide setup segment for sectors `281..305` on top of the
-motion-copy baseline. It preserves both `1555450` byte pack footprints, later
-offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while
-moving low `1108/1028 -> 1102/1032`. It trades setup scene time
-`1408 -> 1415` for active-loop relief: overrun `80 -> 70`, blocking
-`139 -> 124`, loop reads `27 -> 23`, loop-read time `148 -> 131`, and due
-misses `25 -> 22`. High remains the v202 profile at `1101/1030`.
+The latest VISITOR3 follow-up, `visitor3-high-segment277-293-v205`, adds a
+persistent high-tide setup segment for sectors `277..293` on top of the
+motion-copy baseline and the v204 low segment for sectors `281..305`. It
+preserves both `1555450` byte pack footprints, later offsets, fixed LBAs
+`22472/23232`, and the `215040` byte PS-EXE bucket while keeping high
+`1101/1030` and low `1102/1032`. It trades high setup scene time `1405 ->
+1414` for same-loop CD-pressure relief: blocking `114 -> 108`, loop reads
+`22 -> 20`, loop-read time `116 -> 108`, and due misses `21 -> 20`; low
+remains on the v204 profile with blocking `124`, loop-read time `131`, and due
+misses `22`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

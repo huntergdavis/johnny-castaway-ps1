@@ -315,8 +315,8 @@ signed optimization matrix is `-0.3723%` / `100.4004%`.
 
 As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-segment277-293-v205`,
 `visitor3-low-segment281-305-v204`,
-`visitor3-high-reanchor-f127-v202`,
 `visitor3-drop-unused-motion-dispatch-v197`,
 `activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
@@ -400,7 +400,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-09T04:40:56`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-09T06:16:24`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -408,8 +408,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-low-segment281-305-v204`,
-`visitor3-high-reanchor-f127-v202`,
+rows now use `visitor3-high-segment277-293-v205`,
+`visitor3-low-segment281-305-v204`,
 `visitor3-drop-unused-motion-dispatch-v197`,
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
@@ -829,7 +829,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
-   largest gap at `+73/+80` VBlanks after the VISITOR3 motion-copy passes; its
+   largest gap at `+71/+70` VBlanks after the VISITOR3 motion-copy and
+   setup-segment passes; its
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
    data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and

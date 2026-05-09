@@ -158,7 +158,7 @@ drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; lo
   <li><strong>Battle card is now public-capped at native speed.</strong> After the follow-up
 MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-VISITOR3 motion-copy/code-headroom/CD-pressure passes through v204, all 126
+VISITOR3 motion-copy/code-headroom/CD-pressure passes through v205, all 126
 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3962%</code> public over target / <code class="language-plaintext highlighter-rouge">99.6166%</code>
 public target speed; the raw signed CSV is <code class="language-plaintext highlighter-rouge">-0.3723%</code> / <code class="language-plaintext highlighter-rouge">100.4004%</code> for
 optimization work.</li>
@@ -166,9 +166,10 @@ optimization work.</li>
 VISITOR3 tides, high-tide frame <code class="language-plaintext highlighter-rouge">115</code>, shared frames <code class="language-plaintext highlighter-rouge">118</code>/<code class="language-plaintext highlighter-rouge">124</code>, and
 high-only frame <code class="language-plaintext highlighter-rouge">117</code>, and high-only re-anchored frame <code class="language-plaintext highlighter-rouge">127</code> now move
 already-composited background rows and draw only residual foreground payloads;
-the v204 low-tide setup segment keeps sectors <code class="language-plaintext highlighter-rouge">281..305</code> resident before the
-active loop. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt; 1101/1030</code>, low improves
-<code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1102/1032</code>, blocking drops <code class="language-plaintext highlighter-rouge">150/170 -&gt; 114/124</code>, and the packs
+the v204/v205 setup segments keep low sectors <code class="language-plaintext highlighter-rouge">281..305</code> and high sectors
+<code class="language-plaintext highlighter-rouge">277..293</code> resident before the active loop. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt;
+1101/1030</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1102/1032</code>, blocking drops
+<code class="language-plaintext highlighter-rouge">150/170 -&gt; 108/124</code>, and the packs
 keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
 </ul>
 

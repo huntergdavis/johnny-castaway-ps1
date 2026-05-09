@@ -40,7 +40,7 @@ headless performance baseline.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
   ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-  VISITOR3 motion-copy/code-headroom/CD-pressure passes through v204, all 126
+  VISITOR3 motion-copy/code-headroom/CD-pressure passes through v205, all 126
   timing-bearing rows average `+0.3962%` public over target / `99.6166%`
   public target speed; the raw signed CSV is `-0.3723%` / `100.4004%` for
   optimization work.
@@ -48,9 +48,10 @@ headless performance baseline.
   VISITOR3 tides, high-tide frame `115`, shared frames `118`/`124`, and
   high-only frame `117`, and high-only re-anchored frame `127` now move
   already-composited background rows and draw only residual foreground payloads;
-  the v204 low-tide setup segment keeps sectors `281..305` resident before the
-  active loop. High improves `1118/1028 -> 1101/1030`, low improves
-  `1126/1025 -> 1102/1032`, blocking drops `150/170 -> 114/124`, and the packs
+  the v204/v205 setup segments keep low sectors `281..305` and high sectors
+  `277..293` resident before the active loop. High improves `1118/1028 ->
+  1101/1030`, low improves `1126/1025 -> 1102/1032`, blocking drops
+  `150/170 -> 108/124`, and the packs
   keep fixed LBAs and the `215040` byte PS-EXE bucket.
 
 The post-validation perf retrospective at

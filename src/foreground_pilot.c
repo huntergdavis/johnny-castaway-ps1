@@ -193,6 +193,8 @@ enum {
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_HIGH_SETUP_SEGMENT_START (277UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_HIGH_SETUP_SEGMENT_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT_START (281UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define fgRuntimeWindowReadSize() (gFgRuntime.streamWindowReadSize)
@@ -1091,6 +1093,7 @@ static uint32 gFgStreamWindowBufferSize = 0;
 static uint8 *gFgStreamScratch = NULL;
 static uint32 gFgStreamScratchSize = 0;
 static uint8 *gFgSetupSegmentBuffer = NULL;
+static uint32 gFgSetupSegmentBufferSize = 0;
 
 static void fgReleaseStreamBuffers(void)
 {
@@ -1112,6 +1115,7 @@ static void fgReleaseStreamBuffers(void)
     if (gFgSetupSegmentBuffer != NULL) {
         free(gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
+        gFgSetupSegmentBufferSize = 0;
     }
 }
 
@@ -1174,6 +1178,7 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
     if (gFgSetupSegmentBuffer != NULL) {
         free(gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
+        gFgSetupSegmentBufferSize = 0;
     }
 
     gFgRuntime.frameBuffer = keepFrameBuffer;
@@ -2191,16 +2196,26 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     uint8 *segmentBuffer;
 
     gFgRuntime.setupSegmentReusable = 0;
-    if (fgSceneEquals(sceneName, "visitor3") && islandState.lowTide) {
-        segmentStart = FG_VISITOR3_LOW_SETUP_SEGMENT_START;
-        segmentBytes = FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES;
-        if (gFgSetupSegmentBuffer == NULL) {
-            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES);
+    if (fgSceneEquals(sceneName, "visitor3")) {
+        if (islandState.lowTide) {
+            segmentStart = FG_VISITOR3_LOW_SETUP_SEGMENT_START;
+            segmentBytes = FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES;
+        } else {
+            segmentStart = FG_VISITOR3_HIGH_SETUP_SEGMENT_START;
+            segmentBytes = FG_VISITOR3_HIGH_SETUP_SEGMENT_BYTES;
+        }
+        if (gFgSetupSegmentBuffer == NULL ||
+            gFgSetupSegmentBufferSize < segmentBytes) {
+            if (gFgSetupSegmentBuffer != NULL)
+                free(gFgSetupSegmentBuffer);
+            gFgSetupSegmentBuffer = (uint8 *)malloc(segmentBytes);
             if (gFgSetupSegmentBuffer == NULL) {
+                gFgSetupSegmentBufferSize = 0;
                 if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES);
+                    ps1PerfMarkAllocFail(segmentBytes);
                 return 0;
             }
+            gFgSetupSegmentBufferSize = segmentBytes;
         }
         segmentBuffer = gFgSetupSegmentBuffer;
         gFgRuntime.setupSegmentReusable = 1;
@@ -2209,13 +2224,18 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     } else if (islandState.lowTide) {
         segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
         segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
-        if (gFgSetupSegmentBuffer == NULL) {
+        if (gFgSetupSegmentBuffer == NULL ||
+            gFgSetupSegmentBufferSize < segmentBytes) {
+            if (gFgSetupSegmentBuffer != NULL)
+                free(gFgSetupSegmentBuffer);
             gFgSetupSegmentBuffer = (uint8 *)malloc(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
             if (gFgSetupSegmentBuffer == NULL) {
+                gFgSetupSegmentBufferSize = 0;
                 if (ps1PerfEnabled)
                     ps1PerfMarkAllocFail(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
                 return 0;
             }
+            gFgSetupSegmentBufferSize = segmentBytes;
         }
         segmentBuffer = gFgSetupSegmentBuffer;
     } else {

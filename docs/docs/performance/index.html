@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3977 words
+          ~15 min read · 3979 words
         </p>
 
       <hr class="rule" />
@@ -441,8 +441,8 @@ signed optimization matrix is <code class="language-plaintext highlighter-rouge"
 
 <p>As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">visitor3-high-segment277-293-v205</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-segment281-305-v204</code>,
-<code class="language-plaintext highlighter-rouge">visitor3-high-reanchor-f127-v202</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-drop-unused-motion-dispatch-v197</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
@@ -526,7 +526,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-09T04:40:56</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-09T06:16:24</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -534,8 +534,8 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor3-low-segment281-305-v204</code>,
-<code class="language-plaintext highlighter-rouge">visitor3-high-reanchor-f127-v202</code>,
+rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-segment277-293-v205</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-segment281-305-v204</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-drop-unused-motion-dispatch-v197</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>,
@@ -955,7 +955,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 is now the
-largest gap at <code class="language-plaintext highlighter-rouge">+73/+80</code> VBlanks after the VISITOR3 motion-copy passes; its
+largest gap at <code class="language-plaintext highlighter-rouge">+71/+70</code> VBlanks after the VISITOR3 motion-copy and
+setup-segment passes; its
 local C read-table rows are exhausted, so the next CD-shape pass needs
 generated scheduler ownership, selective preprocessing, or further pack
 data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and

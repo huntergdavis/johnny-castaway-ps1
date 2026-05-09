@@ -11,7 +11,7 @@ the headless perf matrix, and all 126 timing-bearing rows now average
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v204. The raw signed optimization matrix is `-0.3723%` over target /
+v205. The raw signed optimization matrix is `-0.3723%` over target /
 `100.4004%` target speed.
 
 ## Headline
@@ -53,11 +53,12 @@ v204. The raw signed optimization matrix is `-0.3723%` over target /
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
   `117` plus high-only re-anchored frame `127` motion-copy payloads, then adds
-  a low-tide persistent setup segment for sectors `281..305`. Both packs
+  high/low persistent setup segments for sectors `277..293` and `281..305`.
+  Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
-  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 116`, loop reads `27 -> 22`,
-  and due misses `26 -> 21`; low moves `1126/1025 -> 1102/1032`, cuts blocking
+  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 108`, loop reads `27 -> 20`,
+  and due misses `26 -> 20`; low moves `1126/1025 -> 1102/1032`, cuts blocking
   `170 -> 124`, loop reads `31 -> 23`, and due misses `29 -> 22`.
 
 ## Follow-Up Closure
@@ -116,6 +117,14 @@ low-tide setup segment for sectors `281..305`. It accepts setup cost
 drop `27 -> 23`, loop-read time drops `148 -> 131`, and due misses drop
 `25 -> 22`.
 
+The follow-up `visitor3-high-segment277-293-v205` promotes the matching
+high-tide setup segment for sectors `277..293`. It keeps the active loop flat
+at `1101/1030` while cutting blocking `114 -> 108`, loop reads `22 -> 20`,
+loop-read time `116 -> 108`, and due misses `21 -> 20`; setup cost raises high
+total `scene_vb 1405 -> 1414`. Wider high segments `261..285` and `269..285`
+cut more active CD work but were rejected because both introduced hidden refill
+debt (`prefetch_overrun_vb 0 -> 3`).
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -134,6 +143,8 @@ drop `27 -> 23`, loop-read time drops `148 -> 131`, and due misses drop
   `scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
 - VISITOR3 high frame-117 target-hull broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-high-f117-target-hull-v193-broad/20260509-014222-3940374/summary.json`.
+- VISITOR3 high setup-segment broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-high-segment277-293-v205-broad-norequire-rerun/20260509-061624-1296310/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
