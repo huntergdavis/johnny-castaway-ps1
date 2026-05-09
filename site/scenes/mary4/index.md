@@ -6,7 +6,19 @@ tag: 4
 slug: mary4
 status: validated
 description: "MARY.ADS scene 4: Johnny works on his raft to get off the island; Mary sees and is heartbroken that he plans to leave. Validated 2026-05-08."
+image: /assets/img/mary4-ps1-raft-heartbreak.png
+image_alt: "MARY 4 on PS1: Johnny working on his raft on the island while Mary the mermaid watches from the water, heartbroken."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/mary4-ps1-raft-heartbreak.png' | relative_url }}"
+       width="961" height="720" loading="lazy" decoding="async"
+       alt="MARY 4 running on PS1: Johnny working on his raft on the island while Mary the mermaid watches from the water with a heartbroken expression." />
+  <figcaption>MARY 4 on PS1 hardware. Mary surfaces and sees what Johnny is doing — fixing the raft so he can sail home. The clean-rect pressure during this scene's random-position load is what the v0.8.1-ps1 soak loop caught and the
+  <a href="{{ '/lab/v081-mary4-freeze/' | relative_url }}">soak retrospective</a> walks through.</figcaption>
+</figure>
 
 Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}): pixel-perfect human
 visual signoff plus synced captured SFX.
