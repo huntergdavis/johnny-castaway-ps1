@@ -68,7 +68,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/audio/' | relative_url }}">Audio</a>
-    <p>SPU layout, VAG sample bank, the round-robin voice allocator, the captured <code>0xC051 PLAY_SAMPLE</code> events, and the ocean-ambience loop on its dedicated voice.</p>
+    <p>SPU layout, VAG sample bank, the round-robin voice allocator, the captured <code>0xC051 PLAY_SAMPLE</code> events, and the <a href="{{ '/docs/glossary/#ocean-ambience' | relative_url }}">ocean-ambience</a> loop on its dedicated voice.</p>
   </li>
   <li>
     <a href="{{ '/docs/formats/' | relative_url }}">File formats</a>
