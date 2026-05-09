@@ -102,7 +102,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1647 words
+          ~7 min read · 1787 words
         </p>
       
       <hr class="rule" />
@@ -299,9 +299,28 @@ block edge cases.</li>
 stores automatic policy separately from manual holiday id. Captions, Scene
 Set, tide, raft, island-position, freeplay/perf preferences, and menu cursor
 defaults remain future work.</li>
-  <li><strong>Caption audit follow-through.</strong> HIGH-confidence ADS-tag
-mappings are in; LOW-confidence STAND/VISITOR/WALKSTUF slots
-will be refined as those scenes pass the bar.</li>
+  <li><strong>Caption audit follow-through.</strong> Two layers, with one done in
+<code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> and one still open. <em>Done:</em> the website’s <em>description</em>
+of which caption belongs to which scene was reconciled against the
+on-PS1 packs during the
+<a href="/johnny-castaway-ps1/lab/chapter-select-grind/">chapter-select grind</a>
+— per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles + bodies, <code class="language-plaintext highlighter-rouge">scenes.yml</code> notes,
+<code class="language-plaintext highlighter-rouge">scene-status.md</code> Notes column, and the in-game
+<a href="/johnny-castaway-ps1/docs/glossary/#scene-explorer">Scene Explorer</a>
+display strings. The runtime evidence overturned a substantial
+fraction of the audit’s confidence ratings, including two HIGH-rated
+FISHING entries (<code class="language-plaintext highlighter-rouge">FISHING 2</code> boot, <code class="language-plaintext highlighter-rouge">FISHING 3</code> crab) that were exact
+text-pack mismatches and the <code class="language-plaintext highlighter-rouge">VISITOR 5</code> <code class="language-plaintext highlighter-rouge">NO_MATCH</code> candidate that
+turned out to be a clear unambiguous gag. <em>Open:</em> the runtime
+<code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> array in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>
+was not changed in <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>; the on-screen caption band
+continues to play whatever caption the original audit picked, even
+on rows where the website now disagrees with that pick. Repointing
+the runtime mapping (or blanking the rows where text and pack can’t
+be reconciled) is a future-release item. The
+<a href="/johnny-castaway-ps1/docs/captions/#post-validation-runtime-corrections-v084-ps1">post-validation runtime corrections section</a>
+lists the named mismaps.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">fgpilot</code> -&gt; “PS1 scene playback” naming migration.</strong> The
 internal code-name in <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> and friends remains
 <code class="language-plaintext highlighter-rouge">fgpilot</code>; the public-facing name is moving to “PS1 scene
