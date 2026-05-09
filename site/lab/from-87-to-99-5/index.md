@@ -59,7 +59,7 @@ Two numbers from the log do most of the work:
 
 Their ratio is the row's `target_speed_pct`. Their difference is `over_target_pct`. Anything above zero means the row missed; the matrix mean is what the home-page status pill reads from.
 
-The harness writes one JSONL line per run into a scratch directory and one row into the long-form table. The scratch directory is local-only — it's the experimentation log nobody else reads. The long-form table lives at `docs/ps1/performance-experiment-log.md` and is the decision record that survives branch rebases. Every accepted experiment, every rejected one, gets a row.
+The harness writes one JSONL line per run into a scratch directory and one row into the long-form table. The scratch directory is local-only — it's the experimentation log nobody else reads. The long-form table lives at [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md) and is the decision record that survives branch rebases. Every accepted experiment, every rejected one, gets a row.
 
 ## Accepted experiments
 
@@ -131,7 +131,7 @@ at `95.6%`/`95.8%` after its v0.8.3 compact-FGP3/v4 pass, BUILDING2
 high at `97.6%`, and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1
 / VISITOR3 / wide-action cluster still finishing scheduler-owned read
 timing and selective-preprocessing work. The optimization plan at
-`docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about
+[`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.
 
