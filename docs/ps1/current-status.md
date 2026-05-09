@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure/setup-prime perf follow-ups through v214;
+motion-copy/code-headroom/CD-pressure/setup-prime perf follow-ups through v216;
 all 63 scenes remain validated, and the public headless battle card is
-`+0.3829%` over target / `99.6284%` target speed).
+`+0.3783%` over target / `99.6326%` target speed).
 
 ## Overall
 
@@ -195,14 +195,15 @@ the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
 shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
 `125`.
 It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
-improves high to `1089/1035`, moves low to `1102/1032`, and keeps high/low
+improves high to `1089/1035`, moves low to `1098/1034`, and keeps high/low
 persistent setup segments for sectors `277..293` and `281..305` plus the v214
-high `320 KiB` setup-prime cap. Blocking is now `83/124`, loop-read time is
-`83/131`, and due misses are `15/22`; the accepted setup tradeoffs raise high
-total `scene_vb 1405 -> 1420` and low total `1408 -> 1415` while reducing
-active-loop debt. The current runtime baseline keeps all broad canaries flat
-while creating code-layout headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3829%` over target / `99.6284%` target speed
+high `320 KiB` setup-prime cap and the v216 guarded low segment `150..174`.
+Blocking is now `83/112`, loop-read time is `83/119`, and due misses are
+`15/19`; the accepted setup tradeoffs raise high total `scene_vb 1405 -> 1420`
+and low total `1408 -> 1424` while reducing active-loop debt. The current
+runtime baseline keeps all broad canaries flat while creating code-layout
+headroom from the earlier v197 dispatch removal.
+The public battle card is now `+0.3783%` over target / `99.6326%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
@@ -229,10 +230,10 @@ pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
 plus high-tide frame `115`, shared frames `118`/`124`, high-only frame `117`,
 and high-only re-anchored frames `127`/`126`/`125`, plus high/low persistent setup segments
-for sectors `277..293` and `281..305`, plus the v214 high setup-prime cap
-expansion. VISITOR3 high is now `1089/1035` with
-`blocking_vb=83`; low is
-`1102/1032` with `blocking_vb=124`. BUILDING2 high/low are `1349/1316` and
+for sectors `277..293` and `281..305`, the v214 high setup-prime cap
+expansion, and the v216 guarded low segment `150..174`. VISITOR3 high is now
+`1089/1035` with `blocking_vb=83`; low is
+`1098/1034` with `blocking_vb=112`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and

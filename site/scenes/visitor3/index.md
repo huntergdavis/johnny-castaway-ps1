@@ -45,9 +45,10 @@ were evidence-gathering positions, not runtime pins.
 `VISITOR 3` remains one of the high-leverage yellow-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
 `{{ site.release.tag }}`. After the compact metadata work, motion-copy payloads,
-high-only frame `117` target-hull promotion, and the v197 code-headroom pass,
-`visitor3` high and low now run around
-[`93.6%` and `92.8%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+high-only frame `117` target-hull promotion, the v214 high setup-prime pass,
+and the v216 guarded low second setup segment, `visitor3` high and low now run
+around
+[`95.0%` and `94.2%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 instead of sitting in the red band. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})

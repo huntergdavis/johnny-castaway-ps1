@@ -21,8 +21,8 @@ v0.8.3-ps1 is a performance point release after v0.8.2-ps1. All 63 scenes remain
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.3.md` |
-| Lines | 188 |
-| Approx. words | 1433 |
+| Lines | 204 |
+| Approx. words | 1572 |
 | Code fences | 0 |
 
 ## Outline

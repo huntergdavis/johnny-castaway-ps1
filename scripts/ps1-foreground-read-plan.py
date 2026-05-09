@@ -593,12 +593,16 @@ def parse_source_setup_policy() -> dict[str, Any]:
             ]
 
     for tide in ("HIGH", "LOW"):
-        start = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT_START")
-        size = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT_BYTES")
-        if start is not None and size is not None and size > 0:
-            policy[f"visitor3_{tide.lower()}_segments"] = [
-                (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
-            ]
+        segments = []
+        for suffix in ("", "2"):
+            start = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_START")
+            size = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_BYTES")
+            if start is not None and size is not None and size > 0:
+                segments.append(
+                    (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
+                )
+        if segments:
+            policy[f"visitor3_{tide.lower()}_segments"] = segments
 
     return policy
 

@@ -121,9 +121,10 @@ The current matrix mean is `{{ site.release.perf_target_speed_pct }}%` target sp
 The matrix-wide aggregate is now slightly under target -- the remaining
 work is in a small number of high-leverage rows that still slip.
 As of `{{ site.release.tag }}` there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}). The two yellow rows
-(`90`–`95%`) are VISITOR3 high/low at roughly `93.6%`/`93.6%` after
-the motion-copy, high re-anchor, and low persistent-segment passes. The thirteen orange rows
+[battle card]({{ '/perf/' | relative_url }}). The single yellow row
+(`90`–`95%`) is VISITOR3 low at roughly `94.2%` after the motion-copy,
+setup-segment, and guarded second-segment passes. VISITOR3 high is now orange
+at roughly `95.0%` after its high re-anchor and setup-prime passes. The fourteen orange rows
 (`95`–`99%`) include WALKSTUF1 at `95.6%`/`95.8%` after its v0.8.3
 compact-FGP3/v4 pass, BUILDING2 high/low at `97.6%`, VISITOR5 high/low,
 and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1 /

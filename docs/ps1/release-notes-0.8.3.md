@@ -53,13 +53,14 @@ v213. The raw signed optimization matrix is `-0.3755%` over target /
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
   `117` plus high-only re-anchored frames `127`, `126`, and `125`, then adds high/low
-  persistent setup segments for sectors `277..293` and `281..305`.
+  persistent setup segments for sectors `277..293` and `281..305`, the high
+  `320 KiB` setup-prime cap, and the guarded low second segment `150..174`.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
-  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 106`, loop reads `27 -> 20`,
-  and due misses `26 -> 20`; low moves `1126/1025 -> 1102/1032`, cuts blocking
-  `170 -> 124`, loop reads `31 -> 23`, and due misses `29 -> 22`.
+  `1118/1028 -> 1089/1035`, cuts blocking `150 -> 83`, loop reads `27 -> 15`,
+  and due misses `26 -> 15`; low moves `1126/1025 -> 1098/1034`, cuts blocking
+  `170 -> 112`, loop reads `31 -> 20`, and due misses `29 -> 19`.
 
 ## Follow-Up Closure
 
@@ -149,7 +150,22 @@ setup-prime cap from `232 KiB` to `288 KiB`. It trades high setup time
 `1101/1030 -> 1099/1032`, overrun `71 -> 67`, blocking `106 -> 96`,
 loop reads `20 -> 17`, loop-read time `106 -> 96`, and due misses `20 -> 17`.
 Low cap probes at `288/256/240 KiB` were rejected because they added hidden
-refill or visible cadence debt, so low remains on v204 at `1102/1032`.
+refill or visible cadence debt, so low stayed on v204 until the guarded v216
+second setup segment moved it to `1098/1034`.
+
+The follow-up `visitor3-high-setup-prime320-v214` expands only the high-tide
+setup-prime cap from `288 KiB` to `320 KiB`. It trades high setup time for
+active-loop timing relief: `1099/1032 -> 1089/1035`, overrun `67 -> 54`,
+blocking `96 -> 83`, loop reads `17 -> 15`, loop-read time `96 -> 83`, and due
+misses `17 -> 15`.
+
+The follow-up `visitor3-low-dual-segment150-174-slack4-v216` adds a guarded
+second low-tide setup segment for sectors `150..174` and raises only VISITOR3
+low refill eligibility to `4` VBlanks. It accepts low setup time
+(`scene_vb 1415 -> 1424`) because the active loop improves `1102/1032 ->
+1098/1034`, overrun drops `70 -> 64`, blocking drops `124 -> 112`, loop reads
+drop `23 -> 20`, loop-read time drops `131 -> 119`, due misses drop `22 -> 19`,
+and hidden refill remains `0`.
 
 ## Verification
 
