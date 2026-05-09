@@ -102,7 +102,7 @@
       <h1>Story-loop walks</h1>
       <p class="subtitle">How Johnny stops teleporting between scenes — the walk subsystem, the spot graph, and the runtime invariants the kernel has to preserve.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1299 words
+          ~5 min read · 1329 words
         </p>
       
       <hr class="rule" />
@@ -162,7 +162,7 @@ and gained three runtime guards in subsequent releases (see
 
 <h2 id="modules">Modules</h2>
 
-<p>The walk subsystem lives in four files under <code class="language-plaintext highlighter-rouge">src/</code>:</p>
+<p>The walk subsystem lives in five modules under <code class="language-plaintext highlighter-rouge">src/</code>:</p>
 
 <table>
   <thead>
@@ -187,10 +187,16 @@ and gained three runtime guards in subsequent releases (see
       <td>The original walk state machine. Consumes <code class="language-plaintext highlighter-rouge">walk_data.h</code>; produces a per-tick <code class="language-plaintext highlighter-rouge">(x, y, sprite_idx, heading)</code>.</td>
     </tr>
     <tr>
+      <td><code class="language-plaintext highlighter-rouge">calcpath.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
+      <td style="text-align: right">130 / 25</td>
+      <td>upstream</td>
+      <td>The <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> BFS-style path-finder over the spot graph. Walk_pilot calls it when no direct (from, to) edge exists in <code class="language-plaintext highlighter-rouge">walk_data.h</code>.</td>
+    </tr>
+    <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_pilot.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
       <td style="text-align: right">354 / 84</td>
       <td>this port</td>
-      <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
+      <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> + <code class="language-plaintext highlighter-rouge">calcpath.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_render.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
