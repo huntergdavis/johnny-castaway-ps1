@@ -65,6 +65,18 @@ The v177 probes kept both tides exact-flat at `2070` scene, `1974/1945`,
 These rows remain evidence for generated append ownership or a larger
 retained-window design, not for another local table edit.
 
+Latest VISITOR3 hot-atlas decision: do not promote or retry setup-owned tail
+atlases under the current runtime. The v178 25-sector atlas duplicated frames
+`139..144` into pack zero-tail space and removed real reads, but high regressed
+`1118 -> 1141` and low failed the full-scene/hidden-refill gate despite an
+active-loop improvement. The v179 7-sector terminal atlas for frames `142..144`
+still regressed both tides (`1118 -> 1132` high, `1126 -> 1129` low) and added
+low hidden refill debt. The pack file sizes, LBAs, and PS-EXE bucket stayed
+fixed, so the closure is about setup-owned CD phase/lifetime, not broad layout.
+The next VISITOR3 swing needs either data that is cheaper to present
+(precomposed/background-owned upload with compression/ownership metadata) or a
+real deadline-aware scheduler sidecar; another manual setup segment is closed.
+
 Latest promoted WALKSTUF3 low compact-FGP3/v4 baseline: convert
 `WALK3LOW.FG2` to padded compact FGP3/v4 restore-minus-current data while
 preserving the `994669` byte CD footprint. The compaction chain trims active
@@ -1497,6 +1509,36 @@ display, tearing, frame drops, or weakened pause input.
 | 222 | Broad-canary auto-minimizer | When a candidate fails broad controls, bisect canaries and metrics to isolate layout drift vs true runtime coupling. | Speeds up log-only determinations and avoids rerunning irrelevant scenes. |
 | 223 | Baseline promotion ledger script | Automatically update README/site/CSV rollups and total improvement text from the accepted summary. | Reduces manual drift after every successful headless commit. |
 | 224 | No-runtime determination template | Generate experiment-log rows from scratch artifacts for failed size/safety gates. | Makes headless logging faster when a candidate is blocked before emulator time. |
+| 225 | VISITOR3 precomposed terminal-frame proof | Build a tiny precomposed upload payload only for frames `142..144`, keyed by tide/night/background state. | The setup atlas showed those terminal frames are a real read target; precomposed pixels attack presentation cost without setup CD debt. |
+| 226 | VISITOR3 compressed terminal x-band proof | Encode frames `142..144` as row-local RLE/x-delta precomposed bands and size-gate before runtime code. | A 7-sector residency atlas was too expensive as CD setup work; compressed upload data may fit and run only on due frames. |
+| 227 | VISITOR3 high-only late-sequence strategy | Treat high and low independently instead of requiring one symmetric atlas or format. | The 25-sector atlas helped low active loop but hurt high badly; tide-specific tactics are required. |
+| 228 | VISITOR3 low-only late-sequence strategy | Build a low-only candidate that preserves `prefetch_overrun_vb=0` before testing high. | Low has the largest public gap and showed the strongest read-removal signal, but hidden refill must be owned explicitly. |
+| 229 | VISITOR3 deadline sidecar for frames `139..144` | Generate per-frame read deadlines and slack reservations for the terminal yacht/photo cluster. | The atlas proved data residency can remove reads; scheduler ownership is the missing piece. |
+| 230 | VISITOR3 held-slice replay simulator | Replay the v178/v179 logs to identify which held waits became setup/hidden debt. | Prevents another emulator run that only moves reads into scene-vb or `prefetch_overrun_vb`. |
+| 231 | VISITOR3 primary-dataOffset atlas | Repoint `header.dataOffset` to a compact duplicate ordering that includes current setup-covered frames plus late hot frames. | Tests whether compacting the resident set inside the existing setup window can help without adding a second setup read. |
+| 232 | VISITOR3 setup-prime resident-set knapsack | Select entries for a compact setup window by read cost and early-frame preservation, then duplicate only that set. | Avoids losing the early `1..116`/`1..112` coverage while making room for late hotspots. |
+| 233 | VISITOR3 pack-order local search | Search payload order/duplication inside zero-tail while keeping file size/LBA fixed and scoring a read-plan model before emulator. | Manual atlas ordering is too crude for a fragile CD phase problem. |
+| 234 | VISITOR3 frame `127..140` upload hotspot micro-pack | Target the highest modeled upload-savings frames separately from the terminal read cluster. | The upload model says frames `125..127` dominate byte savings; the read atlas targeted the wrong bottleneck for high tide. |
+| 235 | VISITOR3 cap-hit fallback table | Leave cap-hit frames on current full-width upload while precomposing only non-cap rows. | Prevents a compact upload format from repeating old rect-cap and scratch-packing failures. |
+| 236 | VISITOR3 background-owned ocean strip cache | Store deterministic ocean/background strips once per tide and compose foreground deltas against that cache. | Raw foreground x-bands are unsafe because selected pixels include restored background. |
+| 237 | VISITOR3 clean-state hash verifier | Runtime-check a small background hash before accepting any precomposed strip. | Lets us bake background-owned pixels without risking wrong tide/night/holiday visuals. |
+| 238 | VISITOR3 row-template dictionary | Deduplicate repeated dirty-row layouts and payload rows across the late yacht frames. | Rect and row metadata are large enough that dictionary reuse may be the only same-footprint path. |
+| 239 | VISITOR3 direct16 strip format | Store ready-to-upload 16bpp strips for selected frames instead of PAL4 spans plus runtime compose. | Bypasses PAL4 compose and dirty-restore for the worst frames at the cost of pack bytes. |
+| 240 | VISITOR3 PAL4-to-direct16 offline converter | Host-generate direct16 payloads from validated foreground/background states and compare exact pixels to runtime output. | Produces the source material needed for a safe precomposed strip experiment. |
+| 241 | VISITOR3 frame-cluster subpack | Split the final yacht/photo cluster into a tiny secondary pack loaded only when entering that phase. | A smaller phase pack may make late data local without a scene-start setup read. |
+| 242 | VISITOR3 phase-transition preload | Start reading the terminal subpack during the long pre-terminal hold instead of scene setup. | Moves the atlas idea to the point where spare scene time actually exists. |
+| 243 | VISITOR3 second staged-payload slot | Add a scene-local two-entry stage queue only for the terminal cluster. | Current one-slot staging cannot get far enough ahead through tight late reads. |
+| 244 | VISITOR3 associative sector cache | Keep a small sector cache for the terminal cluster without invalidating it on unrelated direct reads. | More precise than the failed single persistent segment and may avoid code-path lifetime side effects. |
+| 245 | VISITOR3 no-code pack-tail duplication | Duplicate hot frames into tail positions but leave runtime setup untouched, measuring whether stream locality alone helps. | Separates data layout effects from the failed setup-segment code path. |
+| 246 | VISITOR3 code-neutral parser funding | Reclaim or pad hot code before any new precomposed decoder so PS-EXE bucket and hot-symbol phase stay fixed. | Prior data-shape wins failed when decoder/code movement shifted other canaries. |
+| 247 | VISITOR3 overlay/cold decoder probe | Put the precomposed-strip decoder in a cold overlay-like path or isolated TU with layout padding. | Allows a new format without growing `foregroundPilotPlay` in the hot loop. |
+| 248 | VISITOR3 LZ4-style payload size gate | Test simple bytewise LZ/RLE on active FGP3 payload bodies and selected upload bands offline. | If payload compression saves enough sectors, it may beat scheduler work without unsafe pixels. |
+| 249 | VISITOR3 per-frame read-vs-upload classifier | Label each bad frame as CD-read dominated, upload dominated, compose dominated, or mixed. | Prevents aiming read-residency at frames whose dominant cost is presentation. |
+| 250 | VISITOR3 long-hold retime canary | Try a generated retime that only borrows from long holds after sound-safe proof and resident-next-frame proof. | The scene has long holds; controlled retiming may absorb unavoidable late reads without changing event order. |
+| 251 | VISITOR3 sound-event timing proof | Build a host check that any retime preserves sound cursor/source-frame semantics. | Retiming is off-limits until audio correctness is mechanically proven. |
+| 252 | VISITOR3 visual splice proof | Host-render the late cluster as a precomputed visual sequence and compare against frame captures. | If exact, a custom scene-private playback path becomes plausible for the white whale. |
+| 253 | VISITOR3 custom terminal mini-player | Implement a branch just for the last yacht/photo phase using preloaded/precomposed frames. | Scene-specific code is acceptable if it is isolated, layout-funded, and measured. |
+| 254 | VISITOR3 white-whale decision gate | After three more big swings, compare expected gain of scheduler/precomposed/custom-player paths and commit to one deeper implementation. | Prevents endless small probes while keeping VISITOR3 as the priority target. |
 
 ## Impact-Prioritized Order
 
@@ -1786,6 +1828,7 @@ pre-v0.8.0 row.
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The current v140 analyzer exact-knapsacks the default-selected VISITOR3 rows against the post-tail-trim pack slack: high selects `75 / 117` default frames using `888880 / 891012` bytes and retaining `6290232` modeled upload bytes saved, while low selects `74 / 117` frames using `853848 / 854114` bytes and retaining `6166528` modeled bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows, a safe background-owned/precomposed pixel source, and full VISITOR3/canary validation. |
 | VISITOR3 runtime dirty-upload narrowing | Do not retry as a source-side optimization. The live uploader already has row-level dirty X metadata, but exact narrow intervals for current VISITOR3 would create about `131996` upload rects over the loop, and scratch-packed x-band variants have already failed from code-size, copy, and cadence cost. Upload-byte work must be pack-emitted or precomposed, not packed from tile rows during `grDrawBackground()`. |
 | VISITOR3 v140 current-window read-plan refresh | Do not promote or retry another hand-authored source table. The refreshed read-plan from v127 found `0` candidates that are append-start fireable, current-window-sized, and low-risk. The rows that fit and fire are the late tight-cluster class, including the already-rejected high `315..331` and low `333..349` shapes, and remain `high-risk:scheduler-only`. |
+| VISITOR3 setup-owned tail atlas | Do not retry manual zero-tail atlases through setup segments. The v178 25-sector atlas removed reads but regressed high and failed low full-scene/hidden-refill gates; the v179 7-sector terminal atlas still regressed both tides. Tail residency needs phase-transition preload, a real scheduler sidecar, or precomposed data, not another scene-start setup segment. |
 | VISITOR3 `20 KiB` retained window with `12` VBlank slack | Do not promote or retry as scalar window/slack tuning. It improved total scene duration by shortening setup/load shape, but active loop regressed on both tides: high `1118 -> 1131`, blocking `150 -> 210`, reads `27 -> 39`; low `1126 -> 1139`, blocking `170 -> 212`, reads `31 -> 41`. Hidden refill stayed `0` and layout stayed fixed, so the failure is scheduler/CD ownership, not binary layout. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |

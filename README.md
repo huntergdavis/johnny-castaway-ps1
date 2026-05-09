@@ -218,6 +218,12 @@ The VISITOR3 `97..109` setup-owned segment retry is closed as well: a dedicated
 flat against that baseline (`1139/1024` and `1140/1024`), so that
 read-plan candidate now requires generated scheduler ownership or a payload
 shape change rather than another local setup/grouped-read variant.
+The current VISITOR3 tail-atlas retry is closed too: duplicating frames
+`139..144` or just `142..144` into zero-tail space and preloading them as a
+persistent setup segment removed some reads, but regressed strict scene timing
+or hidden refill on the current `1118/1028` high and `1126/1025` low baseline.
+The next VISITOR3 swing is precomposed/background-owned payload data or a real
+deadline scheduler sidecar, not another manual setup segment.
 A data-only sector-alignment probe is also closed: spending `38957` bytes of
 pack slack to align the large late payloads cut modeled uncovered sectors
 `306 -> 294`, but shifted the measured CD phase and regressed VISITOR3 high/low
