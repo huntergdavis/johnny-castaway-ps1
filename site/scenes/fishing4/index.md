@@ -6,7 +6,30 @@ tag: 4
 slug: fishing4
 status: validated
 description: "FISHING.ADS scene 4: Johnny hooks a shark and gets pulled around the ocean like a water-skier behind a speedboat. Validated 2026-05-08."
+image: /assets/img/fishing4-ps1-shark.png
+image_alt: "FISHING 4 on PS1 at night: a shark fin cuts the water on the right edge of the frame, a fishing line connecting it to Johnny standing under the palm tree on the island."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/fishing4-ps1-shark.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="FISHING 4 on PS1 at night: a shark fin cuts the water on the right edge of the frame, a fishing line connecting it to Johnny standing under the palm tree on the island." />
+  <figcaption>
+    FISHING 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The hooked-shark beat: the fin is on the right edge of the
+    frame, the fishing line stretches across the open water back
+    to Johnny under the palm — the next beat drags him out like a
+    water-skier. FISHING 4 is also a <code>LEFT_ISLAND</code>
+    scene; the fgpilot path now derives that draw-offset from
+    <code>story_data.h</code> so the island baseline holds the
+    original ADS thread compensation.
+  </figcaption>
+</figure>
 
 Validated on PS1/DuckStation on 2026-05-01 after the fgpilot path was corrected to apply the original `LEFT_ISLAND` scene draw offset.
 
