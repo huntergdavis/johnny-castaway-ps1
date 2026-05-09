@@ -18,7 +18,7 @@ debugging artifacts became historical evidence.
 
 The visual stack has several layers:
 
-- A telemetry overlay drawn by the runtime for frame counters, pack state, resource state, and perf flags.
+- A [telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) drawn by the runtime for frame counters, pack state, resource state, and perf flags.
 - Headless DuckStation captures driven by the [regtest harness]({{ '/docs/regtest/' | relative_url }}).
 - Scripted PS1 controller routes driven by the [scripted input harness]({{ '/docs/scripted-input/' | relative_url }}), which can open menus, enter Freeplay, and drop screenshot markers without a human at the keyboard.
 - Frozen host references under [regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }}).

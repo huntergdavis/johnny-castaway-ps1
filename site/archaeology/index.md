@@ -342,7 +342,7 @@ attack-rate orientation. Each of those was its own afternoon.
 `JCPERF` / `JCPERF2` lines on the TTY. The level is set by
 `ps1PerfSetLevel(OFF / SUMMARY / DETAIL / DEBUG)`. Per-frame state
 that used to require visual debugging now also has a text breadcrumb
-trail. The visual telemetry overlay (5 panels) is still the right
+trail. The [visual telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) (5 panels) is still the right
 tool for per-frame state; the text logs are for setup and teardown.
 
 What's left is performance polish on a small set of high-leverage
