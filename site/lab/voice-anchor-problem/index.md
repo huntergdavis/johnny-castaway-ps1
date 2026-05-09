@@ -47,7 +47,7 @@ like a museum placard. The Lab sounds like a conference talk. The docs sound
 like a SaaS onboarding funnel. Nobody wants that. I certainly don't.
 
 So the voice guide exists. It is not public navigation. It is an internal
-tool, checked into `site/_includes/voice-guide.md`, read before new prose gets
+tool, checked into [`site/_includes/voice-guide.md`]({{ site.github_url }}/blob/main/site/_includes/voice-guide.md), read before new prose gets
 written.
 
 ## The Hunter shape
