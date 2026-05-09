@@ -370,7 +370,7 @@ overlays, input, pause menu.</p>
 because that’s what the directory was named when it was a pilot
 experiment that didn’t yet work. The name stuck. The project is
 gradually migrating it to <em>PS1 scene playback</em> in operator-facing
-docs. The internal name is in <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> and is going to
+docs. The internal name is in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">foreground_pilot.c</code></a> and is going to
 stay there until someone has time to rename two thousand lines of C.</p>
 
   <p>The first scene that worked, end to end, under this method was
@@ -436,7 +436,7 @@ System, Set Time / Date, and Set RNG Seed. It uses a custom embedded 8x8 ASCII f
 <code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in the scene-runtime context: the
 primitives accumulate but no pixels appear. POLY_F4 quads handle the
 dim and the panel chrome. User settings persist to a memory card save
-at <code class="language-plaintext highlighter-rouge">bu00:</code> through <code class="language-plaintext highlighter-rouge">memcard.c</code>; the persisted set covers sound mute,
+at <code class="language-plaintext highlighter-rouge">bu00:</code> through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/memcard.c"><code class="language-plaintext highlighter-rouge">memcard.c</code></a>; the persisted set covers sound mute,
 captions, holiday mode, ocean ambience, and the rest of the
 pause-menu toggles.</p>
 
