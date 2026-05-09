@@ -102,7 +102,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1805 words
+          ~7 min read · 1850 words
         </p>
       
       <hr class="rule" />
@@ -402,7 +402,15 @@ alphabetical.</li>
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/hardware-specs.md"><code class="language-plaintext highlighter-rouge">docs/ps1/hardware-specs.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/hardware-specs.md"><code class="language-plaintext highlighter-rouge">docs/ps1/hardware-specs.md</code></a> — original design doc.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/spi.c"><code class="language-plaintext highlighter-rouge">src/spi.c</code></a> —
+the project’s own SPI driver (250 Hz Timer 2 polling, <code class="language-plaintext highlighter-rouge">tx_len=5</code>
+for DuckStation parity). Carries the fix the
+<a href="/johnny-castaway-ps1/lab/two-day-spi-bug/">two-day SPI bug retrospective</a>
+walks through.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a> —
+bounded <code class="language-plaintext highlighter-rouge">JCPERF</code>/<code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatters; the safe substitute
+for per-frame <code class="language-plaintext highlighter-rouge">printf()</code> in timing-sensitive paths.</li>
 </ul>
 
   </div>
