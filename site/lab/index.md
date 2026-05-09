@@ -50,11 +50,16 @@ most feed readers find it automatically.
 
 ## Contents
 
-Fifteen feature articles, in reverse chronological order. The newest
+Sixteen feature articles, in reverse chronological order. The newest
 sit on top; the foundational methodology pieces sit underneath. Each
 card carries the date it landed.
 
 <ul class="doc-grid">
+  <li>
+    <p class="lab-date"><time datetime="2026-05-08">2026-05-08</time></p>
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">The chapter-select grind</a>
+    <p>Walking all 63 packs on hardware again to ship custom on-PS1 chapter-select thumbnails — and the surprising number of caption-mismaps the loop caught in the existing scene-page metadata. The validation bar guards pixel drift, not caption drift; this loop reconciled the prose against the discs that play.</p>
+  </li>
   <li>
     <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>
     <a href="{{ '/lab/v081-mary4-freeze/' | relative_url }}">v0.8.1: what the soak found that the matrix didn't</a>
