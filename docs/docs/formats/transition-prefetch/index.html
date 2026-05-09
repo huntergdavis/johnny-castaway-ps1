@@ -102,7 +102,7 @@
       <h1>Transition prefetch schema</h1>
       <p class="subtitle">The post-processed planner that says which pack to start streaming next, given the current pack and the analyzer's story-order graph.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1317 words
+          ~5 min read · 1357 words
         </p>
       
       <hr class="rule" />
@@ -145,7 +145,7 @@ at
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md"><code class="language-plaintext highlighter-rouge">TRANSITION_PREFETCH_SCHEMA.md</code></a>.</p>
 
 <p>This file documents the post-processed planning artifacts generated from
-<code class="language-plaintext highlighter-rouge">scene_analysis_output_2026-03-17.json</code>. It exists so transition and
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/generated/scene_analysis_output_2026-03-17.json"><code class="language-plaintext highlighter-rouge">scene_analysis_output_2026-03-17.json</code></a>. It exists so transition and
 prefetch studies target the same field names the manifest uses.</p>
 
 <p>If you paid for this, you were cheated. Open source and free.</p>
@@ -372,8 +372,13 @@ summarizer and current prefetch tuning state.</li>
 <h2 id="source-on-github">Source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md</code></a>
+— canonical schema doc; the field tables above are derived from it.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/generated/scene_analysis_output_2026-03-17.json"><code class="language-plaintext highlighter-rouge">docs/ps1/research/generated/scene_analysis_output_2026-03-17.json</code></a>
+— input file the transition + prefetch planning artifacts above
+were generated from; named in the page intro.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
+— runtime consumer; the prefetch decision logic lives here.</li>
 </ul>
 
   </div>
