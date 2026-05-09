@@ -72,7 +72,10 @@ optional and reachable with **Start**.
 
 Inside the pause menu you can: enter or exit Freeplay, choose a
 Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits,
-Visitors, Activities, or Misc & Suzy), mute sound, toggle closed
+Visitors, Activities, or Misc & Suzy), open the
+[Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
+chapter-select grid to jump straight to any of the 63 scenes (each
+with an on-PS1-captured thumbnail), mute sound, toggle closed
 captions, force day/night, tide, raft, and holidays, advance to
 the next scene, set the in-game date, move the island anchor, set
 the RNG seed, and open the sound test.
