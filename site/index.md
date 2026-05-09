@@ -195,9 +195,10 @@ with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
 [pause menu]({{ '/docs/pause-menu/' | relative_url }}) reachable
 with Start (the original had none), with sub-screens for Scene
-Set, Freeplay Options, Controls, World Options, Holidays, Set
-Island Position, Accessibility, Sound Test, System, Set Time/Date,
-and Set RNG Seed. An optional
+Set, Scene Explorer (the chapter-select grid with on-PS1-captured
+thumbnails for every scene), Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound Test,
+System, Set Time/Date, and Set RNG Seed. An optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
 on a dedicated SPU voice. [Frog-clock loading transitions]({{ '/docs/glossary/#frog-clock' | relative_url }}) between
 scene swaps. The website
