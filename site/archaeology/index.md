@@ -291,7 +291,7 @@ image, plays every scene the original game routed pixel-perfect with
 synced SFX, and idles cleanly through long randomized sessions. The
 PS1 executable is around 208 KiB after the legacy ADS/TTM/FG1 runtime
 paths were removed; the rest of the disc is FG2/FGP3 foreground pack
-payload, the title raw, palette tables, the ocean ambience VAG, and
+payload, the title raw, palette tables, the [ocean ambience]({{ '/docs/glossary/#ocean-ambience' | relative_url }}) VAG, and
 the resource map. The full FG2 corpus — 126 packs covering every
 scene's high-tide and low-tide variants — is routed onto the CD at
 release; what gets loaded at runtime is whichever the screensaver

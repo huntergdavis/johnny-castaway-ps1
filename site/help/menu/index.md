@@ -157,7 +157,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 
 <section class="menu-shot" id="accessibility">
 <h2>Accessibility</h2>
-<p>Captions, sound, ocean ambience, Sound Test, and Back.</p>
+<p>Captions, sound, <a href="{{ '/docs/glossary/#ocean-ambience' | relative_url }}">ocean ambience</a>, Sound Test, and Back.</p>
 <p class="menu-route"><strong>Capture route:</strong> Start, Down, Down, Down, Down, Cross</p>
 <figure>
   <img src="{{ '/assets/img/help/menu/accessibility.png' | relative_url }}" alt="Captured PS1 screenshot of the Accessibility screen." width="640" height="448" loading="lazy" />
