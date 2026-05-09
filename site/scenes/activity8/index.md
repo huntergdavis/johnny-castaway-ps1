@@ -7,7 +7,30 @@ slug: activity8
 status: validated
 last_verified: "2026-05-05"
 description: "ACTIVITY.ADS scene 8: Johnny takes a bath, then walks behind the palm tree to hide his nakedness. Validated 2026-05-08."
+image: /assets/img/activity8-ps1-bath.png
+image_alt: "ACTIVITY 8 on PS1 at night: Johnny stands at the shoreline on the left side of the island, mid-bath in the surf, before he walks behind the palm to dress."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity8-ps1-bath.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="ACTIVITY 8 on PS1 at night: Johnny stands at the shoreline on the left side of the island, mid-bath in the surf." />
+  <figcaption>
+    ACTIVITY 8 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny is mid-bath at the shoreline; the next beat walks him
+    behind the palm to dress. The on-PS1 loop also overturned the
+    original
+    <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
+    "reads a book upside-down" guess for this slot — that gag is
+    <a href="{{ '/scenes/activity7/' | relative_url }}">ACTIVITY 7</a>,
+    not here.
+  </figcaption>
+</figure>
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
 high/low packs through the no-stitch fast path with frame-wide keyed
