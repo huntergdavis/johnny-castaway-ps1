@@ -69,6 +69,10 @@ and `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-tail-rerun/202605
 The follow-up v208 frame `116` copy-only hull probe is rejected: it saved
 `9102` high active bytes (`14226 -> 5124`) with fixed footprint/LBA, but
 regressed high to `1427`, `1114/1029`, overrun `85`, and blocking `114`.
+The follow-up v209 frame `114` copy-only hull probe is also rejected: it saved
+`2567` high active bytes (`7171 -> 4604`) with fixed footprint/LBA, but
+regressed high to `1418`, `1105/1029`, and overrun `76` with blocking flat at
+`106`.
 
 Latest rejected VISITOR3 v183-v192 probes: low-tide precursor motion-copy
 expansion, C-side fastspan row copies, terminal zero trimming, compact-origin
@@ -97,7 +101,9 @@ runtime narrow-upload paths crossed the PS-EXE bucket or failed before
 `JCPERF2`, even though the host-side x-band model remains useful. The v208
 frame `116` copy-only hull retry closes the largest remaining precursor hull
 byte signal for high tide too: removing cleanup rows still converted bytes into
-visible cadence debt. The next
+visible cadence debt. The v209 frame `114` retry repeats the pattern with a
+smaller copy footprint, so adjacent precursor hull rewrites are closed unless
+the payload format changes. The next
 VISITOR3 swing must either change the data shape enough to reduce both CD and
 CPU, or add deadline-aware scheduling without growing the hot executable bucket.
 
