@@ -102,7 +102,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1167 words
+          ~5 min read · 1289 words
         </p>
       
       <hr class="rule" />
@@ -372,31 +372,53 @@ for the routing step.</p>
   </tbody>
 </table>
 
-<p>The clean build path inside <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code>:</p>
+<p>What <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code> ultimately invokes is two
+container shells. The first is <code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> (executable +
+ELF), the second is <code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code> (CD image). Stripped of
+the wrapper plumbing, the commands inside each container are:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
-    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; rm -rf build-ps1"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># scripts/build-ps1.sh — clean rebuild of jcreborn.exe</span>
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"rm -rf /project/build-ps1"</span>
 
 docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
-    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkdir build-ps1 &amp;&amp; cd build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
-        cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .. &amp;&amp; make"</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"
+        cmake -G 'Unix Makefiles' </span><span class="se">\</span><span class="s2">
+            -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY </span><span class="se">\</span><span class="s2">
+            -S /project -B /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
+        cmake --build /project/build-ps1"</span>
 
+<span class="c"># scripts/make-cd-image.sh — bundle the build + assets into jcreborn.bin/.cue</span>
 docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
-    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkpsxiso cd_layout.xml"</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"
+        cd /project &amp;&amp; </span><span class="se">\</span><span class="s2">
+        mkpsxiso -y /project/config/ps1/cd_layout.xml"</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is the third step on its own and is fast enough to run
-between scene edits.</p>
+<p>The cmake invocation does not pass <code class="language-plaintext highlighter-rouge">-DCMAKE_TOOLCHAIN_FILE</code> because
+<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> resolves the PSn00bSDK toolchain via the
+<code class="language-plaintext highlighter-rouge">PSN00BSDK</code> environment variable that the Dockerfile sets to
+<code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/PSn00bSDK-0.24-Linux</code>. The <code class="language-plaintext highlighter-rouge">mkpsxiso</code> invocation needs
+the <code class="language-plaintext highlighter-rouge">-y</code> flag (overwrite) and the full path to <code class="language-plaintext highlighter-rouge">cd_layout.xml</code>
+because the layout file lives under <code class="language-plaintext highlighter-rouge">config/ps1/</code>, not the project
+root.</p>
+
+<p><code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is the third step on its own and is fast enough to
+run between scene edits.</p>
 
 <h2 id="common-breakages">Common breakages</h2>
 
-<p><strong>“Could not find toolchain file”</strong> — PSn00bSDK didn’t install correctly in
-the container. Confirm <code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake</code>
-exists in the image:</p>
+<p><strong>“Could not find toolchain file”</strong> or <strong>“PSN00BSDK environment
+variable not set”</strong> — PSn00bSDK didn’t install correctly in the
+container. Confirm both the env var and the SDK cmake module exist
+in the image:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    <span class="nb">ls</span> /opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+    bash <span class="nt">-c</span> <span class="s1">'echo "$PSN00BSDK" &amp;&amp; ls "$PSN00BSDK/lib/libpsn00b/cmake/sdk.cmake"'</span>
 </code></pre></div></div>
+
+<p>Expected output: <code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/PSn00bSDK-0.24-Linux</code> followed by a
+listing of <code class="language-plaintext highlighter-rouge">sdk.cmake</code>.</p>
 
 <p><strong>“undefined reference to <code class="language-plaintext highlighter-rouge">SpuInit</code>“</strong> — A new audio path needs <code class="language-plaintext highlighter-rouge">psxspu</code> in
 the link list. Audio code that doesn’t link will surface as missing
