@@ -307,15 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.4% over target / 99.6% target speed** (`0.3962%`
-exact public over target / `99.6166%` exact public target speed); the raw
-signed optimization matrix is `-0.3723%` / `100.4004%`.
+the public average is **+0.4% over target / 99.6% target speed** (`0.3930%`
+exact public over target / `99.6194%` exact public target speed); the raw
+signed optimization matrix is `-0.3755%` / `100.4032%`.
 
 ## Scene Battle Card
 
 As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-high-reanchor-f125-v207`,
+`visitor3-high-setup-prime288-v213`,
 `visitor3-low-segment281-305-v204`,
 `visitor3-drop-unused-motion-dispatch-v197`,
 `activity9-low-compact-fgp3-v174`,
@@ -408,7 +408,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-high-reanchor-f125-v207`,
+rows now use `visitor3-high-setup-prime288-v213`,
 `visitor3-low-segment281-305-v204`,
 `visitor3-drop-unused-motion-dispatch-v197`,
 `johnny1-compact-fgp3-v173`,
@@ -879,7 +879,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3962% over target / 99.6166% target speed, with several
+  public average is now +0.3930% over target / 99.6194% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

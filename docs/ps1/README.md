@@ -23,26 +23,25 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3962%` over target / `99.6166%` target speed across all 126
+`+0.3930%` over target / `99.6194%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
-low/high setup-segment and high frame-126/frame-125 re-anchor follow-ups; the raw signed
-optimization matrix is
-`-0.3723%` / `100.4004%`.
-That is about `17.00` public over-target points removed and `12.52` public
+low/high setup-segment, high frame-126/frame-125 re-anchor, and high
+setup-prime follow-ups; the raw signed optimization matrix is
+`-0.3755%` / `100.4032%`.
+That is about `17.01` public over-target points removed and `12.52` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-high-reanchor-f125-v207`, adds a
-high-only frame `125` re-anchor payload on top of the motion-copy baseline,
-the v206 high frame `126` re-anchor, the v205 high setup segment for sectors
-`277..293`, and the v204 low segment for sectors `281..305`. It preserves both
-`1555450` byte pack footprints,
-later offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket
-while keeping high `1101/1030` and low `1102/1032`. It cuts high active payload
-`511690 -> 496661`, blocking `107 -> 106`, and loop-read time `107 -> 106`;
-low remains on the v204 profile with blocking `124`, loop-read time `131`, and
-due misses `22`.
+The latest VISITOR3 follow-up, `visitor3-high-setup-prime288-v213`, expands
+the high-only setup-prime cap from `232 KiB` to `288 KiB` on top of the
+motion-copy/re-anchor/setup baseline. It preserves both `1555450` byte pack
+footprints, later offsets, fixed LBAs `22472/23232`, and the `215040` byte
+PS-EXE bucket while moving high `1101/1030 -> 1099/1032`. It cuts overrun
+`71 -> 67`, blocking `106 -> 96`, loop reads `20 -> 17`, loop-read time
+`106 -> 96`, and due misses `20 -> 17`, with the accepted setup tradeoff
+`scene_vb 1414 -> 1423`. Low remains on the v204 profile at `1102/1032` with
+blocking `124`, loop-read time `131`, and due misses `22`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

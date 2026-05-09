@@ -433,15 +433,15 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3962%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6166%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3723%</code> / <code class="language-plaintext highlighter-rouge">100.4004%</code>.</p>
+the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3930%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6194%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3755%</code> / <code class="language-plaintext highlighter-rouge">100.4032%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">visitor3-high-reanchor-f125-v207</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-setup-prime288-v213</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-segment281-305-v204</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-drop-unused-motion-dispatch-v197</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>,
@@ -534,7 +534,7 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-reanchor-f125-v207</code>,
+rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-setup-prime288-v213</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-segment281-305-v204</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-drop-unused-motion-dispatch-v197</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
@@ -1007,7 +1007,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3962% over target / 99.6166% target speed, with several
+public average is now +0.3930% over target / 99.6194% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

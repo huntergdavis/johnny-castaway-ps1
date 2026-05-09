@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3962%` public over target / `99.6166%` public target speed after the MARY3,
+`+0.3930%` public over target / `99.6194%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v207. The raw signed optimization matrix is `-0.3723%` over target /
-`100.4004%` target speed.
+v213. The raw signed optimization matrix is `-0.3755%` over target /
+`100.4032%` target speed.
 
 ## Headline
 
@@ -143,6 +143,14 @@ controls remain flat; the broad gate was split because an inconclusive harness
 `137` killed JOHNNY1 before metrics, then the tail rerun passed the remaining
 JOHNNY1/ACTIVITY9/FISHING1 controls.
 
+The follow-up `visitor3-high-setup-prime288-v213` expands only the high-tide
+setup-prime cap from `232 KiB` to `288 KiB`. It trades high setup time
+(`scene_vb 1414 -> 1423`) for active-loop timing relief:
+`1101/1030 -> 1099/1032`, overrun `71 -> 67`, blocking `106 -> 96`,
+loop reads `20 -> 17`, loop-read time `106 -> 96`, and due misses `20 -> 17`.
+Low cap probes at `288/256/240 KiB` were rejected because they added hidden
+refill or visible cadence debt, so low remains on v204 at `1102/1032`.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -170,6 +178,8 @@ JOHNNY1/ACTIVITY9/FISHING1 controls.
 - VISITOR3 high frame-125 split broad controls:
   `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-broad-norequire/20260509-075210-1829320/`
   plus `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-tail-rerun/20260509-075859-1871481/summary.json`.
+- VISITOR3 high setup-prime v213 broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-high288-low208-v213-broad/20260509-093115-2397654/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
