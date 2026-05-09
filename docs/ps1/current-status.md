@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack perf follow-ups through v237;
+motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack perf follow-ups through v238;
 all 63 scenes remain validated, and the public headless battle card is
-`+0.3697%` over target / `99.6402%` target speed).
+`+0.3574%` over target / `99.6515%` target speed).
 
 ## Overall
 
@@ -195,23 +195,25 @@ the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
 shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
 `125`.
 It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
-improves high to `1089/1035`, moves low to `1088/1035`, and keeps high/low
+improves high to `1075/1037`, moves low to `1088/1035`, and keeps high/low
 persistent setup segments for sectors `277..293` and `281..305` plus the v214
 high `320 KiB` setup-prime cap, the v216 guarded low segment `150..174`, and
 the v227 low frame-125/frame-126 resident re-anchor plus v234 frame-118 and
-v237 frame-127 resident copies inside that segment. Blocking is now `83/95`,
-loop-read time is `83/102`, and due misses are `15/16`; the accepted setup/data
-tradeoffs raise high total `scene_vb 1405 -> 1420` and low total
+v237 frame-127 resident copies inside that segment, then compacts high frames
+`117..130` unchanged into the existing high setup-prime resident window.
+Blocking is now `59/95`,
+loop-read time is `59/102`, and due misses are `11/16`; the accepted setup/data
+tradeoffs leave high total at `scene_vb=1406` and low total
 `1408 -> 1414` while reducing
 active-loop debt. The current
 runtime baseline keeps all broad canaries flat while creating code-layout
 headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3697%` over target / `99.6402%` target speed
+The public battle card is now `+0.3574%` over target / `99.6515%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.03`
-public over-target points and added about `12.54` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.04`
+public over-target points and added about `12.55` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -236,8 +238,9 @@ and high-only re-anchored frames `127`/`126`/`125`, plus high/low persistent set
 for sectors `277..293` and `281..305`, the v214 high setup-prime cap
 expansion, the v216 guarded low segment `150..174`, and the v227 low resident
 frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
-copies. VISITOR3 high is now
-`1089/1035` with `blocking_vb=83`; low is
+copies, plus the v238 high frame-127/frame-130 resident-copy compaction.
+VISITOR3 high is now
+`1075/1037` with `blocking_vb=59`; low is
 `1088/1035` with `blocking_vb=95`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now

@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3697%` public over target / `99.6402%` public target speed after the MARY3,
+`+0.3574%` public over target / `99.6515%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v237. The raw signed optimization matrix is `-0.3988%` over target /
-`100.4240%` target speed.
+v238. The raw signed optimization matrix is `-0.4111%` over target /
+`100.4353%` target speed.
 
 ## Headline
 
@@ -28,8 +28,8 @@ v237. The raw signed optimization matrix is `-0.3988%` over target /
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `17.03` public over-target points and added
-  about `12.54` public target-speed points.
+  methodology has removed about `17.04` public over-target points and added
+  about `12.55` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
   `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
@@ -56,12 +56,14 @@ v237. The raw signed optimization matrix is `-0.3988%` over target /
   persistent setup segments for sectors `277..293` and `281..305`, the high
   `320 KiB` setup-prime cap, the guarded low second segment `150..174`, and
   the low frame-125/frame-126 resident re-anchor plus the low frame-118
-  resident-copy payload plus the low frame-127 resident-copy payload.
+  resident-copy payload plus the low frame-127 resident-copy payload, then
+  compacts high frames `117..130` unchanged into the existing high setup-prime
+  resident window.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
-  `1118/1028 -> 1089/1035`, cuts blocking `150 -> 83`, loop reads `27 -> 15`,
-  and due misses `26 -> 15`; low moves `1126/1025 -> 1088/1035`, cuts blocking
+  `1118/1028 -> 1075/1037`, cuts blocking `150 -> 59`, loop reads `27 -> 11`,
+  and due misses `26 -> 11`; low moves `1126/1025 -> 1088/1035`, cuts blocking
   `170 -> 95`, loop reads `31 -> 17`, and due misses `29 -> 16`.
 
 ## Follow-Up Closure
@@ -195,6 +197,14 @@ loop improves `1091/1035 -> 1088/1035`, overrun drops `56 -> 53`, blocking
 drops `103 -> 95`, loop reads drop `18 -> 17`, loop-read time drops
 `110 -> 102`, due misses drop `17 -> 16`, and hidden refill remains `0`.
 
+The follow-up `visitor3-high-f127-f130-resident-copy-v238` compacts high
+frames `117..130` unchanged into the already accepted `320 KiB` setup-prime
+resident window. The active loop improves `1089/1035 -> 1075/1037`, overrun
+drops `54 -> 38`, blocking drops `83 -> 59`, loop reads drop `15 -> 11`,
+loop-read time drops `83 -> 59`, due misses drop `15 -> 11`, and hidden refill
+remains `0`. Entry geometry, payload bytes, pack size, LBA, sound offset, and
+the `215040` byte PS-EXE bucket all stay fixed.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -240,6 +250,10 @@ drops `103 -> 95`, loop reads drop `18 -> 17`, loop-read time drops
   `scratch/ps1-perf-iterate/visitor3-low-f127-resident-copy-v237-broad/20260509-140440-3961993/summary.json`.
 - VISITOR3 low frame-127 resident-copy current-control drift check:
   `scratch/ps1-perf-iterate/visitor3-low-f127-resident-copy-v237-current-control/20260509-141713-4034325/summary.json`.
+- VISITOR3 high frame-127/frame-130 resident-copy focused gate:
+  `scratch/ps1-perf-iterate/visitor3-high-f127-f130-resident-copy-v238-focused/20260509-144443-4186029/summary.json`.
+- VISITOR3 high frame-127/frame-130 resident-copy broad regression gate:
+  `scratch/ps1-perf-iterate/visitor3-high-f127-f130-resident-copy-v238-broad-regression/20260509-145507-53698/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

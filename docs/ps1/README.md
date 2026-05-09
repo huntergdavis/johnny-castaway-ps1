@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.4% public over target / 99.6% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.4% public over target / 99.7% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,27 +23,27 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3697%` over target / `99.6402%` target speed across all 126
+`+0.3574%` over target / `99.6515%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
 low/high setup-segment, high frame-126/frame-125 re-anchor, and high
 setup-prime plus guarded low second-segment and low frame-125/frame-126
-resident re-anchor plus frame-118/frame-127 resident-copy follow-ups; the raw
-signed optimization matrix is `-0.3988%` / `100.4240%`.
-That is about `17.03` public over-target points removed and `12.54` public
+resident re-anchor plus low frame-118/frame-127 resident-copy and high
+frame-127/frame-130 resident-copy follow-ups; the raw signed optimization
+matrix is `-0.4111%` / `100.4353%`.
+That is about `17.04` public over-target points removed and `12.55` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-low-f127-resident-copy-v237`,
-compacts the already accepted `150..174` low resident segment, moves low frames
-`125/126` earlier unchanged, and copies frame `127` unchanged into the freed
-resident tail. It preserves both `1555450` byte pack footprints, later offsets,
-fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while moving low
-`1091/1035 -> 1088/1035`. It cuts overrun `56 -> 53`, blocking `103 -> 95`,
-loop reads `18 -> 17`, loop-read time `110 -> 102`, and due misses `17 -> 16`
-while keeping hidden refill at `0`.
-High remains on the v214 setup-prime profile at `1089/1035`, `blocking_vb=83`,
-loop-read time `83`, and due misses `15`.
+The latest VISITOR3 follow-up, `visitor3-high-f127-f130-resident-copy-v238`,
+compacts high frames `117..130` unchanged into the existing `320 KiB`
+setup-prime resident window. It preserves both `1555450` byte pack footprints,
+later offsets, fixed LBAs `22472/23232`, sound offsets, and the `215040` byte
+PS-EXE bucket while moving high `1089/1035 -> 1075/1037`. It cuts overrun
+`54 -> 38`, blocking `83 -> 59`, loop reads `15 -> 11`, loop-read time
+`83 -> 59`, and due misses `15 -> 11` while keeping hidden refill at `0`.
+Low remains on the v237 resident-copy profile at `1088/1035`,
+`blocking_vb=95`, loop-read time `102`, and due misses `16`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

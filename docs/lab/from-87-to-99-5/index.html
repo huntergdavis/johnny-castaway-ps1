@@ -190,7 +190,7 @@ followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
 the VISITOR3 and WALKSTUF1 outliers. The current branch at
 <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is at <strong>-0.3% over target /
-99.6% target speed</strong>, with
+99.7% target speed</strong>, with
 roughly <strong>17.7 percentage points</strong> of over-target gap closed and
 about <strong>13.2 target-speed points</strong> added. This article is what
 that loop actually looked like.</p>
@@ -283,12 +283,12 @@ that loop actually looked like.</p>
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.6%</code> target speed.
+<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
 The matrix-wide aggregate is now slightly under target – the remaining
 work is in a small number of high-leverage rows that still slip.
 As of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> there are no red or yellow rows left on the
 <a href="../../perf/">battle card</a>. VISITOR3 high/low are both orange
-at roughly <code class="language-plaintext highlighter-rouge">95.0%</code>/<code class="language-plaintext highlighter-rouge">95.1%</code> after the high setup-prime lane and the low
+at roughly <code class="language-plaintext highlighter-rouge">96.5%</code>/<code class="language-plaintext highlighter-rouge">95.1%</code> after the high setup-prime/resident-copy lane and the low
 resident-copy compaction lane. The fifteen orange rows
 (<code class="language-plaintext highlighter-rouge">95</code>–<code class="language-plaintext highlighter-rouge">99%</code>) include WALKSTUF1 at <code class="language-plaintext highlighter-rouge">95.6%</code>/<code class="language-plaintext highlighter-rouge">95.8%</code> after its v0.8.3
 compact-FGP3/v4 pass, BUILDING2 high/low at <code class="language-plaintext highlighter-rouge">97.6%</code>, VISITOR5 high/low,
@@ -299,7 +299,7 @@ timing and selective-preprocessing work. The optimization plan at
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.6%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 

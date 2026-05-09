@@ -102,7 +102,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1847 words
+          ~7 min read · 1852 words
         </p>
 
       <hr class="rule" />
@@ -119,7 +119,7 @@ holiday, raft-stage):
 <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the current release: every row in the live
 per-scene ledger is signed off, all 126 high/low scene variants are routed,
 and the headless timing-bearing average is +0.4% over target /
-99.6% target speed. The current
+99.7% target speed. The current
 post-release BUILDING1 compact-FGP3/no-autoprime follow-up moves both
 BUILDING1 tides into the green band, and the newer VISITOR5 high-only compact
 FGP3/no-autoprime follow-up cuts that high-tide overrun without moving low
@@ -134,12 +134,12 @@ compact-FGP3/v4 pass moves low to <code class="language-plaintext highlighter-ro
 reads <code class="language-plaintext highlighter-rouge">59 -&gt; 47</code>, and moves the row into green. The latest WALKSTUF3 low
 compact-FGP3/v4 pass moves low to
 <code class="language-plaintext highlighter-rouge">2310/2295</code>, cuts blocking <code class="language-plaintext highlighter-rouge">41 -&gt; 26</code>, and moves the row into green. The
-latest VISITOR3 pass moves high to <code class="language-plaintext highlighter-rouge">1089/1035</code>, moves low to <code class="language-plaintext highlighter-rouge">1088/1035</code>,
-cuts high blocking <code class="language-plaintext highlighter-rouge">114 -&gt; 83</code> and low blocking <code class="language-plaintext highlighter-rouge">139 -&gt; 95</code>, and trades
+latest VISITOR3 pass moves high to <code class="language-plaintext highlighter-rouge">1075/1037</code>, moves low to <code class="language-plaintext highlighter-rouge">1088/1035</code>,
+cuts high blocking <code class="language-plaintext highlighter-rouge">114 -&gt; 59</code> and low blocking <code class="language-plaintext highlighter-rouge">139 -&gt; 95</code>, and trades
 setup time for lower active-loop CD pressure through high/low persistent
 segments, high-only re-anchor payloads, the guarded low second setup segment,
 the low frame-125/frame-126 resident re-anchor, and the low frame-118/frame-127
-resident copies. The
+resident copies plus high frame-127/frame-130 resident-copy compaction. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
@@ -301,7 +301,7 @@ harness output is the SoT for build-and-boot regressions.</p>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
 loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>
-has the headless baseline at slightly under target — <code class="language-plaintext highlighter-rouge">99.6%</code>
+has the headless baseline at slightly under target — <code class="language-plaintext highlighter-rouge">99.7%</code>
 target speed across all 126 timing-bearing rows after the v0.8.2 + v0.8.3
 VISITOR3 + WALKSTUF1 outlier closures, the missing-scene timing refresh, the
 MARY3 guarded prefetch-preserve pass, the BUILDING1 compact-FGP3/no-autoprime
@@ -309,7 +309,7 @@ follow-up, the VISITOR5 high-only compact-FGP3/no-autoprime follow-up, the
 BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
 compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
 compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
-plus high-only re-anchor passes.
+plus high-only re-anchor/resident-copy passes.
 The bring-up loop remains in
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a>.</li>
   <li><strong>Scene-by-scene FG2 routing.</strong> All 63 scenes have generated
