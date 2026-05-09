@@ -6,7 +6,29 @@ tag: 5
 slug: fishing5
 status: validated
 description: "FISHING.ADS scene 5: Johnny goes fishing, gets eaten by a shark, then spat back out. Validated 2026-05-08."
+image: /assets/img/fishing5-ps1-shark-bite.png
+image_alt: "FISHING 5 on PS1 at night: a large grinning shark sits on the right side of the island mid-bite, with what is left of Johnny's gear in its jaws."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/fishing5-ps1-shark-bite.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="FISHING 5 on PS1 at night: a large grinning shark sits on the right side of the island mid-bite, with what is left of Johnny's gear in its jaws." />
+  <figcaption>
+    FISHING 5 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The shark has eaten Johnny whole and is mid-pose on the right
+    side of the island; the next beat spits him back out — the
+    punchline the original audit's "eaten by a shark" line missed.
+    The validated pack path replays the foreground ledger without
+    the final-surface visibility mask, so the shark pixels survive
+    instead of dropping to outline-only frames.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-02 after the shark interaction was rebuilt with a
 full-frame keyed current-ledger overlay for both tide packs. The final
