@@ -7,7 +7,29 @@ slug: walkstuf3
 status: validated
 last_verified: "2026-05-04"
 description: "WALKSTUF.ADS scene 3: Johnny jogs around the island. Validated 2026-05-08."
+image: /assets/img/walkstuf3-ps1-jog.png
+image_alt: "WALKSTUF 3 on PS1 at night: Johnny mid-stride on the left side of the island, jogging in front of the palm tree."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/walkstuf3-ps1-jog.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="WALKSTUF 3 on PS1 at night: Johnny mid-stride on the left side of the island, jogging in front of the palm tree." />
+  <figcaption>
+    WALKSTUF 3 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny mid-stride; the exercise-loop gag. The
+    <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
+    "jogs around the island" line was originally attached to WALKSTUF 1 —
+    on-PS1 playback showed WALKSTUF 1 is actually the yacht-party-and-
+    pass-out beat, and the jog gag belongs here. See the
+    <a href="{{ '/faq/' | relative_url }}">FAQ Q on caption-vs-scene-title divergence</a>.
+  </figcaption>
+</figure>
 
 Validated 2026-05-04. Visual + audible signoff on commit
 `f2519a0c2`; high-tide nighttime route, packs `WALK3.FG2` /
