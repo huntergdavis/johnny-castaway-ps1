@@ -251,6 +251,15 @@ caps for WALKSTUF1; retry only with generated scheduler ownership,
 frame/range-specific direct-stage policy, or a pack/data-shape reduction that
 lowers refill cost first.
 
+The first hand-coded frame/range follow-up is also closed. Forcing WALKSTUF1
+high sector range `178..194` out of the exact-min-slack direct-stage shortcut
+and into the retained-window path reduced hidden refill (`prefetch_overrun_vb
+32 -> 26`) but regressed the user-facing loop: `1491 -> 1495`, target-relative
+overrun `65 -> 68`, blocking `85 -> 95`, reads `69 -> 70`, and due misses
+`13 -> 14`. Do not retry this as another local source deny-list; the next
+range-specific attempt needs generated scheduler ownership/cost metadata that
+can decide when the grouped read is actually hidden.
+
 Current WALKSTUF1 preprocess footprint gate: the default selective x-band
 upload-ready model now has compact-pack zero-tail budget, but it remains unsafe
 as a raw append. The old PAL4/FGP2 packs had only `1` byte of zero-tail slack;
@@ -1720,6 +1729,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low no-direct-stage branch | Do not promote as a broad scene-name check. It improves low visible metrics (`1604 -> 1601`, `blocking_vb 271 -> 214`, `due_misses 50 -> 34`) but regresses hidden refill (`prefetch_overrun_vb 54 -> 79`) and crosses the PS-EXE bucket. Keep the signal; retry only with a narrower direct-stage threshold or generated scheduler metadata. |
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
+| WALKSTUF1 high direct-stage deny range `178..194` | Do not promote or retry as a hand-coded range policy. It improved hidden refill (`32 -> 26`) but regressed high `loop_vb 1491 -> 1495`, overrun `65 -> 68`, blocking `85 -> 95`, loop reads `69 -> 70`, and due misses `13 -> 14`. Treat this as proof that local range deny-lists still need generated scheduler ownership, not another scalar or source-table tweak. |
 | WALKSTUF1 low read group `297..313` with `minSlack=8` | Do not promote or retry as a hand table. The safe slack guard prevented the group from firing (`group_hits=0`), while the source branch still shifted low target enough to regress overrun by one VBlank. WALKSTUF1 read clusters need generated scheduler metadata, not another hot source-table branch. |
 | WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. The current compact FGP3/v4 packs now expose `611305` zero-tail bytes and can fit a `609192` byte budgeted x-band subset for `39` frames with `1991904` modeled upload bytes saved, but raw foreground-only safety still reports `0` selected draw-covered x-band bytes and `0` all-draw-covered selected frames. Compact slack is a byte budget, not a safety proof; retry only with safe background-owned/precomposed pixels, ownership metadata, generated scheduler ownership, or MoveImage-safe motion data. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
