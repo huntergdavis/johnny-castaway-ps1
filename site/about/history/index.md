@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.3-ps1
+eyebrow: 2025-10 to v0.8.4-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.3-ps1.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline and the v0.8.4-ps1 chapter-select-thumbnail reconciliation.
 ---
 
 <details class="page-toc" markdown="1">
@@ -386,11 +386,18 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
-- Latest performance release: **`v0.8.3-ps1`** — promoted the
+- Latest content release: **`v0.8.4-ps1`** — custom on-PS1 thumbnails
+  for all 63 chapter-select grid slots, with scene titles and bodies
+  reconciled against the on-PS1 packs. The earlier caption-mapping
+  audit got several scenes mismapped (boot / octopus / coconut-plane /
+  jog) — corrected from direct on-PS1 observation. New 5-surface
+  helper at `scripts/apply-scene-correction.py`. No perf or pack
+  content changed.
+- Previous performance release: **`v0.8.3-ps1`** — promoted the
   WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
   bearing rows now average slightly under target at
   `{{ site.release.perf_target_speed_pct }}%` target speed.
-- Previous performance release: **`v0.8.2-ps1`** — promoted the
+- Earlier performance release: **`v0.8.2-ps1`** — promoted the
   VISITOR3 guarded-read path and kept the 63-scene validation bar
   intact while the headless battle card stayed near target.
 - Latest stability release: **`v0.8.1-ps1`** — clean-rect
