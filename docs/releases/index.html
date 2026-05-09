@@ -159,22 +159,22 @@ drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; lo
 MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
 VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack
-passes through v234, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3720%</code> public
-over target / <code class="language-plaintext highlighter-rouge">99.6381%</code> public target speed; the raw signed CSV is
-<code class="language-plaintext highlighter-rouge">-0.3965%</code> / <code class="language-plaintext highlighter-rouge">100.4219%</code> for
+passes through v237, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3697%</code> public
+over target / <code class="language-plaintext highlighter-rouge">99.6402%</code> public target speed; the raw signed CSV is
+<code class="language-plaintext highlighter-rouge">-0.3988%</code> / <code class="language-plaintext highlighter-rouge">100.4240%</code> for
 optimization work.</li>
   <li><strong>VISITOR3 motion-copy payloads are promoted.</strong> Frames <code class="language-plaintext highlighter-rouge">119..123</code> in both
 VISITOR3 tides, high-tide frame <code class="language-plaintext highlighter-rouge">115</code>, shared frames <code class="language-plaintext highlighter-rouge">118</code>/<code class="language-plaintext highlighter-rouge">124</code>, and
 high-only frame <code class="language-plaintext highlighter-rouge">117</code>, high-only re-anchored frames <code class="language-plaintext highlighter-rouge">127</code>/<code class="language-plaintext highlighter-rouge">126</code>/<code class="language-plaintext highlighter-rouge">125</code>, and
 the high-only <code class="language-plaintext highlighter-rouge">320 KiB</code> setup-prime cap, the guarded low <code class="language-plaintext highlighter-rouge">150..174</code>
 second setup segment, the low frame-125/frame-126 resident re-anchor, and
-the low frame-118 resident copy now
+the low frame-118/frame-127 resident copies now
 move already-composited
 background rows or CD residency out of the active loop;
 the v204/v205 setup segments keep low sectors <code class="language-plaintext highlighter-rouge">281..305</code> and high sectors
 <code class="language-plaintext highlighter-rouge">277..293</code> resident before the active loop. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt;
-1089/1035</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1091/1035</code>, blocking drops
-<code class="language-plaintext highlighter-rouge">150/170 -&gt; 83/103</code>, and the packs
+1089/1035</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1088/1035</code>, blocking drops
+<code class="language-plaintext highlighter-rouge">150/170 -&gt; 83/95</code>, and the packs
 keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
 </ul>
 

@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3720%` public over target / `99.6381%` public target speed after the MARY3,
+`+0.3697%` public over target / `99.6402%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v234. The raw signed optimization matrix is `-0.3965%` over target /
-`100.4219%` target speed.
+v237. The raw signed optimization matrix is `-0.3988%` over target /
+`100.4240%` target speed.
 
 ## Headline
 
@@ -56,13 +56,13 @@ v234. The raw signed optimization matrix is `-0.3965%` over target /
   persistent setup segments for sectors `277..293` and `281..305`, the high
   `320 KiB` setup-prime cap, the guarded low second segment `150..174`, and
   the low frame-125/frame-126 resident re-anchor plus the low frame-118
-  resident-copy payload.
+  resident-copy payload plus the low frame-127 resident-copy payload.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
   `1118/1028 -> 1089/1035`, cuts blocking `150 -> 83`, loop reads `27 -> 15`,
-  and due misses `26 -> 15`; low moves `1126/1025 -> 1091/1035`, cuts blocking
-  `170 -> 103`, loop reads `31 -> 18`, and due misses `29 -> 17`.
+  and due misses `26 -> 15`; low moves `1126/1025 -> 1088/1035`, cuts blocking
+  `170 -> 95`, loop reads `31 -> 17`, and due misses `29 -> 16`.
 
 ## Follow-Up Closure
 
@@ -187,6 +187,14 @@ active-loop read into resident data. The active loop improves
 `108 -> 103`, loop reads drop `19 -> 18`, loop-read time drops `115 -> 110`,
 due misses drop `18 -> 17`, and hidden refill remains `0`.
 
+The follow-up `visitor3-low-f127-resident-copy-v237` then compacts that same
+resident segment by moving frames `125/126` earlier unchanged and copying the
+existing frame-127 payload unchanged into the freed tail. That converts another
+active-loop read without changing frame geometry or pack layout: the active
+loop improves `1091/1035 -> 1088/1035`, overrun drops `56 -> 53`, blocking
+drops `103 -> 95`, loop reads drop `18 -> 17`, loop-read time drops
+`110 -> 102`, due misses drop `17 -> 16`, and hidden refill remains `0`.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -226,6 +234,12 @@ due misses drop `18 -> 17`, and hidden refill remains `0`.
   `scratch/ps1-perf-iterate/visitor3-low-f118-resident-copy-v234-focused/20260509-131645-3689098/summary.json`.
 - VISITOR3 low frame-118 resident-copy broad/control gate:
   `scratch/ps1-perf-iterate/visitor3-low-f118-resident-copy-v234-broad/20260509-131940-3705538/summary.json`.
+- VISITOR3 low frame-127 resident-copy focused gate:
+  `scratch/ps1-perf-iterate/visitor3-low-f127-resident-copy-v237-focused/20260509-140328-3954717/summary.json`.
+- VISITOR3 low frame-127 resident-copy broad/control gate:
+  `scratch/ps1-perf-iterate/visitor3-low-f127-resident-copy-v237-broad/20260509-140440-3961993/summary.json`.
+- VISITOR3 low frame-127 resident-copy current-control drift check:
+  `scratch/ps1-perf-iterate/visitor3-low-f127-resident-copy-v237-current-control/20260509-141713-4034325/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
