@@ -102,7 +102,7 @@
       <h1>Pause menu</h1>
       <p class="subtitle">Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1431 words
+          ~5 min read · 1475 words
         </p>
       
       <hr class="rule" />
@@ -507,6 +507,19 @@ Start / D-pad / Cross input depends on.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_pad_script.c"><code class="language-plaintext highlighter-rouge">src/ps1_pad_script.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/scene_freeplay.c"><code class="language-plaintext highlighter-rouge">src/scene_freeplay.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/scene_explorer_data.h"><code class="language-plaintext highlighter-rouge">src/scene_explorer_data.h</code></a> —
+the regenerated runtime header behind the
+<a href="#scene-explorer">Scene Explorer</a> sub-screen (slugs, display
+names, families, frame counts).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-scene-explorer-data.py"><code class="language-plaintext highlighter-rouge">scripts/build-scene-explorer-data.py</code></a> —
+regenerates <code class="language-plaintext highlighter-rouge">scene_explorer_data.h</code> from <code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code>
+    <ul>
+      <li>per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles.</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-scene-explorer-thumbnails.py"><code class="language-plaintext highlighter-rouge">scripts/build-scene-explorer-thumbnails.py</code></a> —
+encodes the captured PNGs into the <code class="language-plaintext highlighter-rouge">SX&lt;abbrev&gt;&lt;tag&gt;.SCR</code> thumbnail
+files the Scene Explorer loads on cursor change.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/pause-menu-design.md"><code class="language-plaintext highlighter-rouge">docs/ps1/pause-menu-design.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/freeplay-mode-design.md"><code class="language-plaintext highlighter-rouge">docs/ps1/freeplay-mode-design.md</code></a></li>
 </ul>

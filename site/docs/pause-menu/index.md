@@ -243,5 +243,15 @@ with captions and other small text overlays.
 - [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c)
 - [`src/ps1_pad_script.c`]({{ site.github_url }}/blob/main/src/ps1_pad_script.c)
 - [`src/scene_freeplay.c`]({{ site.github_url }}/blob/main/src/scene_freeplay.c)
+- [`src/scene_explorer_data.h`]({{ site.github_url }}/blob/main/src/scene_explorer_data.h) —
+  the regenerated runtime header behind the
+  [Scene Explorer](#scene-explorer) sub-screen (slugs, display
+  names, families, frame counts).
+- [`scripts/build-scene-explorer-data.py`]({{ site.github_url }}/blob/main/scripts/build-scene-explorer-data.py) —
+  regenerates `scene_explorer_data.h` from `docs/ps1/scene-status.md`
+  + per-scene `index.md` titles.
+- [`scripts/build-scene-explorer-thumbnails.py`]({{ site.github_url }}/blob/main/scripts/build-scene-explorer-thumbnails.py) —
+  encodes the captured PNGs into the `SX<abbrev><tag>.SCR` thumbnail
+  files the Scene Explorer loads on cursor change.
 - [`docs/ps1/pause-menu-design.md`]({{ site.github_url }}/blob/main/docs/ps1/pause-menu-design.md)
 - [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md)
