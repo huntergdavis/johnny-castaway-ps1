@@ -142,7 +142,7 @@ written after a bug.</p>
 <ul class="doc-grid">
   <li>
     <a href="/johnny-castaway-ps1/docs/formats/pack-payload/">FG2 pack payload</a>
-    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <code>foreground_pilot.c</code>.</p>
+    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code>foreground_pilot.c</code></a>.</p>
   </li>
   <li>
     <a href="/johnny-castaway-ps1/docs/formats/pack-manifest/">FG2 pack manifest</a>
@@ -173,7 +173,7 @@ payload. It writes the manifest beside it. It optionally derives a
 dirty-region template from the TTM bytecode for the same scene.</li>
   <li>The pack manifest and the prefetch schema are read by post-processing
 tools that decide pack granularity and likely pack-to-pack transitions.</li>
-  <li><code class="language-plaintext highlighter-rouge">mkpsxiso</code> reads <code class="language-plaintext highlighter-rouge">cd_layout.xml</code> and stamps the chosen FG2 packs onto
+  <li><a href="/johnny-castaway-ps1/docs/glossary/#mkpsxiso"><code class="language-plaintext highlighter-rouge">mkpsxiso</code></a> reads <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/cd_layout.xml"><code class="language-plaintext highlighter-rouge">cd_layout.xml</code></a> and stamps the chosen FG2 packs onto
 <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> at deterministic sector offsets.</li>
   <li>At runtime, <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> calls <code class="language-plaintext highlighter-rouge">CdSearchFile</code> on <code class="language-plaintext highlighter-rouge">FG\\&lt;NAME&gt;.FG2</code>,
 reads the 40-byte header, walks the entry table, and presents one diff

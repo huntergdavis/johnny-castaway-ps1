@@ -39,7 +39,7 @@ If you paid for this, you were cheated. Open source and free.
 <ul class="doc-grid">
   <li>
     <a href="{{ '/docs/formats/pack-payload/' | relative_url }}">FG2 pack payload</a>
-    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <code>foreground_pilot.c</code>.</p>
+    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <a href="{{ site.github_url }}/blob/main/src/foreground_pilot.c"><code>foreground_pilot.c</code></a>.</p>
   </li>
   <li>
     <a href="{{ '/docs/formats/pack-manifest/' | relative_url }}">FG2 pack manifest</a>
@@ -69,7 +69,7 @@ The pipeline runs in one direction: host build, then PS1 build, then disc.
    dirty-region template from the TTM bytecode for the same scene.
 2. The pack manifest and the prefetch schema are read by post-processing
    tools that decide pack granularity and likely pack-to-pack transitions.
-3. `mkpsxiso` reads `cd_layout.xml` and stamps the chosen FG2 packs onto
+3. [`mkpsxiso`]({{ '/docs/glossary/#mkpsxiso' | relative_url }}) reads [`cd_layout.xml`]({{ site.github_url }}/blob/main/config/ps1/cd_layout.xml) and stamps the chosen FG2 packs onto
    `jcreborn.bin` at deterministic sector offsets.
 4. At runtime, `foreground_pilot.c` calls `CdSearchFile` on `FG\\<NAME>.FG2`,
    reads the 40-byte header, walks the entry table, and presents one diff
