@@ -118,9 +118,13 @@ The v222 guarded low `133..149` grouped append is also closed: it kept
 VISITOR3 low exact-flat at `1098/1034`, reported `group_hits=0`, and grew
 `foregroundPilotPlay` by `48` bytes, proving append-start fireability alone is
 not enough under the current one-staged-frame/window-prefetch state machine.
-The next VISITOR3 swing must either change the data shape enough to reduce both
-CD and CPU, or add deadline-aware scheduling without growing the hot executable
-bucket.
+The v223 fresh-window version of the same group is closed too: it also stayed
+exact-flat at `1098/1034`, kept blocking at `112` and due misses at `19`, and
+added `12` bytes to `fgRuntimeFillWindowForEntry` plus `48` bytes to
+`foregroundPilotPlay`. Hand-authored `133..149` grouping is now exhausted; the
+next VISITOR3 swing must either change the data shape enough to reduce both CD
+and CPU, or add deadline-aware scheduling with a second retained window/sector
+map rather than another scalar table row.
 
 ## VISITOR3 white-whale backlog
 
