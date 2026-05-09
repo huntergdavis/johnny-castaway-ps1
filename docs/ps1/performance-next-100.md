@@ -114,9 +114,13 @@ smaller copy footprint, so adjacent precursor hull rewrites are closed unless
 the payload format changes. The v215 unguarded low second-segment probe showed
 the same segment can reduce reads but fail when hidden refill appears; v216
 promoted only after the low refill slack guard made the segment deadline-aware.
-The next
-VISITOR3 swing must either change the data shape enough to reduce both CD and
-CPU, or add deadline-aware scheduling without growing the hot executable bucket.
+The v222 guarded low `133..149` grouped append is also closed: it kept
+VISITOR3 low exact-flat at `1098/1034`, reported `group_hits=0`, and grew
+`foregroundPilotPlay` by `48` bytes, proving append-start fireability alone is
+not enough under the current one-staged-frame/window-prefetch state machine.
+The next VISITOR3 swing must either change the data shape enough to reduce both
+CD and CPU, or add deadline-aware scheduling without growing the hot executable
+bucket.
 
 ## VISITOR3 white-whale backlog
 
@@ -155,6 +159,36 @@ Rank order is current working priority, not guaranteed payoff.
 | 28 | Re-run VISITOR3 read candidates after every data-shape change | Data-shape wins can make previously inert scheduler rows fire. Treat read candidates as invalidated after each accepted pack transform. | Prevents stale decisions, but can burn run time. |
 | 29 | Scene-local LBA padding before VISITOR3 packs | If another accepted change shifts LBAs, deliberately pad earlier CD layout to keep VISITOR3 phase stable while testing pack mutations. | Must not shift other canaries or PS-EXE bucket. |
 | 30 | VISITOR3 custom decompressor in overlay budget | If main EXE bucket cannot fit a decoder, test whether a scene-local overlay/decompressor loaded during setup can pay for itself without active-loop debt. | Setup-time and RAM pressure; likely only worth it for a large terminal-frame byte cut. |
+| 31 | VISITOR3 low grouped-append state trace | Instrument why the fireable `133..149` row still reported `group_hits=0`. | Must be trace-only and keep the measured baseline flat. |
+| 32 | VISITOR3 two-entry lookahead scheduler | Let VISITOR3 low reserve the frame after the staged frame when the staged frame is already resident. | Could starve present prep unless CD ownership is explicit. |
+| 33 | VISITOR3 second stream window just for low `117..118` | Keep one normal window and one tiny retained append window so the useful cluster is not evicted by the staged payload path. | RAM pressure and code-size growth must stay below the current bucket. |
+| 34 | VISITOR3 sector-resident bitmap | Track resident sectors independently from the contiguous stream window and setup segments. | Bitmap lookup and copy path can grow hot code. |
+| 35 | VISITOR3 phase-local preload after frame `113` | Read the `133..149` cluster during the long pre-precursor slack window rather than at scene setup. | Needs proof that sound/source-frame deadlines still hold. |
+| 36 | VISITOR3 low frame `117..118` micro-subpack | Split only the precursor cluster into a tiny subpack loaded at the phase transition. | Subpack lookup and file residency may cost more than one due read. |
+| 37 | VISITOR3 same-sector residual compactor | Compress frame `117` enough that frames `117..118` fit one fewer sector without changing offsets after frame `118`. | Sparse in-place space is tight and visual equivalence must be byte-proven. |
+| 38 | VISITOR3 payload-hole allocator | Reuse zeroed slack inside already-read sectors for duplicated hot spans. | Requires below-entry offset surgery and safety checks. |
+| 39 | VISITOR3 late-cluster in-sector dictionary | Store repeated rows from frames `117..118` and `139..144` once inside their current sector neighborhoods. | Decoder path must be smaller than the saved CD/read pressure. |
+| 40 | VISITOR3 low prepared-frame priority inversion | Prefer window prefetch over visual prepare only for the known low precursor cluster. | Could waste prepared-present opportunities and regress loop timing. |
+| 41 | VISITOR3 low no-evict terminal segment policy | Keep `281..305` resident while testing extra low cluster ownership, because v221 proved stealing it regresses. | Needs a third residency owner or generated replacement. |
+| 42 | VISITOR3 low direct-stage deny for frame `117` only | Avoid staging frame `117` directly when it prevents a grouped window fill. | Direct-stage changes have been exact-flat or negative unless tightly scoped. |
+| 43 | VISITOR3 per-source-frame slack ledger | Build a CSV of held slack, staged validity, resident window, and next read per source frame. | Host model must match PS1 counters before trusting it. |
+| 44 | VISITOR3 scheduler simulator from JCPERF2 trace | Replay exact wait, prefetch, prepare, and advance decisions before writing C tables. | Requires richer trace export but avoids blind source probes. |
+| 45 | VISITOR3 low frame `117` original-payload rollback test | Confirm whether accepted motion payloads still help low after v216, instead of assuming old wins remain additive. | Repacking original larger payloads may require offset movement or padding control. |
+| 46 | VISITOR3 high and low divergent pack bodies | Stop forcing tides to share the same motion and residual choices where one tide is CPU-negative. | More generated artifacts and visual-signoff burden. |
+| 47 | VISITOR3 copy-span SIMD-style unroll only for opcode marker | Speed the accepted motion-copy rows without touching normal FGP3 spans. | Previous generic copy paths were flat or code-size-negative. |
+| 48 | VISITOR3 row-run bytecode replacement | Replace compact span parsing for VISITOR3 with a scene-private bytecode optimized for repeated horizontal rows. | New decoder must fit code headroom and pass exact visual gates. |
+| 49 | VISITOR3 predecoded row templates in setup RAM | Decode repeated row layouts once during setup, then consume smaller payload references in the loop. | Setup RAM and lifetime ownership are risky. |
+| 50 | VISITOR3 terminal frame still-sequence player | Treat frames `139..144` as a tiny precomputed visual sequence with fixed dirty bands. | Scene-private path must preserve sound and dynamic background state. |
+| 51 | VISITOR3 clean-ocean strip atlas | Store deterministic clean water/background strips separately from foreground deltas for yacht frames. | Tide/night/holiday state keying must be airtight. |
+| 52 | VISITOR3 direct16 strip micro-proof for frame `127` | Convert only the top modeled upload hotspot to ready-to-upload 16bpp rows. | Large payload bytes could worsen CD even if upload work falls. |
+| 53 | VISITOR3 compressed direct16 strips | RLE or LZ encode precomposed 16bpp strips and decode into upload scratch. | Decode cost can erase the upload win. |
+| 54 | VISITOR3 FGP3 span partition search | Search alternate byte-identical span cuts that reduce rect count, parser branches, or sector crossings. | Tooling-heavy and may find no feasible same-footprint move. |
+| 55 | VISITOR3 frame `128..130` cap-hit bypass | Leave cap-hit rows on current path and optimize only surrounding non-cap rows. | Partial format can add branch cost without enough coverage. |
+| 56 | VISITOR3 low due-miss cluster map | Rank remaining due misses by exact frame, read sector, and target slack rather than aggregate counters. | Needs detailed log extraction before coding. |
+| 57 | VISITOR3 code-layout padded retry harness | Pad hot symbols and PS-EXE bucket deliberately before testing any new decoder or scheduler branch. | Padding can mask real code-size costs if not documented. |
+| 58 | VISITOR3 resident-window replacement search | Automatically try small state-machine variants that choose stage, window, or prepare order per frame class. | Search space can explode; every winner still needs broad canaries. |
+| 59 | VISITOR3 foreground-only custom mini-driver | Fork only VISITOR3 playback into a generated, scene-private driver using fixed metadata. | Maintenance burden and binary size, but this may be justified for the white whale. |
+| 60 | VISITOR3 final 10-percent decision tree | Compare scheduler, compressed precompose, custom bytecode, and mini-driver paths after three more big swings. | Prevents endless micro-probes but requires disciplined stop criteria. |
 
 Latest promoted ACTIVITY9 low compact-FGP3/v4 baseline: convert `ACTV9LOW.FG2`
 to padded compact FGP3/v4 restore-minus-current data while preserving the
