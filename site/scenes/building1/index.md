@@ -6,7 +6,29 @@ tag: 1
 slug: building1
 status: validated
 description: "BUILDING.ADS scene 1: Johnny tries to build a sandcastle; it slumps mid-build, and he stomps on it. Validated 2026-05-08."
+image: /assets/img/building1-ps1-sandcastle.png
+image_alt: "BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build, the moment before the stomp."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/building1-ps1-sandcastle.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build." />
+  <figcaption>
+    BUILDING 1 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The slump beat: Johnny is next to his half-built sandcastle on
+    the left side of the island, the moment before he stomps it
+    flat in frustration. (Compare
+    <a href="{{ '/scenes/building2/' | relative_url }}">BUILDING 2</a>,
+    where the lilliputians have repurposed the sandcastle into an
+    airport.)
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
