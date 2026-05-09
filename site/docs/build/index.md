@@ -183,33 +183,55 @@ for the routing step.
 | `scripts/make-cd-image.sh`       | Re-run `mkpsxiso` against the current `build-ps1/jcreborn.exe`. Faster than a full rebuild when only the layout XML changed. |
 | `scripts/build-docker-image.sh`  | Build the dev Docker image from `config/ps1/Dockerfile.ps1`. Run once after clone, then again when the Dockerfile changes. |
 
-The clean build path inside `scripts/rebuild-and-let-run.sh`:
+What `scripts/rebuild-and-let-run.sh` ultimately invokes is two
+container shells. The first is `scripts/build-ps1.sh` (executable +
+ELF), the second is `scripts/make-cd-image.sh` (CD image). Stripped of
+the wrapper plumbing, the commands inside each container are:
 
 ```bash
+# scripts/build-ps1.sh — clean rebuild of jcreborn.exe
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && rm -rf build-ps1"
+    jc-reborn-ps1-dev:amd64 bash -c "rm -rf /project/build-ps1"
 
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && mkdir build-ps1 && cd build-ps1 && \
-        cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .. && make"
+    jc-reborn-ps1-dev:amd64 bash -c "
+        cmake -G 'Unix Makefiles' \
+            -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+            -S /project -B /project/build-ps1 && \
+        cmake --build /project/build-ps1"
 
+# scripts/make-cd-image.sh — bundle the build + assets into jcreborn.bin/.cue
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && mkpsxiso cd_layout.xml"
+    jc-reborn-ps1-dev:amd64 bash -c "
+        cd /project && \
+        mkpsxiso -y /project/config/ps1/cd_layout.xml"
 ```
 
-`make-cd-image.sh` is the third step on its own and is fast enough to run
-between scene edits.
+The cmake invocation does not pass `-DCMAKE_TOOLCHAIN_FILE` because
+`CMakeLists.txt` resolves the PSn00bSDK toolchain via the
+`PSN00BSDK` environment variable that the Dockerfile sets to
+`/opt/psn00bsdk/PSn00bSDK-0.24-Linux`. The `mkpsxiso` invocation needs
+the `-y` flag (overwrite) and the full path to `cd_layout.xml`
+because the layout file lives under `config/ps1/`, not the project
+root.
+
+`make-cd-image.sh` is the third step on its own and is fast enough to
+run between scene edits.
 
 ## Common breakages
 
-**"Could not find toolchain file"** — PSn00bSDK didn't install correctly in
-the container. Confirm `/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake`
-exists in the image:
+**"Could not find toolchain file"** or **"PSN00BSDK environment
+variable not set"** — PSn00bSDK didn't install correctly in the
+container. Confirm both the env var and the SDK cmake module exist
+in the image:
 
 ```bash
 docker run --rm jc-reborn-ps1-dev:amd64 \
-    ls /opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+    bash -c 'echo "$PSN00BSDK" && ls "$PSN00BSDK/lib/libpsn00b/cmake/sdk.cmake"'
 ```
+
+Expected output: `/opt/psn00bsdk/PSn00bSDK-0.24-Linux` followed by a
+listing of `sdk.cmake`.
 
 **"undefined reference to `SpuInit`"** — A new audio path needs `psxspu` in
 the link list. Audio code that doesn't link will surface as missing
