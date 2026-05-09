@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy perf follow-ups; all 63 scenes remain validated, and the public
+motion-copy perf follow-ups through high frame 115; all 63 scenes remain validated, and the public
 headless battle card is `+0.4064%` over target / `99.6077%` target speed).
 
 ## Overall
@@ -189,11 +189,11 @@ green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
 `95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 motion-copy
-payload pass rewrites yacht translation frames `119..123` in both tides,
-preserves both `1555450` byte pack footprints and LBAs `22472/23232`, moves
-high `1118/1028 -> 1105/1031`, moves low `1126/1025 -> 1108/1028`, cuts
-blocking `150/170 -> 129/143`, loop reads `27/31 -> 23/27`, and due misses
-`26/29 -> 22/25`. The public battle card is now
+payload pass adds a high-tide frame `115` state-hull motion-copy payload on top
+of the v181 yacht translation payloads, preserves both `1555450` byte pack
+footprints and LBAs `22472/23232`, moves high `1105/1031 -> 1104/1030`, cuts
+blocking `129 -> 128`, and cuts loop-read time `132 -> 130`; low remains on
+v181 at `1108/1028`. The public battle card is now
 `+0.4064%` over target / `99.6077%` target speed while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
@@ -217,8 +217,9 @@ Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
-guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`.
-VISITOR3 high is now `1105/1031` with `blocking_vb=129`; low is
+guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
+plus high-tide frame `115`. VISITOR3 high is now `1104/1030` with
+`blocking_vb=128`; low is
 `1108/1028` with `blocking_vb=143`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
@@ -247,14 +248,14 @@ frames (`134..136`, where blanket x-band saves `0%`) from the profitable
 non-cap frames (`121..133`, where align4 x-band saves roughly `65..75%`). The
 first tracked threshold plan is
 [performance-preprocess-visitor3-hotspots.csv](performance-preprocess-visitor3-hotspots.csv):
-it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
-`6114568` upload bytes saved inside the selected subset. The same current
-size gate rejects the default upload-ready append as layout-neutral: the
-payload plus rect metadata would need `2462072` bytes per tide against only
-`814847` bytes of padded zero-tail slack. The analyzer now also emits a
-same-footprint budgeted subset for that exact slack: `74 / 96`
-default-selected frames fit in `814184` payload+rect bytes, leave `663` bytes
-of slack, and retain `3858104` modeled upload bytes saved. Raw foreground-only
+it selects `92 / 144` high-tide frames, excludes `6` cap-hit frames, and
+estimates `5730024` upload bytes saved inside the selected subset. The same
+current size gate rejects the default upload-ready append as layout-neutral:
+the payload plus rect metadata would need `2111224` bytes against only
+`970076` bytes of padded high-pack zero-tail slack. The analyzer now also emits
+a same-footprint budgeted subset for that exact slack: `78 / 92`
+default-selected frames fit in `968904` payload+rect bytes, leave `1172` bytes
+of slack, and retain `4232112` modeled upload bytes saved. Raw foreground-only
 payloads remain unsafe because the selected x-bands have no guaranteed
 draw-covered pixel source, so the next VISITOR3 graphics probe needs a safe
 background-owned/precomposed payload source, compression plus ownership, a

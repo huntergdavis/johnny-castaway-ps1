@@ -27,19 +27,18 @@ restore-minus-current pack baseline. The public battle card is now
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy
-follow-ups; the raw signed optimization matrix is `-0.3621%` / `100.3916%`.
+follow-ups; the raw signed optimization matrix is `-0.3620%` / `100.3915%`.
 That is about `16.99` public over-target points removed and `12.51` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-motion-x-v181`, adds a compact
-motion-copy FGP3 payload for yacht translation frames `119..123`. It preserves
-both `1555450` byte pack footprints, fixed LBAs `22472/23232`, and the
-`215040` byte PS-EXE bucket while moving high `1118/1028 -> 1105/1031`, low
-`1126/1025 -> 1108/1028`, blocking `150/170 -> 129/143`, loop reads
-`27/31 -> 23/27`, and due misses `26/29 -> 22/25`. VISITOR3 remains the top
-outlier, but local threshold/read-table/tail-atlas probes stay closed; future
-work should build on scene-owned motion/precomposed data or generated scheduler
-ownership.
+The latest VISITOR3 follow-up, `visitor3-high-f115-motion-x-v182`, adds a
+high-tide frame `115` state-hull motion-copy payload on top of the v181 yacht
+translation motion-copy baseline. It preserves both `1555450` byte pack
+footprints, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while
+moving high `1105/1031 -> 1104/1030`; low remains on v181 at `1108/1028`.
+VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas
+probes stay closed; future work should build on scene-owned motion/precomposed
+data or generated scheduler ownership.
 
 `v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed

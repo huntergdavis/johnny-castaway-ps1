@@ -117,12 +117,12 @@ splits cap-hit frames from saving-heavy frames, which keeps the next
 upload-ready experiment selective instead of a whole-pack conversion. The
 current VISITOR3 frame sheet is
 [`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv).
-The current default VISITOR3 selective plan is still too large for a
-same-footprint append: it models `6114568` selected upload bytes saved, but the
-upload-ready payload plus rect metadata needs `2462072` bytes per tide against
-only `814847` bytes of padded zero-tail slack. The analyzer now emits the
-same-footprint budgeted target too: `74 / 96` default-selected frames fit in
-`814184` payload+rect bytes, leave `663` bytes of slack, and retain `3858104`
+The current default VISITOR3 high-tide selective plan is still too large for a
+same-footprint append: it models `5730024` selected upload bytes saved, but the
+upload-ready payload plus rect metadata needs `2111224` bytes against only
+`970076` bytes of padded zero-tail slack. The analyzer now emits the
+same-footprint budgeted target too: `78 / 92` default-selected frames fit in
+`968904` payload+rect bytes, leave `1172` bytes of slack, and retain `4232112`
 modeled upload bytes saved. The analyzer now also reports whether those x-band
 uploads are safe to emit from foreground data alone. For VISITOR3, `0`
 selected x-band bytes are fully covered by current opaque draw spans, so a raw
@@ -309,12 +309,13 @@ That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
 the public average is **+0.4% over target / 99.6% target speed** (`0.4064%`
 exact public over target / `99.6077%` exact public target speed); the raw
-signed optimization matrix is `-0.3621%` / `100.3916%`.
+signed optimization matrix is `-0.3620%` / `100.3915%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-f115-motion-x-v182`,
 `visitor3-motion-x-v181`,
 `activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
@@ -763,7 +764,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+7.2% / 93.3% (1105/1031); due 22; blk 129</td>
+      <td>+7.2% / 93.3% (1104/1030); due 22; blk 128</td>
       <td>+7.8% / 92.8% (1108/1028); due 25; blk 143</td>
     </tr>
     <tr>
@@ -824,16 +825,16 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
-   largest gap at `+90/+101` VBlanks after the tail-trim stageguard pass; its local C
-   read-table rows are exhausted, so the next CD-shape pass needs generated
-   scheduler ownership, selective preprocessing, or further pack data-shape
-   work rather than hand-authored ranges. BUILDING2, BUILDING6, and WALKSTUF1
-   remain the next wide-action/read-pressure rows after the WALKSTUF1 compact
-   pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
-   same-layout append because `2462072` bytes of payload plus rect metadata
-   exceed the current `814847` bytes of VISITOR3 pack slack per tide. The
-   budgeted analyzer target keeps this same-footprint lane alive with `74`
-   selected frames, `814184` payload+rect bytes, and `3858104` modeled upload
+   largest gap at `+74/+80` VBlanks after the VISITOR3 motion-copy passes; its
+   local C read-table rows are exhausted, so the next CD-shape pass needs
+   generated scheduler ownership, selective preprocessing, or further pack
+   data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and
+   WALKSTUF1 remain the next wide-action/read-pressure rows after the WALKSTUF1
+   compact pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
+   same-layout append because `2111224` bytes of payload plus rect metadata
+   exceed the current `970076` bytes of VISITOR3 high-pack slack. The
+   budgeted analyzer target keeps this same-footprint lane alive with `78`
+   selected frames, `968904` payload+rect bytes, and `4232112` modeled upload
    bytes saved before runtime implementation. The empty-hold no-op recast is
    closed because the current packs expose `0` zero-visual-work entries. The
    packed-draw metadata probes prove a real VISITOR3 byte-reduction signal:

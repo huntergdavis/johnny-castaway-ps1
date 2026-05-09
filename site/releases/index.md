@@ -42,12 +42,13 @@ headless performance baseline.
   ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
   VISITOR3 motion-copy passes, all 126 timing-bearing rows average `+0.4064%`
   public over target / `99.6077%` public target speed; the raw signed CSV is
-  `-0.3621%` / `100.3916%` for optimization work.
+  `-0.3620%` / `100.3915%` for optimization work.
 - **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
-  VISITOR3 tides now move already-composited background rows and draw only the
-  residual foreground payload. High improves `1118/1028 -> 1105/1031`, low
-  improves `1126/1025 -> 1108/1028`, blocking drops `150/170 -> 129/143`, and
-  the packs keep fixed LBAs and the `215040` byte PS-EXE bucket.
+  VISITOR3 tides and high-tide frame `115` now move already-composited
+  background rows and draw only residual foreground payloads. High improves
+  `1118/1028 -> 1104/1030`, low improves `1126/1025 -> 1108/1028`, blocking
+  drops `150/170 -> 128/143`, and the packs keep fixed LBAs and the `215040`
+  byte PS-EXE bucket.
 
 The post-validation perf retrospective at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})

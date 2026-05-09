@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3975 words
+          ~15 min read · 3973 words
         </p>
 
       <hr class="rule" />
@@ -232,12 +232,12 @@ splits cap-hit frames from saving-heavy frames, which keeps the next
 upload-ready experiment selective instead of a whole-pack conversion. The
 current VISITOR3 frame sheet is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-visitor3-hotspots.csv</code></a>.
-The current default VISITOR3 selective plan is still too large for a
-same-footprint append: it models <code class="language-plaintext highlighter-rouge">6114568</code> selected upload bytes saved, but the
-upload-ready payload plus rect metadata needs <code class="language-plaintext highlighter-rouge">2462072</code> bytes per tide against
-only <code class="language-plaintext highlighter-rouge">814847</code> bytes of padded zero-tail slack. The analyzer now emits the
-same-footprint budgeted target too: <code class="language-plaintext highlighter-rouge">74 / 96</code> default-selected frames fit in
-<code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, leave <code class="language-plaintext highlighter-rouge">663</code> bytes of slack, and retain <code class="language-plaintext highlighter-rouge">3858104</code>
+The current default VISITOR3 high-tide selective plan is still too large for a
+same-footprint append: it models <code class="language-plaintext highlighter-rouge">5730024</code> selected upload bytes saved, but the
+upload-ready payload plus rect metadata needs <code class="language-plaintext highlighter-rouge">2111224</code> bytes against only
+<code class="language-plaintext highlighter-rouge">970076</code> bytes of padded zero-tail slack. The analyzer now emits the
+same-footprint budgeted target too: <code class="language-plaintext highlighter-rouge">78 / 92</code> default-selected frames fit in
+<code class="language-plaintext highlighter-rouge">968904</code> payload+rect bytes, leave <code class="language-plaintext highlighter-rouge">1172</code> bytes of slack, and retain <code class="language-plaintext highlighter-rouge">4232112</code>
 modeled upload bytes saved. The analyzer now also reports whether those x-band
 uploads are safe to emit from foreground data alone. For VISITOR3, <code class="language-plaintext highlighter-rouge">0</code>
 selected x-band bytes are fully covered by current opaque draw spans, so a raw
@@ -435,12 +435,13 @@ sound_late = 0   cd_fail = 0
 CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 126 timing-bearing battle-card rows,
 the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.4064%</code>
 exact public over target / <code class="language-plaintext highlighter-rouge">99.6077%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3621%</code> / <code class="language-plaintext highlighter-rouge">100.3916%</code>.</p>
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3620%</code> / <code class="language-plaintext highlighter-rouge">100.3915%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">visitor3-high-f115-motion-x-v182</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-motion-x-v181</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
@@ -889,7 +890,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+7.2% / 93.3% (1105/1031); due 22; blk 129</td>
+      <td>+7.2% / 93.3% (1104/1030); due 22; blk 128</td>
       <td>+7.8% / 92.8% (1108/1028); due 25; blk 143</td>
     </tr>
     <tr>
@@ -950,16 +951,16 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 is now the
-largest gap at <code class="language-plaintext highlighter-rouge">+90/+101</code> VBlanks after the tail-trim stageguard pass; its local C
-read-table rows are exhausted, so the next CD-shape pass needs generated
-scheduler ownership, selective preprocessing, or further pack data-shape
-work rather than hand-authored ranges. BUILDING2, BUILDING6, and WALKSTUF1
-remain the next wide-action/read-pressure rows after the WALKSTUF1 compact
-pack pass cut that scene to <code class="language-plaintext highlighter-rouge">+65/+62</code> VBlanks. The default selective upload-ready plan is footprint-closed as a
-same-layout append because <code class="language-plaintext highlighter-rouge">2462072</code> bytes of payload plus rect metadata
-exceed the current <code class="language-plaintext highlighter-rouge">814847</code> bytes of VISITOR3 pack slack per tide. The
-budgeted analyzer target keeps this same-footprint lane alive with <code class="language-plaintext highlighter-rouge">74</code>
-selected frames, <code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, and <code class="language-plaintext highlighter-rouge">3858104</code> modeled upload
+largest gap at <code class="language-plaintext highlighter-rouge">+74/+80</code> VBlanks after the VISITOR3 motion-copy passes; its
+local C read-table rows are exhausted, so the next CD-shape pass needs
+generated scheduler ownership, selective preprocessing, or further pack
+data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and
+WALKSTUF1 remain the next wide-action/read-pressure rows after the WALKSTUF1
+compact pack pass cut that scene to <code class="language-plaintext highlighter-rouge">+65/+62</code> VBlanks. The default selective upload-ready plan is footprint-closed as a
+same-layout append because <code class="language-plaintext highlighter-rouge">2111224</code> bytes of payload plus rect metadata
+exceed the current <code class="language-plaintext highlighter-rouge">970076</code> bytes of VISITOR3 high-pack slack. The
+budgeted analyzer target keeps this same-footprint lane alive with <code class="language-plaintext highlighter-rouge">78</code>
+selected frames, <code class="language-plaintext highlighter-rouge">968904</code> payload+rect bytes, and <code class="language-plaintext highlighter-rouge">4232112</code> modeled upload
 bytes saved before runtime implementation. The empty-hold no-op recast is
 closed because the current packs expose <code class="language-plaintext highlighter-rouge">0</code> zero-visual-work entries. The
 packed-draw metadata probes prove a real VISITOR3 byte-reduction signal:

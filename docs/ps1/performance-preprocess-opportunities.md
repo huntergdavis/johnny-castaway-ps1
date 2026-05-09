@@ -8,15 +8,15 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `126`
-- Average measured timing gap: `-0.3621%` over target
-- Average estimated align4 x-band upload byte saving: `66.79%`
+- Average measured timing gap: `-0.3620%` over target
+- Average estimated align4 x-band upload byte saving: `66.78%`
 
 ## Top Upload-Ready Candidates
 
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `visitor3` | `low` | 80.09 | 7.78% | 55.43% | 725.9% | 143 | x-band rect cap pressure; needs selective bands; rect/frame 1.52 |
-| 2 | `visitor3` | `high` | 73.27 | 7.18% | 55.43% | 777.85% | 129 | x-band rect cap pressure; needs selective bands; rect/frame 1.52 |
+| 2 | `visitor3` | `high` | 72.4 | 7.18% | 54.59% | 814.94% | 128 | x-band rect cap pressure; needs selective bands; rect/frame 1.55 |
 | 3 | `walkstuf1` | `high` | 58.95 | 4.56% | 45.7% | 668.56% | 117 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
 | 4 | `walkstuf1` | `low` | 56.58 | 4.34% | 45.7% | 668.56% | 113 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
 | 5 | `mary1` | `high` | 50.14 | 0.77% | 78.75% | 274.07% | 84 | candidate; rect/frame 2.33 |
@@ -44,21 +44,21 @@ accepted performance baseline.
   residency before runtime promotion.
 - Use `scripts/analyze-fg2-preprocess-plans.py --hotspot-count N` on the
   selected pack before a runtime probe. VISITOR3 now proves why: cap-hit frames
-  `134..136` save `0%` under blanket x-band, while nearby non-cap frames carry
+  `114`, `134..136`, and `141..142` save `0%` under blanket x-band, while nearby non-cap frames carry
   most of the useful byte saving.
 - The current VISITOR3 detail sheet is
   `docs/ps1/performance-preprocess-visitor3-hotspots.csv`. Its default
-  threshold plan selects `96 / 144` frames, excludes `3` cap-hit frames, and
-  estimates `6114568` selected-subset upload bytes saved.
+  threshold plan selects `92 / 144` frames, excludes `6` cap-hit frames, and
+  estimates `5730024` selected-subset upload bytes saved.
 - The current VISITOR3 default selective upload-ready footprint does not fit
-  as a layout-neutral append: it needs `2462072` payload+rect bytes per pack
-  against `814847` bytes of padded zero-tail slack. The next runtime probe
+  as a layout-neutral append: it needs `2111224` payload+rect bytes for high tide
+  against `970076` bytes of padded zero-tail slack. The next runtime probe
   needs the now-modeled smaller subset, compression, or an explicit
   layout-moving experiment.
 - The same-footprint VISITOR3 budgeted subset now has an exact analyzer
-  target: `74 / 96` default-selected frames fit in `814184` payload+rect
-  bytes, leaving `663` bytes of slack and retaining `3858104` modeled
-  upload bytes saved (`63.1%` of the default plan's savings).
+  target: `78 / 92` default-selected high-tide frames fit in `968904` payload+rect
+  bytes, leaving `1172` bytes of slack and retaining `4232112` modeled
+  upload bytes saved (`73.9%` of the default plan's savings).
 - The raw pack-emitted upload-ready lane is blocked for VISITOR3 under
   the current FGP3 data: `0` selected x-band bytes are fully covered by
   current opaque draw spans, so the modeled win depends on restored

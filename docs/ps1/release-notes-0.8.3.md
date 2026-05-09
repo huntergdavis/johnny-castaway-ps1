@@ -11,7 +11,7 @@ the headless perf matrix, and all 126 timing-bearing rows now average
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy follow-ups. The raw signed optimization
-matrix is `-0.3621%` over target / `100.3916%` target speed.
+matrix is `-0.3620%` over target / `100.3915%` target speed.
 
 ## Headline
 
@@ -48,13 +48,14 @@ matrix is `-0.3621%` over target / `100.3916%` target speed.
   `1745484` byte footprint and LBA fixed while moving low `2085/2058 ->
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
-- **VISITOR3 motion-copy payloads promoted.** The latest follow-up rewrites
-  VISITOR3 frames `119..123` in both tides as compact horizontal motion-copy
-  payloads with residual draw/cleanup data. Both packs remain `1555450` bytes
-  with fixed LBAs `22472/23232` and the `215040` byte PS-EXE bucket. High moves
-  `1118/1028 -> 1105/1031`, cuts blocking `150 -> 129`, loop reads `27 -> 23`,
-  and due misses `26 -> 22`; low moves `1126/1025 -> 1108/1028`, cuts blocking
-  `170 -> 143`, loop reads `31 -> 27`, and due misses `29 -> 25`.
+- **VISITOR3 motion-copy payloads promoted.** The latest follow-up keeps the
+  v181 frames `119..123` motion-copy payloads in both tides and adds a
+  high-tide frame `115` state-hull motion-copy payload. Both packs remain
+  `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte PS-EXE
+  bucket. High moves `1118/1028 -> 1104/1030`, cuts blocking `150 -> 128`,
+  loop reads `27 -> 23`, and due misses `26 -> 22`; low moves `1126/1025 ->
+  1108/1028`, cuts blocking `170 -> 143`, loop reads `31 -> 27`, and due
+  misses `29 -> 25`.
 
 ## Follow-Up Closure
 
@@ -82,6 +83,12 @@ non-VISITOR controls on their accepted profiles; an unrelated WALKSTUF1 high
 drift was reproduced on the pre-change HEAD control and is not attributed to
 this payload format.
 
+The follow-up `visitor3-high-f115-motion-x-v182` also promoted. It extends the
+motion-copy shape to high-tide frame `115` only, improving high from
+`1105/1031` to `1104/1030`, cutting blocking `129 -> 128`, and cutting
+loop-read time `132 -> 130`. Low remains on the v181 row after larger both-tide
+and high-only windows regressed held slack or hidden refill.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -96,6 +103,8 @@ this payload format.
   `scratch/ps1-perf-iterate/visitor3-motion-x-v181-focused/20260508-202531-2127593/summary.json`.
 - VISITOR3 motion-copy broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-motion-x-v181-broad-norequire/20260508-203050-2158325/summary.json`.
+- VISITOR3 high frame-115 broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
