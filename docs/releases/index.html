@@ -158,15 +158,15 @@ drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; lo
   <li><strong>Battle card is now public-capped at native speed.</strong> After the follow-up
 MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-VISITOR3 motion-copy passes, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.4056%</code>
-public over target / <code class="language-plaintext highlighter-rouge">99.6084%</code> public target speed; the raw signed CSV is
-<code class="language-plaintext highlighter-rouge">-0.3629%</code> / <code class="language-plaintext highlighter-rouge">100.3922%</code> for optimization work.</li>
+VISITOR3 motion-copy passes, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.4041%</code>
+public over target / <code class="language-plaintext highlighter-rouge">99.6097%</code> public target speed; the raw signed CSV is
+<code class="language-plaintext highlighter-rouge">-0.3644%</code> / <code class="language-plaintext highlighter-rouge">100.3935%</code> for optimization work.</li>
   <li><strong>VISITOR3 motion-copy payloads are promoted.</strong> Frames <code class="language-plaintext highlighter-rouge">119..123</code> in both
-VISITOR3 tides and high-tide frame <code class="language-plaintext highlighter-rouge">115</code> now move already-composited
-background rows and draw only residual foreground payloads. High improves
-<code class="language-plaintext highlighter-rouge">1118/1028 -&gt; 1104/1030</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1108/1028</code>, blocking
-drops <code class="language-plaintext highlighter-rouge">150/170 -&gt; 128/143</code>, and the packs keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code>
-byte PS-EXE bucket.</li>
+VISITOR3 tides, high-tide frame <code class="language-plaintext highlighter-rouge">115</code>, shared frames <code class="language-plaintext highlighter-rouge">118</code>/<code class="language-plaintext highlighter-rouge">124</code>, and
+high-only frame <code class="language-plaintext highlighter-rouge">117</code> now move already-composited background rows and draw
+only residual foreground payloads. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt; 1101/1030</code>,
+low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1108/1028</code>, blocking drops <code class="language-plaintext highlighter-rouge">150/170 -&gt; 116/139</code>,
+and the packs keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
 </ul>
 
 <p>The post-validation perf retrospective at

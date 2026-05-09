@@ -7,11 +7,11 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4056%` public over target / `99.6084%` public target speed after the MARY3,
+`+0.4041%` public over target / `99.6097%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy follow-ups. The raw signed optimization
-matrix is `-0.3629%` over target / `100.3922%` target speed.
+matrix is `-0.3644%` over target / `100.3935%` target speed.
 
 ## Headline
 
@@ -27,7 +27,7 @@ matrix is `-0.3629%` over target / `100.3922%` target speed.
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `16.99` public over-target points and added
+  methodology has removed about `17.00` public over-target points and added
   about `12.51` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
@@ -49,13 +49,13 @@ matrix is `-0.3629%` over target / `100.3922%` target speed.
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
 - **VISITOR3 motion-copy payloads promoted.** The latest follow-up keeps the
-  v181 frames `119..123` motion-copy payloads in both tides and adds a
-  high-tide frame `115` state-hull motion-copy payload. Both packs remain
-  `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte PS-EXE
-  bucket. High moves `1118/1028 -> 1104/1030`, cuts blocking `150 -> 128`,
-  loop reads `27 -> 23`, and due misses `26 -> 22`; low moves `1126/1025 ->
-  1108/1028`, cuts blocking `170 -> 143`, loop reads `31 -> 27`, and due
-  misses `29 -> 25`.
+  v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
+  frame `115`, shared frame `124`, shared frame `118`, and high-only frame
+  `117` motion-copy payloads. Both packs remain `1555450` bytes with fixed LBAs
+  `22472/23232` and the `215040` byte PS-EXE bucket. High moves
+  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 116`, loop reads `27 -> 22`,
+  and due misses `26 -> 21`; low moves `1126/1025 -> 1108/1028`, cuts blocking
+  `170 -> 139`, loop reads `31 -> 27`, and due misses `29 -> 25`.
 
 ## Follow-Up Closure
 
@@ -99,6 +99,13 @@ offset-preserving lane for frame `118`. It keeps fixed LBAs and the `215040`
 byte PS-EXE bucket, trims another `13901` active bytes per tide, nudges high to
 `1104/1031`, keeps low at `1108/1028`, and cuts blocking to `120/139`.
 
+The follow-up `visitor3-high-f117-target-hull-v193` promotes the high-only
+subset of frame `117` after the both-tide and low-only sparse-hull variants
+failed. It uses a target-hull payload that preserves cleanup geometry, trims
+another `11149` high active bytes, improves high to `1101/1030`, cuts high
+blocking to `116`, cuts high loop-read time to `118`, and leaves low exact-flat
+on the v189 pack.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -115,6 +122,8 @@ byte PS-EXE bucket, trims another `13901` active bytes per tide, nudges high to
   `scratch/ps1-perf-iterate/visitor3-motion-x-v181-broad-norequire/20260508-203050-2158325/summary.json`.
 - VISITOR3 high frame-115 broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
+- VISITOR3 high frame-117 target-hull broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-high-f117-target-hull-v193-broad/20260509-014222-3940374/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

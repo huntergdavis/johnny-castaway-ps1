@@ -307,15 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.4% over target / 99.6% target speed** (`0.4056%`
-exact public over target / `99.6084%` exact public target speed); the raw
-signed optimization matrix is `-0.3629%` / `100.3922%`.
+the public average is **+0.4% over target / 99.6% target speed** (`0.4041%`
+exact public over target / `99.6097%` exact public target speed); the raw
+signed optimization matrix is `-0.3644%` / `100.3935%`.
 
 ## Scene Battle Card
 
 As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-f118-hull-sparse-v189`,
+`visitor3-high-f117-target-hull-v193`,
 `activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,

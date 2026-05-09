@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6, ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3 motion-copy perf follow-ups through sparse frame 118 hull motion; all 63 scenes remain validated, and the public headless battle card is +0.4056% over target / 99.6084% target speed).
+post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6, ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3 motion-copy perf follow-ups through high-only sparse frame 117 target-hull motion; all 63 scenes remain validated, and the public headless battle card is +0.4041% over target / 99.6097% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 594 |
-| Approx. words | 6397 |
+| Lines | 596 |
+| Approx. words | 6415 |
 | Code fences | 1 |
 
 ## Outline
