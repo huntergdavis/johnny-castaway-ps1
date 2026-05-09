@@ -50,7 +50,7 @@ The v0.8.0 invariant is that **63 / 63 scenes stayed green on the visual bar thr
 
 ## The headless harness
 
-`scripts/run-regtest.sh` boots a deterministic DuckStation in `perf-log` mode against a `BOOTMODE.TXT` that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps `perf-log.txt`, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.
+[`scripts/run-regtest.sh`]({{ site.github_url }}/blob/main/scripts/run-regtest.sh) boots a deterministic DuckStation in `perf-log` mode against a [`BOOTMODE.TXT`]({{ '/docs/glossary/#bootmode' | relative_url }}) that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps `perf-log.txt`, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.
 
 Two numbers from the log do most of the work:
 
