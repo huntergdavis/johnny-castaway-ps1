@@ -102,7 +102,7 @@
       <h1>Development workflow</h1>
       <p class="subtitle">The author's own per-scene loop. Capture, encode, replay, screenshot, validate.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1591 words
+          ~6 min read · 1626 words
         </p>
       
       <hr class="rule" />
@@ -247,10 +247,13 @@ add the scene to the active routing function:</p>
 </ul>
 
 <p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a> —
-add the slug to <code class="language-plaintext highlighter-rouge">kProvenScenes</code> <strong>only after full human visual + audible
-signoff</strong>. Pending scenes can still be launched explicitly with
-<code class="language-plaintext highlighter-rouge">fgpilot &lt;slug&gt;</code> once the routing function knows about them, but they
-shouldn’t enter the random screensaver rotation until they’re certified.</p>
+add the slug to <code class="language-plaintext highlighter-rouge">kAllScenes[]</code> so the screensaver picker can draw it.
+There used to be a separate <code class="language-plaintext highlighter-rouge">kProvenScenes</code> array gated on human
+visual + audible signoff; that gate was retired once the full
+63-scene set ran cleanly post-v0.7.0-ps1, so the picker now draws
+from everything in <code class="language-plaintext highlighter-rouge">kAllScenes</code>. New scenes land here as soon as
+their FG2 pack ships on the CD layout. Pending scenes can still be
+launched explicitly with <code class="language-plaintext highlighter-rouge">fgpilot &lt;slug&gt;</code> for bring-up work.</p>
 
 <h3 id="3-build--launch">3. Build + launch</h3>
 
