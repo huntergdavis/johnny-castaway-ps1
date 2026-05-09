@@ -116,9 +116,28 @@ Pulled from the live narrative in
   stores automatic policy separately from manual holiday id. Captions, Scene
   Set, tide, raft, island-position, freeplay/perf preferences, and menu cursor
   defaults remain future work.
-- **Caption audit follow-through.** HIGH-confidence ADS-tag
-  mappings are in; LOW-confidence STAND/VISITOR/WALKSTUF slots
-  will be refined as those scenes pass the bar.
+- **Caption audit follow-through.** Two layers, with one done in
+  `v0.8.4-ps1` and one still open. *Done:* the website's *description*
+  of which caption belongs to which scene was reconciled against the
+  on-PS1 packs during the
+  [chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — per-scene `index.md` titles + bodies, `scenes.yml` notes,
+  `scene-status.md` Notes column, and the in-game
+  [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
+  display strings. The runtime evidence overturned a substantial
+  fraction of the audit's confidence ratings, including two HIGH-rated
+  FISHING entries (`FISHING 2` boot, `FISHING 3` crab) that were exact
+  text-pack mismatches and the `VISITOR 5` `NO_MATCH` candidate that
+  turned out to be a clear unambiguous gag. *Open:* the runtime
+  `captionSceneMap[]` array in
+  [`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+  was not changed in `v0.8.4-ps1`; the on-screen caption band
+  continues to play whatever caption the original audit picked, even
+  on rows where the website now disagrees with that pick. Repointing
+  the runtime mapping (or blanking the rows where text and pack can't
+  be reconciled) is a future-release item. The
+  [post-validation runtime corrections section]({{ '/docs/captions/#post-validation-runtime-corrections-v084-ps1' | relative_url }})
+  lists the named mismaps.
 - **`fgpilot` -> "PS1 scene playback" naming migration.** The
   internal code-name in `foreground_pilot.c` and friends remains
   `fgpilot`; the public-facing name is moving to "PS1 scene
