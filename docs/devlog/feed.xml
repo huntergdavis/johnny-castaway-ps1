@@ -93,7 +93,7 @@ believable rotation.</p>
 runtime cost of a not-yet-validated scene is the same as a validated
 one: load the FG2 pack, play it, tick the calendar. The visuals may
 not be pixel-perfect, the SFX may need rework, but the scene plays. As
-soon as a scene moves from ⏳ to ✅ in the <a href="../scenes/">scene
+soon as a scene moves from ⏳ to ✅ in the <a href="/johnny-castaway-ps1/scenes/">scene
 ledger</a>, it looks right in whichever
 pool already contains it.</p>
 
@@ -451,7 +451,7 @@ presses Start, walks the major pause-menu screens, and drops <code class="langua
 markers into the PS1 TTY log. DuckStation regtest captures frames every few
 VBlanks. Each marker is delayed until the target menu has had time to draw,
 and the reporter copies the first dumped frame at or after that point before
-rewriting the <a href="../help/menu/">menu help guide</a>.</p>
+rewriting the <a href="/johnny-castaway-ps1/help/menu/">menu help guide</a>.</p>
 
 <p>That gives the project a new kind of documentation: generated from the
 running disc, checked by the same deterministic tooling we use for
@@ -478,7 +478,7 @@ Start stops working on the SPI pad path again, no guide page gets produced.</p>
 do the thing, make it repeatable, and then let the artifact tell the truth.</p>
 
 <p>The full operational reference is now
-<a href="../docs/scripted-input/">Scripted input harness</a>.</p>
+<a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>.</p>
 ]]></content>
   </entry><entry>
     <title>Freeplay debug mode — May 1, 2026</title>
@@ -693,7 +693,7 @@ Docker image. Frames dump on a fixed interval, TTY captures to stdout,
 state hashes capture at exit. Combined, this gives a single command
 that produces both visual diff inputs and machine-readable perf
 baselines for a regression run.</li>
-  <li>See the <a href="../source/docs/ps1/performance-optimization-plan/">performance optimization plan</a>
+  <li>See the <a href="/johnny-castaway-ps1/source/docs/ps1/performance-optimization-plan/">performance optimization plan</a>
 for the optimization backlog being driven by these numbers.</li>
 </ul>
 
@@ -723,7 +723,7 @@ register writes.</li>
   <li><strong>Day/Night and Holiday overrides (shipped)</strong>: flow into
 <code class="language-plaintext highlighter-rouge">fgLoopApplyVariant</code> in <code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code> with priority
 <code class="language-plaintext highlighter-rouge">explicit menu override &gt; Set Time/Date soft override &gt; random</code>.</li>
-  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu.c/h</code>. Design: <a href="../source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
+  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu.c/h</code>. Design: <a href="/johnny-castaway-ps1/source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
 </ul>
 
 <h2 id="4-holiday-expansion--4--35-design">4. Holiday expansion — 4 → 35 design</h2>
@@ -737,7 +737,7 @@ an average of about three.</li>
 Pirate Day, Star Wars Day, Moon Landing Day) so the screensaver
 always feels seasonally alive rather than dead-stretches between the
 four legacy events.</li>
-  <li>Design: <a href="../source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>.
+  <li>Design: <a href="/johnny-castaway-ps1/source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>.
 Implementation is not in this batch.</li>
 </ul>
 
@@ -797,12 +797,12 @@ intended for external perf-debugging agents.</li>
 <h2 id="pointers">Pointers</h2>
 
 <ul>
-  <li>Design backbone: <a href="../source/docs/ps1/pause-menu-design/">pause menu design</a>,
-<a href="../source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>,
-<a href="../source/docs/ps1/performance-optimization-plan/">performance optimization plan</a></li>
-  <li>Status frame: <a href="../source/docs/ps1/current-status/">current status</a>,
-<a href="../source/docs/ps1/scene-status/">scene status</a></li>
-  <li>Workflow: <a href="../source/docs/ps1/development-workflow/">development workflow</a></li>
+  <li>Design backbone: <a href="/johnny-castaway-ps1/source/docs/ps1/pause-menu-design/">pause menu design</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/holidays-expansion-design/">holiday expansion design</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/performance-optimization-plan/">performance optimization plan</a></li>
+  <li>Status frame: <a href="/johnny-castaway-ps1/source/docs/ps1/current-status/">current status</a>,
+<a href="/johnny-castaway-ps1/source/docs/ps1/scene-status/">scene status</a></li>
+  <li>Workflow: <a href="/johnny-castaway-ps1/source/docs/ps1/development-workflow/">development workflow</a></li>
 </ul>
 ]]></content>
   </entry><entry>
@@ -2009,8 +2009,8 @@ the current standalone <code class="language-plaintext highlighter-rouge">fishin
   <p><strong>⚠️ Historical snapshot — not current truth.</strong>
 Dated 2026-04-16. Preserved as a prerender-pilot-era status surface
 between the restore-pilot era and the fgpilot/full-SFX baseline. For
-current status see the <a href="../source/docs/ps1/scene-status/">scene-status shelf page</a>
-and <a href="../source/docs/ps1/current-status/">current-status shelf page</a>.</p>
+current status see the <a href="/johnny-castaway-ps1/source/docs/ps1/scene-status/">scene-status shelf page</a>
+and <a href="/johnny-castaway-ps1/source/docs/ps1/current-status/">current-status shelf page</a>.</p>
 </blockquote>
 
 <details class="page-toc">
@@ -15639,8 +15639,8 @@ right fit for general sprite animation assets.</li>
 Dated 2026-03-21. Preserved as the restore-pilot-era status surface.
 The “verified” counts below belong to the restore-rollout validation
 model and are not comparable to the current scene-playback bar. For
-current status see the <a href="../source/docs/ps1/scene-status/">scene-status shelf page</a>
-and <a href="../source/docs/ps1/current-status/">current-status shelf page</a>.</p>
+current status see the <a href="/johnny-castaway-ps1/source/docs/ps1/scene-status/">scene-status shelf page</a>
+and <a href="/johnny-castaway-ps1/source/docs/ps1/current-status/">current-status shelf page</a>.</p>
 </blockquote>
 
 <p>Date: 2026-03-21</p>

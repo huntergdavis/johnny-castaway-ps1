@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../assets/css/main.css" />
-  <script defer src="../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../">Home</a></li>
-        <li><a href="../play/">Play</a></li>
-        <li><a href="./" aria-current="page">About</a></li>
-        <li><a href="../scenes/">Scenes</a></li>
-        <li><a href="../perf/">Perf</a></li>
-        <li><a href="../devlog/">Devlog</a></li>
-        <li><a href="../lab/">Lab</a></li>
-        <li><a href="../hack/">Hack</a></li>
-        <li><a href="../docs/">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/" aria-current="page">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,14 +96,14 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">What this is · How it works</p>
       <h1>About</h1>
       <p class="subtitle">A fan port of Sierra's Johnny Castaway to the original PlayStation, built as a hybrid host-and-replay pipeline.</p>
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <h2 id="in-one-paragraph">In one paragraph</h2>
 
@@ -116,11 +116,11 @@ cheated. The technical short version: the project does not run Sierra’s
 original ADS / TTM bytecode on the PS1 at all. A desktop host runs the
 real engine, captures every visible foreground draw plus every
 <code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> event, and writes the result into a small per-scene
-binary called an <strong><a href="../docs/glossary/#fg2-pack">FG2 pack</a></strong>. The PS1 build loads packs from the disc
+binary called an <strong><a href="/johnny-castaway-ps1/docs/glossary/#fg2-pack">FG2 pack</a></strong>. The PS1 build loads packs from the disc
 and replays them, while owning only the narrow runtime it must:
 background, wave animation, holiday overlay, controller input, SPU
 audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
-inside <a href="../docs/hardware/">2 MB of RAM</a> at all.</p>
+inside <a href="/johnny-castaway-ps1/docs/hardware/">2 MB of RAM</a> at all.</p>
 
 <p>Current release: <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>. Validated scenes:
 <code class="language-plaintext highlighter-rouge">63 / 63</code>
@@ -168,8 +168,8 @@ PS1 replay before it joins the validated count. There is no shortcut.
 At <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>, all
 <strong>63 of 63</strong>
 scenes are signed off — every row in the
-<a href="../scenes/">per-scene ledger</a> clears the
-<a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>
+<a href="/johnny-castaway-ps1/scenes/">per-scene ledger</a> clears the
+<a href="/johnny-castaway-ps1/docs/glossary/#fishing1-bar">FISHING 1 bar</a>
 across every applicable variant. The hard cluster
 near the end was the foreground-only multi-view scenes
 (<code class="language-plaintext highlighter-rouge">MISCGAG 1</code>, <code class="language-plaintext highlighter-rouge">MISCGAG 2</code>, <code class="language-plaintext highlighter-rouge">STAND 1</code>, the wide LILLIPUTIAN arrival),
@@ -177,13 +177,13 @@ which all needed the generic normal / far-left / far-right host
 stitch before their packs replayed cleanly.</p>
 
 <p>The second ledger — the
-<a href="../perf/">performance battle card</a> — is its
+<a href="/johnny-castaway-ps1/perf/">performance battle card</a> — is its
 own bar, separate on purpose. At <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> the matrix
-averages <code class="language-plaintext highlighter-rouge">99.5%</code> <a href="../docs/glossary/#target-speed">target speed</a>
+averages <code class="language-plaintext highlighter-rouge">99.5%</code> <a href="/johnny-castaway-ps1/docs/glossary/#target-speed">target speed</a>
 across the 120 timing-bearing scene/tide rows; the
-<a href="../docs/performance/">reference manual</a>
+<a href="/johnny-castaway-ps1/docs/performance/">reference manual</a>
 explains what each column means and the
-<a href="../lab/from-87-to-99-5/">retrospective on how it got there</a>
+<a href="/johnny-castaway-ps1/lab/from-87-to-99-5/">retrospective on how it got there</a>
 walks through which experiments landed and which didn’t.</p>
 
 <h2 id="what-this-isnt">What this isn’t</h2>
@@ -210,61 +210,61 @@ voting, no Patreon.</li>
 <h2 id="where-to-go-from-here">Where to go from here</h2>
 
 <ul>
-  <li><a href="./method/">/about/method/</a> – the
+  <li><a href="/johnny-castaway-ps1/about/method/">/about/method/</a> – the
 technical deep-dive: pipeline, pack format, hardware gotchas
 hit on the way (SPI pad polling, <code class="language-plaintext highlighter-rouge">FntFlush</code>, dirty-rect
 bookkeeping, SPU HLE divergence, TTY printf).</li>
-  <li><a href="./status/">/about/status/</a> –
+  <li><a href="/johnny-castaway-ps1/about/status/">/about/status/</a> –
 component-level status. Renderer, audio, input, captions,
 holidays, pause menu, memcard, regtest harness, host capture,
 CD packaging.</li>
-  <li><a href="./history/">/about/history/</a> –
+  <li><a href="/johnny-castaway-ps1/about/history/">/about/history/</a> –
 the timeline. Pre-port era, first PS1 attempts, the hybrid
 pivot, the 63-scene grind, where it stands at
 <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>.</li>
-  <li><a href="./voice/">/about/voice/</a> – the
+  <li><a href="/johnny-castaway-ps1/about/voice/">/about/voice/</a> – the
 editorial standard the prose on this site holds itself to.
 Read it before writing a new page.</li>
-  <li><a href="./dev-environment/">/about/dev-environment/</a>
+  <li><a href="/johnny-castaway-ps1/about/dev-environment/">/about/dev-environment/</a>
 – the actual desk behind the work, photographed. Six windows:
 the Dunking Bird auto-poker, the fresh editor, two LLM
 sub-agents (Claude + Codex), DuckStation running the latest
 build, and a bottom-monitor system-telemetry panel — all on
 KDE Plasma.</li>
-  <li><a href="../scenes/">/scenes/</a> – live per-scene
+  <li><a href="/johnny-castaway-ps1/scenes/">/scenes/</a> – live per-scene
 ledger. All 63 rows clear the FISHING 1 bar; family jump nav,
 per-scene case studies, last-verified release tag.</li>
-  <li><a href="../perf/">/perf/</a> – the second ledger:
+  <li><a href="/johnny-castaway-ps1/perf/">/perf/</a> – the second ledger:
 126-variant headless-perf battle card with sortable columns
 and color-coded Target Speed cells.</li>
-  <li><a href="../devlog/">/devlog/</a> – the dated
+  <li><a href="/johnny-castaway-ps1/devlog/">/devlog/</a> – the dated
 worklogs that drove each phase, in original form.</li>
-  <li><a href="../archaeology/">/archaeology/</a> – older
+  <li><a href="/johnny-castaway-ps1/archaeology/">/archaeology/</a> – older
 status surfaces, retired tooling, the harness era, the
 restore-pilot era, and other paths that did not become the
 active methodology.</li>
-  <li><a href="../lab/">/lab/</a> – fifteen feature-length
+  <li><a href="/johnny-castaway-ps1/lab/">/lab/</a> – fifteen feature-length
 retrospectives, newest first. The
-<a href="../lab/from-87-to-99-5/">post-validation performance loop</a>,
-<a href="../lab/the-site-itself/">the site itself as a small program</a>,
-<a href="../lab/build-farm/">the 24/7 build farm</a>,
-<a href="../lab/the-63-scene-grind/">the 63-scene grind</a>,
+<a href="/johnny-castaway-ps1/lab/from-87-to-99-5/">post-validation performance loop</a>,
+<a href="/johnny-castaway-ps1/lab/the-site-itself/">the site itself as a small program</a>,
+<a href="/johnny-castaway-ps1/lab/build-farm/">the 24/7 build farm</a>,
+<a href="/johnny-castaway-ps1/lab/the-63-scene-grind/">the 63-scene grind</a>,
 the LLM pass, hallucination engineering, regression as a
 lifestyle, and the rest.</li>
-  <li><a href="../hack/">/hack/</a> – a learning path for
+  <li><a href="/johnny-castaway-ps1/hack/">/hack/</a> – a learning path for
 hackers who want to read the C, port to another machine, or
 understand the debugging loops.</li>
-  <li><a href="../source/">/source/</a> and
-<a href="../resources/">/resources/</a> – the complete
+  <li><a href="/johnny-castaway-ps1/source/">/source/</a> and
+<a href="/johnny-castaway-ps1/resources/">/resources/</a> – the complete
 documentation shelf and asset catalog.</li>
-  <li><a href="../play/">/play/</a> – the download page:
+  <li><a href="/johnny-castaway-ps1/play/">/play/</a> – the download page:
 latest <code class="language-plaintext highlighter-rouge">.bin</code> / <code class="language-plaintext highlighter-rouge">.cue</code>, DuckStation quickstart, controller
 map, freeplay controls, real-hardware notes.</li>
-  <li><a href="../faq/">/faq/</a> – author-written
+  <li><a href="/johnny-castaway-ps1/faq/">/faq/</a> – author-written
 answers to “what is this,” “do I need Sierra files,” “is this
 legal,” “does it run at native rate,” and the other recurring
 questions.</li>
-  <li><a href="../releases/">/releases/</a> – short notes
+  <li><a href="/johnny-castaway-ps1/releases/">/releases/</a> – short notes
 on every tagged version with links to the full release notes
 and the disc image.</li>
 </ul>
@@ -290,23 +290,23 @@ that engine decode this port would not exist.</p>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -320,18 +320,18 @@ that engine decode this port would not exist.</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../help/">Help</a></li>
-          <li><a href="../perf/">Battle card</a></li>
-          <li><a href="../releases/">Releases</a></li>
-          <li><a href="../faq/">FAQ</a></li>
-          <li><a href="../credits/">Credits</a></li>
-          <li><a href="../hack/">Hack</a></li>
-          <li><a href="../archaeology/">Archaeology</a></li>
-          <li><a href="../docs/glossary/">Glossary</a></li>
-          <li><a href="../source/">Source library</a></li>
-          <li><a href="../resources/">Resources</a></li>
-          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

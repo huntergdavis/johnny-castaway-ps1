@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,7 +96,7 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Reference</p>
       <h1>Story-loop walks</h1>
@@ -104,10 +104,10 @@
         <p class="reading-time" aria-label="Estimated reading time">
           ~5 min read · 1263 words
         </p>
-
+      
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The original <em>Johnny Castaway</em>
 screensaver did not move Johnny between scenes. Each scene started
@@ -138,10 +138,10 @@ from <code class="language-plaintext highlighter-rouge">walk_data.h</code>.</p>
 <h2 id="what-this-is">What this is</h2>
 
 <p>Story-loop walks fire <strong>between scenes</strong>, not inside them. The
-screensaver-loop <a href="../glossary/#scene-picker">scene picker</a> decides what’s next, asks the walk
+screensaver-loop <a href="/johnny-castaway-ps1/docs/glossary/#scene-picker">scene picker</a> decides what’s next, asks the walk
 subsystem to move Johnny from his current <code class="language-plaintext highlighter-rouge">(spot, heading)</code> to the
 next scene’s start <code class="language-plaintext highlighter-rouge">(spot, heading)</code>, and only then plays the next
-scene’s <a href="../glossary/#fg2-pack">FG2 pack</a>.</p>
+scene’s <a href="/johnny-castaway-ps1/docs/glossary/#fg2-pack">FG2 pack</a>.</p>
 
 <p>The walk happens against the live island background — ocean still
 animating, holiday overlay still on screen if applicable, the palm
@@ -151,12 +151,12 @@ caption fires during a walk). When the walk finishes, the next scene
 loads its pack as if Johnny had always been at the new spot.</p>
 
 <p>Freeplay’s direct-control walking is a different surface — same
-draw kernel, but the player drives <code class="language-plaintext highlighter-rouge">(x, y)</code> per <a href="../glossary/#vblank">VBlank</a> from the
+draw kernel, but the player drives <code class="language-plaintext highlighter-rouge">(x, y)</code> per <a href="/johnny-castaway-ps1/docs/glossary/#vblank">VBlank</a> from the
 D-pad instead of consuming a pre-baked path. See
-<a href="../freeplay/">/docs/freeplay/</a>.</p>
+<a href="/johnny-castaway-ps1/docs/freeplay/">/docs/freeplay/</a>.</p>
 
 <p>The feature shipped in
-<a href="../../releases/#v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></a>
+<a href="/johnny-castaway-ps1/releases/#v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></a>
 and gained three runtime guards in subsequent releases (see
 <a href="#evolution-by-release">Evolution by release</a> below).</p>
 
@@ -167,10 +167,10 @@ and gained three runtime guards in subsequent releases (see
 <table>
   <thead>
     <tr>
-      <th scope="col">File</th>
+      <th>File</th>
       <th style="text-align: right">Lines</th>
-      <th scope="col">Owner</th>
-      <th scope="col">Notes</th>
+      <th>Owner</th>
+      <th>Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -230,7 +230,7 @@ tuples the kernel walks through one tick at a time.</p>
 <p>The full pre-flight audit, the per-spot canonical <code class="language-plaintext highlighter-rouge">(x, y)</code>
 coordinates, and the heading conventions are documented in the
 upstream source doc — see
-<a href="../../source/docs/ps1/walk-spot-coordinates/">walk-spot-coordinates</a>
+<a href="/johnny-castaway-ps1/source/docs/ps1/walk-spot-coordinates/">walk-spot-coordinates</a>
 for the deep dive.</p>
 
 <h2 id="runtime-invariants">Runtime invariants</h2>
@@ -275,7 +275,7 @@ releases:</p>
 teleporting between scenes. Footstep audio shipped here too
 but was removed wholesale before any sample-ID audit
 (see the historical
-<a href="../../source/docs/ps1/walk-implementation-plan/">walk-implementation-plan</a>
+<a href="/johnny-castaway-ps1/source/docs/ps1/walk-implementation-plan/">walk-implementation-plan</a>
 for the original Phase 4 footsteps record).</li>
   <li><strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong> — backdrop-key guard. Walks now run only
 when the next scene matches the previous rendered tide,
@@ -294,7 +294,7 @@ The clean-rect pressure estimator was counting only foreground
 pack bounds, not the ocean wave band or the upper/lower split
 rects actually saved for restoration. The MARY 4 random-load
 freeze
-(<a href="../../lab/v081-mary4-freeze/">retrospective</a>)
+(<a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/">retrospective</a>)
 was the canary. Fix is centralized in a helper that mirrors
 the actual save path; covers all 14 random-position scenes.</li>
 </ul>
@@ -309,38 +309,38 @@ captured during a freeze — the values say whether the persistent
 clean buffer was alive at the point of the bug.</p>
 
 <p>For visual debugging, the
-<a href="../regtest/">regtest harness</a> captures
+<a href="/johnny-castaway-ps1/docs/regtest/">regtest harness</a> captures
 frame PNGs every N frames; comparing two consecutive walk
 captures usually reveals stale-backdrop bleed-through. The
-<a href="../scripted-input/">scripted-input harness</a>
+<a href="/johnny-castaway-ps1/docs/scripted-input/">scripted-input harness</a>
 can drive a deterministic walk by replaying a fixed pad-script.</p>
 
 <p>For repros that the bounded matrix can’t reach, run a
-<a href="../glossary/#soak-test">soak</a> — long
+<a href="/johnny-castaway-ps1/docs/glossary/#soak-test">soak</a> — long
 randomized DuckStation pass — and watch for the kind of
 clean-pressure freeze v0.8.1 fixed.</p>
 
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../freeplay/">Freeplay reference</a> —
+  <li><a href="/johnny-castaway-ps1/docs/freeplay/">Freeplay reference</a> —
 the other consumer of <code class="language-plaintext highlighter-rouge">walk_render</code>. Same kernel, D-pad input
 instead of pre-baked path.</li>
-  <li><a href="../hardware/">Hardware envelope</a> —
+  <li><a href="/johnny-castaway-ps1/docs/hardware/">Hardware envelope</a> —
 why the persistent clean buffer matters: 2 MB total RAM, every
 re-allocation is a fragmentation risk.</li>
-  <li><a href="../../perf/">Performance battle card</a> —
+  <li><a href="/johnny-castaway-ps1/perf/">Performance battle card</a> —
 per-tide timing for every scene, including the walk-adjacent
 ones.</li>
-  <li><a href="../performance/">Performance reference</a>
+  <li><a href="/johnny-castaway-ps1/docs/performance/">Performance reference</a>
 — what each column on the battle card means; the walk
 subsystem’s persistent clean buffer is part of the same
 pressure-accounting envelope.</li>
-  <li><a href="../../lab/v081-mary4-freeze/">v0.8.1 retrospective</a>
+  <li><a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/">v0.8.1 retrospective</a>
 — the soak-vs-matrix war story that drove the wave-band pressure
 fix.</li>
-  <li><a href="../glossary/#clean-rect">Glossary: clean-rect</a>
-· <a href="../glossary/#bootmode">Glossary: BOOTMODE.TXT</a></li>
+  <li><a href="/johnny-castaway-ps1/docs/glossary/#clean-rect">Glossary: clean-rect</a>
+· <a href="/johnny-castaway-ps1/docs/glossary/#bootmode">Glossary: BOOTMODE.TXT</a></li>
 </ul>
 
 <h2 id="source-on-github">Source on GitHub</h2>
@@ -372,23 +372,23 @@ fix.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/walks/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -402,18 +402,18 @@ fix.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

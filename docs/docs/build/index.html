@@ -16,31 +16,31 @@
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <script defer src="../../assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="../../devlog/feed.xml" />
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="../../devlog/feed.json" />
+        href="/johnny-castaway-ps1/devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="../../lab/feed.xml" />
+        href="/johnny-castaway-ps1/lab/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="../../lab/feed.json" />
-  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="../../sitemap.xml" />
+        href="/johnny-castaway-ps1/sitemap.xml" />
 
-
+  
 
   <script type="application/ld+json">
 {
@@ -70,21 +70,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../perf/">Perf</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -96,7 +96,7 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-
+  
     <header class="page-header">
       <p class="eyebrow">Build</p>
       <h1>Build & toolchain</h1>
@@ -104,14 +104,14 @@
         <p class="reading-time" aria-label="Estimated reading time">
           ~4 min read · 1167 words
         </p>
-
+      
       <hr class="rule" />
     </header>
-
+  
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page documents the build pipeline that
 turns the source tree into <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. The toolchain is
-<a href="../glossary/#psn00bsdk">PSn00bSDK</a> 0.24 + a MIPS cross-compiler, both of which live inside a
+<a href="/johnny-castaway-ps1/docs/glossary/#psn00bsdk">PSn00bSDK</a> 0.24 + a MIPS cross-compiler, both of which live inside a
 reproducible Docker image so the build is identical on Linux, Intel macOS,
 Apple Silicon (via Rosetta 2), and Windows (via WSL2). The native macOS
 toolchain attempt was abandoned because the precompiled binaries from
@@ -145,7 +145,7 @@ Docker won by default.</p>
   <li><strong>Docker Desktop</strong> (or rootless Docker on Linux). The build never runs
 natively on the host.</li>
   <li><strong>Git</strong>, to clone the repository.</li>
-  <li><strong><a href="../glossary/#duckstation">DuckStation</a></strong> for testing — the regtest image carries its own copy, but
+  <li><strong><a href="/johnny-castaway-ps1/docs/glossary/#duckstation">DuckStation</a></strong> for testing — the regtest image carries its own copy, but
 for live development you launch the desktop emulator yourself. Get a real
 PS1 BIOS file separately; the project does not redistribute one.</li>
 </ul>
@@ -169,10 +169,10 @@ git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
 <p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. At
 <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> the CD image is about <strong>76 MB</strong> — that
 weight is almost all foreground (FG2) packs routed onto the disc;
-the <a href="../glossary/#ps-exe">PS-EXE</a> itself is <strong>208 KiB</strong> (104 × 2 KiB CD-ROM sectors). If
+the <a href="/johnny-castaway-ps1/docs/glossary/#ps-exe">PS-EXE</a> itself is <strong>208 KiB</strong> (104 × 2 KiB CD-ROM sectors). If
 you want the per-scene loop instead
 of a one-shot build, read
-<a href="../dev-workflow/">Development workflow</a>.</p>
+<a href="/johnny-castaway-ps1/docs/dev-workflow/">Development workflow</a>.</p>
 
 <h2 id="the-docker-image">The Docker image</h2>
 
@@ -182,9 +182,9 @@ architecture the author owns. It’s based on Ubuntu 22.04 and installs:</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Component</th>
-      <th scope="col">Version</th>
-      <th scope="col">Source</th>
+      <th>Component</th>
+      <th>Version</th>
+      <th>Source</th>
     </tr>
   </thead>
   <tbody>
@@ -248,8 +248,8 @@ The PS1-specific list adds the PSn00bSDK adapter modules:</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Library</th>
-      <th scope="col">Purpose</th>
+      <th>Library</th>
+      <th>Purpose</th>
     </tr>
   </thead>
   <tbody>
@@ -340,7 +340,7 @@ STACK = 801FFF00
 </code></pre></div></div>
 
 <p>Per-scene <code class="language-plaintext highlighter-rouge">.FG2</code> packs are added under <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code> as scenes
-get wired in — see <a href="../dev-workflow/">Development workflow</a>
+get wired in — see <a href="/johnny-castaway-ps1/docs/dev-workflow/">Development workflow</a>
 for the routing step.</p>
 
 <h2 id="the-wrapper-scripts">The wrapper scripts</h2>
@@ -348,8 +348,8 @@ for the routing step.</p>
 <table>
   <thead>
     <tr>
-      <th scope="col">Script</th>
-      <th scope="col">What it does</th>
+      <th>Script</th>
+      <th>What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -425,23 +425,23 @@ docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 mipsel-none-elf-
 </code></pre></div></div>
 
 <p>If both succeed, the next step is loading <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in DuckStation —
-or running it through the <a href="../regtest/">headless regtest harness</a>.</p>
+or running it through the <a href="/johnny-castaway-ps1/docs/regtest/">headless regtest harness</a>.</p>
 
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../dev-workflow/">Development workflow</a> — what to do
+  <li><a href="/johnny-castaway-ps1/docs/dev-workflow/">Development workflow</a> — what to do
 <em>with</em> a fresh build, scene by scene.</li>
-  <li><a href="../infrastructure/">Build infrastructure</a> —
+  <li><a href="/johnny-castaway-ps1/docs/infrastructure/">Build infrastructure</a> —
 the bigger picture: Docker images, regtest container, release
 script, what’s still done by hand on each release.</li>
-  <li><a href="../hardware/">Hardware</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/hardware/">Hardware</a> — the
 PS1 envelope the build is targeting.</li>
-  <li><a href="../regtest/">Regression testing</a> — booting the disc
+  <li><a href="/johnny-castaway-ps1/docs/regtest/">Regression testing</a> — booting the disc
 image headlessly for screenshots and TTY capture.</li>
-  <li><a href="../api/">API mapping</a> — what each PSn00bSDK
+  <li><a href="/johnny-castaway-ps1/docs/api/">API mapping</a> — what each PSn00bSDK
 library is replacing.</li>
-  <li><a href="../../lab/build-farm/">Lab: the 24/7 build farm</a>
+  <li><a href="/johnny-castaway-ps1/lab/build-farm/">Lab: the 24/7 build farm</a>
 — the same machinery framed as methodology.</li>
 </ul>
 
@@ -473,23 +473,23 @@ library is replacing.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.4-ps1</a>)
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/build/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -503,18 +503,18 @@ library is replacing.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../perf/">Battle card</a></li>
-          <li><a href="../../releases/">Releases</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="../glossary/">Glossary</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>
