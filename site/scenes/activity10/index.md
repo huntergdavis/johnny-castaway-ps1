@@ -7,7 +7,31 @@ slug: activity10
 status: validated
 last_verified: "2026-05-05"
 description: "ACTIVITY.ADS scene 10: Johnny sits reading and a seagull swoops in and steals the book. Validated 2026-05-08."
+image: /assets/img/activity10-ps1-seagull-steals-book.png
+image_alt: "ACTIVITY 10 on PS1 at night: Johnny stands under the palm tree while a seagull flies away upper-right with the stolen book."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity10-ps1-seagull-steals-book.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="ACTIVITY 10 on PS1 at night: Johnny stands under the palm tree while a seagull flies away upper-right with the stolen book." />
+  <figcaption>
+    ACTIVITY 10 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The seagull is mid-getaway upper-right with Johnny's book; he is
+    left empty-handed under the palm. The book-and-seagull pairing
+    is also why
+    <a href="{{ '/scenes/activity4/' | relative_url }}">ACTIVITY 4</a>
+    needed its caption fixed — the on-PS1 loop showed the audit's
+    "reads, seagull on head" line did not belong to that scene either,
+    and the closest match to that description is the setup beat
+    here.
+  </figcaption>
+</figure>
 
 Validated 2026-05-05. Visual + audible signoff on the existing on-disc
 `ACTIVITY10.FG2` / `ACTV10L.FG2` packs — high-tide nighttime route, no
