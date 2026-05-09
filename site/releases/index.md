@@ -40,15 +40,17 @@ headless performance baseline.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
   ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-  VISITOR3 motion-copy passes, all 126 timing-bearing rows average `+0.4041%`
-  public over target / `99.6097%` public target speed; the raw signed CSV is
-  `-0.3644%` / `100.3935%` for optimization work.
+  VISITOR3 motion-copy/code-headroom/CD-pressure passes through v202, all 126
+  timing-bearing rows average `+0.4041%` public over target / `99.6097%`
+  public target speed; the raw signed CSV is `-0.3644%` / `100.3935%` for
+  optimization work.
 - **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
   VISITOR3 tides, high-tide frame `115`, shared frames `118`/`124`, and
-  high-only frame `117` now move already-composited background rows and draw
-  only residual foreground payloads. High improves `1118/1028 -> 1101/1030`,
-  low improves `1126/1025 -> 1108/1028`, blocking drops `150/170 -> 116/139`,
-  and the packs keep fixed LBAs and the `215040` byte PS-EXE bucket.
+  high-only frame `117`, and high-only re-anchored frame `127` now move
+  already-composited background rows and draw only residual foreground payloads.
+  High improves `1118/1028 -> 1101/1030`, low improves `1126/1025 -> 1108/1028`,
+  blocking drops `150/170 -> 114/139`, and the packs keep fixed LBAs and the
+  `215040` byte PS-EXE bucket.
 
 The post-validation perf retrospective at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})

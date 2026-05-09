@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom perf follow-ups through v197; all 63 scenes remain
-validated, and the public headless battle card is `+0.4041%` over target /
-`99.6097%` target speed).
+motion-copy/code-headroom/CD-pressure perf follow-ups through v202; all 63
+scenes remain validated, and the public headless battle card is `+0.4041%`
+over target / `99.6097%` target speed).
 
 ## Overall
 
@@ -222,8 +222,9 @@ FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
 guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
-plus high-tide frame `115`, shared frames `118`/`124`, and high-only frame
-`117`. VISITOR3 high is now `1101/1030` with `blocking_vb=116`; low is
+plus high-tide frame `115`, shared frames `118`/`124`, high-only frame `117`,
+and high-only re-anchored frame `127`. VISITOR3 high is now `1101/1030` with
+`blocking_vb=114`; low is
 `1108/1028` with `blocking_vb=139`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now

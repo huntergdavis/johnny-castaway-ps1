@@ -26,7 +26,8 @@ target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
 Current all-scene rollup after the VISITOR3 high-only sparse frame-117
-target-hull motion-copy promotion:
+target-hull timing promotion plus the v202 high frame-127 re-anchor CD-pressure
+promotion:
 `+0.4041%` public average over target / `99.6097%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.3644%` / `100.3935%`. Since the compact full-matrix baseline was about
@@ -39,7 +40,10 @@ scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
 add the v188 sparse-in-place frame `124` state-hull motion-copy payload and
 the v189 sparse-in-place frame `118` hull motion-copy payload to both tides,
-then add the v193 high-only sparse-in-place frame `117` target-hull payload.
+then add the v193 high-only sparse-in-place frame `117` target-hull payload
+and the v202 high-only frame `127` re-anchor payload. The v202 pass keeps
+VISITOR3 high loop timing flat at `1101/1030` while cutting active payload
+`542729 -> 527206`, blocking `116 -> 114`, and loop-read time `118 -> 116`.
 Both VISITOR3 tides preserve the original `1555450` byte CD footprint, fixed
 later offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket.
 The v193 rewrite trims another `11149` high active bytes: high improves to

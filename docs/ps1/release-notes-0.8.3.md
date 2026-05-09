@@ -10,8 +10,9 @@ the headless perf matrix, and all 126 timing-bearing rows now average
 `+0.4041%` public over target / `99.6097%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
-compact, and VISITOR3 motion-copy follow-ups. The raw signed optimization
-matrix is `-0.3644%` over target / `100.3935%` target speed.
+compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
+v202. The raw signed optimization matrix is `-0.3644%` over target /
+`100.3935%` target speed.
 
 ## Headline
 
