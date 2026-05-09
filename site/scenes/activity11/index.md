@@ -7,7 +7,30 @@ slug: activity11
 status: validated
 last_verified: "2026-05-05"
 description: "ACTIVITY.ADS scene 11: A bird swoops in and steals Johnny's clothes. Validated 2026-05-08."
+image: /assets/img/activity11-ps1-bird-clothes-thief.png
+image_alt: "ACTIVITY 11 on PS1 at night: a bird perches in the palm leaves holding Johnny's clothes while a naked Johnny stands in the water at the lower-left of the island."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity11-ps1-bird-clothes-thief.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="ACTIVITY 11 on PS1 at night: a bird perches in the palm leaves holding Johnny's clothes while a naked Johnny stands in the water at the lower-left of the island." />
+  <figcaption>
+    ACTIVITY 11 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Both halves of the gag in one frame: the bird is perched in
+    the palm leaves with the stolen clothes, and Johnny is in the
+    water at the lower-left, clothes-less. The on-PS1 loop also
+    overturned the original
+    <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
+    "rain dance" guess for this scene — that gag is
+    <a href="{{ '/scenes/activity5/' | relative_url }}">ACTIVITY 5</a>.
+  </figcaption>
+</figure>
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
 high/low packs with a frame-wide keyed overlay
