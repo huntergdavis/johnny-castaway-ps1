@@ -25,7 +25,7 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the VISITOR3 high frame-115 motion-copy promotion:
+Current all-scene rollup after the VISITOR3 sparse frame-124 motion-copy promotion:
 `+0.4064%` public average over target / `99.6077%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.3620%` / `100.3915%`. Since the compact full-matrix baseline was about
@@ -35,23 +35,25 @@ public target-speed points.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
-then add a high-tide frame `115` state-hull motion-copy payload. Both VISITOR3
-tides preserve the original `1555450` byte CD footprint, fixed LBAs
-`22472/23232`, and the `215040` byte PS-EXE bucket. The v182 high-only rewrite
-trims another `4334` active high-tide payload bytes; high improves
-`scene_vb 1409 -> 1408`, `loop_vb 1105 -> 1104`, `target_vb 1031 -> 1030`,
-keeps overrun at `74`, cuts `blocking_vb 129 -> 128`, keeps loop reads at `23`,
-cuts `loop_read_vb 132 -> 130`, and keeps due misses at `22`. Low remains on
-the v181 row at `scene_vb=1408`, `loop_vb=1108`, `target_vb=1028`,
-`overrun_vb=80`, `blocking_vb=143`, `loop_reads=27`, `loop_read_vb=152`, and
-`due_misses=25`. Hidden refill stays `prefetch_overrun_vb=0` on both tides. The
-broad no-regression gate is
-`scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
+then add the v182 high-tide frame `115` state-hull motion-copy payload, then
+add the v188 sparse-in-place frame `124` state-hull motion-copy payload to both
+tides. Both VISITOR3 tides preserve the original `1555450` byte CD footprint,
+fixed later offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE
+bucket. The v188 rewrite trims another `14592` active bytes per tide while
+keeping visible loop timing flat: high remains `scene_vb=1408`,
+`loop_vb=1104`, `target_vb=1030`, `overrun_vb=74`, and due misses `22`, while
+`blocking_vb` improves `128 -> 126` and `loop_read_vb` improves `130 -> 128`.
+Low remains `scene_vb=1408`, `loop_vb=1108`, `target_vb=1028`,
+`overrun_vb=80`, and due misses `25`, while `blocking_vb` improves `143 -> 142`
+and `loop_read_vb` improves `152 -> 151`. Hidden refill stays
+`prefetch_overrun_vb=0` on both tides. The broad no-regression gate is
+`scratch/ps1-perf-iterate/visitor3-f124-motion-sparse-v188-broad/20260509-001852-3457696/summary.json`.
 
-Latest rejected VISITOR3 v183-v186 probes: low-tide precursor motion-copy
+Latest rejected VISITOR3 v183-v187 probes: low-tide precursor motion-copy
 expansion, C-side fastspan row copies, terminal zero trimming, compact-origin
 rebasing, low precursor hull motion, terminal hand-authored read groups, and
-compact motion-copy metadata are closed for now. Low frames `114..118` saved
+compact motion-copy metadata plus generic runtime narrow upload are closed for
+now. Low frames `114..118` saved
 `59543` active payload bytes on paper, but regressed low from `1108/1028` to
 `1129/1027` and added hidden
 refill. Split-frame tests showed no single precursor frame promotes; sparse
@@ -67,7 +69,9 @@ layout stable at `215040` with fixed VISITOR3 LBAs, but both tides were
 exact-flat against v182 (`1104/1030` high and `1108/1028` low). The v186
 contiguous one-span copy metadata opcode saved `3906` high active bytes and
 `3485` low active bytes, but compact repack regressed both tides and
-sparse-in-place still regressed low to `1119/1027` with hidden refill. The next
+sparse-in-place still regressed low to `1119/1027` with hidden refill. The v187
+runtime narrow-upload path crossed the PS-EXE bucket and failed before
+`JCPERF2`, even though the host-side x-band model remains useful. The next
 VISITOR3 swing must either change the data shape enough to reduce both CD and
 CPU, or add deadline-aware scheduling without growing the hot executable bucket.
 
@@ -602,8 +606,9 @@ WALKSTUF3 low compact-FGP3/v4 pass moves it to `-0.3273%` / `100.3612%`, and
 the JOHNNY1 compact-FGP3/v4 pass moves it to `-0.3281%` / `100.3620%`. The
 ACTIVITY9 low compact-FGP3/v4 pass moves it to `-0.3331%` / `100.3669%`, the
 VISITOR3 v181 motion-copy payload pass moves it to `-0.3621%` /
-`100.3916%`, and the VISITOR3 high frame-115 motion-copy follow-up moves it to
-`-0.3620%` / `100.3915%`.
+`100.3916%`, the VISITOR3 high frame-115 motion-copy follow-up moves it to
+`-0.3620%` / `100.3915%`, and the VISITOR3 sparse frame-124 work-reduction
+follow-up keeps it at `-0.3620%` / `100.3915%`.
 The current rollup is tracked above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
@@ -685,8 +690,10 @@ raw signed matrix to `-0.3281%` over target / `100.3620%` target speed. The
 ACTIVITY9 low compact-FGP3/v4 pass moves the current raw signed matrix to
 `-0.3331%` over target / `100.3669%` target speed, the VISITOR3 v181
 motion-copy payload pass moves it to `-0.3621%` over target / `100.3916%`
-target speed, and the VISITOR3 high frame-115 motion-copy follow-up moves it to
-`-0.3620%` over target / `100.3915%` target speed.
+target speed, the VISITOR3 high frame-115 motion-copy follow-up moves it to
+`-0.3620%` over target / `100.3915%` target speed, and the VISITOR3 sparse
+frame-124 work-reduction follow-up keeps the same raw signed rollup while
+lowering VISITOR3 CD pressure.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need

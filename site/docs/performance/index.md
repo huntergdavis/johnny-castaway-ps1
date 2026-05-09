@@ -313,10 +313,9 @@ signed optimization matrix is `-0.3620%` / `100.3915%`.
 
 ## Scene Battle Card
 
-As of 2026-05-08, all 126 scene/tide variants have current headless
+As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-high-f115-motion-x-v182`,
-`visitor3-motion-x-v181`,
+`visitor3-f124-sparse-motion-v188`,
 `activity9-low-compact-fgp3-v174`,
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,

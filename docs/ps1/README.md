@@ -31,11 +31,14 @@ follow-ups; the raw signed optimization matrix is `-0.3620%` / `100.3915%`.
 That is about `16.99` public over-target points removed and `12.51` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-high-f115-motion-x-v182`, adds a
-high-tide frame `115` state-hull motion-copy payload on top of the v181 yacht
-translation motion-copy baseline. It preserves both `1555450` byte pack
-footprints, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while
-moving high `1105/1031 -> 1104/1030`; low remains on v181 at `1108/1028`.
+The latest VISITOR3 follow-up, `visitor3-f124-sparse-motion-v188`, adds a
+sparse-in-place frame `124` state-hull motion-copy payload to both tides on top
+of the v181/v182 motion baseline. It preserves both `1555450` byte pack
+footprints, later offsets, fixed LBAs `22472/23232`, and the `215040` byte
+PS-EXE bucket while keeping loop timing flat at `1104/1030` high and
+`1108/1028` low. It cuts another `14592` active payload bytes per tide,
+blocking `128 -> 126` high / `143 -> 142` low, and loop-read time
+`130 -> 128` high / `152 -> 151` low.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler
