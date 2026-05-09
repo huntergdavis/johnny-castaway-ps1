@@ -6,7 +6,18 @@ tag: 3
 slug: visitor3
 status: validated
 description: "VISITOR.ADS scene 3: Johnny waves down what he thinks is a small boat, but the perspective gag reveals it's actually a huge boat. Validated 2026-05-08."
+image: /assets/img/visitor3-ps1-perspective.png
+image_alt: "VISITOR 3 on PS1: Johnny on the island waving down a passing boat that turns out to be much larger than it looked."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/visitor3-ps1-perspective.png' | relative_url }}"
+       width="961" height="720" loading="lazy" decoding="async"
+       alt="VISITOR 3 running on PS1: Johnny on the island waving down a passing boat. The perspective gag reveals the boat is much larger than it first appeared." />
+  <figcaption>VISITOR 3 on PS1 hardware. The perspective gag — Johnny waves what he thinks is a small nearby boat; it turns out to be a huge one farther out. The wide multi-view stitch this scene needs to render is also why the two perf-battle-card rows for VISITOR 3 are the only red entries on /perf/ at the current release.</figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
