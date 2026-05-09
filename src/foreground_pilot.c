@@ -112,6 +112,7 @@ struct TFgPilotRuntime {
     uint8 *setupSegmentBuffer;      /* Small setup-read segment retained independently from streamScratch. */
     uint32 setupSegmentStart;
     uint32 setupSegmentBytes;
+    uint8 setupSegmentReusable;
     const struct TFgPilotReadGroup *streamReadGroups;
     uint8 streamReadGroupCount;
     uint8 streamWindowValid;
@@ -192,6 +193,8 @@ enum {
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_LOW_SETUP_SEGMENT_START (281UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define fgRuntimeWindowReadSize() (gFgRuntime.streamWindowReadSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
@@ -1103,8 +1106,8 @@ static void fgReleaseStreamBuffers(void)
      *   gFgStreamWindowBuffer    — grow-only (prefetch read window)
      *   gFgStreamScratch         — grow-only (alignment scratch)
      *
-     * gFgSetupSegmentBuffer is fishing3-specific and small; we still
-     * cycle it because it's zero-cost and makes the failure path
+     * gFgSetupSegmentBuffer is scene-segment-specific and bounded; we
+     * still cycle it because it's low-cost and makes the failure path
      * easier to read. */
     if (gFgSetupSegmentBuffer != NULL) {
         free(gFgSetupSegmentBuffer);
@@ -1186,6 +1189,7 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
     gFgRuntime.setupSegmentBuffer = NULL;
     gFgRuntime.setupSegmentStart = 0;
     gFgRuntime.setupSegmentBytes = 0;
+    gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.streamReadGroups = NULL;
     gFgRuntime.streamReadGroupCount = 0;
     gFgRuntime.streamWindowValid = 0;
@@ -1306,6 +1310,7 @@ static void fgRuntimeReset(void)
     gFgRuntime.setupSegmentBuffer = NULL;
     gFgRuntime.setupSegmentStart = 0;
     gFgRuntime.setupSegmentBytes = 0;
+    gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.streamReadGroups = NULL;
     gFgRuntime.streamReadGroupCount = 0;
     gFgRuntime.streamWindowValid = 0;
@@ -1693,6 +1698,12 @@ static int fgRuntimeCanStageNextFrame(void)
            gFgRuntime.prefetchFrameBuffer != NULL;
 }
 
+static inline void fgRuntimeClearVolatileSetupSegment(void)
+{
+    if (!gFgRuntime.setupSegmentReusable)
+        gFgRuntime.setupSegmentPrimed = 0;
+}
+
 static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 windowStart,
                                               uint32 targetEnd,
@@ -1777,7 +1788,7 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
         entryEnd <= gFgRuntime.setupSegmentStart + gFgRuntime.setupSegmentBytes) {
         offsetInWindow = entry->dataOffset - gFgRuntime.setupSegmentStart;
         memcpy(dst, gFgRuntime.setupSegmentBuffer + offsetInWindow, entry->dataSize);
-        gFgRuntime.setupSegmentPrimed = 0;
+        fgRuntimeClearVolatileSetupSegment();
     } else {
         uint32 windowEnd;
         if (!gFgRuntime.streamWindowValid)
@@ -2015,7 +2026,7 @@ static int fgRuntimePrimeNextFrameForSetup(void)
         return 1;
     }
 
-    gFgRuntime.setupSegmentPrimed = 0;
+    fgRuntimeClearVolatileSetupSegment();
     if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                         entry->dataOffset,
                                         entry->dataSize,
@@ -2179,10 +2190,23 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     uint32 segmentBytes;
     uint8 *segmentBuffer;
 
-    if (!fgSceneEquals(sceneName, "fishing3"))
+    gFgRuntime.setupSegmentReusable = 0;
+    if (fgSceneEquals(sceneName, "visitor3") && islandState.lowTide) {
+        segmentStart = FG_VISITOR3_LOW_SETUP_SEGMENT_START;
+        segmentBytes = FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES;
+        if (gFgSetupSegmentBuffer == NULL) {
+            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES);
+            if (gFgSetupSegmentBuffer == NULL) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkAllocFail(FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES);
+                return 0;
+            }
+        }
+        segmentBuffer = gFgSetupSegmentBuffer;
+        gFgRuntime.setupSegmentReusable = 1;
+    } else if (!fgSceneEquals(sceneName, "fishing3")) {
         return 1;
-
-    if (islandState.lowTide) {
+    } else if (islandState.lowTide) {
         segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
         segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
         if (gFgSetupSegmentBuffer == NULL) {
@@ -2281,7 +2305,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 stageTick = fgReadTickCounter();
                 if (ps1PerfEnabled)
                     ps1PerfBeginPrefetchRead(slackVBlanks);
-                gFgRuntime.setupSegmentPrimed = 0;
+                fgRuntimeClearVolatileSetupSegment();
                 ok = ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                                     entry->dataOffset,
                                                     entry->dataSize,
@@ -2350,7 +2374,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
     if (ps1PerfEnabled) {
         ps1PerfBeginPrefetchRead(slackVBlanks);
     }
-    gFgRuntime.setupSegmentPrimed = 0;
+    fgRuntimeClearVolatileSetupSegment();
     ok = ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                         entry->dataOffset,
                                         entry->dataSize,
@@ -2501,7 +2525,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
             }
             gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
         } else {
-            gFgRuntime.setupSegmentPrimed = 0;
+            fgRuntimeClearVolatileSetupSegment();
             if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                                 gFgRuntime.currentEntry.dataOffset,
                                                 gFgRuntime.currentEntry.dataSize,

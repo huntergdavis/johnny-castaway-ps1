@@ -64,15 +64,14 @@ BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
 compact-FGP3/v4 pass, the BUILDING6 compact-FGP3/v4 pass, the ACTIVITY9 high
 compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the JOHNNY1
 compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, and the
-VISITOR3 motion-copy/code-headroom/CD-pressure passes. The latest VISITOR3
-pack pass is the high-only frame-127 re-anchor: high remains `1101/1030`, low
-stays `1108/1028`, and blocking drops to `114/139` with fixed pack layout.
-The current v197 source pass removes unused noncompact motion dispatch and
-keeps those timings exact-flat while buying code-layout headroom.
+VISITOR3 motion-copy/code-headroom/CD-pressure passes plus the low persistent
+setup-segment pass. The latest VISITOR3 pass keeps high at `1101/1030` and
+moves low `1108/1028 -> 1102/1032`; blocking is now `114/124` with fixed pack
+layout and a deliberate low setup tradeoff.
 The two yellow
 rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
-(`92.8%` / `93.6%`); the orange band (95–99%) holds `walkstuf1` high/low
+(`93.6%` / `93.6%`); the orange band (95–99%) holds `walkstuf1` high/low
 (`95.6%` / `95.8%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
@@ -82,11 +81,12 @@ BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
 WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
 high, WALKSTUF3 low, and ACTIVITY9 low moved into green after their
 compact-FGP3/v4 restore-minus-current passes. The latest rejected VISITOR3
-v183-v196 probes close low precursor motion-copy frames `114..118`, the C-side
+v183-v203 probes close low precursor motion-copy frames `114..118`, the C-side
 fastspan path, terminal zero/origin trimming, low hull-motion retries, terminal
 hand-authored read groups, simple motion row-copy runtime paths, compact
-motion-copy metadata, frame `117` sparse hull in both/low-only forms, and
-generic narrow dirty-row upload plus naive compact-v4 motion-marker dispatch; the remaining
+motion-copy metadata, frame `117` sparse hull in both/low-only forms, generic
+narrow dirty-row upload, naive compact-v4 motion-marker dispatch, frame `125`
+re-anchor, and low frame `127` re-anchor; the remaining
 VISITOR3 work is now custom data-shape, dictionary, pack-authored
 precomposed-strip, or generated scheduler work.
 
@@ -109,10 +109,10 @@ Current battle-card rollup as of <time datetime="2026-05-09">2026-05-09</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.4%` (`0.4041%` exact, public-capped) |
-| Timing-bearing average target speed | `99.6%` (`99.6097%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-09T04:04:48` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-high-reanchor-f127-v202`, `visitor3-drop-unused-motion-dispatch-v197`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.4%` (`0.3962%` exact, public-capped) |
+| Timing-bearing average target speed | `99.6%` (`99.6166%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-09T04:40:56` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-segment281-305-v204`, `visitor3-high-reanchor-f127-v202`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -148,8 +148,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-high-reanchor-f127-v202`,
-  `visitor3-drop-unused-motion-dispatch-v197`,
+  refreshed rows use `visitor3-low-segment281-305-v204`,
+  `visitor3-high-reanchor-f127-v202`,
   `johnny1-compact-fgp3-v173`,
   `walkstuf3-low-compact-fgp3-v171`,
   `activity9-high-compact-fgp3-v167`,
@@ -1823,15 +1823,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-09T02:41:24</td>
-      <td>visitor3-drop-unused-motion-dispatch-v197</td>
-      <td>+7.8%</td>
-      <td class="spd-yellow">92.8%</td>
-      <td>1108/1028</td>
-      <td>139</td>
+      <td>2026-05-09T04:40:56</td>
+      <td>visitor3-low-segment281-305-v204</td>
+      <td>+6.8%</td>
+      <td class="spd-yellow">93.6%</td>
+      <td>1102/1032</td>
+      <td>124</td>
       <td>0</td>
-      <td>25</td>
-      <td>v197 code-headroom row; low pack remains exact-flat after unused noncompact motion dispatch removal with fixed offsets LBA and PS-EXE bucket</td>
+      <td>22</td>
+      <td>v204 persistent setup segment 281..305 trades setup scene_vb 1408 to 1415 for active-loop win: loop 1108/1028 to 1102/1032, overrun 80 to 70, blocking 139 to 124, loop reads 27 to 23, due misses 25 to 22; fixed pack LBA and PS-EXE bucket</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>

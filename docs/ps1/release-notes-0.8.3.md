@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4041%` public over target / `99.6097%` public target speed after the MARY3,
+`+0.3962%` public over target / `99.6166%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v202. The raw signed optimization matrix is `-0.3644%` over target /
-`100.3935%` target speed.
+v204. The raw signed optimization matrix is `-0.3723%` over target /
+`100.4004%` target speed.
 
 ## Headline
 
@@ -29,7 +29,7 @@ v202. The raw signed optimization matrix is `-0.3644%` over target /
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
   methodology has removed about `17.00` public over-target points and added
-  about `12.51` public target-speed points.
+  about `12.52` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
   `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
@@ -49,14 +49,16 @@ v202. The raw signed optimization matrix is `-0.3644%` over target /
   `1745484` byte footprint and LBA fixed while moving low `2085/2058 ->
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
-- **VISITOR3 motion-copy payloads promoted.** The latest follow-up keeps the
+- **VISITOR3 motion-copy and setup-segment payloads promoted.** The latest follow-up keeps the
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
-  `117` motion-copy payloads. Both packs remain `1555450` bytes with fixed LBAs
-  `22472/23232` and the `215040` byte PS-EXE bucket. High moves
+  `117` plus high-only re-anchored frame `127` motion-copy payloads, then adds
+  a low-tide persistent setup segment for sectors `281..305`. Both packs
+  remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
+  PS-EXE bucket. High moves
   `1118/1028 -> 1101/1030`, cuts blocking `150 -> 116`, loop reads `27 -> 22`,
-  and due misses `26 -> 21`; low moves `1126/1025 -> 1108/1028`, cuts blocking
-  `170 -> 139`, loop reads `31 -> 27`, and due misses `29 -> 25`.
+  and due misses `26 -> 21`; low moves `1126/1025 -> 1102/1032`, cuts blocking
+  `170 -> 124`, loop reads `31 -> 23`, and due misses `29 -> 22`.
 
 ## Follow-Up Closure
 
@@ -106,6 +108,13 @@ failed. It uses a target-hull payload that preserves cleanup geometry, trims
 another `11149` high active bytes, improves high to `1101/1030`, cuts high
 blocking to `116`, cuts high loop-read time to `118`, and leaves low exact-flat
 on the v189 pack.
+
+The follow-up `visitor3-low-segment281-305-v204` promotes a scheduler-owned
+low-tide setup segment for sectors `281..305`. It accepts setup cost
+(`scene_vb 1408 -> 1415`) because the active loop improves `1108/1028 ->
+1102/1032`, overrun drops `80 -> 70`, blocking drops `139 -> 124`, loop reads
+drop `27 -> 23`, loop-read time drops `148 -> 131`, and due misses drop
+`25 -> 22`.
 
 ## Verification
 

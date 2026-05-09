@@ -592,6 +592,13 @@ def parse_source_setup_policy() -> dict[str, Any]:
                 (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
             ]
 
+    start = symbols.get("FG_VISITOR3_LOW_SETUP_SEGMENT_START")
+    size = symbols.get("FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES")
+    if start is not None and size is not None and size > 0:
+        policy["visitor3_low_segments"] = [
+            (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
+        ]
+
     return policy
 
 
@@ -672,7 +679,12 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
             prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
             if prime is None:
                 prime = source_policy.get("visitor3_low_prime_bytes")
-            return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024, visitor3_cap), [], "auto:visitor3-low"
+            segments = source_policy.get("visitor3_low_segments") or []
+            return (
+                clamp_setup_prime_bytes(source_policy, prime or 208 * 1024, visitor3_cap),
+                list(segments),
+                "auto:visitor3-low",
+            )
         prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
         if prime is None:
             prime = source_policy.get("visitor3_high_prime_bytes")

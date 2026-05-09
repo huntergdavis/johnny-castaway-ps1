@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure perf follow-ups through v202; all 63
-scenes remain validated, and the public headless battle card is `+0.4041%`
-over target / `99.6097%` target speed).
+motion-copy/code-headroom/CD-pressure perf follow-ups through v204; all 63
+scenes remain validated, and the public headless battle card is `+0.3962%`
+over target / `99.6166%` target speed).
 
 ## Overall
 
@@ -193,16 +193,18 @@ byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 a high-only sparse-in-place frame `117` target-hull motion payload on top of
 the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
 shared frame `118`, preserves both `1555450` byte pack footprints and LBAs
-`22472/23232`, improves high to `1101/1030`, keeps low at `1108/1028`, cuts
-blocking to `116/139`, and cuts loop-read time to `118/148`. The current v197
-source baseline then removes unused noncompact motion dispatch and keeps all
-VISITOR3/broad canary timings exact-flat while creating code-layout headroom.
-The public battle card is now `+0.4041%` over target / `99.6097%` target speed
+`22472/23232`, improves high to `1101/1030`, and the current v204 low
+persistent setup segment moves low to `1102/1032`. Blocking is now `114/124`,
+loop-read time is `116/131`, and low due misses drop `25 -> 22`; the accepted
+setup tradeoff raises low total `scene_vb 1408 -> 1415` while reducing
+active-loop debt. The current runtime baseline keeps all broad canaries flat
+while creating code-layout headroom from the earlier v197 dispatch removal.
+The public battle card is now `+0.3962%` over target / `99.6166%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.00`
-public over-target points and added about `12.51` public target-speed points.
+public over-target points and added about `12.52` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -223,9 +225,10 @@ pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
 guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
 plus high-tide frame `115`, shared frames `118`/`124`, high-only frame `117`,
-and high-only re-anchored frame `127`. VISITOR3 high is now `1101/1030` with
+and high-only re-anchored frame `127`, plus a low-tide persistent setup segment
+for sectors `281..305`. VISITOR3 high is now `1101/1030` with
 `blocking_vb=114`; low is
-`1108/1028` with `blocking_vb=139`. BUILDING2 high/low are `1349/1316` and
+`1102/1032` with `blocking_vb=124`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
