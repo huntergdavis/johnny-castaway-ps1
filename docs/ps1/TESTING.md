@@ -87,15 +87,16 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest rejected VISITOR3 v183-v185 note: low-tide precursor motion-copy frames
+Latest rejected VISITOR3 v183-v186 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,
 low hull-motion retries, terminal hand-authored read groups, and simple motion
-row-copy runtime paths are log-only failures. The pack rewrites either saved no
-meaningful bytes or regressed active timing, the read groups saved some reads
-but hurt cadence, and the runtime copy paths either crossed the `215040` byte
-PS-EXE bucket or stayed exact-flat. The next VISITOR3 work should use custom
-data-shape, dictionary, precomposed-strip, or generated scheduler ideas rather
-than another wider precursor motion window, hand read table, or C copy loop
+row-copy runtime paths, plus compact motion-copy metadata are log-only failures.
+The pack rewrites either saved no meaningful bytes or regressed active timing,
+the read groups saved some reads but hurt cadence, and the runtime/data-format
+copy paths either crossed the `215040` byte PS-EXE bucket, stayed exact-flat, or
+hurt refill cadence. The next VISITOR3 work should use custom data-shape,
+dictionary, precomposed-strip, or generated scheduler ideas rather than another
+wider precursor motion window, hand read table, metadata shrink, or C copy loop
 micro-optimization.
 
 Reporting rule: after every accepted perf optimization, or every rejected
