@@ -6,7 +6,33 @@ tag: 2
 slug: johnny2
 status: validated
 description: "JOHNNY.ADS scene 2: a bottle washes up on the shore; Johnny puts an SOS note inside and tosses it back into the ocean. Validated 2026-05-08."
+image: /assets/img/johnny2-ps1-sos-note.png
+image_alt: "JOHNNY 2 on PS1 at night: Johnny stands on the left shoreline holding a bottle, a thought bubble above him showing a sheet of paper labelled SOS."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/johnny2-ps1-sos-note.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="JOHNNY 2 on PS1 at night: Johnny stands on the left shoreline holding a bottle, a thought bubble above him showing a sheet of paper labelled SOS." />
+  <figcaption>
+    JOHNNY 2 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The SOS-note thought-bubble frame: Johnny is at the left
+    shoreline holding the bottle that washed up, picturing the
+    note he'll roll inside before tossing it back into the
+    ocean. The bubble hold timing was specifically tuned so the
+    island and SOS thought frames stay readable instead of
+    rolling past as a trailing empty-bubble chain — the per-page
+    perf retrospective at
+    <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">/lab/from-87-to-99-5/</a>
+    walks through the JOHNNY 2 padded-FGP3 + clean-pressure-relief
+    follow-up that completed this row.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-02 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
