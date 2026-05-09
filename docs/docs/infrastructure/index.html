@@ -102,7 +102,7 @@
       <h1>Build infrastructure & dev environment</h1>
       <p class="subtitle">How a one-person fan port keeps a reproducible cross-compile pipeline together — Docker, CMake, mkpsxiso, and a release script that tags itself.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1980 words
+          ~8 min read · 2047 words
         </p>
       
       <hr class="rule" />
@@ -254,18 +254,32 @@ docker build <span class="nt">-f</span> config/ps1/Dockerfile.ps1 <span class="s
     <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
     <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
 
-<span class="c"># 3. Build the PS1 executable + CD image</span>
+<span class="c"># 3. Build the PS1 executable</span>
 ./scripts/build-ps1.sh
 
-<span class="c"># 4. Boot it</span>
+<span class="c"># 4. Bundle the executable + assets into a CD image</span>
+./scripts/make-cd-image.sh
+
+<span class="c"># 5. Boot it</span>
 <span class="c">#    Open DuckStation, File → Start File…, point at jcreborn.cue (NOT .bin).</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> is the wrapper. It runs three Docker invocations in
-sequence: a clean of the previous build directory, a CMake configure plus
-<code class="language-plaintext highlighter-rouge">make</code>, and <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. The output lands
-in the repo root as <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> (the CD image) and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> (the
-cue sheet that tells DuckStation where the data track lives).</p>
+<p>The two-step split matters because the second step is fast and can be
+re-run after asset edits without rebuilding the executable. The
+all-in-one wrapper is <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code>, which calls
+both steps and then launches DuckStation.</p>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> produces <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.exe</code> and
+<code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.elf</code>. It runs two Docker invocations in sequence:
+a clean of the previous build directory, then a CMake configure plus
+<code class="language-plaintext highlighter-rouge">make jcreborn</code>. CMake resolves the PSn00bSDK toolchain via the
+<code class="language-plaintext highlighter-rouge">PSN00BSDK</code> environment variable that the Dockerfile sets to
+<code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/PSn00bSDK-0.24-Linux</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code> runs a third Docker invocation: <code class="language-plaintext highlighter-rouge">mkpsxiso
+-y /project/config/ps1/cd_layout.xml</code>. The output lands in the repo
+root as <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> (the CD image) and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> (the cue
+sheet that tells DuckStation where the data track lives).</p>
 
 <p>The CMake configuration lives in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> at the repo root. The
 relevant shape:</p>
