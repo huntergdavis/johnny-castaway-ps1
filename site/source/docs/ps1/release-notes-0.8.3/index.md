@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-v0.8.3-ps1 is a performance point release after v0.8.2-ps1. All 63 scenes remain validated, all 126 high/low scene variants remain routed through the headless perf matrix, and all 126 timing-bearing rows now average +0.4412% public over target / 99.5774% public target speed after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low compact follow-ups. The raw signed optimization...
+v0.8.3-ps1 is a performance point release after v0.8.2-ps1. All 63 scenes remain validated, all 126 high/low scene variants remain routed through the headless perf matrix, and all 126 timing-bearing rows now average +0.4404% public over target / 99.5782% public target speed after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, WALKSTUF3 low compact, and JOHNNY1 compact follow-ups. The raw si...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.3.md` |
-| Lines | 75 |
-| Approx. words | 487 |
+| Lines | 80 |
+| Approx. words | 528 |
 | Code fences | 0 |
 
 ## Outline

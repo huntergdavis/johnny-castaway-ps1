@@ -38,9 +38,10 @@ records the latest VISITOR3 follow-up as a non-promoting threshold closure.
   drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-  ACTIVITY9 high, and WALKSTUF3 low compact passes, all 126 timing-bearing rows
-  average `+0.4412%` public over target / `99.5774%` public target speed; the
-  raw signed CSV is `-0.3273%` / `100.3612%` for optimization work.
+  ACTIVITY9 high, WALKSTUF3 low, and JOHNNY1 compact passes, all 126
+  timing-bearing rows average `+0.4404%` public over target / `99.5782%`
+  public target speed; the raw signed CSV is `-0.3281%` / `100.3620%` for
+  optimization work.
 - **VISITOR3 threshold probing is closed for this baseline.** Lowering the
   fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
   keeps the accepted guard and moves future VISITOR3 work back to generated

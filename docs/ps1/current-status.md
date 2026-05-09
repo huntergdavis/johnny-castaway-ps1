@@ -5,9 +5,9 @@
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, and WALKSTUF3 low compact-FGP3 perf follow-ups; all 63 scenes
-remain validated, and the public headless battle card is `+0.4412%` over target /
-`99.5774%` target speed).
+ACTIVITY9 high, WALKSTUF3 low, and JOHNNY1 compact-FGP3 perf follow-ups; all 63
+scenes remain validated, and the public headless battle card is `+0.4404%`
+over target / `99.5782%` target speed).
 
 ## Overall
 
@@ -182,8 +182,11 @@ tide exact-flat as a canary. The latest WALKSTUF3 low compact-FGP3/v4 pass
 keeps the original `994669` byte footprint and LBA `26906`, moves low
 `2321/2293 -> 2310/2295`, cuts blocking
 `41 -> 26`, hidden refill `21 -> 17`, loop reads `72 -> 29`, and moves low into
-green. The public battle card is now `+0.4412%` over
-target / `99.5774%` target speed while preserving fixed pack LBAs and the
+green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
+byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
+`31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
+`95 -> 56`, and keeps LBAs `13982/14201`. The public battle card is now
+`+0.4404%` over target / `99.5782%` target speed while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.96`
@@ -211,14 +214,14 @@ stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2085/2058`, WALKSTUF1
 high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
-`2310/2295`, and the FISHING1 high control sits at the public cap
+`2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
 low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
 matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
-BUILDING2 residual work, VISITOR5 low, JOHNNY1 high/low, BUILDING4 low,
+BUILDING2 residual work, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
 BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
 VISITOR3 local C
 read-table rows and threshold-only fallthrough probes are now exhausted; the

@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3973 words
+          ~15 min read · 3975 words
         </p>
 
       <hr class="rule" />
@@ -433,14 +433,15 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.4412%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.5774%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3273%</code> / <code class="language-plaintext highlighter-rouge">100.3612%</code>.</p>
+the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.4404%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.5782%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.3281%</code> / <code class="language-plaintext highlighter-rouge">100.3620%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>,
 <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>,
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
@@ -521,7 +522,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-08T16:59:36</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-08T17:54:07</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -529,7 +530,8 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>,
+rows now use <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>,
 <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>,
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>,
@@ -735,8 +737,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>johnny1</code></td>
-      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
-      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
+      <td>+1.5% / 98.5% (1974/1945); blk 26</td>
+      <td>+1.5% / 98.5% (1974/1945); blk 26</td>
     </tr>
     <tr>
       <td><code>johnny2</code></td>

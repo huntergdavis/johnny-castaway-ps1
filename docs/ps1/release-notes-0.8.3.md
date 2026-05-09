@@ -7,10 +7,11 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4412%` public over target / `99.5774%` public target speed after the MARY3,
+`+0.4404%` public over target / `99.5782%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
-ACTIVITY9 high compact, and WALKSTUF3 low compact follow-ups. The raw signed
-optimization matrix is `-0.3273%` over target / `100.3612%` target speed.
+ACTIVITY9 high compact, WALKSTUF3 low compact, and JOHNNY1 compact follow-ups.
+The raw signed optimization matrix is `-0.3281%` over target / `100.3620%`
+target speed.
 
 ## Headline
 
@@ -39,6 +40,10 @@ optimization matrix is `-0.3273%` over target / `100.3612%` target speed.
   `994669` byte footprint and LBA fixed while moving low `2321/2293 ->
   2310/2295`, cutting blocking `41 -> 26`, loop reads `72 -> 29`, and due
   misses `5 -> 2`.
+- **JOHNNY1 read pressure is lower.** The latest compact-FGP3/v4 follow-up keeps
+  both `448370` byte footprints and fixed LBAs while moving high/low
+  `1977/1943 -> 1974/1945`, cutting blocking `31 -> 26`, loop reads `16 -> 7`,
+  and loop-read time `95 -> 56`.
 
 ## Follow-Up Closure
 
