@@ -6,7 +6,31 @@ tag: 5
 slug: mary5
 status: validated
 description: "MARY.ADS scene 5: Johnny finishes packing the raft and says goodbye to Mary before sailing off. Validated 2026-05-08."
+image: /assets/img/mary5-ps1-goodbye.png
+image_alt: "MARY 5 on PS1 at night: Johnny stands on the island holding Mary the mermaid in a goodbye embrace, the scene's packed raft sitting ready on the right side of the island, the moon overhead."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/mary5-ps1-goodbye.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="MARY 5 on PS1 at night: Johnny stands on the island holding Mary the mermaid in a goodbye embrace, the scene's packed raft sitting ready on the right side of the island, the moon overhead." />
+  <figcaption>
+    MARY 5 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Mary's day-eight goodbye: Johnny and Mary embrace on the
+    island while the scene's own packed raft sits ready on the
+    right (the generic island raft is suppressed via the
+    <code>NORAFT</code> story flag this scene introduced to direct
+    <code>fgpilot</code> playback). The
+    <code>FIRST</code> flag also routes through here, skipping the
+    walk prelude because the frog/full-wipe transition owns the
+    screen at scene start.
+  </figcaption>
+</figure>
 
 Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
