@@ -113,7 +113,10 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dd>The TTM opcode (<code>0xC051</code>) that triggers a sound effect. Captured into the FG2 pack as a per-frame sound-event table; <code>foreground_pilot.c</code> fires them with a 3-frame key-on delay so SPU register writes land before the PS1 expects audio.</dd>
 
 <dt id="voice-slot">Voice slot</dt>
-<dd>One of the SPU's 24 hardware-managed voices. The runtime uses 8 voices in round-robin for scene SFX, plus one dedicated voice for the optional ocean-ambience loop (toggle: Pause → Accessibility → Ocean).</dd>
+<dd>One of the SPU's 24 hardware-managed voices. The runtime uses 8 voices in round-robin for scene SFX, plus one dedicated voice for the optional <a href="#ocean-ambience">ocean-ambience</a> loop (toggle: Pause → Accessibility → Ocean).</dd>
+
+<dt id="ocean-ambience">Ocean ambience</dt>
+<dd>Optional looping background track that shipped in <code>v0.6.0-ps1</code>. Lives on a dedicated <a href="#voice-slot">voice slot</a> separate from the 8-voice scene-SFX round-robin so ducking the gag SFX never affects the ambient loop. The on-disc <code>OCEAN.VAG</code> is a 20-second seamless loop, downsampled to 11.025 kHz mono and encoded to Sony <a href="#vag">VAG</a> <a href="#adpcm">ADPCM</a> by <code>scripts/wav2vag.py</code>; the source recording is BigSoundBank sound 0266 ("Sea: Waves"), released CC0 (full attribution at <a href="{{ '/credits/#ocean-ambience' | relative_url }}">/credits/</a>). The SPU's hardware sample-loop reads as unbroken because the seam is hidden by an equal-power crossfade with the recording's natural continuation. Toggle path: <strong>Pause → Accessibility → Ocean</strong>; the choice persists to the <a href="#memcard">memcard</a> save block alongside the rest of the user-preference state.</dd>
 </dl>
 
 ## Hardware & toolchain {#hardware}
