@@ -150,8 +150,11 @@ set(SOURCES
     src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
     src/foreground_pilot.c src/ps1_perf.c src/island.c
     src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
+    src/ps1_pad_script.c
     src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
     src/spi.c src/memcard.c
+    src/scene_picker.c src/scene_freeplay.c
+    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
     src/holidays.c src/holidays_table.c
     src/ps1_stubs.c)
 
