@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **126 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; public-capped timing-bearing average is **+0.4% over target / 99.6% target speed** |
-| Latest perf matrix run | **`2026-05-09T01:53:41`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized/code-headroom rows use `visitor3-high-f117-target-hull-v193`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-09T02:41:24`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized/code-headroom rows use `visitor3-drop-unused-motion-dispatch-v197`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -110,20 +110,21 @@ across all 126 timing-bearing rows; the raw signed CSV records
 `-0.3644%` over target / `100.3935%` target speed for
 internal optimization analysis.
 
-The latest VISITOR3 follow-up, `visitor3-high-f117-target-hull-v193`, adds a
-high-only sparse-in-place frame `117` target-hull motion-copy payload on top of
-the v181/v182/v188/v189 motion baseline. It keeps both `1555450` byte pack
-footprints, fixed later offsets, fixed LBAs `22472/23232`, and the `215040`
-byte PS-EXE bucket while restoring the low pack to v189 and improving high to
-`1101/1030`. It is a CD-pressure plus timing promotion: high active payload
-drops another `11149` bytes, high blocking moves `120 -> 116`, loop reads move
-`23 -> 22`, loop-read time moves `122 -> 118`, and due misses move `22 -> 21`;
-low remains exact-flat at `1108/1028` with `blocking_vb=139`.
-The latest rejected v183-v192 VISITOR3 probes close low precursor motion-copy
+The latest VISITOR3 follow-up, `visitor3-drop-unused-motion-dispatch-v197`,
+removes the unused noncompact motion-marker dispatch after the pack scan proved
+current motion markers exist only in VISITOR3/VIST3LOW compact-v4 payloads.
+It is code-headroom, not a VBlank speed win: VISITOR3 remains exact-flat at
+`1101/1030` high and `1108/1028` low, with fixed LBAs `22472/23232` and the
+`215040` byte PS-EXE bucket, while hot foreground/render symbols move earlier.
+The timing baseline remains the v193 high-only frame `117` target-hull
+promotion: high active payload dropped `11149` bytes, high blocking moved
+`120 -> 116`, loop reads moved `23 -> 22`, and due misses moved `22 -> 21`.
+The latest rejected v183-v196 VISITOR3 probes close low precursor motion-copy
 frames `114..118`, the C-side fastspan copy path, terminal zero/origin trimming,
 low hull-motion retries, terminal hand-authored read groups, simple motion
 row-copy runtime paths, compact motion-copy metadata, sparse frame `117` hull
-mode in both/low-only forms, and generic narrow dirty-row upload. The pack
+mode in both/low-only forms, generic narrow dirty-row upload, and naive compact-v4
+motion-marker dispatch. The pack
 rewrites saved too little or regressed low timing,
 and the runtime/data-format fast paths either crossed the PS-EXE bucket, stayed
 exact-flat, hurt cadence, or failed before `JCPERF2`.
@@ -153,14 +154,15 @@ percentage points** of over-target gap and added about **12.51 target-speed
 points**.
 
 Current performance work is focused on rows below 99% first, then the remaining
-top outliers. The current promoted source/data pass is
-`visitor3-high-f117-target-hull-v193`: it keeps the v181 VISITOR3 frames
+top outliers. The current promoted source baseline is
+`visitor3-drop-unused-motion-dispatch-v197`: it keeps the v181 VISITOR3 frames
 `119..123` motion-copy payloads in both tides, keeps the v182 high-tide frame
 `115` payload, keeps the v188 frame `124` state-hull payload, and adds a
 sparse-in-place frame `118` hull payload to both tides plus a high-only frame
 `117` target-hull payload. Loop timing is `1101/1030` high and `1108/1028` low
 while blocking drops to `116/139`, loop-read time drops to `118/148`, and due
-misses are `21/25`. The
+misses are `21/25`; v197 adds code-layout headroom for the next direct or
+precomposed VISITOR3 path without changing those timings. The
 previous ACTIVITY9 low compact-FGP3/v4 pass converts `ACTV9LOW.FG2` to padded
 compact FGP3/v4 restore-minus-current data inside the original `1745484` byte
 footprint. Low improves `2085/2058 -> 2075/2061`, cuts overrun `27 -> 14`,
@@ -431,19 +433,19 @@ and the latest ACTIVITY9 low compact-FGP3/v4 pass moves low tide to
 `2075/2061`.
 The public-capped timing-bearing average is now `+0.4041%` over target /
 `99.6097%` target speed after the VISITOR3 high-only sparse frame-117
-target-hull motion-copy follow-up. The raw signed optimization matrix is
-`-0.3644%` / `100.3935%`.
-The latest VISITOR3 pass is a CD-pressure and high-timing promotion: it adds a
-high-only sparse target-hull motion-copy payload for frame `117`, preserves low
-loop timing at `1108/1028`, improves high to `1101/1030`, cuts high active
-payload another `11149` bytes, cuts high blocking `120 -> 116`, high loop-read
-time `122 -> 118`, and high due misses `22 -> 21`, while keeping fixed LBAs
-`22472/23232` plus the `215040` byte PS-EXE bucket. The latest rejected
-v183-v192 VISITOR3 probes close low precursor motion-copy frames `114..118`, a
+target-hull timing promotion and the later exact-flat v197 code-headroom pass.
+The raw signed optimization matrix is `-0.3644%` / `100.3935%`.
+The latest VISITOR3 timing pass is a CD-pressure and high-timing promotion: it
+adds a high-only sparse target-hull motion-copy payload for frame `117`,
+preserves low loop timing at `1108/1028`, improves high to `1101/1030`, cuts
+high active payload another `11149` bytes, cuts high blocking `120 -> 116`,
+high loop-read time `122 -> 118`, and high due misses `22 -> 21`, while keeping
+fixed LBAs `22472/23232` plus the `215040` byte PS-EXE bucket. The latest
+rejected v183-v196 VISITOR3 probes close low precursor motion-copy frames `114..118`, a
 runtime fastspan copy path, terminal zero/origin trimming, low hull-motion
 retries, terminal hand-authored read groups, simple motion row-copy runtime
 paths, compact motion-copy metadata, low/both-tide frame `117` sparse hull, and
-generic narrow dirty-row upload; future
+generic narrow dirty-row upload plus naive compact-v4 motion-marker dispatch; future
 VISITOR3 work is now focused on custom data-shape/dictionary/precomposed-strip
 ideas or generated deadline scheduling rather than wider precursor motion
 windows. The prior

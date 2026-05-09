@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy perf follow-ups through high-only sparse frame 117 target-hull
-motion; all 63 scenes remain validated, and the public headless battle card is
-`+0.4041%` over target / `99.6097%` target speed).
+motion-copy/code-headroom perf follow-ups through v197; all 63 scenes remain
+validated, and the public headless battle card is `+0.4041%` over target /
+`99.6097%` target speed).
 
 ## Overall
 
@@ -189,12 +189,14 @@ keeps the original `994669` byte footprint and LBA `26906`, moves low
 green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
-`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 motion-copy
-payload pass adds a high-only sparse-in-place frame `117` target-hull motion
-payload on top of the v181 yacht translation payloads, high frame `115`, shared
-frame `124`, and shared frame `118`, preserves both `1555450` byte pack
-footprints and LBAs `22472/23232`, improves high to `1101/1030`, keeps low at
-`1108/1028`, cuts blocking to `116/139`, and cuts loop-read time to `118/148`.
+`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 timing pass adds
+a high-only sparse-in-place frame `117` target-hull motion payload on top of
+the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
+shared frame `118`, preserves both `1555450` byte pack footprints and LBAs
+`22472/23232`, improves high to `1101/1030`, keeps low at `1108/1028`, cuts
+blocking to `116/139`, and cuts loop-read time to `118/148`. The current v197
+source baseline then removes unused noncompact motion dispatch and keeps all
+VISITOR3/broad canary timings exact-flat while creating code-layout headroom.
 The public battle card is now `+0.4041%` over target / `99.6097%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.

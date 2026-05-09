@@ -2311,14 +2311,6 @@ void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint3
         return;
 
     cleanupRows = grReadPackedSpanU16(spanData);
-    if (cleanupRows == GR_FGP3_MOTION_MARKER) {
-        grCompositePacked4CompactMotionXToBackground(spanData,
-                                                     spanDataSize,
-                                                     palette,
-                                                     screenX,
-                                                     screenY);
-        return;
-    }
     offset = 2;
     for (uint16 row = 0; row < cleanupRows; row++) {
         uint16 relY;
