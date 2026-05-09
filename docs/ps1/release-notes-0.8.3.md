@@ -11,7 +11,7 @@ the headless perf matrix, and all 126 timing-bearing rows now average
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v206. The raw signed optimization matrix is `-0.3723%` over target /
+v207. The raw signed optimization matrix is `-0.3723%` over target /
 `100.4004%` target speed.
 
 ## Headline
@@ -52,12 +52,12 @@ v206. The raw signed optimization matrix is `-0.3723%` over target /
 - **VISITOR3 motion-copy, setup-segment, and re-anchor payloads promoted.** The latest follow-up keeps the
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
-  `117` plus high-only re-anchored frames `127` and `126`, then adds high/low
+  `117` plus high-only re-anchored frames `127`, `126`, and `125`, then adds high/low
   persistent setup segments for sectors `277..293` and `281..305`.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
-  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 107`, loop reads `27 -> 20`,
+  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 106`, loop reads `27 -> 20`,
   and due misses `26 -> 20`; low moves `1126/1025 -> 1102/1032`, cuts blocking
   `170 -> 124`, loop reads `31 -> 23`, and due misses `29 -> 22`.
 
@@ -133,6 +133,16 @@ with `overrun_vb=71`, while cutting active payload `527206 -> 511690`,
 blocking `108 -> 107`, and loop-read time `108 -> 107`. Low and the broad
 canaries remain flat.
 
+The follow-up `visitor3-high-reanchor-f125-v207` promotes the next high-only
+re-anchor payload after v206. Frame `125`/source `171` widens from
+`x=161,w=162` to `x=154,w=169` and becomes a sparse-in-place target-hull
+motion-copy payload. It keeps high visible timing flat at `1414`, `1101/1030`
+with `overrun_vb=71`, while cutting active payload `511690 -> 496661`,
+blocking `107 -> 106`, and loop-read time `107 -> 106`. Low and the broad
+controls remain flat; the broad gate was split because an inconclusive harness
+`137` killed JOHNNY1 before metrics, then the tail rerun passed the remaining
+JOHNNY1/ACTIVITY9/FISHING1 controls.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -155,6 +165,11 @@ canaries remain flat.
   `scratch/ps1-perf-iterate/visitor3-high-segment277-293-v205-broad-norequire-rerun/20260509-061624-1296310/summary.json`.
 - VISITOR3 high frame-126 re-anchor broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-high-reanchor-f126-v206-broad-norequire/20260509-071828-1639276/summary.json`.
+- VISITOR3 high frame-125 focused gate:
+  `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-focused/20260509-075102-1822459/summary.json`.
+- VISITOR3 high frame-125 split broad controls:
+  `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-broad-norequire/20260509-075210-1829320/`
+  plus `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-tail-rerun/20260509-075859-1871481/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

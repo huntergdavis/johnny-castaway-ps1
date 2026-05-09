@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure perf follow-ups through v206; all 63
+motion-copy/code-headroom/CD-pressure perf follow-ups through v207; all 63
 scenes remain validated, and the public headless battle card is `+0.3962%`
 over target / `99.6166%` target speed).
 
@@ -192,11 +192,12 @@ byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 timing pass adds
 a high-only sparse-in-place frame `117` target-hull motion payload on top of
 the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
-shared frame `118`, then adds high-only re-anchored frames `127` and `126`.
+shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
+`125`.
 It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
 improves high to `1101/1030`, moves low to `1102/1032`, and keeps high/low
 persistent setup segments for sectors `277..293` and `281..305`. Blocking is
-now `107/124`, loop-read time is `107/131`, and due misses are `20/22`; the
+now `106/124`, loop-read time is `106/131`, and due misses are `20/22`; the
 accepted setup tradeoffs raise high total
 `scene_vb 1405 -> 1414` and low total `1408 -> 1415` while reducing
 active-loop debt. The current runtime baseline keeps all broad canaries flat
@@ -227,9 +228,9 @@ pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
 guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
 plus high-tide frame `115`, shared frames `118`/`124`, high-only frame `117`,
-and high-only re-anchored frames `127`/`126`, plus high/low persistent setup segments
+and high-only re-anchored frames `127`/`126`/`125`, plus high/low persistent setup segments
 for sectors `277..293` and `281..305`. VISITOR3 high is now `1101/1030` with
-`blocking_vb=107`; low is
+`blocking_vb=106`; low is
 `1102/1032` with `blocking_vb=124`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now

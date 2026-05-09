@@ -102,7 +102,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1824 words
+          ~7 min read · 1831 words
         </p>
 
       <hr class="rule" />
@@ -135,9 +135,9 @@ reads <code class="language-plaintext highlighter-rouge">59 -&gt; 47</code>, and
 compact-FGP3/v4 pass moves low to
 <code class="language-plaintext highlighter-rouge">2310/2295</code>, cuts blocking <code class="language-plaintext highlighter-rouge">41 -&gt; 26</code>, and moves the row into green. The
 latest VISITOR3 pass keeps high at <code class="language-plaintext highlighter-rouge">1101/1030</code>, moves low to <code class="language-plaintext highlighter-rouge">1102/1032</code>,
-cuts high blocking <code class="language-plaintext highlighter-rouge">114 -&gt; 108</code> and low blocking <code class="language-plaintext highlighter-rouge">139 -&gt; 124</code>, and trades
+cuts high blocking <code class="language-plaintext highlighter-rouge">114 -&gt; 106</code> and low blocking <code class="language-plaintext highlighter-rouge">139 -&gt; 124</code>, and trades
 setup time for lower active-loop CD pressure through high/low persistent
-segments. The
+segments plus high-only re-anchor payloads. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
@@ -306,7 +306,8 @@ MARY3 guarded prefetch-preserve pass, the BUILDING1 compact-FGP3/no-autoprime
 follow-up, the VISITOR5 high-only compact-FGP3/no-autoprime follow-up, the
 BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
 compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
-compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment passes.
+compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
+plus high-only re-anchor passes.
 The bring-up loop remains in
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a>.</li>
   <li><strong>Scene-by-scene FG2 routing.</strong> All 63 scenes have generated

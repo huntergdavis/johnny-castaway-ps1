@@ -32,9 +32,9 @@ reads `59 -> 47`, and moves the row into green. The latest WALKSTUF3 low
 compact-FGP3/v4 pass moves low to
 `2310/2295`, cuts blocking `41 -> 26`, and moves the row into green. The
 latest VISITOR3 pass keeps high at `1101/1030`, moves low to `1102/1032`,
-cuts high blocking `114 -> 108` and low blocking `139 -> 124`, and trades
+cuts high blocking `114 -> 106` and low blocking `139 -> 124`, and trades
 setup time for lower active-loop CD pressure through high/low persistent
-segments. The
+segments plus high-only re-anchor payloads. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
@@ -123,7 +123,8 @@ Pulled from the live narrative in
   follow-up, the VISITOR5 high-only compact-FGP3/no-autoprime follow-up, the
   BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
   compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
-  compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment passes.
+  compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
+  plus high-only re-anchor passes.
   The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
