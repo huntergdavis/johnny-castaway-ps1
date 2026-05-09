@@ -124,7 +124,11 @@ added `12` bytes to `fgRuntimeFillWindowForEntry` plus `48` bytes to
 `foregroundPilotPlay`. Hand-authored `133..149` grouping is now exhausted; the
 next VISITOR3 swing must either change the data shape enough to reduce both CD
 and CPU, or add deadline-aware scheduling with a second retained window/sector
-map rather than another scalar table row.
+map rather than another scalar table row. The v224 low frame `123` original
+payload rollback is closed as exact-flat too: it grew the frame `2616 -> 17570`
+bytes, shifted the sound table by `+362`, but left low at `1098/1034`,
+blocking `112`, and due misses `19`; single-frame rollback of the accepted
+`119..123` motion cluster is not the missing win.
 
 ## VISITOR3 white-whale backlog
 
