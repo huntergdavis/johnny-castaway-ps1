@@ -21,13 +21,14 @@ Date: 2026-05-08
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 1955 |
-| Approx. words | 32481 |
+| Lines | 2005 |
+| Approx. words | 33871 |
 | Code fences | 0 |
 
 ## Outline
 
 - PS1 Performance Next 100
+-   VISITOR3 white-whale backlog
 -   2026-04-30 ASM And Toolchain Feasibility Intake
 -   Highest-Leverage Thesis
 -   Fresh Targets From The Latest Misses

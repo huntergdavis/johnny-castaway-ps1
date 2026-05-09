@@ -48,6 +48,56 @@ the v181 row at `scene_vb=1408`, `loop_vb=1108`, `target_vb=1028`,
 broad no-regression gate is
 `scratch/ps1-perf-iterate/visitor3-motion-x-v182-high-f115-broad/20260508-213318-2508409/summary.json`.
 
+Latest rejected VISITOR3 v183 probes: low-tide precursor motion-copy expansion
+and C-side fastspan row copies are closed for now. Low frames `114..118` saved
+`59543` active payload bytes on paper, but regressed low from `1108/1028` to
+`1129/1027` and added hidden refill. Split-frame tests showed no single
+precursor frame promotes; frame `117` was closest at `1110/1028` with
+`blocking_vb 143 -> 141`, but sparse-in-place offset preservation still
+regressed to `1111/1028`, so offset compaction was not the root cause. A
+runtime same-tile fast path for motion spans crossed the PS-EXE bucket
+`215040 -> 217088` and did not improve key metrics. The next VISITOR3 swing
+must either change the data shape enough to reduce both CD and CPU, or add
+deadline-aware scheduling without growing the hot executable bucket.
+
+## VISITOR3 white-whale backlog
+
+These are intentionally deeper than the exhausted scalar/read-group lanes.
+Rank order is current working priority, not guaranteed payoff.
+
+| Rank | Idea | Why it could work | Main risk / gate |
+|---:|---|---|---|
+| 1 | Frame-local residual dictionary for terminal frames `139..144` | Tail duplication proved the late payload cluster is expensive, but moving it later is phase-negative. A same-offset dictionary inside each original payload could shrink bytes without changing pack LBA or read phase. | Needs a tiny decoder or generated FGP3 shape that stays inside the `215040` byte PS-EXE bucket. |
+| 2 | VISITOR3-only precomposed background-owned strips | Upload-ready analysis failed because selected pixels were not foreground-owned. Precompose strips from the known background state at pack build time and mark them background-owned so runtime can blit safe pixels without cleanup reads. | Must prove no island/tide/night/holiday state dependency leaks into the strip pixels. |
+| 3 | Motion opcode v2 with row-run headers shared across frames | Current motion-copy repeats row/span metadata per frame. Frames `119..123` and nearby yacht/state motion share geometry; a shared per-scene row-run table could shrink CD bytes without adding per-pixel work. | Runtime table lookup must be code-size-neutral or replace existing motion parser branches. |
+| 4 | Motion opcode v2 block-copy rectangles | Low precursor motion loses CPU. Encoding a few rectangular copy regions instead of hundreds of row spans could cut CPU while keeping the byte win. | Rectangular copies may include pixels that should stay transparent unless masks are precise. |
+| 5 | Motion opcode v2 masked strip copy | Store a bitmask per strip and copy only set pixels from old background. This may cut cleanup/residual bytes for yacht motion while reducing per-pixel span metadata. | Mask decode may cost more than it saves unless masks are highly compressible. |
+| 6 | Per-frame choose-between-original-and-motion with CPU model | Low frames save bytes but lose cycles. Build a measured eligibility model using payload saved, copy pixels, cleanup pixels, and read timing, then test only frames predicted to be net-positive. | Model can overfit; strict gates remain the source of truth. |
+| 7 | Same-offset payload packing for frame `117` only plus micro residual trim | Frame `117` was the closest low-tide precursor. Combine sparse-in-place motion with residual-tail trimming or cleanup subtraction to find a one-frame net win. | The known result is still +3 VBlanks with sparse-in-place, so the added trim must be real. |
+| 8 | Terminal frame partial restore-minus-current v2 | Existing restore-minus-current already helped VISITOR3, but terminal frames may still restore rows immediately overwritten by motion/exposed cleanup. Re-run subtraction with motion-aware current intervals. | Must not disturb visual correctness around yacht wake/rope/water overlaps. |
+| 9 | Frame-order-aware prefetch deadline sidecar | Local read groups do not fire; generated metadata could tell the scheduler exact frame deadlines and safe read groups for VISITOR3 without C table churn. | Requires runtime scheduling changes and proof that setup/held slack is sufficient. |
+| 10 | Do-not-stage negative hints for late terminal reads | Tail atlas and taildup showed some movements are phase-negative. A sidecar can also forbid speculative staging that causes hidden refill debt near terminal frames. | Hard to distinguish helpful hidden work from harmful hidden debt without per-frame gates. |
+| 11 | Per-pack sector clustering around existing hot offsets | Instead of moving data to zero-tail, repack only within the already-read sector neighborhood so hot frames share sector reads but keep phase. | Entry offsets/sound offsets must stay valid and file footprint fixed. |
+| 12 | Duplicate only subpayload spans inside current sectors | If full entry duplication is phase-negative, duplicate only the spans that trigger extra sectors into slack bytes in the same sector group. | Needs pack surgery below entry granularity. |
+| 13 | VISITOR3 terminal frame split: early core plus late tail | Split large entries into an early resident core and a late small residual, reducing blocking at due time without moving the whole payload. | Requires pack/runtime support for two payload sources per frame. |
+| 14 | Palette-index RLE for repeated water/background strips | VISITOR3 late frames likely contain repeated water/background runs. A VISITOR3-specific RLE substream could be tiny and decode into PAL4 spans. | Decoder code size and branch cost. |
+| 15 | Cross-frame residual XOR dictionary | Store differences from the prior residual payload rather than full compact spans for frames with similar geometry. | Runtime needs prior residual dictionary state and must handle random entry starts safely. |
+| 16 | Generated per-frame copy-previous-background mode | Motion-copy is one instance. Generalize to copy selected previous background regions plus smaller draw deltas for frames that are near-identical but not simple X translations. | Copy regions can propagate stale pixels if cleanup ownership is wrong. |
+| 17 | Pre-baked clean-rect cache for VISITOR3 yacht region | Keep a small cached clean background rectangle for the yacht travel band to make cleanup cheaper than reading/restoring dynamic spans. | RAM pressure and correctness with island/water overlays. |
+| 18 | Tide-specific opcode selection | High and low differ: high accepted frame `115`, low rejected every precursor. Generate independent opcode families and never assume paired eligibility. | More tooling complexity and broader visual verification burden. |
+| 19 | Sound-table alignment preservation for all probes | Sparse-in-place showed offset churn was not the main issue for frame `117`, but future repacks should default to preserving sound and later entry offsets to isolate CPU/CD effects. | May leave less byte budget for dictionary payloads. |
+| 20 | VISITOR3 frame-class heatmap | Build a per-frame heatmap of bytes, reads, blocking, copy pixels, cleanup pixels, upload bytes, and target slack to rank custom algorithms by measured bottleneck, not intuition. | Analysis time, but low implementation risk. |
+| 21 | Reclaim code headroom before runtime opcode work | The fastspan idea failed mainly by crossing the EXE bucket. Prune or shrink cold foreground code first, then retry only the smallest runtime opcode variant. | Code-headroom commits must be flat across broad canaries. |
+| 22 | Replace generic motion parser with VISITOR3-only parser | If motion remains VISITOR3-only, a hardwired parser may be smaller/faster than the generic marker/opcode path. | Less reusable and still must preserve v181/v182 behavior exactly. |
+| 23 | Static frame `115/119..123` motion table in code | Move repeated motion metadata to code and keep pack payloads smaller. | Probably crosses PS-EXE bucket unless offset by code pruning; also moves data from CD to executable. |
+| 24 | Pack-side row span macro table | Store common row span lists once in the pack and reference them by small IDs from several frames. | Runtime indirection and validation complexity. |
+| 25 | VISITOR3 low alternate baseline without frame `119..123` motion | Since low precursor motion is CPU-sensitive, test whether the accepted low `119..123` set still dominates after v182 and current scheduler changes. | Could regress the best known low baseline; log-only if so. |
+| 26 | Targeted due-miss reduction via frame deadline padding | Some remaining due misses may be caused by target accounting around tight frames. Slight timing-table adjustments that preserve visual cadence could reduce due pressure. | Must not lie about timing or speed; visual/audio cadence gate is strict. |
+| 27 | Strip-level lossless equivalence search | Search alternate span partitions that render byte-identical but have lower metadata/read cost, especially for long horizontal water strips. | Tooling-heavy, but no runtime code if successful. |
+| 28 | Re-run VISITOR3 read candidates after every data-shape change | Data-shape wins can make previously inert scheduler rows fire. Treat read candidates as invalidated after each accepted pack transform. | Prevents stale decisions, but can burn run time. |
+| 29 | Scene-local LBA padding before VISITOR3 packs | If another accepted change shifts LBAs, deliberately pad earlier CD layout to keep VISITOR3 phase stable while testing pack mutations. | Must not shift other canaries or PS-EXE bucket. |
+| 30 | VISITOR3 custom decompressor in overlay budget | If main EXE bucket cannot fit a decoder, test whether a scene-local overlay/decompressor loaded during setup can pay for itself without active-loop debt. | Setup-time and RAM pressure; likely only worth it for a large terminal-frame byte cut. |
+
 Latest promoted ACTIVITY9 low compact-FGP3/v4 baseline: convert `ACTV9LOW.FG2`
 to padded compact FGP3/v4 restore-minus-current data while preserving the
 `1745484` byte CD footprint. The compaction chain trims active payload

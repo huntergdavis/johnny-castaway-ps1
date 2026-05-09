@@ -63,11 +63,11 @@ pass, the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups, the
 BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
 compact-FGP3/v4 pass, the BUILDING6 compact-FGP3/v4 pass, the ACTIVITY9 high
 compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the JOHNNY1
-compact-FGP3/v4 pass, and the ACTIVITY9 low compact-FGP3/v4 pass. The two
-yellow
+compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, and the
+VISITOR3 motion-copy passes. The two yellow
 rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
-(`91.0%` / `91.9%`); the orange band (95–99%) holds `walkstuf1` high/low
+(`92.8%` / `93.3%`); the orange band (95–99%) holds `walkstuf1` high/low
 (`95.6%` / `95.8%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
@@ -76,7 +76,10 @@ work. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
 BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
 WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
 high, WALKSTUF3 low, and ACTIVITY9 low moved into green after their
-compact-FGP3/v4 restore-minus-current passes.
+compact-FGP3/v4 restore-minus-current passes. The latest rejected VISITOR3 v183
+probes close low precursor motion-copy frames `114..118` and the C-side
+fastspan path; the remaining VISITOR3 work is now custom data-shape,
+dictionary, precomposed-strip, or generated scheduler work.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
