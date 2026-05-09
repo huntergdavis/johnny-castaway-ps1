@@ -102,7 +102,7 @@
       <h1>Development workflow</h1>
       <p class="subtitle">The author's own per-scene loop. Capture, encode, replay, screenshot, validate.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1626 words
+          ~6 min read · 1686 words
         </p>
       
       <hr class="rule" />
@@ -170,9 +170,17 @@ matrix, and a row in the green band that fails visual review
 doesn’t ship. The two ledgers stay separate on purpose — different
 bars, different cadences, different failure modes.</p>
 
-<p>Milestone release cadence: every <strong>10</strong> scenes reaching <code class="language-plaintext highlighter-rouge">✅ / ✅</code>. Smaller
-stability releases happen between scene milestones when there’s something
-worth shipping.</p>
+<p>Milestone release cadence was historically every <strong>10</strong> scenes reaching
+<code class="language-plaintext highlighter-rouge">✅ / ✅</code>, with smaller stability releases between milestones when there
+was something worth shipping. That cadence drove the v0.4–v0.7 line up
+through the v0.7.0-ps1 release that capped the 63/63 validation grind
+(<a href="/johnny-castaway-ps1/lab/the-63-scene-grind/">retrospective</a>).
+With every scene now signed off, the 0.8.x line ships against
+performance, stability, and content bars instead — a per-release theme
+under
+<a href="/johnny-castaway-ps1/releases/">/releases/</a>. The visual-signoff
+gate above is still the gate any new or re-validated scene would have
+to clear.</p>
 
 <h2 id="prerequisites">Prerequisites</h2>
 
