@@ -51,8 +51,8 @@ precompiled macOS toolchain was attempted and abandoned (missing
 Docker: `config/ps1/Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK's toolchain file; CD packaging via
-[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script (`build-ps1.sh`, later
-`rebuild-and-let-run.sh`) on top.
+[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script ([`build-ps1.sh`]({{ site.github_url }}/blob/main/scripts/build-ps1.sh), later
+[`rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)) on top.
 
 Core implementation came next. The plan was: port only the platform
 layer, leave the engine alone. That principle held: only three files
@@ -150,7 +150,7 @@ on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
 controller input, SPU playback.
 
-Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the `foreground_pilot.c`
+Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
 runtime); externally it is "PS1 scene playback." The decisive
 property is that the PS1 stops carrying state that the desktop
 engine built up across scenes. The disappearing-Johnny class doesn't
@@ -391,7 +391,7 @@ component-completeness phases:
   reconciled against the on-PS1 packs. The earlier caption-mapping
   audit got several scenes mismapped (boot / octopus / coconut-plane /
   jog) — corrected from direct on-PS1 observation. New 5-surface
-  helper at `scripts/apply-scene-correction.py`. No perf or pack
+  helper at [`scripts/apply-scene-correction.py`]({{ site.github_url }}/blob/main/scripts/apply-scene-correction.py). No perf or pack
   content changed.
 - Previous performance release: **`v0.8.3-ps1`** — promoted the
   WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
