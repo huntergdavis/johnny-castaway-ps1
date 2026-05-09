@@ -7,8 +7,8 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.3-ps1." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:title"        content="History — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.3-ps1." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline and the v0.8.4-ps1 chapter-select-thumbnail reconciliation." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:title"        content="History — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline and the v0.8.4-ps1 chapter-select-thumbnail reconciliation." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
@@ -98,11 +98,11 @@
     <article class="page">
   
     <header class="page-header">
-      <p class="eyebrow">2025-10 to v0.8.3-ps1</p>
+      <p class="eyebrow">2025-10 to v0.8.4-ps1</p>
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3153 words
+          ~12 min read · 3209 words
         </p>
       
       <hr class="rule" />
@@ -500,11 +500,18 @@ headless optimization methodology to a release baseline; routed
 all 126 high/low scene variants through the perf matrix; clean-
 memory-relief drop-prefetch turned the post-validation perf
 arc from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target to <code class="language-plaintext highlighter-rouge">+0.9%</code> over target.</li>
-  <li>Latest performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong> — promoted the
+  <li>Latest content release: <strong><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code></strong> — custom on-PS1 thumbnails
+for all 63 chapter-select grid slots, with scene titles and bodies
+reconciled against the on-PS1 packs. The earlier caption-mapping
+audit got several scenes mismapped (boot / octopus / coconut-plane /
+jog) — corrected from direct on-PS1 observation. New 5-surface
+helper at <code class="language-plaintext highlighter-rouge">scripts/apply-scene-correction.py</code>. No perf or pack
+content changed.</li>
+  <li>Previous performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong> — promoted the
 WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
 bearing rows now average slightly under target at
 <code class="language-plaintext highlighter-rouge">99.5%</code> target speed.</li>
-  <li>Previous performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code></strong> — promoted the
+  <li>Earlier performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code></strong> — promoted the
 VISITOR3 guarded-read path and kept the 63-scene validation bar
 intact while the headless battle card stayed near target.</li>
   <li>Latest stability release: <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> — clean-rect
