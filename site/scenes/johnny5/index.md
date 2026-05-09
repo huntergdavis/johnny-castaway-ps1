@@ -6,7 +6,37 @@ tag: 5
 slug: johnny5
 status: validated
 description: "JOHNNY.ADS scene 5: Johnny writes a fresh SOS and sends the bottle out. Validated 2026-05-08."
+image: /assets/img/johnny5-ps1-sos-send.png
+image_alt: "JOHNNY 5 on PS1 at night: Johnny stands on the left shoreline holding the bottle he is about to throw out, the SOS message already corked inside."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/johnny5-ps1-sos-send.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="JOHNNY 5 on PS1 at night: Johnny stands on the left shoreline holding the bottle he is about to throw out, the SOS message already corked inside." />
+  <figcaption>
+    JOHNNY 5 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The fresh-SOS-send beat: Johnny is at the shoreline with a
+    new bottle, message already corked inside, about to throw it
+    out. JOHNNY 5 is the third scene in Johnny's three-scene SOS
+    saga —
+    <a href="{{ '/scenes/johnny2/' | relative_url }}">JOHNNY 2</a>
+    (recycles a found bottle),
+    <a href="{{ '/scenes/johnny5/' | relative_url }}">JOHNNY 5</a>
+    (sends a fresh one),
+    <a href="{{ '/scenes/johnny4/' | relative_url }}">JOHNNY 4</a>
+    (one of his bottles eventually washes back). The validated
+    pack uses a full-frame foreground-only keyed overlay so the
+    bottle pixels survive without stale full-host overpaint, and
+    holds the note-bubble frame instead of landing on the blank
+    row after it.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-03 after visual and audible signoff.
 
