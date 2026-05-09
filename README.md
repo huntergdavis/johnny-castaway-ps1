@@ -115,12 +115,13 @@ high-tide frame `115` state-hull motion-copy payload on top of the v181 yacht
 translation motion-copy baseline. It keeps both `1555450` byte pack footprints,
 fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while moving high
 from `1105/1031` to `1104/1030`; low remains on v181 at `1108/1028`.
-The latest rejected v183-v186 VISITOR3 probes close low precursor motion-copy
+The latest rejected v183-v187 VISITOR3 probes close low precursor motion-copy
 frames `114..118`, the C-side fastspan copy path, terminal zero/origin trimming,
 low hull-motion retries, terminal hand-authored read groups, and simple motion
-row-copy runtime paths, and compact motion-copy metadata. The pack rewrites
-saved too little or regressed low timing, and the runtime/data-format fast paths
-either crossed the PS-EXE bucket, stayed exact-flat, or hurt cadence.
+row-copy runtime paths, compact motion-copy metadata, and generic narrow
+dirty-row upload. The pack rewrites saved too little or regressed low timing,
+and the runtime/data-format fast paths either crossed the PS-EXE bucket, stayed
+exact-flat, hurt cadence, or failed before `JCPERF2`.
 
 `v0.8.2-ps1` is a performance point release after `v0.8.1-ps1`. It promotes
 the VISITOR3 high-tide guarded generated-window read group `138..162`, lowering
@@ -430,12 +431,13 @@ moving high `1105/1031 -> 1104/1030`, cutting blocking `129 -> 128`, and
 cutting loop-read time `132 -> 130` while preserving both `1555450` byte pack
 footprints, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket. Low
 remains on the v181 motion-copy row at `1108/1028`. The latest rejected
-v183-v186 VISITOR3 probes close low precursor motion-copy frames `114..118`, a
+v183-v187 VISITOR3 probes close low precursor motion-copy frames `114..118`, a
 runtime fastspan copy path, terminal zero/origin trimming, low hull-motion
-retries, terminal hand-authored read groups, and simple motion row-copy runtime
-paths, plus compact motion-copy metadata; future VISITOR3 work is now focused on custom
-data-shape/dictionary/precomposed-strip ideas or generated deadline scheduling
-rather than wider precursor motion windows. The prior
+retries, terminal hand-authored read groups, simple motion row-copy runtime
+paths, compact motion-copy metadata, and generic narrow dirty-row upload; future
+VISITOR3 work is now focused on custom data-shape/dictionary/precomposed-strip
+ideas or generated deadline scheduling rather than wider precursor motion
+windows. The prior
 ACTIVITY9 low pass moves `2085/2058 ->
 2075/2061`, cuts overrun `27 -> 14`, blocking `29 -> 17`, loop reads `59 ->
 47`, loop-read time `289 -> 232`, and due misses `3 -> 1` while preserving the

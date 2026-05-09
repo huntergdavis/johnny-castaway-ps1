@@ -77,11 +77,12 @@ BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
 WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
 high, WALKSTUF3 low, and ACTIVITY9 low moved into green after their
 compact-FGP3/v4 restore-minus-current passes. The latest rejected VISITOR3
-v183-v186 probes close low precursor motion-copy frames `114..118`, the C-side
+v183-v187 probes close low precursor motion-copy frames `114..118`, the C-side
 fastspan path, terminal zero/origin trimming, low hull-motion retries, terminal
-hand-authored read groups, simple motion row-copy runtime paths, and compact
-motion-copy metadata; the remaining VISITOR3 work is now custom data-shape,
-dictionary, precomposed-strip, or generated scheduler work.
+hand-authored read groups, simple motion row-copy runtime paths, compact
+motion-copy metadata, and generic narrow dirty-row upload; the remaining
+VISITOR3 work is now custom data-shape, dictionary, pack-authored
+precomposed-strip, or generated scheduler work.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid

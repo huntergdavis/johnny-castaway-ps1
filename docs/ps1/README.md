@@ -36,9 +36,10 @@ high-tide frame `115` state-hull motion-copy payload on top of the v181 yacht
 translation motion-copy baseline. It preserves both `1555450` byte pack
 footprints, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while
 moving high `1105/1031 -> 1104/1030`; low remains on v181 at `1108/1028`.
-VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas
-probes stay closed; future work should build on scene-owned motion/precomposed
-data or generated scheduler ownership.
+VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
+metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
+work should build on scene-owned motion/precomposed data or generated scheduler
+ownership.
 
 `v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
