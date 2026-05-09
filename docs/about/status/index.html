@@ -102,7 +102,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1789 words
+          ~7 min read · 1822 words
         </p>
       
       <hr class="rule" />
@@ -202,9 +202,9 @@ done.”</p>
       <td>Pause-menu choices persist to <code class="language-plaintext highlighter-rouge">bu00:</code> block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work.</td>
     </tr>
     <tr>
-      <td>Telemetry / debug overlay</td>
+      <td><a href="/johnny-castaway-ps1/docs/glossary/#telemetry-overlay">Telemetry / debug overlay</a></td>
       <td>Complete</td>
-      <td>Five-panel overlay; gated by <code class="language-plaintext highlighter-rouge">debugMode</code>. Toggle with Select. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state.</td>
+      <td>Five-panel left-edge overlay; gated by <code class="language-plaintext highlighter-rouge">grPs1TelemetryEnabled</code> in <code class="language-plaintext highlighter-rouge">graphics_ps1.c</code> with row writes scattered through <code class="language-plaintext highlighter-rouge">src/ads.c</code> and helpers like <code class="language-plaintext highlighter-rouge">grPs1SetLastBmpTelemetry</code>. Off by default in release builds. Decoded out of captured frames by <code class="language-plaintext highlighter-rouge">scripts/decode-ps1-bars.py</code> into <code class="language-plaintext highlighter-rouge">telemetry.json</code> during <a href="/johnny-castaway-ps1/docs/regtest/">regtest</a>. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state since text I/O can perturb timing.</td>
     </tr>
     <tr>
       <td>Perf instrumentation (<code class="language-plaintext highlighter-rouge">ps1_perf.c</code>)</td>
