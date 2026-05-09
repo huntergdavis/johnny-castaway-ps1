@@ -77,9 +77,11 @@ bugfixing, performance, and feature polish; the
 [`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 keeps long randomized runs stable, the [`v0.8.0` performance
 baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }})
-promoted the headless optimization methodology, and the
+promoted the headless optimization methodology, the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
-outliers — the matrix now averages
+outliers, and `v0.8.4` walked all 63 packs on hardware to ship
+custom chapter-select thumbnails plus a scene-page reconciliation
+against the on-PS1 packs — the matrix now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the timing-bearing rows (public-capped; the
 optimization-side raw signed average is past target). The two
