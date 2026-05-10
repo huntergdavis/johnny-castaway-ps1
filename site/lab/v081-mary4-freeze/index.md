@@ -5,6 +5,10 @@ eyebrow: Lab · stability war story
 subtitle: A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.
 description: How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it.
 date: 2026-05-06
+image: /assets/img/mary4-ps1-raft-heartbreak.png
+image_alt: Johnny on the island shoreline with Mary on a raft pulling away — the MARY 4 raft-heartbreak scene that surfaced the v0.8.1 soak-only freeze. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 <details class="page-toc" markdown="1">
