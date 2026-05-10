@@ -84,6 +84,14 @@ and [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }}).
 - [Vision-classifier]({{ '/docs/vision/' | relative_url }}) —
   the per-frame detection layer that runs on top of the
   screenshots.
+- [Lab: regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
+  — the magazine treatment of the screenshot-diff regtest
+  practice this page is the practical-loop chapter for. Cited
+  in the body above; surfaced here as a Related entry too.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — the visual-signoff loop applied 63 times. The visual-debug
+  loop on this page is the tooling that makes that signoff
+  reproducible.
 - [Glossary]({{ '/docs/glossary/' | relative_url }}) —
   vocabulary anchor for `BOOTMODE`, `PADSCRIPT.TXT`, `regtest`,
   `JCPADSHOT`, and the rest of the harness vocabulary used
