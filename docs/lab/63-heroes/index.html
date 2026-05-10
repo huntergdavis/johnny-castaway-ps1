@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+
+  <title>63 heroes — Johnny Castaway PS1</title>
+  <meta name="description" content="A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/" /><meta property="og:title"        content="63 heroes — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-05-09T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Lab" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/" /><meta property="og:locale"       content="en_US" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="/johnny-castaway-ps1/devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="/johnny-castaway-ps1/devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="/johnny-castaway-ps1/lab/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="/johnny-castaway-ps1/lab/feed.json" />
+  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="/johnny-castaway-ps1/sitemap.xml" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "63 heroes", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "63 heroes",
+  "description": "A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly.",
+  "datePublished": "2026-05-09T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
+  "inLanguage": "en",
+  "wordCount": 1500,
+  "timeRequired": "PT6M",
+  "articleSection": "Lab",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="/johnny-castaway-ps1/">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/" aria-current="page">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main" tabindex="-1">
+    <article class="page">
+  
+    <header class="page-header">
+      <p class="eyebrow">Lab · Retrospective</p>
+      <h1>63 heroes</h1>
+      <p class="subtitle">How every per-scene page on the site got its own captured-on-PS1 hero image — and the cross-link clusters that emerged from writing one figcaption at a time.</p>
+        <p class="pub-date">
+          Published <time datetime="2026-05-09">May 9, 2026</time>
+        </p>
+        
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~5 min read · 1441 words
+        </p>
+      
+      <hr class="rule" />
+    </header>
+  
+  <div class="page-body">
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#what-the-rollout-actually-was" id="markdown-toc-what-the-rollout-actually-was">What the rollout actually was</a></li>
+  <li><a href="#frame-selection-rules-of-thumb" id="markdown-toc-frame-selection-rules-of-thumb">Frame selection rules of thumb</a></li>
+  <li><a href="#cross-link-clusters-that-wrote-themselves" id="markdown-toc-cross-link-clusters-that-wrote-themselves">Cross-link clusters that wrote themselves</a></li>
+  <li><a href="#engineering-retros-that-didnt-justify-a-doc" id="markdown-toc-engineering-retros-that-didnt-justify-a-doc">Engineering retros that didn’t justify a doc</a></li>
+  <li><a href="#the-one-scene-the-chapter-select-grind-missed" id="markdown-toc-the-one-scene-the-chapter-select-grind-missed">The one scene the chapter-select grind missed</a></li>
+  <li><a href="#final-shape" id="markdown-toc-final-shape">Final shape</a></li>
+</ul>
+
+</details>
+
+<p>Every per-scene page at <a href="/johnny-castaway-ps1/scenes/"><code class="language-plaintext highlighter-rouge">/scenes/&lt;slug&gt;/</code></a> on this site now carries a captured-on-PS1 hero image at the top, a per-page Open Graph override pointing at it, and a figcaption underneath that names the gag and any engineering retro the scene happens to belong to. All sixty-three.</p>
+
+<p>That number is not interesting on its own. The interesting thing is that nobody planned the structure of the figcaptions or the cross-link clusters they made. They came out of writing one scene’s hero at a time, in the order DuckStation had captured them, and noticing what wanted a link.</p>
+
+<h2 id="what-the-rollout-actually-was">What the rollout actually was</h2>
+
+<p>Per scene, mechanically:</p>
+
+<ol>
+  <li>Pick a representative frame from the v0.8.4-ps1 <a href="/johnny-castaway-ps1/lab/chapter-select-grind/">chapter-select grind</a>’s capture dump (DuckStation writes 961×720 PNGs into <code class="language-plaintext highlighter-rouge">~/.var/app/.../duckstation/screenshots/</code> whenever you take a screenshot, and the grind took a named one for almost every scene).</li>
+  <li>Promote it to <code class="language-plaintext highlighter-rouge">site/assets/img/&lt;slug&gt;-ps1-&lt;short&gt;.png</code>.</li>
+  <li>Add <code class="language-plaintext highlighter-rouge">image:</code> / <code class="language-plaintext highlighter-rouge">image_alt:</code> / <code class="language-plaintext highlighter-rouge">image_width:</code> / <code class="language-plaintext highlighter-rouge">image_height:</code> to the page’s frontmatter so the <a href="/johnny-castaway-ps1/lab/the-site-itself/">head template</a> flips the per-page OG override on.</li>
+  <li>Add a <code class="language-plaintext highlighter-rouge">&lt;figure class="scene-hero"&gt;</code> block above the body with a figcaption that says what the gag is in one or two sentences.</li>
+</ol>
+
+<p>That four-step pattern was set in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/commit/1adac73b5"><code class="language-plaintext highlighter-rouge">1adac73b5</code></a> when FISHING 2 got the first per-scene hero. The next sixty-two ships followed it.</p>
+
+<h2 id="frame-selection-rules-of-thumb">Frame selection rules of thumb</h2>
+
+<p>The frame-selection step seemed obvious until it wasn’t. A few patterns kept repeating:</p>
+
+<ul>
+  <li><strong>Compose-the-whole-joke</strong>. Pick the frame where both halves of the gag are visible at the same time. VISITOR 1’s hero shows the speedboat zipping past <em>and</em> Johnny standing at the front of the island looking the wrong way — same frame. ACTIVITY 11 has the bird perched in the palm leaves with the stolen clothes and a clothes-less Johnny standing in the water — same frame. If the joke is “X happens to Y,” the picture should have both.</li>
+  <li><strong>Antagonist-in-frame beats Johnny-alone</strong>. FISHING 4 had two captures: Johnny holding a fishing rod, and a frame with Johnny + a shark fin and a fishing line stretching across the open water. The fin frame won. VISITOR 5 had three captures; the one where the biplane is in-frame won. At OG-thumbnail size the antagonist makes the gag legible; without it, the frame just looks like Johnny standing on an island.</li>
+  <li><strong>Title-naming beat over generic-looking-around</strong>. JOHNNY 2’s two captures were a “thinking of home” thought-bubble and an “SOS-note” thought-bubble. The page title is “puts an SOS note inside” — so the SOS bubble won.</li>
+</ul>
+
+<p>None of these rules were written down before the rollout started. They got noticed around the fifth or sixth ship and applied retroactively where a previous frame still looked OK with hindsight.</p>
+
+<h2 id="cross-link-clusters-that-wrote-themselves">Cross-link clusters that wrote themselves</h2>
+
+<p>Every figcaption is short. Most of them have one or two outbound links. The links accumulated into clusters that nobody planned.</p>
+
+<p><strong>Variant pairs</strong> are the simplest case. Two scenes are obvious gag-twins varying one axis:</p>
+
+<ul>
+  <li><a href="/johnny-castaway-ps1/scenes/activity1/">ACTIVITY 1</a> belly-flop dive vs. <a href="/johnny-castaway-ps1/scenes/activity4/">ACTIVITY 4</a> clean dive (impact axis).</li>
+  <li><a href="/johnny-castaway-ps1/scenes/building4/">BUILDING 4</a> Gulliver-tie-down with bird vs. <a href="/johnny-castaway-ps1/scenes/building6/">BUILDING 6</a> without bird.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/building5/">BUILDING 5</a> just a fire vs. <a href="/johnny-castaway-ps1/scenes/building7/">BUILDING 7</a> fire + grill + eat.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/fishing1/">FISHING 1</a> left-side starfish vs. <a href="/johnny-castaway-ps1/scenes/fishing7/">FISHING 7</a> right-side starfish vs. <a href="/johnny-castaway-ps1/scenes/fishing8/">FISHING 8</a> right-side caught-fish.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/stand3/">STAND 3</a> edge-of-island hat-adjust vs. <a href="/johnny-castaway-ps1/scenes/stand4/">STAND 4</a> front-of-island hat-adjust vs. <a href="/johnny-castaway-ps1/scenes/stand7/">STAND 7</a> look-right-hat-lift vs. <a href="/johnny-castaway-ps1/scenes/stand12/">STAND 12</a> forward-hat-adjust — that’s a hat-pose <strong>quartet</strong>.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/stand2/">STAND 2</a> edge-pants-adjust vs. <a href="/johnny-castaway-ps1/scenes/stand9/">STAND 9</a> tree-side-pants-adjust.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/stand6/">STAND 6</a> front-scratch-head vs. <a href="/johnny-castaway-ps1/scenes/stand8/">STAND 8</a> right-side-scratch-head.</li>
+  <li><a href="/johnny-castaway-ps1/scenes/stand15/">STAND 15</a> left-spyglass vs. <a href="/johnny-castaway-ps1/scenes/stand16/">STAND 16</a> right-spyglass.</li>
+</ul>
+
+<p><strong>Story-arc pairs and sagas</strong> were more interesting because they walked across families. JOHNNY 2 (recycle a found bottle, write SOS) → JOHNNY 5 (write SOS in a fresh bottle, send) → JOHNNY 4 (one of his bottles eventually washes back). Three scenes, mutually cross-linked. Then SUZY 1 (Suzy back home receives a Johnny letter) ↔ JOHNNY 3 (Johnny writes a letter to Suzy). And then the longest arc in the game: WALKSTUF 2 (raft-build) → STAND 10 (admire raft) → MARY 5 (pack the raft, sail off) → SUZY 2 (drift in to the home beach). Add the SOS bottles in transit and that’s an <strong>eight-scene</strong> mutually-linked cluster: walkstuf2 + mary5 + johnny2 + johnny5 + johnny4 + suzy1 + suzy2 + stand10. None of this was visible from the per-scene markdown bodies on their own — it only crystallized once the figcaptions started linking.</p>
+
+<p><strong>Theme clusters</strong> appeared in single ADS families:</p>
+
+<ul>
+  <li>The <strong>coconut quartet</strong> in VISITOR. <a href="/johnny-castaway-ps1/scenes/visitor4/">VISITOR 4</a> loses one (rolls off into the ocean), <a href="/johnny-castaway-ps1/scenes/visitor5/">VISITOR 5</a> weaponizes one (throws at a plane, brings it down), <a href="/johnny-castaway-ps1/scenes/visitor6/">VISITOR 6</a> shake-crack-eats one, <a href="/johnny-castaway-ps1/scenes/visitor7/">VISITOR 7</a> just-crack-eats one. Same prop, four different fates.</li>
+  <li>The <strong>shark thread</strong> crosses families. <a href="/johnny-castaway-ps1/scenes/fishing4/">FISHING 4</a> drags Johnny like a water-skier; <a href="/johnny-castaway-ps1/scenes/fishing5/">FISHING 5</a> eats him whole; <a href="/johnny-castaway-ps1/scenes/miscgag2/">MISCGAG 2</a> scares him out of his bath.</li>
+  <li>The <strong>hard cluster</strong>. <a href="/johnny-castaway-ps1/about/">/about/</a> names it: foreground-only multi-view scenes (<a href="/johnny-castaway-ps1/scenes/miscgag1/">MISCGAG 1</a>, <a href="/johnny-castaway-ps1/scenes/miscgag2/">MISCGAG 2</a>, <a href="/johnny-castaway-ps1/scenes/stand1/">STAND 1</a>, the wide LILLIPUTIAN arrival) that all needed the generic normal / far-left / far-right host stitch before their packs replayed cleanly.</li>
+</ul>
+
+<p><strong>Engineering-quirk lineages</strong> showed up too. Three STAND scenes (10, 11, 12) all had the same host pipeline quirk — <code class="language-plaintext highlighter-rouge">STAND.ADS:N</code> exits after only two frames, the no-stitch export collapses to a 92-byte empty pack. The previously-committed packs played cleanly on PS1, so they were signed off as-is. Paid pragmatism, called out by name. Three more STAND scenes (5, 6, 7, 8) all share the no-stitch fast-path lineage with the runtime FG2 wave-tick fix STAND 8 introduced.</p>
+
+<h2 id="engineering-retros-that-didnt-justify-a-doc">Engineering retros that didn’t justify a doc</h2>
+
+<p>A repeated discovery during the rollout was that a figcaption is a useful surface for naming a concrete engineering detail that doesn’t justify writing a whole doc but should be on the record somewhere. A reader looking at the <a href="/johnny-castaway-ps1/scenes/stand5/">STAND 5</a> hero learns:</p>
+
+<blockquote>
+  <p>Engineering footnote: STAND 5 is what surfaced the “no-stitch fast path fades Johnny’s legs” bug — pure base-diff treated frame-0 static pixels as background and dropped them. The exporter fast path now keeps a single-position foreground-only overlay while still skipping far-left / far-right stitch captures for simple STAND scenes.</p>
+</blockquote>
+
+<p>That sentence didn’t exist anywhere on the site before the hero shipped. It would not, on its own, have justified a <code class="language-plaintext highlighter-rouge">/docs/</code> reference page or a devlog post — but it is a useful piece of the project’s why. A reader on <a href="/johnny-castaway-ps1/scenes/stand8/">STAND 8</a> finds the static-ocean bug retro the same way; on <a href="/johnny-castaway-ps1/scenes/visitor7/">VISITOR 7</a>, the dedupe-too-short-strike-rows fix; on <a href="/johnny-castaway-ps1/scenes/walkstuf1/">WALKSTUF 1</a>, the v0.8.3 compact-FGP3/v4 restore-minus-current pack pass and its before/after VBlank numbers.</p>
+
+<h2 id="the-one-scene-the-chapter-select-grind-missed">The one scene the chapter-select grind missed</h2>
+
+<p>Sixty-two of sixty-three. The capture dump from the v0.8.4 grind covered every scene except <a href="/johnny-castaway-ps1/scenes/johnny3/">JOHNNY 3</a>. The dump was named, frame-by-frame, and <code class="language-plaintext highlighter-rouge">johnny3</code> was simply absent — the sweep had moved past it without taking a screenshot.</p>
+
+<p>Closing the rollout required generating a fresh capture. The same headless harness machinery that runs <a href="/johnny-castaway-ps1/help/menu/"><code class="language-plaintext highlighter-rouge">/help/menu/</code></a> and powered the <a href="/johnny-castaway-ps1/docs/pause-menu/#scene-explorer">Scene Explorer screenshot</a> replacement on this site’s homepage handled it: write a one-shot <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> (<code class="language-plaintext highlighter-rouge">fgpilot johnny3 night/raft-stage 4 island-pos -64 54 pad-script</code>), write a one-shot <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> taking four shots across one full ~3.5s scene loop, rebuild the EXE + CD image, run <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">./scripts/run-regtest.sh</code></a>, grep <code class="language-plaintext highlighter-rouge">JCPADSHOT</code> markers out of the TTY log, pick the captured frame that best showed the gag, restore the originals.</p>
+
+<p>The frame that won was the romantic thought-bubble — Johnny standing on the island writing the letter, picturing himself with Suzy back home embracing on a beach. Two of the four candidate frames showed only Johnny + the letter; one showed only the bubble at a too-early moment. The winning frame had both. Compose-the-whole-joke held up.</p>
+
+<h2 id="final-shape">Final shape</h2>
+
+<p>Sixty-three of sixty-three. Ten ADS families closed. Every per-scene page now carries a unique OG card. The cross-link cluster taxonomy that emerged was not designed up front; it accreted because every figcaption has to ask “what does this scene most want to link to right now?” and small consistent answers stack up.</p>
+
+<p>If there’s a generalizable thing here, it’s that figcaptions are an under-rated documentation surface. They are constrained — short, page-local, attached to a picture — and the constraint is what makes them useful. A writer can fit one engineering-retro sentence and one gag-arc cross-link in a figcaption without making it feel padded. Sixty-three of those, taken together, build a connectivity graph that no individual essay had to draw on its own.</p>
+
+<p>The full list of per-scene pages with their heroes is at <a href="/johnny-castaway-ps1/scenes/">/scenes/</a>. The matching commit history is on the project’s <a href="https://github.com/huntergdavis/johnny-castaway-ps1/commits/main">main branch</a> — every scene’s hero is one focused commit, mergeable and revertable on its own.</p>
+
+  </div>
+  <footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Lab essay navigation">
+    <div class="scene-pager-prev">
+      
+        <a href="/johnny-castaway-ps1/lab/chapter-select-grind/" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← older</span>
+          <span class="scene-pager-tag">The chapter-select grind</span>
+        </a>
+      
+    </div>
+    <div class="scene-pager-up">
+      <a href="/johnny-castaway-ps1/lab/">↑ lab index</a>
+    </div>
+    <div class="scene-pager-next">
+      
+    </div>
+    <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
+  </nav>
+</footer>
+
+  
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (<a href="/johnny-castaway-ps1/releases/">v0.8.5-ps1</a>)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/63-heroes/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
+          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
