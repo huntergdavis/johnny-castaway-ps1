@@ -91,9 +91,16 @@ The PS1 port started working when the answer stopped being "everywhere."
   the persistent clean buffer named in the v0.8.0 / v0.8.1
   Evolution-by-release section is a direct response to this
   page's "VRAM allocation as explicit state" rule.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the post-validation performance retrospective whose single
+  biggest unlock was the [drop-prefetch]({{ '/docs/glossary/#drop-prefetch' | relative_url }})
+  experiment: trading streaming headroom for the clean-rect bytes
+  the budget on this page tracks. Cited inline above; surfaced
+  here as a Related entry too.
 - [v0.8.1 retrospective]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — the soak loop that found the clean-rect pressure freeze,
   driven by exactly the budget-overrun story above.
 - [Glossary: clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
   · [Glossary: VRAM]({{ '/docs/glossary/#vram' | relative_url }})
   · [Glossary: SPU]({{ '/docs/glossary/#spu' | relative_url }})
+  · [Glossary: drop-prefetch]({{ '/docs/glossary/#drop-prefetch' | relative_url }})
