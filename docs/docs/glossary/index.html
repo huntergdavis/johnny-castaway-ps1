@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4770 words
+          ~19 min read · 4900 words
         </p>
 
       <hr class="rule" />
@@ -320,6 +320,9 @@
 
 <dt id="prefetch-window">Prefetch window</dt>
 <dd>The streaming budget the runtime uses to read pack data ahead of the playback frame. Originally global (one number across all scenes); the scene-local relief pass made it a per-scene setting backed by measurement. Smaller per-scene buffers, fewer evictions when the next scene is loading.</dd>
+
+<dt id="drop-prefetch">Drop-prefetch (clean-memory relief)</dt>
+<dd>The per-scene opt-in that lets the runtime <em>drop</em> the <a href="#prefetch-window">prefetch window</a> down to zero for a scene whose <a href="#clean-rect">clean-rect</a> allocation would otherwise fail under post-walk memory pressure. Surfaced as the single biggest perf unlock during the post-validation optimization loop: trade some streaming headroom (which a wide-action scene wasn't fully using anyway) for the clean-rect bytes the scene actually needs to render. Maintained as an <em>exception list</em> per scene rather than a global on/off, because most scenes don't need it and lowering prefetch globally regresses scenes that <em>were</em> using their streaming budget. Canonical opt-in: <code>BUILDING 4</code> (lilliputian Gulliver-tie-down — wide clean-rect demand, modest streaming demand). Full retrospective at <a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>; the <code>v0.8.1-ps1</code> stability fix later generalized the pressure estimator side of this trade for every random-position scene (see <a href="../../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>).</dd>
 
 <dt id="stream-window">Stream-window (stage-1)</dt>
 <dd>The CD stream's first-stage read buffer. Default was 32 KB; the per-scene retune (some up, some down) reduced blocking vblanks across the matrix by about a third. The number that mattered wasn't the size — it was that the size had been one number before, and was a per-scene measurement after.</dd>

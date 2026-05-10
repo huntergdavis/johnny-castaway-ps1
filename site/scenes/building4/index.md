@@ -25,7 +25,7 @@ image_height: 720
     tree about to be tied down Gulliver-style. Outside the gag, this is
     the canonical clean-rect-heavy variant on the
     <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">post-validation perf retrospective</a>'s
-    drop-prefetch exception list.
+    <a href="{{ '/docs/glossary/#drop-prefetch' | relative_url }}">drop-prefetch</a> exception list.
   </figcaption>
 </figure>
 
