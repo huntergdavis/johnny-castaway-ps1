@@ -6,7 +6,30 @@ tag: 2
 slug: stand2
 status: validated
 description: "STAND.ADS scene 2: Johnny stands and hitches up his pants. Validated 2026-05-08."
+image: /assets/img/stand2-ps1-pants-adjust.png
+image_alt: "STAND 2 on PS1 at night: Johnny stands at the leftmost edge of the island in the pants-adjust idle pose, a short subtle stand-loop scene."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand2-ps1-pants-adjust.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 2 on PS1 at night: Johnny stands at the leftmost edge of the island in the pants-adjust idle pose, a short subtle stand-loop scene." />
+  <figcaption>
+    STAND 2 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The pants-adjust idle loop: Johnny stands at the edge of the
+    island and hitches up his shorts. The STAND.ADS family is
+    14 of these short stand-pose idle beats — small variations on
+    Johnny just being there — and pixel-perfect matching them all
+    is much of what made the
+    <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">63-scene grind</a>'s
+    tail so long.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
