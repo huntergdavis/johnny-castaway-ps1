@@ -4,6 +4,10 @@ eyebrow: Methodology · the site
 subtitle: A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.
 description: How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn.
 date: 2026-05-05
+image: /assets/img/stand15-ps1-spyglass.png
+image_alt: STAND 15 — Johnny on the leftmost shoreline holding a spyglass to his eye, focused on the horizon. The close-inspection-of-small-decisions register the essay walks. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 The PS1 port has a website. The website has its own engineering choices, and most of them aren't documented anywhere because nobody asks. This page is for me, six months from now, when I'm wondering why the build script does that one thing.
