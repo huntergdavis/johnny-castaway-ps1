@@ -152,7 +152,8 @@ A few things this project is deliberately not trying to be:
   [the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}),
   [the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }}),
   the LLM pass, hallucination engineering, regression as a
-  lifestyle, and the rest.
+  lifestyle, [why this is the fifth port]({{ '/lab/why-i-keep-porting-johnny/' | relative_url }}),
+  and the rest.
 - [/hack/]({{ '/hack/' | relative_url }}) -- a learning path for
   hackers who want to read the C, port to another machine, or
   understand the debugging loops.
