@@ -5,6 +5,10 @@ eyebrow: Lab · tools
 subtitle: A dumb hack that keeps the loop running.
 description: Dunking bird is a small piece of software the author wrote to keep long-running unattended jobs alive. It got used a lot during the Johnny Castaway PS1 port.
 date: 2026-04-26
+image: /assets/img/dunking-bird-2026-05-06.jpg
+image_alt: A novelty thirty-cent dunking-bird desk toy positioned to tap a keyboard — the literal hardware behind the long-unattended-runs trick the essay names.
+image_width: 1100
+image_height: 522
 ---
 
 <details class="page-toc" markdown="1">
