@@ -7,13 +7,13 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, and the v0.8.5-ps1 full headless matrix release." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:title"        content="History — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, and the v0.8.5-ps1 full headless matrix release." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, and the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:title"        content="History — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, and the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.6; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -98,11 +98,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">2025-10 to v0.8.5-ps1</p>
+      <p class="eyebrow">2025-10 to v0.8.6-ps1</p>
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3305 words
+          ~13 min read · 3335 words
         </p>
 
       <hr class="rule" />
@@ -118,7 +118,7 @@
   <li><a href="#the-hybrid-pipeline-pivot" id="markdown-toc-the-hybrid-pipeline-pivot">The hybrid pipeline pivot</a></li>
   <li><a href="#first-scenes-validated" id="markdown-toc-first-scenes-validated">First scenes validated</a></li>
   <li><a href="#the-63-scene-grind" id="markdown-toc-the-63-scene-grind">The 63-scene grind</a></li>
-  <li><a href="#where-it-stands-at-v085-ps1" id="markdown-toc-where-it-stands-at-v085-ps1">Where it stands at v0.8.5-ps1</a></li>
+  <li><a href="#where-it-stands-at-v086-ps1" id="markdown-toc-where-it-stands-at-v086-ps1">Where it stands at v0.8.6-ps1</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
@@ -480,10 +480,10 @@ and system pages. The important engineering rule was the same as
 the walking release: the steady-state frame loop does not allocate.</li>
 </ul>
 
-<h2 id="where-it-stands-at-v085-ps1">Where it stands at v0.8.5-ps1</h2>
+<h2 id="where-it-stands-at-v086-ps1">Where it stands at v0.8.6-ps1</h2>
 
 <ul>
-  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code></strong>.</li>
+  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code></strong>.</li>
   <li>Validated scenes:
 <strong>63 / 63</strong> —
 every routed scene the original game had, signed off across every
@@ -500,9 +500,13 @@ headless optimization methodology to a release baseline; routed
 all 126 high/low scene variants through the perf matrix; clean-
 memory-relief drop-prefetch turned the post-validation perf
 arc from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target to <code class="language-plaintext highlighter-rouge">+0.9%</code> over target.</li>
-  <li>Latest performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code></strong> — promoted the full
-126-row timing-bearing headless matrix as the public release baseline:
-<code class="language-plaintext highlighter-rouge">+0.3184%</code> over target / <code class="language-plaintext highlighter-rouge">99.6876%</code> target speed.</li>
+  <li>Latest performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code></strong> — WALKSTUF1 low
+gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch /
+slack4 guard, and VISITOR3 high/low setup-segment resident copies for
+frames <code class="language-plaintext highlighter-rouge">131</code> / <code class="language-plaintext highlighter-rouge">128</code>. Public rollup <code class="language-plaintext highlighter-rouge">+0.3157%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.6902%</code> target speed.</li>
+  <li>Previous performance baseline: <strong><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code></strong> — promoted the full
+126-row timing-bearing headless matrix as the public release baseline.</li>
   <li>Latest content release: <strong><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code></strong> — custom on-PS1 thumbnails
 for all 63 <a href="../../docs/glossary/#scene-explorer">chapter-select</a> grid slots, with scene titles and bodies
 reconciled against the on-PS1 packs. The earlier caption-mapping
@@ -537,9 +541,9 @@ between scene endpoints.</li>
 confirms the current runtime can run long sessions without the
 prior scene-to-scene leak.</li>
   <li><a href="../../docs/glossary/#ps-exe">PS-EXE</a> size: <strong>~208 KiB</strong> (104 × 2 KiB CD-ROM
-sectors) at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> after legacy ADS/TTM/FG1
+sectors) at <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> after legacy ADS/TTM/FG1
 paths were stripped from the linker pass.</li>
-  <li>Routed CD image: <strong>~79 MB</strong> at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>
+  <li>Routed CD image: <strong>~79 MB</strong> at <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code>
 (mostly FG2 pack payload routed selectively onto the disc).</li>
   <li>Generated FG2 corpus on disk: <strong>126 packs</strong> (high-tide +
 low-tide for all 63 scenes), <strong>~343 MB</strong>, routed onto
@@ -555,7 +559,7 @@ Long-term hardware-soak observations are still on the wishlist.</li>
   <li><a href="../method/">Method</a> — the <em>what</em> and
 the <em>why</em> of the hybrid pipeline this history walked toward.</li>
   <li><a href="../status/">Status</a> — the current
-per-component state at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>.</li>
+per-component state at <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code>.</li>
   <li><a href="../../releases/">Releases</a> — every tagged
 version with theme line and headline bullets.</li>
   <li><a href="../../lab/the-63-scene-grind/">Lab: the 63-scene grind</a>
@@ -600,7 +604,7 @@ you were cheated. Open source and free.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.5-ps1</a>)
+          (<a href="../../releases/">v0.8.6-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

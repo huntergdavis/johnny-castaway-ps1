@@ -66,6 +66,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }}">v0.8.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.3.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }}">v0.8.4-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.4.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.5/' | relative_url }}">v0.8.5-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.5.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.6/' | relative_url }}">v0.8.6-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.6.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-plan-0.7.1/' | relative_url }}">v0.7.1-ps1 Feature Notes</a><p><code>docs/ps1/release-plan-0.7.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-explorer-design/' | relative_url }}">Scene Explorer — design doc</a><p><code>docs/ps1/scene-explorer-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-picker-design/' | relative_url }}">Scene Picker Algorithms — Research + Design (v2)</a><p><code>docs/ps1/scene-picker-design.md</code></p></li>
@@ -414,7 +415,6 @@ for a guided learning path through the machinery.
 ## Repository note
 
 <ul class="doc-grid">
-<li><a href="{{ '/source/models/Qwen2.5-VL-3B-Instruct-ov-int4/README/' | relative_url }}">Choose GPU instead of CPU in the line below to run the model on Intel integrated or discrete GPU</a><p><code>models/Qwen2.5-VL-3B-Instruct-ov-int4/README.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>

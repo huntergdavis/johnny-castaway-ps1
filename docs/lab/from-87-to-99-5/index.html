@@ -15,7 +15,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png" />
   <meta property="og:image:alt"    content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta property="og:image:width"  content="961" />
   <meta property="og:image:height" content="720" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png" /><meta name="twitter:image:alt" content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png" /><meta name="twitter:image:alt" content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.6; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -75,7 +75,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2158,
+  "wordCount": 2177,
   "timeRequired": "PT8M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -138,7 +138,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2075 words
+          ~8 min read · 2094 words
         </p>
 
       <hr class="rule" />
@@ -188,9 +188,12 @@ to “optimized validated outlier.”
 <a href="../v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
 followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> shipped the Scene Explorer thumbnail
-reconciliation, and <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> promotes the full 126-row timing-bearing
-matrix. The current public-capped average at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is
-<strong>+0.3184% over target / 99.6876% target speed</strong>, with roughly <strong>17.08
+reconciliation, <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> promotes the full 126-row timing-bearing
+matrix, and <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> carries that baseline forward with the WALKSTUF1
+gap-compression / slack-guard pair and the VISITOR3 frame-<code class="language-plaintext highlighter-rouge">131</code>/<code class="language-plaintext highlighter-rouge">128</code>
+setup-segment resident copies. The current public-capped average at
+<code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> is
+<strong>+0.3157% over target / 99.6902% target speed</strong>, with roughly <strong>17.08
 percentage points</strong> of over-target gap closed and about <strong>12.59 target-speed
 points</strong> added. The optimization-side
 raw signed average sits past target — the public number is the
@@ -288,7 +291,7 @@ that loop actually looked like.</p>
 <p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> there are no red or yellow rows left on the
+As of <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> there are no red or yellow rows left on the
 <a href="../../perf/">battle card</a>: <code class="language-plaintext highlighter-rouge">111</code> rows are green and <code class="language-plaintext highlighter-rouge">15</code>
 remain orange. The current under-99 focus set is WALKSTUF1 high/low,
 VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
@@ -297,7 +300,7 @@ The optimization plan at
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
@@ -376,7 +379,7 @@ will join the rejected log.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.5-ps1</a>)
+          (<a href="../../releases/">v0.8.6-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
