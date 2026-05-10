@@ -5,6 +5,10 @@ eyebrow: Lab · War story
 subtitle: The controller worked everywhere except where it mattered.
 description: A debugging war story about the PS1 controller SPI/SIO0 polling bug that blocked the Johnny Castaway PS1 pause menu.
 date: 2026-04-26
+image: /assets/img/help/menu/controls.png
+image_alt: The Controls submenu inside the in-game pause menu — the surface that depends on every controller pad-poll byte landing. The two-day SPI bug was that DuckStation only delivered button bytes when the full five-byte sequence was sent.
+image_width: 640
+image_height: 448
 ---
 
 <details class="page-toc" markdown="1">
