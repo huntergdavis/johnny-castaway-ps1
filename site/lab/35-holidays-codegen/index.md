@@ -5,6 +5,10 @@ eyebrow: Lab · Codegen study
 subtitle: A small YAML file, a calendar engine, and a sprite sheet full of tiny props.
 description: A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites.
 date: 2026-04-26
+image: /assets/img/help/menu/holidays.png
+image_alt: The Holidays submenu inside the in-game pause menu — the runtime surface the codegen pipeline produces, with toggleable overlays for each of the 36 calendar holidays. Captured on PS1 hardware via the validation harness.
+image_width: 640
+image_height: 448
 ---
 
 <details class="page-toc" markdown="1">
