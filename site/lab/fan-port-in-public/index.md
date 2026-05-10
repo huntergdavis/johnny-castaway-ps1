@@ -5,6 +5,10 @@ eyebrow: Lab · Legal and social shape
 subtitle: GPL code, Sierra assets, original creators, and the Credits screen that says the quiet part plainly.
 description: "A practical essay on the legal and social posture of the Johnny Castaway PS1 fan port: GPL code, original Sierra assets, release artifacts, and public disclaimers."
 date: 2026-04-26
+image: /assets/img/johnny1-ps1-frog-clock.png
+image_alt: JOHNNY 1 frog-clock frame — the cyclical-end marker that fires as each screensaver loop closes. The screensaver keeps running; the fan port keeps going. Captured on PS1 hardware via the validation harness.
+image_width: 1127
+image_height: 677
 ---
 
 <details class="page-toc" markdown="1">
