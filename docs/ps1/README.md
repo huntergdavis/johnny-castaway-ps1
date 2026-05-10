@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.5-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3284% public over target / 99.6783% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3253% public over target / 99.6811% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -24,7 +24,7 @@ It keeps all 63 scenes visually/audibly validated, preserves the custom
 Scene Explorer thumbnails and reconciled scene metadata from `v0.8.4-ps1`,
 and promotes the full 126-row headless matrix as the public performance
 baseline. The public battle card is now
-`+0.3284%` over target / `99.6783%` target speed across all 126
+`+0.3253%` over target / `99.6811%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -33,9 +33,10 @@ setup-prime plus guarded low second-segment and low frame-125/frame-126
 resident re-anchor plus low frame-118/frame-127 resident-copy, high
 frame-127/frame-130 resident-copy, low frame-114/frame-117 no-op residual,
 low frame-113 no-op residual, the VISITOR3 high frame-140 setup-segment copy,
+VISITOR3 low frame-114/frame-117 no-op payload aliasing,
 and WALKSTUF1 high sector `201..213` read-group follow-ups plus the WALKSTUF1
 high gap-compressed/window-prefetch guard and low gap-compressed prefix; the
-raw signed optimization matrix is `-0.4401%` / `100.4621%`.
+raw signed optimization matrix is `-0.4432%` / `100.4649%`.
 That is about `17.07` public over-target points removed and `12.58` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
@@ -54,14 +55,17 @@ accepted broad control `1487/1424` to `1478/1428`; overrun drops `63 -> 50`,
 blocking `95 -> 75`, loop-read time `305 -> 301`, and due misses `15 -> 13`.
 The durable public row is now `1478/1428` at `96.6%` target speed.
 
-The latest VISITOR3 baseline is `visitor3-high-f140-segment-copy-v291` plus the
-paired `visitor3-current-v291-control` low row. The high pass moves frame `140`
+The latest VISITOR3 baseline is `visitor3-high-f140-segment-copy-v291` plus
+`visitor3-low-alias-noop114117-v292`. The high pass moves frame `140`
 and tail frames `142..144` into the already paid setup segment, keeps the
 `1555450` byte pack footprint and `217088` byte PS-EXE bucket fixed, and moves
 high `1075/1037 -> 1074/1038`: overrun `38 -> 36`, blocking `61 -> 58`, loop
 reads `11 -> 10`, loop-read time `61 -> 58`, and due misses `11 -> 10`. The
-paired low control is current-layout `1079/1039`, blocking `70`, loop reads
-`16`, loop-read time `84`, due misses `12`, and hidden refill `0`.
+low v292 pass aliases frames `114..117` to frame `113`'s already-resident
+two-byte no-op payload, keeps the `1555450` byte pack footprint fixed, and
+moves low `1079/1039 -> 1075/1039`: overrun `40 -> 36`, blocking `70 -> 67`,
+loop reads `16 -> 12`, and loop-read time `84 -> 67`; due misses stay `12`
+and hidden refill stays `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

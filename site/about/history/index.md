@@ -388,7 +388,7 @@ component-completeness phases:
   arc from `+17.4%` over target to `+0.9%` over target.
 - Latest performance release: **`v0.8.5-ps1`** — promoted the full
   126-row timing-bearing headless matrix as the public release baseline:
-  `+0.3284%` over target / `99.6783%` target speed.
+  `+0.3253%` over target / `99.6811%` target speed.
 - Latest content release: **`v0.8.4-ps1`** — custom on-PS1 thumbnails
   for all 63 [chapter-select]({{ '/docs/glossary/#scene-explorer' | relative_url }}) grid slots, with scene titles and bodies
   reconciled against the on-PS1 packs. The earlier caption-mapping

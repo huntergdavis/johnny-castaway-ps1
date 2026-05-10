@@ -33,8 +33,8 @@ public baseline.
 - **All 126 high/low rows are timing-bearing.** The matrix now has active-loop
   timing for every routed scene/tide variant: 63 scenes x 2 tide rows.
 - **Public rollup is effectively at native speed.** The public-capped average
-  is `+0.3284%` over target / `99.6783%` target speed; the raw signed
-  optimization matrix is `-0.4401%` / `100.4621%`.
+  is `+0.3253%` over target / `99.6811%` target speed; the raw signed
+  optimization matrix is `-0.4432%` / `100.4649%`.
 - **The methodology has removed about 17.07 over-target points.** Since the
   compact full-matrix baseline, the accepted promotions add about `12.58`
   target-speed points while keeping the visual + audible scene bar intact.

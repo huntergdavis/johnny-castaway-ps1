@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-10:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3284%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6783%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-10T01:50:59` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-high-f140-segment-copy-v291`, `visitor3-current-v291-control`, `walkstuf1-low-gap1-v289`, `walkstuf1-high-gap1-windowprefetch-slack4-v288`, `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3253%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6811%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-10T02:50:49` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-alias-noop114117-v292`, `visitor3-high-f140-segment-copy-v291`, `walkstuf1-low-gap1-v289`, `walkstuf1-high-gap1-windowprefetch-slack4-v288`, `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=2` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,13 +87,13 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-high-f140-segment-copy-v291` moves
-high frame `140` and tail frames `142..144` into the already paid setup
-segment without changing the `1555450` byte pack footprint. High improves
-`1075/1037 -> 1074/1038`, overrun `38 -> 36`, blocking `61 -> 58`, loop reads
-`11 -> 10`, loop-read time `61 -> 58`, and due misses `11 -> 10`; hidden
-refill stays `0`. The paired current-layout low control is `1079/1039` with
-blocking `70`, loop reads `16`, loop-read time `84`, and due misses `12`.
+Latest promoted VISITOR3 note: `visitor3-low-alias-noop114117-v292` aliases
+low frames `114..117` to frame `113`'s already-resident two-byte no-op payload
+without changing the `1555450` byte pack footprint. Low improves
+`1079/1039 -> 1075/1039`, overrun `40 -> 36`, blocking `70 -> 67`, loop reads
+`16 -> 12`, and loop-read time `84 -> 67`; due misses stay `12` and hidden
+refill stays `0`. High remains `visitor3-high-f140-segment-copy-v291` at
+`1074/1038`, blocking `58`, loop reads `10`, and due misses `10`.
 
 Latest promoted WALKSTUF1 note: `walkstuf1-low-gap1-v289` applies the gap1
 early-prefix pack shape to low tide without runtime source changes. Low
