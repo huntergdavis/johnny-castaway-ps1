@@ -96,7 +96,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port �
       "name": "Does it run at native rate?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": {{ "At " | append: site.release.tag | append: " the headless-perf battle card averages " | append: site.release.perf_target_speed_pct | append: "% target speed across the 120 timing-bearing scene/tide rows — close enough that most scenes hit their original frame budget on PS1 hardware. The remaining gap is concentrated in a small set of high-leverage scenes." | jsonify }}
+        "text": {{ "At " | append: site.release.tag | append: " the headless-perf battle card averages " | append: site.release.perf_target_speed_pct | append: "% target speed across all 126 timing-bearing scene/tide rows — close enough that most scenes hit their original frame budget on PS1 hardware. The remaining gap is concentrated in a small set of high-leverage scenes." | jsonify }}
       }
     },
     {
@@ -248,7 +248,7 @@ runs in headless DuckStation, so that one is the reference.
 
 At {{ site.release.tag }} the headless-perf battle card averages
 **[{{ site.release.perf_target_speed_pct }}% target speed]({{ '/docs/glossary/#target-speed' | relative_url }})** across
-the 120 timing-bearing scene/tide rows — close enough that most
+all 126 timing-bearing scene/tide rows — close enough that most
 scenes hit their original frame budget on PS1 hardware. The
 remaining gap is concentrated in a small set of high-leverage
 scenes (wide-action, clean-rect-heavy frames) and is the active

@@ -34,7 +34,7 @@
     </author>
     <summary>How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it.</summary>
   </entry><entry>
-    <title>From 87 to 99.5: the post-validation performance loop</title>
+    <title>From 87 to 99.7: the post-validation performance loop</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/"/>
     <id>https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/</id>
     <published>2026-05-06T00:00:00-04:00</published>

@@ -592,6 +592,18 @@ def parse_source_setup_policy() -> dict[str, Any]:
                 (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
             ]
 
+    for tide in ("HIGH", "LOW"):
+        segments = []
+        for suffix in ("", "2"):
+            start = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_START")
+            size = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_BYTES")
+            if start is not None and size is not None and size > 0:
+                segments.append(
+                    (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
+                )
+        if segments:
+            policy[f"visitor3_{tide.lower()}_segments"] = segments
+
     return policy
 
 
@@ -672,11 +684,21 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
             prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
             if prime is None:
                 prime = source_policy.get("visitor3_low_prime_bytes")
-            return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024, visitor3_cap), [], "auto:visitor3-low"
+            segments = source_policy.get("visitor3_low_segments") or []
+            return (
+                clamp_setup_prime_bytes(source_policy, prime or 208 * 1024, visitor3_cap),
+                list(segments),
+                "auto:visitor3-low",
+            )
         prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
         if prime is None:
             prime = source_policy.get("visitor3_high_prime_bytes")
-        return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024, visitor3_cap), [], "auto:visitor3-high"
+        segments = source_policy.get("visitor3_high_segments") or []
+        return (
+            clamp_setup_prime_bytes(source_policy, prime or 216 * 1024, visitor3_cap),
+            list(segments),
+            "auto:visitor3-high",
+        )
     if scene_name == "walkstuf1":
         if scene.get("fmt") == "fgp3_indexed8_residual":
             normal = source_policy.get(
@@ -722,6 +744,10 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
             prime = source_policy.get("johnny3_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 312 * 1024), [], "auto:johnny3-high"
     return 0, [], "none"
+
+
+def skips_auto_fgp3_setup_prime(scene_name: str | None) -> bool:
+    return scene_name in {"building1", "visitor5"}
 
 
 def fg_pack_payload_end(header: dict[str, Any], entries: list[dict[str, Any]]) -> int:
@@ -973,7 +999,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     data_offset = int(header.get("data_offset", 0))
 
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
-    if pack.get("magic") == "FGP3":
+    scene = case.get("sections", {}).get("scene", {})
+    scene_name = scene.get("scene")
+    if pack.get("magic") == "FGP3" and not skips_auto_fgp3_setup_prime(scene_name):
         auto_pack_limit = int(
             source_policy.get("symbols", {}).get("FG_SETUP_PRIME_AUTO_PACK_BYTES") or
             source_policy.get("symbols", {}).get("FG_SETUP_PRIME_SMALL_PACK_BYTES") or

@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline; all 63 scenes remain validated, and the public headless battle card is +0.5576% over target / 99.4669% target speed).
+performance matrix release; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.3459% over target / 99.6621% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 549 |
-| Approx. words | 5897 |
+| Lines | 625 |
+| Approx. words | 6706 |
 | Code fences | 1 |
 
 ## Outline

@@ -2121,6 +2121,173 @@ static void grCompositePacked4CompactSpansToBackground(const uint8 *spanData,
     grPacked4SpanMetadataCompact = 0;
 }
 
+/* VISITOR3 uses this marker for pack-authored horizontal motion frames. */
+#define GR_FGP3_MOTION_MARKER 0xffffu
+#define GR_FGP3_MOTION_X_OPCODE 1u
+
+static uint16 *__attribute__((optimize("Os"), noinline))
+grMutableBgPixelAt(int x, int y)
+{
+    PS1Surface *tile;
+    int tileLocalY;
+    int tileLocalX;
+
+    if (x < 0 || x >= 640 || y < 0 || y >= 480)
+        return NULL;
+
+    if (y < 240) {
+        tileLocalY = y;
+        tile = (x < 320) ? bgTile0 : bgTile1;
+    } else {
+        tileLocalY = y - 240;
+        tile = (x < 320) ? bgTile3 : bgTile4;
+    }
+    if (tile == NULL || tile->pixels == NULL)
+        return NULL;
+
+    tileLocalX = (x < 320) ? x : (x - 320);
+    return tile->pixels + (tileLocalY * (int)tile->width) + tileLocalX;
+}
+
+static void __attribute__((optimize("Os"), noinline))
+grMoveBgSpanX(int x, int y, uint16 pixelCount, int dx)
+{
+    int start = 0;
+    int end = (int)pixelCount;
+    int destStart;
+    int destEnd;
+
+    if (dx == 0 || pixelCount == 0 || y < 0 || y >= 480)
+        return;
+
+    if (x < 0)
+        start = -x;
+    if (x + end > 640)
+        end = 640 - x;
+    if (x + dx + start < 0)
+        start = -x - dx;
+    if (x + dx + end > 640)
+        end = 640 - x - dx;
+    if (start >= end)
+        return;
+
+    if (dx > 0) {
+        int i;
+        for (i = end - 1; i >= start; i--) {
+            uint16 *src = grMutableBgPixelAt(x + i, y);
+            uint16 *dst = grMutableBgPixelAt(x + dx + i, y);
+            if (src != NULL && dst != NULL)
+                *dst = *src;
+        }
+    } else {
+        int i;
+        for (i = start; i < end; i++) {
+            uint16 *src = grMutableBgPixelAt(x + i, y);
+            uint16 *dst = grMutableBgPixelAt(x + dx + i, y);
+            if (src != NULL && dst != NULL)
+                *dst = *src;
+        }
+    }
+
+    destStart = x + dx + start;
+    destEnd = x + dx + end;
+    grMarkRectDirty(destStart, y, destEnd, y + 1);
+}
+
+static void __attribute__((optimize("Os"), noinline))
+grCompositePacked4CompactMotionXToBackground(const uint8 *spanData,
+                                             uint32 spanDataSize,
+                                             const uint16 *palette,
+                                             sint16 screenX,
+                                             sint16 screenY)
+{
+    uint32 offset = 2;
+    uint32 restoredBytes = 0;
+    uint16 copyRows;
+    uint16 cleanupRows;
+    uint16 perfRows = 0;
+    uint16 perfSpans = 0;
+    uint32 perfPixels = 0;
+    int dx;
+    int dy;
+
+    if (spanDataSize < 8)
+        return;
+    if (spanData[offset] != GR_FGP3_MOTION_X_OPCODE)
+        return;
+    dx = (int)((signed char)spanData[offset + 1]);
+    dy = (int)((signed char)spanData[offset + 2]);
+    offset += 4;
+    if (dy != 0 || dx == 0)
+        return;
+
+    if (offset + 2u > spanDataSize)
+        return;
+    copyRows = grReadPackedSpanU16(spanData + offset);
+    offset += 2u;
+    perfRows = copyRows;
+    for (uint16 row = 0; row < copyRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relY) ||
+            !grReadCompactSpanU16(spanData, spanDataSize, &offset, &spanCount))
+            return;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relX) ||
+                !grReadCompactSpanU16(spanData, spanDataSize, &offset, &pixelCount))
+                return;
+            grMoveBgSpanX((int)screenX + (int)relX, rowScreenY, pixelCount, dx);
+            perfSpans++;
+            perfPixels += pixelCount;
+        }
+    }
+
+    if (offset + 2u > spanDataSize)
+        return;
+    cleanupRows = grReadPackedSpanU16(spanData + offset);
+    offset += 2u;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relY) ||
+            !grReadCompactSpanU16(spanData, spanDataSize, &offset, &spanCount))
+            return;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relX) ||
+                !grReadCompactSpanU16(spanData, spanDataSize, &offset, &pixelCount))
+                return;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled) {
+        ps1PerfMarkCompose(perfRows, perfSpans, perfPixels, spanDataSize);
+        ps1PerfMarkRestore(restoredBytes);
+    }
+    if (offset < spanDataSize)
+        grCompositePacked4CompactSpansToBackground(spanData + offset,
+                                                   spanDataSize - offset,
+                                                   palette,
+                                                   screenX,
+                                                   screenY);
+}
+
 void grBeginResidualCleanBgFrame(void)
 {
     grClearCurrDirtyState();

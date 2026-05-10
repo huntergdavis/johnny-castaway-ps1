@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
-  <title>From 87 to 99.5: the post-validation performance loop — Johnny Castaway PS1</title>
-  <meta name="description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" /><meta property="og:title"        content="From 87 to 99.5: the post-validation performance loop — Johnny Castaway PS1" />
+  <title>From 87 to 99.7: the post-validation performance loop — Johnny Castaway PS1</title>
+  <meta name="description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" /><meta property="og:title"        content="From 87 to 99.7: the post-validation performance loop — Johnny Castaway PS1" />
   <meta property="og:description"  content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-05-06T00:00:00-04:00" />
   <meta property="article:author"         content="Hunter Davis" />
   <meta property="article:section"        content="Lab" />
@@ -15,32 +15,32 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
-  <script defer src="/johnny-castaway-ps1/assets/js/key-nav.js"></script>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
-        href="/johnny-castaway-ps1/devlog/feed.xml" />
+        href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
-        href="/johnny-castaway-ps1/devlog/feed.json" />
+        href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
-        href="/johnny-castaway-ps1/lab/feed.xml" />
+        href="../feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
-        href="/johnny-castaway-ps1/lab/feed.json" />
-  <link rel="author" type="text/plain" href="/johnny-castaway-ps1/humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
-        href="/johnny-castaway-ps1/sitemap.xml" />
+        href="../../sitemap.xml" />
 
   <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" />
 
@@ -63,19 +63,19 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99.5: the post-validation performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99.7: the post-validation performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
 }
 </script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "From 87 to 99.5: the post-validation performance loop",
+  "headline": "From 87 to 99.7: the post-validation performance loop",
   "description": "A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.",
   "datePublished": "2026-05-06T00:00:00-04:00",
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2190,
+  "wordCount": 2158,
   "timeRequired": "PT8M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
@@ -102,21 +102,21 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/perf/">Perf</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/" aria-current="page">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../perf/">Perf</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -128,22 +128,22 @@
 
   <main id="main" class="main" tabindex="-1">
     <article class="page">
-  
+
     <header class="page-header">
       <p class="eyebrow">Lab · Methodology</p>
-      <h1>From 87 to 99.5: the post-validation performance loop</h1>
+      <h1>From 87 to 99.7: the post-validation performance loop</h1>
       <p class="subtitle">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</p>
         <p class="pub-date">
           Published <time datetime="2026-05-06">May 6, 2026</time>
         </p>
-        
+
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2107 words
+          ~8 min read · 2075 words
         </p>
-      
+
       <hr class="rule" />
     </header>
-  
+
   <div class="page-body">
     <details class="page-toc">
   <summary>On this page</summary>
@@ -185,14 +185,14 @@ target speed</strong> across the same 120 rows. Roughly
 <strong>12.4 target-speed points</strong> added. ACTIVITY 9 — the last
 validated scene and the widest one — graduated from “validated”
 to “optimized validated outlier.”
-<a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
+<a href="../v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
-the VISITOR3 and WALKSTUF1 outliers. The current public-capped
-average at <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> is <strong>+0.6% over target /
-99.5% target speed</strong>, with
-roughly <strong>16.8 percentage points</strong> of over-target gap closed and
-about <strong>12.4 target-speed points</strong> added. The optimization-side
+matrix mean untouched, <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> shipped the Scene Explorer thumbnail
+reconciliation, and <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> promotes the full 126-row timing-bearing
+matrix. The current public-capped average at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is
+<strong>+0.3459% over target / 99.6621% target speed</strong>, with roughly <strong>17.05
+percentage points</strong> of over-target gap closed and about <strong>12.56 target-speed
+points</strong> added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
 that loop actually looked like.</p>
@@ -202,8 +202,8 @@ that loop actually looked like.</p>
 <p>The project keeps two acceptance bars and never lets them merge:</p>
 
 <ul>
-  <li><strong>Visual signoff</strong> — pixel-perfect against host capture, plus SFX cues on the same engine ticks, signed off across every variant flag. Human review. The <a href="/johnny-castaway-ps1/scenes/">scene ledger</a> tracks this in the top table.</li>
-  <li><strong>Headless performance</strong> — automated DuckStation timing in capture mode. Measures <code class="language-plaintext highlighter-rouge">loop_vb</code>, <code class="language-plaintext highlighter-rouge">target_vb</code>, <code class="language-plaintext highlighter-rouge">over_target</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">prefetch_hits</code>, byte counts. The live battle card is at <a href="/johnny-castaway-ps1/perf/">/perf/</a> — sortable headers, color-coded Target Speed cells.</li>
+  <li><strong>Visual signoff</strong> — pixel-perfect against host capture, plus SFX cues on the same engine ticks, signed off across every variant flag. Human review. The <a href="../../scenes/">scene ledger</a> tracks this in the top table.</li>
+  <li><strong>Headless performance</strong> — automated DuckStation timing in capture mode. Measures <code class="language-plaintext highlighter-rouge">loop_vb</code>, <code class="language-plaintext highlighter-rouge">target_vb</code>, <code class="language-plaintext highlighter-rouge">over_target</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">prefetch_hits</code>, byte counts. The live battle card is at <a href="../../perf/">/perf/</a> — sortable headers, color-coded Target Speed cells.</li>
 </ul>
 
 <p>A scene can clear the visual bar and still be slow. A scene can be fast and still be wrong. The ledgers stay separate because the failure modes are uncorrelated. Optimizing for speed without re-running the visual signoff would be how regressions ship.</p>
@@ -212,7 +212,7 @@ that loop actually looked like.</p>
 
 <h2 id="the-headless-harness">The headless harness</h2>
 
-<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <a href="/johnny-castaway-ps1/docs/glossary/#bootmode"><code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <a href="../../docs/glossary/#bootmode"><code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
 
 <p>Two numbers from the log do most of the work:</p>
 
@@ -251,7 +251,7 @@ that loop actually looked like.</p>
 
 <h3 id="fgp3-pack-format-conversions">FGP3 pack format conversions</h3>
 
-<p>The original <a href="/johnny-castaway-ps1/docs/glossary/#fg2-pack">FG2 pack</a> format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime’s “did I miss a pixel” rebuild. Most scenes’ high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.</p>
+<p>The original <a href="../../docs/glossary/#fg2-pack">FG2 pack</a> format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime’s “did I miss a pixel” rebuild. Most scenes’ high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.</p>
 
 <h3 id="scene-local-prefetch-relief">Scene-local prefetch relief</h3>
 
@@ -285,23 +285,19 @@ that loop actually looked like.</p>
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.5%</code> target speed.
+<p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> there are no red rows left on the
-<a href="/johnny-castaway-ps1/perf/">battle card</a>. The three yellow rows
-(<code class="language-plaintext highlighter-rouge">90</code>–<code class="language-plaintext highlighter-rouge">95%</code>) are VISITOR3 high/low at roughly <code class="language-plaintext highlighter-rouge">91.9%</code>/<code class="language-plaintext highlighter-rouge">91.0%</code> after
-the pack-side restore-minus-current cleanup and BUILDING2 low at
-<code class="language-plaintext highlighter-rouge">94.3%</code>. The eighteen orange rows (<code class="language-plaintext highlighter-rouge">95</code>–<code class="language-plaintext highlighter-rouge">99%</code>) include WALKSTUF1
-at <code class="language-plaintext highlighter-rouge">95.6%</code>/<code class="language-plaintext highlighter-rouge">95.8%</code> after its v0.8.3 compact-FGP3/v4 pass, BUILDING2
-high at <code class="language-plaintext highlighter-rouge">97.6%</code>, and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1
-/ VISITOR3 / wide-action cluster still finishing scheduler-owned read
-timing and selective-preprocessing work. The optimization plan at
+As of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> there are no red or yellow rows left on the
+<a href="../../perf/">battle card</a>: <code class="language-plaintext highlighter-rouge">111</code> rows are green and <code class="language-plaintext highlighter-rouge">15</code>
+remain orange. The current under-99 focus set is WALKSTUF1 high/low,
+VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
+The optimization plan at
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a> § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.5%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>); the live battle card is at <a href="/johnny-castaway-ps1/perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
@@ -319,20 +315,20 @@ will join the rejected log.</p>
 <h2 id="cross-links">Cross-links</h2>
 
 <ul>
-  <li><a href="/johnny-castaway-ps1/perf/">/perf/</a> — the live battle card this article is the back-story for.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/">/scenes/</a> — the visual signoff ledger; the parallel acceptance bar.</li>
-  <li><a href="/johnny-castaway-ps1/docs/performance/">/docs/performance/</a> — reference manual for what each column on the battle card means.</li>
-  <li><a href="/johnny-castaway-ps1/lab/the-63-scene-grind/">/lab/the-63-scene-grind/</a> — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.</li>
-  <li><a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a> — the stability follow-on that left this article’s matrix mean untouched.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/visitor3/">/scenes/visitor3/</a> — formerly the red outlier, now a yellow-band pack/data-shape target.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/activity9/">/scenes/activity9/</a> — wide-boat scene; padded FGP3 + scoped low-tide read group case study.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/building4/">/scenes/building4/</a> — clean-rect-heavy variant; representative of the drop-prefetch unlock.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/fishing1/">/scenes/fishing1/</a> — the canary scene the matrix tracks against every release.</li>
-  <li><a href="/johnny-castaway-ps1/docs/glossary/#fgp3">Glossary: FGP3</a> — the pack format most rebuilds converged on.</li>
-  <li><a href="/johnny-castaway-ps1/docs/glossary/#prefetch-window">Glossary: prefetch window</a> — the buffer the drop-prefetch mechanism releases under clean-rect pressure.</li>
-  <li><a href="/johnny-castaway-ps1/docs/glossary/#read-group">Glossary: read group</a> — the CD layout primitive the ACTIVITY 9 scope-narrowing exploited.</li>
-  <li><a href="/johnny-castaway-ps1/docs/glossary/#experiment-log">Glossary: experiment log</a> — the long-form table of every accepted and rejected probe.</li>
-  <li><a href="/johnny-castaway-ps1/docs/glossary/#canary">Glossary: canary scene</a> — the FISHING 1 high-tide load-bearing reference frame.</li>
+  <li><a href="../../perf/">/perf/</a> — the live battle card this article is the back-story for.</li>
+  <li><a href="../../scenes/">/scenes/</a> — the visual signoff ledger; the parallel acceptance bar.</li>
+  <li><a href="../../docs/performance/">/docs/performance/</a> — reference manual for what each column on the battle card means.</li>
+  <li><a href="../the-63-scene-grind/">/lab/the-63-scene-grind/</a> — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.</li>
+  <li><a href="../v081-mary4-freeze/">/lab/v081-mary4-freeze/</a> — the stability follow-on that left this article’s matrix mean untouched.</li>
+  <li><a href="../../scenes/visitor3/">/scenes/visitor3/</a> — formerly the red outlier, now a yellow-band pack/data-shape target.</li>
+  <li><a href="../../scenes/activity9/">/scenes/activity9/</a> — wide-boat scene; padded FGP3 + scoped low-tide read group case study.</li>
+  <li><a href="../../scenes/building4/">/scenes/building4/</a> — clean-rect-heavy variant; representative of the drop-prefetch unlock.</li>
+  <li><a href="../../scenes/fishing1/">/scenes/fishing1/</a> — the canary scene the matrix tracks against every release.</li>
+  <li><a href="../../docs/glossary/#fgp3">Glossary: FGP3</a> — the pack format most rebuilds converged on.</li>
+  <li><a href="../../docs/glossary/#prefetch-window">Glossary: prefetch window</a> — the buffer the drop-prefetch mechanism releases under clean-rect pressure.</li>
+  <li><a href="../../docs/glossary/#read-group">Glossary: read group</a> — the CD layout primitive the ACTIVITY 9 scope-narrowing exploited.</li>
+  <li><a href="../../docs/glossary/#experiment-log">Glossary: experiment log</a> — the long-form table of every accepted and rejected probe.</li>
+  <li><a href="../../docs/glossary/#canary">Glossary: canary scene</a> — the FISHING 1 high-tide load-bearing reference frame.</li>
 </ul>
 
   </div>
@@ -340,29 +336,29 @@ will join the rejected log.</p>
   <hr class="rule" />
   <nav class="scene-pager" aria-label="Lab essay navigation">
     <div class="scene-pager-prev">
-      
-        <a href="/johnny-castaway-ps1/lab/the-site-itself/" rel="prev">
+
+        <a href="../the-site-itself/" rel="prev">
           <span class="scene-pager-dir" aria-hidden="true">← older</span>
           <span class="scene-pager-tag">The site itself, as a small program</span>
         </a>
-      
+
     </div>
     <div class="scene-pager-up">
-      <a href="/johnny-castaway-ps1/lab/">↑ lab index</a>
+      <a href="../">↑ lab index</a>
     </div>
     <div class="scene-pager-next">
-      
-        <a href="/johnny-castaway-ps1/lab/v081-mary4-freeze/" rel="next">
+
+        <a href="../v081-mary4-freeze/" rel="next">
           <span class="scene-pager-dir" aria-hidden="true">newer →</span>
           <span class="scene-pager-tag">v0.8.1 — what the soak found that the matrix didn't</span>
         </a>
-      
+
     </div>
     <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
   </nav>
 </footer>
 
-  
+
 </article>
 
   </main>
@@ -377,23 +373,23 @@ will join the rejected log.</p>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="/johnny-castaway-ps1/releases/">v0.8.4-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
-          <a href="/johnny-castaway-ps1/devlog/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="/johnny-castaway-ps1/devlog/feed.json" type="application/feed+json">JSON</a>
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="/johnny-castaway-ps1/lab/feed.xml" type="application/atom+xml">Atom</a> ·
-          <a href="/johnny-castaway-ps1/lab/feed.json" type="application/feed+json">JSON</a>
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
-          <a href="/johnny-castaway-ps1/humans.txt" type="text/plain">humans.txt</a>
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
-          <a href="/johnny-castaway-ps1/sitemap.xml" type="application/xml">sitemap</a>
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/from-87-to-99-5/index.md" rel="noopener">Edit this page on GitHub</a> →
@@ -407,18 +403,18 @@ will join the rejected log.</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/perf/">Battle card</a></li>
-          <li><a href="/johnny-castaway-ps1/releases/">Releases</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-          <li><a href="/johnny-castaway-ps1/docs/glossary/">Glossary</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../archaeology/">Archaeology</a></li>
+          <li><a href="../../docs/glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

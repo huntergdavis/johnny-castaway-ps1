@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.4-ps1
+eyebrow: 2025-10 to v0.8.5-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline and the v0.8.4-ps1 chapter-select-thumbnail reconciliation.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, and the v0.8.5-ps1 full headless matrix release.
 ---
 
 <details class="page-toc" markdown="1">
@@ -386,6 +386,9 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
+- Latest performance release: **`v0.8.5-ps1`** — promoted the full
+  126-row timing-bearing headless matrix as the public release baseline:
+  `+0.3459%` over target / `99.6621%` target speed.
 - Latest content release: **`v0.8.4-ps1`** — custom on-PS1 thumbnails
   for all 63 [chapter-select]({{ '/docs/glossary/#scene-explorer' | relative_url }}) grid slots, with scene titles and bodies
   reconciled against the on-PS1 packs. The earlier caption-mapping

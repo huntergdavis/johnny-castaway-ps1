@@ -1,5 +1,5 @@
 ---
-title: "From 87 to 99.5: the post-validation performance loop"
+title: "From 87 to 99.7: the post-validation performance loop"
 eyebrow: Lab · Methodology
 subtitle: How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.
 description: A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.
@@ -27,12 +27,12 @@ validated scene and the widest one — graduated from "validated"
 to "optimized validated outlier."
 [`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
-the VISITOR3 and WALKSTUF1 outliers. The current public-capped
-average at `{{ site.release.tag }}` is **+0.6% over target /
-{{ site.release.perf_target_speed_pct }}% target speed**, with
-roughly **16.8 percentage points** of over-target gap closed and
-about **12.4 target-speed points** added. The optimization-side
+matrix mean untouched, `v0.8.4-ps1` shipped the Scene Explorer thumbnail
+reconciliation, and `v0.8.5-ps1` promotes the full 126-row timing-bearing
+matrix. The current public-capped average at `{{ site.release.tag }}` is
+**+0.3459% over target / 99.6621% target speed**, with roughly **17.05
+percentage points** of over-target gap closed and about **12.56 target-speed
+points** added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
 that loop actually looked like.
@@ -122,15 +122,11 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of `{{ site.release.tag }}` there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}). The three yellow rows
-(`90`–`95%`) are VISITOR3 high/low at roughly `91.9%`/`91.0%` after
-the pack-side restore-minus-current cleanup and BUILDING2 low at
-`94.3%`. The eighteen orange rows (`95`–`99%`) include WALKSTUF1
-at `95.6%`/`95.8%` after its v0.8.3 compact-FGP3/v4 pass, BUILDING2
-high at `97.6%`, and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1
-/ VISITOR3 / wide-action cluster still finishing scheduler-owned read
-timing and selective-preprocessing work. The optimization plan at
+As of `{{ site.release.tag }}` there are no red or yellow rows left on the
+[battle card]({{ '/perf/' | relative_url }}): `111` rows are green and `15`
+remain orange. The current under-99 focus set is WALKSTUF1 high/low,
+VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
+The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.

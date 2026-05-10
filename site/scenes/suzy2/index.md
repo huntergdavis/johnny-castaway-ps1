@@ -69,9 +69,7 @@ for the longer version.
 ## Notable runtime history
 
 `SUZY 2` high and low both appear on the
-[performance battle card]({{ '/perf/' | relative_url }}) as
-**metadata-only** rows — they don't reach a deterministic
-scene-end the way story scenes do, so they're excluded from the
-matrix's `target_speed` averages on purpose. The same applies to
-`SUZY 1`. Visual signoff (the FISHING 1 bar) holds; only the
-*timing* gate doesn't.
+[performance battle card]({{ '/perf/' | relative_url }}) as measured rows.
+The current high/low rows are close to target at `2655/2633` VBlanks with
+`0` due misses. `SUZY 1` is also measured now, using the longer timing window
+that scene requires.

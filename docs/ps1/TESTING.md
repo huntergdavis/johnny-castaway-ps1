@@ -67,25 +67,49 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-08:
+Current battle-card rollup as of 2026-05-09:
 
 | Metric | Value |
 |---|---:|
 | Scene/tide variants routed through headless perf | `126 / 126` |
-| Timing-bearing variants | `120 / 126` |
-| Scenes with at least one active-loop timed variant | `60 / 63` |
+| Timing-bearing variants | `126 / 126` |
+| Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.5576%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4669%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T06:36:32` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.4%` (`0.3459%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6621%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-09T18:08:05` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=2` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
 `100.0%` target speed so the website never presents playback faster than
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
+
+Latest promoted VISITOR3 note: `visitor3-low-noop113-v249` extends the
+pack-only no-op residual lane one frame earlier after the v248 frame
+`114..117` compaction. Low improves `1086/1035 -> 1075/1039`, overrun
+`51 -> 36`, blocking `93 -> 69`, loop reads `17 -> 16`, loop-read time
+`100 -> 83`, and due misses `16 -> 12`; `prefetch_overrun_vb=0`. High
+remains on `visitor3-high-f127-f130-resident-copy-v238` at `1075/1037`.
+
+Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
+`114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,
+low hull-motion retries, terminal hand-authored read groups, and simple motion
+row-copy runtime paths, compact motion-copy metadata, frame `117` sparse hull
+in both/low-only forms, runtime/staged narrow dirty-row upload, naive compact-v4
+motion-marker dispatch, both-tide frame `125` re-anchor, low frame `127`
+re-anchor, frame `116`/`114` copy-only hull shapes, and low setup-prime caps
+above `208 KiB` are log-only
+failures.
+The pack rewrites either saved no meaningful bytes or regressed active timing,
+the read groups saved some reads but hurt cadence, and the runtime/data-format
+copy paths either crossed the `215040` byte PS-EXE bucket, stayed exact-flat, or
+hurt refill cadence or failed before `JCPERF2`. The next VISITOR3 work should
+use custom data-shape, dictionary, pack-authored precomposed-strip, or generated
+scheduler ideas rather than another wider precursor motion window, hand read
+table, metadata shrink, or C-side upload/copy micro-optimization.
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
@@ -99,6 +123,19 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
+`visitor3-high-f127-f130-resident-copy-v238`,
+`visitor3-low-noop114117-v248`,
+`activity9-low-compact-fgp3-v174`,
+`johnny1-compact-fgp3-v173`,
+`walkstuf3-low-compact-fgp3-v171`,
+`activity9-high-compact-fgp3-v167`,
+`building6-compact-fgp3-v165`,
+`walkstuf3-high-compact-fgp3-v163`,
+`building2-low-restore-window-slack4-v160`,
+`visitor5-high-compact-fgp3-noautoprime-v158`,
+`building1-compact-fgp3-noautoprime-v157`,
+`mary3-preserve-window-slack8-v149`,
+`missing-scenes-current-v001`,
 `visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
@@ -157,10 +194,9 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v61-fishing3low-group163-175`,
 `compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
-`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Four routed rows (`suzy1`, `suzy2`,
-high/low) complete without active-loop timing and are excluded from speed
-averages even though the route/gate itself passes; `mary3` is visually
-validated but still needs a perf-matrix refresh.
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. All 126 routed rows now carry active-loop timing. `suzy1` needs the longer
+`12000`-frame matrix budget because its valid scene end lands after the default
+`7200`-frame window.
 
 ## Secondary (historical): headless regtest harness
 

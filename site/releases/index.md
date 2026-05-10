@@ -22,6 +22,34 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.5-ps1` — Full 126-row headless performance matrix
+<time datetime="2026-05-09"><em>2026-05-09</em></time>
+
+A performance/methodology point release after `v0.8.4-ps1`. It keeps the
+custom Scene Explorer thumbnails and scene-page reconciliation from the
+chapter-select grind, then promotes the current headless matrix as the
+public baseline.
+
+- **All 126 high/low rows are timing-bearing.** The matrix now has active-loop
+  timing for every routed scene/tide variant: 63 scenes x 2 tide rows.
+- **Public rollup is effectively at native speed.** The public-capped average
+  is `+0.3459%` over target / `99.6621%` target speed; the raw signed
+  optimization matrix is `-0.4226%` / `100.4459%`.
+- **The methodology has removed about 17.05 over-target points.** Since the
+  compact full-matrix baseline, the accepted promotions add about `12.56`
+  target-speed points while keeping the visual + audible scene bar intact.
+- **The missing-scene confusion is closed.** MARY1/2/3 and SUZY1/2 are
+  measured and green; `suzy3` is not a standalone Johnny Castaway scene route.
+- **Latest unpromoted probes are recorded, not hidden.** The recent WALKSTUF1
+  cleanup-gap/core/edge experiments are logged as misses because their hidden
+  refill regressions outweighed the visible timing wins.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.5/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.5-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.4-ps1` — Custom chapter-select thumbnails for all 63 scenes
 <time datetime="2026-05-08"><em>2026-05-08</em></time>
 

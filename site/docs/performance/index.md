@@ -117,12 +117,12 @@ splits cap-hit frames from saving-heavy frames, which keeps the next
 upload-ready experiment selective instead of a whole-pack conversion. The
 current VISITOR3 frame sheet is
 [`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv).
-The current default VISITOR3 selective plan is still too large for a
-same-footprint append: it models `6114568` selected upload bytes saved, but the
-upload-ready payload plus rect metadata needs `2462072` bytes per tide against
-only `814847` bytes of padded zero-tail slack. The analyzer now emits the
-same-footprint budgeted target too: `74 / 96` default-selected frames fit in
-`814184` payload+rect bytes, leave `663` bytes of slack, and retain `3858104`
+The current default VISITOR3 high-tide selective plan is still too large for a
+same-footprint append: it models `5730024` selected upload bytes saved, but the
+upload-ready payload plus rect metadata needs `2111224` bytes against only
+`970076` bytes of padded zero-tail slack. The analyzer now emits the
+same-footprint budgeted target too: `78 / 92` default-selected frames fit in
+`968904` payload+rect bytes, leave `1172` bytes of slack, and retain `4232112`
 modeled upload bytes saved. The analyzer now also reports whether those x-band
 uploads are safe to emit from foreground data alone. For VISITOR3, `0`
 selected x-band bytes are fully covered by current opaque draw spans, so a raw
@@ -306,15 +306,30 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
-CSV row is `-0.6%` / `100.6%`. Across the 120 timing-bearing battle-card rows,
-the public average is **+0.6% over target / 99.5% target speed** (`0.5576%`
-exact public over target / `99.4669%` exact public target speed); the raw
-signed optimization matrix remains `-0.2497%` / `100.2899%`.
+CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
+the public average is **+0.4% over target / 99.7% target speed** (`0.3459%`
+exact public over target / `99.6621%` exact public target speed); the raw
+signed optimization matrix is `-0.4226%` / `100.4459%`.
 
 ## Scene Battle Card
 
-As of 2026-05-08, all 126 scene/tide variants have current headless
+As of 2026-05-09, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-low-noop113-v249`,
+`visitor3-low-noop114117-v248`,
+`visitor3-high-f127-f130-resident-copy-v238`,
+`visitor3-drop-unused-motion-dispatch-v197`,
+`activity9-low-compact-fgp3-v174`,
+`johnny1-compact-fgp3-v173`,
+`walkstuf3-low-compact-fgp3-v171`,
+`activity9-high-compact-fgp3-v167`,
+`building6-compact-fgp3-v165`,
+`walkstuf3-high-compact-fgp3-v163`,
+`building2-low-restore-window-slack4-v160`,
+`visitor5-high-compact-fgp3-noautoprime-v158`,
+`building1-compact-fgp3-noautoprime-v157`,
+`mary3-preserve-window-slack8-v149`,
+`missing-scenes-current-v001`,
 `visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
@@ -383,11 +398,10 @@ perf measurements. The latest updated rows are stamped
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
-variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
-carry active-loop timing; `suzy1` and `suzy2` high/low complete as
-metadata-only routes and are excluded from speed averages. `mary3` is visually
-validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T06:36:32`; per-row freshness and stats version are shown on
+variant, and 63 scenes have both high- and low-tide variants routed. All 126
+rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
+matrix budget because its valid scene-end lands after the default `7200`-frame
+window. The latest matrix run is `2026-05-09T18:08:05`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -395,7 +409,20 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-tail-trim-stageguard-v127`,
+rows now use `visitor3-low-noop113-v249`,
+`visitor3-low-noop114117-v248`,
+`visitor3-high-f127-f130-resident-copy-v238`,
+`visitor3-drop-unused-motion-dispatch-v197`,
+`johnny1-compact-fgp3-v173`,
+`walkstuf3-low-compact-fgp3-v171`,
+`activity9-high-compact-fgp3-v167`,
+`building6-compact-fgp3-v165`,
+`walkstuf3-high-compact-fgp3-v163`,
+`building2-low-restore-window-slack4-v160`,
+`visitor5-high-compact-fgp3-noautoprime-v158`,
+`building1-compact-fgp3-noautoprime-v157`,
+`mary3-preserve-window-slack8-v149`,
+`visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
@@ -498,8 +525,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>activity9</code></td>
-      <td>+1.9% / 98.2% (2094/2056); due 2; blk 37</td>
-      <td>+1.3% / 98.7% (2085/2058); due 3; blk 29</td>
+      <td>+1.0% / 99.0% (2082/2062); due 1; blk 24</td>
+      <td>+0.7% / 99.3% (2075/2061); due 1; blk 17</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -524,7 +551,7 @@ rows are historical only.
     <tr>
       <td><code>building2</code></td>
       <td>+2.5% / 97.6% (1349/1316); due 7; blk 48</td>
-      <td>+6.1% / 94.3% (1383/1304); due 22; blk 118</td>
+      <td>+2.5% / 97.6% (1349/1316); due 19; blk 83</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -543,8 +570,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building6</code></td>
-      <td>+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
-      <td>+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
+      <td>+1.0% / 99.0% (2482/2457); blk 25</td>
+      <td>+1.2% / 98.8% (2485/2456); blk 28</td>
     </tr>
     <tr>
       <td><code>building7</code></td>
@@ -593,8 +620,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>johnny1</code></td>
-      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
-      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
+      <td>+1.5% / 98.5% (1974/1945); blk 26</td>
+      <td>+1.5% / 98.5% (1974/1945); blk 26</td>
     </tr>
     <tr>
       <td><code>johnny2</code></td>
@@ -633,8 +660,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>mary3</code></td>
-      <td>no active loop</td>
-      <td>no active loop</td>
+      <td>+0.1% / 99.9% (2296/2294); due 13; blk 53</td>
+      <td>+0.1% / 99.9% (2297/2295); due 13; blk 51</td>
     </tr>
     <tr>
       <td><code>mary4</code></td>
@@ -743,8 +770,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+8.8% / 91.9% (1118/1028); due 26; blk 150</td>
-      <td>+9.8% / 91.0% (1126/1025); due 29; blk 170</td>
+      <td>+3.7% / 96.5% (1075/1037); due 11; blk 59</td>
+      <td>+3.5% / 96.7% (1075/1039); due 12; blk 69</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -753,7 +780,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor5</code></td>
-      <td>+1.9% / 98.1% (1111/1090); blk 12</td>
+      <td>+1.1% / 98.9% (1104/1092); blk 11</td>
       <td>+2.0% / 98.0% (1112/1090); blk 12</td>
     </tr>
     <tr>
@@ -778,8 +805,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf3</code></td>
-      <td>+1.9% / 98.1% (2321/2278); due 6; blk 68</td>
-      <td>+1.1% / 98.9% (2321/2295); due 5; blk 40</td>
+      <td>+0.9% / 99.1% (2310/2290); due 6; blk 47</td>
+      <td>+1.2% / 98.8% (2321/2293); due 5; blk 41</td>
     </tr>
   </tbody>
 </table>
@@ -804,16 +831,18 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
-   largest gap at `+90/+101` VBlanks after the tail-trim stageguard pass; its local C
-   read-table rows are exhausted, so the next CD-shape pass needs generated
-   scheduler ownership, selective preprocessing, or further pack data-shape
-   work rather than hand-authored ranges. BUILDING2, BUILDING6, and WALKSTUF1
-   remain the next wide-action/read-pressure rows after the WALKSTUF1 compact
-   pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
-   same-layout append because `2462072` bytes of payload plus rect metadata
-   exceed the current `814847` bytes of VISITOR3 pack slack per tide. The
-   budgeted analyzer target keeps this same-footprint lane alive with `74`
-   selected frames, `814184` payload+rect bytes, and `3858104` modeled upload
+   largest gap at `+51/+38` VBlanks after the VISITOR3 motion-copy,
+   setup-segment, setup-prime, guarded second-segment, resident-copy, and
+   low no-op residual passes; its
+   local C read-table rows are exhausted, so the next CD-shape pass needs
+   generated scheduler ownership, selective preprocessing, or further pack
+   data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and
+   WALKSTUF1 remain the next wide-action/read-pressure rows after the WALKSTUF1
+   compact pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
+   same-layout append because `2111224` bytes of payload plus rect metadata
+   exceed the current `970076` bytes of VISITOR3 high-pack slack. The
+   budgeted analyzer target keeps this same-footprint lane alive with `78`
+   selected frames, `968904` payload+rect bytes, and `4232112` modeled upload
    bytes saved before runtime implementation. The empty-hold no-op recast is
    closed because the current packs expose `0` zero-visual-work entries. The
    packed-draw metadata probes prove a real VISITOR3 byte-reduction signal:
@@ -833,10 +862,13 @@ Next plausible wins, in priority order:
    pressure.
 4. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
    bytes, but dense scenes still pay per-span/per-pixel runtime costs.
-5. **Remaining metadata-only scene diagnosis.** `suzy1` and `suzy2`
-   still complete without active-loop timing, so their packs are not yet part
-   of the speed average. `mary3` moved out of that class visually and needs a
-   fresh matrix row.
+5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
+   now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
+   the bottom of the orange band after compact-pack promotion. The remaining
+   hard rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
+   VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
+   where hand-authored read groups and scalar window changes have
+   repeatedly shifted cadence instead of safely removing work.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
@@ -850,7 +882,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.6% over target / 99.5% target speed, with several
+  public average is now +0.3459% over target / 99.6621% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

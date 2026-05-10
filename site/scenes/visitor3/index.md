@@ -48,13 +48,17 @@ were evidence-gathering positions, not runtime pins.
 
 ## Notable runtime history
 
-`VISITOR 3` remains one of the high-leverage yellow-band rows on the
+`VISITOR 3` remains one of the high-leverage orange-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
-`{{ site.release.tag }}`. After the FGP3/v4 compact metadata work, the
-pack-side restore-minus-current cleanup, offscreen clips, code-shape pass, and
-v4 draw-tail stage guard, `visitor3` high and low now run around
-[`91.9%` and `91.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-instead of sitting in the red band. The wide multi-view stitch (the red ship
+`{{ site.release.tag }}`. After the compact metadata work, motion-copy payloads,
+high-only frame `117` target-hull promotion, the v214 high setup-prime pass,
+the v216 guarded low second setup segment, the v227 low frame-125/frame-126
+resident re-anchor, the v234/v237 low frame-118/frame-127 resident copies, the
+v238 high frame-127/frame-130 resident-copy compaction, and the v248 low
+frame-114/frame-117 no-op residual compaction, `visitor3` high
+and low now run around
+[`96.5%` and `95.3%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+instead of sitting in the red/yellow bands. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
 harder than most scenes; the remaining timing gap is concentrated in the
@@ -66,9 +70,9 @@ target speed is at
 The named-experiment queue for `visitor3` lives in
 [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md);
 recent rejected probes include several read-group, slack-gated, and
-setup-prime variants that didn't beat the canary. The current `97..109`
-read-plan cluster is closed for local runtime changes too: both grouped-read
-and setup-owned persistent-segment probes measured exact-flat, so the next
-useful lane needs generated scheduler ownership or a real payload/data-shape
-change. A data-only sector-alignment probe also failed: it reduced modeled
-uncovered sectors but shifted CD phase and regressed both tide variants.
+setup-prime variants that didn't beat the canary. The current source baseline
+has also removed unused noncompact motion dispatch without moving timings; that
+headroom is reserved for a future direct/precomposed VISITOR3 data path. Earlier
+read-plan clusters are closed for local runtime changes too: grouped-read,
+setup-owned persistent-segment, and data-only sector-alignment probes either
+measured exact-flat or shifted CD phase and regressed both tide variants.

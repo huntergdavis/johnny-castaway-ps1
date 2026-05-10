@@ -14,20 +14,21 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Date: 2026-05-08
+Date: 2026-05-09
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 1626 |
-| Approx. words | 27573 |
+| Lines | 2172 |
+| Approx. words | 36909 |
 | Code fences | 0 |
 
 ## Outline
 
 - PS1 Performance Next 100
+-   VISITOR3 white-whale backlog
 -   2026-04-30 ASM And Toolchain Feasibility Intake
 -   Highest-Leverage Thesis
 -   Fresh Targets From The Latest Misses

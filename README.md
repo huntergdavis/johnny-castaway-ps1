@@ -41,14 +41,15 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.8.4-ps1`** — custom chapter-select thumbnails for all 63 scenes |
+| Current release | **`v0.8.5-ps1`** — full 126-row headless performance matrix baseline |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **120 of 126** scene/tide rows have active-loop timing (6 metadata-only); public-capped average is **+0.6% over target / 99.5% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3459% over target / 99.6621% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
 
+- `v0.8.5-ps1` — full 126-row headless performance matrix baseline; public rollup at `+0.3459%` over target / `99.6621%` target speed.
 - `v0.8.4-ps1` — on-PS1 captured thumbnails for every Scene Explorer slot; per-scene metadata reconciled against what the discs play. [Retrospective.](https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/)
 - `v0.8.3-ps1` — WALKSTUF1 compact FGP3/v4 restore-minus-current packs.
 - `v0.8.2-ps1` — VISITOR3 guarded-read group performance promotion.

@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release with the
-WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline; all 63 scenes
-remain validated, and the public headless battle card is `+0.5576%` over
-target / `99.4669%` target speed).
+**Last updated:** 2026-05-09 (`v0.8.5-ps1` full 126-row headless
+performance matrix release; all 63 scenes remain validated, all 126
+high/low rows are timing-bearing, and the public headless battle card is
+`+0.3459%` over target / `99.6621%` target speed).
 
 ## Overall
 
@@ -63,8 +63,8 @@ variable-position safe.
 `MARY 3` was rebuilt from a far-right full-frame keyed foreground-only
 host capture (`x=80,y=54`) so the action left of the island is complete.
 The host capture ledger now invalidates stale sprite-surface references
-before BMP/layer frees, and the PS1 runtime uses low-memory
-clean-snapshot relief for this large pack.
+before BMP/layer frees, and the current PS1 perf path preserves stage/window
+prefetch under clean pressure with an 8-VBlank MARY3 window guard.
 `MARY 4` uses the generic multi-view scene-relative stitch: normal,
 far-left, and far-right foreground-only host views are merged into one
 pack so island-relative action is complete across runtime placements.
@@ -152,15 +152,69 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.3-ps1` is the WALKSTUF1 compact foreground
-performance release. All 63 scenes remain validated, all 126 high/low variants
-remain routed through headless perf, and the promoted
-`walkstuf1-compact-fgp3-v141` pass moves the public battle card to `+0.5576%`
-over target / `99.4669%` target speed while preserving WALKSTUF1 pack LBAs,
-the original `1535263` byte footprints, and the `215040` byte PS-EXE bucket.
+Latest point release: `v0.8.5-ps1` is the full headless performance matrix
+release after the `v0.8.4-ps1` Scene Explorer thumbnail/content pass. All 63
+scenes remain validated, all 126 high/low variants are routed and
+timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured and green; `suzy3` is
+not a standalone scene route. The promoted
+`walkstuf1-compact-fgp3-v141` pass remains the release pack/data win, and the
+MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
+`2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
+`690/693 -> 53/51` while keeping hidden refill overrun at zero. The latest
+post-release BUILDING1 pass converts both packs to compact FGP3/v4 while
+skipping auto-resident setup prime for that scene: high moves `792/778 ->
+784/782`, low moves `794/779 -> 787/782`, and both rows are now green. The
+newer VISITOR5 high-only compact-FGP3/no-autoprime pass keeps low tide on the
+prior pack while moving high `1111/1090 -> 1104/1092`, cutting overrun
+`21 -> 12`, blocking `12 -> 11`, and loop-read time `123 -> 91`. The newer
+BUILDING2 low restore-minus-current/slack-4 pass moves low `1383/1304 ->
+1349/1316`, cutting blocking `118 -> 83` and hidden refill `5 -> 1`. The
+newer WALKSTUF3 high compact-FGP3/v4 pass moves current-layout control
+`2325/2282 -> 2310/2290`, cutting overrun `43 -> 20`, blocking `65 -> 47`,
+hidden refill `32 -> 18`, and loop reads `74 -> 37`. The newer BUILDING6
+compact-FGP3/v4 pass converts both packs inside the original `1444370` byte
+footprint, moves high `2520/2442 -> 2482/2457` and low `2515/2437 ->
+2485/2456`, cuts blocking `62/70 -> 25/28`, hidden refill `64/66 -> 27/29`,
+loop reads `74/73 -> 42/42`, and keeps LBAs `10754/11460`. The latest
+ACTIVITY9 high compact-FGP3/v4 pass keeps the original `1745484` byte
+footprint and LBA `3108`, moves high `2094/2056 -> 2082/2062`, cuts blocking
+`37 -> 24`, hidden refill `23 -> 17`, and loop reads `52 -> 25`. The later
+ACTIVITY9 low compact-FGP3/v4 pass keeps the original `1745484` byte footprint
+and LBA `3961`, moves low `2085/2058 -> 2075/2061`, cuts blocking `29 -> 17`,
+loop reads `59 -> 47`, loop-read time `289 -> 232`, and due misses `3 -> 1`.
+The latest WALKSTUF3 low compact-FGP3/v4 pass
+keeps the original `994669` byte footprint and LBA `26906`, moves low
+`2321/2293 -> 2310/2295`, cuts blocking
+`41 -> 26`, hidden refill `21 -> 17`, loop reads `72 -> 29`, and moves low into
+green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
+byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
+`31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
+`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 timing pass adds
+a high-only sparse-in-place frame `117` target-hull motion payload on top of
+the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
+shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
+`125`.
+It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
+improves high to `1075/1037`, moves low to `1075/1039`, and keeps high/low
+persistent setup segments for sectors `277..293` and `281..305` plus the v214
+high `320 KiB` setup-prime cap, the v216 guarded low segment `150..174`, and
+the v227 low frame-125/frame-126 resident re-anchor plus v234 frame-118 and
+v237 frame-127 resident copies inside that segment, then compacts high frames
+`117..130` unchanged into the existing high setup-prime resident window and
+rewrites low frames `114..117` plus frame `113` in place as compact no-op
+residuals. Blocking is now `59/69`,
+loop-read time is `59/83`, and due misses are `11/12`; the accepted setup/data
+tradeoffs leave high total at `scene_vb=1406` and low total
+`1412 -> 1401` while reducing
+active-loop debt. The current
+runtime baseline keeps all broad canaries flat while creating code-layout
+headroom from the earlier v197 dispatch removal.
+The public battle card is now `+0.3459%` over target / `99.6621%` target speed
+while preserving fixed pack LBAs and the
+`215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.84`
-public over-target points and added about `12.37` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.05`
+public over-target points and added about `12.56` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -170,29 +224,44 @@ subsequent BUILDING4 restore-minus-current pack pass, VISITOR3 low read-group
 prune, WALKSTUF1 high setup-prime retune, VISITOR3 high/low offscreen draw
 clips, BUILDING2 high restore-minus-current pass, BUILDING2 grouped-read
 passes, VISITOR3 low code-shape pass, and VISITOR3 v4 draw-tail trim
-stageguard pass are now superseded by the current public-capped `v0.8.3`
+stageguard pass are now superseded by the current public-capped `v0.8.5`
 rollup above.
 See
-[release-notes-0.8.3.md](release-notes-0.8.3.md).
+[release-notes-0.8.5.md](release-notes-0.8.5.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
-`-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
-stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
-`1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and `1383/1304`,
-ACTIVITY9 low is `2085/2058`, WALKSTUF1 high/low are now `1491/1426` and
-`1489/1427`, and the FISHING1 high control sits at the public cap
+`-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
+guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`
+plus high-tide frame `115`, shared frames `118`/`124`, high-only frame `117`,
+and high-only re-anchored frames `127`/`126`/`125`, plus high/low persistent setup segments
+for sectors `277..293` and `281..305`, the v214 high setup-prime cap
+expansion, the v216 guarded low segment `150..174`, the v227 low resident
+frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
+copies, the v238 high frame-127/frame-130 resident-copy compaction, the
+v248 low frame-114/frame-117 no-op residual compaction, and the v249 low
+frame-113 no-op residual compaction.
+VISITOR3 high is now
+`1075/1037` with `blocking_vb=59`; low is
+`1075/1039` with `blocking_vb=69`. BUILDING2 high/low are `1349/1316` and
+`1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
+high/low are now
+`1495/1427` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
+`2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
 low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
-matrix; the next true outliers are VISITOR3, BUILDING2, residual WALKSTUF1
-work, BUILDING6, and selective upload-ready bands. VISITOR3 local C
-read-table rows and threshold-only fallthrough probes are now exhausted; the
-next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
-data-shape/preprocess route.
+matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
+BUILDING2 residual work, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
+BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
+VISITOR3 local C
+read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
+repoints are now exhausted; the next VISITOR3 attempt should extend the
+scene-owned motion/precomposed-data path, add a true residual dictionary, or add
+generated scheduler ownership.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the
@@ -204,14 +273,14 @@ frames (`134..136`, where blanket x-band saves `0%`) from the profitable
 non-cap frames (`121..133`, where align4 x-band saves roughly `65..75%`). The
 first tracked threshold plan is
 [performance-preprocess-visitor3-hotspots.csv](performance-preprocess-visitor3-hotspots.csv):
-it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
-`6114568` upload bytes saved inside the selected subset. The same current
-size gate rejects the default upload-ready append as layout-neutral: the
-payload plus rect metadata would need `2462072` bytes per tide against only
-`814847` bytes of padded zero-tail slack. The analyzer now also emits a
-same-footprint budgeted subset for that exact slack: `74 / 96`
-default-selected frames fit in `814184` payload+rect bytes, leave `663` bytes
-of slack, and retain `3858104` modeled upload bytes saved. Raw foreground-only
+it selects `92 / 144` high-tide frames, excludes `6` cap-hit frames, and
+estimates `5730024` upload bytes saved inside the selected subset. The same
+current size gate rejects the default upload-ready append as layout-neutral:
+the payload plus rect metadata would need `2111224` bytes against only
+`970076` bytes of padded high-pack zero-tail slack. The analyzer now also emits
+a same-footprint budgeted subset for that exact slack: `78 / 92`
+default-selected frames fit in `968904` payload+rect bytes, leave `1172` bytes
+of slack, and retain `4232112` modeled upload bytes saved. Raw foreground-only
 payloads remain unsafe because the selected x-bands have no guaranteed
 draw-covered pixel source, so the next VISITOR3 graphics probe needs a safe
 background-owned/precomposed payload source, compression plus ownership, a
@@ -219,6 +288,11 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
+  the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
+  and publishes `+0.3459%` over target / `99.6621%` target speed.
+- `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
+  scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both
   WALKSTUF1 tides to padded compact FGP3/v4 restore-minus-current packs,
   reducing high/low active loop time and visible CD blocking while preserving
@@ -537,6 +611,8 @@ baseline.
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes
+- [release-notes-0.8.4.md](release-notes-0.8.4.md) — custom Scene Explorer thumbnail release notes
 - [release-notes-0.5.0.md](release-notes-0.5.0.md) — freeplay/debug release notes
 - [release-notes-0.4.20.md](release-notes-0.4.20.md) — walking-loop release notes
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
