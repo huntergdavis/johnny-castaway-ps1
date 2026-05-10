@@ -259,6 +259,12 @@ shipped is the author's.
   methodology essay this docs page is the reference companion
   for. Same disclosure scope; magazine treatment instead of
   reference list.
+- [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }})
+  — the dedicated essay on LLM-driven development's specific
+  failure mode (confident wrong answers that sound normal),
+  the mitigations actually used on this project, and the
+  review discipline that keeps them from shipping. The
+  practical companion to The LLM pass.
 - [The voice-anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
   — the deeper retrospective on how the four-line [`drawCredits`]({{ '/docs/glossary/#drawcredits' | relative_url }})
   text propagates voice constraints downstream.
