@@ -307,14 +307,16 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3269%`
-exact public over target / `99.6796%` exact public target speed); the raw
-signed optimization matrix is `-0.4416%` / `100.4635%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3284%`
+exact public over target / `99.6783%` exact public target speed); the raw
+signed optimization matrix is `-0.4401%` / `100.4621%`.
 
 ## Scene Battle Card
 
-As of 2026-05-09, all 126 scene/tide variants have current headless
+As of 2026-05-10, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-f140-segment-copy-v291`,
+`visitor3-current-v291-control`,
 `visitor3-low-noop113-v249`,
 `visitor3-low-noop114117-v248`,
 `visitor3-high-f127-f130-resident-copy-v238`,
@@ -401,7 +403,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-10T00:50:29`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-10T01:50:59`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -409,7 +411,9 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-low-noop113-v249`,
+rows now use `visitor3-high-f140-segment-copy-v291`,
+`visitor3-current-v291-control`,
+`visitor3-low-noop113-v249`,
 `visitor3-low-noop114117-v248`,
 `visitor3-high-f127-f130-resident-copy-v238`,
 `visitor3-drop-unused-motion-dispatch-v197`,
@@ -770,8 +774,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+3.7% / 96.5% (1075/1037); due 11; blk 59</td>
-      <td>+3.5% / 96.7% (1075/1039); due 12; blk 69</td>
+      <td>+3.5% / 96.6% (1074/1038); due 10; blk 58</td>
+      <td>+3.9% / 96.3% (1079/1039); due 12; blk 70</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -865,7 +869,7 @@ Next plausible wins, in priority order:
 5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
    now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
    the bottom of the orange band after compact-pack promotion. The remaining
-   hard rows are VISITOR3 high/low, WALKSTUF1 low/high, BUILDING2 high/low,
+   hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low,
    and JOHNNY6 high/low,
    where hand-authored read groups and scalar window changes have
@@ -883,7 +887,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3269% over target / 99.6796% target speed, with several
+  public average is now +0.3284% over target / 99.6783% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

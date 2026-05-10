@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-10 (`v0.8.5-ps1` full 126-row headless
 performance matrix release; all 63 scenes remain validated, all 126
 high/low rows are timing-bearing, and the public headless battle card is
-`+0.3269%` over target / `99.6796%` target speed).
+`+0.3284%` over target / `99.6783%` target speed).
 
 ## Overall
 
@@ -189,31 +189,20 @@ keeps the original `994669` byte footprint and LBA `26906`, moves low
 green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
-`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 timing pass adds
-a high-only sparse-in-place frame `117` target-hull motion payload on top of
-the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
-shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
-`125`.
-It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
-improves high to `1075/1037`, moves low to `1075/1039`, and keeps high/low
-persistent setup segments for sectors `277..293` and `281..305` plus the v214
-high `320 KiB` setup-prime cap, the v216 guarded low segment `150..174`, and
-the v227 low frame-125/frame-126 resident re-anchor plus v234 frame-118 and
-v237 frame-127 resident copies inside that segment, then compacts high frames
-`117..130` unchanged into the existing high setup-prime resident window and
-rewrites low frames `114..117` plus frame `113` in place as compact no-op
-residuals. Blocking is now `59/69`,
-loop-read time is `59/83`, and due misses are `11/12`; the accepted setup/data
-tradeoffs leave high total at `scene_vb=1406` and low total
-`1412 -> 1401` while reducing
-active-loop debt. The current
-runtime baseline keeps all broad canaries flat while creating code-layout
-headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3269%` over target / `99.6796%` target speed
-while preserving fixed pack LBAs and the
-`215040` byte PS-EXE bucket.
+`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 timing pass moves
+high frame `140` plus tail frames `142..144` into the already paid high setup
+segment instead of adding another setup-prime cap. It preserves the `1555450`
+byte pack footprint, keeps the current-layout LBAs at `22473/23233`, and holds
+the `217088` byte PS-EXE bucket. High improves `1075/1037 -> 1074/1038`,
+overrun `38 -> 36`, blocking `61 -> 58`, loop reads `11 -> 10`, loop-read time
+`61 -> 58`, and due misses `11 -> 10`; hidden refill remains `0`. The paired
+low control is the current-layout `1079/1039` row with blocking `70`, loop reads
+`16`, loop-read time `84`, due misses `12`, and hidden refill still `0`.
+The public battle card is now `+0.3284%` over target / `99.6783%` target speed
+while preserving fixed pack footprints and the
+`217088` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.08`
+`87.1%` target speed, the headless methodology has removed about `17.07`
 public over-target points and added about `12.58` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
@@ -240,12 +229,13 @@ for sectors `277..293` and `281..305`, the v214 high setup-prime cap
 expansion, the v216 guarded low segment `150..174`, the v227 low resident
 frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
 copies, the v238 high frame-127/frame-130 resident-copy compaction, the
-v248 low frame-114/frame-117 no-op residual compaction, and the v249 low
-frame-113 no-op residual compaction, plus the WALKSTUF1 high v288
+v248 low frame-114/frame-117 no-op residual compaction, the v249 low
+frame-113 no-op residual compaction, and the v291 high frame-140/tail
+setup-segment copy, plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack.
 VISITOR3 high is now
-`1075/1037` with `blocking_vb=59`; low is
-`1075/1039` with `blocking_vb=69`. BUILDING2 high/low are `1349/1316` and
+`1074/1038` with `blocking_vb=58`; low is
+`1079/1039` with `blocking_vb=70`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1477/1431` and `1478/1428`, WALKSTUF3 high/low are `2310/2290` and
@@ -291,7 +281,7 @@ canaries.
 Milestone releases:
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
   the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
-  and publishes `+0.3269%` over target / `99.6796%` target speed.
+  and publishes `+0.3284%` over target / `99.6783%` target speed.
 - `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
   scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both

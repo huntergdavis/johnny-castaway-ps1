@@ -4,11 +4,11 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-low-gap1-v289-broad/20260510-003714-3367301`
-- Candidate rows: `124`
+- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-f140-segment-copy-v291-broad-norequire/20260510-013606-3696459`
+- Candidate rows: `122`
 - Standalone probes: `2`
 - Scheduler or guarded probes: `7`
-- Scheduler-owned only: `57`
+- Scheduler-owned only: `56`
 - Closed exact ranges from experiment log: `10`
 - Deferred under-target rows: `12`
 
@@ -37,8 +37,8 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 15 | `walkstuf1` | `low` | 1478/1428 | 75 | `333..345` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 16 | `walkstuf1` | `low` | 1478/1428 | 75 | `298..310` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 17 | `walkstuf1` | `low` | 1478/1428 | 75 | `214..220` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 18 | `walkstuf1` | `low` | 1478/1428 | 75 | `292..298` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 19 | `walkstuf1` | `low` | 1478/1428 | 75 | `306..312` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 18 | `walkstuf1` | `low` | 1478/1428 | 75 | `306..312` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 19 | `walkstuf1` | `low` | 1478/1428 | 75 | `292..298` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 20 | `walkstuf1` | `low` | 1478/1428 | 75 | `290..296` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 21 | `walkstuf1` | `high` | 1477/1431 | 90 | `298..314` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 22 | `walkstuf1` | `high` | 1477/1431 | 90 | `306..322` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
@@ -51,15 +51,15 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 29 | `walkstuf1` | `high` | 1477/1431 | 90 | `304..310` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 30 | `visitor3` | `low` | 1079/1039 | 70 | `107..119` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 31 | `visitor3` | `low` | 1079/1039 | 70 | `116..128` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 32 | `visitor3` | `high` | 1075/1037 | 61 | `261..277` (16s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 33 | `building2` | `high` | 1352/1314 | 48 | `17..33` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 34 | `building2` | `high` | 1352/1314 | 48 | `11..27` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 35 | `building2` | `high` | 1352/1314 | 48 | `226..242` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 36 | `building2` | `high` | 1352/1314 | 48 | `210..222` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 37 | `building2` | `high` | 1352/1314 | 48 | `226..238` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 38 | `building2` | `high` | 1352/1314 | 48 | `206..218` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 39 | `building2` | `high` | 1352/1314 | 48 | `185..197` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 40 | `building2` | `high` | 1352/1314 | 48 | `23..29` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 32 | `building2` | `high` | 1352/1314 | 48 | `17..33` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 33 | `building2` | `high` | 1352/1314 | 48 | `11..27` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 34 | `building2` | `high` | 1352/1314 | 48 | `226..242` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 35 | `building2` | `high` | 1352/1314 | 48 | `210..222` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 36 | `building2` | `high` | 1352/1314 | 48 | `226..238` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 37 | `building2` | `high` | 1352/1314 | 48 | `206..218` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 38 | `building2` | `high` | 1352/1314 | 48 | `185..197` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 39 | `building2` | `high` | 1352/1314 | 48 | `23..29` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 40 | `building2` | `low` | 1354/1317 | 100 | `206..222` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 
 ## CSV
 
