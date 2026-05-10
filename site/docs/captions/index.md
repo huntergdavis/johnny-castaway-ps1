@@ -258,6 +258,13 @@ no-op stub — captions are a PS1-only feature.
 - [Lab: the LLM pass]({{ '/lab/llm-pass/' | relative_url }})
   — magazine treatment of the same disclosure, with the caption
   corpus named as one of the canonical agent-drafted artifacts.
+- [Lab: the chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — the v0.8.4-ps1 retrospective on walking all 63 packs on
+  hardware to ship the on-PS1 chapter-select thumbnails, which
+  also surfaced the [caption-mismap]({{ '/docs/glossary/#caption-mismap' | relative_url }})
+  set this page's post-validation runtime corrections section
+  enumerates. The pixel-validation bar guards pixel drift, not
+  caption drift; that loop reconciled the prose against the discs.
 - [Voice guide]({{ '/about/voice/' | relative_url }}) — the editorial
   standard the caption text is held to (short lines, plainspoken,
   describes-the-gag-not-the-frame).
