@@ -5,6 +5,10 @@ eyebrow: Lab · Advanced development techniques
 subtitle: On this port, tests are not a CI checkbox. They are how the work thinks.
 description: "A methodology essay about the Johnny Castaway PS1 regression suite: host references, DuckStation capture, frame metadata, perf logs, and human review."
 date: 2026-04-26
+image: /assets/img/visitor3-ps1-perspective.png
+image_alt: VISITOR 3 — the canonical two-red-rows perf-battle multi-view stitch scene. The kind of regression artifact the headless harness captures and the essay describes. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 <details class="page-toc" markdown="1">
