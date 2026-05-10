@@ -24,8 +24,9 @@ image_height: 720
     The right-side scratch-head idle. Position-variant pair with
     <a href="{{ '/scenes/stand6/' | relative_url }}">STAND 6</a>'s
     front-of-island scratch-head. Engineering footnote: STAND 8
-    is what surfaced the static-ocean bug that had silently
-    affected STAND 5/6/7 — the no-stitch foreground-only pack
+    is what surfaced the
+    <a href="{{ '/docs/glossary/#stand-static-ocean' | relative_url }}">static-ocean bug</a>
+    that had silently affected STAND 5/6/7 — the no-stitch foreground-only pack
     carries Johnny pixels but no captured water frames, so
     <code>OCEAN00.SCR</code> never advanced. The fix adds a
     per-frame wave tick to the FG2 runtime that mirrors
