@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4528 words
+          ~19 min read · 4770 words
         </p>
 
       <hr class="rule" />
@@ -202,6 +202,12 @@
 
 <dt id="multi-view-stitch">Multi-view stitch</dt>
 <dd>For wide scenes that exceed one screen of action (e.g., LILLIPUTIAN arrival sweeping in from far-left), the host capture takes three sightlines — normal / far-left / far-right — and stitches their foreground deltas into one merged pack. <code>MISCGAG 1</code>, <code>MISCGAG 2</code>, <code>STAND 1</code> all needed this before they replayed cleanly.</dd>
+
+<dt id="no-stitch-fast-path">No-stitch fast path</dt>
+<dd>The host capture's shortcut for scenes that don't need <a href="#multi-view-stitch">multi-view stitch</a> — typically simple STAND idles and short ACTIVITY beats where Johnny stays in one place. Skips the far-left / far-right sightline captures, exports a single-position foreground-only overlay against the base background, and produces a smaller pack faster. Surfaced one notable bug at <code>STAND 5</code> ("no-stitch fast path fades Johnny's legs" — pure base-diff treated frame-0 static pixels as background and dropped them); the fix was to keep the single-position foreground overlay while still skipping the wide-sightline captures. Lineage: <code>STAND 5</code> / <code>6</code> / <code>7</code> / <code>8</code> all share this fast path; <code>STAND 8</code> additionally added the per-frame FG2 wave tick that <a href="#stand-static-ocean">fixed the static-ocean bug</a>. Three other STAND scenes (<code>STAND 10</code>, <code>11</code>, <code>12</code>) hit the no-stitch path and produced 92-byte effectively-empty packs — the previously-committed packs played cleanly on PS1 so they were signed off as-is, called out by name. Used by <a href="#fg2-pack">FG2</a> exporter <code>scripts/export-scene-foreground-pilot.sh</code>.</dd>
+
+<dt id="stand-static-ocean">Static-ocean bug (STAND wave tick)</dt>
+<dd>STAND 8 surfaced this in v0.7.x: a STAND scene exported through the <a href="#no-stitch-fast-path">no-stitch fast path</a> would hold a frozen ocean because the foreground-only pack carried no per-frame wave updates, and the runtime's wave layer normally only retouches when the foreground asks. The fix was to add a synthetic per-frame wave tick to the FG2 stream so the runtime keeps animating the ocean even when nothing else moves. Inherited by every later STAND scene that takes the fast path.</dd>
 
 <dt id="residual">Residual cleanup contract</dt>
 <dd>The rule that the foreground replay must restore every dirty-rect span back to the background bitmap before next frame, with no left-over pixels. When a scene's pack misses a few pixels, the project ships a small <code>patch-&lt;scene&gt;-foreground.py</code> that keys foreground-only contamination against the full-host composite.</dd>
