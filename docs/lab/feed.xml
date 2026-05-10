@@ -5,13 +5,24 @@
   <link rel="self" type="application/atom+xml" href="https://hunterdavis.com/johnny-castaway-ps1/lab/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/"/>
   <id>https://hunterdavis.com/johnny-castaway-ps1/lab/</id>
-  <updated>2026-05-08T00:00:00-04:00</updated>
+  <updated>2026-05-09T00:00:00-04:00</updated>
   <generator uri="https://jekyllrb.com/" version="hand-rolled">Jekyll (no plugin)</generator>
   <rights>Code GPL-3.0. Sierra art and the Johnny Castaway character are © Sierra On-Line and not licensed under GPL — see /legal/.</rights>
   <author>
     <name>Hunter Davis</name>
     <uri>https://hunterdavis.com/</uri>
   </author><entry>
+    <title>63 heroes</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/</id>
+    <published>2026-05-09T00:00:00-04:00</published>
+    <updated>2026-05-09T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly.</summary>
+  </entry><entry>
     <title>The chapter-select grind</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/"/>
     <id>https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/</id>
