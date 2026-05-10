@@ -33,13 +33,22 @@ second setup segment, the v227 low frame-125/frame-126 resident re-anchor, the
 v234 low frame-118 resident-copy follow-up, the v237 low frame-127
 resident-copy follow-up, the v238 high frame-127/frame-130 resident-copy
 follow-up, the v248 low frame-114/frame-117 no-op residual compaction
-follow-up, and the v249 low frame-113 no-op residual follow-up:
-`+0.3459%` public average over target / `99.6621%` public target speed across
+follow-up, the v249 low frame-113 no-op residual follow-up, and the v277
+WALKSTUF1 high sector `201..213` read-group follow-up:
+`+0.3426%` public average over target / `99.6651%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4226%` / `100.4459%`. Since the compact full-matrix baseline was about
+`-0.4259%` / `100.4489%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.05` public over-target points and added about `12.56`
+removed about `17.06` public over-target points and added about `12.57`
 public target-speed points.
+
+Latest promoted WALKSTUF1 baseline: high tide now adds a scheduler-owned
+stream read group for sectors `201..213`. The strict gate improves high
+`scene_vb 1779 -> 1777`, active loop `1490/1424 -> 1488/1426`, overrun
+`66 -> 62`, hidden refill `31 -> 27`, and loop reads `69 -> 68`, while
+blocking stays `92` and broad controls are exact-flat. Low remains
+`1489/1427`; WALKSTUF1 high/low are still the top under-99 rows, but the high
+row is now essentially tied with low.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
@@ -826,7 +835,9 @@ compaction moves it to `-0.4111%` / `100.4353%` while cutting VISITOR3 high to
 to `-0.4126%` / `100.4367%` while cutting VISITOR3 low to `1086/1035` and
 blocking `93`; the v249 low frame-113 no-op residual moves it again to
 `-0.4226%` / `100.4459%` while cutting VISITOR3 low to `1075/1039` and
-blocking `69`.
+blocking `69`; the v277 WALKSTUF1 high sector `201..213` read-group follow-up
+moves it to `-0.4259%` / `100.4489%` while cutting WALKSTUF1 high to
+`1488/1426`, overrun `62`, and hidden refill `27`.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -2112,6 +2123,7 @@ pre-v0.8.0 row.
 | VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the superseded VISITOR3 baseline that v181 built on. FGP3/v4 zero draw-tail bytes were trimmed while both packs stayed `1555450` bytes and LBAs stayed fixed; high setup-prime residency rose to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevented no-slack prefetch debt. VISITOR3 high improved `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improved `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both kept `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stayed exact-flat. The current rollup is tracked at the top of this file. |
 | WALKSTUF1 compact FGP3/v4 restore-minus-current | Done; keep as the current WALKSTUF1 baseline. Both PAL4/FGP2 packs are compacted into FGP3/v4 restore-minus-current packs and padded back to the original `1535263` byte footprint, preserving pack LBAs and the `215040` byte PS-EXE bucket. High improves `1592/1406 -> 1491/1426`, `overrun_vb 186 -> 65`, `blocking_vb 275 -> 85`, `prefetch_overrun_vb 51 -> 32`, `loop_reads 134 -> 69`, and `due_misses 55 -> 13`; low improves `1604/1407 -> 1489/1427`, `197 -> 62`, `270 -> 86`, `55 -> 27`, `132 -> 69`, and `50 -> 12`. The broad non-WALKSTUF controls stayed exact-flat except VISITOR3 high; that same drift reproduced with original WALKSTUF1 FGP2 packs restored, so it is tracked as unrelated current-control drift. The current rollup is tracked at the top of this file. |
 | WALKSTUF1 high frame `109` motion-copy | Do not promote under the current opcode/helper shape. Sparse-in-place high-only motion saved `3139` active payload bytes but was exact-flat (`1779`, `1490/1424`, overrun `66`, blocking `92`, hidden `31`, reads `69`); the C row-copy helper crossed the PS-EXE bucket and shifted LBA; the non-sparse repack improved hidden refill `31 -> 26` but regressed public timing to `1784`, `1495/1427`, overrun `68`, and reads `73`. Retry only as zero-runtime precomposed data, generated phase-safe layout search, or a cost-modeled multi-frame codec. |
+| WALKSTUF1 high read group `201..213` | Done; keep as the current WALKSTUF1 high baseline. The high-tide-only retained stream read group promotes because it improves `scene_vb 1779 -> 1777`, active loop `1490/1424 -> 1488/1426`, overrun `66 -> 62`, hidden refill `31 -> 27`, and loop reads `69 -> 68` while keeping blocking `92`, pack LBA `24745`, pack sectors `750`, and the `217088` byte PS-EXE bucket fixed. Same-branch broad controls for WALKSTUF1 low, VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, FISHING1 high, JOHNNY1 high, and MARY3 high/low stayed exact-flat. |
 | MARY3 guarded prefetch-preserve | Done; keep as the current MARY3 baseline. MARY3 now preserves stage/window prefetch under clean pressure, but uses an `8` VBlank scene-local window-refill guard to keep hidden refill debt at zero. High improves `2402/2295 -> 2296/2294`, `overrun_vb 107 -> 2`, `blocking_vb 690 -> 53`, `loop_reads 255 -> 44`, and `due_misses 255 -> 13`; low improves `2402/2296 -> 2297/2295`, `106 -> 2`, `693 -> 51`, `255 -> 44`, and `255 -> 13`. The `7` VBlank retry is rejected because high tide regressed against the slack-8 baseline. The current rollup is tracked at the top of this file. |
 | VISITOR3 cleanup-only offscreen clip | Do not promote. Clipping only offscreen FGP3/v4 cleanup spans preserves pack sizes, entry offsets, LBAs, and PS-EXE bytes while trimming `5526` bytes, `58513` cleanup pixels, and `1299` cleanup spans per tide, but both focused v106 gates are exact-flat: high remains `1137/1024` with `blocking_vb=190`, low remains `1138/1024` with `blocking_vb=191`. Treat this as safe but inert; future offscreen work needs draw/CD phase ownership or a different measured counter. |
 | WALKSTUF1 high setup-prime cap 152 KiB | Do not promote. Raising the high-only cap from `144 KiB` to `152 KiB` extends setup coverage to sectors `2..76` and nominally cuts high loop reads `134 -> 133`, but regresses high `scene_vb 1880 -> 1884`, `loop_vb 1592 -> 1595`, `target_vb 1406 -> 1405`, `blocking_vb 275 -> 286`, and `due_misses 55 -> 57`. Treat `144 KiB` as the high-cap knee. |

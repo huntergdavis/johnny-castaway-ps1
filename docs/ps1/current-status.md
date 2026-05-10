@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-09 (`v0.8.5-ps1` full 126-row headless
 performance matrix release; all 63 scenes remain validated, all 126
 high/low rows are timing-bearing, and the public headless battle card is
-`+0.3459%` over target / `99.6621%` target speed).
+`+0.3426%` over target / `99.6651%` target speed).
 
 ## Overall
 
@@ -209,12 +209,12 @@ tradeoffs leave high total at `scene_vb=1406` and low total
 active-loop debt. The current
 runtime baseline keeps all broad canaries flat while creating code-layout
 headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3459%` over target / `99.6621%` target speed
+The public battle card is now `+0.3426%` over target / `99.6651%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.05`
-public over-target points and added about `12.56` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.06`
+public over-target points and added about `12.57` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -290,7 +290,7 @@ canaries.
 Milestone releases:
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
   the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
-  and publishes `+0.3459%` over target / `99.6621%` target speed.
+  and publishes `+0.3426%` over target / `99.6651%` target speed.
 - `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
   scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both

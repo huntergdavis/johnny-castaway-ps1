@@ -501,6 +501,10 @@ static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
     {365, 381, 0}
 };
 
+static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
+    {201, 213, 0}
+};
+
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -3007,6 +3011,12 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             (uint8)(sizeof(kBuilding2HighReadGroups12) /
                                     sizeof(kBuilding2HighReadGroups12[0]));
                     }
+                } else if (!islandState.lowTide &&
+                           fgSceneEquals(sceneName, "walkstuf1")) {
+                    streamReadGroups = kWalkstuf1HighReadGroups12;
+                    streamReadGroupCount =
+                        (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
+                                sizeof(kWalkstuf1HighReadGroups12[0]));
                 }
                 gFgRuntime.streamReadGroups = streamReadGroups;
                 gFgRuntime.streamReadGroupCount = streamReadGroupCount;
