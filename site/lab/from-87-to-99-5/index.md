@@ -30,7 +30,7 @@ followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, `v0.8.4-ps1` shipped the Scene Explorer thumbnail
 reconciliation, and `v0.8.5-ps1` promotes the full 126-row timing-bearing
 matrix. The current public-capped average at `{{ site.release.tag }}` is
-**+0.3426% over target / 99.6651% target speed**, with roughly **17.06
+**+0.3336% over target / 99.6734% target speed**, with roughly **17.07
 percentage points** of over-target gap closed and about **12.57 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

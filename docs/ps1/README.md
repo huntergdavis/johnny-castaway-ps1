@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.5-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3426% public over target / 99.6651% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3336% public over target / 99.6734% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -24,7 +24,7 @@ It keeps all 63 scenes visually/audibly validated, preserves the custom
 Scene Explorer thumbnails and reconciled scene metadata from `v0.8.4-ps1`,
 and promotes the full 126-row headless matrix as the public performance
 baseline. The public battle card is now
-`+0.3426%` over target / `99.6651%` target speed across all 126
+`+0.3336%` over target / `99.6734%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -33,16 +33,19 @@ setup-prime plus guarded low second-segment and low frame-125/frame-126
 resident re-anchor plus low frame-118/frame-127 resident-copy, high
 frame-127/frame-130 resident-copy, low frame-114/frame-117 no-op residual,
 low frame-113 no-op residual, and WALKSTUF1 high sector `201..213` read-group
-follow-ups; the raw signed optimization
-matrix is `-0.4259%` / `100.4489%`.
-That is about `17.06` public over-target points removed and `12.57` public
+follow-ups plus the WALKSTUF1 high gap-compressed/window-prefetch guard; the
+raw signed optimization matrix is `-0.4349%` / `100.4573%`.
+That is about `17.07` public over-target points removed and `12.57` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
 
-The latest WALKSTUF1 high baseline adds a high-tide-only stream read group for
-sectors `201..213`, moving high from `1490/1424` to `1488/1426`, cutting
-overrun `66 -> 62`, hidden refill `31 -> 27`, and loop reads `69 -> 68`.
+The latest WALKSTUF1 high baseline keeps the high-tide-only stream read group
+for sectors `201..213`, adds a high-tide-only 3-VBlank window-prefetch guard
+on the gap-compressed pack, and moves high from `1488/1426` to `1477/1431`.
+Overrun drops `62 -> 46`, blocking `92 -> 90`, hidden refill `27 -> 19`, and
+loop-read time `309 -> 285`; due misses rise `14 -> 17`, but broad controls
+stay flat.
 
 The latest VISITOR3 baseline combines `visitor3-high-f127-f130-resident-copy-v238`
 with `visitor3-low-noop113-v249`. The high pass compacts frames `117..130`

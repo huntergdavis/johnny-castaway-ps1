@@ -14,11 +14,11 @@ matrix as the public performance baseline.
 - **126 / 126 scene/tide rows are timing-bearing.** Every routed high/low
   scene variant now contributes active-loop timing to the matrix.
 - **Public performance is effectively at native speed.** The public-capped
-  rollup is `+0.3426%` over target / `99.6651%` target speed.
+  rollup is `+0.3336%` over target / `99.6734%` target speed.
 - **Raw optimization headroom remains visible.** The uncapped signed rollup is
-  `-0.4259%` over target / `100.4489%` target speed, so future optimization
+  `-0.4349%` over target / `100.4573%` target speed, so future optimization
   work can still see when a scene runs faster than target.
-- **Methodology total since the compact full-matrix baseline:** about `17.06`
+- **Methodology total since the compact full-matrix baseline:** about `17.07`
   public over-target points removed and `12.57` public target-speed points
   gained.
 - **Missing-scene confusion is closed.** MARY1/2/3 and SUZY1/2 are measured
@@ -27,17 +27,16 @@ matrix as the public performance baseline.
 
 ## Current Battle Card
 
-- **Public rollup:** `+0.3426%` over target / `99.6651%` target speed.
-- **Raw signed rollup:** `-0.4259%` over target / `100.4489%` target speed.
+- **Public rollup:** `+0.3336%` over target / `99.6734%` target speed.
+- **Raw signed rollup:** `-0.4349%` over target / `100.4573%` target speed.
 - **Bands:** `111` green, `15` orange, `0` yellow, `0` red.
 - **Under-99 focus set:** WALKSTUF1 high/low, VISITOR3 high/low, BUILDING2
   high/low, VISITOR5 low, and JOHNNY1 high.
 - **VISITOR3 baseline:** high `1075/1037` with `59` blocking VBlanks, `11`
   loop reads, and `11` due misses; low `1075/1039` with `69` blocking
   VBlanks, `16` loop reads, and `12` due misses.
-- **WALKSTUF1 remains the largest outlier.** Recent cleanup-gap/core/edge
-  probes lowered visible timing in places but were committed as log-only
-  misses because hidden refill regressions made them unsafe to promote.
+- **WALKSTUF1 high moved again.** The v288 gap1/window-prefetch guard moves
+  high to `1477/1431` (96.9% speed), while low remains `1489/1427` (95.8%).
 
 ## Verification
 

@@ -2522,6 +2522,16 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
         return 0;
     }
 
+    if (!islandState.lowTide &&
+        fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
+        slackVBlanks <= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) {
+        if (ps1PerfEnabled) {
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
+            ps1PerfMarkPrefetchSkipNoSlack();
+        }
+        return 0;
+    }
+
     if (!fgRuntimeWindowSlackEligible(slackVBlanks)) {
         if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
