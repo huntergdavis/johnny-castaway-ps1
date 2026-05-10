@@ -6,7 +6,37 @@ tag: 6
 slug: visitor6
 status: validated
 description: "VISITOR.ADS scene 6: Johnny shakes the palm, drops a coconut, cracks it on the trunk, and eats it. Validated 2026-05-08."
+image: /assets/img/visitor6-ps1-coconut-eat.png
+image_alt: "VISITOR 6 on PS1 at night: Johnny stands under the palm tree, a coconut on the sand to his right that he is about to pick up, crack on the trunk, and eat."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/visitor6-ps1-coconut-eat.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="VISITOR 6 on PS1 at night: Johnny stands under the palm tree, a coconut on the sand to his right that he is about to pick up, crack on the trunk, and eat." />
+  <figcaption>
+    VISITOR 6 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The post-drop, pre-crack beat: Johnny is at the palm with a
+    fresh coconut on the sand at his side, the next beat picks it
+    up, cracks it on the trunk, and eats the meat. VISITOR 6
+    closes the **coconut trilogy** in this ADS family — each scene
+    spends a coconut a different way:
+    <a href="{{ '/scenes/visitor4/' | relative_url }}">VISITOR 4</a>
+    rolls one into the ocean (lost),
+    <a href="{{ '/scenes/visitor5/' | relative_url }}">VISITOR 5</a>
+    throws one at a plane and brings it down (weaponized), and
+    VISITOR 6 cracks and eats one (food). Engineering retro: the
+    pack uses the generic multi-view stitch plus a narrow
+    full-host delta injection over source frames 120:141, because
+    foreground-only capture keeps Johnny and the coconut clean
+    but omits background-owned tree shake/strike pixels.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
