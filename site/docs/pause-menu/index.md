@@ -101,10 +101,11 @@ through [fgpilot]({{ '/docs/glossary/#fgpilot' | relative_url }}).
 
 The layout is a full-screen preview of one scene at a time: the
 selected scene's 320×240 RGB555 thumbnail fills the centered region
-of the framebuffer, with a top chrome band carrying the page title +
-position counter (`N/63`) + display name + family/frame-count, and a
-bottom chrome band carrying the FG2 pack path + control hints. The
-cursor walks the 63-scene list sequentially.
+of the framebuffer, with a top chrome band carrying the page title,
+position counter (`N/63`), per-scene validation marker (`* validated`
+or `? pending` from `gSceneExplorer[].validated`), display name, and
+family / frame-count, and a bottom chrome band carrying the FG2 pack
+path and control hints. The cursor walks the 63-scene list sequentially.
 
 | Control | Action |
 |---|---|
