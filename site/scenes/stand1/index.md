@@ -6,7 +6,35 @@ tag: 1
 slug: stand1
 status: validated
 description: "STAND.ADS scene 1: Johnny stands at the edge of the island. Validated 2026-05-08."
+image: /assets/img/stand1-ps1-edge-stand.png
+image_alt: "STAND 1 on PS1 at night: Johnny stands at the leftmost edge of the island in an idle pose, a short subtle stand-loop scene."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand1-ps1-edge-stand.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 1 on PS1 at night: Johnny stands at the leftmost edge of the island in an idle pose, a short subtle stand-loop scene." />
+  <figcaption>
+    STAND 1 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The minimal beat: Johnny is at the leftmost edge of the
+    island in an idle pose. The whole pack is 35 source frames
+    and a 169-VBlank timeline (~2.8s at 60 Hz) with no captured
+    SFX — the visible reset is easy to miss. STAND 1 is also
+    one of the canonical
+    <a href="{{ '/about/' | relative_url }}">"hard cluster"</a>
+    scenes — foreground-only multi-view scenes (with
+    <a href="{{ '/scenes/miscgag1/' | relative_url }}">MISCGAG 1</a>,
+    <a href="{{ '/scenes/miscgag2/' | relative_url }}">MISCGAG 2</a>,
+    and the wide LILLIPUTIAN arrival) that all needed the
+    generic normal / far-left / far-right host stitch before
+    their packs replayed cleanly.
+  </figcaption>
+</figure>
 
 Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
