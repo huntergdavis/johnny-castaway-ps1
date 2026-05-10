@@ -27,8 +27,8 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 <section class="trio" aria-label="Selected PS1 captures">
   <figure>
     <a href="{{ '/scenes/activity9/' | relative_url }}">
-      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-      <figcaption>ACTIVITY 9 · boat pass</figcaption>
+      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island." />
+      <figcaption>ACTIVITY 9 · rain dance, boat passes</figcaption>
     </a>
   </figure>
   <figure>
