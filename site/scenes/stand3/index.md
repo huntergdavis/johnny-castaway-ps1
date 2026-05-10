@@ -6,7 +6,27 @@ tag: 3
 slug: stand3
 status: validated
 description: "STAND.ADS scene 3: Johnny stands at the edge of the island and adjusts his hat. Validated 2026-05-08."
+image: /assets/img/stand3-ps1-hat-adjust.png
+image_alt: "STAND 3 on PS1 at night: Johnny stands at the leftmost edge of the island and lifts his hat in a short idle pose."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand3-ps1-hat-adjust.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 3 on PS1 at night: Johnny stands at the leftmost edge of the island and lifts his hat in a short idle pose." />
+  <figcaption>
+    STAND 3 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The hat-adjust idle: Johnny is at the left edge with his hand
+    raised to his cap. Third entry in the
+    <a href="{{ '/scenes/' | relative_url }}#ads-stand">STAND family</a>'s
+    14-scene catalog of subtle stand-pose loops.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
