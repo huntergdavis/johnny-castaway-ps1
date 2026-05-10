@@ -27,7 +27,7 @@ release:
   # /releases/). Surfaced on the home status strip and in the
   # SoftwareApplication JSON-LD `dateModified` field. Update
   # alongside `version` and `tag` on each milestone release.
-  release_date: "2026-05-09"
+  release_date: "2026-05-10"
   scenes_validated: 63
   scenes_total: 63
   # Headless-perf battle-card snapshot at the current release tag.

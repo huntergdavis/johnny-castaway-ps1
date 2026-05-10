@@ -22,6 +22,32 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.6-ps1` — WALKSTUF1 / VISITOR3 setup-segment compaction follow-through
+<time datetime="2026-05-10"><em>2026-05-10</em></time>
+
+A performance point release after `v0.8.5-ps1`. It keeps the
+v0.8.5 full 126-row headless matrix as the baseline and adds the
+WALKSTUF1 low gap6-prefix + slack-guard promotion, the WALKSTUF1 high
+window-prefetch / slack4 guard on the gap-compressed pack, and the
+VISITOR3 high/low setup-segment resident copies for frames `131` / `128`.
+
+- **126 / 126 rows remain timing-bearing.** No row regressed; band shape
+  (`111` green, `15` orange, `0` yellow, `0` red) is unchanged from v0.8.5.
+- **Public rollup `+0.3157%` / `99.6902%` target speed.** Down from
+  v0.8.5's `+0.3215%` / `99.6847%`.
+- **Raw signed rollup `-0.4529%` / `100.4740%` target speed.** Down from
+  v0.8.5's `-0.4470%` / `100.4685%`.
+- **Stats-version anchors that moved.** `walkstuf1-low-prefix-gap6-slackguard-v305`,
+  `walkstuf1-high-gap1-windowprefetch-slack4-v288`,
+  `visitor3-high-f131-resident-alias121123-v299`,
+  `visitor3-low-f128-resident-seg27-v302`.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.6/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.6-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.5-ps1` — Full 126-row headless performance matrix
 <time datetime="2026-05-09"><em>2026-05-09</em></time>
 

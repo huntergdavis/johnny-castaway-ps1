@@ -32,9 +32,12 @@ to "optimized validated outlier."
 [`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, `v0.8.4-ps1` shipped the Scene Explorer thumbnail
-reconciliation, and `v0.8.5-ps1` promotes the full 126-row timing-bearing
-matrix. The current public-capped average at `{{ site.release.tag }}` is
-**+0.3184% over target / 99.6876% target speed**, with roughly **17.08
+reconciliation, `v0.8.5-ps1` promotes the full 126-row timing-bearing
+matrix, and `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
+gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
+setup-segment resident copies. The current public-capped average at
+`{{ site.release.tag }}` is
+**+0.3157% over target / 99.6902% target speed**, with roughly **17.08
 percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
