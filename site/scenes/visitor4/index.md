@@ -6,7 +6,33 @@ tag: 4
 slug: visitor4
 status: validated
 description: "VISITOR.ADS scene 4: Johnny shakes the palm tree; a coconut falls and rolls into the ocean. Validated 2026-05-08."
+image: /assets/img/visitor4-ps1-coconut-rolls.png
+image_alt: "VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/visitor4-ps1-coconut-rolls.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean." />
+  <figcaption>
+    VISITOR 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The frozen-just-before-the-punchline beat: Johnny has shaken
+    the palm, the coconut has dropped to the sand, the next frame
+    rolls it off the island into the ocean — straight down the
+    drain. VISITOR 4 was the canonical source of the v0.8.4
+    caption-mismap chain — the original audit attached "coconut
+    plane hit" here, but on-PS1 playback showed there's no plane
+    in this scene; the throw-coconut-at-plane gag lives at
+    <a href="{{ '/scenes/visitor5/' | relative_url }}">VISITOR 5</a>.
+    See the
+    <a href="{{ '/faq/' | relative_url }}">FAQ Q on caption-vs-scene-title divergence</a>.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
