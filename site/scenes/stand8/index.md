@@ -6,7 +6,36 @@ tag: 8
 slug: stand8
 status: validated
 description: "STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-08."
+image: /assets/img/stand8-ps1-right-scratch.png
+image_alt: "STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand8-ps1-right-scratch.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle." />
+  <figcaption>
+    STAND 8 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The right-side scratch-head idle. Position-variant pair with
+    <a href="{{ '/scenes/stand6/' | relative_url }}">STAND 6</a>'s
+    front-of-island scratch-head. Engineering footnote: STAND 8
+    is what surfaced the static-ocean bug that had silently
+    affected STAND 5/6/7 — the no-stitch foreground-only pack
+    carries Johnny pixels but no captured water frames, so
+    <code>OCEAN00.SCR</code> never advanced. The fix adds a
+    per-frame wave tick to the FG2 runtime that mirrors
+    <code>adsPilotTickBackgroundWaves</code>' timer pattern,
+    advancing one wave frame every
+    <code>gFgBackdropThread.delay</code> VBlanks and redrawing
+    the last wave on intermediate frames so
+    <code>grRestoreBgFromRects</code> doesn't leave a gap.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
