@@ -25,7 +25,7 @@ image_height: 720
     the palm, the coconut has dropped to the sand, the next frame
     rolls it off the island into the ocean — straight down the
     drain. VISITOR 4 was the canonical source of the v0.8.4
-    caption-mismap chain — the original audit attached "coconut
+    <a href="{{ '/docs/glossary/#caption-mismap' | relative_url }}">caption-mismap</a> chain — the original audit attached "coconut
     plane hit" here, but on-PS1 playback showed there's no plane
     in this scene; the throw-coconut-at-plane gag lives at
     <a href="{{ '/scenes/visitor5/' | relative_url }}">VISITOR 5</a>.

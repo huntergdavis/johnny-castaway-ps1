@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4339 words
+          ~18 min read · 4528 words
         </p>
 
       <hr class="rule" />
@@ -348,6 +348,9 @@
 
 <dt id="dead-end">Dead end (named out loud)</dt>
 <dd>A path that did not work, kept in the public record because dead ends are content. The <a href="../../devlog/">devlog</a> is verbatim — superseded plans, partial successes, week-long timing bugs preserved unedited. The blog convention is to name them with a short lampshade ("Bummer." "Lightbulb moment!") rather than rewrite history into a clean narrative.</dd>
+
+<dt id="caption-mismap">Caption-mismap</dt>
+<dd>A scene whose prose description on the site drifted from what the FG2 pack actually plays on PS1 — the captured frame and the surrounding caption / title / alt-text disagree. The <a href="#fishing1-bar">FISHING 1 bar</a> guards pixel drift, not caption drift, so a scene can be fully visually signed off while its sentence-long human-readable label still names the wrong gag. Surfaced systematically by the <a href="../../lab/chapter-select-grind/">v0.8.4-ps1 chapter-select grind</a>, which walked all 63 packs on hardware and reconciled scene-page metadata against what the discs play. Canonical examples: <code>FISHING 2</code> ("He catches a boot" → actually a Titanic-stenciled life preserver — the boot line fits <code>MARY 2</code>); <code>VISITOR 5</code> (audit "future blanking" → actually the unambiguous coconut-plane-hit beat); <code>WALKSTUF 3</code> (audit MED label → exercise-jog laps); <code>JOHNNY 3</code> / <code>4</code> (audit had them swapped — JOHNNY 3 writes the letter to Suzy, JOHNNY 4 is where the SOS returns). The <a href="../captions/#post-validation-runtime-corrections-v084-ps1">post-validation runtime corrections section of /docs/captions/</a> lists the named mismaps still active at the runtime layer; the website prose is reconciled but <code>captionSceneMap[]</code> in <code>src/ps1_captions.c</code> still routes a few HIGH-confidence audit lines to the wrong scene tag and is open work.</dd>
 </dl>
 
 <h2 id="see-also">See also</h2>
