@@ -5,6 +5,10 @@ eyebrow: Lab · Retrospective
 subtitle: Walking all 63 packs on hardware again to fix the thumbnails — and the surprising number of caption-mismaps it caught.
 description: A retrospective on the v0.8.4 chapter-select-thumbnail loop — what it took to ship a custom on-PS1 thumbnail for every scene and reconcile the website against the packs that actually play.
 date: 2026-05-08
+image: /assets/img/scene-explorer-fishing5.png
+image_alt: The PS1 v0.8.4 Scene Explorer mid-grind — the in-pause-menu chapter-select grid showing live thumbnails captured on hardware, the loop the essay walks. Captured headlessly via the validation harness.
+image_width: 640
+image_height: 448
 ---
 
 <details class="page-toc" markdown="1">
