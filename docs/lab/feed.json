@@ -12,6 +12,12 @@
     }
   ],
   "items": [{
+      "id": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
+      "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
+      "title": "63 heroes",
+      "date_published": "2026-05-09T00:00:00-04:00",
+      "summary": "A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly."
+    },{
       "id": "https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/",
       "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/",
       "title": "The chapter-select grind",

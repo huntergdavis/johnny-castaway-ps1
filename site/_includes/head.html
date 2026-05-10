@@ -21,8 +21,8 @@
   {%- endcomment -%}
   <meta name="format-detection" content="telephone=no" />
 
-  <title>{% if page.title and page.url != "/" %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — fan port{% endif %}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}" />
+  <title>{% if page.title and page.url != "/" %}{{ page.title | escape }} — {{ site.title | escape }}{% else %}{{ site.title | escape }} — fan port{% endif %}</title>
+  <meta name="description" content="{{ page.description | default: site.description | escape }}" />
 
   {%- comment -%}
     OG/Twitter image: prefer page.image (set in frontmatter) so per-
@@ -81,8 +81,8 @@
   <meta name="robots" content="noindex, follow" />
   {%- endif -%}
 
-  <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
-  <meta property="og:description"  content="{{ page.description | default: site.description }}" />
+  <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title | escape }} — {{ site.title | escape }}{% else %}{{ site.title | escape }} — a fan port{% endif %}" />
+  <meta property="og:description"  content="{{ page.description | default: site.description | escape }}" />
   {%- comment -%}
     og:site_name. Persistent site identifier rendered alongside the
     per-page title in LinkedIn / Slack / Discord / Facebook / X /
@@ -122,7 +122,7 @@
   <meta property="article:author"         content="{{ site.author | default: 'Hunter Davis' }}" />
   <meta property="article:section"        content="{% if og_is_lab_essay %}Lab{% else %}Devlog{% endif %}" />
   {%- endif %}
-  <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
+  <meta property="og:url"          content="{{ og_root }}{{ page.url | escape }}" />
   {%- comment -%}
     og:locale. Open Graph spec property that tells social
     consumers (LinkedIn, Facebook, embed cards) the language
@@ -133,8 +133,8 @@
     show no locale signal.
   {%- endcomment -%}
   <meta property="og:locale"       content="en_US" />
-  <meta property="og:image"        content="{{ og_image }}" />
-  <meta property="og:image:alt"    content="{{ og_image_alt }}" />
+  <meta property="og:image"        content="{{ og_image | escape }}" />
+  <meta property="og:image:alt"    content="{{ og_image_alt | escape }}" />
   {%- comment -%}
     og:image:width / height. Two cases:
     - Default (no page.image): use the og-image.png dimensions.
@@ -154,7 +154,7 @@
   <meta property="og:image:height" content="630" />
   {%- endif -%}
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="{{ tw_image }}" />
+  <meta name="twitter:image" content="{{ tw_image | escape }}" />
   {%- comment -%}
     twitter:image:alt — accessibility property the Twitter/X card
     spec recommends for summary_large_image. Twitter/X does NOT
@@ -162,7 +162,7 @@
     users on those platforms get no description of the social
     card image. Reuses the same alt text computed for og:image:alt.
   {%- endcomment -%}
-  <meta name="twitter:image:alt" content="{{ og_image_alt }}" />
+  <meta name="twitter:image:alt" content="{{ og_image_alt | escape }}" />
 
   {%- comment -%}
     Forensic build stamp. Lets anyone debugging a deployed page see
