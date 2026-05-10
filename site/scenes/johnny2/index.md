@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/johnny2-ps1-sos-note.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="JOHNNY 2 on PS1 at night: Johnny stands on the left shoreline holding a bottle, a thought bubble above him showing a sheet of paper labelled SOS." />
   <figcaption>

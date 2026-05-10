@@ -14,77 +14,47 @@ The point is not just documentation. It is a test. If Start stops opening the me
 
 The default capture script starts in normal screensaver playback, waits 30 seconds, opens the pause menu, then walks each major screen with D-pad, Cross, and Circle. It intentionally captures catalog entry pages once, not every gag or visitor row.
 
-<nav class="scenes-jump" aria-label="Jump to a specific menu screen">
-<span class="scenes-jump-label">Jump to:</span>
-<a href="#pause-main">Pause Menu</a>
-·
-<a href="#scene-set">Scene Set</a>
-·
-<a href="#freeplay-options">Freeplay Options</a>
-·
-<a href="#freeplay-gags">Freeplay Gags</a>
-·
-<a href="#freeplay-visitors">Freeplay Visitors</a>
-·
-<a href="#controls">Controls</a>
-·
-<a href="#world-options">World Options</a>
-·
-<a href="#holidays">Holidays</a>
-·
-<a href="#island-position">Set Island Position</a>
-·
-<a href="#accessibility">Accessibility</a>
-·
-<a href="#sound-test">Sound Test</a>
-·
-<a href="#system">System</a>
-·
-<a href="#set-time-date">Set Time / Date</a>
-·
-<a href="#set-rng-seed">Set RNG Seed</a>
-</nav>
-
 <div class="menu-guide">
 <section class="menu-shot" id="pause-main">
 <h2>Pause Menu</h2>
-<p>The top-level dispatch screen: resume, change the Scene Set, enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System.</p>
+<p>The top-level dispatch screen: resume, open Scene Set Options or Scene Explorer (both new in v0.8.4-ps1), enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System.</p>
 <p class="menu-route"><strong>Capture route:</strong> Start</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 3035, captured frame 3035, delta 0.</figcaption>
+  <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen." fetchpriority="high" />
+  <figcaption>Marker frame 3036, captured frame 3040, delta 4.</figcaption>
 </figure>
 <p>This screen is intentionally short. Anything that grows past a few rows belongs on a sub-screen.</p>
 </section>
 
 <section class="menu-shot" id="scene-set">
-<h2>Scene Set</h2>
-<p>Constrains the screensaver-loop's random pool to a category. Defaults to <code>All Scenes</code>; the seven shipping categories cover the full scene catalog by family.</p>
-<p class="menu-route"><strong>Capture route:</strong> Start, Down (line item is the second row of the pause menu)</p>
-<p>Scene Set is the only main-menu row that takes Left/Right input directly. Left and Right preview a pending value (the row shows it bracketed: <code>&lt;Fishing Only&gt;</code>); an asterisk marks the preview as un-applied. <strong>Cross</strong> or <strong>Start</strong> commits the change, fires a frog-clock loading transition, and the next scene comes from the new pool.</p>
-<p>Navigating away with Up/Down without committing discards the preview — you cannot accidentally change the pool just by scrolling past this row.</p>
-<table class="scene-set-table">
-<thead><tr><th scope="col">Set</th><th scope="col">Pool</th><th scope="col">Visual signoff</th></tr></thead>
-<tbody>
-<tr><td><code>All Scenes</code></td><td>Catch-all — every routed scene the original game had</td><td>All ✅</td></tr>
-<tr><td><code>Fishing Only</code></td><td><code>fishing1</code>..<code>fishing8</code></td><td>All ✅</td></tr>
-<tr><td><code>Johnny Stories</code></td><td><code>johnny1</code>..<code>johnny6</code></td><td>All ✅</td></tr>
-<tr><td><code>Mary Visits</code></td><td><code>mary1</code>..<code>mary5</code></td><td>All ✅</td></tr>
-<tr><td><code>Visitors</code></td><td><code>visitor1</code>, <code>visitor3</code>..<code>visitor7</code></td><td>All ✅; <code>visitor2</code> was never routed in the original (no FG2 pack)</td></tr>
-<tr><td><code>Activities</code></td><td><code>activity1</code>, <code>activity4</code>..<code>activity12</code></td><td>All ✅; <code>activity2</code>/<code>3</code> were never routed in the original (no FG2 pack)</td></tr>
-<tr><td><code>Misc &amp; Suzy</code></td><td><code>suzy1</code>, <code>suzy2</code>, <code>miscgag1</code>, <code>miscgag2</code></td><td>All ✅; combined because each family alone is just two scenes</td></tr>
-</tbody>
-</table>
-<p>At <code>{{ site.release.tag }}</code> every pool above is fully validated under the <a href="{{ '/docs/glossary/#fishing1-bar' | relative_url }}">FISHING 1 bar</a> — pixel-perfect visuals plus synced SFX, signed off across every applicable variant. The sets exist as filtering preferences (someone who wants only the fishing scenes for a given afternoon) rather than as workarounds for unvalidated content. The live status of every routed scene is in the <a href="{{ '/scenes/' | relative_url }}">scene ledger</a>.</p>
+<h2>Scene Set Options</h2>
+<p>Scene-pool selector and picker policy in one place: pick a Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits, Visitors, Activities, or Misc & Suzy) and choose Random / Sequential / Original Sierra dispatch.</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down, Cross</p>
+<figure>
+  <img src="{{ '/assets/img/help/menu/scene-set.png' | relative_url }}" alt="Captured PS1 screenshot of the Scene Set Options screen." loading="lazy" />
+  <figcaption>Marker frame 3564, captured frame 3565, delta 1.</figcaption>
+</figure>
+<p>Scene Set commits on Cross or Start so unsubmitted previews never linger.</p>
+</section>
+
+<section class="menu-shot" id="scene-explorer">
+<h2>Scene Explorer</h2>
+<p>The chapter-select grid. Each entry shows a captured-on-PS1 thumbnail, scene title, family, frame count, and pack name, with LEFT/RIGHT to step one scene and L1/R1 to step one family.</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down, Down, Cross</p>
+<figure>
+  <img src="{{ '/assets/img/help/menu/scene-explorer.png' | relative_url }}" alt="Captured PS1 screenshot of the Scene Explorer screen." loading="lazy" />
+  <figcaption>Marker frame 4142, captured frame 4145, delta 3.</figcaption>
+</figure>
+<p>Cross plays the highlighted scene once; Triangle loops it; Circle/Start backs out. New in v0.8.4-ps1.</p>
 </section>
 
 <section class="menu-shot" id="freeplay-options">
 <h2>Freeplay Options</h2>
 <p>The Freeplay debug entry page: gag catalog, visitor catalog, controls, and the clear-screen rebuild action.</p>
-<p class="menu-route"><strong>Capture route:</strong> Start, Down, Down, Cross</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down four times, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/freeplay-options.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Options screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 3583, captured frame 3585, delta 2.</figcaption>
+  <img src="{{ '/assets/img/help/menu/freeplay-options.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Options screen." loading="lazy" />
+  <figcaption>Marker frame 4740, captured frame 4740, delta 0.</figcaption>
 </figure>
 <p>Freeplay keeps the live joypad simple. Catalog-like actions live here, where they can be named and described.</p>
 </section>
@@ -94,8 +64,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Selector for direct Johnny actions. Each entry shows the source bitmap, frame count, rough RAM cost, and a one-line behavior note.</p>
 <p class="menu-route"><strong>Capture route:</strong> Freeplay Options, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/freeplay-gags.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Gags screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 4091, captured frame 4095, delta 4.</figcaption>
+  <img src="{{ '/assets/img/help/menu/freeplay-gags.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Gags screen." loading="lazy" />
+  <figcaption>Marker frame 5248, captured frame 5250, delta 2.</figcaption>
 </figure>
 <p>The screenshot shows the first entry only; the harness does not capture every gag row.</p>
 </section>
@@ -105,8 +75,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Selector for external events and visitors, with the same asset metadata as the gag catalog.</p>
 <p class="menu-route"><strong>Capture route:</strong> Freeplay Options, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/freeplay-visitors.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Visitors screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 4669, captured frame 4670, delta 1.</figcaption>
+  <img src="{{ '/assets/img/help/menu/freeplay-visitors.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Visitors screen." loading="lazy" />
+  <figcaption>Marker frame 5826, captured frame 5830, delta 4.</figcaption>
 </figure>
 <p>Missing optional assets are meant to fail soft: the menu names the asset, the runtime skips cleanly.</p>
 </section>
@@ -116,8 +86,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>The on-disc reminder for Freeplay controls: walking, speed modifiers, fishing, clear screen, world toggles, and pause.</p>
 <p class="menu-route"><strong>Capture route:</strong> Freeplay Options, Down, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/controls.png' | relative_url }}" alt="Captured PS1 screenshot of the Controls screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 5247, captured frame 5250, delta 3.</figcaption>
+  <img src="{{ '/assets/img/help/menu/controls.png' | relative_url }}" alt="Captured PS1 screenshot of the Controls screen." loading="lazy" />
+  <figcaption>Marker frame 6404, captured frame 6405, delta 1.</figcaption>
 </figure>
 <p>Circle is Back everywhere in the menu. Cross is Select everywhere in the menu.</p>
 </section>
@@ -125,10 +95,10 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <section class="menu-shot" id="world-options">
 <h2>World Options</h2>
 <p>Visual state controls: day or night, tide, raft stage, holiday selector, island-position editor, and Back.</p>
-<p class="menu-route"><strong>Capture route:</strong> Start, Down, Down, Down, Cross</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down five times, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/world-options.png' | relative_url }}" alt="Captured PS1 screenshot of the World Options screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 5875, captured frame 5875, delta 0.</figcaption>
+  <img src="{{ '/assets/img/help/menu/world-options.png' | relative_url }}" alt="Captured PS1 screenshot of the World Options screen." loading="lazy" />
+  <figcaption>Marker frame 7032, captured frame 7035, delta 3.</figcaption>
 </figure>
 <p>In Freeplay, these settings use the same rebuild path as the live R1 shortcuts so the island changes immediately.</p>
 </section>
@@ -138,8 +108,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Holiday mode and forced holiday selection: Auto Date, None, Original 4, or Expanded calendar.</p>
 <p class="menu-route"><strong>Capture route:</strong> World Options, Down, Down, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/holidays.png' | relative_url }}" alt="Captured PS1 screenshot of the Holidays screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 6443, captured frame 6445, delta 2.</figcaption>
+  <img src="{{ '/assets/img/help/menu/holidays.png' | relative_url }}" alt="Captured PS1 screenshot of the Holidays screen." loading="lazy" />
+  <figcaption>Marker frame 7600, captured frame 7600, delta 0.</figcaption>
 </figure>
 <p>This is the manual side of the same date resolver used by the soft date picker.</p>
 </section>
@@ -149,19 +119,19 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Manual X/Y offset editor for the island anchor, plus an Auto/Manual mode toggle.</p>
 <p class="menu-route"><strong>Capture route:</strong> World Options, Down, Down, Down, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/island-position.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Island Position screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 7021, captured frame 7025, delta 4.</figcaption>
+  <img src="{{ '/assets/img/help/menu/island-position.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Island Position screen." loading="lazy" />
+  <figcaption>Marker frame 8178, captured frame 8180, delta 2.</figcaption>
 </figure>
 <p>This is mostly a development and placement tool, but it is kept in the player menu because it is useful on real hardware too.</p>
 </section>
 
 <section class="menu-shot" id="accessibility">
 <h2>Accessibility</h2>
-<p>Captions, sound, <a href="{{ '/docs/glossary/#ocean-ambience' | relative_url }}">ocean ambience</a>, Sound Test, and Back.</p>
-<p class="menu-route"><strong>Capture route:</strong> Start, Down, Down, Down, Down, Cross</p>
+<p>Captions, sound, footsteps, Sound Test, and Back.</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down six times, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/accessibility.png' | relative_url }}" alt="Captured PS1 screenshot of the Accessibility screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 7649, captured frame 7650, delta 1.</figcaption>
+  <img src="{{ '/assets/img/help/menu/accessibility.png' | relative_url }}" alt="Captured PS1 screenshot of the Accessibility screen." loading="lazy" />
+  <figcaption>Marker frame 8806, captured frame 8810, delta 4.</figcaption>
 </figure>
 <p>Captions share the pause-menu font atlas so they can draw before the pause menu has ever been opened.</p>
 </section>
@@ -171,8 +141,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>A selector for individual SPU sound effects: choose an effect, see whether it is present, and play it on demand.</p>
 <p class="menu-route"><strong>Capture route:</strong> Accessibility, Down, Down, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/sound-test.png' | relative_url }}" alt="Captured PS1 screenshot of the Sound Test screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 8217, captured frame 8220, delta 3.</figcaption>
+  <img src="{{ '/assets/img/help/menu/sound-test.png' | relative_url }}" alt="Captured PS1 screenshot of the Sound Test screen." loading="lazy" />
+  <figcaption>Marker frame 9374, captured frame 9375, delta 1.</figcaption>
 </figure>
 <p>This turns audio debugging into a deterministic menu operation instead of a waiting game.</p>
 </section>
@@ -180,10 +150,10 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <section class="menu-shot" id="system">
 <h2>System</h2>
 <p>Save settings, set time/date, set RNG seed, cycle perf logging, reset current scene, or advance to the next scene.</p>
-<p class="menu-route"><strong>Capture route:</strong> Start, Down five times, Cross</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down seven times, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/system.png' | relative_url }}" alt="Captured PS1 screenshot of the System screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 8845, captured frame 8845, delta 0.</figcaption>
+  <img src="{{ '/assets/img/help/menu/system.png' | relative_url }}" alt="Captured PS1 screenshot of the System screen." loading="lazy" />
+  <figcaption>Marker frame 10002, captured frame 10005, delta 3.</figcaption>
 </figure>
 <p>System keeps less frequent operations away from the high-use visual and Freeplay screens.</p>
 </section>
@@ -193,8 +163,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Software clock editor. The date drives holiday lookup and lets testers jump directly to seasonal overlays.</p>
 <p class="menu-route"><strong>Capture route:</strong> System, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/set-time-date.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Time And Date screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 9373, captured frame 9375, delta 2.</figcaption>
+  <img src="{{ '/assets/img/help/menu/set-time-date.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Time And Date screen." loading="lazy" />
+  <figcaption>Marker frame 10530, captured frame 10530, delta 0.</figcaption>
 </figure>
 <p>Confirming a date clears forced holiday selection so Auto Date can take over.</p>
 </section>
@@ -204,8 +174,8 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Deterministic random-seed editor for repeatable visual tests and bug reports.</p>
 <p class="menu-route"><strong>Capture route:</strong> System, Down, Down, Cross</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/set-rng-seed.png' | relative_url }}" alt="Captured PS1 screenshot of the Set RNG Seed screen." width="640" height="448" loading="lazy" />
-  <figcaption>Marker frame 9951, captured frame 9955, delta 4.</figcaption>
+  <img src="{{ '/assets/img/help/menu/set-rng-seed.png' | relative_url }}" alt="Captured PS1 screenshot of the Set RNG Seed screen." loading="lazy" />
+  <figcaption>Marker frame 11108, captured frame 11110, delta 2.</figcaption>
 </figure>
 <p>Shoulder buttons use larger steps so a tester can move quickly without a keyboard.</p>
 </section>
@@ -220,4 +190,4 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 
 The runner temporarily writes `BOOTMODE.TXT` and `PADSCRIPT.TXT`, rebuilds the PS1 image, runs DuckStation regtest headlessly, copies the first captured frame at or after every delayed `JCPADSHOT` marker into `site/assets/img/help/menu/`, and rewrites this page.
 
-Related references: [Pause menu]({{ '/docs/pause-menu/' | relative_url }}), [Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}), [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}), and [Regression testing]({{ '/docs/regtest/' | relative_url }}).
+Related references: [Pause menu]({{ '/docs/pause-menu/' | relative_url }}), [Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}), and [Regression testing]({{ '/docs/regtest/' | relative_url }}).

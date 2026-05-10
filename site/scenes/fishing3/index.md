@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing3-ps1-octopus-steals.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 3 on PS1 at night: a red octopus stands on the shoreline next to Johnny's fishing line on the left side of the island, walking off with the fish." />
   <figcaption>
@@ -23,7 +23,7 @@ image_height: 720
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
     The octopus has come up on the line and is walking off the
     shoreline with the fish that was on the hook. This is one of
-    the canonical caption-mismap scenes — the on-screen
+    the canonical <a href="{{ '/docs/glossary/#caption-mismap' | relative_url }}">caption-mismap</a> scenes — the on-screen
     "He catches a crab. It snaps his nose." caption preserved
     below describes a different fishing gag entirely; see the
     <a href="{{ '/faq/' | relative_url }}">FAQ Q on caption-vs-scene-title divergence</a>.

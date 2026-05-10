@@ -67,3 +67,8 @@ requests; that's GitHub's policy, not ours.
   short author-written version of the disclaimer above.
 - [About]({{ '/about/' | relative_url }}) — what this project
   is and isn't, in plain language.
+- [Lab: Building a fan port in public]({{ '/lab/fan-port-in-public/' | relative_url }})
+  — the magazine treatment of this page's subject: GPL-3.0,
+  Sierra-asset disclaimers, the original-creator's permission,
+  "if you paid for this you were cheated" as voice, and how a
+  fan port ships without lawyers in 2026.

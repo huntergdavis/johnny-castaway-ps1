@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand5-ps1-look-out.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 5 on PS1 at night: Johnny stands at the front of the island under the palm tree, looking out over the moonlit ocean." />
   <figcaption>
@@ -23,7 +23,8 @@ image_height: 720
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
     The look-out-to-sea idle pose at the front of the island.
     Engineering footnote: STAND 5 is what surfaced the
-    "no-stitch fast path fades Johnny's legs" bug — pure base-diff
+    "<a href="{{ '/docs/glossary/#no-stitch-fast-path' | relative_url }}">no-stitch fast path</a>
+    fades Johnny's legs" bug — pure base-diff
     treated frame-0 static pixels as background and dropped them.
     The exporter fast path now keeps a single-position
     foreground-only overlay while still skipping far-left /

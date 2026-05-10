@@ -6,7 +6,30 @@ tag: 16
 slug: stand16
 status: validated
 description: "STAND.ADS scene 16: Johnny stands on the right side of the island and looks around with a spyglass. Validated 2026-05-08."
+image: /assets/img/stand16-ps1-spyglass-right.png
+image_alt: "STAND 16 on PS1 at night: Johnny stands on the right side of the island holding a spyglass to his eye, scanning the horizon."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand16-ps1-spyglass-right.png' | relative_url }}"
+       width="961" height="720"
+       fetchpriority="high"
+       decoding="async"
+       alt="STAND 16 on PS1 at night: Johnny stands on the right side of the island holding a spyglass to his eye, scanning the horizon." />
+  <figcaption>
+    STAND 16 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The right-side spyglass-search idle. Position-variant pair
+    with
+    <a href="{{ '/scenes/stand15/' | relative_url }}">STAND 15</a>'s
+    left-side spyglass-search — same prop and pose, mirrored
+    across the palm tree. Closes the
+    <a href="{{ '/scenes/' | relative_url }}#ads-stand">STAND family</a>'s
+    14 idle-pose loops.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 

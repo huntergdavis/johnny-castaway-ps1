@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing8-ps1-fish-right.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 8 on PS1 at night: Johnny stands on the right-side dock holding a caught fish on the line, fishing rod arched out toward the water." />
   <figcaption>

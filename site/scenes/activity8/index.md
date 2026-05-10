@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity8-ps1-bath.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 8 on PS1 at night: Johnny stands at the shoreline on the left side of the island, mid-bath in the surf." />
   <figcaption>

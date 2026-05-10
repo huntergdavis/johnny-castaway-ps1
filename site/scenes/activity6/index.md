@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity6-ps1-reads.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 6 on PS1 at night: Johnny sits under the palm tree reading, the static-Johnny pose right before the falling-asleep beat and the coconut bonk." />
   <figcaption>

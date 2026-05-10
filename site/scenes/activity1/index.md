@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity1-ps1-bellyflop.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 1 on PS1 at night: Johnny mid-air, arms outstretched, having just leapt off the palm tree, on his way to a belly-flop into the water." />
   <figcaption>

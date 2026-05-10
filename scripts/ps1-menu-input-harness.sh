@@ -84,39 +84,74 @@ restore_files() {
 }
 
 write_pad_script() {
+    # Pause-main rows in the post-v0.8.4 menu (src/pause_menu.c::drawMainMenu):
+    #   0 Resume
+    #   1 Scene Set Options...
+    #   2 Scene Explorer
+    #   3 Freeplay: ON/OFF
+    #   4 Freeplay Options
+    #   5 World Options
+    #   6 Accessibility
+    #   7 System
+    #
+    # Each top-level visit returns to pause-main with the cursor parked on
+    # the row we just opened, so subsequent Down counts are relative to the
+    # previous visit.
     cat > config/ps1/PADSCRIPT.TXT <<PADSCRIPT
 wait 30s
 tap START 600
 shot pause-main ${SETTLE_FRAMES}
 
+# Scene Set Options (row 1) — cursor at 0
+tap DOWN ${TAP_FRAMES}
+tap CROSS ${TAP_FRAMES}
+shot scene-set ${SETTLE_FRAMES}
+tap CIRCLE ${TAP_FRAMES}
+wait 30
+
+# Scene Explorer (row 2) — cursor returned to row 1
+tap DOWN ${TAP_FRAMES}
+tap CROSS ${TAP_FRAMES}
+shot scene-explorer ${SETTLE_FRAMES}
+tap CIRCLE ${TAP_FRAMES}
+wait 30
+
+# Freeplay Options (row 4) — skip Freeplay toggle at row 3; cursor at 2
 tap DOWN ${TAP_FRAMES}
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot freeplay-options ${SETTLE_FRAMES}
 
+# freeplay-gags (Freeplay Options, row 0)
 tap CROSS ${TAP_FRAMES}
 shot freeplay-gags ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# freeplay-visitors (Freeplay Options, row 1)
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot freeplay-visitors ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# controls (Freeplay Options, row 2)
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot controls ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# Back to pause-main; cursor on row 4 (Freeplay Options)
 tap CIRCLE ${TAP_FRAMES}
 wait 30
+
+# World Options (row 5) — 1 down from row 4
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot world-options ${SETTLE_FRAMES}
 
+# holidays (World Options, row 3 — Day/Night, Tide, Raft, Holidays)
 tap DOWN ${TAP_FRAMES}
 tap DOWN ${TAP_FRAMES}
 tap DOWN ${TAP_FRAMES}
@@ -125,18 +160,23 @@ shot holidays ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# island-position (World Options, row 4)
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot island-position ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# Back to pause-main; cursor on row 5 (World Options)
 tap CIRCLE ${TAP_FRAMES}
 wait 30
+
+# Accessibility (row 6) — 1 down from row 5
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot accessibility ${SETTLE_FRAMES}
 
+# sound-test (Accessibility, row 3)
 tap DOWN ${TAP_FRAMES}
 tap DOWN ${TAP_FRAMES}
 tap DOWN ${TAP_FRAMES}
@@ -145,24 +185,30 @@ shot sound-test ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# Back to pause-main; cursor on row 6 (Accessibility)
 tap CIRCLE ${TAP_FRAMES}
 wait 30
+
+# System (row 7) — 1 down from row 6
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot system ${SETTLE_FRAMES}
 
+# set-time-date (System, row 1)
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot set-time-date ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# set-rng-seed (System, row 2)
 tap DOWN ${TAP_FRAMES}
 tap CROSS ${TAP_FRAMES}
 shot set-rng-seed ${SETTLE_FRAMES}
 tap CIRCLE ${TAP_FRAMES}
 wait 30
 
+# Back to pause-main; final marker
 tap CIRCLE ${TAP_FRAMES}
 shot pause-main-return ${SETTLE_FRAMES}
 PADSCRIPT

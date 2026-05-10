@@ -5,6 +5,10 @@ eyebrow: Lab · Advanced development techniques
 subtitle: The failure mode is not that the model is weird. The failure mode is that it sounds normal.
 description: "A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline."
 date: 2026-04-26
+image: /assets/img/walkstuf3-ps1-jog.png
+image_alt: WALKSTUF 3 — Johnny mid-stride at night doing exercise laps. The canonical caption-mismap scene; the kind of confident-wrong answer the essay names. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 <details class="page-toc" markdown="1">

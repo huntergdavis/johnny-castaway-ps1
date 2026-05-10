@@ -20,7 +20,7 @@ and removes the ocean/island clean-rect memory pressure that caused the
 previous JOHNNY1 loop BSOD.
 
 <figure>
-  <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 1 The End title card running on PS1." />
+  <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 1 The End title card running on PS1." />
   <figcaption>JOHNNY 1 · The End, captured from DuckStation.</figcaption>
 </figure>
 

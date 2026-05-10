@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity4-ps1-clean-dive.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 4 on PS1 at night: Johnny in the water at the lower-left of the island, post-clean-dive, with a small splash and a seagull above." />
   <figcaption>

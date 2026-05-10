@@ -7,8 +7,8 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Development workflow — Johnny Castaway PS1</title>
-  <meta name="description" content="The Johnny Castaway PS1 port's per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/" /><meta property="og:title"        content="Development workflow — Johnny Castaway PS1" />
-  <meta property="og:description"  content="The Johnny Castaway PS1 port's per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta name="description" content="The Johnny Castaway PS1 port&#39;s per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/" /><meta property="og:title"        content="Development workflow — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The Johnny Castaway PS1 port&#39;s per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
@@ -102,7 +102,7 @@
       <h1>Development workflow</h1>
       <p class="subtitle">The author's own per-scene loop. Capture, encode, replay, screenshot, validate.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1776 words
+          ~7 min read · 1849 words
         </p>
 
       <hr class="rule" />
@@ -504,6 +504,16 @@ ledger; per-scene timing against the target frame budget.</li>
   <li><a href="../performance/">Performance reference</a> —
 what each <code class="language-plaintext highlighter-rouge">loop_vb</code> / <code class="language-plaintext highlighter-rouge">target_vb</code> / <code class="language-plaintext highlighter-rouge">blocking_vb</code> column means
 and the experiment-log discipline behind the matrix.</li>
+  <li><a href="../../lab/the-63-scene-grind/">Lab: the 63-scene grind</a>
+— the magazine treatment of the per-scene validation loop this
+page is the reference manual for. From “first scene signed off”
+to “every scene signed off,” same loop repeated 63 times: capture,
+pack, route, replay, sign off.</li>
+  <li><a href="../../lab/chapter-select-grind/">Lab: the chapter-select grind</a>
+— the v0.8.4-ps1 sequel to the 63-scene grind: walking every
+validated pack again on hardware to ship custom Scene Explorer
+thumbnails plus reconcile <a href="../glossary/#caption-mismap">caption-mismaps</a>
+in the per-scene metadata.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>

@@ -10,10 +10,10 @@
   <meta name="description" content="STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-08." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/stand8/" /><meta property="og:title"        content="STAND 8 — Right side of island, looks around, scratches head — Johnny Castaway PS1" />
   <meta property="og:description"  content="STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-08." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/scenes/stand8/" /><meta property="og:locale"       content="en_US" />
-  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/stand8-ps1-right-scratch.png" />
+  <meta property="og:image:alt"    content="STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle." /><meta property="og:image:width"  content="961" />
+  <meta property="og:image:height" content="720" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/stand8-ps1-right-scratch.png" /><meta name="twitter:image:alt" content="STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -72,7 +72,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/scenes/stand8/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/scenes/stand8/",
   "inLanguage": "en",
-  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/stand8-ps1-right-scratch.png",
   "dateCreated": "2026-05-04",
   "isPartOf": {
     "@type": "WebSite",
@@ -124,7 +124,29 @@
   </header>
 
   <div class="page-body">
-    <p>Validated on 2026-05-04.</p>
+    <figure class="scene-hero">
+  <img src="../../assets/img/stand8-ps1-right-scratch.png" width="961" height="720" fetchpriority="high" decoding="async" alt="STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle." />
+  <figcaption>
+    STAND 8 on PS1, captured during the v0.8.4-ps1
+    <a href="../../lab/chapter-select-grind/">chapter-select grind</a>.
+    The right-side scratch-head idle. Position-variant pair with
+    <a href="../stand6/">STAND 6</a>'s
+    front-of-island scratch-head. Engineering footnote: STAND 8
+    is what surfaced the
+    <a href="../../docs/glossary/#stand-static-ocean">static-ocean bug</a>
+    that had silently affected STAND 5/6/7 — the no-stitch foreground-only pack
+    carries Johnny pixels but no captured water frames, so
+    <code>OCEAN00.SCR</code> never advanced. The fix adds a
+    per-frame wave tick to the FG2 runtime that mirrors
+    <code>adsPilotTickBackgroundWaves</code>' timer pattern,
+    advancing one wave frame every
+    <code>gFgBackdropThread.delay</code> VBlanks and redrawing
+    the last wave on intermediate frames so
+    <code>grRestoreBgFromRects</code> doesn't leave a gap.
+  </figcaption>
+</figure>
+
+<p>Validated on 2026-05-04.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 

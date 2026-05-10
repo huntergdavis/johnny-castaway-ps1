@@ -5,6 +5,10 @@ eyebrow: Lab · tools
 subtitle: A dumb hack that keeps the loop running.
 description: Dunking bird is a small piece of software the author wrote to keep long-running unattended jobs alive. It got used a lot during the Johnny Castaway PS1 port.
 date: 2026-04-26
+image: /assets/img/dunking-bird-2026-05-06.jpg
+image_alt: A novelty thirty-cent dunking-bird desk toy positioned to tap a keyboard — the literal hardware behind the long-unattended-runs trick the essay names.
+image_width: 1100
+image_height: 522
 ---
 
 <details class="page-toc" markdown="1">
@@ -19,7 +23,7 @@ date: 2026-04-26
 <figure>
   <img src="{{ '/assets/img/dunking-bird-2026-05-06.jpg' | relative_url }}"
        width="1100" height="522"
-       loading="lazy" decoding="async"
+       fetchpriority="high" decoding="async"
        alt="The Dunking Bird application window: a two-row task list. Row 1: jc_reborn : node — Konsole, Min 40.0, prompt 'continue to imp...'. Row 2: jc_reborn_claude_2 : clau... , Min 20.0, prompt 'You are a profe...'. Status bar: '√ 2 dunkers (1 running)'." />
   <figcaption>Dunking Bird mid-double-dunk on 2026-05-06. Two agent slots queued at 40-min and 20-min intervals. The full screenshot in context is at <a href="{{ '/about/dev-environment/' | relative_url }}">/about/dev-environment/</a>.</figcaption>
 </figure>

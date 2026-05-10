@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/visitor6-ps1-coconut-eat.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="VISITOR 6 on PS1 at night: Johnny stands under the palm tree, a coconut on the sand to his right that he is about to pick up, crack on the trunk, and eat." />
   <figcaption>

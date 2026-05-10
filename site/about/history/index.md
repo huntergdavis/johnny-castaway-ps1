@@ -450,6 +450,16 @@ component-completeness phases:
   v0.8.0 baseline above.
 - [Lab: v0.8.1 — what the soak found]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — the stability follow-on that motivated the latest line.
+- [Lab: the chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — the v0.8.4-ps1 retrospective on walking all 63 packs again
+  on hardware to ship custom Scene Explorer thumbnails, plus
+  the [caption-mismap]({{ '/docs/glossary/#caption-mismap' | relative_url }})
+  reconciliation (boot / octopus / coconut-plane / jog and the
+  rest) the body of this page covers as the v0.8.4 milestone.
+- [Lab: 63 heroes]({{ '/lab/63-heroes/' | relative_url }})
+  — retrospective on the per-scene captured-on-PS1 hero rollout
+  that put a unique social card on every per-scene page during
+  the same v0.8.4-ps1 era.
 
 This isn't done. That's fine. A labor of love by Hunter Davis. The
 original creator generously allows fan ports. If you paid for this,

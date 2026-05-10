@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building4-ps1-lilliputians.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 4 on PS1 at night: Johnny lies under the palm tree while a crowd of lilliputian figures swarms onto the island carrying their gear." />
   <figcaption>
@@ -25,7 +25,7 @@ image_height: 720
     tree about to be tied down Gulliver-style. Outside the gag, this is
     the canonical clean-rect-heavy variant on the
     <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">post-validation perf retrospective</a>'s
-    drop-prefetch exception list.
+    <a href="{{ '/docs/glossary/#drop-prefetch' | relative_url }}">drop-prefetch</a> exception list.
   </figcaption>
 </figure>
 

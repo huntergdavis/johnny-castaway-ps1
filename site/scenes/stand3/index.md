@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand3-ps1-hat-adjust.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 3 on PS1 at night: Johnny stands at the leftmost edge of the island and lifts his hat in a short idle pose." />
   <figcaption>

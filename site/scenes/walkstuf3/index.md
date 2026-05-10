@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/walkstuf3-ps1-jog.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="WALKSTUF 3 on PS1 at night: Johnny mid-stride on the left side of the island, jogging in front of the palm tree." />
   <figcaption>

@@ -2,7 +2,7 @@
 layout: page
 title: Lab
 eyebrow: Magazine · Methodology and reflection
-subtitle: How a one-person PS1 fan port actually gets built. Sixteen feature articles on the craft, the failures, and the tools.
+subtitle: How a one-person PS1 fan port actually gets built. Seventeen feature articles on the craft, the failures, and the tools.
 description: The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port.
 date: 2026-04-26
 ---
@@ -50,15 +50,20 @@ most feed readers find it automatically.
 
 ## Contents
 
-Sixteen feature articles, in reverse chronological order. The newest
+Seventeen feature articles, in reverse chronological order. The newest
 sit on top; the foundational methodology pieces sit underneath. Each
 card carries the date it landed.
 
 <ul class="doc-grid">
   <li>
+    <p class="lab-date"><time datetime="2026-05-09">2026-05-09</time></p>
+    <a href="{{ '/lab/63-heroes/' | relative_url }}">63 heroes</a>
+    <p>How every per-scene page on the site got its own captured-on-PS1 hero image, what frame-selection rules of thumb kept reappearing, and the cross-link cluster taxonomy that emerged from writing one figcaption at a time — variant pairs, story-arc sagas, theme threads, engineering-quirk lineages. Plus the one scene the chapter-select grind missed and how the regtest harness filled it in headlessly.</p>
+  </li>
+  <li>
     <p class="lab-date"><time datetime="2026-05-08">2026-05-08</time></p>
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">The chapter-select grind</a>
-    <p>Walking all 63 packs on hardware again to ship custom on-PS1 chapter-select thumbnails — and the surprising number of caption-mismaps the loop caught in the existing scene-page metadata. The validation bar guards pixel drift, not caption drift; this loop reconciled the prose against the discs that play.</p>
+    <p>Walking all 63 packs on hardware again to ship custom on-PS1 chapter-select thumbnails — and the surprising number of <a href="{{ '/docs/glossary/#caption-mismap' | relative_url }}">caption-mismaps</a> the loop caught in the existing scene-page metadata. The validation bar guards pixel drift, not caption drift; this loop reconciled the prose against the discs that play.</p>
   </li>
   <li>
     <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>

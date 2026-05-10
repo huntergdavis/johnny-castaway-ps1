@@ -45,3 +45,19 @@ find "$ROOT/docs" -type f \( -name '*.html' -o -name '*.css' -o -name '*.xml' -o
   -not -path "$ROOT/docs/general/*" \
   -not -path "$ROOT/docs/readme/*" \
   -exec perl -0pi -e 's/[ \t]+$//mg; s/\n+\z/\n/s' {} +
+
+# Final pass: red-team the website output. Catches broken local links,
+# missing fragment anchors (e.g. a glossary cross-ref pointing at a
+# section id that doesn't exist), and <img> without alt. Excludes the
+# same preserved-research trees the perl passes above skip — those
+# subtrees pre-date the site's authoring conventions and are tracked
+# separately in the site-improvement backlog. A broken anchor that
+# silently ships once cost a follow-up commit (a82c12982); making the
+# build fail on it instead means the next typo gets caught at build
+# time rather than after merge.
+python3 "$ROOT/scripts/site-redteam.py" "$ROOT/docs" \
+  --baseurl "/johnny-castaway-ps1" \
+  --exclude 'ps1/*' \
+  --exclude 'archive/*' \
+  --exclude 'general/*' \
+  --exclude 'readme/*'

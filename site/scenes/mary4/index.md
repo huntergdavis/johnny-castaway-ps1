@@ -14,7 +14,7 @@ image_height: 720
 
 <figure class="scene-hero">
   <img src="{{ '/assets/img/mary4-ps1-raft-heartbreak.png' | relative_url }}"
-       width="961" height="720" loading="lazy" decoding="async"
+       width="961" height="720" fetchpriority="high" decoding="async"
        alt="MARY 4 running on PS1: Johnny working on his raft on the island while Mary the mermaid watches from the water with a heartbroken expression." />
   <figcaption>MARY 4 on PS1 hardware. Mary surfaces and sees what Johnny is doing — fixing the raft so he can sail home. The clean-rect pressure during this scene's random-position load is what the v0.8.1-ps1 soak loop caught and the
   <a href="{{ '/lab/v081-mary4-freeze/' | relative_url }}">soak retrospective</a> walks through.</figcaption>

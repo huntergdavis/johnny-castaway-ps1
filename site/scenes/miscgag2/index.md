@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/miscgag2-ps1-bath-towel.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MISCGAG 2 on PS1 at night: Johnny stands under the palm tree with a small white towel spread on the sand next to him, set up for a bath that the shark will interrupt." />
   <figcaption>

@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/visitor5-ps1-plane.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="VISITOR 5 on PS1 at night: a small biplane approaches from the upper-right while Johnny stands under the palm tree on his raft." />
   <figcaption>

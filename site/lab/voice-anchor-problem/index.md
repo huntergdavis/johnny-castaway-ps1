@@ -5,6 +5,10 @@ eyebrow: Lab · Prose engineering
 subtitle: Keeping a giant AI-assisted site from sounding like a brochure.
 description: A prose-process essay about the Johnny Castaway PS1 site's voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review.
 date: 2026-04-26
+image: /assets/img/johnny1-ps1-the-end.png
+image_alt: JOHNNY 1 the-end frame — the in-game ending sequence where the four-line drawCredits text scrolls past. The voice anchor the entire site is edited against, captured on PS1 hardware.
+image_width: 1127
+image_height: 677
 ---
 
 <details class="page-toc" markdown="1">
