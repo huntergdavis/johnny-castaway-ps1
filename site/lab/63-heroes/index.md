@@ -5,6 +5,10 @@ eyebrow: Lab · Retrospective
 subtitle: How every per-scene page on the site got its own captured-on-PS1 hero image — and the cross-link clusters that emerged from writing one figcaption at a time.
 description: A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly.
 date: 2026-05-09
+image: /assets/img/johnny3-ps1-letter-suzy.png
+image_alt: Johnny standing on the island writing a letter at night, romantic-thought-bubble overhead picturing himself with Suzy embracing on a beach. The one frame the v0.8.4 chapter-select grind missed and the headless harness filled in.
+image_width: 640
+image_height: 448
 ---
 
 <details class="page-toc" markdown="1">
