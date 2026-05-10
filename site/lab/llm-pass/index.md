@@ -5,6 +5,10 @@ eyebrow: Lab · Advanced development techniques
 subtitle: How I use AI sub-agents on a one-person PS1 port without pretending they are magic.
 description: "A methodology essay on the LLM-assisted development workflow behind Johnny Castaway PS1: parallel agents, review loops, hallucination control, and where the human stays in charge."
 date: 2026-04-26
+image: /assets/img/activity9-ps1-boat.png
+image_alt: ACTIVITY 9 — the canonical wide-boat / padded-FGP3 retrospective scene. The kind of complex compression work the LLM-pass methodology helps land, via parallel sub-agent drafting plus human engineering review.
+image_width: 1127
+image_height: 677
 ---
 
 <details class="page-toc" markdown="1">
