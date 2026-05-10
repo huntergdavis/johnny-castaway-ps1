@@ -323,6 +323,16 @@ in the archaeology and research docs.
 - [Performance reference]({{ '/docs/performance/' | relative_url }}) —
   what each `loop_vb` / `target_vb` / `blocking_vb` column means
   and the experiment-log discipline behind the matrix.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — the magazine treatment of the per-scene validation loop this
+  page is the reference manual for. From "first scene signed off"
+  to "every scene signed off," same loop repeated 63 times: capture,
+  pack, route, replay, sign off.
+- [Lab: the chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — the v0.8.4-ps1 sequel to the 63-scene grind: walking every
+  validated pack again on hardware to ship custom Scene Explorer
+  thumbnails plus reconcile [caption-mismaps]({{ '/docs/glossary/#caption-mismap' | relative_url }})
+  in the per-scene metadata.
 
 ## View source on GitHub
 
