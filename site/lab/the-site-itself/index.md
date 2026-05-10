@@ -199,26 +199,25 @@ markdown. The cost of remembering this once is one merge; the cost of
 shipping a "fix" that quietly disappears on the next build is one
 honestly-confused contributor and a half-hour of debugging.
 
-The pattern looks like this — note the doubled `{{:toc}}` because
+The pattern looks like this — note the doubled <code>&#123;&#123;:toc&#125;&#125;</code> because
 the f-string consumes one pair of braces, leaving Liquid the rest:
 
-```python
-index = f"""---
+<pre><code class="language-python">index = f"""---
 layout: page
 title: Resource catalog
 ...
 ---
 
-<details class="page-toc" markdown="1">
-<summary>On this page</summary>
+&lt;details class="page-toc" markdown="1"&gt;
+&lt;summary&gt;On this page&lt;/summary&gt;
 
 * TOC
-{{:toc}}
-</details>
+&#123;&#123;:toc&#125;&#125;
+&lt;/details&gt;
 
-{resource_sections}
+&#123;resource_sections&#125;
 """
-```
+</code></pre>
 
 Same trick for the case-shelf family jump nav (`<nav class="scenes-jump">`
 with per-family counts and `id="ads-<family>"` on the first row of each
