@@ -6,7 +6,37 @@ tag: 1
 slug: suzy1
 status: validated
 description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08."
+image: /assets/img/suzy1-ps1-letter-daydream.png
+image_alt: "SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/suzy1-ps1-letter-daydream.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on." />
+  <figcaption>
+    SUZY 1 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The letter-and-daydream beat: Suzy is on the beach back home —
+    <code>SUZBEACH.SCR</code> backdrop, city skyline, palm-island
+    cutaway in the corner — with a thought bubble of Johnny's
+    island as she reads his letter. SUZY 1 is the inbound
+    counterpart to
+    <a href="{{ '/scenes/johnny3/' | relative_url }}">JOHNNY 3</a>'s
+    outbound "writes a letter to Suzy" beat. Engineering note: not
+    an island/ocean scene — the FG2 runtime now loads
+    <code>SUZBEACH.SCR</code> as the clean backdrop for SUZY scenes
+    instead of painting the standard island and water behind them.
+    Both SUZY rows are metadata-only on
+    <a href="{{ '/perf/' | relative_url }}">/perf/</a> on purpose
+    (no deterministic scene-end so they're excluded from
+    target-speed averages — visual signoff still holds).
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
