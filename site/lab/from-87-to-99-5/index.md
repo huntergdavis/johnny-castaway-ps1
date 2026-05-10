@@ -4,6 +4,10 @@ eyebrow: Lab · Methodology
 subtitle: How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.
 description: A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.
 date: 2026-05-06
+image: /assets/img/building4-ps1-lilliputians.png
+image_alt: BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 <details class="page-toc" markdown="1">
