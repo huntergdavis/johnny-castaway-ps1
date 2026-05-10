@@ -18,9 +18,9 @@ ledger is signed off, all 126 high/low scene variants are routed and
 timing-bearing, and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
-from `v0.8.4-ps1`. The public headless battle card is `+0.3215%` over
-target / `99.6847%` target speed; the raw signed optimization matrix is
-`-0.4470%` / `100.4685%`.
+from `v0.8.4-ps1`. The public headless battle card is `+0.3184%` over
+target / `99.6876%` target speed; the raw signed optimization matrix is
+`-0.4501%` / `100.4714%`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

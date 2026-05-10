@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.5-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3215% public over target / 99.6847% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3184% public over target / 99.6876% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -24,7 +24,7 @@ It keeps all 63 scenes visually/audibly validated, preserves the custom
 Scene Explorer thumbnails and reconciled scene metadata from `v0.8.4-ps1`,
 and promotes the full 126-row headless matrix as the public performance
 baseline. The public battle card is now
-`+0.3215%` over target / `99.6847%` target speed across all 126
+`+0.3184%` over target / `99.6876%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -35,10 +35,11 @@ frame-127/frame-130 resident-copy, low frame-114/frame-117 no-op residual,
 low frame-113 no-op residual, the VISITOR3 high frame-140 setup-segment copy,
 VISITOR3 low frame-114/frame-117 no-op payload aliasing, and the VISITOR3
 high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
+VISITOR3 low frame-123 resident alias plus frame-128 setup-segment copy,
 and WALKSTUF1 high sector `201..213` read-group follow-ups plus the WALKSTUF1
 high gap-compressed/window-prefetch guard and low gap-compressed prefix; the
-raw signed optimization matrix is `-0.4470%` / `100.4685%`.
-That is about `17.08` public over-target points removed and `12.58` public
+raw signed optimization matrix is `-0.4501%` / `100.4714%`.
+That is about `17.08` public over-target points removed and `12.59` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
@@ -57,17 +58,18 @@ blocking `95 -> 75`, loop-read time `305 -> 301`, and due misses `15 -> 13`.
 The durable public row is now `1478/1428` at `96.6%` target speed.
 
 The latest VISITOR3 baseline is `visitor3-high-f131-resident-alias121123-v299`
-plus `visitor3-low-alias-noop114117-v292`. The high pass aliases duplicate
+plus `visitor3-low-f128-resident-seg27-v302`. The high pass aliases duplicate
 frames `121` and `123` to frame `120`, compacts the resident setup-prime tail,
 and copies frame `131` fully inside the already paid setup-prime coverage. It
 keeps the `1555450` byte pack footprint and `217088` byte PS-EXE bucket fixed,
 and moves high `1074/1038 -> 1070/1039`: overrun `36 -> 31`, blocking
 `58 -> 49`, loop reads `10 -> 9`, loop-read time `58 -> 49`, and due misses
-`10 -> 9`. The low v292 pass aliases frames `114..117` to frame `113`'s
-already-resident two-byte no-op payload, keeps the `1555450` byte pack
-footprint fixed, and moves low `1079/1039 -> 1075/1039`: overrun `40 -> 36`,
-blocking `70 -> 67`, loop reads `16 -> 12`, and loop-read time `84 -> 67`;
-due misses stay `12` and hidden refill stays `0`.
+`10 -> 9`. The low v302 pass aliases duplicate frame `123` to frame `121`,
+compacts frames `118..128` into the second setup segment, grows that segment
+from `24` to `27` sectors, and copies frame `128` resident while keeping the
+`1555450` byte pack footprint fixed. Low moves `1075/1039 -> 1071/1039`:
+overrun `36 -> 32`, blocking `67 -> 63`, loop reads `12 -> 11`, loop-read time
+`67 -> 63`, and due misses `12 -> 11`; hidden refill stays `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler
