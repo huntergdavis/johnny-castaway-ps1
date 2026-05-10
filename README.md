@@ -44,12 +44,12 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.5-ps1`** — full 126-row headless performance matrix baseline |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3184% over target / 99.6876% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3156% over target / 99.6902% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
 
-- `v0.8.5-ps1` — full 126-row headless performance matrix baseline; current public rollup at `+0.3184%` over target / `99.6876%` target speed after the VISITOR3 low v302 frame-128 resident-segment promotion.
+- `v0.8.5-ps1` — full 126-row headless performance matrix baseline; current public rollup at `+0.3156%` over target / `99.6902%` target speed after the WALKSTUF1 low v305 gap6-prefix plus slack-guard promotion.
 - `v0.8.4-ps1` — on-PS1 captured thumbnails for every Scene Explorer slot; per-scene metadata reconciled against what the discs play. [Retrospective.](https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/)
 - `v0.8.3-ps1` — WALKSTUF1 compact FGP3/v4 restore-minus-current packs.
 - `v0.8.2-ps1` — VISITOR3 guarded-read group performance promotion.
