@@ -5,6 +5,10 @@ eyebrow: Lab · Personal history
 subtitle: Dreamcast, embedded Linux, picture frames, text edition, PS1. Same little island. Different machines.
 description: A personal retrospective on Hunter Davis repeatedly porting Johnny Castaway across Dreamcast, embedded Linux, picture frames, text editions, and now PlayStation 1.
 date: 2026-04-26
+image: /assets/img/stand1-ps1-edge-stand.png
+image_alt: Johnny standing on the leftmost shoreline of his tiny island at night — the canonical idle pose. The same little island, on PS1 hardware this time. Captured on PS1 hardware via the validation harness.
+image_width: 961
+image_height: 720
 ---
 
 <details class="page-toc" markdown="1">
