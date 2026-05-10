@@ -6,7 +6,34 @@ tag: 11
 slug: stand11
 status: validated
 description: "STAND.ADS scene 11: Johnny stands on the left side of the island and looks around. Validated 2026-05-08."
+image: /assets/img/stand11-ps1-left-look.png
+image_alt: "STAND 11 on PS1 at night: Johnny stands on the left side of the island next to the palm tree's trunk in the look-around idle pose."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand11-ps1-left-look.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 11 on PS1 at night: Johnny stands on the left side of the island next to the palm tree's trunk in the look-around idle pose." />
+  <figcaption>
+    STAND 11 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The left-position look-around idle (the audit's
+    "shades under the palm" guess looked similar at a glance but
+    the on-PS1 pose is just looking around). Position-variant pair
+    with
+    <a href="{{ '/scenes/stand8/' | relative_url }}">STAND 8</a>'s
+    right-side scratch-head-and-look. Like
+    <a href="{{ '/scenes/stand10/' | relative_url }}">STAND 10</a>,
+    STAND 11's host pipeline exits after two frames so the
+    no-stitch export collapses to a 92-byte empty pack — the
+    previously-committed pack plays cleanly on PS1, so it was
+    signed off as-is.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
