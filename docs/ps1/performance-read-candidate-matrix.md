@@ -4,12 +4,12 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-f127-f130-resident-copy-v238-broad-regression/20260509-145507-53698`
-- Candidate rows: `96`
+- Source artifact root: `scratch/ps1-perf-iterate/visitor3-low-noop114117-v248b-broad/20260509-165251-713811`
+- Candidate rows: `97`
 - Standalone probes: `2`
 - Scheduler or guarded probes: `3`
 - Scheduler-owned only: `39`
-- Closed exact ranges from experiment log: `10`
+- Closed exact ranges from experiment log: `11`
 - Deferred under-target rows: `12`
 
 Recent hand-authored table probes proved that nominal read-count wins can

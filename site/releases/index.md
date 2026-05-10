@@ -40,24 +40,25 @@ headless performance baseline.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
   ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-  VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack
-  passes through v238, all 126 timing-bearing rows average `+0.3574%` public
-  over target / `99.6515%` public target speed; the raw signed CSV is
-  `-0.4111%` / `100.4353%` for
+  VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual
+  passes through v248, all 126 timing-bearing rows average `+0.3558%` public
+  over target / `99.6529%` public target speed; the raw signed CSV is
+  `-0.4126%` / `100.4367%` for
   optimization work.
 - **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
   VISITOR3 tides, high-tide frame `115`, shared frames `118`/`124`, and
   high-only frame `117`, high-only re-anchored frames `127`/`126`/`125`, and
   the high-only `320 KiB` setup-prime cap, the guarded low `150..174`
   second setup segment, the low frame-125/frame-126 resident re-anchor, and
-  the low frame-118/frame-127 resident copies, plus the high frame-127/frame-130
-  resident-copy compaction now
+  the low frame-118/frame-127 resident copies, the high frame-127/frame-130
+  resident-copy compaction, plus the low frame-114/frame-117 no-op residual
+  compaction now
   move already-composited
   background rows or CD residency out of the active loop;
   the v204/v205 setup segments keep low sectors `281..305` and high sectors
   `277..293` resident before the active loop. High improves `1118/1028 ->
-  1075/1037`, low improves `1126/1025 -> 1088/1035`, blocking drops
-  `150/170 -> 59/95`, and the packs
+  1075/1037`, low improves `1126/1025 -> 1086/1035`, blocking drops
+  `150/170 -> 59/93`, and the packs
   keep fixed LBAs and the `215040` byte PS-EXE bucket.
 
 The post-validation perf retrospective at

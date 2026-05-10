@@ -122,8 +122,8 @@ The matrix-wide aggregate is now slightly under target -- the remaining
 work is in a small number of high-leverage rows that still slip.
 As of `{{ site.release.tag }}` there are no red or yellow rows left on the
 [battle card]({{ '/perf/' | relative_url }}). VISITOR3 high/low are both orange
-at roughly `96.5%`/`95.1%` after the high setup-prime/resident-copy lane and the low
-resident-copy compaction lane. The fifteen orange rows
+at roughly `96.5%`/`95.3%` after the high setup-prime/resident-copy lane and the low
+resident-copy/no-op residual compaction lane. The fifteen orange rows
 (`95`–`99%`) include WALKSTUF1 at `95.6%`/`95.8%` after its v0.8.3
 compact-FGP3/v4 pass, BUILDING2 high/low at `97.6%`, VISITOR5 high/low,
 and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1 /

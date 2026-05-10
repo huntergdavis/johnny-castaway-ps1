@@ -23,15 +23,16 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3574%` over target / `99.6515%` target speed across all 126
+`+0.3558%` over target / `99.6529%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
 low/high setup-segment, high frame-126/frame-125 re-anchor, and high
 setup-prime plus guarded low second-segment and low frame-125/frame-126
-resident re-anchor plus low frame-118/frame-127 resident-copy and high
-frame-127/frame-130 resident-copy follow-ups; the raw signed optimization
-matrix is `-0.4111%` / `100.4353%`.
+resident re-anchor plus low frame-118/frame-127 resident-copy, high
+frame-127/frame-130 resident-copy, and low frame-114/frame-117 no-op residual
+follow-ups; the raw signed optimization
+matrix is `-0.4126%` / `100.4367%`.
 That is about `17.04` public over-target points removed and `12.55` public
 target-speed points added since the compact full-matrix baseline.
 
@@ -42,8 +43,8 @@ later offsets, fixed LBAs `22472/23232`, sound offsets, and the `215040` byte
 PS-EXE bucket while moving high `1089/1035 -> 1075/1037`. It cuts overrun
 `54 -> 38`, blocking `83 -> 59`, loop reads `15 -> 11`, loop-read time
 `83 -> 59`, and due misses `15 -> 11` while keeping hidden refill at `0`.
-Low remains on the v237 resident-copy profile at `1088/1035`,
-`blocking_vb=95`, loop-read time `102`, and due misses `16`.
+Low now uses the v248 compact no-op residual profile at `1086/1035`,
+`blocking_vb=93`, loop-read time `100`, and due misses `16`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

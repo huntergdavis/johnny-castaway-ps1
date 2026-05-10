@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3574%` public over target / `99.6515%` public target speed after the MARY3,
+`+0.3558%` public over target / `99.6529%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v238. The raw signed optimization matrix is `-0.4111%` over target /
-`100.4353%` target speed.
+v248. The raw signed optimization matrix is `-0.4126%` over target /
+`100.4367%` target speed.
 
 ## Headline
 
@@ -49,7 +49,7 @@ v238. The raw signed optimization matrix is `-0.4111%` over target /
   `1745484` byte footprint and LBA fixed while moving low `2085/2058 ->
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
-- **VISITOR3 motion-copy, setup-segment, and resident payloads promoted.** The latest follow-up keeps the
+- **VISITOR3 motion-copy, setup-segment, resident payloads, and low no-op residuals promoted.** The latest follow-up keeps the
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
   `117` plus high-only re-anchored frames `127`, `126`, and `125`, then adds high/low
@@ -58,13 +58,14 @@ v238. The raw signed optimization matrix is `-0.4111%` over target /
   the low frame-125/frame-126 resident re-anchor plus the low frame-118
   resident-copy payload plus the low frame-127 resident-copy payload, then
   compacts high frames `117..130` unchanged into the existing high setup-prime
-  resident window.
+  resident window and rewrites low frames `114..117` in place as compact
+  no-op residual payloads.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
   `1118/1028 -> 1075/1037`, cuts blocking `150 -> 59`, loop reads `27 -> 11`,
-  and due misses `26 -> 11`; low moves `1126/1025 -> 1088/1035`, cuts blocking
-  `170 -> 95`, loop reads `31 -> 17`, and due misses `29 -> 16`.
+  and due misses `26 -> 11`; low moves `1126/1025 -> 1086/1035`, cuts blocking
+  `170 -> 93`, loop reads `31 -> 17`, and due misses `29 -> 16`.
 
 ## Follow-Up Closure
 
@@ -205,6 +206,14 @@ loop-read time drops `83 -> 59`, due misses drop `15 -> 11`, and hidden refill
 remains `0`. Entry geometry, payload bytes, pack size, LBA, sound offset, and
 the `215040` byte PS-EXE bucket all stay fixed.
 
+The follow-up `visitor3-low-noop114117-v248` rewrites low frames `114..117`
+in place as two-byte compact no-op residual payloads after the compact-motion
+marker/no-op probes showed the current v4 path could preserve cadence without a
+source change. The pack footprint, LBA, sound offset, and PS-EXE bucket stay
+fixed. The active loop improves `1088/1035 -> 1086/1035`, overrun drops
+`53 -> 51`, blocking drops `95 -> 93`, loop-read time drops `102 -> 100`, due
+misses stay `16`, and hidden refill remains `0`.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -254,6 +263,10 @@ the `215040` byte PS-EXE bucket all stay fixed.
   `scratch/ps1-perf-iterate/visitor3-high-f127-f130-resident-copy-v238-focused/20260509-144443-4186029/summary.json`.
 - VISITOR3 high frame-127/frame-130 resident-copy broad regression gate:
   `scratch/ps1-perf-iterate/visitor3-high-f127-f130-resident-copy-v238-broad-regression/20260509-145507-53698/summary.json`.
+- VISITOR3 low frame-114/frame-117 no-op residual focused gate:
+  `scratch/ps1-perf-iterate/visitor3-low-noop114117-v248b-focused/20260509-165134-705923/summary.json`.
+- VISITOR3 low frame-114/frame-117 no-op residual broad gate:
+  `scratch/ps1-perf-iterate/visitor3-low-noop114117-v248b-broad/20260509-165251-713811/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

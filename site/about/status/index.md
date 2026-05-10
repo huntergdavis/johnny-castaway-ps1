@@ -31,12 +31,13 @@ compact-FGP3/v4 pass moves low to `2075/2061`, cuts blocking `29 -> 17`, loop
 reads `59 -> 47`, and moves the row into green. The latest WALKSTUF3 low
 compact-FGP3/v4 pass moves low to
 `2310/2295`, cuts blocking `41 -> 26`, and moves the row into green. The
-latest VISITOR3 pass moves high to `1075/1037`, moves low to `1088/1035`,
-cuts high blocking `114 -> 59` and low blocking `139 -> 95`, and trades
+latest VISITOR3 pass moves high to `1075/1037`, moves low to `1086/1035`,
+cuts high blocking `114 -> 59` and low blocking `139 -> 93`, and trades
 setup time for lower active-loop CD pressure through high/low persistent
 segments, high-only re-anchor payloads, the guarded low second setup segment,
 the low frame-125/frame-126 resident re-anchor, and the low frame-118/frame-127
-resident copies plus high frame-127/frame-130 resident-copy compaction. The
+resident copies plus high frame-127/frame-130 resident-copy compaction and low
+frame-114/frame-117 no-op residual compaction. The
 MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
@@ -126,7 +127,7 @@ Pulled from the live narrative in
   BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
   compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
   compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
-  plus high-only re-anchor/resident-copy passes.
+  plus high-only re-anchor/resident-copy and low no-op residual passes.
   The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

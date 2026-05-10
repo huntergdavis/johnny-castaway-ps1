@@ -47,10 +47,11 @@ were evidence-gathering positions, not runtime pins.
 `{{ site.release.tag }}`. After the compact metadata work, motion-copy payloads,
 high-only frame `117` target-hull promotion, the v214 high setup-prime pass,
 the v216 guarded low second setup segment, the v227 low frame-125/frame-126
-resident re-anchor, the v234/v237 low frame-118/frame-127 resident copies, and
-the v238 high frame-127/frame-130 resident-copy compaction, `visitor3` high
+resident re-anchor, the v234/v237 low frame-118/frame-127 resident copies, the
+v238 high frame-127/frame-130 resident-copy compaction, and the v248 low
+frame-114/frame-117 no-op residual compaction, `visitor3` high
 and low now run around
-[`96.5%` and `95.1%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+[`96.5%` and `95.3%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 instead of sitting in the red/yellow bands. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
