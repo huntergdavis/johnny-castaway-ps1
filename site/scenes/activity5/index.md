@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity5-ps1-rain-dance.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 5 on PS1 at night: Johnny in costume mid-rain-dance with a storm-cloud thought bubble hovering over the palm tree." />
   <figcaption>

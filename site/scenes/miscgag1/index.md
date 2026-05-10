@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/miscgag1-ps1-melts.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MISCGAG 1 on PS1 at night: Johnny lies flat on the sand under the palm tree, melted into a puddle by the heat." />
   <figcaption>

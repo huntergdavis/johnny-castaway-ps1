@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/mary3-ps1-mermaid-shore.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MARY 3 on PS1 at night: Johnny stands at the center of the island under the palm tree, Mary the mermaid surfacing in the water at the lower-left shoreline." />
   <figcaption>

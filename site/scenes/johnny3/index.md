@@ -15,7 +15,7 @@ image_height: 448
 <figure class="scene-hero">
   <img src="{{ '/assets/img/johnny3-ps1-letter-suzy.png' | relative_url }}"
        width="640" height="448"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="JOHNNY 3 on PS1 at night: Johnny stands on the left side of the island writing a letter, a thought bubble above him showing him and Suzy embracing on a beach." />
   <figcaption>

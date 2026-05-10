@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand9-ps1-tree-pants.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 9 on PS1 at night: Johnny stands right next to the palm tree, looking around in the pants-adjust idle pose." />
   <figcaption>

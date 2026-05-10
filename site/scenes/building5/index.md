@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building5-ps1-fire.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 5 on PS1 at night: Johnny sits at the left shoreline next to a small fire, the moon visible above." />
   <figcaption>

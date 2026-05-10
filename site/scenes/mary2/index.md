@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/mary2-ps1-mermaid-fish.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MARY 2 on PS1 at night: Johnny stands on his raft fishing with the rod arched out over the water while Mary the mermaid surfaces near the shoreline." />
   <figcaption>

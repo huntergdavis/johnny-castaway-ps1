@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity12-ps1-bird-on-head.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 12 on PS1 at night: Johnny stands under the palm tree with a white bird perched on top of his head, raising a red club." />
   <figcaption>

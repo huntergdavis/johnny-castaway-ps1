@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/suzy1-ps1-letter-daydream.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on." />
   <figcaption>

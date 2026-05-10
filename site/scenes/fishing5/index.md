@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing5-ps1-shark-bite.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 5 on PS1 at night: a large grinning shark sits on the right side of the island mid-bite, with what is left of Johnny's gear in its jaws." />
   <figcaption>

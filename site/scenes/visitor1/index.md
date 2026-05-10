@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/visitor1-ps1-misses-speedboat.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="VISITOR 1 on PS1 at night: a red and white speedboat zips past on the upper-left of the frame while Johnny stands at the front of the island looking the other way." />
   <figcaption>

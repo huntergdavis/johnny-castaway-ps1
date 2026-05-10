@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand16-ps1-spyglass-right.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 16 on PS1 at night: Johnny stands on the right side of the island holding a spyglass to his eye, scanning the horizon." />
   <figcaption>

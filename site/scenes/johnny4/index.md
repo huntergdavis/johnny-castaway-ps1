@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/johnny4-ps1-bottle-returns.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="JOHNNY 4 on PS1 at night: Johnny stands on the left shoreline holding the bottle that just washed back, a red question-mark hovering above his head." />
   <figcaption>

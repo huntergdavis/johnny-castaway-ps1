@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/suzy2-ps1-rendezvous.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="SUZY 2 on PS1: Suzy and Johnny embrace on the beach back home, his raft beached on the sand beside them, the city skyline behind." />
   <figcaption>

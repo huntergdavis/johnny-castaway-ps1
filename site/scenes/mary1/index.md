@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/mary1-ps1-dinner-date.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MARY 1 on PS1 at night: Johnny and Mary the mermaid sit together at a small table under the palm tree on the island, mid-dinner-date, the moon overhead and the raft beside them." />
   <figcaption>

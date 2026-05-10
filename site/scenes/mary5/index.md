@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/mary5-ps1-goodbye.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="MARY 5 on PS1 at night: Johnny stands on the island holding Mary the mermaid in a goodbye embrace, the scene's packed raft sitting ready on the right side of the island, the moon overhead." />
   <figcaption>

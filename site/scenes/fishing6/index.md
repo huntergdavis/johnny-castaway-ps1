@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing6-ps1-spits-water.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 6 on PS1 at night: Johnny stands at the left shoreline holding a green fish that is squirting water directly into his face." />
   <figcaption>

@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity7-ps1-upside-down-book.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 7 on PS1 at night: Johnny sits under the palm reading, a red question-mark thought bubble hovering over his head." />
   <figcaption>
