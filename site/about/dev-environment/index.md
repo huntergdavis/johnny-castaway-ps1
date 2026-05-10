@@ -14,7 +14,7 @@ A photograph of the actual workflow as of `{{ site.release.tag }}`. Click the im
 <a href="{{ '/assets/img/dev-environment-2026-05-06.png' | relative_url }}">
   <img src="{{ '/assets/img/dev-environment-2026-05-06-w1600.jpg' | relative_url }}"
        width="1600" height="1086"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="Multi-monitor PS1 development environment with Dunking Bird, the fresh editor, two AI agent windows (Claude and Codex), DuckStation, and bottom-monitor system telemetry on KDE Plasma." />
 </a>
