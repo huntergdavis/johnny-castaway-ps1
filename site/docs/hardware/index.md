@@ -246,4 +246,12 @@ specialized compositors, not a clock change — the clock isn't going up.
 
 ## View source on GitHub
 
-- [`docs/ps1/hardware-specs.md`]({{ site.github_url }}/blob/main/docs/ps1/hardware-specs.md)
+- [`docs/ps1/hardware-specs.md`]({{ site.github_url }}/blob/main/docs/ps1/hardware-specs.md) — original design doc.
+- [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c) —
+  the project's own SPI driver (250 Hz Timer 2 polling, `tx_len=5`
+  for DuckStation parity). Carries the fix the
+  [two-day SPI bug retrospective]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  walks through.
+- [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c) —
+  bounded `JCPERF`/`JCPERF2` gated formatters; the safe substitute
+  for per-frame `printf()` in timing-sensitive paths.

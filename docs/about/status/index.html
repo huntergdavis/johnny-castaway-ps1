@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -98,11 +98,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state at v0.8.3-ps1</p>
+      <p class="eyebrow">Component-level state at v0.8.5-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1862 words
+          ~7 min read · 1822 words
         </p>
 
       <hr class="rule" />
@@ -111,37 +111,19 @@
   <div class="page-body">
     <h2 id="headline">Headline</h2>
 
-<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong>. Scenes validated
+<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code></strong>. Scenes validated
 under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
-<code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the current release: every row in the live
-per-scene ledger is signed off, all 126 high/low scene variants are routed,
-and the headless timing-bearing average is +0.4% over target /
-99.7% target speed. The current
-post-release BUILDING1 compact-FGP3/no-autoprime follow-up moves both
-BUILDING1 tides into the green band, and the newer VISITOR5 high-only compact
-FGP3/no-autoprime follow-up cuts that high-tide overrun without moving low
-tide. The newer BUILDING2 low restore-minus-current/slack-4 pass moves low
-back into the orange band, and the newer WALKSTUF3 high compact-FGP3/v4 pass
-moves high into green. The BUILDING6 compact-FGP3/v4 pass cuts both
-tides to <code class="language-plaintext highlighter-rouge">2482/2457</code> and <code class="language-plaintext highlighter-rouge">2485/2456</code>, clearing due misses and moving both rows
-to the bottom of the orange band while preserving fixed pack LBAs. The latest
-ACTIVITY9 high compact-FGP3/v4 pass moves high to <code class="language-plaintext highlighter-rouge">2082/2062</code>, cuts blocking
-<code class="language-plaintext highlighter-rouge">37 -&gt; 24</code>, and moves the row into green. The latest ACTIVITY9 low
-compact-FGP3/v4 pass moves low to <code class="language-plaintext highlighter-rouge">2075/2061</code>, cuts blocking <code class="language-plaintext highlighter-rouge">29 -&gt; 17</code>, loop
-reads <code class="language-plaintext highlighter-rouge">59 -&gt; 47</code>, and moves the row into green. The latest WALKSTUF3 low
-compact-FGP3/v4 pass moves low to
-<code class="language-plaintext highlighter-rouge">2310/2295</code>, cuts blocking <code class="language-plaintext highlighter-rouge">41 -&gt; 26</code>, and moves the row into green. The
-latest VISITOR3 pass moves high to <code class="language-plaintext highlighter-rouge">1075/1037</code>, moves low to <code class="language-plaintext highlighter-rouge">1086/1035</code>,
-cuts high blocking <code class="language-plaintext highlighter-rouge">114 -&gt; 59</code> and low blocking <code class="language-plaintext highlighter-rouge">139 -&gt; 93</code>, and trades
-setup time for lower active-loop CD pressure through high/low persistent
-segments, high-only re-anchor payloads, the guarded low second setup segment,
-the low frame-125/frame-126 resident re-anchor, and the low frame-118/frame-127
-resident copies plus high frame-127/frame-130 resident-copy compaction and low
-frame-114/frame-117 no-op residual compaction. The
-MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
+<code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is the current release: every row in the live per-scene
+ledger is signed off, all 126 high/low scene variants are routed and
+timing-bearing, and the chapter-select grid in the in-game
+<a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
+keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
+from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3459%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6621%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4226%</code> / <code class="language-plaintext highlighter-rouge">100.4459%</code>.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in
@@ -205,14 +187,14 @@ done.”</p>
       <td>Johnny walks between scene endpoints using Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. <code class="language-plaintext highlighter-rouge">v0.7.2</code> adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; <code class="language-plaintext highlighter-rouge">v0.8.0</code> adds a clean-rect retry path; <code class="language-plaintext highlighter-rouge">v0.8.1</code> counts wave-band/split-rect clean pressure before allocation.</td>
     </tr>
     <tr>
-      <td>Freeplay/debug mode (<code class="language-plaintext highlighter-rouge">scene_freeplay.c</code>)</td>
+      <td><a href="../../docs/glossary/#freeplay">Freeplay/debug mode</a> (<code class="language-plaintext highlighter-rouge">scene_freeplay.c</code>)</td>
       <td>Working</td>
       <td><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, <a href="../../docs/glossary/#frog-clock">frog-clock</a> loading transitions, and a no-allocation steady-state frame loop.</td>
     </tr>
     <tr>
       <td>Pause menu (<code class="language-plaintext highlighter-rouge">pause_menu.c</code>)</td>
       <td>Complete</td>
-      <td>Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because <code class="language-plaintext highlighter-rouge">FntFlush</code> is broken in scene context); <code class="language-plaintext highlighter-rouge">POLY_F4</code> dim quad + panel quads. Eleven sub-screens: Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</td>
+      <td>Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because <code class="language-plaintext highlighter-rouge">FntFlush</code> is broken in scene context); <code class="language-plaintext highlighter-rouge">POLY_F4</code> dim quad + panel quads. Twelve sub-screens: Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</td>
     </tr>
     <tr>
       <td><a href="../../docs/glossary/#memcard">Memcard</a> persistence (<code class="language-plaintext highlighter-rouge">memcard.c</code>)</td>
@@ -220,9 +202,9 @@ done.”</p>
       <td>Pause-menu choices persist to <code class="language-plaintext highlighter-rouge">bu00:</code> block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work.</td>
     </tr>
     <tr>
-      <td>Telemetry / debug overlay</td>
+      <td><a href="../../docs/glossary/#telemetry-overlay">Telemetry / debug overlay</a></td>
       <td>Complete</td>
-      <td>Five-panel overlay; gated by <code class="language-plaintext highlighter-rouge">debugMode</code>. Toggle with Select. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state.</td>
+      <td>Five-panel left-edge overlay; gated by <code class="language-plaintext highlighter-rouge">grPs1TelemetryEnabled</code> in <code class="language-plaintext highlighter-rouge">graphics_ps1.c</code> with row writes scattered through <code class="language-plaintext highlighter-rouge">src/ads.c</code> and helpers like <code class="language-plaintext highlighter-rouge">grPs1SetLastBmpTelemetry</code>. Off by default in release builds. Decoded out of captured frames by <code class="language-plaintext highlighter-rouge">scripts/decode-ps1-bars.py</code> into <code class="language-plaintext highlighter-rouge">telemetry.json</code> during <a href="../../docs/regtest/">regtest</a>. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state since text I/O can perturb timing.</td>
     </tr>
     <tr>
       <td>Perf instrumentation (<code class="language-plaintext highlighter-rouge">ps1_perf.c</code>)</td>
@@ -247,7 +229,7 @@ done.”</p>
     <tr>
       <td>CD packaging (mkpsxiso)</td>
       <td>Complete</td>
-      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is ~76 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
+      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is ~79 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
     </tr>
   </tbody>
 </table>
@@ -301,17 +283,11 @@ harness output is the SoT for build-and-boot regressions.</p>
 <ul>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
-loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>
-has the headless baseline at slightly under target — <code class="language-plaintext highlighter-rouge">99.7%</code>
-target speed across all 126 timing-bearing rows after the v0.8.2 + v0.8.3
-VISITOR3 + WALKSTUF1 outlier closures, the missing-scene timing refresh, the
-MARY3 guarded prefetch-preserve pass, the BUILDING1 compact-FGP3/no-autoprime
-follow-up, the VISITOR5 high-only compact-FGP3/no-autoprime follow-up, the
-BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
-compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
-compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
-plus high-only re-anchor/resident-copy and low no-op residual passes.
-The bring-up loop remains in
+loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>
+has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.7%</code>
+target speed across all 126 timing-bearing rows after the VISITOR3,
+WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
+promotion arc. The bring-up loop remains in
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a>.</li>
   <li><strong>Scene-by-scene FG2 routing.</strong> All 63 scenes have generated
 high-tide and low-tide FG2 packs sitting in the corpus; routing
@@ -324,19 +300,41 @@ block edge cases.</li>
 stores automatic policy separately from manual holiday id. Captions, Scene
 Set, tide, raft, island-position, freeplay/perf preferences, and menu cursor
 defaults remain future work.</li>
-  <li><strong>Caption audit follow-through.</strong> HIGH-confidence ADS-tag
-mappings are in; LOW-confidence STAND/VISITOR/WALKSTUF slots
-will be refined as those scenes pass the bar.</li>
+  <li><strong>Caption audit follow-through.</strong> Two layers, with one done in
+<code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> and one still open. <em>Done:</em> the website’s <em>description</em>
+of which caption belongs to which scene was reconciled against the
+on-PS1 packs during the
+<a href="../../lab/chapter-select-grind/">chapter-select grind</a>
+— per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles + bodies, <code class="language-plaintext highlighter-rouge">scenes.yml</code> notes,
+<code class="language-plaintext highlighter-rouge">scene-status.md</code> Notes column, and the in-game
+<a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
+display strings. The runtime evidence overturned a substantial
+fraction of the audit’s confidence ratings, including two HIGH-rated
+FISHING entries (<code class="language-plaintext highlighter-rouge">FISHING 2</code> boot, <code class="language-plaintext highlighter-rouge">FISHING 3</code> crab) that were exact
+text-pack mismatches and the <code class="language-plaintext highlighter-rouge">VISITOR 5</code> <code class="language-plaintext highlighter-rouge">NO_MATCH</code> candidate that
+turned out to be a clear unambiguous gag. <em>Open:</em> the runtime
+<code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> array in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>
+was not changed in <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>; the on-screen caption band
+continues to play whatever caption the original audit picked, even
+on rows where the website now disagrees with that pick. Repointing
+the runtime mapping (or blanking the rows where text and pack can’t
+be reconciled) is a future-release item. The
+<a href="../../docs/captions/#post-validation-runtime-corrections-v084-ps1">post-validation runtime corrections section</a>
+lists the named mismaps.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">fgpilot</code> -&gt; “PS1 scene playback” naming migration.</strong> The
 internal code-name in <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> and friends remains
 <code class="language-plaintext highlighter-rouge">fgpilot</code>; the public-facing name is moving to “PS1 scene
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the WALKSTUF1 compact
-foreground performance pass. <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> is the VISITOR3 guarded-read
-performance pass. <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the clean-rect pressure stability
-point release. <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene performance
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is the full 126-row
+headless performance matrix release. <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> is the chapter-select
+thumbnails content release — 63 custom on-PS1-captured grid slots and
+a scene-page reconciliation pass against the actual on-PS1 packs.
+<code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the WALKSTUF1 compact foreground performance pass.
+<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> is the VISITOR3 guarded-read performance pass.
+<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the clean-rect pressure stability point release. <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene performance
 baseline. <code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code>
 fixes stale-backdrop story-loop walks. <code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> adds the original-four
 auto holiday default and persisted holiday mode. <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> validates all
@@ -398,7 +396,7 @@ this page uses without scaffolding.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

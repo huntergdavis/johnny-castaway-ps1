@@ -46,9 +46,17 @@ matrix, and a row in the green band that fails visual review
 doesn't ship. The two ledgers stay separate on purpose — different
 bars, different cadences, different failure modes.
 
-Milestone release cadence: every **10** scenes reaching `✅ / ✅`. Smaller
-stability releases happen between scene milestones when there's something
-worth shipping.
+Milestone release cadence was historically every **10** scenes reaching
+`✅ / ✅`, with smaller stability releases between milestones when there
+was something worth shipping. That cadence drove the v0.4–v0.7 line up
+through the v0.7.0-ps1 release that capped the 63/63 validation grind
+([retrospective]({{ '/lab/the-63-scene-grind/' | relative_url }})).
+With every scene now signed off, the 0.8.x line ships against
+performance, stability, and content bars instead — a per-release theme
+under
+[/releases/]({{ '/releases/' | relative_url }}). The visual-signoff
+gate above is still the gate any new or re-validated scene would have
+to clear.
 
 ## Prerequisites
 
@@ -121,10 +129,13 @@ add the scene to the active routing function:
   `.FG2` based on `islandState.lowTide`.
 
 [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c) —
-add the slug to `kProvenScenes` **only after full human visual + audible
-signoff**. Pending scenes can still be launched explicitly with
-`fgpilot <slug>` once the routing function knows about them, but they
-shouldn't enter the random screensaver rotation until they're certified.
+add the slug to `kAllScenes[]` so the screensaver picker can draw it.
+There used to be a separate `kProvenScenes` array gated on human
+visual + audible signoff; that gate was retired once the full
+63-scene set ran cleanly post-v0.7.0-ps1, so the picker now draws
+from everything in `kAllScenes`. New scenes land here as soon as
+their FG2 pack ships on the CD layout. Pending scenes can still be
+launched explicitly with `fgpilot <slug>` for bring-up work.
 
 ### 3. Build + launch
 
@@ -247,7 +258,7 @@ exists as a diagnostic — not as the acceptance gate.
 - **Scripted controller repros**: use
   [`ps1-menu-input-harness.sh`]({{ site.github_url }}/blob/main/scripts/ps1-menu-input-harness.sh)
   or a custom `PADSCRIPT.TXT` route when a bug depends on menu navigation or
-  Freeplay input. The script drives the actual PS1 pad path and emits
+  [Freeplay]({{ '/docs/glossary/#freeplay' | relative_url }}) input. The script drives the actual PS1 pad path and emits
   `JCPADSHOT` markers for screenshot alignment; see
   [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}).
 - **Scratch files go in `scratch/`**, never `/tmp`. DuckStation logs
@@ -318,9 +329,26 @@ in the archaeology and research docs.
 - [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
   — the inner-loop wrapper this page references throughout
   the per-scene runbook.
+- [`scripts/build-host.sh`]({{ site.github_url }}/blob/main/scripts/build-host.sh)
+  — host capture binary build (Prerequisites step).
 - [`scripts/export-scene-foreground-pilot.sh`]({{ site.github_url }}/blob/main/scripts/export-scene-foreground-pilot.sh)
   — host-side capture-and-pack script that produces per-scene
-  FG2 packs.
+  FG2 packs (Step 1).
+- [`scripts/make-cd-image.sh`]({{ site.github_url }}/blob/main/scripts/make-cd-image.sh)
+  — CD image regenerator (the "Shorter shortcuts" entry).
+- [`scripts/release.sh`]({{ site.github_url }}/blob/main/scripts/release.sh)
+  — full release wrapper (Step 6: build + bump + tag + push).
+- [`scripts/batch-capture-all-scenes.sh`]({{ site.github_url }}/blob/main/scripts/batch-capture-all-scenes.sh)
+  — generates the all-63-scenes pack corpus referenced in the
+  "Existing all-scene pack corpus" section.
+- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  — the routing function `fgCompactOverlayPackPathForScene` that Step 2
+  asks the contributor to extend.
+- [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c)
+  — `kAllScenes[]` (the scene-picker pool Step 2 lands new slugs in,
+  post-`v0.7.0-ps1` retirement of the gated `kProvenScenes`).
+- [`src/ps1_debug.c`]({{ site.github_url }}/blob/main/src/ps1_debug.c)
+  — the 5-panel telemetry overlay the Diagnostics section names.
 - [`docs/ps1/development-workflow.md`]({{ site.github_url }}/blob/main/docs/ps1/development-workflow.md) — original.
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md) — the active strategy.
 - [`docs/ps1/scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) — per-scene ledger.

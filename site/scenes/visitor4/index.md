@@ -1,12 +1,38 @@
 ---
 layout: scene
-title: VISITOR 4 — Coconut plane hit
+title: VISITOR 4 — Shakes the palm; coconut rolls into the ocean
 ads: VISITOR
 tag: 4
 slug: visitor4
 status: validated
-description: "VISITOR.ADS scene 4: Coconut plane gag. Validated on PS1/DuckStation."
+description: "VISITOR.ADS scene 4: Johnny shakes the palm tree; a coconut falls and rolls into the ocean. Validated 2026-05-08."
+image: /assets/img/visitor4-ps1-coconut-rolls.png
+image_alt: "VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/visitor4-ps1-coconut-rolls.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean." />
+  <figcaption>
+    VISITOR 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The frozen-just-before-the-punchline beat: Johnny has shaken
+    the palm, the coconut has dropped to the sand, the next frame
+    rolls it off the island into the ocean — straight down the
+    drain. VISITOR 4 was the canonical source of the v0.8.4
+    caption-mismap chain — the original audit attached "coconut
+    plane hit" here, but on-PS1 playback showed there's no plane
+    in this scene; the throw-coconut-at-plane gag lives at
+    <a href="{{ '/scenes/visitor5/' | relative_url }}">VISITOR 5</a>.
+    See the
+    <a href="{{ '/faq/' | relative_url }}">FAQ Q on caption-vs-scene-title divergence</a>.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
@@ -15,13 +41,9 @@ Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-b
 - ADS dispatch: <code>VISITOR.ADS scene 4</code>
 - Slug: <code>visitor4</code>
 
-## What This Scene Is
+## What this scene is
 
-Johnny knocks down the plane/visitor with a coconut.
-
-The old catalogue label on this page described a red-boat scene; live
-validation proved VISITOR 4 is the coconut/plane gag in the current PS1
-scene mapping.
+Johnny grabs the palm tree and shakes it. A coconut drops loose, hits the ground, and rolls right off the edge of the island into the ocean — straight down the drain. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "coconut plane hit" caption-mapping guess was wrong (no plane in the on-PS1 pack).
 
 ### How this scene gets validated
 

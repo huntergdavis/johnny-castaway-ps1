@@ -45,6 +45,25 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </figure>
 </section>
 
+<figure style="margin: 2rem auto; text-align: center;" aria-label="Scene Explorer running on PS1">
+  <a href="{{ '/docs/pause-menu/#scene-explorer' | relative_url }}">
+    <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
+         width="640" height="448"
+         loading="lazy"
+         decoding="async"
+         style="max-width: 100%; height: auto;"
+         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, 5 of 63 validated, FISHING 5 — Eaten by a shark, Family Fishing, Frames 69; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2, navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+  </a>
+  <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
+    <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
+    straight to any of the 63 scenes. Each entry shows a
+    captured-on-PS1 thumbnail, family, and frame count. New in
+    <a href="{{ '/releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes' | relative_url }}"><code>v0.8.4-ps1</code></a>;
+    this screenshot was itself captured headlessly via
+    <a href="{{ '/docs/scripted-input/' | relative_url }}">the scripted-input harness</a>.
+  </figcaption>
+</figure>
+
 <aside class="status-strip" aria-label="Project status">
   <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a> <small>· <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time></small></span>
   <a class="pill pill--ok" href="{{ '/scenes/' | relative_url }}">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</a>
@@ -77,11 +96,16 @@ bugfixing, performance, and feature polish; the
 [`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 keeps long randomized runs stable, the [`v0.8.0` performance
 baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }})
-promoted the headless optimization methodology, and the
+promoted the headless optimization methodology, the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
-outliers — the matrix now averages
+outliers, `v0.8.4` walked all 63 packs on hardware to ship custom
+chapter-select thumbnails plus a scene-page reconciliation against the
+on-PS1 packs, and `v0.8.5` promotes the full 126-row timing-bearing
+matrix — the public battle card now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-at native rate or better. The two ledgers live separately: the
+across the timing-bearing rows (public-capped; the
+optimization-side raw signed average is past target). The two
+ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
 [performance battle card]({{ '/perf/' | relative_url }}) tracks
@@ -138,7 +162,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/lab/' | relative_url }}">Magazine-length Lab</a>
-    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
+    <p>Sixteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the chapter-select grind, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="{{ '/hack/' | relative_url }}">Curious hacker path</a>
@@ -191,9 +215,10 @@ with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
 [pause menu]({{ '/docs/pause-menu/' | relative_url }}) reachable
 with Start (the original had none), with sub-screens for Scene
-Set, Freeplay Options, Controls, World Options, Holidays, Set
-Island Position, Accessibility, Sound Test, System, Set Time/Date,
-and Set RNG Seed. An optional
+Set, Scene Explorer (the chapter-select grid with on-PS1-captured
+thumbnails for every scene), Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound Test,
+System, Set Time/Date, and Set RNG Seed. An optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
 on a dedicated SPU voice. [Frog-clock loading transitions]({{ '/docs/glossary/#frog-clock' | relative_url }}) between
 scene swaps. The website

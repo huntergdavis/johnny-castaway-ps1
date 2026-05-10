@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -117,18 +117,22 @@ the <strong>FISHING 1 bar</strong>: pixel-perfect visuals against the host-captu
 reference, plus SFX cues that land on the same engine ticks, across
 every variant flag that applies to the scene (night palette, low-tide
 shoreline, holiday overlay, raft-stage progression). That’s a higher
-bar than “it ran once and didn’t crash” — at <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>
+bar than “it ran once and didn’t crash” — at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>
 all 63 rows below clear it. The
 <a href="../lab/the-63-scene-grind/">63-scene grind retrospective</a>
 walks through how the last cluster (the foreground-only multi-view
-scenes) cleared the bar.</p>
+scenes) cleared the bar. The one-line lead in each row’s Notes column
+was reconciled against on-PS1 playback in <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>; the
+<a href="../lab/chapter-select-grind/">chapter-select grind retrospective</a>
+walks through what that loop caught (several caption-mapping audit
+guesses had drifted from the gags the discs actually play).</p>
 
 <p>The source of truth for this ledger is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code></a>
 in the project repo. The table on this page is generated from
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_data/scenes.yml"><code class="language-plaintext highlighter-rouge">site/_data/scenes.yml</code></a>,
 which is parsed from that file. Current tally: <strong>63 of
-63 scenes</strong> validated. <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is the
+63 scenes</strong> validated. <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is the
 release line the validated rows were last verified on. For the longer
 explanation of how a scene moves from <code class="language-plaintext highlighter-rouge">pending</code> to <code class="language-plaintext highlighter-rouge">validated</code>, see
 <a href="../about/method/">the method</a> and
@@ -156,7 +160,7 @@ host-vs-PS1 reference frames where applicable.</p>
 
 <table class="scene-table">
   <caption class="visually-hidden">
-    Scene ledger at v0.8.3-ps1: 63 of
+    Scene ledger at v0.8.5-ps1: 63 of
     63 scenes validated under the FISHING 1 bar.
     Columns are ADS-and-tag, scene name, status, last-verified
     release tag, and notes. Rows are grouped by ADS family; use
@@ -186,7 +190,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity1/">activity1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`); source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops</td>
+        <td>palm-climb-then-belly-flop (the sloppy-impact variant of the same climb-and-water arc; ACTIVITY 4 is the clean-dive variant). Visual + audible signoff after rebuilding high/low packs from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`); source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops. Pack content (belly-flop) confirmed from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -200,7 +204,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity4/">activity4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route, reads-with-seagull-on-head</td>
+        <td>palm-climb-then-clean-dive (the clean-dive variant of the same climb-and-water arc; ACTIVITY 1 is the belly-flop variant). Visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route. Earlier "reads-with-seagull-on-head" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -214,7 +218,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity5/">activity5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff on the climb/look/dive gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff, lower third on keyed overlay) plus +30 vblanks of hold on source frame 46 so the storm-cloud thought bubble is readable</td>
+        <td>rain-dance-then-lightning-strike (Johnny in costume performs a rain dance, the storm-cloud thought bubble triggers, lightning hits); visual + audible signoff on the gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff, lower third on keyed overlay) plus +30 vblanks of hold on source frame 46 so the storm-cloud thought bubble is readable. Earlier "climb/look/dive" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -228,7 +232,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity6/">activity6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop</td>
+        <td>reads-falls-asleep-coconut-bonk (Johnny sits under the palm reading, dozes off, and a coconut drops on his head); visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop</td>
       </tr>
 
 
@@ -242,7 +246,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity7/">activity7</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop</td>
+        <td>reads-book-upside-down (Johnny sits and reads a book — but the book is upside-down). Visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the reads-book-upside-down loop. The earlier "bathes / seagull steals clothes" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -256,7 +260,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity8/">activity8</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base</td>
+        <td>bathes-then-walks-behind-tree (Johnny takes a bath, then walks behind the palm tree to hide his nakedness); visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base</td>
       </tr>
 
 
@@ -270,7 +274,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity9/">activity9</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers</td>
+        <td>rain-dance-boat-naked (Johnny in costume rain-dances, a boat carrying a couple passes by, he drops the costume, and the embarrassed couple sails on); visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers</td>
       </tr>
 
 
@@ -284,7 +288,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity10/">activity10</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book</td>
+        <td>reads-seagull-steals-book (Johnny sits reading; a seagull swoops in and snatches the book); visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book</td>
       </tr>
 
 
@@ -298,7 +302,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity11/">activity11</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop</td>
+        <td>bird-steals-clothes (a bird swoops in and steals Johnny's clothes off the island); visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop</td>
       </tr>
 
 
@@ -312,7 +316,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./activity12/">activity12</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive</td>
+        <td>bird-on-head-clubs-self (a bird lands on Johnny's head and he clobbers his own head with a club trying to hit it). Visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route. The earlier "belly-flop dive" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -327,7 +331,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building1/">building1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route</td>
+        <td>sandcastle-slumps-stomp (Johnny tries to build a sandcastle, it slumps mid-build, and he stomps on it in frustration); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route</td>
       </tr>
 
 
@@ -341,7 +345,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building2/">building2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form</td>
+        <td>lilliputian-sandcastle-airport (Johnny builds a sandcastle, tiny lilliputians take it over and launch airplanes from it); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form</td>
       </tr>
 
 
@@ -355,7 +359,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building3/">building3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route</td>
+        <td>rolls-over-and-naps (Johnny lies down on the sand, rolls over, and takes a nap); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route</td>
       </tr>
 
 
@@ -369,7 +373,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building4/">building4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly</td>
+        <td>lilliputians-tie-up-sleeping-johnny (Gulliver-style: Johnny sleeps on the sand, tiny lilliputians tie him down with ropes); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly</td>
       </tr>
 
 
@@ -383,7 +387,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building5/">building5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route</td>
+        <td>builds-fire-sits-by-it (Johnny gathers driftwood, builds a small fire on the beach, and sits next to it). Visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; played cleanly on the normal high-tide/night validation route. The earlier "raft/mermaid repair" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -397,7 +401,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building6/">building6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; edge-sleep scene played cleanly on the normal high-tide/night validation route</td>
+        <td>lilliputians-tie-up-no-bird (Johnny sleeps on the sand and lilliputians tie him down — same Gulliver gag as BUILDING 4 but without the bird beat). Visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; played cleanly on the normal high-tide/night validation route. The earlier "edge sleep" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -411,7 +415,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./building7/">building7</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene</td>
+        <td>fire-grill-fish-eat (Johnny builds a fire, grills a fish on it, and eats the fish); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene</td>
       </tr>
 
 
@@ -426,7 +430,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing1/">fishing1</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>v0.3.6-ps1</code></td>
-        <td>reference scene; template for remaining</td>
+        <td>fishes-catches-starfish-throws-back (Johnny casts a line, hooks a starfish, and tosses it back into the water — the gag the on-screen caption literally calls out). Reference scene; template for remaining.</td>
       </tr>
 
 
@@ -440,7 +444,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing2/">fishing2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-04-23"><code>2026-04-23</code></time></td>
-        <td></td>
+        <td>fishes-pulls-up-titanic-life-preserver (Johnny casts a line and reels in a round life-preserver ring stenciled TITANIC). The earlier "a life raft drifts past" mapping was wrong (the object is hooked on the line, not a passing raft); on-screen caption mentions a boot, which appears to be a different fishing gag — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -454,7 +458,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing3/">fishing3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-01"><code>2026-05-01</code></time></td>
-        <td>visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline</td>
+        <td>octopus-steals-fish-walks-off (Johnny fishes, an octopus comes up on the line, snatches the fish that was on the hook, and walks off with it). Visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline. The earlier "octopus interlude" mapping had the octopus right but missed the fish-steal beat; on-screen caption ("crab snaps his nose") appears to be a different fishing gag — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -468,7 +472,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing4/">fishing4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-01"><code>2026-05-01</code></time></td>
-        <td>visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix</td>
+        <td>shark-pulls-johnny-speedboat (Johnny hooks a shark and gets pulled around the ocean by it like a water-skier behind a speedboat); visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix</td>
       </tr>
 
 
@@ -482,7 +486,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing5/">fishing5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-02"><code>2026-05-02</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed</td>
+        <td>shark-eats-and-spits-out (Johnny goes fishing, gets eaten by a shark, then spat back out onto the island); visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed</td>
       </tr>
 
 
@@ -496,7 +500,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing6/">fishing6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-01"><code>2026-05-01</code></time></td>
-        <td>visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue</td>
+        <td>fish-spits-water-thrown-back (Johnny reels in a fish; it squirts water in his face and he tosses it back); visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue</td>
       </tr>
 
 
@@ -510,7 +514,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing7/">fishing7</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed</td>
+        <td>fishes-right-side-catches-starfish-throws-back (Johnny fishes off the right side of the island, hooks a starfish, and throws it back); visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed</td>
       </tr>
 
 
@@ -524,7 +528,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./fishing8/">fishing8</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe</td>
+        <td>fishes-right-side-catches-fish (Johnny fishes off the right side of the island and reels in a fish); visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe</td>
       </tr>
 
 
@@ -539,7 +543,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny1/">johnny1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-02"><code>2026-05-02</code></time></td>
-        <td>visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init</td>
+        <td>the-end-scroll (the Day 11 finale: frog clock, sunset silhouette, plane overhead, Johnny parachutes down, and the "The End" title card); visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init</td>
       </tr>
 
 
@@ -553,7 +557,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny2/">johnny2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-02"><code>2026-05-02</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles</td>
+        <td>bottle-washes-up-sos-note (a bottle washes up on the shore; Johnny puts an SOS note into it and tosses it back); visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles</td>
       </tr>
 
 
@@ -567,7 +571,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny3/">johnny3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-02"><code>2026-05-02</code></time></td>
-        <td>visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required</td>
+        <td>writes-letter-to-suzy (Johnny writes a letter to Suzy and sends it off); visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required</td>
       </tr>
 
 
@@ -581,7 +585,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny4/">johnny4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin</td>
+        <td>own-sos-returns (Johnny's own SOS bottle washes back onto the shore); visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin</td>
       </tr>
 
 
@@ -595,7 +599,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny5/">johnny5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows</td>
+        <td>sends-sos-bottle (Johnny writes a fresh SOS and sends the bottle out); visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows</td>
       </tr>
 
 
@@ -609,7 +613,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./johnny6/">johnny6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted</td>
+        <td>office-desk-daydreams-island (Johnny is back at his office desk, daydreaming about his time on the island — the inverse-castaway gag); visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted</td>
       </tr>
 
 
@@ -624,7 +628,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./mary1/">mary1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required</td>
+        <td>date-with-mary-the-mermaid (Johnny goes on a date with Mary the mermaid at the shoreline); visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required</td>
       </tr>
 
 
@@ -638,7 +642,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./mary2/">mary2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed</td>
+        <td>mary-visits-fishing-mistaken-for-fish-boot (Mary swims up while Johnny is fishing; he mistakes her for a fish on the line, then ends up reeling in a boot); 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'</td>
       </tr>
 
 
@@ -652,7 +656,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./mary3/">mary3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 now preserves prefetch under clean pressure with an 8-VBlank guard, and the late dinner/thought beat holds on the readable frames</td>
+        <td>exchange-gifts-plan-date (Mary and Johnny exchange gifts at the shoreline and make plans to go on a date); visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames</td>
       </tr>
 
 
@@ -666,7 +670,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./mary4/">mary4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed</td>
+        <td>raft-work-hurts-mary (Johnny works on his raft to get home; Mary sees this and is heartbroken that he plans to leave); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed</td>
       </tr>
 
 
@@ -680,7 +684,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./mary5/">mary5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition</td>
+        <td>packs-raft-says-goodbye (Johnny finishes packing the raft and says goodbye to Mary before sailing off); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition</td>
       </tr>
 
 
@@ -695,7 +699,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./miscgag1/">miscgag1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
+        <td>heat-melts-johnny (Johnny gets so hot in the sun that he melts); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
       </tr>
 
 
@@ -709,7 +713,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./miscgag2/">miscgag2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
+        <td>bathe-shark-scare (Johnny goes down to take a bath in the surf and a shark turns up and scares him off); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
       </tr>
 
 
@@ -724,7 +728,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand1/">stand1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-03"><code>2026-05-03</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected</td>
+        <td>stands-at-edge (Johnny stands at the edge of the island, idle); visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected</td>
       </tr>
 
 
@@ -738,7 +742,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand2/">stand2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude</td>
+        <td>stands-adjusts-pants (Johnny stands and hitches up his pants — an idle standing-pose beat); visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude</td>
       </tr>
 
 
@@ -752,7 +756,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand3/">stand3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly</td>
+        <td>stands-edge-adjusts-hat (Johnny stands at the edge of the island and adjusts his hat — an idle standing-pose beat); visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly</td>
       </tr>
 
 
@@ -766,7 +770,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand4/">stand4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route</td>
+        <td>stands-front-adjusts-hat (Johnny stands at the front of the island and adjusts his hat — front-position variant of the standing-pose hat-adjust beat); visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route</td>
       </tr>
 
 
@@ -780,7 +784,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand5/">stand5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay</td>
+        <td>stands-front-looks-out (Johnny stands at the front of the island and looks out over the ocean); visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay</td>
       </tr>
 
 
@@ -794,7 +798,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand6/">stand6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path</td>
+        <td>stands-looks-ocean-scratches-head (Johnny looks out at the ocean and scratches his head — a confused-looking idle pose); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path</td>
       </tr>
 
 
@@ -808,7 +812,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand7/">stand7</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path</td>
+        <td>stands-looks-right-lifts-hat (Johnny looks to the right and lifts his hat); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path</td>
       </tr>
 
 
@@ -822,7 +826,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand8/">stand8</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack</td>
+        <td>stands-right-looks-around-scratches-head (Johnny stands on the right side of the island, looks around, and scratches his head); visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack</td>
       </tr>
 
 
@@ -836,7 +840,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand9/">stand9</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced</td>
+        <td>stands-by-tree-looks-adjusts-pants (Johnny stands by the palm tree, looks around, and adjusts his pants); visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced</td>
       </tr>
 
 
@@ -850,7 +854,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand10/">stand10</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.</td>
+        <td>stands-looks-at-raft-and-around (Johnny looks at his raft and then looks around); visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -864,7 +868,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand11/">stand11</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.</td>
+        <td>stands-left-looks-around (Johnny stands on the left side of the island and looks around); visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -878,7 +882,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand12/">stand12</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.</td>
+        <td>stands-looks-forward-adjusts-hat (Johnny looks forward and adjusts his hat); visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -892,7 +896,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand15/">stand15</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick</td>
+        <td>stands-spyglass-looks-around (Johnny stands and looks around with a spyglass); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick</td>
       </tr>
 
 
@@ -906,7 +910,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./stand16/">stand16</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick</td>
+        <td>stands-spyglass-right (Johnny stands on the right side of the island and looks around with a spyglass); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick</td>
       </tr>
 
 
@@ -921,7 +925,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./suzy1/">suzy1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path</td>
+        <td>suzy-finds-letter-from-johnny (Suzy back home finds a letter that Johnny sent her from the island); visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path</td>
       </tr>
 
 
@@ -935,7 +939,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./suzy2/">suzy2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples</td>
+        <td>raft-arrives-meets-suzy (Johnny drifts in on his raft and is reunited with Suzy); visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples</td>
       </tr>
 
 
@@ -950,7 +954,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor1/">visitor1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival</td>
+        <td>misses-speedboat-going-by (Johnny looks around the island and completely misses a speedboat driving by); visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival</td>
       </tr>
 
 
@@ -964,7 +968,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor3/">visitor3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue</td>
+        <td>waves-small-boat-actually-huge (Johnny waves down what he thinks is a small boat in the distance, only to discover it's actually a huge boat much closer than it looked); 'visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'</td>
       </tr>
 
 
@@ -978,7 +982,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor4/">visitor4</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label</td>
+        <td>shakes-tree-coconut-rolls-into-ocean (Johnny shakes the palm tree; a coconut falls and rolls right off the island into the ocean); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label</td>
       </tr>
 
 
@@ -992,7 +996,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor5/">visitor5</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration</td>
+        <td>throws-coconut-at-plane-it-crashes (Johnny sees a plane overhead, throws a coconut at it, and the plane crashes); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration</td>
       </tr>
 
 
@@ -1006,7 +1010,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor6/">visitor6</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels</td>
+        <td>shakes-tree-cracks-coconut-eats (Johnny shakes the palm tree, drops a coconut, cracks it open against the trunk, and eats it); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels</td>
       </tr>
 
 
@@ -1020,7 +1024,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./visitor7/">visitor7</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration</td>
+        <td>cracks-coconut-eats-no-shake (Johnny already has a coconut; cracks it on the palm trunk and eats — no-shake variant of VISITOR 6). Visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration. Pack content (no-shake coconut-eat) confirmed from direct on-PS1 observation while capturing the chapter-select thumbnail.</td>
       </tr>
 
 
@@ -1035,7 +1039,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./walkstuf1/">walkstuf1</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-05"><code>2026-05-05</code></time></td>
-        <td>visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him</td>
+        <td>yacht-party-drunk-pass-out (Johnny parties with a yacht full of people, returns to the island drunk, and passes out); visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him</td>
       </tr>
 
 
@@ -1049,7 +1053,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./walkstuf2/">walkstuf2</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route</td>
+        <td>works-on-raft (Johnny works on his raft); visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route</td>
       </tr>
 
 
@@ -1063,7 +1067,7 @@ host-vs-PS1 reference frames where applicable.</p>
         <td class="scene-name"><a href="./walkstuf3/">walkstuf3</a></td>
         <td class="scene-status ok">validated</td>
         <td><time datetime="2026-05-04"><code>2026-05-04</code></time></td>
-        <td>visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed</td>
+        <td>jogs-around-island (Johnny jogs laps around the island — the exercise loop); visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed</td>
       </tr>
 
   </tbody>
@@ -1140,7 +1144,7 @@ start at the <a href="../source/">source library</a> and
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../releases/">v0.8.3-ps1</a>)
+          (<a href="../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

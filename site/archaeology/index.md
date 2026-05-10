@@ -258,7 +258,7 @@ This is the *hybrid pipeline*. Internally it's called [`fgpilot`]({{ '/docs/glos
 because that's what the directory was named when it was a pilot
 experiment that didn't yet work. The name stuck. The project is
 gradually migrating it to *PS1 scene playback* in operator-facing
-docs. The internal name is in `foreground_pilot.c` and is going to
+docs. The internal name is in [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) and is going to
 stay there until someone has time to rename two thousand lines of C.
 
 The first scene that worked, end to end, under this method was
@@ -286,12 +286,12 @@ honest about the wrong question.
 
 The disc plays. That's the headline.
 
-`{{ site.release.tag }}` boots on DuckStation, loads from a ~76 MB CD
+`{{ site.release.tag }}` boots on DuckStation, loads from a ~79 MB CD
 image, plays every scene the original game routed pixel-perfect with
 synced SFX, and idles cleanly through long randomized sessions. The
 PS1 executable is around 208 KiB after the legacy ADS/TTM/FG1 runtime
 paths were removed; the rest of the disc is FG2/FGP3 foreground pack
-payload, the title raw, palette tables, the ocean ambience VAG, and
+payload, the title raw, palette tables, the [ocean ambience]({{ '/docs/glossary/#ocean-ambience' | relative_url }}) VAG, and
 the resource map. The full FG2 corpus — 126 packs covering every
 scene's high-tide and low-tide variants — is routed onto the CD at
 release; what gets loaded at runtime is whichever the screensaver
@@ -317,14 +317,14 @@ that grades each ADS-tag → caption mapping. Some are high confidence
 ("Johnny is fishing"). Some are guesses. The guesses are marked.
 
 **The pause menu.** Press Start during any scene and you get an
-overlay menu reachable through eleven sub-screens — Scene Set,
-Freeplay Options, Controls, World Options, Holidays, Set Island
-Position, Accessibility, Sound Test, System, Set Time / Date, and Set
-RNG Seed. It uses a custom embedded 8x8 ASCII font because PSn00bSDK's
+overlay menu reachable through twelve sub-screens — Scene Set, Scene
+Explorer (the chapter-select grid), Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound Test,
+System, Set Time / Date, and Set RNG Seed. It uses a custom embedded 8x8 ASCII font because PSn00bSDK's
 `FntFlush` is empirically broken in the scene-runtime context: the
 primitives accumulate but no pixels appear. POLY_F4 quads handle the
 dim and the panel chrome. User settings persist to a memory card save
-at `bu00:` through `memcard.c`; the persisted set covers sound mute,
+at `bu00:` through [`memcard.c`]({{ site.github_url }}/blob/main/src/memcard.c); the persisted set covers sound mute,
 captions, holiday mode, ocean ambience, and the rest of the
 pause-menu toggles.
 
@@ -342,7 +342,7 @@ attack-rate orientation. Each of those was its own afternoon.
 `JCPERF` / `JCPERF2` lines on the TTY. The level is set by
 `ps1PerfSetLevel(OFF / SUMMARY / DETAIL / DEBUG)`. Per-frame state
 that used to require visual debugging now also has a text breadcrumb
-trail. The visual telemetry overlay (5 panels) is still the right
+trail. The [visual telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) (5 panels) is still the right
 tool for per-frame state; the text logs are for setup and teardown.
 
 What's left is performance polish on a small set of high-leverage

@@ -1,12 +1,34 @@
 ---
 layout: scene
-title: BUILDING 1 — Sand castle (crumbles)
+title: BUILDING 1 — Sandcastle slumps, Johnny stomps it
 ads: BUILDING
 tag: 1
 slug: building1
 status: validated
-description: "BUILDING.ADS scene 1: Sand castle (crumbles). Validated on PS1 after generic multi-view capture."
+description: "BUILDING.ADS scene 1: Johnny tries to build a sandcastle; it slumps mid-build, and he stomps on it. Validated 2026-05-08."
+image: /assets/img/building1-ps1-sandcastle.png
+image_alt: "BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build, the moment before the stomp."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/building1-ps1-sandcastle.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build." />
+  <figcaption>
+    BUILDING 1 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The slump beat: Johnny is next to his half-built sandcastle on
+    the left side of the island, the moment before he stomps it
+    flat in frustration. (Compare
+    <a href="{{ '/scenes/building2/' | relative_url }}">BUILDING 2</a>,
+    where the lilliputians have repurposed the sandcastle into an
+    airport.)
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
@@ -18,11 +40,9 @@ high-tide/night validation route.
 - ADS dispatch: <code>BUILDING.ADS scene 1</code>
 - Slug: <code>building1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny walks to the water's edge and builds a sand castle; it crumbles.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny tries to build a sandcastle on the beach. It slumps mid-build, and he stomps on it in frustration. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior caption-mapping guess ("sand castle crumbles").
 
 ### How this scene gets validated
 

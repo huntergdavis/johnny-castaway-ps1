@@ -1,12 +1,33 @@
 ---
 layout: scene
-title: BUILDING 4 — Sand castle vs. lilliputians
+title: BUILDING 4 — Lilliputians tie Johnny down while he sleeps
 ads: BUILDING
 tag: 4
 slug: building4
 status: validated
-description: "BUILDING.ADS scene 4: Sand castle vs. lilliputians. Validated on PS1 after generic multi-view capture and terminal cleanup."
+description: "BUILDING.ADS scene 4: Johnny sleeps on the sand and lilliputians tie him down with ropes (Gulliver-style). Validated 2026-05-08."
+image: /assets/img/building4-ps1-lilliputians.png
+image_alt: "BUILDING 4 on PS1 at night: Johnny lies under the palm tree while a crowd of lilliputian figures swarms onto the island carrying their gear, mid-Gulliver-tie-down."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/building4-ps1-lilliputians.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="BUILDING 4 on PS1 at night: Johnny lies under the palm tree while a crowd of lilliputian figures swarms onto the island carrying their gear." />
+  <figcaption>
+    BUILDING 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The lilliputians are mid-arrival; Johnny is asleep under the palm
+    tree about to be tied down Gulliver-style. Outside the gag, this is
+    the canonical clean-rect-heavy variant on the
+    <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">post-validation perf retrospective</a>'s
+    drop-prefetch exception list.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
@@ -18,11 +39,9 @@ frame so the final Johnny/bird foreground row restores cleanly.
 - ADS dispatch: <code>BUILDING.ADS scene 4</code>
 - Slug: <code>building4</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny builds a castle; tiny figures attack it. He retreats up the palm.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny sleeps on the sand and tiny lilliputians swarm in and tie him down with ropes — straight Gulliver. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "sand castle vs. lilliputians" caption-mapping guess had the lilliputians right but the action wrong.
 
 ### How this scene gets validated
 

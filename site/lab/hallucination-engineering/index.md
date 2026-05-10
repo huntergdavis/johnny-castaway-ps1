@@ -36,9 +36,14 @@ to detect.
 The first rule is simple: the agent has to read the files.
 
 Not "you know C". Not "this is probably a Jekyll site". The actual files.
-`src/pause_menu.c`. `src/jc_reborn.c`. `CMakeLists.txt`. `holidays.yml`.
-The generated pages under `site/docs/holidays/calendar/`. The build script.
-The release script. If the task touches a subsystem, the agent reads the
+[`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c).
+[`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c).
+[`CMakeLists.txt`]({{ site.github_url }}/blob/main/CMakeLists.txt).
+[`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml).
+The generated pages under [`site/docs/holidays/calendar/`]({{ site.github_url }}/tree/main/site/docs/holidays/calendar/).
+[The build script]({{ site.github_url }}/blob/main/scripts/build-ps1.sh).
+[The release script]({{ site.github_url }}/blob/main/scripts/release.sh).
+If the task touches a subsystem, the agent reads the
 subsystem before it writes.
 
 That does two things. It gives the model real names and real constraints. It
@@ -108,7 +113,7 @@ The prompts that work here are ugly in the way good engineering documents are
 ugly:
 
 - "Only edit these files."
-- "Do not touch `src/holidays.c`."
+- "Do not touch [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c)."
 - "Index 0 is transparent."
 - "Build must pass."
 - "If you cannot find the function, say that."

@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Build infrastructure & dev environment</h1>
       <p class="subtitle">How a one-person fan port keeps a reproducible cross-compile pipeline together — Docker, CMake, mkpsxiso, and a release script that tags itself.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1980 words
+          ~8 min read · 2113 words
         </p>
 
       <hr class="rule" />
@@ -254,18 +254,32 @@ docker build <span class="nt">-f</span> config/ps1/Dockerfile.ps1 <span class="s
     <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
     <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
 
-<span class="c"># 3. Build the PS1 executable + CD image</span>
+<span class="c"># 3. Build the PS1 executable</span>
 ./scripts/build-ps1.sh
 
-<span class="c"># 4. Boot it</span>
+<span class="c"># 4. Bundle the executable + assets into a CD image</span>
+./scripts/make-cd-image.sh
+
+<span class="c"># 5. Boot it</span>
 <span class="c">#    Open DuckStation, File → Start File…, point at jcreborn.cue (NOT .bin).</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> is the wrapper. It runs three Docker invocations in
-sequence: a clean of the previous build directory, a CMake configure plus
-<code class="language-plaintext highlighter-rouge">make</code>, and <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. The output lands
-in the repo root as <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> (the CD image) and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> (the
-cue sheet that tells DuckStation where the data track lives).</p>
+<p>The two-step split matters because the second step is fast and can be
+re-run after asset edits without rebuilding the executable. The
+all-in-one wrapper is <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code>, which calls
+both steps and then launches DuckStation.</p>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> produces <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.exe</code> and
+<code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.elf</code>. It runs two Docker invocations in sequence:
+a clean of the previous build directory, then a CMake configure plus
+<code class="language-plaintext highlighter-rouge">make jcreborn</code>. CMake resolves the PSn00bSDK toolchain via the
+<code class="language-plaintext highlighter-rouge">PSN00BSDK</code> environment variable that the Dockerfile sets to
+<code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/PSn00bSDK-0.24-Linux</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code> runs a third Docker invocation: <code class="language-plaintext highlighter-rouge">mkpsxiso
+-y /project/config/ps1/cd_layout.xml</code>. The output lands in the repo
+root as <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> (the CD image) and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> (the cue
+sheet that tells DuckStation where the data track lives).</p>
 
 <p>The CMake configuration lives in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> at the repo root. The
 relevant shape:</p>
@@ -284,8 +298,11 @@ relevant shape:</p>
     src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
     src/foreground_pilot.c src/ps1_perf.c src/island.c
     src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
+    src/ps1_pad_script.c
     src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
     src/spi.c src/memcard.c
+    src/scene_picker.c src/scene_freeplay.c
+    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
     src/holidays.c src/holidays_table.c
     src/ps1_stubs.c<span class="p">)</span>
 
@@ -371,7 +388,7 @@ the time of writing. The ones that matter for daily build work:</p>
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></td>
-      <td>Clean rebuild of executable + CD image. The “make me a fresh disc” button.</td>
+      <td>Clean rebuild of the PS1 executable (<code class="language-plaintext highlighter-rouge">jcreborn.elf</code> + <code class="language-plaintext highlighter-rouge">jcreborn.exe</code>). Does not produce the CD image — <code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is the next step.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></td>
@@ -442,7 +459,7 @@ this script updates the release tag in the Jekyll config, rebuilds the
 checked-in <code class="language-plaintext highlighter-rouge">www/</code> archive, and verifies that the generated site still uses
 relative links for project-page deployment.</p>
 
-<p>The current release is <strong>v0.8.3-ps1</strong>, with
+<p>The current release is <strong>v0.8.5-ps1</strong>, with
 63 of 63
 scenes validated under the human-signoff bar. See the
 <a href="../../scenes/">scene ledger</a> for which scenes those are.</p>
@@ -540,8 +557,20 @@ decides what’s worth automating.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.regtest"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.regtest</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/release.sh"><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/make-cd-image.sh"><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/rebuild-and-let-run.sh"><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></a>
+— the day-to-day build pipeline (executable, CD image, all-in-one
+wrapper).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-host.sh"><code class="language-plaintext highlighter-rouge">scripts/build-host.sh</code></a>
+— separate SDL2 host capture binary.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-docker-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-docker-image.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-regtest-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-regtest-image.sh</code></a>
+— the two <code class="language-plaintext highlighter-rouge">docker build</code> wrappers (dev image + regtest image).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+— the headless DuckStation harness runner.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/release.sh"><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></a>
+— full release flow (bump VERSION, tag, push, attach assets).</li>
 </ul>
 
   </div>
@@ -562,7 +591,7 @@ decides what’s worth automating.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

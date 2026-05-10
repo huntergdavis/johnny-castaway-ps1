@@ -1,12 +1,23 @@
 ---
 layout: scene
-title: VISITOR 3 — Yacht couple, photos
+title: VISITOR 3 — Waves down what looks like a small boat, but it's huge
 ads: VISITOR
 tag: 3
 slug: visitor3
 status: validated
-description: "VISITOR.ADS scene 3: Yacht couple, photos. Validated on PS1 after VISITOR3-specific red-ship and splash synthesis."
+description: "VISITOR.ADS scene 3: Johnny waves down what he thinks is a small boat, but the perspective gag reveals it's actually a huge boat. Validated 2026-05-08."
+image: /assets/img/visitor3-ps1-perspective.png
+image_alt: "VISITOR 3 on PS1: Johnny on the island waving down a passing boat that turns out to be much larger than it looked."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/visitor3-ps1-perspective.png' | relative_url }}"
+       width="961" height="720" loading="lazy" decoding="async"
+       alt="VISITOR 3 running on PS1: Johnny on the island waving down a passing boat. The perspective gag reveals the boat is much larger than it first appeared." />
+  <figcaption>VISITOR 3 on PS1 hardware. The perspective gag — Johnny waves what he thinks is a small nearby boat; it turns out to be a huge one farther out. The wide multi-view stitch this scene needs to render is also why the two perf-battle-card rows for VISITOR 3 are the only red entries on /perf/ at the current release.</figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
@@ -19,12 +30,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-A large red ship/yacht crashes through the scene while Johnny reacts in the
-water. The original host renderer reveals the ship as moving slices, but the
-visible scene expects those slices to accumulate into a full hull before the
-cleanup frames remove it.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny spots a boat in the distance and starts waving it down, thinking it's a small one nearby. The perspective gag reveals it's actually a huge boat much further out — and the size flip plays for the laugh. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "yacht couple, photos" caption-mapping guess was wrong (no couple or photo-taking in the on-PS1 pack).
 
 ## Validation notes
 

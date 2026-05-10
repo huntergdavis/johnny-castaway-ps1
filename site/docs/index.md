@@ -24,7 +24,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/captions/' | relative_url }}">Closed captions</a>
-    <p>How the caption corpus, the ADS-tag map, and the on-screen text band fit together. Includes the 30 HIGH / 21 MED / 12 LOW confidence breakdown from the 2026-04-26 audit.</p>
+    <p>How the caption corpus, the ADS-tag map, and the on-screen text band fit together. Includes the 30 HIGH / 21 MED / 12 LOW confidence breakdown from the 2026-04-26 audit and the v0.8.4-ps1 runtime corrections section noting which audit ratings the on-PS1 chapter-select walk overturned.</p>
   </li>
   <li>
     <a href="{{ '/docs/holidays/' | relative_url }}">Holidays</a>
@@ -32,7 +32,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/pause-menu/' | relative_url }}">Pause menu</a>
-    <p>State machine, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), Freeplay entry/exit, and the shared font atlas used by captions.</p>
+    <p>State machine, twelve sub-screens (Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), Freeplay entry/exit, and the shared font atlas used by captions.</p>
   </li>
   <li>
     <a href="{{ '/docs/freeplay/' | relative_url }}">Freeplay mode</a>
@@ -68,7 +68,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/audio/' | relative_url }}">Audio</a>
-    <p>SPU layout, VAG sample bank, the round-robin voice allocator, the captured <code>0xC051 PLAY_SAMPLE</code> events, and the ocean-ambience loop on its dedicated voice.</p>
+    <p>SPU layout, VAG sample bank, the round-robin voice allocator, the captured <code>0xC051 PLAY_SAMPLE</code> events, and the <a href="{{ '/docs/glossary/#ocean-ambience' | relative_url }}">ocean-ambience</a> loop on its dedicated voice.</p>
   </li>
   <li>
     <a href="{{ '/docs/formats/' | relative_url }}">File formats</a>

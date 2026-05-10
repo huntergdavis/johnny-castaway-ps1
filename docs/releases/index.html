@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -107,7 +107,7 @@
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
 
-<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong> with
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code></strong> with
 <strong>63 / 63</strong> scenes signed off under the
 <a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
@@ -116,7 +116,9 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads</a></li>
+      <li><a href="#v085-ps1--full-126-row-headless-performance-matrix" id="markdown-toc-v085-ps1--full-126-row-headless-performance-matrix"><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> — Full 126-row headless performance matrix</a></li>
+      <li><a href="#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes" id="markdown-toc-v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes"><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> — Custom chapter-select thumbnails for all 63 scenes</a></li>
+      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
@@ -139,12 +141,86 @@
 
 <h2 id="latest">Latest</h2>
 
-<h3 id="v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads</h3>
+<h3 id="v085-ps1--full-126-row-headless-performance-matrix"><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> — Full 126-row headless performance matrix</h3>
+<p><time datetime="2026-05-09"><em>2026-05-09</em></time></p>
+
+<p>A performance/methodology point release after <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>. It keeps the
+custom Scene Explorer thumbnails and scene-page reconciliation from the
+chapter-select grind, then promotes the current headless matrix as the
+public baseline.</p>
+
+<ul>
+  <li><strong>All 126 high/low rows are timing-bearing.</strong> The matrix now has active-loop
+timing for every routed scene/tide variant: 63 scenes x 2 tide rows.</li>
+  <li><strong>Public rollup is effectively at native speed.</strong> The public-capped average
+is <code class="language-plaintext highlighter-rouge">+0.3459%</code> over target / <code class="language-plaintext highlighter-rouge">99.6621%</code> target speed; the raw signed
+optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4226%</code> / <code class="language-plaintext highlighter-rouge">100.4459%</code>.</li>
+  <li><strong>The methodology has removed about 17.05 over-target points.</strong> Since the
+compact full-matrix baseline, the accepted promotions add about <code class="language-plaintext highlighter-rouge">12.56</code>
+target-speed points while keeping the visual + audible scene bar intact.</li>
+  <li><strong>The missing-scene confusion is closed.</strong> MARY1/2/3 and SUZY1/2 are
+measured and green; <code class="language-plaintext highlighter-rouge">suzy3</code> is not a standalone Johnny Castaway scene route.</li>
+  <li><strong>Latest unpromoted probes are recorded, not hidden.</strong> The recent WALKSTUF1
+cleanup-gap/core/edge experiments are logged as misses because their hidden
+refill regressions outweighed the visible timing wins.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.5/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.5-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes"><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> — Custom chapter-select thumbnails for all 63 scenes</h3>
+<p><time datetime="2026-05-08"><em>2026-05-08</em></time></p>
+
+<p>A content-and-UX point release. The in-game Scene Explorer now ships a
+custom on-PS1-captured thumbnail for every one of the 63 scenes, and the
+scene-page metadata across the website is reconciled against what the
+discs actually play.</p>
+
+<ul>
+  <li><strong>Every Scene Explorer slot has a custom thumbnail.</strong> Each pack was
+booted under DuckStation, played to a representative frame, captured
+at native resolution, and encoded as a 320×240 RGB555 SCR. No scene
+falls back to the auto-generated frame.</li>
+  <li><strong>Scene titles and bodies match the on-PS1 packs.</strong> Many of the prior
+caption-mapping audit guesses were wrong once watched on hardware. Per-
+scene commits lift the “(Guess.)” hedging on every page where it
+appeared.</li>
+  <li><strong>Several caption-to-scene mismaps caught.</strong> “He catches a boot” is
+MARY 2, not FISHING 2; the octopus-steals-fish gag is FISHING 3, not
+the audit’s “crab snaps his nose”; coconut-plane-hit is VISITOR 5, not
+VISITOR 4; jogs-around-island is WALKSTUF 3, not WALKSTUF 1.</li>
+  <li><strong>One missing-manifest bug fixed mid-loop.</strong> <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>
+only listed 42 of 63 SCRs; the other 21 were on disk but never made it
+onto the CD. Manifest now lists all 63.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">scripts/apply-scene-correction.py</code> is the new in-loop tool.</strong> Single
+command updates all five sources of truth per scene (page index.md,
+scenes.yml notes, scene-status.md Notes, thumbnail SCR, progress
+tracker) in one pass, with idempotent failure mode so a re-run can’t
+silently clobber a prior fix.</li>
+</ul>
+
+<p>No perf code or pack content changed; the 120 timing-bearing rows on
+<a href="../perf/">/perf/</a> average the same <code class="language-plaintext highlighter-rouge">+0.5576%</code> public
+over target / <code class="language-plaintext highlighter-rouge">99.4669%</code> public target speed as v0.8.3-ps1. Scene
+validation scope is unchanged: 63 / 63 remain signed off.</p>
+
+<p>The retrospective on the loop is at
+<a href="../lab/chapter-select-grind/">/lab/chapter-select-grind/</a>.</p>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.4/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.4-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</h3>
 <p><time datetime="2026-05-08"><em>2026-05-08</em></time></p>
 
 <p>This point release promotes the WALKSTUF1 compact foreground pack pass and
-records the later VISITOR3 motion-copy payload follow-up as the current
-headless performance baseline.</p>
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.</p>
 
 <ul>
   <li><strong>WALKSTUF1 gets compact FGP3/v4 packs.</strong> Both tides move from PAL4/FGP2 to
@@ -155,29 +231,13 @@ bucket.</li>
 1491/1426</code>; low improves <code class="language-plaintext highlighter-rouge">1604/1407 -&gt; 1489/1427</code>.</li>
   <li><strong>Visible CD pressure falls.</strong> High blocking drops <code class="language-plaintext highlighter-rouge">275 -&gt; 85</code>; low blocking
 drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; loop reads drop from <code class="language-plaintext highlighter-rouge">134/132</code> to <code class="language-plaintext highlighter-rouge">69/69</code>.</li>
-  <li><strong>Battle card is now public-capped at native speed.</strong> After the follow-up
-MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual
-passes through v248, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3558%</code> public
-over target / <code class="language-plaintext highlighter-rouge">99.6529%</code> public target speed; the raw signed CSV is
-<code class="language-plaintext highlighter-rouge">-0.4126%</code> / <code class="language-plaintext highlighter-rouge">100.4367%</code> for
-optimization work.</li>
-  <li><strong>VISITOR3 motion-copy payloads are promoted.</strong> Frames <code class="language-plaintext highlighter-rouge">119..123</code> in both
-VISITOR3 tides, high-tide frame <code class="language-plaintext highlighter-rouge">115</code>, shared frames <code class="language-plaintext highlighter-rouge">118</code>/<code class="language-plaintext highlighter-rouge">124</code>, and
-high-only frame <code class="language-plaintext highlighter-rouge">117</code>, high-only re-anchored frames <code class="language-plaintext highlighter-rouge">127</code>/<code class="language-plaintext highlighter-rouge">126</code>/<code class="language-plaintext highlighter-rouge">125</code>, and
-the high-only <code class="language-plaintext highlighter-rouge">320 KiB</code> setup-prime cap, the guarded low <code class="language-plaintext highlighter-rouge">150..174</code>
-second setup segment, the low frame-125/frame-126 resident re-anchor, and
-the low frame-118/frame-127 resident copies, the high frame-127/frame-130
-resident-copy compaction, plus the low frame-114/frame-117 no-op residual
-compaction now
-move already-composited
-background rows or CD residency out of the active loop;
-the v204/v205 setup segments keep low sectors <code class="language-plaintext highlighter-rouge">281..305</code> and high sectors
-<code class="language-plaintext highlighter-rouge">277..293</code> resident before the active loop. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt;
-1075/1037</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1086/1035</code>, blocking drops
-<code class="language-plaintext highlighter-rouge">150/170 -&gt; 59/93</code>, and the packs
-keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
+  <li><strong>Battle card is now public-capped at native speed.</strong> The 120 timing-bearing
+rows average <code class="language-plaintext highlighter-rouge">+0.5576%</code> public over target / <code class="language-plaintext highlighter-rouge">99.4669%</code> public target speed;
+the raw signed CSV remains <code class="language-plaintext highlighter-rouge">-0.2497%</code> / <code class="language-plaintext highlighter-rouge">100.2899%</code> for optimization work.</li>
+  <li><strong>VISITOR3 threshold probing is closed for this baseline.</strong> Lowering the
+fallthrough guard from <code class="language-plaintext highlighter-rouge">6</code> to <code class="language-plaintext highlighter-rouge">5</code> VBlanks stayed exact-flat, so the runtime
+keeps the accepted guard and moves future VISITOR3 work back to generated
+scheduler/data-shape lanes.</li>
 </ul>
 
 <p>The post-validation perf retrospective at
@@ -407,7 +467,7 @@ is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">hun
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./">v0.8.3-ps1</a>)
+          (<a href="./">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

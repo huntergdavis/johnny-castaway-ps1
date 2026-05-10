@@ -44,7 +44,7 @@ The captions module shares VRAM with the [pause menu]({{ '/docs/pause-menu/' | r
 on first use it calls `pauseMenuEnsureFontUploaded()` so the captions don't
 need to wait for the user to open the pause menu before subtitles can render.
 The font lives at VRAM `(640, 256)` with a CLUT at `(640, 360)` — those
-constants are exported from `pause_menu.h`.
+constants are exported from [`pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu.h).
 
 When captions are disabled or no scene is active, `captionsRender()` returns
 immediately. It is zero-cost when off.
@@ -119,6 +119,74 @@ The four entries currently flagged as `NO_MATCH` candidates — `BUILDING 6`,
 `VISITOR 5`, `WALKSTUF 2`, `WALKSTUF 3` — got assignments anyway, on the
 "least bad" principle. They're the most likely sites for future blanking
 when runtime evidence makes a better mapping possible.
+
+## Post-validation runtime corrections (v0.8.4-ps1)
+
+The audit was a structural fix — the off-by-one cascade is gone, every
+ADS+tag has *some* mapping, and the corpus + render path work as
+designed. What the audit could not resolve from text alone was whether
+the caption it picked actually described the gag the pack plays.
+
+That second-order check arrived in `v0.8.4-ps1`, when the
+[chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+walked all 63 packs on PS1 hardware and reconciled every scene-page
+title and body against the disc. The runtime evidence overturned a
+substantial fraction of the audit's confidence ratings:
+
+- **Four flat mismaps named.** `FISHING 2`'s pack reels in a Titanic
+  life preserver, not a boot — the boot is at `MARY 2`. `FISHING 3`
+  is the octopus-steals-fish beat, not a crab snapping a nose.
+  `VISITOR 4` is just a coconut rolling into the ocean — the
+  coconut-plane-hit is `VISITOR 5`. `WALKSTUF 1` is a yacht-party-
+  and-pass-out beat — the jog is `WALKSTUF 3`.
+- **Two HIGH-confidence FISHING entries were exact text-pack
+  mismatches.** `FISHING 2` and `FISHING 3` were both rated HIGH
+  because the audit anchored on caught-object keywords ("boot",
+  "crab"). The keyword *was* in the corpus; the pack just doesn't
+  play it. The structural strength of HIGH (unambiguous keyword
+  match) didn't survive contact with the runtime.
+- **Multiple ACTIVITY / BUILDING / VISITOR MED entries flipped.**
+  ACTIVITY 5 (rain dance, not climb/look/dive), ACTIVITY 7 (book
+  upside-down, not bathes/seagull), ACTIVITY 11 (bird-steals-
+  clothes, not rain dance), ACTIVITY 12 (bird-on-head, not belly-
+  flop), BUILDING 2 (lilliputian airport, not boot-roast), BUILDING 5
+  (builds fire, not raft/mermaid), BUILDING 7 (grills fish, not
+  raft-build), VISITOR 1 (misses speedboat, not lilliputian arrival),
+  VISITOR 3 (perspective gag, not yacht/photos).
+- **One audit `NO_MATCH` candidate turned out to be a clear gag.**
+  `VISITOR 5` was on the "future blanking" list above; on PS1 it's
+  the unambiguous coconut-plane-hit beat that's been miscredited to
+  `VISITOR 4` since the audit shipped.
+- **JOHNNY 3 / 4 were swapped.** The audit had `JOHNNY 3` as "his
+  own SOS returns" and `JOHNNY 4` as "writes a fresh SOS". On PS1
+  it's the other way around: JOHNNY 3 writes the letter to Suzy, and
+  the SOS returns at JOHNNY 4.
+- **STAND idles read better than the audit could prove.** All 14
+  STAND entries got concrete two-axis labels (position × pose:
+  edge-of-island / front / right / left × adjusts-pants / adjusts-
+  hat / looks-around / scratches-head / spyglass) once watched on
+  hardware. The 8 LOW-rated rows are now distinguishable from each
+  other in a way the corpus alone could not support.
+
+The corpus and on-screen captions themselves did not change in
+`v0.8.4-ps1`. What changed is the website's *description* of which
+caption belongs to which scene — the per-scene `index.md` titles +
+bodies, the [`scenes.yml`]({{ site.github_url }}/blob/main/site/_data/scenes.yml) notes, the [`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) Notes column,
+and the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})'s display strings (regenerated from
+those sources). The `captionSceneMap[]` array in
+[`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+was not updated as part of `v0.8.4-ps1`; the runtime continues to
+play whatever caption the audit's mapping picked. Repointing the
+`captionSceneMap[]` rows where the caption text contradicts the
+runtime gag (notably `FISHING 2` → MARY's boot, `FISHING 3` → the
+crab caption belongs elsewhere or stays as `NO_MATCH`) is open work.
+
+The `2026-04-26` audit's confidence ratings should now be read as
+"how well the caption corpus maps to the audit's notion of what each
+scene should be," not "how well the caption text describes what the
+scene actually plays." The audit was a necessary structural fix; the
+chapter-select grind was the runtime cross-check the audit had
+explicitly anticipated.
 
 ## How to add a caption
 

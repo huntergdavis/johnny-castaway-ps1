@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Story-loop walks</h1>
       <p class="subtitle">How Johnny stops teleporting between scenes — the walk subsystem, the spot graph, and the runtime invariants the kernel has to preserve.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1263 words
+          ~5 min read · 1329 words
         </p>
 
       <hr class="rule" />
@@ -162,7 +162,7 @@ and gained three runtime guards in subsequent releases (see
 
 <h2 id="modules">Modules</h2>
 
-<p>The walk subsystem lives in four files under <code class="language-plaintext highlighter-rouge">src/</code>:</p>
+<p>The walk subsystem lives in five modules under <code class="language-plaintext highlighter-rouge">src/</code>:</p>
 
 <table>
   <thead>
@@ -187,10 +187,16 @@ and gained three runtime guards in subsequent releases (see
       <td>The original walk state machine. Consumes <code class="language-plaintext highlighter-rouge">walk_data.h</code>; produces a per-tick <code class="language-plaintext highlighter-rouge">(x, y, sprite_idx, heading)</code>.</td>
     </tr>
     <tr>
+      <td><code class="language-plaintext highlighter-rouge">calcpath.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
+      <td style="text-align: right">130 / 25</td>
+      <td>upstream</td>
+      <td>The <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> BFS-style path-finder over the spot graph. Walk_pilot calls it when no direct (from, to) edge exists in <code class="language-plaintext highlighter-rouge">walk_data.h</code>.</td>
+    </tr>
+    <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_pilot.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
       <td style="text-align: right">354 / 84</td>
       <td>this port</td>
-      <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
+      <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> + <code class="language-plaintext highlighter-rouge">calcpath.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_render.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
@@ -352,6 +358,8 @@ fix.</li>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.h"><code class="language-plaintext highlighter-rouge">src/walk.h</code></a>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.c"><code class="language-plaintext highlighter-rouge">src/walk.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.h"><code class="language-plaintext highlighter-rouge">src/calcpath.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.c"><code class="language-plaintext highlighter-rouge">src/calcpath.c</code></a> — the <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body’s “(from, to) pair has a direct path” paragraph).</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_data.h"><code class="language-plaintext highlighter-rouge">src/walk_data.h</code></a> — the upstream Sierra route table.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-implementation-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-implementation-plan.md</code></a> — original walk port plan, with the Phase 4 footsteps record kept for historical accuracy.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-spot-coordinates.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-spot-coordinates.md</code></a> — pre-flight audit and per-spot coordinates.</li>
@@ -375,7 +383,7 @@ fix.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

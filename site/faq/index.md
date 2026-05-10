@@ -6,7 +6,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
 ---
 
 {%- comment -%}
-  Schema.org FAQPage structured data. Mirrors the 14 H3 questions
+  Schema.org FAQPage structured data. Mirrors the 16 H3 questions
   on this page with 1â€“2 sentence summary answers. Google retired
   FAQ rich results for general sites in 2023, but Bing, AI agents,
   and embedded knowledge graphs still consume FAQPage. Hand-mirrored
@@ -117,6 +117,14 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
     },
     {
       "@type": "Question",
+      "name": "Why does the scene title differ from the on-screen caption sometimes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The on-screen caption text is fixed and the scene-page title is what the pack actually plays on PS1. They lined up sequentially for most scenes but the v0.8.4-ps1 chapter-select grind found the audit's caption-to-scene mapping was wrong on several rows. FISHING 2 is the canonical example: the on-screen caption says he catches a boot, but the on-PS1 pack reels in a Titanic life preserver. Repointing the runtime caption mapping is open work."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Why are there 36 holidays now instead of 4?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -125,10 +133,18 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
     },
     {
       "@type": "Question",
+      "name": "How do I jump to a specific scene?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open the pause menu with Start, choose Scene Explorer, and step through with LEFT/RIGHT (one scene at a time) or L1/R1 (one scene family at a time). Cross plays the highlighted scene once; Triangle loops it. Each entry shows a captured-on-PS1 thumbnail and the scene title; the 63 thumbnails were each captured during the v0.8.4-ps1 chapter-select grind."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "What's faithful to the original, and what's added?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Faithful: every scene the original had, in the original order, with the original variants. The art is unchanged. Added: a real pause menu reachable with Start (the original had none) with sub-screens for Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed; closed captions; thirty-two additional holidays; story-loop walking between scenes; freeplay/debug mode where the player drives Johnny directly; optional ocean-ambience loop; Scene Set pool selector; frog-clock loading transitions; full Credits page."
+        "text": "Faithful: every scene the original had, in the original order, with the original variants. The art is unchanged. Added: a real pause menu reachable with Start (the original had none) with sub-screens for Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed; closed captions; thirty-two additional holidays; story-loop walking between scenes; freeplay/debug mode where the player drives Johnny directly; optional ocean-ambience loop; Scene Set pool selector; frog-clock loading transitions; full Credits page."
       }
     }
   ]
@@ -265,6 +281,34 @@ full reference manual is at
 shows the confidence level of every ADS-tag â†’ caption mapping
 (30 HIGH / 21 MED / 12 LOW as of {{ site.release.tag }}).
 
+### Why does the scene title differ from the on-screen caption sometimes?
+
+Two different sources of truth, and they don't always agree.
+
+The **scene-page title** at `/scenes/<slug>/` is what the pack
+actually plays on PS1, confirmed during the
+[v0.8.4-ps1 chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }}).
+The **on-screen caption** that draws in the dark band at the bottom of
+the framebuffer is whatever `captionSceneMap[]` in
+[`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+routes that ADS+tag to.
+
+For most scenes those line up. For a few they don't, because the
+2026-04-26 caption audit picked its mapping from text alone â€” without
+runtime evidence of which pack played which gag. The clearest example
+is `FISHING 2`: the on-screen caption block says "He catches a boot,"
+but the on-PS1 pack reels in a Titanic-stenciled life preserver. The
+"boot" line actually fits `MARY 2`, where Mary the mermaid swims up
+while Johnny is fishing and he ends up reeling in a boot after the
+confusion.
+
+The post-validation runtime corrections section at
+[/docs/captions/]({{ '/docs/captions/#post-validation-runtime-corrections-v084-ps1' | relative_url }})
+lists the named mismaps. Repointing `captionSceneMap[]` so the
+on-screen caption matches the on-PS1 gag is open work â€” `v0.8.4-ps1`
+fixed the website's *description* of every scene, not the runtime
+mapping itself.
+
 ### Why are there 36 holidays now instead of 4?
 
 The original Sierra game had 4 baked-in holiday decorations
@@ -277,6 +321,23 @@ for 100+ years. The full reference manual is at
 `holidays.yml` and `src/holidays.c` in the repository for the
 source data and the codegen output.
 
+### How do I jump to a specific scene?
+
+Open the pause menu with **Start** and choose **Scene Explorer**.
+Step through with **LEFT / RIGHT** (one scene at a time) or
+**L1 / R1** (one scene family at a time â€” Fishing, Johnny, Mary,
+Visitor, Activity, Stand, Walkstuf, etc.). **Cross** plays the
+highlighted scene once; **Triangle** plays it on a loop.
+**Circle** or **Start** backs out of the picker.
+
+Each entry shows a captured-on-PS1 thumbnail and the scene title.
+The 63 thumbnails ship as `SCR\SX<abbrev><tag>.SCR` files on the
+disc; each one was captured during the
+[`v0.8.4-ps1` chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+so the picker is showing real on-PS1 footage of the pack, not a
+generated frame. Full reference at
+[/docs/pause-menu/#scene-explorer]({{ '/docs/pause-menu/#scene-explorer' | relative_url }}).
+
 ### What's faithful to the original, and what's added?
 
 **Faithful**: every scene the original had, in the original
@@ -286,9 +347,9 @@ the original sprites; the new ones were authored to fit).
 
 **Added**: a real [pause menu]({{ '/docs/pause-menu/' | relative_url }})
 reachable with Start (the original had none), with sub-screens
-for Scene Set, Freeplay Options, Controls, World Options,
-Holidays, Set Island Position, Accessibility, Sound Test,
-System, Set Time / Date, and Set RNG Seed. Closed captions
+for Scene Set, Scene Explorer, Freeplay Options, Controls,
+World Options, Holidays, Set Island Position, Accessibility,
+Sound Test, System, Set Time / Date, and Set RNG Seed. Closed captions
 (off by default; see [/docs/captions/]({{ '/docs/captions/' | relative_url }})).
 [Thirty-two additional holidays]({{ '/docs/holidays/' | relative_url }})
 via a code-generated table and pure-algorithm date core.

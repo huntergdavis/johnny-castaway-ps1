@@ -278,3 +278,23 @@ shipped is the author's.
   another place AI runs at process boundaries, on the host validation
   side.
 - [Devlog]({{ '/devlog/' | relative_url }}) — the running worklog.
+
+## View source on GitHub
+
+The canonical artifacts agents produced or contributed to. The body
+above names where each one came from; this list collects the GitHub
+links in one place.
+
+- [`docs/ps1/caption-audit-2026-04-26.yaml`]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
+  — the agent-drafted caption corpus with HIGH/MED/LOW confidence
+  ratings (60+ captions, 30/21/12 split).
+- [`scripts/holidays-emblem-sheet.py`]({{ site.github_url }}/blob/main/scripts/holidays-emblem-sheet.py)
+  — the agent-authored Python+PIL emblem-codegen pipeline; primitive
+  shapes, palette-locked, per-holiday compose routine.
+- [`docs/ps1/holidays-emblems/holiday-emblems-sheet.png`]({{ site.github_url }}/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png)
+  — the shipping 32-emblem sprite sheet (curated subset of
+  agent-generated art with human edits on top).
+- [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+  — the experiment ledger; some entries originated as agent-suggested
+  hypotheses the author then ran (about half were rejected at the
+  promotion gate).

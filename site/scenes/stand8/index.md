@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 8 — Tap, lift, look
+title: STAND 8 — Right side of island, looks around, scratches head
 ads: STAND
 tag: 8
 slug: stand8
 status: validated
-description: "STAND.ADS scene 8: Tap, lift, look. Validated on PS1."
+description: "STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_C E: composite of two short stances.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands on the right side of the island, looks around, and scratches his head — a confused-looking idle pose, right-side variant (compare STAND 6, the front-of-island looks-out-and-scratches variant). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "tap, lift, look" caption-mapping guess was wrong.
 
 ## Validation notes
 

@@ -78,71 +78,95 @@ tree mounts at `/project/`.
 ## CMake configuration
 
 The PS1 build is a separate CMake invocation from the host capture build.
-Configuration always points at the PSn00bSDK toolchain file:
+`CMakeLists.txt` resolves the PSn00bSDK toolchain via the `PSN00BSDK`
+environment variable that the Dockerfile sets to
+`/opt/psn00bsdk/PSn00bSDK-0.24-Linux`, so the configure command does not
+need a `-DCMAKE_TOOLCHAIN_FILE` flag:
 
 ```bash
-cmake -B build-ps1 -S . \
-    -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+cmake -G "Unix Makefiles" \
+    -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+    -S /project -B /project/build-ps1
 ```
 
-Sources split into two groups in `CMakeLists.txt`. The core engine list
-is portable C — it compiles for both the host capture binary and the PS1.
-The PS1-specific list adds the PSn00bSDK adapter modules:
+Sources are a single `set(SOURCES ...)` list in `CMakeLists.txt` covering
+26 translation units — engine core, PS1 adapter modules, the pause-menu /
+captions / SPI / memcard / scene-picker / freeplay UI subsystems, the
+walk family, and the holiday code-generated tables:
 
 ```cmake
-set(CORE_SOURCES
-    jc_reborn.c resource.c uncompress.c ttm.c ads.c story.c
-    walk.c calcpath.c island.c utils.c config.c bench.c)
+set(SOURCES
+    src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
+    src/foreground_pilot.c src/ps1_perf.c src/island.c
+    src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
+    src/ps1_pad_script.c
+    src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
+    src/spi.c src/memcard.c
+    src/scene_picker.c src/scene_freeplay.c
+    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
+    src/holidays.c src/holidays_table.c
+    src/ps1_stubs.c)
 
-set(PS1_SOURCES
-    graphics_ps1.c sound_ps1.c events_ps1.c cdrom_ps1.c ps1_stubs.c)
+psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
 
-add_executable(jcreborn ${CORE_SOURCES} ${PS1_SOURCES})
+target_compile_options(jcreborn PRIVATE
+    -ffunction-sections -fdata-sections)
+target_link_options(jcreborn PRIVATE -Wl,--gc-sections)
+
+target_link_libraries(jcreborn PRIVATE
+    psxgpu psxgte psxspu psxcd c)
 ```
 
-Linked PSn00bSDK libraries:
+The legacy `src/ads.c`, `src/ttm.c`, `src/story.c`, `src/config.c`, and
+`src/bench.c` source files still exist on disk but are not in the
+SOURCES list. The host build references them; the PS1 build doesn't.
+Section GC (`--gc-sections`) drops the dead code from cross-references
+the active modules still hold.
 
-| Library    | Purpose                                |
-|------------|----------------------------------------|
-| `psxgpu`   | GPU primitives, OT, VRAM upload        |
-| `psxcd`    | CD-ROM access (`CdRead`, `CdSearchFile`) |
-| `psxspu`   | SPU init + voice keys for sound        |
-| `psxapi`   | System / kernel calls                  |
-| `psxgte`   | Geometry transformation engine         |
-| `psxsio`   | Serial I/O (TTY breadcrumbs)           |
-| `psxpress` | CD compression/decompression utilities |
+`GPREL` enables GP-relative addressing, which makes data access faster
+on the MIPS R3000A. `-ffunction-sections -fdata-sections` plus
+`--gc-sections` lets the linker drop unused engine paths.
 
-Link order matters because they're static archives. `psxgpu` first;
-`psxpress` last; everything else in the middle. See
-`CMakeLists.txt` for the canonical order.
+Linked PSn00bSDK libraries (link order is the order they appear in the
+`target_link_libraries` call above):
 
-The compiler flags inherited from PSn00bSDK's toolchain file are
-`-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding`. The project layers
-its own `-O2 -Wall -Wpedantic` on top.
+| Library  | Purpose                                  |
+|----------|------------------------------------------|
+| `psxgpu` | GPU primitives, OT, VRAM upload          |
+| `psxgte` | Geometry transformation engine           |
+| `psxspu` | SPU init + voice keys for sound          |
+| `psxcd`  | CD-ROM access (`CdRead`, `CdSearchFile`) |
+| `c`      | C runtime (libc + PSn00bSDK glue)        |
+
+The compiler flags inherited from the PSn00bSDK `sdk` cmake module are
+`-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding`. The project
+layers `-Wall -Wpedantic -DPS1_BUILD -ffreestanding` on top via
+`CMAKE_C_FLAGS`.
 
 ## The end-to-end build, by hand
 
 ```bash
-# Configure
+# Configure (PSN00BSDK env var set in the Docker image; no -DCMAKE_TOOLCHAIN_FILE needed)
 docker run --rm --platform linux/amd64 \
     -v "$PWD":/project jc-reborn-ps1-dev:amd64 \
-    bash -c "cd /project/build-ps1 && \
-             cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .."
+    bash -c "cmake -G 'Unix Makefiles' \
+                  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+                  -S /project -B /project/build-ps1"
 
 # Compile (produces build-ps1/jcreborn.elf and jcreborn.exe)
 docker run --rm --platform linux/amd64 \
     -v "$PWD":/project jc-reborn-ps1-dev:amd64 \
-    bash -c "cd /project/build-ps1 && make"
+    bash -c "cmake --build /project/build-ps1 --target jcreborn"
 
 # Author the CD image
 docker run --rm --platform linux/amd64 \
     -v "$PWD":/project jc-reborn-ps1-dev:amd64 \
-    bash -c "cd /project && mkpsxiso cd_layout.xml"
+    bash -c "mkpsxiso -y /project/config/ps1/cd_layout.xml"
 ```
 
-The post-build step inside CMake runs `elf2x -q jcreborn jcreborn.exe`,
-which is what `mkpsxiso` actually packages onto the disc. The `.elf` is
-useful for symbol lookups when debugging.
+The post-build step inside CMake runs `elf2x -q jcreborn.elf
+jcreborn.exe`, which is what `mkpsxiso` actually packages onto the disc.
+The `.elf` is useful for symbol lookups when debugging.
 
 ## CD layout
 
@@ -183,33 +207,55 @@ for the routing step.
 | `scripts/make-cd-image.sh`       | Re-run `mkpsxiso` against the current `build-ps1/jcreborn.exe`. Faster than a full rebuild when only the layout XML changed. |
 | `scripts/build-docker-image.sh`  | Build the dev Docker image from `config/ps1/Dockerfile.ps1`. Run once after clone, then again when the Dockerfile changes. |
 
-The clean build path inside `scripts/rebuild-and-let-run.sh`:
+What `scripts/rebuild-and-let-run.sh` ultimately invokes is two
+container shells. The first is `scripts/build-ps1.sh` (executable +
+ELF), the second is `scripts/make-cd-image.sh` (CD image). Stripped of
+the wrapper plumbing, the commands inside each container are:
 
 ```bash
+# scripts/build-ps1.sh — clean rebuild of jcreborn.exe
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && rm -rf build-ps1"
+    jc-reborn-ps1-dev:amd64 bash -c "rm -rf /project/build-ps1"
 
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && mkdir build-ps1 && cd build-ps1 && \
-        cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .. && make"
+    jc-reborn-ps1-dev:amd64 bash -c "
+        cmake -G 'Unix Makefiles' \
+            -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+            -S /project -B /project/build-ps1 && \
+        cmake --build /project/build-ps1"
 
+# scripts/make-cd-image.sh — bundle the build + assets into jcreborn.bin/.cue
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
-    jc-reborn-ps1-dev:amd64 bash -c "cd /project && mkpsxiso cd_layout.xml"
+    jc-reborn-ps1-dev:amd64 bash -c "
+        cd /project && \
+        mkpsxiso -y /project/config/ps1/cd_layout.xml"
 ```
 
-`make-cd-image.sh` is the third step on its own and is fast enough to run
-between scene edits.
+The cmake invocation does not pass `-DCMAKE_TOOLCHAIN_FILE` because
+`CMakeLists.txt` resolves the PSn00bSDK toolchain via the
+`PSN00BSDK` environment variable that the Dockerfile sets to
+`/opt/psn00bsdk/PSn00bSDK-0.24-Linux`. The `mkpsxiso` invocation needs
+the `-y` flag (overwrite) and the full path to `cd_layout.xml`
+because the layout file lives under `config/ps1/`, not the project
+root.
+
+`make-cd-image.sh` is the third step on its own and is fast enough to
+run between scene edits.
 
 ## Common breakages
 
-**"Could not find toolchain file"** — PSn00bSDK didn't install correctly in
-the container. Confirm `/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake`
-exists in the image:
+**"Could not find toolchain file"** or **"PSN00BSDK environment
+variable not set"** — PSn00bSDK didn't install correctly in the
+container. Confirm both the env var and the SDK cmake module exist
+in the image:
 
 ```bash
 docker run --rm jc-reborn-ps1-dev:amd64 \
-    ls /opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+    bash -c 'echo "$PSN00BSDK" && ls "$PSN00BSDK/lib/libpsn00b/cmake/sdk.cmake"'
 ```
+
+Expected output: `/opt/psn00bsdk/PSn00bSDK-0.24-Linux` followed by a
+listing of `sdk.cmake`.
 
 **"undefined reference to `SpuInit`"** — A new audio path needs `psxspu` in
 the link list. Audio code that doesn't link will surface as missing
@@ -261,6 +307,7 @@ or running it through the [headless regtest harness]({{ '/docs/regtest/' | relat
 
 - [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
   · [`scripts/build-ps1.sh`]({{ site.github_url }}/blob/main/scripts/build-ps1.sh)
+  · [`scripts/make-cd-image.sh`]({{ site.github_url }}/blob/main/scripts/make-cd-image.sh)
   · [`scripts/build-docker-image.sh`]({{ site.github_url }}/blob/main/scripts/build-docker-image.sh)
   — the wrapper scripts the body walks the reader through.
 - [`docs/ps1/build-system.md`]({{ site.github_url }}/blob/main/docs/ps1/build-system.md)

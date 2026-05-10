@@ -1,18 +1,31 @@
 ---
 layout: scene
-title: FISHING 2 — A life raft drifts past
+title: FISHING 2 — Hooks a Titanic life preserver
 ads: FISHING
 tag: 2
 slug: fishing2
 status: validated
-description: "FISHING.ADS scene 2: A life raft drifts past. Validated under the FISHING 1 bar."
+description: "FISHING.ADS scene 2: Johnny fishes and reels in a Titanic-stenciled life preserver ring. Validated under the FISHING 1 bar."
+image: /assets/img/fishing2-ps1-titanic.png
+image_alt: "FISHING 2 on PS1: Johnny pulls a TITANIC-stenciled life preserver ring out of the water on his fishing line."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/fishing2-ps1-titanic.png' | relative_url }}"
+       width="961" height="720" loading="lazy" decoding="async"
+       alt="FISHING 2 running on PS1: Johnny on the island reeling a TITANIC-stenciled life preserver ring out of the water on his fishing line." />
+  <figcaption>FISHING 2 on PS1 hardware. The line comes up with a Titanic life-preserver ring instead of a fish — the gag the on-PS1 pack actually plays, not the "He catches a boot" caption in the audit.</figcaption>
+</figure>
 
 ## What happens
 
-Johnny is fishing again. While he waits, a small life raft drifts past in the water behind him. He doesn't see it. The raft drifts on out of frame, and Johnny eventually reels in nothing and walks back.
+Johnny casts a line, and after a beat reels in a round life-preserver ring stenciled `TITANIC` instead of a fish. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail.
 
-Second scene to clear the FISHING 1 bar. Same fishing-pose loop as scene 1, but with a different background animation layered in. Confirmed pixel-stable and SFX-synced across night, low-tide, holiday, and raft-stage variants.
+(The on-screen caption block below — preserved from the Sierra original — says "He catches a boot," which is a different fishing gag in the game. The caption-to-scene mapping in the original audit appears to be approximate; the on-PS1 pack for FISHING.ADS scene 2 plays the Titanic life-preserver beat.)
+
+Second scene to clear the FISHING 1 bar. Same fishing-pose loop as scene 1, but with a different reel-in object. Confirmed pixel-stable and SFX-synced across night, low-tide, holiday, and raft-stage variants.
 
 ## Validation
 
@@ -32,6 +45,18 @@ This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relati
 - **low-tide** — Tide state variant; different shoreline geometry (BOOTMODE `lowtide 1`).
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
+
+## Notable runtime history
+
+`FISHING 2` is one of the four canonical caption-mapping mismatches the
+v0.8.4-ps1 chapter-select grind caught: the on-PS1 pack plays the
+Titanic life-preserver beat above, but the on-screen caption block
+below ("He catches a boot") describes a different fishing gag. The
+"boot" caption actually belongs to `MARY 2` — Mary the mermaid swims
+up while Johnny is fishing, he mistakes her for a fish, and the boot
+is what he ends up reeling in instead. The
+[chapter-select-grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
+walks through the named mismaps and how the on-PS1 loop surfaced them.
 
 ## Caption
 

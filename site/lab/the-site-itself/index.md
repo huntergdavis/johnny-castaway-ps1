@@ -25,7 +25,7 @@ Jekyll's `relative_url` filter takes `site.baseurl` from `_config.yml`. In the d
 bundle exec jekyll build --trace --baseurl "" --destination "$ROOT/docs"
 ```
 
-Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at `/`, and a small Python pass — `scripts/site-relativize-build.py` — rewrites those to file-relative paths (`./play/`, `../assets/css/main.css`). The output bundle has no embedded knowledge of where it lives. It can be served at `/johnny-castaway-ps1/`, at `/`, at `/anywhere/`, and every internal link resolves against the actual served path.
+Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at `/`, and a small Python pass — [`scripts/site-relativize-build.py`]({{ site.github_url }}/blob/main/scripts/site-relativize-build.py) — rewrites those to file-relative paths (`./play/`, `../assets/css/main.css`). The output bundle has no embedded knowledge of where it lives. It can be served at `/johnny-castaway-ps1/`, at `/`, at `/anywhere/`, and every internal link resolves against the actual served path.
 
 That's a useful property for a project hosted at GitHub Pages, where the publish prefix isn't stable across renames or forks. It's also a useful property if anyone ever clones the bundle to host it as a backup, or if the canonical URL ever moves.
 
@@ -181,7 +181,7 @@ the website tree), `site/resources/index.md` (the asset catalog with
 seven section tables), and
 `site/archaeology/regtest-references/cases/index.md` plus its 63
 per-case detail pages. They're emitted by
-`scripts/site-generate-library.py` on every build, before Jekyll runs.
+[`scripts/site-generate-library.py`]({{ site.github_url }}/blob/main/scripts/site-generate-library.py) on every build, before Jekyll runs.
 
 The catch is a foot-gun for any future improvement: editing those
 `.md` files in place looks fine in `git diff`, builds locally, then
@@ -221,6 +221,46 @@ with per-family counts and `id="ads-<family>"` on the first row of each
 group), and for the `<caption class="visually-hidden">` per-table a11y
 captions on `/resources/`. All four shipped through the generator
 template, not the markdown.
+
+## The chapter-select manifest gap and the in-loop tool
+
+The `v0.8.4-ps1` chapter-select grind shipped a custom thumbnail and a
+reconciled scene-page lead for all 63 scenes, plus one bug-fix nobody
+expected: a third of the thumbnail SCRs were on disk but never made it
+onto the CD because nothing referenced them. The CD ISO is built from
+`config/ps1/cd_layout.xml`, which lists every file by name. The
+thumbnail-builder script wrote `SX*.SCR` files into the host
+filesystem, but only 42 of the 63 had ever been added to the manifest;
+the other 21 were silent passengers on disk that the build skipped.
+The user found this by walking [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }}) and reporting "stand 2-5
+and 58-63 don't load."
+
+The site-engineering takeaway is small but concrete: when one source
+of truth (the host filesystem) emits files and a different source of
+truth (the manifest) enumerates which of them ship, a parity check is
+worth keeping. A one-line shell pipeline — `comm -23 <(ls
+jc_resources/extracted/scr/SX*.SCR | xargs -n1 basename | sort)
+<(grep -oE "SX[A-Z]+[0-9]+\.SCR" config/ps1/cd_layout.xml | sort -u)`
+— would have caught the gap before any user did. That check is a
+candidate for the build script's pre-flight cluster, alongside the
+existing site-redteam pass.
+
+The other small piece worth recording: the loop's 5-surface helper at
+[`scripts/apply-scene-correction.py`]({{ site.github_url }}/blob/main/scripts/apply-scene-correction.py) updates the per-scene `index.md`,
+the scenes-data YAML, the scene-status table, the thumbnail SCR, and
+a local progress tracker in one pass. Every write is an exact-string
+match, deliberately — re-running the helper on an already-corrected
+scene fails noisily because the old strings aren't there to match.
+That's not an accident; it's the design. When the cost of a silent
+re-run is "your prior fix is gone and you don't know," idempotent
+failure is more honest than idempotent success.
+
+The same pattern shows up in this site's redirect override (the
+custom `_layouts/redirect.html` strips a known-stale prefix and
+fails on any URL without it) and in the per-scene OG-image
+overrides (the head template skips the override if `page.image` is
+unset rather than guessing). Different surfaces, same instinct: a
+loud failure beats a quiet wrong answer.
 
 ## The shape
 

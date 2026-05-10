@@ -191,6 +191,27 @@
                 <file name="SXAC11.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC11.SCR"/>
                 <file name="SXAC12.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC12.SCR"/>
                 <file name="SXBL1.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL1.SCR"/>
+                <file name="SXBL2.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL2.SCR"/>
+                <file name="SXBL3.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL3.SCR"/>
+                <file name="SXBL4.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL4.SCR"/>
+                <file name="SXBL5.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL5.SCR"/>
+                <file name="SXBL6.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL6.SCR"/>
+                <file name="SXBL7.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL7.SCR"/>
+                <file name="SXMG1.SCR" type="data" source="../../jc_resources/extracted/scr/SXMG1.SCR"/>
+                <file name="SXMG2.SCR" type="data" source="../../jc_resources/extracted/scr/SXMG2.SCR"/>
+                <file name="SXSU1.SCR" type="data" source="../../jc_resources/extracted/scr/SXSU1.SCR"/>
+                <file name="SXSU2.SCR" type="data" source="../../jc_resources/extracted/scr/SXSU2.SCR"/>
+                <file name="SXVI1.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI1.SCR"/>
+                <file name="SXVI3.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI3.SCR"/>
+                <file name="SXVI4.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI4.SCR"/>
+                <file name="SXVI5.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI5.SCR"/>
+                <file name="SXVI6.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI6.SCR"/>
+                <file name="SXVI7.SCR" type="data" source="../../jc_resources/extracted/scr/SXVI7.SCR"/>
+                <file name="SXST1.SCR" type="data" source="../../jc_resources/extracted/scr/SXST1.SCR"/>
+                <file name="SXST2.SCR" type="data" source="../../jc_resources/extracted/scr/SXST2.SCR"/>
+                <file name="SXST3.SCR" type="data" source="../../jc_resources/extracted/scr/SXST3.SCR"/>
+                <file name="SXST4.SCR" type="data" source="../../jc_resources/extracted/scr/SXST4.SCR"/>
+                <file name="SXST5.SCR" type="data" source="../../jc_resources/extracted/scr/SXST5.SCR"/>
                 <file name="SXST6.SCR" type="data" source="../../jc_resources/extracted/scr/SXST6.SCR"/>
                 <file name="SXST7.SCR" type="data" source="../../jc_resources/extracted/scr/SXST7.SCR"/>
                 <file name="SXST8.SCR" type="data" source="../../jc_resources/extracted/scr/SXST8.SCR"/>

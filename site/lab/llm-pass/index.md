@@ -45,8 +45,8 @@ four months. A human can understand all of it, but not all at once.
 Sub-agents are useful when the work decomposes cleanly:
 
 1. One agent inventories `docs/ps1/research/generated`.
-2. One agent drafts per-scene pages from `site/_data/scenes.yml`.
-3. One agent audits a holiday table against `holidays.yml`.
+2. One agent drafts per-scene pages from [`site/_data/scenes.yml`]({{ site.github_url }}/blob/main/site/_data/scenes.yml).
+3. One agent audits a holiday table against [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml).
 4. One agent runs a build and reports the real compiler output.
 5. I stay on the critical path: reading the code, making the judgment calls,
    and deciding what ships.

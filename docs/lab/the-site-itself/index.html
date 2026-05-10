@@ -15,7 +15,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -75,8 +75,8 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 3342,
-  "timeRequired": "PT13M",
+  "wordCount": 3693,
+  "timeRequired": "PT14M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -138,7 +138,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3275 words
+          ~14 min read · 3626 words
         </p>
 
       <hr class="rule" />
@@ -163,6 +163,7 @@
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
   <li><a href="#a-few-small-extras" id="markdown-toc-a-few-small-extras">A few small extras</a></li>
   <li><a href="#the-auto-generated-pages-and-the-f-string-rule" id="markdown-toc-the-auto-generated-pages-and-the-f-string-rule">The auto-generated pages and the f-string rule</a></li>
+  <li><a href="#the-chapter-select-manifest-gap-and-the-in-loop-tool" id="markdown-toc-the-chapter-select-manifest-gap-and-the-in-loop-tool">The chapter-select manifest gap and the in-loop tool</a></li>
   <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
   <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
@@ -176,7 +177,7 @@
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll build <span class="nt">--trace</span> <span class="nt">--baseurl</span> <span class="s2">""</span> <span class="nt">--destination</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs"</span>
 </code></pre></div></div>
 
-<p>Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at <code class="language-plaintext highlighter-rouge">/</code>, and a small Python pass — <code class="language-plaintext highlighter-rouge">scripts/site-relativize-build.py</code> — rewrites those to file-relative paths (<code class="language-plaintext highlighter-rouge">./play/</code>, <code class="language-plaintext highlighter-rouge">../assets/css/main.css</code>). The output bundle has no embedded knowledge of where it lives. It can be served at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/</code>, at <code class="language-plaintext highlighter-rouge">/</code>, at <code class="language-plaintext highlighter-rouge">/anywhere/</code>, and every internal link resolves against the actual served path.</p>
+<p>Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at <code class="language-plaintext highlighter-rouge">/</code>, and a small Python pass — <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/site-relativize-build.py"><code class="language-plaintext highlighter-rouge">scripts/site-relativize-build.py</code></a> — rewrites those to file-relative paths (<code class="language-plaintext highlighter-rouge">./play/</code>, <code class="language-plaintext highlighter-rouge">../assets/css/main.css</code>). The output bundle has no embedded knowledge of where it lives. It can be served at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/</code>, at <code class="language-plaintext highlighter-rouge">/</code>, at <code class="language-plaintext highlighter-rouge">/anywhere/</code>, and every internal link resolves against the actual served path.</p>
 
 <p>That’s a useful property for a project hosted at GitHub Pages, where the publish prefix isn’t stable across renames or forks. It’s also a useful property if anyone ever clones the bundle to host it as a backup, or if the canonical URL ever moves.</p>
 
@@ -348,7 +349,7 @@ the website tree), <code class="language-plaintext highlighter-rouge">site/resou
 seven section tables), and
 <code class="language-plaintext highlighter-rouge">site/archaeology/regtest-references/cases/index.md</code> plus its 63
 per-case detail pages. They’re emitted by
-<code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code> on every build, before Jekyll runs.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/site-generate-library.py"><code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code></a> on every build, before Jekyll runs.</p>
 
 <p>The catch is a foot-gun for any future improvement: editing those
 <code class="language-plaintext highlighter-rouge">.md</code> files in place looks fine in <code class="language-plaintext highlighter-rouge">git diff</code>, builds locally, then
@@ -387,6 +388,46 @@ with per-family counts and <code class="language-plaintext highlighter-rouge">id
 group), and for the <code class="language-plaintext highlighter-rouge">&lt;caption class="visually-hidden"&gt;</code> per-table a11y
 captions on <code class="language-plaintext highlighter-rouge">/resources/</code>. All four shipped through the generator
 template, not the markdown.</p>
+
+<h2 id="the-chapter-select-manifest-gap-and-the-in-loop-tool">The chapter-select manifest gap and the in-loop tool</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> chapter-select grind shipped a custom thumbnail and a
+reconciled scene-page lead for all 63 scenes, plus one bug-fix nobody
+expected: a third of the thumbnail SCRs were on disk but never made it
+onto the CD because nothing referenced them. The CD ISO is built from
+<code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>, which lists every file by name. The
+thumbnail-builder script wrote <code class="language-plaintext highlighter-rouge">SX*.SCR</code> files into the host
+filesystem, but only 42 of the 63 had ever been added to the manifest;
+the other 21 were silent passengers on disk that the build skipped.
+The user found this by walking <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a> and reporting “stand 2-5
+and 58-63 don’t load.”</p>
+
+<p>The site-engineering takeaway is small but concrete: when one source
+of truth (the host filesystem) emits files and a different source of
+truth (the manifest) enumerates which of them ship, a parity check is
+worth keeping. A one-line shell pipeline — <code class="language-plaintext highlighter-rouge">comm -23 &lt;(ls
+jc_resources/extracted/scr/SX*.SCR | xargs -n1 basename | sort)
+&lt;(grep -oE "SX[A-Z]+[0-9]+\.SCR" config/ps1/cd_layout.xml | sort -u)</code>
+— would have caught the gap before any user did. That check is a
+candidate for the build script’s pre-flight cluster, alongside the
+existing site-redteam pass.</p>
+
+<p>The other small piece worth recording: the loop’s 5-surface helper at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/apply-scene-correction.py"><code class="language-plaintext highlighter-rouge">scripts/apply-scene-correction.py</code></a> updates the per-scene <code class="language-plaintext highlighter-rouge">index.md</code>,
+the scenes-data YAML, the scene-status table, the thumbnail SCR, and
+a local progress tracker in one pass. Every write is an exact-string
+match, deliberately — re-running the helper on an already-corrected
+scene fails noisily because the old strings aren’t there to match.
+That’s not an accident; it’s the design. When the cost of a silent
+re-run is “your prior fix is gone and you don’t know,” idempotent
+failure is more honest than idempotent success.</p>
+
+<p>The same pattern shows up in this site’s redirect override (the
+custom <code class="language-plaintext highlighter-rouge">_layouts/redirect.html</code> strips a known-stale prefix and
+fails on any URL without it) and in the per-scene OG-image
+overrides (the head template skips the override if <code class="language-plaintext highlighter-rouge">page.image</code> is
+unset rather than guessing). Different surfaces, same instinct: a
+loud failure beats a quiet wrong answer.</p>
 
 <h2 id="the-shape">The shape</h2>
 
@@ -435,7 +476,7 @@ one” pattern, applied to keeping LLM agents productive.</li>
 
         <a href="../from-87-to-99-5/" rel="next">
           <span class="scene-pager-dir" aria-hidden="true">newer →</span>
-          <span class="scene-pager-tag">From 87 to 99.5: the post-validation performance loop</span>
+          <span class="scene-pager-tag">From 87 to 99.7: the post-validation performance loop</span>
         </a>
 
     </div>
@@ -461,7 +502,7 @@ one” pattern, applied to keeping LLM agents productive.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

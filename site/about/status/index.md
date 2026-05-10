@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.8.3-ps1
+eyebrow: Component-level state at v0.8.5-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,32 +13,14 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`{{ site.release.tag }}` is the current release: every row in the live
-per-scene ledger is signed off, all 126 high/low scene variants are routed,
-and the headless timing-bearing average is +0.4% over target /
-{{ site.release.perf_target_speed_pct }}% target speed. The current
-post-release BUILDING1 compact-FGP3/no-autoprime follow-up moves both
-BUILDING1 tides into the green band, and the newer VISITOR5 high-only compact
-FGP3/no-autoprime follow-up cuts that high-tide overrun without moving low
-tide. The newer BUILDING2 low restore-minus-current/slack-4 pass moves low
-back into the orange band, and the newer WALKSTUF3 high compact-FGP3/v4 pass
-moves high into green. The BUILDING6 compact-FGP3/v4 pass cuts both
-tides to `2482/2457` and `2485/2456`, clearing due misses and moving both rows
-to the bottom of the orange band while preserving fixed pack LBAs. The latest
-ACTIVITY9 high compact-FGP3/v4 pass moves high to `2082/2062`, cuts blocking
-`37 -> 24`, and moves the row into green. The latest ACTIVITY9 low
-compact-FGP3/v4 pass moves low to `2075/2061`, cuts blocking `29 -> 17`, loop
-reads `59 -> 47`, and moves the row into green. The latest WALKSTUF3 low
-compact-FGP3/v4 pass moves low to
-`2310/2295`, cuts blocking `41 -> 26`, and moves the row into green. The
-latest VISITOR3 pass moves high to `1075/1037`, moves low to `1086/1035`,
-cuts high blocking `114 -> 59` and low blocking `139 -> 93`, and trades
-setup time for lower active-loop CD pressure through high/low persistent
-segments, high-only re-anchor payloads, the guarded low second setup segment,
-the low frame-125/frame-126 resident re-anchor, and the low frame-118/frame-127
-resident copies plus high frame-127/frame-130 resident-copy compaction and low
-frame-114/frame-117 no-op residual compaction. The
-MARY3 guarded prefetch-preserve baseline keeps hidden refill debt at zero.
+`v0.8.5-ps1` is the current release: every row in the live per-scene
+ledger is signed off, all 126 high/low scene variants are routed and
+timing-bearing, and the chapter-select grid in the in-game
+[Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
+keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
+from `v0.8.4-ps1`. The public headless battle card is `+0.3459%` over
+target / `99.6621%` target speed; the raw signed optimization matrix is
+`-0.4226%` / `100.4459%`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -62,15 +44,15 @@ done."
 | Closed captions (`src/ps1_captions.{c,h}`) | Working | On/off via Pause -> Accessibility -> Captions. Dark band at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text. Glyph atlas shared with the pause menu. Caption corpus from the upstream `closed_captions` branch of `jc_reborn`; the original sequential ADS-tag map had ~20 mismatches and was re-audited (`docs/ps1/caption-audit-2026-04-26.yaml`). HIGH-confidence matches dominate; LOW-confidence slots remain on STAND idles and a few VISITOR / WALKSTUF edges. |
 | Holidays (36 of them, code-generated) | Working | Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -> World Options -> Holidays and `BOOTMODE.TXT`. Generation is offline; design notes in `docs/ps1/holidays-expansion-design.md`. |
 | [Story-loop walks]({{ '/docs/walks/' | relative_url }}) (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. `v0.7.2` adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; `v0.8.0` adds a clean-rect retry path; `v0.8.1` counts wave-band/split-rect clean pressure before allocation. |
-| Freeplay/debug mode (`scene_freeplay.c`) | Working | `v0.5.0-ps1` promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) loading transitions, and a no-allocation steady-state frame loop. |
-| Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Eleven sub-screens: Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed. |
+| [Freeplay/debug mode]({{ '/docs/glossary/#freeplay' | relative_url }}) (`scene_freeplay.c`) | Working | `v0.5.0-ps1` promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) loading transitions, and a no-allocation steady-state frame loop. |
+| Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Twelve sub-screens: Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed. |
 | [Memcard]({{ '/docs/glossary/#memcard' | relative_url }}) persistence (`memcard.c`) | Working / expanding | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work. |
-| Telemetry / debug overlay | Complete | Five-panel overlay; gated by `debugMode`. Toggle with Select. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state. |
+| [Telemetry / debug overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) | Complete | Five-panel left-edge overlay; gated by `grPs1TelemetryEnabled` in `graphics_ps1.c` with row writes scattered through `src/ads.c` and helpers like `grPs1SetLastBmpTelemetry`. Off by default in release builds. Decoded out of captured frames by `scripts/decode-ps1-bars.py` into `telemetry.json` during [regtest]({{ '/docs/regtest/' | relative_url }}). The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state since text I/O can perturb timing. |
 | Perf instrumentation (`ps1_perf.c`) | Complete | Level-gated `JCPERF` / `JCPERF2` TTY lines. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Set via `ps1PerfSetLevel`. Off in normal operation; the user feeds `JCPERF` output to a perf-debug agent when chasing regressions. |
 | TTY printf | Reliable | Restored 2026-04-25 on PSn00bSDK 0.24 + DuckStation through bounded `vprintf` plus DuckStation TTY/file logging. Gated BOOTMODE probes (`printf-test`, `logtest`). Must not be called per-frame -- text I/O alters timing. |
 | Regtest harness | Working | `config/ps1/regtest-scenes.txt` + `scripts/run-regtest.sh` drive a headless DuckStation pass. Source of truth for "boots and renders something." Not the source of truth for "looks right" -- that's still human signoff. |
 | Host capture pipeline | Working | `scripts/capture-host-scene.sh` runs the desktop build under controlled boot state; emits high/low PNG frames, `frame-meta.json`, `sound-events.jsonl`. `scripts/export-scene-foreground-pilot.sh` now defaults new scene bring-up to normal/far-left/far-right foreground-only multi-view stitching before compiling FG2. |
-| CD packaging (mkpsxiso) | Complete | `config/ps1/cd_layout.xml`. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343&nbsp;MB, of which a selected subset rides on the disc. Build outputs `jcreborn.bin` + `jcreborn.cue`. CD image at `{{ site.release.tag }}` is ~76&nbsp;MB; PS-EXE is ~208&nbsp;KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass. |
+| CD packaging (mkpsxiso) | Complete | `config/ps1/cd_layout.xml`. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343&nbsp;MB, of which a selected subset rides on the disc. Build outputs `jcreborn.bin` + `jcreborn.cue`. CD image at `{{ site.release.tag }}` is ~79&nbsp;MB; PS-EXE is ~208&nbsp;KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass. |
 
 ## What's currently broken
 
@@ -119,16 +101,10 @@ Pulled from the live narrative in
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
   loading, memory pressure, and release polish. `{{ site.release.tag }}`
-  has the headless baseline at slightly under target — `{{ site.release.perf_target_speed_pct }}%`
-  target speed across all 126 timing-bearing rows after the v0.8.2 + v0.8.3
-  VISITOR3 + WALKSTUF1 outlier closures, the missing-scene timing refresh, the
-  MARY3 guarded prefetch-preserve pass, the BUILDING1 compact-FGP3/no-autoprime
-  follow-up, the VISITOR5 high-only compact-FGP3/no-autoprime follow-up, the
-  BUILDING2 low restore-minus-current/slack-4 pass, and the WALKSTUF3 high
-  compact-FGP3/v4 pass, BUILDING6/ACTIVITY9 compact-FGP3/v4 passes, JOHNNY1
-  compact-FGP3/v4 pass, and the latest VISITOR3 high/low persistent-segment
-  plus high-only re-anchor/resident-copy and low no-op residual passes.
-  The bring-up loop remains in
+  has the public-capped headless baseline at `{{ site.release.perf_target_speed_pct }}%`
+  target speed across all 126 timing-bearing rows after the VISITOR3,
+  WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
+  promotion arc. The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing
@@ -141,19 +117,41 @@ Pulled from the live narrative in
   stores automatic policy separately from manual holiday id. Captions, Scene
   Set, tide, raft, island-position, freeplay/perf preferences, and menu cursor
   defaults remain future work.
-- **Caption audit follow-through.** HIGH-confidence ADS-tag
-  mappings are in; LOW-confidence STAND/VISITOR/WALKSTUF slots
-  will be refined as those scenes pass the bar.
+- **Caption audit follow-through.** Two layers, with one done in
+  `v0.8.4-ps1` and one still open. *Done:* the website's *description*
+  of which caption belongs to which scene was reconciled against the
+  on-PS1 packs during the
+  [chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — per-scene `index.md` titles + bodies, `scenes.yml` notes,
+  `scene-status.md` Notes column, and the in-game
+  [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
+  display strings. The runtime evidence overturned a substantial
+  fraction of the audit's confidence ratings, including two HIGH-rated
+  FISHING entries (`FISHING 2` boot, `FISHING 3` crab) that were exact
+  text-pack mismatches and the `VISITOR 5` `NO_MATCH` candidate that
+  turned out to be a clear unambiguous gag. *Open:* the runtime
+  `captionSceneMap[]` array in
+  [`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+  was not changed in `v0.8.4-ps1`; the on-screen caption band
+  continues to play whatever caption the original audit picked, even
+  on rows where the website now disagrees with that pick. Repointing
+  the runtime mapping (or blanking the rows where text and pack can't
+  be reconciled) is a future-release item. The
+  [post-validation runtime corrections section]({{ '/docs/captions/#post-validation-runtime-corrections-v084-ps1' | relative_url }})
+  lists the named mismaps.
 - **`fgpilot` -> "PS1 scene playback" naming migration.** The
   internal code-name in `foreground_pilot.c` and friends remains
   `fgpilot`; the public-facing name is moving to "PS1 scene
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.3-ps1` is the WALKSTUF1 compact
-  foreground performance pass. `v0.8.2-ps1` is the VISITOR3 guarded-read
-  performance pass. `v0.8.1-ps1` is the clean-rect pressure stability
-  point release. `v0.8.0-ps1` is the complete-scene performance
+- **Milestone release cadence.** `v0.8.5-ps1` is the full 126-row
+  headless performance matrix release. `v0.8.4-ps1` is the chapter-select
+  thumbnails content release — 63 custom on-PS1-captured grid slots and
+  a scene-page reconciliation pass against the actual on-PS1 packs.
+  `v0.8.3-ps1` is the WALKSTUF1 compact foreground performance pass.
+  `v0.8.2-ps1` is the VISITOR3 guarded-read performance pass.
+  `v0.8.1-ps1` is the clean-rect pressure stability point release. `v0.8.0-ps1` is the complete-scene performance
   baseline. `v0.7.2-ps1`
   fixes stale-backdrop story-loop walks. `v0.7.1-ps1` adds the original-four
   auto holiday default and persisted holiday mode. `v0.7.0-ps1` validates all

@@ -247,14 +247,14 @@ A few audio quality items the author knows are open:
 ## Ocean ambience (v0.6.0-ps1)
 
 The runtime carries one looping background track — a 20-second
-ocean-loop sample on a dedicated SPU voice slot reserved at boot.
+[ocean-ambience]({{ '/docs/glossary/#ocean-ambience' | relative_url }}) sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
 [memcard]({{ '/docs/glossary/#memcard' | relative_url }}) alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.
 
 The on-disc artifact is `OCEAN.VAG` (~126 KB, 4-bit ADPCM at
-11.025 kHz mono). Source is BigSoundBank.com sound 0266 (CC0); the
+11.025 kHz mono). Source is [BigSoundBank.com sound 0266](https://bigsoundbank.com/sea-waves-s0266.html) ("Sea: Waves", CC0; full attribution at [/credits/#ocean-ambience]({{ '/credits/' | relative_url }}#ocean-ambience)); the
 encoding pipeline lives in `scratch/ocean-ambience/`. The seam is
 hidden by an equal-power crossfade with the recording's natural
 continuation, so the SPU's hardware loop reads as unbroken ocean
@@ -297,6 +297,12 @@ are noted in case the project ever needs them.
 ## View source on GitHub
 
 - [`docs/ps1/audio-optimization-spec.md`]({{ site.github_url }}/blob/main/docs/ps1/audio-optimization-spec.md)
-- [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c)
+- [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c) —
+  the SPU adapter; voice keying, master-volume register writes, the
+  ocean ambience SPU slot, the VAG transfer wrappers.
+- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) —
+  scene-replay-side audio dispatch; consumes captured `0xC051 PLAY_SAMPLE`
+  events from FG2 packs and fires `soundPlay()` with the 3-frame
+  key-on delay the body discusses.
 - [`scripts/wav2vag.py`]({{ site.github_url }}/blob/main/scripts/wav2vag.py)
 - [`scripts/convert-sounds.sh`]({{ site.github_url }}/blob/main/scripts/convert-sounds.sh)

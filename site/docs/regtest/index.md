@@ -412,7 +412,25 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 - [`scripts/run-regtest.sh`]({{ site.github_url }}/blob/main/scripts/run-regtest.sh)
   — the Docker wrapper this page documents; full option set
   in the body's Command-line options section.
+- [`scripts/regtest-scene.sh`]({{ site.github_url }}/blob/main/scripts/regtest-scene.sh)
+  · [`scripts/regtest-all-scenes.sh`]({{ site.github_url }}/blob/main/scripts/regtest-all-scenes.sh)
+  — single-scene runner and parallel orchestrator.
+- [`scripts/build-regtest-image.sh`]({{ site.github_url }}/blob/main/scripts/build-regtest-image.sh)
+  — one-time Docker image build wrapper (the page's first command).
+- [`scripts/analyze-regtest.py`]({{ site.github_url }}/blob/main/scripts/analyze-regtest.py)
+  · [`scripts/regtest-compare.sh`]({{ site.github_url }}/blob/main/scripts/regtest-compare.sh)
+  — post-run analysis + HTML report and run-vs-run diff.
+- [`scripts/decode-ps1-bars.py`]({{ site.github_url }}/blob/main/scripts/decode-ps1-bars.py)
+  — telemetry overlay decoder (used when frames carry the on-screen
+  perf bars from `src/ps1_debug.c`).
+- [`scripts/check-character-screenshot.py`]({{ site.github_url }}/blob/main/scripts/check-character-screenshot.py)
+  — overlay-backed character check the body's "Overlay-backed
+  character checks" section walks through.
+- [`config/ps1/Dockerfile.regtest`]({{ site.github_url }}/blob/main/config/ps1/Dockerfile.regtest)
+  · [`config/ps1/regtest-config.sh`]({{ site.github_url }}/blob/main/config/ps1/regtest-config.sh)
+  · [`config/ps1/regtest-scenes.txt`]({{ site.github_url }}/blob/main/config/ps1/regtest-scenes.txt)
+  — the regtest Docker image build, default frame-counts/timeouts
+  config, and 63-scene manifest with status + boot route.
 - [`docs/ps1/regtest-harness.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-harness.md)
 - [`docs/ps1/regtest-quickstart.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-quickstart.md)
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md)
-- [`config/ps1/regtest-scenes.txt`]({{ site.github_url }}/blob/main/config/ps1/regtest-scenes.txt)

@@ -142,9 +142,11 @@ A few things this project is deliberately not trying to be:
   status surfaces, retired tooling, the harness era, the
   restore-pilot era, and other paths that did not become the
   active methodology.
-- [/lab/]({{ '/lab/' | relative_url }}) -- fifteen feature-length
+- [/lab/]({{ '/lab/' | relative_url }}) -- sixteen feature-length
   retrospectives, newest first. The
-  [post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}),
+  [chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }}),
+  [the v0.8.1 soak freeze]({{ '/lab/v081-mary4-freeze/' | relative_url }}),
+  [the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}),
   [the site itself as a small program]({{ '/lab/the-site-itself/' | relative_url }}),
   [the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}),
   [the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }}),

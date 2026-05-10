@@ -3,11 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
-post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual perf follow-ups through v249;
-all 63 scenes remain validated, and the public headless battle card is
+**Last updated:** 2026-05-09 (`v0.8.5-ps1` full 126-row headless
+performance matrix release; all 63 scenes remain validated, all 126
+high/low rows are timing-bearing, and the public headless battle card is
 `+0.3459%` over target / `99.6621%` target speed).
 
 ## Overall
@@ -154,9 +152,11 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.3-ps1` is the WALKSTUF1 compact foreground
-performance release. All 63 scenes remain validated, all 126 high/low variants
-remain routed through headless perf. The promoted
+Latest point release: `v0.8.5-ps1` is the full headless performance matrix
+release after the `v0.8.4-ps1` Scene Explorer thumbnail/content pass. All 63
+scenes remain validated, all 126 high/low variants are routed and
+timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured and green; `suzy3` is
+not a standalone scene route. The promoted
 `walkstuf1-compact-fgp3-v141` pass remains the release pack/data win, and the
 MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 `2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
@@ -224,10 +224,10 @@ subsequent BUILDING4 restore-minus-current pack pass, VISITOR3 low read-group
 prune, WALKSTUF1 high setup-prime retune, VISITOR3 high/low offscreen draw
 clips, BUILDING2 high restore-minus-current pass, BUILDING2 grouped-read
 passes, VISITOR3 low code-shape pass, and VISITOR3 v4 draw-tail trim
-stageguard pass are now superseded by the current public-capped `v0.8.3`
+stageguard pass are now superseded by the current public-capped `v0.8.5`
 rollup above.
 See
-[release-notes-0.8.3.md](release-notes-0.8.3.md).
+[release-notes-0.8.5.md](release-notes-0.8.5.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
@@ -288,6 +288,11 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
+  the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
+  and publishes `+0.3459%` over target / `99.6621%` target speed.
+- `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
+  scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both
   WALKSTUF1 tides to padded compact FGP3/v4 restore-minus-current packs,
   reducing high/low active loop time and visible CD blocking while preserving
@@ -606,6 +611,8 @@ baseline.
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes
+- [release-notes-0.8.4.md](release-notes-0.8.4.md) — custom Scene Explorer thumbnail release notes
 - [release-notes-0.5.0.md](release-notes-0.5.0.md) — freeplay/debug release notes
 - [release-notes-0.4.20.md](release-notes-0.4.20.md) — walking-loop release notes
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog

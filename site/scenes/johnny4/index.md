@@ -1,12 +1,37 @@
 ---
 layout: scene
-title: JOHNNY 4 — Writes a fresh SOS
+title: JOHNNY 4 — His own SOS bottle washes back
 ads: JOHNNY
 tag: 4
 slug: johnny4
 status: validated
-description: "JOHNNY.ADS scene 4: Writes a fresh SOS. Validated after full-frame foreground-only capture cleanup."
+description: "JOHNNY.ADS scene 4: Johnny's own SOS bottle washes back onto the shore. Validated 2026-05-08."
+image: /assets/img/johnny4-ps1-bottle-returns.png
+image_alt: "JOHNNY 4 on PS1 at night: Johnny stands on the left shoreline holding the bottle that just washed back, a red question-mark hovering above his head."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/johnny4-ps1-bottle-returns.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="JOHNNY 4 on PS1 at night: Johnny stands on the left shoreline holding the bottle that just washed back, a red question-mark hovering above his head." />
+  <figcaption>
+    JOHNNY 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The "wait, this is mine?" beat: Johnny is at the shoreline with
+    the SOS bottle he tossed out earlier, now washed back onto the
+    same beach, with a red question-mark hovering as the
+    realization-cue. (The outbound SOS-note beat is
+    <a href="{{ '/scenes/johnny2/' | relative_url }}">JOHNNY 2</a>;
+    this scene is the punchline that closes that loop.) The
+    validated pack uses a full-frame foreground-only keyed overlay
+    so the bottle pixels and SOS thought-bubble survive without
+    stale full-host overpaint or thin ocean-colored bubble streaks.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-03 after visual and audible signoff.
 
@@ -15,11 +40,9 @@ Validated on 2026-05-03 after visual and audible signoff.
 - ADS dispatch: <code>JOHNNY.ADS scene 4</code>
 - Slug: <code>johnny4</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny writes a new message in a bottle and throws it back out.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny's SOS bottle — the one he tossed out earlier — washes back onto the shore. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "writes a fresh SOS" caption-mapping guess was wrong (that's the outbound beat; this scene is the gag where the bottle comes back to him).
 
 ### Validation note
 

@@ -33,7 +33,7 @@ at
 [`TRANSITION_PREFETCH_SCHEMA.md`]({{ site.github_url }}/blob/main/docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md).
 
 This file documents the post-processed planning artifacts generated from
-`scene_analysis_output_2026-03-17.json`. It exists so transition and
+[`scene_analysis_output_2026-03-17.json`]({{ site.github_url }}/blob/main/docs/ps1/research/generated/scene_analysis_output_2026-03-17.json). It exists so transition and
 prefetch studies target the same field names the manifest uses.
 
 If you paid for this, you were cheated. Open source and free.
@@ -202,4 +202,9 @@ where the planner guessed wrong.
 ## Source on GitHub
 
 - [`docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md`]({{ site.github_url }}/blob/main/docs/ps1/research/TRANSITION_PREFETCH_SCHEMA.md)
+  — canonical schema doc; the field tables above are derived from it.
+- [`docs/ps1/research/generated/scene_analysis_output_2026-03-17.json`]({{ site.github_url }}/blob/main/docs/ps1/research/generated/scene_analysis_output_2026-03-17.json)
+  — input file the transition + prefetch planning artifacts above
+  were generated from; named in the page intro.
 - [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  — runtime consumer; the prefetch decision logic lives here.

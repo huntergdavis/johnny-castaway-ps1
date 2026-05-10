@@ -21,8 +21,8 @@ This file is the permanent reference for the left-side PS1 telemetry overlay. Wh
 | Field | Value |
 |---|---:|
 | Source path | `docs/PS1_LEFT_DEBUG_PANEL.md` |
-| Lines | 105 |
-| Approx. words | 639 |
+| Lines | 106 |
+| Approx. words | 696 |
 | Code fences | 0 |
 
 ## Outline

@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 16 — Spyglass, center
+title: STAND 16 — Spyglass, right side of island
 ads: STAND
 tag: 16
 slug: stand16
 status: validated
-description: "STAND.ADS scene 16: Spyglass, center. Validated on PS1."
+description: "STAND.ADS scene 16: Johnny stands on the right side of the island and looks around with a spyglass. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_C S: spyglass + look-around. Near-duplicate of stand15.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands on the right side of the island and looks around the horizon with a spyglass — the right-side variant of the spyglass-search pose (compare STAND 15). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "spyglass, center" caption-mapping had the spyglass right but the position wrong.
 
 ## Validation notes
 

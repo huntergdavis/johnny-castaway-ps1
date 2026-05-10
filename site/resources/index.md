@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 487 source and generated runtime assets indexed for the site.
+subtitle: 508 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -224,7 +224,7 @@ for the practical porting path.
 ## Original screens
 
 <table>
-<caption class="visually-hidden">Original screens — 52 files, listed by name with byte size and a link to the source file on GitHub.</caption>
+<caption class="visually-hidden">Original screens — 73 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>INTRO.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/INTRO.SCR">source</a></td></tr>
@@ -247,6 +247,12 @@ for the practical porting path.
 <tr><td><code>SXAC8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXAC8.SCR">source</a></td></tr>
 <tr><td><code>SXAC9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXAC9.SCR">source</a></td></tr>
 <tr><td><code>SXBL1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL1.SCR">source</a></td></tr>
+<tr><td><code>SXBL2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL2.SCR">source</a></td></tr>
+<tr><td><code>SXBL3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL3.SCR">source</a></td></tr>
+<tr><td><code>SXBL4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL4.SCR">source</a></td></tr>
+<tr><td><code>SXBL5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL5.SCR">source</a></td></tr>
+<tr><td><code>SXBL6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL6.SCR">source</a></td></tr>
+<tr><td><code>SXBL7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXBL7.SCR">source</a></td></tr>
 <tr><td><code>SXFI1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXFI1.SCR">source</a></td></tr>
 <tr><td><code>SXFI2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXFI2.SCR">source</a></td></tr>
 <tr><td><code>SXFI3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXFI3.SCR">source</a></td></tr>
@@ -266,15 +272,30 @@ for the practical porting path.
 <tr><td><code>SXMA3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA3.SCR">source</a></td></tr>
 <tr><td><code>SXMA4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA4.SCR">source</a></td></tr>
 <tr><td><code>SXMA5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA5.SCR">source</a></td></tr>
+<tr><td><code>SXMG1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMG1.SCR">source</a></td></tr>
+<tr><td><code>SXMG2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMG2.SCR">source</a></td></tr>
+<tr><td><code>SXST1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST1.SCR">source</a></td></tr>
 <tr><td><code>SXST10.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST10.SCR">source</a></td></tr>
 <tr><td><code>SXST11.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST11.SCR">source</a></td></tr>
 <tr><td><code>SXST12.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST12.SCR">source</a></td></tr>
 <tr><td><code>SXST15.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST15.SCR">source</a></td></tr>
 <tr><td><code>SXST16.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST16.SCR">source</a></td></tr>
+<tr><td><code>SXST2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST2.SCR">source</a></td></tr>
+<tr><td><code>SXST3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST3.SCR">source</a></td></tr>
+<tr><td><code>SXST4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST4.SCR">source</a></td></tr>
+<tr><td><code>SXST5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST5.SCR">source</a></td></tr>
 <tr><td><code>SXST6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST6.SCR">source</a></td></tr>
 <tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
 <tr><td><code>SXST9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST9.SCR">source</a></td></tr>
+<tr><td><code>SXSU1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXSU1.SCR">source</a></td></tr>
+<tr><td><code>SXSU2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXSU2.SCR">source</a></td></tr>
+<tr><td><code>SXVI1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI1.SCR">source</a></td></tr>
+<tr><td><code>SXVI3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI3.SCR">source</a></td></tr>
+<tr><td><code>SXVI4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI4.SCR">source</a></td></tr>
+<tr><td><code>SXVI5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI5.SCR">source</a></td></tr>
+<tr><td><code>SXVI6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI6.SCR">source</a></td></tr>
+<tr><td><code>SXVI7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXVI7.SCR">source</a></td></tr>
 <tr><td><code>SXWK1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK1.SCR">source</a></td></tr>
 <tr><td><code>SXWK2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK2.SCR">source</a></td></tr>
 <tr><td><code>SXWK3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK3.SCR">source</a></td></tr>

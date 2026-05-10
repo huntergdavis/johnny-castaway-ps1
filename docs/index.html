@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -72,12 +72,12 @@
   "applicationCategory": "GameApplication",
   "applicationSubCategory": "Screensaver",
   "operatingSystem": "Sony PlayStation",
-  "softwareVersion": "0.8.3",
-  "dateModified": "2026-05-08",
+  "softwareVersion": "0.8.5",
+  "dateModified": "2026-05-09",
   "isAccessibleForFree": true,
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
   "codeRepository": "https://github.com/huntergdavis/johnny-castaway-ps1",
-  "downloadUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.3-ps1",
+  "downloadUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.5-ps1",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -88,7 +88,7 @@
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD",
-    "url": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.3-ps1"
+    "url": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.5-ps1"
   }
 }
 </script>
@@ -128,7 +128,7 @@
     <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
   </div>
   <div class="hero-text">
-    <p class="hero-eyebrow">A fan port · v0.8.3</p>
+    <p class="hero-eyebrow">A fan port · v0.8.5</p>
     <h1 id="hero-title">Johnny Castaway PS1</h1>
     <p class="tagline">A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
     <div class="hero-cta">
@@ -160,8 +160,22 @@
   </figure>
 </section>
 
+<figure style="margin: 2rem auto; text-align: center;" aria-label="Scene Explorer running on PS1">
+  <a href="./docs/pause-menu/#scene-explorer">
+    <img src="./assets/img/scene-explorer-fishing5.png" width="640" height="448" loading="lazy" decoding="async" style="max-width: 100%; height: auto;" alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, 5 of 63 validated, FISHING 5 — Eaten by a shark, Family Fishing, Frames 69; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2, navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+  </a>
+  <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
+    <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
+    straight to any of the 63 scenes. Each entry shows a
+    captured-on-PS1 thumbnail, family, and frame count. New in
+    <a href="./releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes"><code>v0.8.4-ps1</code></a>;
+    this screenshot was itself captured headlessly via
+    <a href="./docs/scripted-input/">the scripted-input harness</a>.
+  </figcaption>
+</figure>
+
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> <a href="./releases/">v0.8.3-ps1</a> <small>· <time datetime="2026-05-08">2026-05-08</time></small></span>
+  <span><strong>Latest:</strong> <a href="./releases/">v0.8.5-ps1</a> <small>· <time datetime="2026-05-09">2026-05-09</time></small></span>
   <a class="pill pill--ok" href="./scenes/">63 / 63 scenes validated</a>
   <a class="pill pill--ok" href="./perf/">99.7% target speed</a>
   <a class="pill pill--info" href="./docs/build/">PSn00bSDK 0.24</a>
@@ -192,11 +206,16 @@ bugfixing, performance, and feature polish; the
 <a href="./lab/v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1</code> line</a>
 keeps long randomized runs stable, the <a href="./releases/#v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0</code> performance
 baseline</a>
-promoted the headless optimization methodology, and the
+promoted the headless optimization methodology, the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
-outliers — the matrix now averages
+outliers, <code class="language-plaintext highlighter-rouge">v0.8.4</code> walked all 63 packs on hardware to ship custom
+chapter-select thumbnails plus a scene-page reconciliation against the
+on-PS1 packs, and <code class="language-plaintext highlighter-rouge">v0.8.5</code> promotes the full 126-row timing-bearing
+matrix — the public battle card now averages
 <a href="./docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.7%</code> target speed</a>
-at native rate or better. The two ledgers live separately: the
+across the timing-bearing rows (public-capped; the
+optimization-side raw signed average is past target). The two
+ledgers live separately: the
 <a href="./scenes/">scene ledger</a> tracks visual
 signoff and the
 <a href="./perf/">performance battle card</a> tracks
@@ -253,7 +272,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./lab/">Magazine-length Lab</a>
-    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
+    <p>Sixteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the chapter-select grind, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="./hack/">Curious hacker path</a>
@@ -306,9 +325,10 @@ with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
 <a href="./docs/pause-menu/">pause menu</a> reachable
 with Start (the original had none), with sub-screens for Scene
-Set, Freeplay Options, Controls, World Options, Holidays, Set
-Island Position, Accessibility, Sound Test, System, Set Time/Date,
-and Set RNG Seed. An optional
+Set, Scene Explorer (the chapter-select grid with on-PS1-captured
+thumbnails for every scene), Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound Test,
+System, Set Time/Date, and Set RNG Seed. An optional
 <a href="./releases/#v060-ps1--ocean-ambience">ocean-ambience loop</a>
 on a dedicated SPU voice. <a href="./docs/glossary/#frog-clock">Frog-clock loading transitions</a> between
 scene swaps. The website
@@ -353,20 +373,29 @@ work. Five most recent, newest first:</p>
 <ul class="devlog-list">
 
   <li>
-    <time datetime="2026-05-06">2026-05-06</time>
+    <time datetime="2026-05-08">2026-05-08</time>
     <div>
-      <a href="./lab/v081-mary4-freeze/">v0.8.1 — what the soak found that the matrix didn't</a>
-      <span class="summary">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</span>
-      <span class="summary devlog-read-time">~2 min read · 663 words</span>
+      <a href="./lab/chapter-select-grind/">The chapter-select grind</a>
+      <span class="summary">Walking all 63 packs on hardware again to fix the thumbnails — and the surprising number of caption-mismaps it caught.</span>
+      <span class="summary devlog-read-time">~4 min read · 1195 words</span>
     </div>
   </li>
 
   <li>
     <time datetime="2026-05-06">2026-05-06</time>
     <div>
-      <a href="./lab/from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
+      <a href="./lab/v081-mary4-freeze/">v0.8.1 — what the soak found that the matrix didn't</a>
+      <span class="summary">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</span>
+      <span class="summary devlog-read-time">~2 min read · 681 words</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-05-06">2026-05-06</time>
+    <div>
+      <a href="./lab/from-87-to-99-5/">From 87 to 99.7: the post-validation performance loop</a>
       <span class="summary">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</span>
-      <span class="summary devlog-read-time">~8 min read · 2091 words</span>
+      <span class="summary devlog-read-time">~8 min read · 2075 words</span>
     </div>
   </li>
 
@@ -375,7 +404,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/the-site-itself/">The site itself, as a small program</a>
       <span class="summary">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</span>
-      <span class="summary devlog-read-time">~13 min read · 3275 words</span>
+      <span class="summary devlog-read-time">~14 min read · 3626 words</span>
     </div>
   </li>
 
@@ -385,15 +414,6 @@ work. Five most recent, newest first:</p>
       <a href="./lab/build-farm/">The 24/7 Build Farm</a>
       <span class="summary">Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.</span>
       <span class="summary devlog-read-time">~1 min read · 279 words</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-04-26">2026-04-26</time>
-    <div>
-      <a href="./lab/regression-as-lifestyle/">Regression as a lifestyle</a>
-      <span class="summary">On this port, tests are not a CI checkbox. They are how the work thinks.</span>
-      <span class="summary devlog-read-time">~2 min read · 739 words</span>
     </div>
   </li>
 
@@ -494,7 +514,7 @@ the user supplies themselves.</p>
           Code: <a href="./legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./releases/">v0.8.3-ps1</a>)
+          (<a href="./releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 9 — Looks back inland
+title: STAND 9 — By the palm, looks around, adjusts pants
 ads: STAND
 tag: 9
 slug: stand9
 status: validated
-description: "STAND.ADS scene 9: Looks back inland. Validated on PS1."
+description: "STAND.ADS scene 9: Johnny stands by the palm tree, looks around, and adjusts his pants. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_D NW: taps foot, lifts hat, looks back inland.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands by the palm tree, looks around, and adjusts his pants — a tree-side variant of the standing-pose pants-adjust beat (compare STAND 2). Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "looks back inland" caption-mapping guess was wrong (the look-around pose is here but the headline beat is the pants-adjust).
 
 ## Validation notes
 

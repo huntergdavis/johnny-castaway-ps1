@@ -1,12 +1,39 @@
 ---
 layout: scene
-title: BUILDING 7 — Builds up the raft
+title: BUILDING 7 — Builds a fire, grills a fish, eats it
 ads: BUILDING
 tag: 7
 slug: building7
 status: validated
-description: "BUILDING.ADS scene 7: Builds up the raft. Validated on PS1."
+description: "BUILDING.ADS scene 7: Johnny builds a fire, grills a fish on it, and eats the fish. Validated 2026-05-08."
+image: /assets/img/building7-ps1-grill-fish.png
+image_alt: "BUILDING 7 on PS1 at night: Johnny crouches next to a small fire on the left shoreline, mid-grill of a caught fish."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/building7-ps1-grill-fish.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="BUILDING 7 on PS1 at night: Johnny crouches next to a small fire on the left shoreline, mid-grill of a caught fish." />
+  <figcaption>
+    BUILDING 7 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny is at the shoreline by his small fire, mid-grill — the
+    next beat eats the fish. (Compare
+    <a href="{{ '/scenes/building5/' | relative_url }}">BUILDING 5</a>,
+    where Johnny just builds the fire and sits by it without the
+    grill-and-eat continuation.) The packs were re-stitched so the
+    middle campfire interval comes from clean animated foreground
+    rows instead of stale full-host pixels, then converted to FGP3
+    with an explicit cleanup frame so the post-meal restore is
+    clean. The on-PS1 loop also overturned the original
+    <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
+    "builds up the raft" guess for this scene.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 after regenerating high/low packs through the generic
 normal/far-left/far-right foreground-only multi-view stitch. The middle
@@ -23,11 +50,9 @@ scene.
 - ADS dispatch: <code>BUILDING.ADS scene 7</code>
 - Slug: <code>building7</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny gathers wood and adds it to the raft.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny builds a small fire on the beach, grills a fish on it, and eats the fish. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "builds up the raft" caption-mapping guess was wrong (the raft-building gag is elsewhere).
 
 ### How this scene gets validated
 

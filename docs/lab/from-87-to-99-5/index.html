@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
-  <title>From 87 to 99.5: the post-validation performance loop — Johnny Castaway PS1</title>
-  <meta name="description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" /><meta property="og:title"        content="From 87 to 99.5: the post-validation performance loop — Johnny Castaway PS1" />
+  <title>From 87 to 99.7: the post-validation performance loop — Johnny Castaway PS1</title>
+  <meta name="description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" /><meta property="og:title"        content="From 87 to 99.7: the post-validation performance loop — Johnny Castaway PS1" />
   <meta property="og:description"  content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-05-06T00:00:00-04:00" />
   <meta property="article:author"         content="Hunter Davis" />
   <meta property="article:section"        content="Lab" />
@@ -15,7 +15,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -63,19 +63,19 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99.5: the post-validation performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99.7: the post-validation performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
 }
 </script><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "From 87 to 99.5: the post-validation performance loop",
+  "headline": "From 87 to 99.7: the post-validation performance loop",
   "description": "A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.",
   "datePublished": "2026-05-06T00:00:00-04:00",
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2174,
+  "wordCount": 2158,
   "timeRequired": "PT8M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
@@ -131,14 +131,14 @@
 
     <header class="page-header">
       <p class="eyebrow">Lab · Methodology</p>
-      <h1>From 87 to 99.5: the post-validation performance loop</h1>
+      <h1>From 87 to 99.7: the post-validation performance loop</h1>
       <p class="subtitle">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</p>
         <p class="pub-date">
           Published <time datetime="2026-05-06">May 6, 2026</time>
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2091 words
+          ~8 min read · 2075 words
         </p>
 
       <hr class="rule" />
@@ -187,12 +187,14 @@ validated scene and the widest one — graduated from “validated”
 to “optimized validated outlier.”
 <a href="../v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
-the VISITOR3 and WALKSTUF1 outliers. The current branch at
-<code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> is at <strong>-0.3% over target /
-99.7% target speed</strong>, with
-roughly <strong>17.7 percentage points</strong> of over-target gap closed and
-about <strong>13.2 target-speed points</strong> added. This article is what
+matrix mean untouched, <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> shipped the Scene Explorer thumbnail
+reconciliation, and <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> promotes the full 126-row timing-bearing
+matrix. The current public-capped average at <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> is
+<strong>+0.3459% over target / 99.6621% target speed</strong>, with roughly <strong>17.05
+percentage points</strong> of over-target gap closed and about <strong>12.56 target-speed
+points</strong> added. The optimization-side
+raw signed average sits past target — the public number is the
+conservative read this site publishes. This article is what
 that loop actually looked like.</p>
 
 <h2 id="two-ledgers-on-purpose">Two ledgers, on purpose</h2>
@@ -210,7 +212,7 @@ that loop actually looked like.</p>
 
 <h2 id="the-headless-harness">The headless harness</h2>
 
-<p><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a> boots a deterministic DuckStation in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against a <a href="../../docs/glossary/#bootmode"><code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a> that names the scene, tide, and seed. The PS1 build runs the scene to a fixed end frame, dumps <code class="language-plaintext highlighter-rouge">perf-log.txt</code>, and exits. The matrix runner walks every (scene, tide) row, records the values, and writes a CSV row keyed by run ID and date.</p>
 
 <p>Two numbers from the log do most of the work:</p>
 
@@ -221,7 +223,7 @@ that loop actually looked like.</p>
 
 <p>Their ratio is the row’s <code class="language-plaintext highlighter-rouge">target_speed_pct</code>. Their difference is <code class="language-plaintext highlighter-rouge">over_target_pct</code>. Anything above zero means the row missed; the matrix mean is what the home-page status pill reads from.</p>
 
-<p>The harness writes one JSONL line per run into a scratch directory and one row into the long-form table. The scratch directory is local-only — it’s the experimentation log nobody else reads. The long-form table lives at <code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code> and is the decision record that survives branch rebases. Every accepted experiment, every rejected one, gets a row.</p>
+<p>The harness writes one JSONL line per run into a scratch directory and one row into the long-form table. The scratch directory is local-only — it’s the experimentation log nobody else reads. The long-form table lives at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a> and is the decision record that survives branch rebases. Every accepted experiment, every rejected one, gets a row.</p>
 
 <h2 id="accepted-experiments">Accepted experiments</h2>
 
@@ -283,23 +285,19 @@ that loop actually looked like.</p>
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
-The matrix-wide aggregate is now slightly under target – the remaining
+<p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
+The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> there are no red or yellow rows left on the
-<a href="../../perf/">battle card</a>. VISITOR3 high/low are both orange
-at roughly <code class="language-plaintext highlighter-rouge">96.5%</code>/<code class="language-plaintext highlighter-rouge">95.3%</code> after the high setup-prime/resident-copy lane and the low
-resident-copy/no-op residual compaction lane. The fifteen orange rows
-(<code class="language-plaintext highlighter-rouge">95</code>–<code class="language-plaintext highlighter-rouge">99%</code>) include WALKSTUF1 at <code class="language-plaintext highlighter-rouge">95.6%</code>/<code class="language-plaintext highlighter-rouge">95.8%</code> after its v0.8.3
-compact-FGP3/v4 pass, BUILDING2 high/low at <code class="language-plaintext highlighter-rouge">97.6%</code>, VISITOR5 high/low,
-and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1 /
-VISITOR3 / wide-action cluster still finishing scheduler-owned read
-timing and selective-preprocessing work. The optimization plan at
-<code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code> § 7 and § 8 lists about
+As of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> there are no red or yellow rows left on the
+<a href="../../perf/">battle card</a>: <code class="language-plaintext highlighter-rouge">111</code> rows are green and <code class="language-plaintext highlighter-rouge">15</code>
+remain orange. The current under-99 focus set is WALKSTUF1 high/low,
+VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
+The optimization plan at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a> § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
@@ -378,7 +376,7 @@ will join the rejected log.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

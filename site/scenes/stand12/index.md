@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 12 — Looks out over the right water
+title: STAND 12 — Looks forward, adjusts hat
 ads: STAND
 tag: 12
 slug: stand12
 status: validated
-description: "STAND.ADS scene 12: Looks out over the right water. Validated on PS1."
+description: "STAND.ADS scene 12: Johnny looks forward and adjusts his hat. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_F S: looks out over the right water.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny looks forward and adjusts his hat — a forward-facing variant of the STAND family's hat-adjust pose. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "looks out over the right water" caption-mapping guess was wrong.
 
 ## Validation notes
 

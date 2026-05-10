@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Era Timeline</h1>
       <p class="subtitle">How the PS1 branch changed jobs without changing standards.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1140 words
+          ~4 min read · 1208 words
         </p>
 
       <hr class="rule" />
@@ -264,10 +264,16 @@ that closed the headless matrix gap from <code class="language-plaintext highlig
 in <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> that fixed a clean-rect pressure freeze the
 per-commit matrix never reached. <strong><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code></strong> and
 <strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong> (<strong>2026-05-07</strong> / <strong>2026-05-08</strong>) closed the
-VISITOR3 and WALKSTUF1 outliers — the matrix mean now sits at
-<code class="language-plaintext highlighter-rouge">99.7%</code> target speed,
-slightly under target across all 126 timing-bearing rows after the
-missing-scene timing refresh.
+VISITOR3 and WALKSTUF1 outliers — the public-capped matrix mean
+now sits at <code class="language-plaintext highlighter-rouge">99.7%</code> target
+speed across the 120 timing-bearing rows.
+<strong><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code></strong> (<strong>2026-05-08</strong>) is the
+<a href="../../lab/chapter-select-grind/">chapter-select grind</a>:
+no perf code or pack content changed, but every one of the 63 packs
+got walked on hardware and the per-scene website metadata got
+reconciled against what the discs actually play. The loop also
+caught a manifest gap that had silently dropped 21 of the 63 chapter-
+select thumbnails from the CD.
 The lab essays on each arc are the deep dives; this entry is
 the chronological anchor.</p>
 </section>
@@ -296,6 +302,9 @@ the second ledger that opened after v0.7.0.</li>
   <li><a href="../../lab/v081-mary4-freeze/">Lab: v0.8.1 MARY 4 freeze</a>
 — stability follow-on; the soak loop catching what the
 per-commit matrix didn’t.</li>
+  <li><a href="../../lab/chapter-select-grind/">Lab: the chapter-select grind</a>
+— retrospective on the v0.8.4 metadata-reconciliation loop and the
+manifest gap it surfaced.</li>
 </ul>
 
   </div>
@@ -316,7 +325,7 @@ per-commit matrix didn’t.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

@@ -20,7 +20,7 @@ the GitHub release pages are at
 [{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
 <p class="hero-cta" markdown="0">
-  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download <code>.bin</code> <small>(~72&nbsp;MiB)</small></a>
+  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download <code>.bin</code> <small>(~76&nbsp;MiB)</small></a>
   <a class="btn"              href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.cue">Download <code>.cue</code> <small>(71&nbsp;B)</small></a>
   <a class="btn btn--small"   href="{{ '/releases/' | relative_url }}">Release notes</a>
 </p>
@@ -28,7 +28,7 @@ the GitHub release pages are at
 The CD image ships as a **.bin / .cue** pair. Both files belong in
 the same directory. Sizes shown are for the
 [`{{ site.release.tag }}`]({{ site.github_url }}/releases/tag/{{ site.release.tag }})
-upload — the `.bin` is ~76&nbsp;MB (~72&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
+upload — the `.bin` is ~79&nbsp;MB (~76&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
 payload routed onto the disc.
 
 ## Quickstart (DuckStation) {#emulator}
@@ -70,9 +70,12 @@ optional and reachable with **Start**.
 | Cross             | Confirm / select                                 |
 | Circle            | Back from any menu or submenu                    |
 
-Inside the pause menu you can: enter or exit Freeplay, choose a
+Inside the pause menu you can: enter or exit [Freeplay]({{ '/docs/glossary/#freeplay' | relative_url }}), choose a
 Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits,
-Visitors, Activities, or Misc & Suzy), mute sound, toggle closed
+Visitors, Activities, or Misc & Suzy), open the
+[Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
+chapter-select grid to jump straight to any of the 63 scenes (each
+with an on-PS1-captured thumbnail), mute sound, toggle closed
 captions, force day/night, tide, raft, and holidays, advance to
 the next scene, set the in-game date, move the island anchor, set
 the RNG seed, and open the sound test.

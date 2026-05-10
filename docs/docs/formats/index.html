@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.3; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.5; built 2026-05-10" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -142,7 +142,7 @@ written after a bug.</p>
 <ul class="doc-grid">
   <li>
     <a href="./pack-payload/">FG2 pack payload</a>
-    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <code>foreground_pilot.c</code>.</p>
+    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code>foreground_pilot.c</code></a>.</p>
   </li>
   <li>
     <a href="./pack-manifest/">FG2 pack manifest</a>
@@ -173,7 +173,7 @@ payload. It writes the manifest beside it. It optionally derives a
 dirty-region template from the TTM bytecode for the same scene.</li>
   <li>The pack manifest and the prefetch schema are read by post-processing
 tools that decide pack granularity and likely pack-to-pack transitions.</li>
-  <li><code class="language-plaintext highlighter-rouge">mkpsxiso</code> reads <code class="language-plaintext highlighter-rouge">cd_layout.xml</code> and stamps the chosen FG2 packs onto
+  <li><a href="../glossary/#mkpsxiso"><code class="language-plaintext highlighter-rouge">mkpsxiso</code></a> reads <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/cd_layout.xml"><code class="language-plaintext highlighter-rouge">cd_layout.xml</code></a> and stamps the chosen FG2 packs onto
 <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> at deterministic sector offsets.</li>
   <li>At runtime, <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> calls <code class="language-plaintext highlighter-rouge">CdSearchFile</code> on <code class="language-plaintext highlighter-rouge">FG\\&lt;NAME&gt;.FG2</code>,
 reads the 40-byte header, walks the entry table, and presents one diff
@@ -225,7 +225,7 @@ table the SDL compat lite contract sits on top of.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.3-ps1</a>)
+          (<a href="../../releases/">v0.8.5-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

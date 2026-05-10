@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.3-ps1
+eyebrow: 2025-10 to v0.8.5-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.3-ps1.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, and the v0.8.5-ps1 full headless matrix release.
 ---
 
 <details class="page-toc" markdown="1">
@@ -51,8 +51,8 @@ precompiled macOS toolchain was attempted and abandoned (missing
 Docker: `config/ps1/Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK's toolchain file; CD packaging via
-[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script (`build-ps1.sh`, later
-`rebuild-and-let-run.sh`) on top.
+[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script ([`build-ps1.sh`]({{ site.github_url }}/blob/main/scripts/build-ps1.sh), later
+[`rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)) on top.
 
 Core implementation came next. The plan was: port only the platform
 layer, leave the engine alone. That principle held: only three files
@@ -69,7 +69,7 @@ What didn't work, in this era:
   buffers plus per-frame text I/O changed timing in ways that
   showed up as scene playback corruption. The interim answer was
   "visual debugging" -- colored pixels via `LoadImage`, the
-  five-panel telemetry overlay, and `debugMode=0` to disable
+  [five-panel telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}), and `debugMode=0` to disable
   noisy text paths. Reliable TTY printf would not return until
   **2026-04-25**.
 - **A faithful TTM/ADS interpreter on the PS1 produced
@@ -150,7 +150,7 @@ on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
 controller input, SPU playback.
 
-Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the `foreground_pilot.c`
+Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
 runtime); externally it is "PS1 scene playback." The decisive
 property is that the PS1 stops carrying state that the desktop
 engine built up across scenes. The disappearing-Johnny class doesn't
@@ -358,7 +358,7 @@ component-completeness phases:
   scene endpoints instead of teleporting, with palm-tree occlusion,
   wave motion, holiday restamping, and a persistent walk-erase buffer
   that survived a long DuckStation soak.
-- **Freeplay/debug mode.** `v0.5.0-ps1` made Johnny controllable.
+- **[Freeplay/debug mode]({{ '/docs/glossary/#freeplay' | relative_url }}).** `v0.5.0-ps1` made Johnny controllable.
   The mode launches from the pause menu, shows the original meanwhile
   frog during teardown/rebuild, lets the player walk with D-pad or
   analog, fish, clear the screen, and change world state immediately.
@@ -378,7 +378,7 @@ component-completeness phases:
   [/scenes/]({{ '/scenes/' | relative_url }}).
 - Performance baseline:
   **{{ site.release.perf_target_speed_pct }}%** target speed across
-  all 126 timing-bearing scene/tide rows on the headless-perf
+  the 120 timing-bearing scene/tide rows on the headless-perf
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
@@ -386,12 +386,21 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
-- Latest performance release: **`v0.8.3-ps1`** — promoted the
-  WALKSTUF1 compact FGP3/v4 foreground packs; after the follow-up
-  missing-scene timing refresh, all 126 timing-bearing rows now average
-  slightly under target at
+- Latest performance release: **`v0.8.5-ps1`** — promoted the full
+  126-row timing-bearing headless matrix as the public release baseline:
+  `+0.3459%` over target / `99.6621%` target speed.
+- Latest content release: **`v0.8.4-ps1`** — custom on-PS1 thumbnails
+  for all 63 [chapter-select]({{ '/docs/glossary/#scene-explorer' | relative_url }}) grid slots, with scene titles and bodies
+  reconciled against the on-PS1 packs. The earlier caption-mapping
+  audit got several scenes mismapped (boot / octopus / coconut-plane /
+  jog) — corrected from direct on-PS1 observation. New 5-surface
+  helper at [`scripts/apply-scene-correction.py`]({{ site.github_url }}/blob/main/scripts/apply-scene-correction.py). No perf or pack
+  content changed.
+- Previous performance release: **`v0.8.3-ps1`** — promoted the
+  WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
+  bearing rows now average slightly under target at
   `{{ site.release.perf_target_speed_pct }}%` target speed.
-- Previous performance release: **`v0.8.2-ps1`** — promoted the
+- Earlier performance release: **`v0.8.2-ps1`** — promoted the
   VISITOR3 guarded-read path and kept the 63-scene validation bar
   intact while the headless battle card stayed near target.
 - Latest stability release: **`v0.8.1-ps1`** — clean-rect
@@ -416,7 +425,7 @@ component-completeness phases:
 - [PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
   sectors) at `{{ site.release.tag }}` after legacy ADS/TTM/FG1
   paths were stripped from the linker pass.
-- Routed CD image: **~76&nbsp;MB** at `{{ site.release.tag }}`
+- Routed CD image: **~79&nbsp;MB** at `{{ site.release.tag }}`
   (mostly FG2 pack payload routed selectively onto the disc).
 - Generated FG2 corpus on disk: **126 packs** (high-tide +
   low-tide for all 63 scenes), **~343&nbsp;MB**, routed onto

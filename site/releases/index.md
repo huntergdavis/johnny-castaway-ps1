@@ -22,12 +22,82 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
-### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads
+### `v0.8.5-ps1` — Full 126-row headless performance matrix
+<time datetime="2026-05-09"><em>2026-05-09</em></time>
+
+A performance/methodology point release after `v0.8.4-ps1`. It keeps the
+custom Scene Explorer thumbnails and scene-page reconciliation from the
+chapter-select grind, then promotes the current headless matrix as the
+public baseline.
+
+- **All 126 high/low rows are timing-bearing.** The matrix now has active-loop
+  timing for every routed scene/tide variant: 63 scenes x 2 tide rows.
+- **Public rollup is effectively at native speed.** The public-capped average
+  is `+0.3459%` over target / `99.6621%` target speed; the raw signed
+  optimization matrix is `-0.4226%` / `100.4459%`.
+- **The methodology has removed about 17.05 over-target points.** Since the
+  compact full-matrix baseline, the accepted promotions add about `12.56`
+  target-speed points while keeping the visual + audible scene bar intact.
+- **The missing-scene confusion is closed.** MARY1/2/3 and SUZY1/2 are
+  measured and green; `suzy3` is not a standalone Johnny Castaway scene route.
+- **Latest unpromoted probes are recorded, not hidden.** The recent WALKSTUF1
+  cleanup-gap/core/edge experiments are logged as misses because their hidden
+  refill regressions outweighed the visible timing wins.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.5/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.5-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.8.4-ps1` — Custom chapter-select thumbnails for all 63 scenes
+<time datetime="2026-05-08"><em>2026-05-08</em></time>
+
+A content-and-UX point release. The in-game Scene Explorer now ships a
+custom on-PS1-captured thumbnail for every one of the 63 scenes, and the
+scene-page metadata across the website is reconciled against what the
+discs actually play.
+
+- **Every Scene Explorer slot has a custom thumbnail.** Each pack was
+  booted under DuckStation, played to a representative frame, captured
+  at native resolution, and encoded as a 320×240 RGB555 SCR. No scene
+  falls back to the auto-generated frame.
+- **Scene titles and bodies match the on-PS1 packs.** Many of the prior
+  caption-mapping audit guesses were wrong once watched on hardware. Per-
+  scene commits lift the "(Guess.)" hedging on every page where it
+  appeared.
+- **Several caption-to-scene mismaps caught.** "He catches a boot" is
+  MARY 2, not FISHING 2; the octopus-steals-fish gag is FISHING 3, not
+  the audit's "crab snaps his nose"; coconut-plane-hit is VISITOR 5, not
+  VISITOR 4; jogs-around-island is WALKSTUF 3, not WALKSTUF 1.
+- **One missing-manifest bug fixed mid-loop.** `config/ps1/cd_layout.xml`
+  only listed 42 of 63 SCRs; the other 21 were on disk but never made it
+  onto the CD. Manifest now lists all 63.
+- **`scripts/apply-scene-correction.py` is the new in-loop tool.** Single
+  command updates all five sources of truth per scene (page index.md,
+  scenes.yml notes, scene-status.md Notes, thumbnail SCR, progress
+  tracker) in one pass, with idempotent failure mode so a re-run can't
+  silently clobber a prior fix.
+
+No perf code or pack content changed; the 120 timing-bearing rows on
+[/perf/]({{ '/perf/' | relative_url }}) average the same `+0.5576%` public
+over target / `99.4669%` public target speed as v0.8.3-ps1. Scene
+validation scope is unchanged: 63 / 63 remain signed off.
+
+The retrospective on the loop is at
+[/lab/chapter-select-grind/]({{ '/lab/chapter-select-grind/' | relative_url }}).
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.4-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
 <time datetime="2026-05-08"><em>2026-05-08</em></time>
 
 This point release promotes the WALKSTUF1 compact foreground pack pass and
-records the later VISITOR3 motion-copy payload follow-up as the current
-headless performance baseline.
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.
 
 - **WALKSTUF1 gets compact FGP3/v4 packs.** Both tides move from PAL4/FGP2 to
   padded compact FGP3/v4 restore-minus-current packs while preserving the
@@ -37,29 +107,13 @@ headless performance baseline.
   1491/1426`; low improves `1604/1407 -> 1489/1427`.
 - **Visible CD pressure falls.** High blocking drops `275 -> 85`; low blocking
   drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
-- **Battle card is now public-capped at native speed.** After the follow-up
-  MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-  ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-  VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual
-  passes through v248, all 126 timing-bearing rows average `+0.3558%` public
-  over target / `99.6529%` public target speed; the raw signed CSV is
-  `-0.4126%` / `100.4367%` for
-  optimization work.
-- **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
-  VISITOR3 tides, high-tide frame `115`, shared frames `118`/`124`, and
-  high-only frame `117`, high-only re-anchored frames `127`/`126`/`125`, and
-  the high-only `320 KiB` setup-prime cap, the guarded low `150..174`
-  second setup segment, the low frame-125/frame-126 resident re-anchor, and
-  the low frame-118/frame-127 resident copies, the high frame-127/frame-130
-  resident-copy compaction, plus the low frame-114/frame-117 no-op residual
-  compaction now
-  move already-composited
-  background rows or CD residency out of the active loop;
-  the v204/v205 setup segments keep low sectors `281..305` and high sectors
-  `277..293` resident before the active loop. High improves `1118/1028 ->
-  1075/1037`, low improves `1126/1025 -> 1086/1035`, blocking drops
-  `150/170 -> 59/93`, and the packs
-  keep fixed LBAs and the `215040` byte PS-EXE bucket.
+- **Battle card is now public-capped at native speed.** The 120 timing-bearing
+  rows average `+0.5576%` public over target / `99.4669%` public target speed;
+  the raw signed CSV remains `-0.2497%` / `100.2899%` for optimization work.
+- **VISITOR3 threshold probing is closed for this baseline.** Lowering the
+  fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
+  keeps the accepted guard and moves future VISITOR3 work back to generated
+  scheduler/data-shape lanes.
 
 The post-validation perf retrospective at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})

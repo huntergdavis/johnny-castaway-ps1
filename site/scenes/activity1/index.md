@@ -1,12 +1,37 @@
 ---
 layout: scene
-title: ACTIVITY 1 — Climbs the palm and dives
+title: ACTIVITY 1 — Climbs the palm and belly-flops
 ads: ACTIVITY
 tag: 1
 slug: activity1
 status: validated
-description: "ACTIVITY.ADS scene 1: Climbs the palm and dives. Validated on PS1."
+description: "ACTIVITY.ADS scene 1: Johnny climbs the palm and belly-flops into the water. Validated on PS1."
+image: /assets/img/activity1-ps1-bellyflop.png
+image_alt: "ACTIVITY 1 on PS1 at night: Johnny mid-air, arms outstretched, having just leapt off the palm tree, on his way to a belly-flop into the water."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity1-ps1-bellyflop.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="ACTIVITY 1 on PS1 at night: Johnny mid-air, arms outstretched, having just leapt off the palm tree, on his way to a belly-flop into the water." />
+  <figcaption>
+    ACTIVITY 1 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Johnny is mid-air, arms outstretched, having just leapt off the
+    palm — the sloppy-impact variant of the climb-and-water arc.
+    (<a href="{{ '/scenes/activity4/' | relative_url }}">ACTIVITY 4</a>
+    is the clean-dive variant.) The packs were rebuilt from a
+    capped two-beat capture so the animal scorecards (source frames
+    148 and 348) hold; <code>patch-activity1-tree-foreground.py</code>
+    keys foreground-only tree-band contamination against the full-host
+    composite so the pre-pop hat pixels and tree-occlusion ghosts are
+    gone in both high and low loops.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-05 after rebuilding high/low packs from a capped
 two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`).
@@ -20,11 +45,12 @@ pixels and tree-occlusion ghosts are gone in both loops.
 - ADS dispatch: <code>ACTIVITY.ADS scene 1</code>
 - Slug: <code>activity1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny climbs the palm tree and does a dive off it — the perfect-flip variant.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny climbs the palm tree and belly-flops into the water — the
+sloppy-impact variant. (Compare ACTIVITY 4, which is the clean-dive
+variant of the same climb-and-water arc.) Confirmed by direct on-PS1
+playback observation while capturing the chapter-select thumbnail.
 
 ### How this scene gets validated
 

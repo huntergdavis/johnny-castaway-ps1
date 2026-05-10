@@ -12,6 +12,12 @@
     }
   ],
   "items": [{
+      "id": "https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/",
+      "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/chapter-select-grind/",
+      "title": "The chapter-select grind",
+      "date_published": "2026-05-08T00:00:00-04:00",
+      "summary": "A retrospective on the v0.8.4 chapter-select-thumbnail loop — what it took to ship a custom on-PS1 thumbnail for every scene and reconcile the website against the packs that actually play."
+    },{
       "id": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
       "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
       "title": "v0.8.1 — what the soak found that the matrix didn't",
@@ -20,7 +26,7 @@
     },{
       "id": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
       "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
-      "title": "From 87 to 99.5: the post-validation performance loop",
+      "title": "From 87 to 99.7: the post-validation performance loop",
       "date_published": "2026-05-06T00:00:00-04:00",
       "summary": "A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log."
     },{

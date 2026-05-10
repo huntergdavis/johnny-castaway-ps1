@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 339 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 341 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -64,6 +64,8 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.1/' | relative_url }}">v0.8.1-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }}">v0.8.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.2.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }}">v0.8.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.3.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }}">v0.8.4-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.4.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.5/' | relative_url }}">v0.8.5-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.5.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-plan-0.7.1/' | relative_url }}">v0.7.1-ps1 Feature Notes</a><p><code>docs/ps1/release-plan-0.7.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-explorer-design/' | relative_url }}">Scene Explorer — design doc</a><p><code>docs/ps1/scene-explorer-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-picker-design/' | relative_url }}">Scene Picker Algorithms — Research + Design (v2)</a><p><code>docs/ps1/scene-picker-design.md</code></p></li>
