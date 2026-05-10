@@ -10,10 +10,10 @@
   <meta name="description" content="SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy1/" /><meta property="og:title"        content="SUZY 1 — Suzy finds a letter from Johnny — Johnny Castaway PS1" />
   <meta property="og:description"  content="SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy1/" /><meta property="og:locale"       content="en_US" />
-  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/suzy1-ps1-letter-daydream.png" />
+  <meta property="og:image:alt"    content="SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on." /><meta property="og:image:width"  content="961" />
+  <meta property="og:image:height" content="720" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/suzy1-ps1-letter-daydream.png" /><meta name="twitter:image:alt" content="SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.4; built 2026-05-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
@@ -72,7 +72,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy1/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy1/",
   "inLanguage": "en",
-  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/suzy1-ps1-letter-daydream.png",
   "dateCreated": "2026-05-04",
   "isPartOf": {
     "@type": "WebSite",
@@ -124,7 +124,29 @@
   </header>
 
   <div class="page-body">
-    <p>Validated on 2026-05-04 under the <a href="/johnny-castaway-ps1/docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
+    <figure class="scene-hero">
+  <img src="/johnny-castaway-ps1/assets/img/suzy1-ps1-letter-daydream.png" width="961" height="720" loading="lazy" decoding="async" alt="SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on." />
+  <figcaption>
+    SUZY 1 on PS1, captured during the v0.8.4-ps1
+    <a href="/johnny-castaway-ps1/lab/chapter-select-grind/">chapter-select grind</a>.
+    The letter-and-daydream beat: Suzy is on the beach back home —
+    <code>SUZBEACH.SCR</code> backdrop, city skyline, palm-island
+    cutaway in the corner — with a thought bubble of Johnny's
+    island as she reads his letter. SUZY 1 is the inbound
+    counterpart to
+    <a href="/johnny-castaway-ps1/scenes/johnny3/">JOHNNY 3</a>'s
+    outbound "writes a letter to Suzy" beat. Engineering note: not
+    an island/ocean scene — the FG2 runtime now loads
+    <code>SUZBEACH.SCR</code> as the clean backdrop for SUZY scenes
+    instead of painting the standard island and water behind them.
+    Both SUZY rows are metadata-only on
+    <a href="/johnny-castaway-ps1/perf/">/perf/</a> on purpose
+    (no deterministic scene-end so they're excluded from
+    target-speed averages — visual signoff still holds).
+  </figcaption>
+</figure>
+
+<p>Validated on 2026-05-04 under the <a href="/johnny-castaway-ps1/docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
 <p>SUZY 1 is not an island/ocean scene. The PS1 runtime now loads the
 source <code class="language-plaintext highlighter-rouge">SUZBEACH.SCR</code> screen as the clean backdrop for SUZY scenes,
