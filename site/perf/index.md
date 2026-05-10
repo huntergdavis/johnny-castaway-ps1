@@ -69,16 +69,17 @@ persistent setup-segment, high frame-126/frame-125 re-anchor passes, the
 high setup-prime cap expansion, the guarded low second setup segment, and the
 low frame-125/frame-126 resident re-anchor plus frame-118 and frame-127
 resident copies, high frame-127/frame-130 resident-copy compaction, and low
-frame-114/frame-117 no-op residual compaction. The
+frame-114/frame-117 plus frame-113 no-op residual compaction. The
 current VISITOR3 baseline is high `1075/1037` after v238
-and low `1086/1035` after v248; high cuts overrun `54 -> 38`, blocking
+and low `1075/1039` after v249; high cuts overrun `54 -> 38`, blocking
 `83 -> 59`, loop reads `15 -> 11`, loop-read time `83 -> 59`, and due misses
-`15 -> 11`, while low cuts overrun `53 -> 51`, blocking `95 -> 93`, and
-loop-read time `102 -> 100` with due misses still `16` and hidden refill `0`.
+`15 -> 11`, while the v249 low follow-up cuts overrun `51 -> 36`, blocking
+`93 -> 69`, loop reads `17 -> 16`, loop-read time `100 -> 83`, and due misses
+`16 -> 12` with hidden refill still `0`.
 Both paths keep fixed pack layout with deliberate setup tradeoffs.
-The yellow band is now empty; the orange band (95–99%) holds VISITOR3 low/high
-(`95.3%` / `96.5%`), `walkstuf1`
-high/low (`95.6%` / `95.8%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
+The yellow band is now empty; the orange band (95–99%) holds WALKSTUF1
+high/low (`95.5%` / `95.8%`), VISITOR3 high/low
+(`96.5%` / `96.7%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
@@ -116,10 +117,10 @@ Current battle-card rollup as of <time datetime="2026-05-09">2026-05-09</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.4%` (`0.3558%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6529%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-09T16:52:51` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.4%` (`0.3459%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6621%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-09T18:08:05` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -155,7 +156,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-low-noop114117-v248`,
+  refreshed rows use `visitor3-low-noop113-v249`,
+  `visitor3-low-noop114117-v248`,
   `visitor3-high-f127-f130-resident-copy-v238`,
   `johnny1-compact-fgp3-v173`,
   `walkstuf3-low-compact-fgp3-v171`,
@@ -458,15 +460,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-activity9-low"><code>activity9</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T18:43:51</td>
-      <td>activity9-low-compact-fgp3-v174</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+0.7%</td>
       <td class="spd-green">99.3%</td>
       <td>2075/2061</td>
       <td>17</td>
       <td>12</td>
       <td>1</td>
-      <td>Compact FGP3/v4 restore-minus-current low-tide pack; preserves footprint, LBA, sectors, and PS-EXE bucket</td>
+      <td>Compact FGP3/v4 restore-minus-current low-tide pack; revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-activity10-high">
       <td><a class="scene-perf-rowlink" href="#perf-activity10-high"><code>activity10</code></a></td>
@@ -584,29 +586,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T18:43:51</td>
-      <td>activity9-low-compact-fgp3-v174</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+2.5%</td>
       <td class="spd-orange">97.6%</td>
       <td>1349/1316</td>
       <td>48</td>
       <td>12</td>
       <td>7</td>
-      <td></td>
+      <td>revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T18:43:51</td>
-      <td>activity9-low-compact-fgp3-v174</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+2.5%</td>
       <td class="spd-orange">97.6%</td>
       <td>1349/1316</td>
       <td>83</td>
       <td>1</td>
       <td>19</td>
-      <td>restore-minus-current low pack plus 4-VBlank slack guard; exact-flat in ACTIVITY9 low broad gate</td>
+      <td>restore-minus-current low pack plus 4-VBlank slack guard; revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>
@@ -752,15 +754,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-high"><code>fishing1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T18:43:51</td>
-      <td>activity9-low-compact-fgp3-v174</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>0.0%</td>
       <td class="spd-green">100.0%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td></td>
+      <td>canary revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-fishing1-low">
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-low"><code>fishing1</code></a></td>
@@ -976,15 +978,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-high"><code>johnny1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T17:54:07</td>
-      <td>johnny1-compact-fgp3-v173</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+1.5%</td>
       <td class="spd-orange">98.5%</td>
       <td>1974/1945</td>
       <td>26</td>
       <td>26</td>
       <td>0</td>
-      <td></td>
+      <td>compact-FGP3/v4 profile revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-johnny1-low">
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-low"><code>johnny1</code></a></td>
@@ -1816,29 +1818,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-09T14:55:07</td>
-      <td>visitor3-high-f127-f130-resident-copy-v238</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+3.7%</td>
       <td class="spd-orange">96.5%</td>
       <td>1075/1037</td>
       <td>59</td>
       <td>0</td>
       <td>11</td>
-      <td>v238 compacts high frames 117..130 unchanged into the existing 320KiB resident setup-prime window; active loop improves 1089/1035->1075/1037 overrun 54->38 blocking 83->59 loop reads 15->11 loop-read time 83->59 due misses 15->11 hidden refill 0; fixed pack size/LBA/sound offset/PS-EXE bucket; broad controls passed with VISITOR3 low and all non-target canaries flat</td>
+      <td>v238 high resident-copy profile revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-09T16:52:51</td>
-      <td>visitor3-low-noop114117-v248</td>
-      <td>+4.9%</td>
-      <td class="spd-orange">95.3%</td>
-      <td>1086/1035</td>
-      <td>93</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
+      <td>+3.5%</td>
+      <td class="spd-orange">96.7%</td>
+      <td>1075/1039</td>
+      <td>69</td>
       <td>0</td>
-      <td>16</td>
-      <td>v248 rewrites low precursor frames 114..117 in place as two-byte compact no-op residual payloads after compact-motion marker/no-op probes proved the current v4 path can preserve cadence without source changes; active loop improves 1088/1035 to 1086/1035, overrun 53 to 51, blocking 95 to 93, loop-read time 102 to 100, due misses stay 16, and hidden refill stays 0 with fixed pack LBA, sound offset, and PS-EXE bucket</td>
+      <td>12</td>
+      <td>v249 rewrites low frame 113 in place as a two-byte compact no-op residual after the v248 frame 114..117 compaction; active loop improves 1086/1035 to 1075/1039, overrun 51 to 36, blocking 93 to 69, loop reads 17 to 16, loop-read time 100 to 83, due misses 16 to 12, and hidden refill stays 0 with fixed pack LBA, sound offset, and PS-EXE bucket</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>
@@ -1956,29 +1958,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T06:35:26</td>
-      <td>walkstuf1-compact-fgp3-v141</td>
-      <td>+4.6%</td>
-      <td class="spd-orange">95.6%</td>
-      <td>1491/1426</td>
-      <td>85</td>
-      <td>32</td>
-      <td>13</td>
-      <td>padded compact FGP3/v4 restore-minus-current pack; active candidate 923959 bytes inside original footprint; VISITOR3 high canary drift reproduced with original FGP2 control</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
+      <td>+4.8%</td>
+      <td class="spd-orange">95.5%</td>
+      <td>1495/1427</td>
+      <td>95</td>
+      <td>26</td>
+      <td>14</td>
+      <td>padded compact FGP3/v4 restore-minus-current pack; current top under-99 row after v249 broad no-regression gate</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T06:36:32</td>
-      <td>walkstuf1-compact-fgp3-v141</td>
+      <td>2026-05-09T18:08:05</td>
+      <td>visitor3-low-noop113-v249</td>
       <td>+4.3%</td>
       <td class="spd-orange">95.8%</td>
       <td>1489/1427</td>
       <td>86</td>
       <td>27</td>
       <td>12</td>
-      <td>padded compact FGP3/v4 restore-minus-current pack; active candidate 923959 bytes inside original footprint; broad non-WALKSTUF controls exact-flat except unrelated VISITOR3 high control drift</td>
+      <td>padded compact FGP3/v4 restore-minus-current pack; revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

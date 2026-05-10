@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3558%` public over target / `99.6529%` public target speed after the MARY3,
+`+0.3459%` public over target / `99.6621%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v248. The raw signed optimization matrix is `-0.4126%` over target /
-`100.4367%` target speed.
+v249. The raw signed optimization matrix is `-0.4226%` over target /
+`100.4459%` target speed.
 
 ## Headline
 
@@ -28,8 +28,8 @@ v248. The raw signed optimization matrix is `-0.4126%` over target /
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `17.04` public over-target points and added
-  about `12.55` public target-speed points.
+  methodology has removed about `17.05` public over-target points and added
+  about `12.56` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
   `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
@@ -58,14 +58,14 @@ v248. The raw signed optimization matrix is `-0.4126%` over target /
   the low frame-125/frame-126 resident re-anchor plus the low frame-118
   resident-copy payload plus the low frame-127 resident-copy payload, then
   compacts high frames `117..130` unchanged into the existing high setup-prime
-  resident window and rewrites low frames `114..117` in place as compact
-  no-op residual payloads.
+  resident window, rewrites low frames `114..117` in place as compact no-op
+  residual payloads, and then rewrites low frame `113` the same way.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
   `1118/1028 -> 1075/1037`, cuts blocking `150 -> 59`, loop reads `27 -> 11`,
-  and due misses `26 -> 11`; low moves `1126/1025 -> 1086/1035`, cuts blocking
-  `170 -> 93`, loop reads `31 -> 17`, and due misses `29 -> 16`.
+  and due misses `26 -> 11`; low moves `1126/1025 -> 1075/1039`, cuts blocking
+  `170 -> 69`, loop reads `31 -> 16`, and due misses `29 -> 12`.
 
 ## Follow-Up Closure
 
@@ -214,6 +214,15 @@ fixed. The active loop improves `1088/1035 -> 1086/1035`, overrun drops
 `53 -> 51`, blocking drops `95 -> 93`, loop-read time drops `102 -> 100`, due
 misses stay `16`, and hidden refill remains `0`.
 
+The follow-up `visitor3-low-noop113-v249` extends the pack-only no-op residual
+lane to low entry `113` without moving the pack or sound table. The payload
+shrinks `17134 -> 2` bytes in place, saving another `17132` active payload
+bytes while preserving the `1555450` byte footprint, LBA `23232`, sound offset
+`626575`, and the `215040` byte PS-EXE bucket. Focused and broad no-regression
+gates improve low `1086/1035 -> 1075/1039`, overrun `51 -> 36`, blocking
+`93 -> 69`, loop reads `17 -> 16`, loop-read time `100 -> 83`, and due misses
+`16 -> 12`; hidden refill remains `0`.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -267,6 +276,10 @@ misses stay `16`, and hidden refill remains `0`.
   `scratch/ps1-perf-iterate/visitor3-low-noop114117-v248b-focused/20260509-165134-705923/summary.json`.
 - VISITOR3 low frame-114/frame-117 no-op residual broad gate:
   `scratch/ps1-perf-iterate/visitor3-low-noop114117-v248b-broad/20260509-165251-713811/summary.json`.
+- VISITOR3 low frame-113 no-op residual focused gate:
+  `scratch/ps1-perf-iterate/visitor3-low-noop113-v249-focused/20260509-175739-1072541/summary.json`.
+- VISITOR3 low frame-113 no-op residual broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-low-noop113-v249-broad-norequire/20260509-180805-1135277/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

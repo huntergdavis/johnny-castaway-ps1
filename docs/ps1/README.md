@@ -23,29 +23,29 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3558%` over target / `99.6529%` target speed across all 126
+`+0.3459%` over target / `99.6621%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
 low/high setup-segment, high frame-126/frame-125 re-anchor, and high
 setup-prime plus guarded low second-segment and low frame-125/frame-126
 resident re-anchor plus low frame-118/frame-127 resident-copy, high
-frame-127/frame-130 resident-copy, and low frame-114/frame-117 no-op residual
+frame-127/frame-130 resident-copy, low frame-114/frame-117 no-op residual,
+and low frame-113 no-op residual
 follow-ups; the raw signed optimization
-matrix is `-0.4126%` / `100.4367%`.
-That is about `17.04` public over-target points removed and `12.55` public
+matrix is `-0.4226%` / `100.4459%`.
+That is about `17.05` public over-target points removed and `12.56` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-high-f127-f130-resident-copy-v238`,
-compacts high frames `117..130` unchanged into the existing `320 KiB`
-setup-prime resident window. It preserves both `1555450` byte pack footprints,
-later offsets, fixed LBAs `22472/23232`, sound offsets, and the `215040` byte
-PS-EXE bucket while moving high `1089/1035 -> 1075/1037`. It cuts overrun
-`54 -> 38`, blocking `83 -> 59`, loop reads `15 -> 11`, loop-read time
-`83 -> 59`, and due misses `15 -> 11` while keeping hidden refill at `0`.
-Low now uses the v248 compact no-op residual profile at `1086/1035`,
-`blocking_vb=93`, loop-read time `100`, and due misses `16`.
-VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
+The latest VISITOR3 baseline combines `visitor3-high-f127-f130-resident-copy-v238`
+with `visitor3-low-noop113-v249`. The high pass compacts frames `117..130`
+unchanged into the existing `320 KiB` setup-prime resident window, preserving
+both `1555450` byte pack footprints, fixed LBAs `22472/23232`, sound offsets,
+and the `215040` byte PS-EXE bucket while moving high `1089/1035 -> 1075/1037`.
+The low pass extends the v248 no-op residual lane to frame `113`, moving low
+`1086/1035 -> 1075/1039`, cutting blocking `93 -> 69`, loop reads `17 -> 16`,
+loop-read time `100 -> 83`, and due misses `16 -> 12`, with hidden refill `0`.
+VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler
 ownership.

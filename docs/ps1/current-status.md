@@ -6,9 +6,9 @@
 **Last updated:** 2026-05-09 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
-motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual perf follow-ups through v248;
+motion-copy/code-headroom/CD-pressure/setup-prime/resident-pack/no-op residual perf follow-ups through v249;
 all 63 scenes remain validated, and the public headless battle card is
-`+0.3558%` over target / `99.6529%` target speed).
+`+0.3459%` over target / `99.6621%` target speed).
 
 ## Overall
 
@@ -195,26 +195,26 @@ the v181 yacht translation payloads, high frame `115`, shared frame `124`, and
 shared frame `118`, then adds high-only re-anchored frames `127`, `126`, and
 `125`.
 It preserves both `1555450` byte pack footprints and LBAs `22472/23232`,
-improves high to `1075/1037`, moves low to `1086/1035`, and keeps high/low
+improves high to `1075/1037`, moves low to `1075/1039`, and keeps high/low
 persistent setup segments for sectors `277..293` and `281..305` plus the v214
 high `320 KiB` setup-prime cap, the v216 guarded low segment `150..174`, and
 the v227 low frame-125/frame-126 resident re-anchor plus v234 frame-118 and
 v237 frame-127 resident copies inside that segment, then compacts high frames
 `117..130` unchanged into the existing high setup-prime resident window and
-rewrites low frames `114..117` in place as compact no-op residuals.
-Blocking is now `59/93`,
-loop-read time is `59/100`, and due misses are `11/16`; the accepted setup/data
+rewrites low frames `114..117` plus frame `113` in place as compact no-op
+residuals. Blocking is now `59/69`,
+loop-read time is `59/83`, and due misses are `11/12`; the accepted setup/data
 tradeoffs leave high total at `scene_vb=1406` and low total
-`1414 -> 1412` while reducing
+`1412 -> 1401` while reducing
 active-loop debt. The current
 runtime baseline keeps all broad canaries flat while creating code-layout
 headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3558%` over target / `99.6529%` target speed
+The public battle card is now `+0.3459%` over target / `99.6621%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.04`
-public over-target points and added about `12.55` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.05`
+public over-target points and added about `12.56` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -239,14 +239,15 @@ and high-only re-anchored frames `127`/`126`/`125`, plus high/low persistent set
 for sectors `277..293` and `281..305`, the v214 high setup-prime cap
 expansion, the v216 guarded low segment `150..174`, the v227 low resident
 frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
-copies, the v238 high frame-127/frame-130 resident-copy compaction, and the
-v248 low frame-114/frame-117 no-op residual compaction.
+copies, the v238 high frame-127/frame-130 resident-copy compaction, the
+v248 low frame-114/frame-117 no-op residual compaction, and the v249 low
+frame-113 no-op residual compaction.
 VISITOR3 high is now
 `1075/1037` with `blocking_vb=59`; low is
-`1086/1035` with `blocking_vb=93`. BUILDING2 high/low are `1349/1316` and
+`1075/1039` with `blocking_vb=69`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
-`1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
+`1495/1427` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
