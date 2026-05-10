@@ -5,6 +5,10 @@ eyebrow: Lab · Retrospective
 subtitle: The project could have shipped at "close enough." That would have been the wrong project.
 description: A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay.
 date: 2026-04-26
+image: /assets/img/fishing1-reference-cast.png
+image_alt: FISHING 1 host reference frame — Johnny mid-cast with rod arced, the captured-on-host ground truth that every PS1 frame is diff-checked against. The pixel-perfect bar the essay describes, in one image.
+image_width: 640
+image_height: 480
 ---
 
 <details class="page-toc" markdown="1">
