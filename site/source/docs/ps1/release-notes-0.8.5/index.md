@@ -22,7 +22,7 @@ v0.8.5-ps1 is a performance/methodology point release after v0.8.4-ps1. It keeps
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.5.md` |
 | Lines | 51 |
-| Approx. words | 357 |
+| Approx. words | 356 |
 | Code fences | 0 |
 
 ## Outline

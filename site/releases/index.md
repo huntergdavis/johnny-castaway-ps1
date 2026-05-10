@@ -33,16 +33,17 @@ public baseline.
 - **All 126 high/low rows are timing-bearing.** The matrix now has active-loop
   timing for every routed scene/tide variant: 63 scenes x 2 tide rows.
 - **Public rollup is effectively at native speed.** The public-capped average
-  is `+0.3253%` over target / `99.6811%` target speed; the raw signed
-  optimization matrix is `-0.4432%` / `100.4649%`.
-- **The methodology has removed about 17.07 over-target points.** Since the
+  is `+0.3215%` over target / `99.6847%` target speed; the raw signed
+  optimization matrix is `-0.4470%` / `100.4685%`.
+- **The methodology has removed about 17.08 over-target points.** Since the
   compact full-matrix baseline, the accepted promotions add about `12.58`
   target-speed points while keeping the visual + audible scene bar intact.
 - **The missing-scene confusion is closed.** MARY1/2/3 and SUZY1/2 are
   measured and green; `suzy3` is not a standalone Johnny Castaway scene route.
 - **Latest VISITOR3 high probe promoted; prior misses remain recorded.** The
-  v291 frame-140/tail setup-segment copy joins the WALKSTUF1 v288/v289 wins,
-  while rejected scalar prime and hand-table probes stay in the experiment log.
+  v299 frame-131 resident-alias setup-prime copy joins the WALKSTUF1 v288/v289
+  wins, while rejected scalar prime and hand-table probes stay in the
+  experiment log.
 
 [Full notes]({{ '/source/docs/ps1/release-notes-0.8.5/' | relative_url }})
 &nbsp;·&nbsp;

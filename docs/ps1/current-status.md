@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-10 (`v0.8.5-ps1` full 126-row headless
 performance matrix release; all 63 scenes remain validated, all 126
 high/low rows are timing-bearing, and the public headless battle card is
-`+0.3253%` over target / `99.6811%` target speed).
+`+0.3215%` over target / `99.6847%` target speed).
 
 ## Overall
 
@@ -195,16 +195,20 @@ segment instead of adding another setup-prime cap. It preserves the `1555450`
 byte pack footprint, keeps the current-layout LBAs at `22473/23233`, and holds
 the `217088` byte PS-EXE bucket. High improves `1075/1037 -> 1074/1038`,
 overrun `38 -> 36`, blocking `61 -> 58`, loop reads `11 -> 10`, loop-read time
-`61 -> 58`, and due misses `11 -> 10`; hidden refill remains `0`. The follow-up
+`61 -> 58`, and due misses `11 -> 10`; hidden refill remains `0`. The v299
+high frame-131 residency pass aliases duplicate frames `121`/`123` to frame
+`120`, compacts the resident setup-prime tail, copies frame `131` fully into
+paid setup-prime coverage, and improves high again to `1070/1039`, blocking
+`49`, loop reads `9`, loop-read time `49`, and due misses `9`. The follow-up
 low no-op alias pass points frames `114..117` at frame `113`'s already-resident
 two-byte payload and improves low `1079/1039 -> 1075/1039`, blocking
 `70 -> 67`, loop reads `16 -> 12`, and loop-read time `84 -> 67`; due misses
 stay `12` and hidden refill stays `0`.
-The public battle card is now `+0.3253%` over target / `99.6811%` target speed
+The public battle card is now `+0.3215%` over target / `99.6847%` target speed
 while preserving fixed pack footprints and the
 `217088` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.07`
+`87.1%` target speed, the headless methodology has removed about `17.08`
 public over-target points and added about `12.58` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
@@ -233,11 +237,12 @@ frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
 copies, the v238 high frame-127/frame-130 resident-copy compaction, the
 v248 low frame-114/frame-117 no-op residual compaction, the v249 low
 frame-113 no-op residual compaction, the v291 high frame-140/tail
-setup-segment copy, and the v292 low frame-114/frame-117 no-op payload alias,
+setup-segment copy, the v292 low frame-114/frame-117 no-op payload alias, and
+the v299 high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
 plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack.
 VISITOR3 high is now
-`1074/1038` with `blocking_vb=58`; low is
+`1070/1039` with `blocking_vb=49`; low is
 `1075/1039` with `blocking_vb=67`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
@@ -284,7 +289,7 @@ canaries.
 Milestone releases:
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
   the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
-  and publishes `+0.3253%` over target / `99.6811%` target speed.
+  and publishes `+0.3215%` over target / `99.6847%` target speed.
 - `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
   scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both
