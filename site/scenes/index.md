@@ -33,7 +33,13 @@ scenes) cleared the bar. The one-line lead in each row's Notes column
 was reconciled against on-PS1 playback in `v0.8.4-ps1`; the
 [chapter-select grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
 walks through what that loop caught (several caption-mapping audit
-guesses had drifted from the gags the discs actually play).
+guesses had drifted from the gags the discs actually play). Each
+row's per-scene page (linked from the table below) carries its own
+captured-on-PS1 hero image plus a figcaption that names the gag and
+any cross-essay role; the
+[63 heroes retrospective]({{ '/lab/63-heroes/' | relative_url }})
+walks through the frame-selection rules of thumb and the cross-link
+clusters that emerged from writing one figcaption at a time.
 
 The source of truth for this ledger is
 [`docs/ps1/scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md)
