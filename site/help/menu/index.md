@@ -20,7 +20,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>The top-level dispatch screen: resume, open Scene Set Options or Scene Explorer (both new in v0.8.4-ps1), enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System.</p>
 <p class="menu-route"><strong>Capture route:</strong> Start</p>
 <figure>
-  <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen." loading="lazy" />
+  <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen." fetchpriority="high" />
   <figcaption>Marker frame 3036, captured frame 3040, delta 4.</figcaption>
 </figure>
 <p>This screen is intentionally short. Anything that grows past a few rows belongs on a sub-screen.</p>
