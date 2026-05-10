@@ -63,7 +63,7 @@ card carries the date it landed.
   <li>
     <p class="lab-date"><time datetime="2026-05-08">2026-05-08</time></p>
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">The chapter-select grind</a>
-    <p>Walking all 63 packs on hardware again to ship custom on-PS1 chapter-select thumbnails — and the surprising number of caption-mismaps the loop caught in the existing scene-page metadata. The validation bar guards pixel drift, not caption drift; this loop reconciled the prose against the discs that play.</p>
+    <p>Walking all 63 packs on hardware again to ship custom on-PS1 chapter-select thumbnails — and the surprising number of <a href="{{ '/docs/glossary/#caption-mismap' | relative_url }}">caption-mismaps</a> the loop caught in the existing scene-page metadata. The validation bar guards pixel drift, not caption drift; this loop reconciled the prose against the discs that play.</p>
   </li>
   <li>
     <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>
