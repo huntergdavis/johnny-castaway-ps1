@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-performance matrix release; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.3336% over target / 99.6734% target speed).
+performance matrix release; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.3269% over target / 99.6796% target speed).
 
 ## File facts
 
@@ -22,7 +22,7 @@ performance matrix release; all 63 scenes remain validated, all 126 high/low row
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 626 |
-| Approx. words | 6714 |
+| Approx. words | 6720 |
 | Code fences | 1 |
 
 ## Outline

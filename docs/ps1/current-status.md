@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-10 (`v0.8.5-ps1` full 126-row headless
 performance matrix release; all 63 scenes remain validated, all 126
 high/low rows are timing-bearing, and the public headless battle card is
-`+0.3336%` over target / `99.6734%` target speed).
+`+0.3269%` over target / `99.6796%` target speed).
 
 ## Overall
 
@@ -209,12 +209,12 @@ tradeoffs leave high total at `scene_vb=1406` and low total
 active-loop debt. The current
 runtime baseline keeps all broad canaries flat while creating code-layout
 headroom from the earlier v197 dispatch removal.
-The public battle card is now `+0.3336%` over target / `99.6734%` target speed
+The public battle card is now `+0.3269%` over target / `99.6796%` target speed
 while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.07`
-public over-target points and added about `12.57` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.08`
+public over-target points and added about `12.58` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -242,13 +242,13 @@ frame-125/frame-126 re-anchor plus v234 frame-118 and v237 frame-127 resident
 copies, the v238 high frame-127/frame-130 resident-copy compaction, the
 v248 low frame-114/frame-117 no-op residual compaction, and the v249 low
 frame-113 no-op residual compaction, plus the WALKSTUF1 high v288
-gap1/window-prefetch guard.
+gap1/window-prefetch guard and low v289 gap1 prefix pack.
 VISITOR3 high is now
 `1075/1037` with `blocking_vb=59`; low is
 `1075/1039` with `blocking_vb=69`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
-`1477/1431` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
+`1477/1431` and `1478/1428`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
@@ -291,7 +291,7 @@ canaries.
 Milestone releases:
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
   the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
-  and publishes `+0.3336%` over target / `99.6734%` target speed.
+  and publishes `+0.3269%` over target / `99.6796%` target speed.
 - `v0.8.4-ps1` — custom Scene Explorer thumbnails for all 63 scenes, plus
   scene titles and bodies reconciled against what the discs actually play.
 - `v0.8.3-ps1` — WALKSTUF1 compact foreground performance. Converts both

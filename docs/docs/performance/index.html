@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~16 min read · 4152 words
+          ~16 min read · 4154 words
         </p>
 
       <hr class="rule" />
@@ -433,9 +433,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3336%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6734%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4349%</code> / <code class="language-plaintext highlighter-rouge">100.4573%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3269%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6796%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4416%</code> / <code class="language-plaintext highlighter-rouge">100.4635%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -527,7 +527,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-09T18:08:05</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-10T00:50:29</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -921,8 +921,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+4.6% / 95.6% (1491/1426); due 13; blk 85</td>
-      <td>+4.3% / 95.8% (1489/1427); due 12; blk 86</td>
+      <td>+3.2% / 96.9% (1477/1431); due 17; blk 90</td>
+      <td>+3.5% / 96.6% (1478/1428); due 13; blk 75</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -991,8 +991,9 @@ bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
   <li><strong>Generated scheduler ownership for the remaining under-99 rows.</strong> MARY3 is
 now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
 the bottom of the orange band after compact-pack promotion. The remaining
-hard rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
-VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
+hard rows are VISITOR3 high/low, WALKSTUF1 low/high, BUILDING2 high/low,
+VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low,
+and JOHNNY6 high/low,
 where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work.</li>
 </ol>
@@ -1010,7 +1011,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3336% over target / 99.6734% target speed, with several
+public average is now +0.3269% over target / 99.6796% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

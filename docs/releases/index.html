@@ -153,16 +153,17 @@ public baseline.</p>
   <li><strong>All 126 high/low rows are timing-bearing.</strong> The matrix now has active-loop
 timing for every routed scene/tide variant: 63 scenes x 2 tide rows.</li>
   <li><strong>Public rollup is effectively at native speed.</strong> The public-capped average
-is <code class="language-plaintext highlighter-rouge">+0.3336%</code> over target / <code class="language-plaintext highlighter-rouge">99.6734%</code> target speed; the raw signed
-optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4349%</code> / <code class="language-plaintext highlighter-rouge">100.4573%</code>.</li>
-  <li><strong>The methodology has removed about 17.07 over-target points.</strong> Since the
-compact full-matrix baseline, the accepted promotions add about <code class="language-plaintext highlighter-rouge">12.57</code>
+is <code class="language-plaintext highlighter-rouge">+0.3269%</code> over target / <code class="language-plaintext highlighter-rouge">99.6796%</code> target speed; the raw signed
+optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4416%</code> / <code class="language-plaintext highlighter-rouge">100.4635%</code>.</li>
+  <li><strong>The methodology has removed about 17.08 over-target points.</strong> Since the
+compact full-matrix baseline, the accepted promotions add about <code class="language-plaintext highlighter-rouge">12.58</code>
 target-speed points while keeping the visual + audible scene bar intact.</li>
   <li><strong>The missing-scene confusion is closed.</strong> MARY1/2/3 and SUZY1/2 are
 measured and green; <code class="language-plaintext highlighter-rouge">suzy3</code> is not a standalone Johnny Castaway scene route.</li>
-  <li><strong>Latest unpromoted probes are recorded, not hidden.</strong> The recent WALKSTUF1
-cleanup-gap/core/edge experiments are logged as misses because their hidden
-refill regressions outweighed the visible timing wins.</li>
+  <li><strong>Latest WALKSTUF1 low probe promoted; prior misses remain recorded.</strong> The
+v289 low-tide gap1 prefix joins the v288 high gap1/window-prefetch guard, while
+rejected cleanup/core/edge probes stay in the experiment log with their hidden
+refill blockers.</li>
 </ul>
 
 <p><a href="../source/docs/ps1/release-notes-0.8.5/">Full notes</a>

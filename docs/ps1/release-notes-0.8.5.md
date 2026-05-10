@@ -14,12 +14,12 @@ matrix as the public performance baseline.
 - **126 / 126 scene/tide rows are timing-bearing.** Every routed high/low
   scene variant now contributes active-loop timing to the matrix.
 - **Public performance is effectively at native speed.** The public-capped
-  rollup is `+0.3336%` over target / `99.6734%` target speed.
+  rollup is `+0.3269%` over target / `99.6796%` target speed.
 - **Raw optimization headroom remains visible.** The uncapped signed rollup is
-  `-0.4349%` over target / `100.4573%` target speed, so future optimization
+  `-0.4416%` over target / `100.4635%` target speed, so future optimization
   work can still see when a scene runs faster than target.
-- **Methodology total since the compact full-matrix baseline:** about `17.07`
-  public over-target points removed and `12.57` public target-speed points
+- **Methodology total since the compact full-matrix baseline:** about `17.08`
+  public over-target points removed and `12.58` public target-speed points
   gained.
 - **Missing-scene confusion is closed.** MARY1/2/3 and SUZY1/2 are measured
   and green in the matrix; `suzy3` is not a standalone Johnny Castaway scene
@@ -27,16 +27,17 @@ matrix as the public performance baseline.
 
 ## Current Battle Card
 
-- **Public rollup:** `+0.3336%` over target / `99.6734%` target speed.
-- **Raw signed rollup:** `-0.4349%` over target / `100.4573%` target speed.
+- **Public rollup:** `+0.3269%` over target / `99.6796%` target speed.
+- **Raw signed rollup:** `-0.4416%` over target / `100.4635%` target speed.
 - **Bands:** `111` green, `15` orange, `0` yellow, `0` red.
 - **Under-99 focus set:** WALKSTUF1 high/low, VISITOR3 high/low, BUILDING2
   high/low, VISITOR5 low, and JOHNNY1 high.
 - **VISITOR3 baseline:** high `1075/1037` with `59` blocking VBlanks, `11`
   loop reads, and `11` due misses; low `1075/1039` with `69` blocking
   VBlanks, `16` loop reads, and `12` due misses.
-- **WALKSTUF1 high moved again.** The v288 gap1/window-prefetch guard moves
-  high to `1477/1431` (96.9% speed), while low remains `1489/1427` (95.8%).
+- **WALKSTUF1 low moved again.** The v289 gap1 prefix pack moves low to
+  `1478/1428` (96.6% speed) after the v288 high gap1/window-prefetch guard
+  moved high to `1477/1431` (96.9% speed).
 
 ## Verification
 

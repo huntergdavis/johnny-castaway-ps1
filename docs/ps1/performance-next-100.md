@@ -34,13 +34,13 @@ v234 low frame-118 resident-copy follow-up, the v237 low frame-127
 resident-copy follow-up, the v238 high frame-127/frame-130 resident-copy
 follow-up, the v248 low frame-114/frame-117 no-op residual compaction
 follow-up, the v249 low frame-113 no-op residual follow-up, the v277
-WALKSTUF1 high sector `201..213` read-group follow-up, and the v288 WALKSTUF1
-high gap1/window-prefetch guard:
-`+0.3336%` public average over target / `99.6734%` public target speed across
+WALKSTUF1 high sector `201..213` read-group follow-up, the v288 WALKSTUF1
+high gap1/window-prefetch guard, and the v289 WALKSTUF1 low gap1 prefix pack:
+`+0.3269%` public average over target / `99.6796%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4349%` / `100.4573%`. Since the compact full-matrix baseline was about
+`-0.4416%` / `100.4635%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.07` public over-target points and added about `12.57`
+removed about `17.08` public over-target points and added about `12.58`
 public target-speed points.
 
 Latest promoted WALKSTUF1 baseline: high tide keeps the scheduler-owned
@@ -49,7 +49,9 @@ shape, and skips speculative window prefetch when held slack is only the
 default 3 VBlanks. The strict gate improves high `1488/1426 -> 1477/1431`,
 overrun `62 -> 46`, blocking `92 -> 90`, hidden refill `27 -> 19`, and
 loop-read time `309 -> 285`; due misses rise `14 -> 17`, but broad controls
-are exact-flat. Low remains `1489/1427`.
+are exact-flat. Low now applies the same gap1 prefix pack without source
+changes and improves `1487/1424 -> 1478/1428`, overrun `63 -> 50`, blocking
+`95 -> 75`, and loop-read time `305 -> 301`.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
@@ -841,7 +843,9 @@ moves it to `-0.4259%` / `100.4489%` while cutting WALKSTUF1 high to
 `1488/1426`, overrun `62`, and hidden refill `27`; the v288 gap1/window-
 prefetch guard moves it again to `-0.4349%` / `100.4573%` while cutting
 WALKSTUF1 high to `1477/1431`, overrun `46`, blocking `90`, and hidden refill
-`19`.
+`19`; the v289 low-tide gap1 prefix then moves it to `-0.4416%` /
+`100.4635%` while cutting WALKSTUF1 low to `1478/1428`, overrun `50`, blocking
+`75`, and due misses `13`.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -2129,6 +2133,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 high frame `109` motion-copy | Do not promote under the current opcode/helper shape. Sparse-in-place high-only motion saved `3139` active payload bytes but was exact-flat (`1779`, `1490/1424`, overrun `66`, blocking `92`, hidden `31`, reads `69`); the C row-copy helper crossed the PS-EXE bucket and shifted LBA; the non-sparse repack improved hidden refill `31 -> 26` but regressed public timing to `1784`, `1495/1427`, overrun `68`, and reads `73`. Retry only as zero-runtime precomposed data, generated phase-safe layout search, or a cost-modeled multi-frame codec. |
 | WALKSTUF1 high read group `201..213` | Done; keep as the retained-read prerequisite for the current WALKSTUF1 high baseline. The high-tide-only retained stream read group promotes because it improves `scene_vb 1779 -> 1777`, active loop `1490/1424 -> 1488/1426`, overrun `66 -> 62`, hidden refill `31 -> 27`, and loop reads `69 -> 68` while keeping blocking `92`, pack LBA `24745`, pack sectors `750`, and the `217088` byte PS-EXE bucket fixed. Same-branch broad controls for WALKSTUF1 low, VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, FISHING1 high, JOHNNY1 high, and MARY3 high/low stayed exact-flat. |
 | WALKSTUF1 high gap1 pack + 3-VBlank window-prefetch guard | Done; keep as the current WALKSTUF1 high baseline. The v288 promotion combines the gap1 early-prefix cleanup pack with the accepted `201..213` high read group and a high-tide-only guard that skips speculative window prefetch when held slack is only the default 3 VBlanks. It improves high `scene_vb 1777 -> 1766`, active loop `1488/1426 -> 1477/1431`, overrun `62 -> 46`, blocking `92 -> 90`, hidden refill `27 -> 19`, and loop-read time `309 -> 285`; due misses rise `14 -> 17`, but WALKSTUF1 low, VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, FISHING1 high, JOHNNY1 high, and MARY3 high/low stay flat in the broad gate. Public rollup moves to `+0.3336%` over target / `99.6734%` target speed. |
+| WALKSTUF1 low gap1 prefix pack | Done; keep as the current WALKSTUF1 low baseline. The v289 pack-only promotion applies the same one-pixel cleanup-gap merge to low-tide frames `0..37`, changing `29` frames, saving `1126` active payload bytes, and preserving the `1535263` byte padded footprint. Focused and broad gates improve low `scene_vb 1779 -> 1770`, active loop `1487/1424 -> 1478/1428`, overrun `63 -> 50`, blocking `95 -> 75`, and due misses `15 -> 13`; hidden refill stays `25`, loop reads stay `69`, pack LBA stays `25495`, and WALKSTUF1 high plus VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, FISHING1 high, JOHNNY1 high, and MARY3 high/low stay flat. Public rollup moves to `+0.3269%` over target / `99.6796%` target speed. |
 | WALKSTUF1 low read group `201..213` | Do not promote as a symmetric high/low table. The v278 focused low gate proved the candidate fires and reduces reads (`67 -> 65`), but public timing regresses `scene_vb 1779 -> 1781`, active loop `1487/1424 -> 1489/1425`, overrun `63 -> 64`, blocking `95 -> 97`, hidden refill `25 -> 27`, and due misses to `17`. Low needs generated phase ownership or pack/data-shape work, not the high-side read group copied across tides. |
 | WALKSTUF1 high read group `178..194` | Do not promote or retry as a hand-authored retained stream table. The v279 focused gate reduced loop reads `68 -> 67`, but regressed high `scene_vb 1777 -> 1781`, active loop `1488/1426 -> 1492/1423`, overrun `62 -> 69`, blocking `92 -> 99`, hidden refill `27 -> 28`, and due misses `14 -> 16` with fixed pack LBA and `217088` byte PS-EXE bucket. The same sector neighborhood is now closed in both direct-stage-deny and retained-read-table forms. |
 | WALKSTUF1 high frame `37` setup-edge motion-copy | Do not promote under the current runtime motion helper. Sparse-in-place frame `37` motion-copy shrank the payload `6885 -> 4817` bytes and reduced the setup-prime spill from `2098` bytes to `30`, but the focused v280 gate regressed high to `1790`, `1501/1422`, overrun `79`, blocking `101`, and hidden refill `38`; only due misses improved `14 -> 13`. The signal should be retried only as no-runtime/precomputed data or generated scheduler ownership, not as the current compact motion marker dispatch. |

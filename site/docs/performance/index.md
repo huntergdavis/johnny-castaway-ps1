@@ -307,9 +307,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3336%`
-exact public over target / `99.6734%` exact public target speed); the raw
-signed optimization matrix is `-0.4349%` / `100.4573%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3269%`
+exact public over target / `99.6796%` exact public target speed); the raw
+signed optimization matrix is `-0.4416%` / `100.4635%`.
 
 ## Scene Battle Card
 
@@ -401,7 +401,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-09T18:08:05`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-10T00:50:29`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -795,8 +795,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+4.6% / 95.6% (1491/1426); due 13; blk 85</td>
-      <td>+4.3% / 95.8% (1489/1427); due 12; blk 86</td>
+      <td>+3.2% / 96.9% (1477/1431); due 17; blk 90</td>
+      <td>+3.5% / 96.6% (1478/1428); due 13; blk 75</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -865,8 +865,9 @@ Next plausible wins, in priority order:
 5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
    now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
    the bottom of the orange band after compact-pack promotion. The remaining
-   hard rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
-   VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
+   hard rows are VISITOR3 high/low, WALKSTUF1 low/high, BUILDING2 high/low,
+   VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low,
+   and JOHNNY6 high/low,
    where hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work.
 
@@ -882,7 +883,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3336% over target / 99.6734% target speed, with several
+  public average is now +0.3269% over target / 99.6796% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
