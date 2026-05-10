@@ -5,6 +5,10 @@ eyebrow: Lab · Retrospective
 subtitle: The scene-by-scene validation ledger, from five signed off to the current grind.
 description: A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.
 date: 2026-04-26
+image: /assets/img/fishing1-ps1-cast.png
+image_alt: FISHING 1 — the first scene signed off and the canary scene on the validation bar. The starting line of the 63-scene grind the essay walks. Captured on PS1 hardware via the validation harness.
+image_width: 1127
+image_height: 677
 ---
 
 <details class="page-toc" markdown="1">
