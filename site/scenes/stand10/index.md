@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand10-ps1-look-raft.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 10 on PS1 at night: Johnny stands on the right side of the island next to the palm tree, looking at his raft." />
   <figcaption>

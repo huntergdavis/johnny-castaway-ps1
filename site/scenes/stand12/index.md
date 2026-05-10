@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand12-ps1-forward-hat.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 12 on PS1 at night: Johnny stands at the center of the island under the palm tree, looking forward and adjusting his hat." />
   <figcaption>

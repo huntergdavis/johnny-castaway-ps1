@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/walkstuf2-ps1-raft-build.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="WALKSTUF 2 on PS1 at night: Johnny crouches over the raft frame on the right side of the island, building it up." />
   <figcaption>

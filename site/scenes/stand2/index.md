@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand2-ps1-pants-adjust.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 2 on PS1 at night: Johnny stands at the leftmost edge of the island in the pants-adjust idle pose, a short subtle stand-loop scene." />
   <figcaption>

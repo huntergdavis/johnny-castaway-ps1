@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/walkstuf1-ps1-yacht-party.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="WALKSTUF 1 on PS1 at night: a white yacht has pulled up next to the island with party-goers visible on its deck, the moon overhead and Johnny's island and palm tree on the right." />
   <figcaption>

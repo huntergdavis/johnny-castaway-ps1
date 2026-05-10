@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand8-ps1-right-scratch.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle." />
   <figcaption>

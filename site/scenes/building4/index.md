@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building4-ps1-lilliputians.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 4 on PS1 at night: Johnny lies under the palm tree while a crowd of lilliputian figures swarms onto the island carrying their gear." />
   <figcaption>

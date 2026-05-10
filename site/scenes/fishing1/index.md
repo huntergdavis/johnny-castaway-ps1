@@ -13,7 +13,7 @@ image_height: 677
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" fetchpriority="high" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
   <figcaption>FISHING 1 on PS1 hardware. The reference scene.</figcaption>
 </figure>
 ## What happens

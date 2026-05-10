@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing3-ps1-octopus-steals.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 3 on PS1 at night: a red octopus stands on the shoreline next to Johnny's fishing line on the left side of the island, walking off with the fish." />
   <figcaption>

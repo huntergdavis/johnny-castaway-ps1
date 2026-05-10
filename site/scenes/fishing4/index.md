@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing4-ps1-shark.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 4 on PS1 at night: a shark fin cuts the water on the right edge of the frame, a fishing line connecting it to Johnny standing under the palm tree on the island." />
   <figcaption>

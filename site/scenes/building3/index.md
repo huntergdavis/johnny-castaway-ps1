@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building3-ps1-nap.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 3 on PS1 at night: Johnny lies on the sand under the palm tree with a column of Z's rising up the palm's trunk." />
   <figcaption>

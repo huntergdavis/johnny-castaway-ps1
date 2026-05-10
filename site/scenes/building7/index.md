@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building7-ps1-grill-fish.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 7 on PS1 at night: Johnny crouches next to a small fire on the left shoreline, mid-grill of a caught fish." />
   <figcaption>

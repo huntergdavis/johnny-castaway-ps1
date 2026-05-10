@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/visitor7-ps1-coconut-crack.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="VISITOR 7 on PS1 at night: Johnny stands at the base of the palm tree cracking a coconut against the trunk, the no-shake variant of the VISITOR 6 coconut sequence." />
   <figcaption>

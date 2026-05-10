@@ -20,7 +20,7 @@ drawn over black, so the PS1 path now avoids painting ocean/island
 background behind it.
 
 <figure>
-  <img src="{{ '/assets/img/johnny6-ps1-office.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 office daydream frame running on PS1." />
+  <img src="{{ '/assets/img/johnny6-ps1-office.png' | relative_url }}" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 office daydream frame running on PS1." />
   <figcaption>JOHNNY 6 · Johnny working in the office, captured from DuckStation.</figcaption>
 </figure>
 

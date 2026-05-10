@@ -16,7 +16,7 @@ Validated on 2026-05-05 under the current visual + audible signoff bar.
 
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}"
-       width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1 at night: Johnny in costume on the island as a wide boat carrying a couple passes by the moonlit ocean." />
+       width="1127" height="677" fetchpriority="high" decoding="async" alt="ACTIVITY 9 running on PS1 at night: Johnny in costume on the island as a wide boat carrying a couple passes by the moonlit ocean." />
   <figcaption>ACTIVITY 9 on PS1 hardware. Costumed Johnny mid-rain-dance as the wide boat with passengers passes the night-palette island.</figcaption>
 </figure>
 

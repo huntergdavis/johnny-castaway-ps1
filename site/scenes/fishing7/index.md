@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/fishing7-ps1-starfish-right.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="FISHING 7 on PS1 at night: Johnny stands on the right side of the island holding a fishing rod, a starfish visible on the raft/dock next to him." />
   <figcaption>

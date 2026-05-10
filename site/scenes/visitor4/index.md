@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/visitor4-ps1-coconut-rolls.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean." />
   <figcaption>

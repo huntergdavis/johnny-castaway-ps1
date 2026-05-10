@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/building1-ps1-sandcastle.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build." />
   <figcaption>

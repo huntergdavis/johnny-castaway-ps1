@@ -15,7 +15,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/stand11-ps1-left-look.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="STAND 11 on PS1 at night: Johnny stands on the left side of the island next to the palm tree's trunk in the look-around idle pose." />
   <figcaption>

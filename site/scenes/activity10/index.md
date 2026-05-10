@@ -16,7 +16,7 @@ image_height: 720
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity10-ps1-seagull-steals-book.png' | relative_url }}"
        width="961" height="720"
-       loading="lazy"
+       fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 10 on PS1 at night: Johnny stands under the palm tree while a seagull flies away upper-right with the stolen book." />
   <figcaption>
