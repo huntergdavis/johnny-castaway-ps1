@@ -66,10 +66,14 @@ The native Zeller convention is `0=Saturday`. The function shifts to
 **Worked example.** What day of the week was 2026-04-26?
 
 April is month 4, no shift. `K = 26`, `J = 20`.
-`h = (26 + (13 * 5) / 5 + 26 + 26/4 + 20/4 + 5*20) % 7`
-`  = (26 + 13 + 26 + 6 + 5 + 100) % 7`
-`  = 176 % 7 = 1` (Sunday in Zeller's convention).
-`(1 + 6) % 7 = 0` -> Sunday. Correct.
+
+```
+h = (26 + (13 * 5) / 5 + 26 + 26/4 + 20/4 + 5*20) % 7
+  = (26 + 13 + 26 + 6 + 5 + 100) % 7
+  = 176 % 7 = 1   (Sunday in Zeller's convention)
+
+(1 + 6) % 7 = 0   -> Sunday. Correct.
+```
 
 ## Nth weekday of month
 
