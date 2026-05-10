@@ -6,7 +6,29 @@ tag: 4
 slug: stand4
 status: validated
 description: "STAND.ADS scene 4: Johnny stands at the front of the island and adjusts his hat. Validated 2026-05-08."
+image: /assets/img/stand4-ps1-front-hat.png
+image_alt: "STAND 4 on PS1 at night: Johnny stands at the front of the island under the palm tree, adjusting his hat in a short idle pose."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand4-ps1-front-hat.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 4 on PS1 at night: Johnny stands at the front of the island under the palm tree, adjusting his hat in a short idle pose." />
+  <figcaption>
+    STAND 4 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    Front-of-island hat-adjust idle. Compare
+    <a href="{{ '/scenes/stand3/' | relative_url }}">STAND 3</a>,
+    the edge-of-island variant of the same gag — small island
+    placement is what differs. Fourth entry in the
+    <a href="{{ '/scenes/' | relative_url }}#ads-stand">STAND family</a>'s
+    14-scene catalog.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
