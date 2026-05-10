@@ -6,7 +6,37 @@ tag: 12
 slug: stand12
 status: validated
 description: "STAND.ADS scene 12: Johnny looks forward and adjusts his hat. Validated 2026-05-08."
+image: /assets/img/stand12-ps1-forward-hat.png
+image_alt: "STAND 12 on PS1 at night: Johnny stands at the center of the island under the palm tree, looking forward and adjusting his hat."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand12-ps1-forward-hat.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 12 on PS1 at night: Johnny stands at the center of the island under the palm tree, looking forward and adjusting his hat." />
+  <figcaption>
+    STAND 12 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The forward-facing hat-adjust idle. Extends the
+    STAND-family hat-pose mini-cluster from a triple to a quartet:
+    <a href="{{ '/scenes/stand3/' | relative_url }}">STAND 3</a>
+    edge-hat-adjust,
+    <a href="{{ '/scenes/stand4/' | relative_url }}">STAND 4</a>
+    front-hat-adjust,
+    <a href="{{ '/scenes/stand7/' | relative_url }}">STAND 7</a>
+    look-right-hat-lift, and STAND 12 forward-hat-adjust. Same
+    92-byte-empty-pack export quirk as
+    <a href="{{ '/scenes/stand10/' | relative_url }}">STAND 10</a>
+    and
+    <a href="{{ '/scenes/stand11/' | relative_url }}">STAND 11</a>
+    (host pipeline exits after two frames; previously-committed
+    pack kept as-is).
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
