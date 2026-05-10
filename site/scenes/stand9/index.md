@@ -6,7 +6,27 @@ tag: 9
 slug: stand9
 status: validated
 description: "STAND.ADS scene 9: Johnny stands by the palm tree, looks around, and adjusts his pants. Validated 2026-05-08."
+image: /assets/img/stand9-ps1-tree-pants.png
+image_alt: "STAND 9 on PS1 at night: Johnny stands right next to the palm tree, looking around in the pants-adjust idle pose."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand9-ps1-tree-pants.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 9 on PS1 at night: Johnny stands right next to the palm tree, looking around in the pants-adjust idle pose." />
+  <figcaption>
+    STAND 9 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The tree-side pants-adjust idle. Position-variant pair with
+    <a href="{{ '/scenes/stand2/' | relative_url }}">STAND 2</a>'s
+    left-edge pants-adjust. Ninth entry in the
+    <a href="{{ '/scenes/' | relative_url }}#ads-stand">STAND family</a>.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
