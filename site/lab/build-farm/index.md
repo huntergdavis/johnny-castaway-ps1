@@ -5,6 +5,10 @@ eyebrow: Lab · Infrastructure
 subtitle: Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.
 description: "A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure."
 date: 2026-04-29
+image: /assets/img/dev-environment-2026-05-06-w1600.jpg
+image_alt: The author's actual PS1 fan-port development desk — multiple monitors, a keyboard, and the build/regression machinery the build-farm essay describes.
+image_width: 1600
+image_height: 1086
 ---
 
 The build farm is not a rack of machines. It is a repeatable loop:
