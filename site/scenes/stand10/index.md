@@ -6,7 +6,33 @@ tag: 10
 slug: stand10
 status: validated
 description: "STAND.ADS scene 10: Johnny looks at his raft and then looks around. Validated 2026-05-08."
+image: /assets/img/stand10-ps1-look-raft.png
+image_alt: "STAND 10 on PS1 at night: Johnny stands on the right side of the island next to the palm tree, looking at his raft."
+image_width: 961
+image_height: 720
 ---
+
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/stand10-ps1-look-raft.png' | relative_url }}"
+       width="961" height="720"
+       loading="lazy"
+       decoding="async"
+       alt="STAND 10 on PS1 at night: Johnny stands on the right side of the island next to the palm tree, looking at his raft." />
+  <figcaption>
+    STAND 10 on PS1, captured during the v0.8.4-ps1
+    <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
+    The look-at-raft idle, threaded between
+    <a href="{{ '/scenes/walkstuf2/' | relative_url }}">WALKSTUF 2</a>
+    (raft-build progress) and
+    <a href="{{ '/scenes/mary5/' | relative_url }}">MARY 5</a>
+    (pack the raft and sail off) in the running raft-stage arc.
+    Engineering quirk: STAND 10's host pipeline exits after only
+    two frames, so the standard no-stitch export collapses to a
+    92-byte empty pack. Rather than chase the host-side cause,
+    the committed pack — which already plays cleanly on PS1 —
+    was signed off as-is. Paid pragmatism.
+  </figcaption>
+</figure>
 
 Validated on 2026-05-04.
 
