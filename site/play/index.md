@@ -42,6 +42,10 @@ payload routed onto the disc.
 
 There is no menu to "begin." The game *is* the screensaver.
 
+DuckStation is the every-commit reference; for other emulators, real
+PS1 hardware via TonyHax, PS2/PS3 backwards-compat, and the BIOS
+requirement, see [/docs/devices/]({{ '/docs/devices/' | relative_url }}).
+
 ## Original Sierra data files
 
 This port ships only the code that drives playback. The original

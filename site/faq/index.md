@@ -237,12 +237,18 @@ compiling from source and want host-mode capture, you need
 Yes — smoke-tested on a SCPH-7501 via the
 [TonyHax](https://github.com/socram8888/tonyhax) softmod path.
 Your mileage may vary; treat any boot success as a small miracle.
+The full device matrix — tested cadence, console model, boot path,
+media — is at
+[/docs/devices/]({{ '/docs/devices/' | relative_url }}).
 
 ### Which emulators are supported?
 
 DuckStation is the only one tested every commit. PCSX-Redux
 should work. ePSXe is unverified. The release smoke gauntlet
 runs in headless DuckStation, so that one is the reference.
+[/docs/devices/]({{ '/docs/devices/' | relative_url }}) has the
+fields-table reference: tested cadence, platforms, BIOS, and the
+should-work-unverified and unsupported lists.
 
 ### Does it run at native rate?
 
