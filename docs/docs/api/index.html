@@ -544,7 +544,7 @@ the call site.</p>
 </table>
 
 <p>The biggest semantic gap is the rendering model. SDL2 lets you draw and
-flip in arbitrary order; the PS1 GPU consumes an <em>ordering table</em> — a
+flip in arbitrary order; the PS1 GPU consumes an <em><a href="../glossary/#ot">ordering table</a></em> — a
 linked list of primitives sorted back-to-front — and renders the whole
 list when you call <code class="language-plaintext highlighter-rouge">DrawOTag</code>. Every PS1 module in this codebase ends up
 shaped around “build the OT, then submit”, which is why

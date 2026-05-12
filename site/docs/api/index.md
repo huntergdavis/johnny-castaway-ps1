@@ -249,7 +249,7 @@ CdReadSync(0, 0);                       /* Wait for completion */
 | File I/O            | Standard C `stdio` (buffered)     | CD-ROM sectors (asynchronous, unbuffered) |
 
 The biggest semantic gap is the rendering model. SDL2 lets you draw and
-flip in arbitrary order; the PS1 GPU consumes an *ordering table* — a
+flip in arbitrary order; the PS1 GPU consumes an *[ordering table]({{ '/docs/glossary/#ot' | relative_url }})* — a
 linked list of primitives sorted back-to-front — and renders the whole
 list when you call `DrawOTag`. Every PS1 module in this codebase ends up
 shaped around "build the OT, then submit", which is why
