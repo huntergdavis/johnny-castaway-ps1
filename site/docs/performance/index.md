@@ -915,6 +915,11 @@ A few things the perf work explicitly does not chase, with reasons:
   experiments landed and which got rejected.
 - [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — the soak-loop war story; matrix and soak are not redundant.
+- [The 24/7 build farm]({{ '/lab/build-farm/' | relative_url }})
+  — the magazine treatment of the parallel Docker machinery that
+  iterates the perf experiments this reference describes the
+  output of. Same JCPERF / JCPERF2 records, but framed as
+  methodology for keeping a 126-row matrix moving.
 - [Hardware]({{ '/docs/hardware/' | relative_url }}) — what the
   optimizations are running against.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the

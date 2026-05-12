@@ -102,7 +102,7 @@
       <h1>Date-algorithm core</h1>
       <p class="subtitle">How the 36 holidays compute their dates with no expiring tables.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1916 words
+          ~7 min read · 1915 words
         </p>
 
       <hr class="rule" />
@@ -177,11 +177,14 @@ leap-year branch from the inner formula.</p>
 
 <p><strong>Worked example.</strong> What day of the week was 2026-04-26?</p>
 
-<p>April is month 4, no shift. <code class="language-plaintext highlighter-rouge">K = 26</code>, <code class="language-plaintext highlighter-rouge">J = 20</code>.
-<code class="language-plaintext highlighter-rouge">h = (26 + (13 * 5) / 5 + 26 + 26/4 + 20/4 + 5*20) % 7</code>
-`  = (26 + 13 + 26 + 6 + 5 + 100) % 7<code class="language-plaintext highlighter-rouge">
-</code>  = 176 % 7 = 1<code class="language-plaintext highlighter-rouge"> (Sunday in Zeller's convention).
-</code>(1 + 6) % 7 = 0` -&gt; Sunday. Correct.</p>
+<p>April is month 4, no shift. <code class="language-plaintext highlighter-rouge">K = 26</code>, <code class="language-plaintext highlighter-rouge">J = 20</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>h = (26 + (13 * 5) / 5 + 26 + 26/4 + 20/4 + 5*20) % 7
+  = (26 + 13 + 26 + 6 + 5 + 100) % 7
+  = 176 % 7 = 1   (Sunday in Zeller's convention)
+
+(1 + 6) % 7 = 0   -&gt; Sunday. Correct.
+</code></pre></div></div>
 
 <h2 id="nth-weekday-of-month">Nth weekday of month</h2>
 

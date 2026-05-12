@@ -52,7 +52,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
          loading="lazy"
          decoding="async"
          style="max-width: 100%; height: auto;"
-         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, 5 of 63 validated, FISHING 5 — Eaten by a shark, Family Fishing, Frames 69; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2, navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, then cursor position 5/63 with a validated marker, then FISHING 5 — Eaten by a shark, then Family Fishing with 69 frames; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2 with navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
   </a>
   <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
     <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
@@ -100,8 +100,9 @@ promoted the headless optimization methodology, the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
 outliers, `v0.8.4` walked all 63 packs on hardware to ship custom
 chapter-select thumbnails plus a scene-page reconciliation against the
-on-PS1 packs, and `v0.8.5` promotes the full 126-row timing-bearing
-matrix — the public battle card now averages
+on-PS1 packs, `v0.8.5` promotes the full 126-row timing-bearing
+matrix, and `v0.8.6` lands the WALKSTUF1 / VISITOR3 setup-segment
+compaction follow-through — the public battle card now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the timing-bearing rows (public-capped; the
 optimization-side raw signed average is past target). The two

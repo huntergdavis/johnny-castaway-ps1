@@ -227,7 +227,13 @@ def build_markdown(captures: dict[str, dict[str, object]]) -> str:
         )
         if image_exists:
             src = "{{ '" + rel_asset(screen.label) + "' | relative_url }}"
-            alt = f"Captured PS1 screenshot of the {screen.title} screen."
+            # Alt text folds the per-screen description in alongside the
+            # title. The same description renders as a visible <p> above
+            # this figure, so sighted readers see it once; a screen-reader
+            # user jumping figure-by-figure (via heading nav, the figure
+            # element, or alt-only summarization) gets the screen's
+            # purpose without having to back up and re-read context.
+            alt = f"Captured PS1 screenshot of the {screen.title} screen. {screen.description}"
             lines.extend(
                 [
                     "<figure>",

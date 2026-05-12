@@ -11,11 +11,19 @@ Checks are intentionally local and boring:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from fnmatch import fnmatch
+
+
+# Matches <code></code> with optional attributes and whitespace between
+# the opening and closing tags. Catches the kramdown / Liquid content-
+# eating regression class (e.g. ``{{:toc}}`` silently emitted as empty
+# <code></code>).
+EMPTY_CODE_RE = re.compile(r"<code(?:\s[^>]*)?>\s*</code>")
 
 
 LINK_ATTRS = {
@@ -129,6 +137,14 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         for src, alt in parser.image_alts:
             if alt is None or not alt.strip():
                 errors.append(f"{rel}: image missing alt text ({src})")
+        # Empty <code></code> elements almost always indicate a content
+        # bug — typically Liquid ate something between backticks (e.g.
+        # `{{:toc}}` interpreted as a Liquid tag and emitted nothing) or
+        # a markdown processor folded adjacent backticks. Caught a real
+        # regression today on /lab/the-site-itself/ where Liquid was
+        # silently eating `{{:toc}}` content. Cheap preventative guard.
+        if EMPTY_CODE_RE.search(text):
+            errors.append(f"{rel}: empty <code></code> element (content lost?)")
 
     for html, parser in pages.items():
         rel = html.relative_to(root)

@@ -102,7 +102,7 @@
       <h1>Pause menu</h1>
       <p class="subtitle">Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1511 words
+          ~6 min read · 1521 words
         </p>
 
       <hr class="rule" />
@@ -268,10 +268,11 @@ through <a href="../glossary/#fgpilot">fgpilot</a>.</p>
 
 <p>The layout is a full-screen preview of one scene at a time: the
 selected scene’s 320×240 RGB555 thumbnail fills the centered region
-of the framebuffer, with a top chrome band carrying the page title +
-position counter (<code class="language-plaintext highlighter-rouge">N/63</code>) + display name + family/frame-count, and a
-bottom chrome band carrying the FG2 pack path + control hints. The
-cursor walks the 63-scene list sequentially.</p>
+of the framebuffer, with a top chrome band carrying the page title,
+position counter (<code class="language-plaintext highlighter-rouge">N/63</code>), per-scene validation marker (<code class="language-plaintext highlighter-rouge">* validated</code>
+or <code class="language-plaintext highlighter-rouge">? pending</code> from <code class="language-plaintext highlighter-rouge">gSceneExplorer[].validated</code>), display name, and
+family / frame-count, and a bottom chrome band carrying the FG2 pack
+path and control hints. The cursor walks the 63-scene list sequentially.</p>
 
 <table>
   <thead>
