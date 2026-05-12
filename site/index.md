@@ -81,12 +81,15 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <figure style="margin: 2rem auto; text-align: center;" aria-label="Scene Explorer running on PS1">
   <a href="{{ '/docs/pause-menu/#scene-explorer' | relative_url }}">
-    <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
-         width="640" height="448"
-         loading="lazy"
-         decoding="async"
-         style="max-width: 100%; height: auto;"
-         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, then cursor position 5/63 with a validated marker, then FISHING 5 — Eaten by a shark, then Family Fishing with 69 frames; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2 with navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+    <picture>
+      <source type="image/webp" srcset="{{ '/assets/img/scene-explorer-fishing5.webp' | relative_url }}" />
+      <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
+           width="640" height="448"
+           loading="lazy"
+           decoding="async"
+           style="max-width: 100%; height: auto;"
+           alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, then cursor position 5/63 with a validated marker, then FISHING 5 — Eaten by a shark, then Family Fishing with 69 frames; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2 with navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+    </picture>
   </a>
   <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
     <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
