@@ -184,7 +184,7 @@ It was not easy. It was, in fact, several months of dead ends.
 
 The first prototype tried the obvious thing. Take `jc_reborn`'s SDL2
 codebase, swap SDL for PSn00bSDK, swap `fopen` for `CdRead`, and let
-the existing ADS/TTM/RES interpreters run on the MIPS R3000A. The
+the existing ADS/TTM/RES interpreters run on the [MIPS]({{ '/docs/glossary/#mips' | relative_url }}) R3000A. The
 build came up. Resources loaded from the CD. Scenes ran. And then,
 roughly, everything went wrong:
 

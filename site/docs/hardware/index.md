@@ -24,7 +24,7 @@ The PlayStation 1 was released in 1994. In 2026 it is a museum piece, but it is
 also the machine that runs `jcreborn.bin` on real hardware and inside
 DuckStation. The numbers that matter, in the order you usually trip over them:
 
-- **CPU:** MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
+- **CPU:** [MIPS]({{ '/docs/glossary/#mips' | relative_url }}) R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
 - **System RAM:** 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.
 - **[VRAM]({{ '/docs/glossary/#vram' | relative_url }}):** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
   of that on their own.

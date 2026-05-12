@@ -25,7 +25,7 @@ PSn00bSDK is sensitive to toolchain version. The SDK is a thin layer over a
 specific build of `mipsel-none-elf-gcc` and a set of static archives; small
 mismatches between the compiler and the SDK headers produce silent runtime
 errors that look like emulator bugs rather than build bugs. The author's
-first month of the port had two laptops with two slightly different MIPS
+first month of the port had two laptops with two slightly different [MIPS]({{ '/docs/glossary/#mips' | relative_url }})
 toolchains installed natively, and one of them produced a binary that
 crashed inside `SpuInit()` on real hardware. The other one didn't. That was
 the start of the problem.
