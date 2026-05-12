@@ -5,6 +5,72 @@ subtitle: Latest build, quickstart, controls.
 description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
+{%- comment -%}
+  Schema.org HowTo structured data for the DuckStation quickstart.
+  Maps 1:1 to the prose steps in the "## Quickstart (DuckStation)"
+  section below. Google + agent crawlers consume HowTo for "how do
+  I run X" intents.
+
+  Steps are hand-mirrored next to the prose they describe — same
+  co-location discipline as the FAQPage on /faq/, Dataset on /perf/,
+  ItemList on /scenes/. If the quickstart steps change, this block
+  updates in the same commit.
+
+  site_root and quickstart_url match the canonical_baseurl pattern
+  used everywhere else so absolute URLs survive `--baseurl ""`.
+{%- endcomment -%}
+{%- assign play_site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign play_quickstart_url = play_site_root | append: '/play/#emulator' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Johnny Castaway PS1 in DuckStation",
+  "description": {{ "Download the .bin / .cue pair from the latest release, open the .cue in DuckStation, and let the screensaver idle. No menu to begin — the game IS the screensaver." | jsonify }},
+  "totalTime": "PT2M",
+  "url": {{ play_quickstart_url | jsonify }},
+  "inLanguage": "en",
+  "tool": [
+    { "@type": "HowToTool", "name": "DuckStation emulator", "url": "https://www.duckstation.org/" },
+    { "@type": "HowToTool", "name": "PlayStation 1 BIOS file (e.g. scph1001.bin) — required by DuckStation, not shipped by this project" }
+  ],
+  "supply": [
+    { "@type": "HowToSupply", "name": "jcreborn.bin (~76 MiB disc image)" },
+    { "@type": "HowToSupply", "name": "jcreborn.cue (71 B cue sheet)" }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Install DuckStation",
+      "text": "Install DuckStation on your platform of choice from duckstation.org.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Place files",
+      "text": "Drop jcreborn.cue and jcreborn.bin into the same folder.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Open the disc image",
+      "text": "In DuckStation: File → Start File… → pick jcreborn.cue.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Watch",
+      "text": "Hit start. The game runs as a screensaver — let it idle and the scenes will cycle on their own. There is no menu to begin; the game is the screensaver.",
+      "url": {{ play_quickstart_url | jsonify }}
+    }
+  ]
+}
+</script>
+
 <details class="page-toc" markdown="1">
 <summary>On this page</summary>
 
