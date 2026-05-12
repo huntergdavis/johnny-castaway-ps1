@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+
+  <title>Feeds &amp;amp; well-known endpoints — Johnny Castaway PS1</title>
+  <meta name="description" content="Reference for every machine-readable endpoint on the Johnny Castaway PS1 site — Atom + JSON feeds for the devlog and lab, hand-rolled sitemap, robots.txt, RFC 9116 security.txt, humans.txt, the W3C web app manifest, and the Schema.org JSON-LD records emitted in every page&#39;s head." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/feeds/" /><meta property="og:title"        content="Feeds &amp;amp; well-known endpoints — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference for every machine-readable endpoint on the Johnny Castaway PS1 site — Atom + JSON feeds for the devlog and lab, hand-rolled sitemap, robots.txt, RFC 9116 security.txt, humans.txt, the W3C web app manifest, and the Schema.org JSON-LD records emitted in every page&#39;s head." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/feeds/" /><meta property="og:locale"       content="en_US" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-11" /><link rel="dns-prefetch" href="//github.com" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="../../sitemap.xml" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Feeds &amp; well-known endpoints", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/feeds/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../perf/">Perf</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main" tabindex="-1">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference · discovery</p>
+      <h1>Feeds &amp; well-known endpoints</h1>
+      <p class="subtitle">Every machine-readable URL on the site — feeds, sitemap, manifest, robots.txt, security.txt, humans.txt, and the JSON-LD records inside each page's head.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~2 min read · 733 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. Most of the site is HTML for humans;
+this page lists everything that isn’t. Each URL has a stable path, a
+documented purpose, and an auto-discovery entry in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/head.html"><code class="language-plaintext highlighter-rouge">_includes/head.html</code></a>
+so crawlers and feed readers can find it without scraping the body.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#feeds" id="markdown-toc-feeds">Feeds</a></li>
+  <li><a href="#discovery" id="markdown-toc-discovery">Discovery</a></li>
+  <li><a href="#identity" id="markdown-toc-identity">Identity</a></li>
+  <li><a href="#structured-data-in-every-pages-head" id="markdown-toc-structured-data-in-every-pages-head">Structured data (in every page’s <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>)</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
+</ul>
+
+</details>
+
+<h2 id="feeds">Feeds</h2>
+
+<p>Four feeds — Atom + JSON for two collections. Both formats carry the
+same set of items per collection; pick the one your reader supports.
+The devlog feed embeds full post bodies inside <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code>; the lab
+feed is headlines + summaries only (a Jekyll constraint — iterating
+<code class="language-plaintext highlighter-rouge">site.html_pages</code> from another page’s render doesn’t guarantee each
+entry’s <code class="language-plaintext highlighter-rouge">.content</code> has been processed yet, so the feed publishes the
+description instead of risking partial bodies).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Path</th>
+      <th scope="col">Format</th>
+      <th scope="col">MIME</th>
+      <th scope="col">Body</th>
+      <th scope="col">Auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link rel="alternate"&gt;</code> title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code></td>
+      <td>Atom 1.0</td>
+      <td><code class="language-plaintext highlighter-rouge">application/atom+xml</code></td>
+      <td>full</td>
+      <td><em>Devlog (Atom)</em></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/devlog/feed.json</code></td>
+      <td>JSON Feed 1.1</td>
+      <td><code class="language-plaintext highlighter-rouge">application/feed+json</code></td>
+      <td>full</td>
+      <td><em>Devlog (JSON Feed)</em></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/lab/feed.xml</code></td>
+      <td>Atom 1.0</td>
+      <td><code class="language-plaintext highlighter-rouge">application/atom+xml</code></td>
+      <td>summary only</td>
+      <td><em>Lab (Atom)</em></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/lab/feed.json</code></td>
+      <td>JSON Feed 1.1</td>
+      <td><code class="language-plaintext highlighter-rouge">application/feed+json</code></td>
+      <td>summary only</td>
+      <td><em>Lab (JSON Feed)</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>All four feeds emit absolute URLs (built from <code class="language-plaintext highlighter-rouge">site.url</code> +
+<code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>) so the build’s path-portable <code class="language-plaintext highlighter-rouge">--baseurl ""</code>
+override doesn’t strip the project prefix from the entry links.</p>
+
+<h2 id="discovery">Discovery</h2>
+
+<p>The endpoints that tell crawlers what to crawl and where to find the rest.</p>
+
+<dl>
+  <dt><a href="../../sitemap.xml"><code class="language-plaintext highlighter-rouge">/sitemap.xml</code></a></dt>
+  <dd>Hand-rolled XML sitemap — no <code class="language-plaintext highlighter-rouge">jekyll-sitemap</code> plugin (its default
+output would emit URLs without the <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1</code> prefix
+because the build runs with <code class="language-plaintext highlighter-rouge">--baseurl ""</code>). Pages opt out by
+setting <code class="language-plaintext highlighter-rouge">sitemap: false</code> in front matter; the four feeds, the
+404, robots.txt, security.txt, humans.txt, and the manifest all do.
+Uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so absolute URLs survive.</dd>
+  <dt><a href="../../robots.txt"><code class="language-plaintext highlighter-rouge">/robots.txt</code></a></dt>
+  <dd>Permissive (<code class="language-plaintext highlighter-rouge">User-agent: *</code> / <code class="language-plaintext highlighter-rouge">Allow: /</code>). The only directive that
+matters is the absolute <code class="language-plaintext highlighter-rouge">Sitemap:</code> line pointing at the sitemap above.
+Auto-generated wrapper pages under <code class="language-plaintext highlighter-rouge">/source/</code>, <code class="language-plaintext highlighter-rouge">/resources/</code>, and
+<code class="language-plaintext highlighter-rouge">/archaeology/regtest-references/cases/</code> opt out of indexing via a
+<code class="language-plaintext highlighter-rouge">&lt;meta name="robots" content="noindex"&gt;</code> tag in their head — not a
+<code class="language-plaintext highlighter-rouge">Disallow:</code> block here — so the rule stays consistent across crawlers
+that handle the two differently.</dd>
+  <dt><a href="../../.well-known/security.txt"><code class="language-plaintext highlighter-rouge">/.well-known/security.txt</code></a></dt>
+  <dd>RFC 9116 responsible-disclosure pointer. Two <code class="language-plaintext highlighter-rouge">Contact:</code> lines —
+GitHub Issues for public reports, GitHub Security Advisories for
+private. The <code class="language-plaintext highlighter-rouge">Expires:</code> field forward-dates one year on every
+rebuild via Liquid date math (<code class="language-plaintext highlighter-rouge">site.time + 31536000</code>), coarsened
+to <code class="language-plaintext highlighter-rouge">T00:00:00Z</code> so same-day rebuilds don’t churn the file.</dd>
+</dl>
+
+<h2 id="identity">Identity</h2>
+
+<p>The endpoints that say who wrote this and what it is.</p>
+
+<dl>
+  <dt><a href="../../humans.txt"><code class="language-plaintext highlighter-rouge">/humans.txt</code></a></dt>
+  <dd><a href="https://humanstxt.org">humanstxt.org</a> format. Voice mirrors the
+in-game <code class="language-plaintext highlighter-rouge">drawCredits</code> screen and the <a href="../../credits/">/credits/</a>
+page. Dynamic fields (release tag, build day, scenes validated)
+rendered from Jekyll. Auto-discoverable via
+<code class="language-plaintext highlighter-rouge">&lt;link rel="author" type="text/plain"&gt;</code>.</dd>
+  <dt><a href="../../site.webmanifest"><code class="language-plaintext highlighter-rouge">/site.webmanifest</code></a></dt>
+  <dd>W3C web app manifest. The site is <em>not</em> a service-worker-backed
+PWA — <code class="language-plaintext highlighter-rouge">display: browser</code> keeps each page in normal Chrome — but
+the manifest gives mobile browsers a canonical source for
+“Install” / “Add to Home Screen” / app-switcher identity. Theme
+and background colors mirror the light-scheme CSS palette. Three
+icon entries (16/32/180) referencing the same branding assets
+the favicon and apple-touch-icon <code class="language-plaintext highlighter-rouge">&lt;link&gt;</code> tags use.
+Auto-discoverable via <code class="language-plaintext highlighter-rouge">&lt;link rel="manifest"&gt;</code>.</dd>
+</dl>
+
+<h2 id="structured-data-in-every-pages-head">Structured data (in every page’s <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>)</h2>
+
+<p>Every page emits one or more <a href="https://schema.org">Schema.org</a>
+JSON-LD records inside its head. Multiple <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code>
+blocks are valid — crawlers merge them — so each record is conditional
+on the page kind:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Record type</th>
+      <th scope="col">Emitted on</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">WebSite</code></td>
+      <td>every page</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SoftwareApplication</code></td>
+      <td>the home page only (<code class="language-plaintext highlighter-rouge">GameApplication</code> · <code class="language-plaintext highlighter-rouge">Screensaver</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BreadcrumbList</code></td>
+      <td>every page except the home page</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BlogPosting</code></td>
+      <td>devlog posts (<code class="language-plaintext highlighter-rouge">layout: post</code> + <code class="language-plaintext highlighter-rouge">date</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Article</code></td>
+      <td>lab essays (<code class="language-plaintext highlighter-rouge">/lab/&lt;slug&gt;/</code> with <code class="language-plaintext highlighter-rouge">date</code>, excludes the index)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">CreativeWork</code></td>
+      <td>per-scene pages (<code class="language-plaintext highlighter-rouge">layout: scene</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">FAQPage</code></td>
+      <td><a href="../../faq/">/faq/</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The emission logic lives in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/json-ld.html"><code class="language-plaintext highlighter-rouge">_includes/json-ld.html</code></a>;
+the FAQPage block is inline at the bottom of
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/faq/index.md"><code class="language-plaintext highlighter-rouge">site/faq/index.md</code></a>
+because it iterates the page’s own Q&amp;A list.</p>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/head.html"><code class="language-plaintext highlighter-rouge">site/_includes/head.html</code></a> — every auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link&gt;</code> tag and JSON-LD entry point lives here.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/json-ld.html"><code class="language-plaintext highlighter-rouge">site/_includes/json-ld.html</code></a> — the multi-block JSON-LD emitter.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/devlog/feed.xml"><code class="language-plaintext highlighter-rouge">site/devlog/feed.xml</code></a> · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/devlog/feed.json"><code class="language-plaintext highlighter-rouge">site/devlog/feed.json</code></a> — devlog feed sources.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/lab/feed.xml"><code class="language-plaintext highlighter-rouge">site/lab/feed.xml</code></a> · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/lab/feed.json"><code class="language-plaintext highlighter-rouge">site/lab/feed.json</code></a> — lab feed sources.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/sitemap.xml"><code class="language-plaintext highlighter-rouge">site/sitemap.xml</code></a> — hand-rolled sitemap.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/robots.txt"><code class="language-plaintext highlighter-rouge">site/robots.txt</code></a> — robots.txt with absolute Sitemap directive.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/security.txt"><code class="language-plaintext highlighter-rouge">site/security.txt</code></a> — RFC 9116 source (rendered at <code class="language-plaintext highlighter-rouge">/.well-known/security.txt</code>).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/humans.txt"><code class="language-plaintext highlighter-rouge">site/humans.txt</code></a> — humans.txt source.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/site.webmanifest"><code class="language-plaintext highlighter-rouge">site/site.webmanifest</code></a> — web manifest source.</li>
+</ul>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../lab/the-site-itself/">Lab: the site itself, as a small program</a> — the magazine treatment of the Jekyll deployment: canonical_baseurl, no-plugin feeds, the redirect override, the build-stamp coarsening pattern that the security.txt Expires field also uses.</li>
+  <li><a href="../../credits/">Credits</a> — the human-readable counterpart to humans.txt.</li>
+  <li><a href="../../legal/">Legal</a> — the security.txt <code class="language-plaintext highlighter-rouge">Policy:</code> target.</li>
+  <li><a href="../glossary/">Glossary</a> — the rest of the site’s vocabulary.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (<a href="../../releases/">v0.8.7-ps1</a>)
+        </p>
+        <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/feeds/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../archaeology/">Archaeology</a></li>
+          <li><a href="../glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
