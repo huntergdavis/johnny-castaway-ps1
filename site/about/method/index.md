@@ -329,3 +329,8 @@ regressions ship.
   — magazine retrospective on the choice between "looks similar"
   and pixel-perfect-with-host-capture that defined the rest of
   this method. The decision behind every section above.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — magazine treatment of applying this method to every routed
+  scene, one capture-encode-replay-validate loop at a time. This
+  page is the recipe; that essay is what running it 63 times
+  actually looked like, including the last-cluster hard cases.
