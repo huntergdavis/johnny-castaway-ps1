@@ -147,7 +147,7 @@ preview image is absent.
 | Freeplay Gags | Selector for Johnny one-shot actions. Each row shows a name, description, BMP, frame count, and rough memory cost. |
 | Freeplay Visitors | Selector for outside-world events, with the same metadata. |
 | Controls | On-device reminder for the final freeplay controls. |
-| Clear | Cancels transient actions, shows the frog clock, rebuilds the clean island backdrop, and returns Johnny to idle. |
+| Clear | Cancels transient actions, shows the frog clock, rebuilds the clean island [backdrop]({{ '/docs/glossary/#backdrop' | relative_url }}), and returns Johnny to idle. |
 
 Gags and visitors are fail-soft. If an optional BMP cannot load, freeplay
 shows the skip text and keeps running.

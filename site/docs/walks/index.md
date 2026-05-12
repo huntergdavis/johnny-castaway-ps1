@@ -100,7 +100,7 @@ frame, against the live island. Breaking any of them shows up
 immediately as a visual regression:
 
 - **Waves keep moving.** The ocean wave-band animates per VBlank
-  the same as during a scene; walks don't freeze the backdrop.
+  the same as during a scene; walks don't freeze the [backdrop]({{ '/docs/glossary/#backdrop' | relative_url }}).
 - **Holiday overlay re-stamps.** If a holiday emblem is on screen,
   the kernel re-stamps it *behind* Johnny each walk frame so he
   visibly walks past it instead of erasing it.

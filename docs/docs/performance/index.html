@@ -318,7 +318,7 @@ scenes, but worse loop/blocking/refill timing overall. The
 optimization changed code shape enough that CD scheduling phase
 shifted unfavorably. Kept <code class="language-plaintext highlighter-rouge">-O2</code>.</li>
   <li><strong>Holiday overlap restamping.</strong> Seed holiday decoration into the
-clean backdrop and only restamp it when the current FG2 frame
+clean <a href="../glossary/#backdrop">backdrop</a> and only restamp it when the current FG2 frame
 overlaps. Logically sound, but the active fishing1 frames overlap
 the Christmas decoration enough that this didn’t reduce dirty work.
 Pure no-op, rejected.</li>

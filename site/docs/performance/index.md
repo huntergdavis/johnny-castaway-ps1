@@ -198,7 +198,7 @@ cost structure.
   optimization changed code shape enough that CD scheduling phase
   shifted unfavorably. Kept `-O2`.
 - **Holiday overlap restamping.** Seed holiday decoration into the
-  clean backdrop and only restamp it when the current FG2 frame
+  clean [backdrop]({{ '/docs/glossary/#backdrop' | relative_url }}) and only restamp it when the current FG2 frame
   overlaps. Logically sound, but the active fishing1 frames overlap
   the Christmas decoration enough that this didn't reduce dirty work.
   Pure no-op, rejected.
