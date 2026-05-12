@@ -15,6 +15,8 @@ or is cheap enough to lock in even with zero past hits:
 - Heading levels never skip downward (WCAG 1.3.1; e.g. h1 → h3).
 - Every `id=""` is unique within its page (WCAG 4.1.1).
 - Every `<script type="application/ld+json">` block parses as valid JSON.
+- Every real content page has a non-empty `<meta name="description">`
+  (exempts redirect pages and explicitly-noindex'd surfaces).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -53,6 +55,27 @@ EMPTY_CODE_RE = re.compile(r"<code(?:\s[^>]*)?>\s*</code>")
 JSONLD_RE = re.compile(
     r'<script\s+type="application/ld\+json">(.+?)</script>',
     re.DOTALL,
+)
+
+# Real content pages must carry a non-empty <meta name="description">
+# tag — Google, Bing, social-card crawlers, and AI agents all use it
+# when no inline summary is available. The site has it as a frontmatter
+# field on every Jekyll page, and head.html threads it through; a
+# Liquid breakage or a forgotten frontmatter field would silently ship
+# an empty page summary. Synthetic surfaces (redirect pages emitted
+# by _layouts/redirect.html, noindex'd auto-generated wrappers under
+# /source/, etc.) are exempt — they shouldn't index in the first place.
+META_DESC_RE = re.compile(
+    r'<meta\s+name="description"\s+content="([^"]*)"',
+    re.IGNORECASE,
+)
+META_REFRESH_RE = re.compile(
+    r'<meta\s+http-equiv="refresh"',
+    re.IGNORECASE,
+)
+META_NOINDEX_RE = re.compile(
+    r'<meta\s+name="robots"\s+content="[^"]*noindex',
+    re.IGNORECASE,
 )
 
 
@@ -346,6 +369,24 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
                 errors.append(f"{rel}: duplicate id='{id_val}'")
             else:
                 seen_ids.add(id_val)
+        # SEO / discoverability — every real content page must carry a
+        # non-empty <meta name="description"> tag. Google + Bing + AI
+        # crawlers fall back to it when no inline summary is available;
+        # the social-card OG description tag also derives from it via
+        # head.html's `page.description | default: site.description`
+        # template. Silent regression class: a forgotten frontmatter
+        # field would ship a page with empty social cards and weaker
+        # search snippets. Exempt synthetic surfaces: redirect pages
+        # (have <meta http-equiv="refresh">, won't be indexed anyway)
+        # and explicitly-noindex'd surfaces (have <meta name="robots"
+        # content="noindex"> — the /source/* shelf, regtest case-shelf
+        # entries, resources catalog). Site-wide audit on 2026-05-12
+        # confirmed all real pages have a non-empty description; this
+        # locks that in.
+        if not META_REFRESH_RE.search(text) and not META_NOINDEX_RE.search(text):
+            m = META_DESC_RE.search(text)
+            if m is None or not m.group(1).strip():
+                errors.append(f"{rel}: missing or empty meta name=\"description\"")
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
