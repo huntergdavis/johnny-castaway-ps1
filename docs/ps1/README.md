@@ -44,19 +44,22 @@ follow-up, the WALKSTUF1 high `213..229` read-group/slack4 promotion, the
 VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
 staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
 pack-only compaction, the WALKSTUF1 high `344..360` read-group promotion,
-the BUILDING6 scene-local slack4 guard, and the BUILDING2 high `226..242`
-retained-read group; the raw signed optimization matrix is `-0.4529%`.
+the BUILDING6 scene-local slack4 guard, the BUILDING2 high `226..242`
+retained-read group, and the WALKSTUF1 high `422..434` CD-work reduction;
+the raw signed optimization matrix is `-0.4529%`.
 That is about `17.08` public over-target points removed and `12.59` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
 
 The latest WALKSTUF1 high baseline extends the high-tide retained read groups
-to `201..213`, `213..229`, and `344..360`. Against the v316 high baseline it
-keeps scene and loop flat at `1768` / `1480`, moves target `1429 -> 1432`,
-overrun `51 -> 48`, blocking `85 -> 83`, loop reads `69 -> 67`, and
-loop-read time `301 -> 292`; due misses stay `16`, hidden refill stays `26`,
-and low plus selected controls stay flat.
+to `201..213`, `213..229`, `344..360`, and `422..434`. Against the v316 high
+baseline it keeps scene and loop flat at `1768` / `1480`, moves target
+`1429 -> 1432`, overrun `51 -> 48`, blocking `85 -> 83`, loop reads
+`69 -> 66`, and loop-read time `301 -> 286`; due misses stay `16`, hidden
+refill stays `26`, and low plus selected controls stay flat. The final
+`422..434` group is a same-speed CD-work reduction, so the public rollup is
+unchanged from the v379 speed baseline.
 
 The latest WALKSTUF1 low baseline is the v331 staged-prepare scheduler
 fallback. Low is now `1484/1431` at `96.43%` target speed; it improved

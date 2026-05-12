@@ -103,7 +103,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3422 words
+          ~13 min read · 3432 words
         </p>
 
       <hr class="rule" />
@@ -497,11 +497,12 @@ the 126 timing-bearing scene/tide rows on the headless-perf
 battle card. The retrospective is at
 <a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.</li>
   <li>Current mainline performance: BUILDING2 high <code class="language-plaintext highlighter-rouge">226..242</code>, BUILDING6 scene-local
-slack4, WALKSTUF1 high <code class="language-plaintext highlighter-rouge">344..360</code>, VISITOR3 low tail pack compaction, and
-WALKSTUF1 low staged-prepare-before-window scheduling put the public battle
-card at <code class="language-plaintext highlighter-rouge">+0.3141%</code> over target / <code class="language-plaintext highlighter-rouge">99.6920%</code> target speed. BUILDING2 high is
-now <code class="language-plaintext highlighter-rouge">1351/1313</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=50</code>, and VISITOR3 low CD pressure is down
-to <code class="language-plaintext highlighter-rouge">blocking_vb=58</code>.</li>
+slack4, WALKSTUF1 high <code class="language-plaintext highlighter-rouge">344..360</code> plus <code class="language-plaintext highlighter-rouge">422..434</code>, VISITOR3 low tail pack
+compaction, and WALKSTUF1 low staged-prepare-before-window scheduling put
+the public battle card at <code class="language-plaintext highlighter-rouge">+0.3141%</code> over target / <code class="language-plaintext highlighter-rouge">99.6920%</code> target speed.
+BUILDING2 high is now <code class="language-plaintext highlighter-rouge">1351/1313</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=50</code>, WALKSTUF1 high is
+<code class="language-plaintext highlighter-rouge">1480/1432</code> with <code class="language-plaintext highlighter-rouge">66</code> loop reads, and VISITOR3 low CD pressure is down to
+<code class="language-plaintext highlighter-rouge">blocking_vb=58</code>.</li>
   <li>Performance-baseline release: <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> — promoted the
 headless optimization methodology to a release baseline; routed
 all 126 high/low scene variants through the perf matrix; clean-

@@ -23,9 +23,11 @@ from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
 allocation. The public headless battle card is `+0.3141%` over
 target / `99.6920%` target speed; the raw signed optimization matrix is
 `-0.4529%`.
-The newest accepted BUILDING2 high `226..242` read group keeps the fixed
-`217088` byte PS-EXE bucket while moving BUILDING2 high to `1351/1313`,
-overrun `38`, blocking `50`, hidden refill `17`, and loop-read time `254`.
+The newest accepted WALKSTUF1 high `422..434` read group keeps the fixed
+`217088` byte PS-EXE bucket and public `1480/1432` timing while lowering
+WALKSTUF1 high loop reads to `66` and loop-read time to `286`. BUILDING2 high
+is `1351/1313`, overrun `38`, blocking `50`, hidden refill `17`, and loop-read
+time `254`.
 VISITOR3 low tail compaction keeps `blocking_vb=58`, `loop_reads=10`, and due
 misses `10`.
 The live ledger is at

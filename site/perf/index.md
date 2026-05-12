@@ -139,7 +139,7 @@ frame-140/tail setup-segment copy, the high frame-121/frame-123 resident
 alias plus frame-131 setup-prime copy, the low frame-123 resident alias
 plus frame-128 setup-segment copy, and the low frame128/frame129
 resident-slot swap, followed by the
-WALKSTUF1 high sector `201..213`, `213..229`, and `344..360` read-group passes, the
+WALKSTUF1 high sector `201..213`, `213..229`, `344..360`, and `422..434` read-group passes, the
 high-tide window-prefetch guard on the gap-compressed pack, the low-tide
 gap-compressed prefix, and the low-tide staged-prepare scheduler fallback.
 The current VISITOR3 baseline is high `1071/1040`
@@ -195,8 +195,8 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.3141%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.6920%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T11:59:49` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-12T12:57:40` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-rg422-434-v383`, `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -232,9 +232,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building2-high-rg226-242-v379`,
+  refreshed rows use `walkstuf1-high-rg422-434-v383`,
+  `building2-high-rg226-242-v379`,
   `walkstuf1-low-prepare-before-window-v331`,
-  `walkstuf1-high-rg344-360-v340`,
   `visitor3-low-tail-pack-only-v338`,
   `visitor3-low-swap-f128-f129-v327`,
   `visitor3-low-f128-resident-seg27-v302`,
@@ -2043,15 +2043,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-12T04:15:22</td>
-      <td>walkstuf1-high-rg344-360-v340</td>
+      <td>2026-05-12T12:57:40</td>
+      <td>walkstuf1-high-rg422-434-v383</td>
       <td>+3.4%</td>
       <td class="spd-yellow">96.8%</td>
       <td>1480/1432</td>
       <td>83</td>
       <td>26</td>
       <td>16</td>
-      <td>high-tide read group adds 344..360 after accepted 201..229 groups; scene/loop flat at 1768/1480 while target 1429-&gt;1432, overrun 51-&gt;48, blocking 85-&gt;83, loop_reads 69-&gt;67; low and selected controls flat</td>
+      <td>high-tide read group adds 422..434 after accepted 201..229 and 344..360 groups; scene/loop/target stay flat at 1768/1480/1432 while loop_reads 67-&gt;66 and loop_read_vb 292-&gt;286; low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls flat</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>

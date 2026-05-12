@@ -216,10 +216,12 @@ compacts frame `143` cleanup and moves frame `144` terminal cleanup into the
 already paid setup window. VISITOR3 low now reports `blocking_vb=58`,
 `loop_reads=10`, loop-read time `58`, and due misses `10`; non-VISITOR3
 controls stayed flat.
-The v340 WALKSTUF1 high read-group pass adds `344..360` after the accepted
-`201..213` and `213..229` groups. High remains `1480` loop VBlanks while target
-moves `1429 -> 1432`, overrun drops `51 -> 48`, blocking drops `85 -> 83`, and
-loop reads drop `69 -> 67`; low and selected controls stayed flat.
+The v340/v383 WALKSTUF1 high read-group passes add `344..360` and `422..434`
+after the accepted `201..213` and `213..229` groups. High remains
+`1480/1432`, overrun `48`, blocking `83`, and hidden refill `26`; the latest
+`422..434` pass is a same-speed CD-work reduction that lowers loop reads
+`67 -> 66` and loop-read time `292 -> 286`. Low and selected controls stayed
+flat.
 The v379 BUILDING2 high read-group pass adds `226..242` between the accepted
 `60..72` and `249..257` groups. High improves `1352/1311 -> 1351/1313`,
 overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and
@@ -311,10 +313,10 @@ canaries.
 Milestone releases:
 - Current `main` after `v0.8.7-ps1` — promotes the BUILDING2 high `226..242`
   read group plus the BUILDING6 scene-local slack4 guard, WALKSTUF1 high
-  `344..360`, WALKSTUF1 low staged-prepare scheduler fallback, and VISITOR3
-  low tail pack-only compaction. The public battle card is `+0.3141%` /
-  `99.6920%`, with BUILDING2 high at `1351/1313`, overrun `38`, blocking
-  `50`, and loop-read time `254`.
+  `344..360` and `422..434`, WALKSTUF1 low staged-prepare scheduler fallback,
+  and VISITOR3 low tail pack-only compaction. The public battle card is
+  `+0.3141%` / `99.6920%`; BUILDING2 high is `1351/1313`, and WALKSTUF1 high
+  stays `1480/1432` with loop reads `66` and loop-read time `286`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

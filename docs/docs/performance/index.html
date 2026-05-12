@@ -103,7 +103,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4251 words
+          ~17 min read · 4256 words
         </p>
 
       <hr class="rule" />
@@ -438,16 +438,18 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3224%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6839%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4446%</code> / <code class="language-plaintext highlighter-rouge">100.4662%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3141%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6920%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4529%</code> / <code class="language-plaintext highlighter-rouge">100.4743%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-rg422-434-v383</code>,
+<code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>,
+<code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
 <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-f128-resident-seg27-v302</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-f131-resident-alias121123-v299</code>,
@@ -546,7 +548,9 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
+rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg422-434-v383</code>,
+<code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>,
+<code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-f131-resident-alias121123-v299</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-f128-resident-seg27-v302</code>,
@@ -974,8 +978,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> WALKSTUF1 low/high are
-now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">344..360</code>
-read group. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+41/+31</code>) and VISITOR3 low/high
+now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">422..434</code>
+same-speed CD-work reduction. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+38/+31</code>) and VISITOR3 low/high
 (<code class="language-plaintext highlighter-rouge">+32/+31</code>) are the next tight rows after the VISITOR3 motion-copy,
 setup-segment, setup-prime, guarded second-segment, resident-copy, and
 low no-op residual passes; its
@@ -1027,7 +1031,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3224% over target / 99.6839% target speed, with several
+public average is now +0.3141% over target / 99.6920% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

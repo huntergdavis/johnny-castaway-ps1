@@ -37,7 +37,7 @@ matrix, `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
 gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
 setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and the current mainline adds
-the WALKSTUF1 high `213..229` and `344..360` read-group promotions, the
+the WALKSTUF1 high `213..229`, `344..360`, and `422..434` read-group promotions, the
 VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
 staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
 pack-only CD-pressure compaction, the BUILDING6 scene-local slack4 guard, and
