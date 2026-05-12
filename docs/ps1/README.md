@@ -64,7 +64,7 @@ loop-read time `301 -> 282`, and due misses `13 -> 12`. The durable public
 row is now `1475/1430` at `96.95%` target speed.
 
 The latest VISITOR3 baseline is `visitor3-high-f131-resident-alias121123-v299`
-plus `visitor3-low-f128-resident-seg27-v302`. The high pass aliases duplicate
+plus `visitor3-low-tail-pack-only-v338`. The high pass aliases duplicate
 frames `121` and `123` to frame `120`, compacts the resident setup-prime tail,
 and copies frame `131` fully inside the already paid setup-prime coverage. It
 keeps the `1555450` byte pack footprint and `217088` byte PS-EXE bucket fixed,
@@ -76,6 +76,11 @@ from `24` to `27` sectors, and copies frame `128` resident while keeping the
 `1555450` byte pack footprint fixed. Low moves `1075/1039 -> 1071/1039`:
 overrun `36 -> 32`, blocking `67 -> 63`, loop reads `12 -> 11`, loop-read time
 `67 -> 63`, and due misses `12 -> 11`; hidden refill stays `0`.
+The v338 low tail pack-only pass supersedes the v327 row by bounding frame
+`143` cleanup and moving frame `144`'s terminal cleanup fully inside the
+existing setup window. It keeps public timing at `1072/1040` but lowers
+blocking `64 -> 58`, loop reads `11 -> 10`, loop-read time `64 -> 58`, and due
+misses `11 -> 10`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

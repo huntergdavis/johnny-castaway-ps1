@@ -313,8 +313,9 @@ signed optimization matrix is `-0.4403%` / `100.4621%`.
 
 ## Scene Battle Card
 
-As of 2026-05-10, all 126 scene/tide variants have current headless
+As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-low-tail-pack-only-v338`,
 `visitor3-low-f128-resident-seg27-v302`,
 `visitor3-high-f131-resident-alias121123-v299`,
 `visitor3-low-alias-noop114117-v292`,
@@ -414,6 +415,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `visitor3-high-f131-resident-alias121123-v299`,
+`visitor3-low-tail-pack-only-v338`,
 `visitor3-low-f128-resident-seg27-v302`,
 `visitor3-low-alias-noop114117-v292`,
 `visitor3-high-f140-segment-copy-v291`,

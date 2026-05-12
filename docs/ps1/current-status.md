@@ -3,7 +3,7 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-11 (`main` after `v0.8.7-ps1`; all 63 scenes remain
+**Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
 battle card is `+0.3267%` over target / `99.6798%` target speed).
 
@@ -211,6 +211,11 @@ The v327 low resident-slot swap moves frame `129` into the already paid frame
 `128` segment2 slot while frame `128` points back to its original cold payload.
 Low improves to `1072/1040`, blocking `64`, loop reads `11`, loop-read time
 `64`, and due misses `11` without changing pack size or LBA.
+The v338 low tail pack-only pass keeps the same public `1072/1040` timing but
+compacts frame `143` cleanup and moves frame `144` terminal cleanup into the
+already paid setup window. VISITOR3 low now reports `blocking_vb=58`,
+`loop_reads=10`, loop-read time `58`, and due misses `10`; non-VISITOR3
+controls stayed flat.
 The public battle card is now `+0.3267%` over target / `99.6798%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
 raw signed optimization rollup is `-0.4403%` / `100.4621%`.
@@ -296,10 +301,11 @@ canaries.
 
 Milestone releases:
 - Current `main` after `v0.8.7-ps1` — promotes the WALKSTUF1 low
-  staged-prepare-before-window scheduler fallback on top of the VISITOR3 low
-  frame128/frame129 resident-slot swap and the WALKSTUF1 high `213..229`
-  read-group/slack4 baseline. The public battle card is `+0.3267%` /
-  `99.6798%`.
+  staged-prepare-before-window scheduler fallback plus VISITOR3 low tail
+  pack-only compaction on top of the VISITOR3 low frame128/frame129
+  resident-slot swap and the WALKSTUF1 high `213..229` read-group/slack4
+  baseline. The public battle card is `+0.3267%` / `99.6798%`, with VISITOR3
+  low CD pressure down to `blocking_vb=58`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

@@ -39,7 +39,8 @@ setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and the current mainline adds
 the WALKSTUF1 high `213..229` read-group/slack4 promotion, the VISITOR3
 low frame128/frame129 resident-slot swap, and the WALKSTUF1 low
-staged-prepare-before-window scheduler fallback. The current
+staged-prepare-before-window scheduler fallback, followed by the VISITOR3 low
+tail pack-only CD-pressure compaction. The current
 public-capped average is
 **+0.3267% over target / 99.6798% target speed**, with roughly **17.07
 percentage points** of over-target gap closed and about **12.58 target-speed

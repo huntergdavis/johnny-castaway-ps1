@@ -23,6 +23,9 @@ from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
 allocation. The public headless battle card is `+0.3267%` over
 target / `99.6798%` target speed; the raw signed optimization matrix is
 `-0.4403%` / `100.4621%`.
+The newest accepted VISITOR3 low tail pack compaction keeps the public timing
+flat at `1072/1040` while reducing CD pressure to `blocking_vb=58`,
+`loop_reads=10`, and due misses `10`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

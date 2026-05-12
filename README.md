@@ -49,7 +49,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
 
-- `main` after `v0.8.7-ps1` — WALKSTUF1 low staged-prepare scheduler fallback on top of the VISITOR3 low frame128/frame129 resident-slot swap and WALKSTUF1 high `213..229` read-group/slack4 baseline. Public rollup is `+0.3267%` over target / `99.6798%` target speed.
+- `main` after `v0.8.7-ps1` — VISITOR3 low tail pack compaction on top of the WALKSTUF1 low staged-prepare scheduler fallback, VISITOR3 low frame128/frame129 resident-slot swap, and WALKSTUF1 high `213..229` read-group/slack4 baseline. Public rollup is `+0.3267%` over target / `99.6798%` target speed; VISITOR3 low CD pressure drops to `blocking_vb=58`, `loop_reads=10`, `due_misses=10`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection, expected-scene gates in the headless perf harness, Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail streaming. Public rollup remains `+0.3156%` over target / `99.6902%` target speed.
 - `v0.8.6-ps1` — WALKSTUF1 low gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch / slack4 guard, and VISITOR3 high/low setup-segment resident copies for frames `131` / `128`. Public rollup `+0.3157%` over target / `99.6902%` target speed.
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline.

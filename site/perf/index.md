@@ -123,8 +123,8 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.3267%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.6798%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T02:03:51` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-prepare-before-window-v331`, `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-12T03:46:31` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -161,6 +161,7 @@ and this page.
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed rows use `walkstuf1-low-prepare-before-window-v331`,
+  `visitor3-low-tail-pack-only-v338`,
   `visitor3-low-swap-f128-f129-v327`,
   `visitor3-low-f128-resident-seg27-v302`,
   `visitor3-high-f131-resident-alias121123-v299`,
@@ -1842,15 +1843,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-11T23:34:41</td>
-      <td>visitor3-low-swap-f128-f129-v327</td>
+      <td>2026-05-12T03:46:31</td>
+      <td>visitor3-low-tail-pack-only-v338</td>
       <td>+3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1072/1040</td>
-      <td>64</td>
+      <td>58</td>
       <td>0</td>
-      <td>11</td>
-      <td>frame128/frame129 resident-slot swap keeps pack size and LBA fixed; loop 1079-&gt;1072 and blocking 67-&gt;64; broad controls plus long Activity9/Mary3 canaries passed</td>
+      <td>10</td>
+      <td>tail pack-only compaction moves frame144 cleanup inside the existing setup window; timing stays 1072/1040 while blocking 64-&gt;58, reads/due 11-&gt;10; non-VISITOR3 controls flat</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>
