@@ -104,7 +104,7 @@ The Lab section has its own Atom feed at `/lab/feed.xml` and a JSON Feed counter
 
 ## The pager pattern, shared across four catalogs
 
-The site has four indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references, 15 lab essays. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:
+The site has four indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references, 17 lab essays. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:
 
 - Scene pages compute prev/next from `_data/scenes.yml`, sorted by `sort: 'tag' | sort: 'ads'` (the same order the index renders).
 - Devlog posts use Jekyll's built-in `page.previous` / `page.next`. Caveat: those are sourced from the posts collection's `docs` array, which is sorted oldest-first, so `page.previous` is the *older* post and `page.next` is the *newer* one. Labels here say "older" and "newer" by direction in time, not "prev" and "next" by Jekyll's array semantics — the convention is too easy to invert.
@@ -156,7 +156,7 @@ The JSON-LD include uses the multi-block strategy: each schema type gets its own
 - `BreadcrumbList` on every non-home page; positions are derived from splitting `page.url` on `/`, with cumulative trail and titlecased segment labels. The leaf segment uses `page.title` rather than slug-capitalization so Google's rich-result trail reads `Home > Lab > The two-day SPI bug` instead of `Home > Lab > Two day spi bug`.
 - `BlogPosting` only on devlog posts.
 - `Article` only on lab essays — URL prefix `/lab/`, excluding the `/lab/` index, requiring `page.date`. Lab essays are dated long-form content, exactly the surface Google's Article structured-data guidance targets, but they live in `site.html_pages` rather than `site.posts` so the `BlogPosting` predicate doesn't catch them.
-- `FAQPage` only on `/faq/`, mirroring the page's 14 H3 questions with summary answers. Google retired generic-site FAQ rich results in 2023, but Bing, AI agents, and knowledge graphs still consume FAQPage; zero user-visible bytes.
+- `FAQPage` only on `/faq/`, mirroring the page's 16 H3 questions with summary answers. Google retired generic-site FAQ rich results in 2023, but Bing, AI agents, and knowledge graphs still consume FAQPage; zero user-visible bytes.
 
 `Article` and `BlogPosting` both also carry `wordCount` and `timeRequired` (ISO-8601 `PT[N]M`) — the same counts the `~N min read · M words` page-header hint exposes visibly. Computed once at the top of the include and reused across both records.
 
