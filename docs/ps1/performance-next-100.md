@@ -290,6 +290,16 @@ The v177 probes kept both tides exact-flat at `2070` scene, `1974/1945`,
 These rows remain evidence for generated append ownership or a larger
 retained-window design, not for another local table edit.
 
+Latest JOHNNY1 window-slack decision: do not promote or retry a local
+`4` VBlank window-refill minimum. The v363 fresh same-layout baselines put both
+tides at `1973/1945`, `blocking_vb=25`, `prefetch_overrun_vb=25`,
+`loop_reads=7`, and `due_misses=0`. Raising only JOHNNY1 to slack `4` improved
+target and hidden refill by one VBlank, but both tides regressed visible
+blocking `25 -> 28`, raised loop reads `7 -> 10`, and introduced
+`due_misses=1`. The safe scalar knee stays at the global `3` VBlank default;
+future JOHNNY1 work needs generated append ownership, a larger retained-window
+design, or pack/data-shape reduction.
+
 Latest VISITOR3 hot-atlas decision: do not promote or retry setup-owned tail
 atlases under the current runtime. The v178 25-sector atlas duplicated frames
 `139..144` into pack zero-tail space and removed real reads, but high regressed
