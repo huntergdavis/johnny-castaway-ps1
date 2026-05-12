@@ -1,0 +1,39 @@
+---
+permalink: /.well-known/security.txt
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  RFC 9116 security.txt. Lives at the well-known location so
+  responsible-disclosure tooling (and humans) can find a contact
+  channel without grepping the source tree.
+
+  Lives at /.well-known/security.txt under the project's GitHub
+  Pages prefix. Jekyll-doesn't-let-you-prefix-a-permalink-with-a-dot
+  caveat: the file is named `security.txt` (no leading dot) but
+  `permalink: /.well-known/security.txt` ships the rendered output
+  at the correct path. The relativizer leaves absolute URLs in
+  `https://`-prefixed values alone, so the Contact / Canonical /
+  Policy lines below survive the build's `--baseurl ""` override.
+
+  RFC 9116 §2.5 requires the `Expires:` field to be machine-parseable
+  ISO-8601 and §2.5.3 RECOMMENDS no longer than one year out. This
+  file uses Liquid to render today + 1 year on each build so the
+  Expires field is always fresh; same auto-extending pattern the
+  industry uses to keep security.txt files from going stale.
+{%- endcomment -%}
+Contact: {{ site.github_url }}/issues
+Contact: {{ site.github_url }}/security/advisories/new
+Expires: {{ site.time | date: '%s' | plus: 31536000 | date: '%Y-%m-%dT%H:%M:%SZ' }}
+Preferred-Languages: en
+Canonical: {{ site.url }}{{ site.canonical_baseurl }}/.well-known/security.txt
+Policy: {{ site.url }}{{ site.canonical_baseurl }}/legal/
+
+# Johnny Castaway PS1 is a fan-port screensaver running on real PS1
+# and DuckStation. Security-relevant scope is narrow: the runtime
+# is read-only on hardware (no network, no file IO beyond memcard
+# saves) and the website is a static Jekyll site served by GitHub
+# Pages. The most useful disclosures are: build/release supply-chain
+# concerns, the regtest Docker images, and the published .bin/.cue
+# disc image being mishandled by a download mirror. Prefer the
+# GitHub Security Advisories link above for non-public reports.
