@@ -12,18 +12,20 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.5-ps1` |
+| Release | `v0.8.7-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3156% public over target / 99.6902% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.5-ps1` is the current performance point release after `v0.8.4-ps1`.
-It keeps all 63 scenes visually/audibly validated, preserves the custom
-Scene Explorer thumbnails and reconciled scene metadata from `v0.8.4-ps1`,
-and promotes the full 126-row headless matrix as the public performance
-baseline. The public battle card is now
+`v0.8.7-ps1` is the current stability point release after the `v0.8.6-ps1`
+performance follow-through. It keeps all 63 scenes visually/audibly validated,
+preserves the custom Scene Explorer thumbnails and reconciled scene metadata
+from `v0.8.4-ps1`, keeps the full 126-row headless matrix as the public
+performance baseline, and hardens deterministic BOOTMODE scene selection,
+Suzy backdrop cleanup, and heapless Scene Explorer preview loading. The public
+battle card is now
 `+0.3156%` over target / `99.6902%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
@@ -86,7 +88,7 @@ high/low offscreen draw clips, BUILDING2 high restore-minus-current cleanup,
 the BUILDING2 high `60..72` grouped-read pass, and the BUILDING2 low
 `365..381` grouped-read pass, the VISITOR3 low code-shape pass, and the
 VISITOR3 v4 draw-tail trim plus stage guard. Those internal checkpoints are
-superseded by the current public-capped `v0.8.5` rollup above.
+superseded by the current public-capped `v0.8.7` rollup above.
 
 `v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
 randomized long-run scene-load freeze by estimating the actual clean
@@ -97,7 +99,7 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows now use the public-capped `v0.8.5` rollup above
+current timing-bearing rows now use the public-capped `v0.8.7` rollup above
 after the post-release VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, JOHNNY2 clean-pressure, WALKSTUF1, selector-cleanup, FGP3/v4
 compact draw metadata, compact decoder inline, and pack-side
@@ -296,6 +298,8 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.7.md](release-notes-0.8.7.md) — deterministic boot selection and Scene Explorer preview stability release notes
+- [release-notes-0.8.6.md](release-notes-0.8.6.md) — WALKSTUF1 / VISITOR3 setup-segment compaction release notes
 - [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes
 - [release-notes-0.8.4.md](release-notes-0.8.4.md) — custom Scene Explorer thumbnail release notes
 - [release-notes-0.8.3.md](release-notes-0.8.3.md) — WALKSTUF1 compact foreground release notes

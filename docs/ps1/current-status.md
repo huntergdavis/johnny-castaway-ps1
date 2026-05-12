@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-10 (`v0.8.5-ps1` full 126-row headless
-performance matrix release; all 63 scenes remain validated, all 126
-high/low rows are timing-bearing, and the public headless battle card is
-`+0.3184%` over target / `99.6876%` target speed).
+**Last updated:** 2026-05-11 (`v0.8.7-ps1` deterministic BOOTMODE scene
+selection + Scene Explorer preview stability release; all 63 scenes remain
+validated, all 126 high/low rows are timing-bearing, and the public headless
+battle card is `+0.3156%` over target / `99.6902%` target speed).
 
 ## Overall
 
@@ -152,11 +152,11 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.5-ps1` is the full headless performance matrix
-release after the `v0.8.4-ps1` Scene Explorer thumbnail/content pass. All 63
-scenes remain validated, all 126 high/low variants are routed and
-timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured and green; `suzy3` is
-not a standalone scene route. The promoted
+Latest point release: `v0.8.7-ps1` is the deterministic BOOTMODE scene
+selection and Scene Explorer preview stability release after the `v0.8.6-ps1`
+performance follow-through. All 63 scenes remain validated, all 126 high/low
+variants are routed and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured
+and green; `suzy3` is not a standalone scene route. The promoted
 `walkstuf1-compact-fgp3-v141` pass remains the release pack/data win, and the
 MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 `2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
@@ -208,9 +208,9 @@ aliases duplicate frame `123` to frame `121`, expands the second setup segment
 from `24` to `27` sectors, copies frame `128` resident, and improves low again
 to `1071/1039`, blocking `63`, loop reads `11`, loop-read time `63`, and due
 misses `11`.
-The public battle card is now `+0.3184%` over target / `99.6876%` target speed
-while preserving fixed pack footprints and the
-`217088` byte PS-EXE bucket.
+The public battle card is now `+0.3156%` over target / `99.6902%` target speed
+while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
+raw signed optimization rollup is `-0.4529%` / `100.4740%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.08`
 public over-target points and added about `12.59` public target-speed points.
@@ -223,10 +223,10 @@ subsequent BUILDING4 restore-minus-current pack pass, VISITOR3 low read-group
 prune, WALKSTUF1 high setup-prime retune, VISITOR3 high/low offscreen draw
 clips, BUILDING2 high restore-minus-current pass, BUILDING2 grouped-read
 passes, VISITOR3 low code-shape pass, and VISITOR3 v4 draw-tail trim
-stageguard pass are now superseded by the current public-capped `v0.8.5`
+stageguard pass are now superseded by the current public-capped `v0.8.7`
 rollup above.
 See
-[release-notes-0.8.5.md](release-notes-0.8.5.md).
+[release-notes-0.8.7.md](release-notes-0.8.7.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
@@ -292,6 +292,15 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
+  preview stability. Adds auditable direct-scene boot logging, expected-scene
+  gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless
+  Scene Explorer thumbnail streaming while preserving the full 126-row
+  `+0.3156%` / `99.6902%` public battle card.
+- `v0.8.6-ps1` — WALKSTUF1 / VISITOR3 performance follow-through. Promotes
+  WALKSTUF1 low gap6-prefix + slack-guard, WALKSTUF1 high window-prefetch /
+  slack4 guard, and VISITOR3 high/low setup-segment resident copies for frames
+  `131` / `128`.
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline. Keeps
   the `v0.8.4` thumbnail/content work, records 126/126 timing-bearing rows,
   and publishes `+0.3184%` over target / `99.6876%` target speed.

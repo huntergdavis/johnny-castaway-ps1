@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.6-ps1
+eyebrow: 2025-10 to v0.8.7-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, and the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, and the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release.
 ---
 
 <details class="page-toc" markdown="1">
@@ -386,6 +386,11 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
+- Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
+  scene selection, expected-scene gates in the headless perf harness,
+  Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail
+  streaming. Public rollup remains `+0.3156%` over target /
+  `99.6902%` target speed.
 - Latest performance release: **`v0.8.6-ps1`** — WALKSTUF1 low
   gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch /
   slack4 guard, and VISITOR3 high/low setup-segment resident copies for

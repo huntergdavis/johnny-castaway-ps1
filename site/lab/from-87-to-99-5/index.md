@@ -33,11 +33,13 @@ to "optimized validated outlier."
 followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, `v0.8.4-ps1` shipped the Scene Explorer thumbnail
 reconciliation, `v0.8.5-ps1` promotes the full 126-row timing-bearing
-matrix, and `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
+matrix, `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
 gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
-setup-segment resident copies. The current public-capped average at
+setup-segment resident copies, and `v0.8.7-ps1` hardens deterministic scene
+booting plus Scene Explorer preview streaming. The current public-capped
+average at
 `{{ site.release.tag }}` is
-**+0.3157% over target / 99.6902% target speed**, with roughly **17.08
+**+0.3156% over target / 99.6902% target speed**, with roughly **17.08
 percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

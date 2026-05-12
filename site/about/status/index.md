@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.8.6-ps1
+eyebrow: Component-level state at v0.8.7-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,12 +13,14 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.8.6-ps1` is the current release: every row in the live per-scene
+`v0.8.7-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed and
-timing-bearing, and the chapter-select grid in the in-game
+timing-bearing, deterministic BOOTMODE scene selection is logged and gated,
+and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
-from `v0.8.4-ps1`. The public headless battle card is `+0.3157%` over
+from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
+allocation. The public headless battle card is `+0.3156%` over
 target / `99.6902%` target speed; the raw signed optimization matrix is
 `-0.4529%` / `100.4740%`.
 The live ledger is at
@@ -145,9 +147,13 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.6-ps1` is the WALKSTUF1 / VISITOR3
-  setup-segment compaction follow-through point release on top of v0.8.5's
-  full 126-row baseline (WALKSTUF1 low gap6-prefix + slack-guard,
+- **Milestone release cadence.** `v0.8.7-ps1` is the deterministic BOOTMODE
+  scene selection and Scene Explorer preview stability point release on top of
+  the v0.8.6 performance follow-through: direct-scene boots are logged and
+  gated, Suzy backdrop cleanup restores scene state, and Scene Explorer
+  thumbnails stream without a large heap allocation. `v0.8.6-ps1` is the
+  WALKSTUF1 / VISITOR3 setup-segment compaction follow-through point release
+  on top of v0.8.5's full 126-row baseline (WALKSTUF1 low gap6-prefix + slack-guard,
   WALKSTUF1 high window-prefetch / slack4 guard, VISITOR3 high/low
   setup-segment resident copies for frames `131` / `128`). `v0.8.5-ps1`
   is the full 126-row headless performance matrix release.

@@ -22,6 +22,38 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.7-ps1` — Deterministic BOOTMODE scene selection + Scene Explorer preview stability
+<time datetime="2026-05-11"><em>2026-05-11</em></time>
+
+A stability and operability point release after `v0.8.6-ps1`. It keeps the
+same 126-row headless performance matrix baseline, but fixes two release-risk
+surfaces: direct scene booting is now provable from the runtime log, and Scene
+Explorer thumbnails no longer need a large heap allocation while paused.
+
+- **BOOTMODE scene selection is deterministic and auditable.** The PS1 runtime
+  logs a single early `JCBOOT` line with the boot source, explicit scene, seed,
+  loop mode, tide/night/holiday/raft state, island position, and normalized
+  boot text before title/resources/sound side effects.
+- **Headless perf now fails if it measures the wrong scene.** The iterator
+  derives the expected scene from `fgpilot <slug>` boot strings and rejects
+  runs that report a different `JCPERF2 scene` or fall through to `JCPICK`.
+- **Suzy black-backdrop scenes clean up after themselves.** Scene-specific
+  backdrop state now clears clean-bg black mode and frees clean-bg rect state
+  on entry/cleanup, preventing the following scenes from losing island/tree
+  background layers.
+- **Scene Explorer previews stream instead of malloc.** Thumbnails load in
+  16-row chunks through a static buffer, avoiding the fragile 153 KB paused-menu
+  allocation that could leave the explorer text-only after long runs.
+- **Battle card unchanged numerically.** Public rollup remains `+0.3156%` over
+  target / `99.6902%` target speed; raw signed rollup remains `-0.4529%` /
+  `100.4740%`.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.7/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.7-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.6-ps1` — WALKSTUF1 / VISITOR3 setup-segment compaction follow-through
 <time datetime="2026-05-10"><em>2026-05-10</em></time>
 
