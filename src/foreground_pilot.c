@@ -210,6 +210,7 @@ enum {
  * window-refill knee that avoids hidden refill debt on both tides. */
 #define FG_MARY3_WINDOW_MIN_SLACK_VBLANKS 8
 #define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 4
+#define FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 4
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
@@ -881,6 +882,8 @@ static uint16 fgRuntimeWindowMinSlackVBlanks(void)
         return FG_MARY3_WINDOW_MIN_SLACK_VBLANKS;
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
         return FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS;
+    if (fgSceneEquals(gFgRuntime.sceneName, "building6"))
+        return FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS;
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
         return FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS;
     return FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;

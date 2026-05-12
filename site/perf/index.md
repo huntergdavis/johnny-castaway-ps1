@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">113 (89.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">13 (10.3%) ≥ 95%</span>
+  <span class="spd-key spd-green">115 (91.3%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">11 (8.7%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -126,7 +126,8 @@ pass, the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups, the
 BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
 compact-FGP3/v4 pass, the BUILDING6 compact-FGP3/v4 pass, the ACTIVITY9 high
 compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the JOHNNY1
-compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, and the
+compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, the BUILDING6
+scene-local slack4 window-refill guard, and the
 VISITOR3 motion-copy/code-headroom/CD-pressure passes plus the low/high
 persistent setup-segment, high frame-126/frame-125 re-anchor passes, the
 high setup-prime cap expansion, the guarded low second setup segment, and the
@@ -146,14 +147,16 @@ keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`96.8%` / `96.4%`), VISITOR3 high/low
 (`97.1%` / `97.0%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
-BUILDING4 low, BUILDING6 high/low, and the remaining wide-action
+BUILDING4 low, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
 work. JOHNNY6 high/low moved into green after the compact-FGP3 metadata plus
 restore-minus-current pass dropped both tides from `2832/2800` to
 `2829/2802` and `2830/2802` while cutting active-loop reads `12 -> 7`.
 The latest BUILDING6 read-group probe (`181..197` / `269..285`) is
 closed because those direct-stage clusters produced `group_hits=0`, left
-`loop_reads=42`, and crossed the PS-EXE bucket. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
+`loop_reads=42`, and crossed the PS-EXE bucket; the later scene-local slack4
+window-refill guard moves BUILDING6 high/low into green at `2471/2456` and
+`2474/2455`. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
 BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
 WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
 high, WALKSTUF3 low, and ACTIVITY9 low moved into green after their
@@ -188,10 +191,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3224%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6839%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T07:29:10` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3159%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6903%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T09:15:23` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -241,7 +244,7 @@ and this page.
   `johnny1-compact-fgp3-v173`,
   `walkstuf3-low-compact-fgp3-v171`,
   `activity9-high-compact-fgp3-v167`,
-  `building6-compact-fgp3-v165`,
+  `building6-window-slack4-v364`,
   `walkstuf3-high-compact-fgp3-v163`,
   `building2-low-restore-window-slack4-v160`,
   `visitor5-high-compact-fgp3-noautoprime-v158`,
@@ -777,29 +780,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building6-high"><code>building6</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T15:26:52</td>
-      <td>building6-compact-fgp3-v165</td>
-      <td>+1.0%</td>
-      <td class="spd-green">99.0%</td>
-      <td>2482/2457</td>
-      <td>25</td>
-      <td>27</td>
-      <td>0</td>
-      <td>compact FGP3/v4 restore-minus-current pack; fixed footprint and LBA under current layout</td>
+      <td>2026-05-12T09:13:54</td>
+      <td>building6-window-slack4-v364</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>2471/2456</td>
+      <td>20</td>
+      <td>16</td>
+      <td>1</td>
+      <td>scene-local slack4 window-refill guard moves high into green; accepts one due miss while reducing visible and hidden CD pressure</td>
     </tr>
     <tr id="perf-building6-low">
       <td><a class="scene-perf-rowlink" href="#perf-building6-low"><code>building6</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T15:26:52</td>
-      <td>building6-compact-fgp3-v165</td>
-      <td>+1.2%</td>
-      <td class="spd-yellow">98.8%</td>
-      <td>2485/2456</td>
-      <td>28</td>
-      <td>29</td>
-      <td>0</td>
-      <td>compact FGP3/v4 restore-minus-current pack; fixed footprint and LBA under current layout</td>
+      <td>2026-05-12T09:15:23</td>
+      <td>building6-window-slack4-v364</td>
+      <td>+0.8%</td>
+      <td class="spd-green">99.2%</td>
+      <td>2474/2455</td>
+      <td>24</td>
+      <td>20</td>
+      <td>1</td>
+      <td>scene-local slack4 window-refill guard moves low into green; accepts one due miss while reducing visible and hidden CD pressure</td>
     </tr>
     <tr id="perf-building7-high">
       <td><a class="scene-perf-rowlink" href="#perf-building7-high"><code>building7</code></a></td>

@@ -43,14 +43,17 @@ v305 WALKSTUF1 low gap6-prefix plus slack-guard promotion, the v316 WALKSTUF1
 high `213..229` read-group/slack4 promotion, the v327 VISITOR3 low
 frame128/frame129 resident-slot swap, the v331 WALKSTUF1 low
 staged-prepare scheduler fallback, the v338 VISITOR3 low tail pack-only
-compaction, the v340 WALKSTUF1 high `344..360` read-group promotion, and the
-v347 BUILDING2 high `249..257` read-group pressure reduction:
-`+0.3250%` public average over target / `99.6814%` public target speed across
+compaction, the v340 WALKSTUF1 high `344..360` read-group promotion, the
+v347 BUILDING2 high `249..257` read-group pressure reduction, the v354
+JOHNNY6 compact-FGP3 metadata/restore-minus-current promotion, and the v364
+BUILDING6 scene-local slack4 window-refill guard:
+`+0.3159%` public average over target / `99.6903%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4420%` / `100.4637%`. Since the compact full-matrix baseline was about
+`-0.4511%` / `100.4726%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.07` public over-target points and added about `12.58`
-public target-speed points.
+removed about `17.08` public over-target points and added about `12.59`
+public target-speed points. Green rows are now `115 / 126`, with `11` yellow
+rows remaining and no orange/red rows.
 
 Latest promoted WALKSTUF1 baseline: high tide keeps the accepted `201..213`
 and `213..229` groups and adds `344..360`. The v340 strict gate keeps
@@ -69,6 +72,19 @@ and loop-read time `266 -> 262`. BUILDING2 low, VISITOR3 low, FISHING1 high,
 and WALKSTUF1 high/low stayed exact-flat. Public and raw rollups remain
 `+0.3250%` / `99.6814%` and `-0.4420%` / `100.4637%`; this is a same-speed
 CD-pressure reduction for the current third-largest under-99 row.
+
+Latest promoted BUILDING6 slack baseline: keep the compact-FGP3/v4 pack shape
+and add a scene-local `4` VBlank window-refill minimum. Fresh current-layout
+baselines were high `2744`, `2479/2453`, overrun `26`, blocking `26`, hidden
+refill `29`, and low `2748`, `2482/2456`, overrun `26`, blocking `28`, hidden
+refill `30`. The v364 focused gates move high to `2736`, `2471/2456`, overrun
+`15`, blocking `20`, hidden refill `16`; low moves to `2740`, `2474/2455`,
+overrun `19`, blocking `24`, hidden refill `20`. Both tides accept one due
+miss and keep `loop_reads=42`. BUILDING2 high/low, WALKSTUF1 high/low,
+FISHING1 high, and ACTIVITY9 low canaries stayed on accepted profiles, while
+VISITOR3 high still hits the known missing-`JCPERF2` measurement defect. This
+moves BUILDING6 high/low into green and sets the current rollup to `+0.3159%`
+/ `99.6903%` public and `-0.4511%` / `100.4726%` raw signed.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
@@ -392,9 +408,9 @@ is FGP3. High improves `scene_vb 1369 -> 1361`, `loop_vb 1111 -> 1104`,
 the PS-EXE bucket stays `215040`. Low tide was verified exact-flat when its
 original FGP2 pack was restored. Broad VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, and FISHING1 canaries stayed on their accepted profiles. The next
-top rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low
-residual work, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
-BUILDING6 high/low residual work, and remaining under-99 rows.
+top rows are WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 low/high,
+VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low, and the
+remaining under-99 rows.
 
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
 `BUILDING1.FG2` and `BUIL1LOW.FG2` to padded compact FGP3/v4
@@ -1459,10 +1475,10 @@ surface. It parses current `FGP2`/`FGP3` packs and ranks selective upload-ready
 or cleanup-metadata experiments against the measured battle card. The first
 pass originally pointed at WALKSTUF1 low/high, VISITOR3 low/high, BUILDING4
 high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1,
-BUILDING6, and ACTIVITY9 high compact passes, the current top generated
-graphics/scheduler targets are VISITOR3 low/high, WALKSTUF1 high/low,
-BUILDING2 high/low, VISITOR5 low, JOHNNY1 residual read/data-shape work, and
-BUILDING6 high/low residual work.
+BUILDING6, ACTIVITY9 high, JOHNNY6, and BUILDING6 slack4 passes, the current
+top generated graphics/scheduler targets are WALKSTUF1 low/high, BUILDING2
+high/low, VISITOR3 low/high, VISITOR5 low, JOHNNY1 residual read/data-shape
+work, and BUILDING4 low.
 Do not retry whole-payload direct16; use selective/compressed bands or
 setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired

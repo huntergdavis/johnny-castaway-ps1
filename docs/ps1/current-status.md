@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3250%` over target / `99.6814%` target speed).
+battle card is `+0.3159%` over target / `99.6903%` target speed).
 
 ## Overall
 
