@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-10:
+Current battle-card rollup as of 2026-05-11:
 
 | Metric | Value |
 |---|---:|
@@ -76,11 +76,11 @@ Current battle-card rollup as of 2026-05-10:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3156%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6902%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-10T05:47:52` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-prefix-gap6-slackguard-v305`, `visitor3-low-f128-resident-seg27-v302`, `visitor3-high-f131-resident-alias121123-v299`, `visitor3-low-alias-noop114117-v292`, `visitor3-high-f140-segment-copy-v291`, `walkstuf1-high-gap1-windowprefetch-slack4-v288`, `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=2` |
+| Timing-bearing average over target | `+0.3%` (`0.3326%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6742%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-11T21:25:51` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
 `100.0%` target speed so the website never presents playback faster than
@@ -99,12 +99,13 @@ from `24` to `27` sectors, and copies frame `128` resident. Low improves
 `1075/1039 -> 1071/1039`, blocking `67 -> 63`, loop reads `12 -> 11`, and due
 misses `12 -> 11`.
 
-Latest promoted WALKSTUF1 note: `walkstuf1-low-prefix-gap6-slackguard-v305`
-keeps the gap6 prefix pack only after pairing it with the WALKSTUF1
-3-VBlank slack guard. Low improves `1478/1428 -> 1475/1430`, overrun
-`50 -> 45`, blocking `75 -> 67`, hidden refill `25 -> 21`, loop reads
-`69 -> 66`, and loop-read time `301 -> 282`. High remains on
-`walkstuf1-high-gap1-windowprefetch-slack4-v288` at `1477/1431`.
+Latest promoted WALKSTUF1 note: `walkstuf1-high-rg213-229-slack4-v316`
+extends the accepted high `201..213` read group through `213..229` and uses a
+high-tide-only slack4 guard. Against the current-layout high control it
+improves `1482/1429 -> 1480/1429`, overrun `53 -> 51`, blocking `102 -> 85`,
+loop reads `70 -> 69`, and due misses `19 -> 16`; hidden refill rises
+`16 -> 26` as an accepted public-loop/blocking tradeoff. Low remains on the
+v305 gap6-prefix/slack baseline under the refreshed current layout.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,

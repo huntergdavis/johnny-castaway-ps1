@@ -378,9 +378,12 @@ component-completeness phases:
   [/scenes/]({{ '/scenes/' | relative_url }}).
 - Performance baseline:
   **{{ site.release.perf_target_speed_pct }}%** target speed across
-  the 120 timing-bearing scene/tide rows on the headless-perf
+  the 126 timing-bearing scene/tide rows on the headless-perf
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
+- Current mainline performance: WALKSTUF1 high `213..229` read-group
+  follow-through plus same-layout canary refreshes put the public battle
+  card at `+0.3326%` over target / `99.6742%` target speed.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
   headless optimization methodology to a release baseline; routed
   all 126 high/low scene variants through the perf matrix; clean-

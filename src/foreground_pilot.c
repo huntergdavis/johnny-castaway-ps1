@@ -502,7 +502,8 @@ static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
-    {201, 213, 0}
+    {201, 213, 0},
+    {213, 229, 0}
 };
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
@@ -2523,7 +2524,9 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     }
 
     if (fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
-        slackVBlanks <= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) {
+        slackVBlanks <= (uint16)(islandState.lowTide ?
+            FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS :
+            FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS + 1)) {
         if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
             ps1PerfMarkPrefetchSkipNoSlack();

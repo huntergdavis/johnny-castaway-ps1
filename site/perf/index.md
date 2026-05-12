@@ -46,8 +46,8 @@ linked in the Rollup section.</p>
 
 ## At a glance
 
-<p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
-  Target Speed distribution at <code>{{ site.release.tag }}</code>:
+<p class="scene-perf-legend" aria-label="Current target speed distribution">
+  Target Speed distribution in the current matrix:
   <span class="spd-key spd-green">111 (88.1%) ≥ 99%</span>
   <span class="spd-key spd-yellow">15 (11.9%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
@@ -73,18 +73,14 @@ frame-114/frame-117 plus frame-113 no-op residual compaction, the high
 frame-140/tail setup-segment copy, the high frame-121/frame-123 resident
 alias plus frame-131 setup-prime copy, and the low frame-123 resident alias
 plus frame-128 setup-segment copy, followed by the
-WALKSTUF1 high sector `201..213` read-group pass, the high-tide window-prefetch
-guard on the gap-compressed pack, and the low-tide gap-compressed prefix. The
-current VISITOR3 baseline is high `1070/1039` after v299
-and low `1071/1039` after v302's frame-128 resident copy; high cuts overrun
-`36 -> 31`, blocking `58 -> 49`, loop reads `10 -> 9`, loop-read time
-`58 -> 49`, and due misses `10 -> 9`, while low cuts the v292 baseline
-overrun `36 -> 32`, blocking `67 -> 63`, loop reads `12 -> 11`, loop-read time
-`67 -> 63`, and due misses `12 -> 11` with hidden refill still `0`.
-Both paths keep fixed pack layout with deliberate setup tradeoffs.
+WALKSTUF1 high sector `201..213` and `213..229` read-group passes, the
+high-tide window-prefetch guard on the gap-compressed pack, and the low-tide
+gap-compressed prefix. The current VISITOR3 baseline is high `1071/1040`
+and low `1079/1040` after the latest same-layout canary refresh; both paths
+keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
-high/low (`96.9%` / `96.6%`), VISITOR3 high/low
-(`97.1%` / `97.0%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
+high/low (`96.6%` / `96.4%`), VISITOR3 high/low
+(`97.1%` / `96.4%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
@@ -111,7 +107,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-10">2026-05-10</time>:
+Current battle-card rollup as of <time datetime="2026-05-11">2026-05-11</time>:
 
 | Metric | Value |
 |---|---:|
@@ -123,11 +119,11 @@ Current battle-card rollup as of <time datetime="2026-05-10">2026-05-10</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3156%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6902%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-10T05:47:52` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-prefix-gap6-slackguard-v305`, `visitor3-low-f128-resident-seg27-v302`, `visitor3-high-f131-resident-alias121123-v299`, `visitor3-low-alias-noop114117-v292`, `visitor3-high-f140-segment-copy-v291`, `walkstuf1-high-gap1-windowprefetch-slack4-v288`, `visitor3-low-noop113-v249`, `visitor3-low-noop114117-v248`, `visitor3-high-f127-f130-resident-copy-v238`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
+| Timing-bearing average over target | `+0.3%` (`0.3326%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6742%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-11T21:25:51` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -470,15 +466,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-activity9-low"><code>activity9</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-09T18:08:05</td>
-      <td>visitor3-low-noop113-v249</td>
-      <td>+0.7%</td>
-      <td class="spd-green">99.3%</td>
-      <td>2075/2061</td>
-      <td>17</td>
-      <td>12</td>
+      <td>2026-05-11T21:08:00</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>2073/2061</td>
+      <td>14</td>
+      <td>9</td>
       <td>1</td>
-      <td>Compact FGP3/v4 restore-minus-current low-tide pack; revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
+      <td>long current layout canary under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-activity10-high">
       <td><a class="scene-perf-rowlink" href="#perf-activity10-high"><code>activity10</code></a></td>
@@ -596,29 +592,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-09T18:08:05</td>
-      <td>visitor3-low-noop113-v249</td>
-      <td>+2.5%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1349/1316</td>
-      <td>48</td>
-      <td>12</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+3.1%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1352/1311</td>
+      <td>56</td>
+      <td>20</td>
       <td>7</td>
-      <td>revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-09T18:08:05</td>
-      <td>visitor3-low-noop113-v249</td>
-      <td>+2.5%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1349/1316</td>
-      <td>83</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+2.4%</td>
+      <td class="spd-yellow">97.7%</td>
+      <td>1349/1318</td>
+      <td>81</td>
       <td>1</td>
-      <td>19</td>
-      <td>restore-minus-current low pack plus 4-VBlank slack guard; revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
+      <td>18</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>
@@ -764,15 +760,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-high"><code>fishing1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-09T18:08:05</td>
-      <td>visitor3-low-noop113-v249</td>
-      <td>0.0%</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+0.0%</td>
       <td class="spd-green">100.0%</td>
-      <td>1068/1074</td>
-      <td>2</td>
-      <td>2</td>
+      <td>1068/1072</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>canary revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-fishing1-low">
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-low"><code>fishing1</code></a></td>
@@ -988,15 +984,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-high"><code>johnny1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-09T18:08:05</td>
-      <td>visitor3-low-noop113-v249</td>
-      <td>+1.5%</td>
-      <td class="spd-yellow">98.5%</td>
-      <td>1974/1945</td>
-      <td>26</td>
-      <td>26</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+1.4%</td>
+      <td class="spd-yellow">98.6%</td>
+      <td>1973/1945</td>
+      <td>25</td>
+      <td>25</td>
       <td>0</td>
-      <td>compact-FGP3/v4 profile revalidated flat under the v249 VISITOR3 broad no-regression gate</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-johnny1-low">
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-low"><code>johnny1</code></a></td>
@@ -1212,29 +1208,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-mary3-high"><code>mary3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T11:12:57</td>
-      <td>mary3-preserve-window-slack8-v149</td>
-      <td>+0.1%</td>
-      <td class="spd-green">99.9%</td>
-      <td>2296/2294</td>
-      <td>53</td>
+      <td>2026-05-11T21:08:00</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+0.3%</td>
+      <td class="spd-green">99.7%</td>
+      <td>2300/2293</td>
+      <td>55</td>
       <td>0</td>
       <td>13</td>
-      <td>MARY3 prefetch preserved with 8-VBlank window guard</td>
+      <td>long current layout canary under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-mary3-low">
       <td><a class="scene-perf-rowlink" href="#perf-mary3-low"><code>mary3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T11:12:57</td>
-      <td>mary3-preserve-window-slack8-v149</td>
-      <td>+0.1%</td>
-      <td class="spd-green">99.9%</td>
-      <td>2297/2295</td>
+      <td>2026-05-11T21:08:00</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+0.0%</td>
+      <td class="spd-green">100.0%</td>
+      <td>2296/2295</td>
       <td>51</td>
       <td>0</td>
       <td>13</td>
-      <td>MARY3 prefetch preserved with 8-VBlank window guard</td>
+      <td>long current layout canary under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-mary4-high">
       <td><a class="scene-perf-rowlink" href="#perf-mary4-high"><code>mary4</code></a></td>
@@ -1828,29 +1824,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-10T03:52:25</td>
-      <td>visitor3-high-f131-resident-alias121123-v299</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
       <td>+3.0%</td>
       <td class="spd-yellow">97.1%</td>
-      <td>1070/1039</td>
-      <td>49</td>
+      <td>1071/1040</td>
+      <td>52</td>
       <td>0</td>
       <td>9</td>
-      <td>v299 aliases duplicate high frames 121 and 123 to frame 120, compacts the resident setup-prime tail, and copies frame 131 fully into paid setup-prime coverage; high improves 1074/1038 to 1070/1039, overrun 36 to 31, blocking 58 to 49, loop reads 10 to 9, loop-read time 58 to 49, and due misses 10 to 9 with hidden refill still 0</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-10T04:38:21</td>
-      <td>visitor3-low-f128-resident-seg27-v302</td>
-      <td>+3.1%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1071/1039</td>
-      <td>63</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+3.8%</td>
+      <td class="spd-yellow">96.4%</td>
+      <td>1079/1040</td>
+      <td>67</td>
       <td>0</td>
       <td>11</td>
-      <td>v302 aliases low frame 123 to frame 121, compacts frames 118..128 into the second setup segment, grows that segment from 24 to 27 sectors, and copies frame 128 resident; low improves 1075/1039 to 1071/1039, overrun 36 to 32, blocking 67 to 63, loop reads 12 to 11, loop-read time 67 to 63, and due misses 12 to 11 with hidden refill 0</td>
+      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>
@@ -1968,29 +1964,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-10T00:10:41</td>
-      <td>walkstuf1-high-gap1-windowprefetch-slack4-v288</td>
-      <td>+3.2%</td>
-      <td class="spd-yellow">96.9%</td>
-      <td>1477/1431</td>
-      <td>90</td>
-      <td>19</td>
-      <td>17</td>
-      <td>gap1 early-prefix pack plus high-tide window-prefetch guard; current WALKSTUF1 high baseline</td>
+      <td>2026-05-11T21:25:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+3.6%</td>
+      <td class="spd-yellow">96.6%</td>
+      <td>1480/1429</td>
+      <td>85</td>
+      <td>26</td>
+      <td>16</td>
+      <td>213..229 high-tide read group plus slack4 guard; public overrun 53-&gt;51 and blocking 102-&gt;85; accepted hidden-refill tradeoff</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-10T00:50:29</td>
-      <td>walkstuf1-low-gap1-v289</td>
-      <td>+3.5%</td>
-      <td class="spd-yellow">96.6%</td>
-      <td>1478/1428</td>
-      <td>75</td>
-      <td>25</td>
-      <td>13</td>
-      <td>gap1 early-prefix pack; current WALKSTUF1 low baseline</td>
+      <td>2026-05-11T20:56:51</td>
+      <td>walkstuf1-high-rg213-229-slack4-v316</td>
+      <td>+3.8%</td>
+      <td class="spd-yellow">96.4%</td>
+      <td>1483/1429</td>
+      <td>74</td>
+      <td>24</td>
+      <td>12</td>
+      <td>current layout control under high-tide-only WALKSTUF1 promotion; unchanged by candidate</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
