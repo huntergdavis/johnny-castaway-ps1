@@ -103,7 +103,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4256 words
+          ~17 min read · 4301 words
         </p>
 
       <hr class="rule" />
@@ -1015,7 +1015,11 @@ the bottom of the yellow band after compact-pack promotion. The remaining
 hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
 VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
 where hand-authored read groups and scalar window changes have
-repeatedly shifted cadence instead of safely removing work.</li>
+repeatedly shifted cadence instead of safely removing work. The latest
+BUILDING4 low v387 pass closes the local <code class="language-plaintext highlighter-rouge">178..202</code> append group and
+<code class="language-plaintext highlighter-rouge">40/48 KiB</code> stream-window growth: reads fell, but visible blocking and loop
+overrun rose sharply, so that row now needs generated deadline ownership or
+pack-side byte reduction rather than larger raw fresh fills.</li>
 </ol>
 
 <p>The author considers the current build comfortable for the validated scenes,

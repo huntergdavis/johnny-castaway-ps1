@@ -888,7 +888,11 @@ Next plausible wins, in priority order:
    hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
    where hand-authored read groups and scalar window changes have
-   repeatedly shifted cadence instead of safely removing work.
+   repeatedly shifted cadence instead of safely removing work. The latest
+   BUILDING4 low v387 pass closes the local `178..202` append group and
+   `40/48 KiB` stream-window growth: reads fell, but visible blocking and loop
+   overrun rose sharply, so that row now needs generated deadline ownership or
+   pack-side byte reduction rather than larger raw fresh fills.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
