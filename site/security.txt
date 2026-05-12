@@ -21,10 +21,16 @@ sitemap: false
   file uses Liquid to render today + 1 year on each build so the
   Expires field is always fresh; same auto-extending pattern the
   industry uses to keep security.txt files from going stale.
+
+  Coarsened to T00:00:00Z (date-only granularity) on purpose. RFC 3339
+  permits any time-of-day; pinning to midnight means same-day rebuilds
+  produce byte-identical output and don't churn the git diff. Same
+  build-stamp-coarsening discipline that c7047365f applied to the
+  generator meta + humans.txt fields.
 {%- endcomment -%}
 Contact: {{ site.github_url }}/issues
 Contact: {{ site.github_url }}/security/advisories/new
-Expires: {{ site.time | date: '%s' | plus: 31536000 | date: '%Y-%m-%dT%H:%M:%SZ' }}
+Expires: {{ site.time | date: '%s' | plus: 31536000 | date: '%Y-%m-%d' }}T00:00:00Z
 Preferred-Languages: en
 Canonical: {{ site.url }}{{ site.canonical_baseurl }}/.well-known/security.txt
 Policy: {{ site.url }}{{ site.canonical_baseurl }}/legal/
