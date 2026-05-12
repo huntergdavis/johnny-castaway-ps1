@@ -71,6 +71,53 @@ description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pa
 }
 </script>
 
+{%- comment -%}
+  Schema.org SoftwareSourceCode. The home page emits SoftwareApplication
+  describing the playable artifact; /play/ is also the install entrypoint
+  for the source-code repository — `git clone` builds the same disc image
+  the .bin/.cue download serves. SourceCode is the Schema.org type for
+  source-code-hosting pages, distinct from SoftwareApplication's
+  playable-artifact framing. Both records are accurate facets of this
+  project.
+
+  programmingLanguage = C (the runtime is C against PSn00bSDK; host
+  build pipeline scripts are Python but not the shipped artifact).
+  runtimePlatform names the actual target. codeRepository + author +
+  license + version mirror the same canonical values the home-page
+  SoftwareApplication block uses, so JSON-LD consumers that merge
+  records by URL get consistent author/license/version triples.
+{%- endcomment -%}
+{%- assign play_repo_url = site.github_url -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": {{ site.title | jsonify }},
+  "description": {{ "Source code for the Johnny Castaway PS1 fan port. C against PSn00bSDK, build pipeline in Docker, regtest harness in headless DuckStation. Open source under GPL-3.0." | jsonify }},
+  "url": {{ play_site_root | append: '/play/' | jsonify }},
+  "codeRepository": {{ play_repo_url | jsonify }},
+  "programmingLanguage": "C",
+  "runtimePlatform": "Sony PlayStation",
+  "targetProduct": {{ play_repo_url | append: '/releases/tag/' | append: site.release.tag | jsonify }},
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "isAccessibleForFree": true,
+  "version": {{ site.release.tag | jsonify }},
+  {%- if site.release.release_date %}
+  "dateModified": {{ site.release.release_date | jsonify }},
+  {%- endif %}
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ play_site_root | append: '/' | jsonify }}
+  }
+}
+</script>
+
 <details class="page-toc" markdown="1">
 <summary>On this page</summary>
 
