@@ -42,8 +42,9 @@ setup-prime copy, the v302 VISITOR3 low frame-128 resident segment copy, the
 v305 WALKSTUF1 low gap6-prefix plus slack-guard promotion, the v316 WALKSTUF1
 high `213..229` read-group/slack4 promotion, the v327 VISITOR3 low
 frame128/frame129 resident-slot swap, the v331 WALKSTUF1 low
-staged-prepare scheduler fallback, and the v338 VISITOR3 low tail pack-only
-compaction, and the v340 WALKSTUF1 high `344..360` read-group promotion:
+staged-prepare scheduler fallback, the v338 VISITOR3 low tail pack-only
+compaction, the v340 WALKSTUF1 high `344..360` read-group promotion, and the
+v347 BUILDING2 high `249..257` read-group pressure reduction:
 `+0.3250%` public average over target / `99.6814%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4420%` / `100.4637%`. Since the compact full-matrix baseline was about
@@ -59,6 +60,15 @@ scene/loop flat at `1768/1480`, moves target `1429 -> 1432`, overrun
 selected controls are exact-flat. Low remains on the v331 staged-prepare
 scheduler fallback at `1484/1431`, overrun `53`, blocking `72`, hidden refill
 `22`, and due misses `12`.
+
+Latest promoted BUILDING2 high baseline: keep the accepted `60..72` group and
+add `249..257`. The v347 focused gate and selected controls keep BUILDING2
+high scene/loop/target/overrun flat at `1603`, `1352/1311`, and `41`, while
+blocking improves `56 -> 55`, hidden refill `20 -> 19`, loop reads `62 -> 61`,
+and loop-read time `266 -> 262`. BUILDING2 low, VISITOR3 low, FISHING1 high,
+and WALKSTUF1 high/low stayed exact-flat. Public and raw rollups remain
+`+0.3250%` / `99.6814%` and `-0.4420%` / `100.4637%`; this is a same-speed
+CD-pressure reduction for the current third-largest under-99 row.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
@@ -647,14 +657,14 @@ Unguarded grouping reduced visible blocking `118 -> 108`, `loop_reads 55 ->
 82` and hidden refill `5 -> 13`. Treat this as another generated scheduler
 placement target, not a hand-authored read group.
 
-Current BUILDING2 high follow-up group gate: the top current-window
-`210..226` row remains scheduler-owned in practice. Adding it after the
+Current BUILDING2 high follow-up group gate: the `249..257` row is now the
+accepted same-speed pressure reducer after `60..72`, cutting blocking, hidden
+refill, loop reads, and loop-read time while keeping public timing flat. The
+older `210..226` row remains scheduler-owned in practice: adding it after the
 accepted high `60..72` group kept layout fixed but produced an exact-flat
 focused gate (`1599` scene, `1349/1316`, `overrun_vb=33`,
 `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`) with
-`group_hits=0`, so the source table did not activate useful movement. Do not
-retry BUILDING2 high `210..226` as a local hand table; it needs generated
-append ownership/cost placement.
+`group_hits=0`, so do not retry `210..226` as a local hand table.
 
 The VISITOR3 no-op empty-hold recast is also closed under the current packs.
 `scripts/compact-fgp3-zero-noop-entries.py` found `0` high-tide and `0`
@@ -886,7 +896,9 @@ public overrun to `53`, blocking to `72`, and prefetch overrun to `22`; v338
 keeps VISITOR3 low timing flat while cutting blocking to `58`, loop-read time
 to `58`, and due misses to `10`; v340 moves the raw rollup to `-0.4420%` /
 `100.4637%` while cutting WALKSTUF1 high to `1480/1432`, overrun `48`,
-blocking `83`, loop reads `67`, and loop-read time `292`.
+blocking `83`, loop reads `67`, and loop-read time `292`; v347 keeps the
+rollup flat while cutting BUILDING2 high blocking `56 -> 55`, hidden refill
+`20 -> 19`, loop reads `62 -> 61`, and loop-read time `266 -> 262`.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -2163,6 +2175,7 @@ pre-v0.8.0 row.
 | VISITOR3 low exit-right offscreen draw clip | Done; keep as a low-tide pack-data trim limited to entries `139..143`. The transform preserves `VIST3LOW.FG2` size, entry sizes, offsets, pack LBA `23232`, and the `215040` byte PS-EXE bucket, while zeroing clipped exit-right draw tails. Low improves `1140/1024 -> 1138/1024`, `overrun_vb 116 -> 114`, and `blocking_vb 194 -> 191`; high and broad controls stay exact-flat. Low `ship-left` and combined `ship-and-exit` subsets are rejected because they regress low to `1151/1024`. The current rollup is tracked at the top of this file. |
 | BUILDING2 high restore-minus-current cleanup | Done; keep as a high-tide-only pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame only in `BUILDING2.FG2`, preserving the `1303332` byte CD footprint, pack LBA `6180`, and the `215040` byte PS-EXE bucket. High improves `1394/1301 -> 1353/1311`, `overrun_vb 93 -> 42`, `blocking_vb 138 -> 56`, and `loop_reads 68 -> 62`; low stays on the prior pack because the both-tide transform regressed hidden prefetch overrun `8 -> 13`. The current rollup is tracked at the top of this file. |
 | BUILDING2 high read group `60..72` | Done; keep as a high-tide-only retained stream group. The range was the only current scheduler-or-guarded matrix candidate with zero overread and medium visible gaps after the v108 pack pass. It grows `foregroundPilotPlay` by `12` bytes but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 high improves `1353/1311 -> 1349/1316`, `overrun_vb 42 -> 33`, `blocking_vb 56 -> 48`, `prefetch_overrun_vb 20 -> 12`, and `loop_reads 62 -> 61`; VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
+| BUILDING2 high read group `249..257` | Done; keep as a same-speed high-tide retained stream group. The v347 row adds `{249,257}` after the accepted `60..72` group, keeps scene/loop/target/overrun flat at `1603`, `1352/1311`, and `41`, and reduces blocking `56 -> 55`, hidden refill `20 -> 19`, loop reads `62 -> 61`, and loop-read VBlanks `266 -> 262`. BUILDING2 low, VISITOR3 low, FISHING1 high, and WALKSTUF1 high/low controls stayed exact-flat. Public rollup stays `+0.3250%` / `99.6814%`; the current rollup is tracked at the top of this file. |
 | BUILDING2 high read group `210..226` | Do not promote or retry as a hand-authored table. The focused v176 probe kept layout fixed but stayed exact-flat at `1599`, `1349/1316`, `overrun_vb=33`, `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`, and `group_hits=0`; the row remains scheduler-owned-only despite being append-start fireable in the planner. |
 | BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
 | BUILDING2 low restore-minus-current retry | Do not promote as a pack-only change. It improves low as far as `1383 -> 1346`, overrun `79 -> 35`, blocking `118 -> 50`, and loop reads `55 -> 52`, but hidden refill regresses `5 -> 13`; temporary setup-prime and stage-guard salvages did not fix that. Retry only with generated scheduler/refill ownership or a second data-shape change that reduces active CD pressure before shortening the render cadence. |
