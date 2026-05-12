@@ -91,3 +91,27 @@ Sixty-three of sixty-three. Ten ADS families closed. Every per-scene page now ca
 If there's a generalizable thing here, it's that figcaptions are an under-rated documentation surface. They are constrained — short, page-local, attached to a picture — and the constraint is what makes them useful. A writer can fit one engineering-retro sentence and one gag-arc cross-link in a figcaption without making it feel padded. Sixty-three of those, taken together, build a connectivity graph that no individual essay had to draw on its own.
 
 The full list of per-scene pages with their heroes is at [/scenes/]({{ '/scenes/' | relative_url }}). The matching commit history is on the project's [main branch]({{ site.github_url }}/commits/main) — every scene's hero is one focused commit, mergeable and revertable on its own.
+
+## Related pages
+
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — where every
+  hero now sits, linked from a per-scene page with figcaption +
+  per-page OG override.
+- [Lab: the chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — the `v0.8.4-ps1` loop that captured 62 of the 63 hero frames
+  on hardware in one named pass. The rollout described here was
+  the consume-side of that producer.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — the earlier validation grind that made every scene heroable
+  in the first place. Hero rollout is the post-validation polish
+  pass; this is the pre-rollout signoff pass.
+- [Lab: the site itself, as a small program]({{ '/lab/the-site-itself/' | relative_url }})
+  — the per-page OG override machinery (image / image_alt /
+  image_width / image_height frontmatter routed through
+  `_includes/head.html`) that makes each scene page's social card
+  carry its hero instead of the site default.
+- [Captions]({{ '/docs/captions/' | relative_url }}) — the
+  paired post-validation reconciliation surface: the chapter-select
+  grind's hardware capture loop is where caption-mismaps were
+  surfaced, fixed in the per-scene `index.md` titles + bodies, and
+  documented in the corrections section.

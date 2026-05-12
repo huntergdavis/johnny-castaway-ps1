@@ -77,7 +77,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
   "inLanguage": "en",
-  "wordCount": 1500,
+  "wordCount": 1658,
   "timeRequired": "PT6M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny3-ps1-letter-suzy.png",
@@ -140,7 +140,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1441 words
+          ~6 min read · 1599 words
         </p>
 
       <hr class="rule" />
@@ -157,6 +157,7 @@
   <li><a href="#engineering-retros-that-didnt-justify-a-doc" id="markdown-toc-engineering-retros-that-didnt-justify-a-doc">Engineering retros that didn’t justify a doc</a></li>
   <li><a href="#the-one-scene-the-chapter-select-grind-missed" id="markdown-toc-the-one-scene-the-chapter-select-grind-missed">The one scene the chapter-select grind missed</a></li>
   <li><a href="#final-shape" id="markdown-toc-final-shape">Final shape</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -244,6 +245,32 @@
 <p>If there’s a generalizable thing here, it’s that figcaptions are an under-rated documentation surface. They are constrained — short, page-local, attached to a picture — and the constraint is what makes them useful. A writer can fit one engineering-retro sentence and one gag-arc cross-link in a figcaption without making it feel padded. Sixty-three of those, taken together, build a connectivity graph that no individual essay had to draw on its own.</p>
 
 <p>The full list of per-scene pages with their heroes is at <a href="../../scenes/">/scenes/</a>. The matching commit history is on the project’s <a href="https://github.com/huntergdavis/johnny-castaway-ps1/commits/main">main branch</a> — every scene’s hero is one focused commit, mergeable and revertable on its own.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../scenes/">Scene ledger</a> — where every
+hero now sits, linked from a per-scene page with figcaption +
+per-page OG override.</li>
+  <li><a href="../chapter-select-grind/">Lab: the chapter-select grind</a>
+— the <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> loop that captured 62 of the 63 hero frames
+on hardware in one named pass. The rollout described here was
+the consume-side of that producer.</li>
+  <li><a href="../the-63-scene-grind/">Lab: the 63-scene grind</a>
+— the earlier validation grind that made every scene heroable
+in the first place. Hero rollout is the post-validation polish
+pass; this is the pre-rollout signoff pass.</li>
+  <li><a href="../the-site-itself/">Lab: the site itself, as a small program</a>
+— the per-page OG override machinery (image / image_alt /
+image_width / image_height frontmatter routed through
+<code class="language-plaintext highlighter-rouge">_includes/head.html</code>) that makes each scene page’s social card
+carry its hero instead of the site default.</li>
+  <li><a href="../../docs/captions/">Captions</a> — the
+paired post-validation reconciliation surface: the chapter-select
+grind’s hardware capture loop is where caption-mismaps were
+surfaced, fixed in the per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles + bodies, and
+documented in the corrections section.</li>
+</ul>
 
   </div>
   <footer class="post-footer">
