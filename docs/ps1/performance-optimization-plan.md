@@ -2741,3 +2741,11 @@ successful append only needs to update the start and byte count. The measured
 result is exact-flat timing with `fgRuntimeFillWindowForEntry 820 -> 816`; the
 aggregate ELF moves to `721228`, so treat this as a hot-path store removal, not
 as a binary-size win.
+
+After the VISITOR3 v376 marker-dispatch failure, the dormant compact motion-X
+decoder is removed instead of left as an attractive runtime branch. VISITOR3 low,
+WALKSTUF1 low/high, and BUILDING2 high stay exact-flat with fixed pack LBAs and
+the same `217088` byte PS-EXE bucket, so this is accepted only as source hygiene.
+It does not move the public battle-card percentages; any future marker runtime
+must prove code-size neutrality and prefetch-budget ownership before emulator
+time.
