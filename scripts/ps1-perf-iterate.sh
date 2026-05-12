@@ -1492,6 +1492,10 @@ for case in cases:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
         warnings.append(f"no matching baseline case for {label}")
+        if require_improvement:
+            failures.append(
+                f"no matching baseline case for {label}; cannot enforce --require-improvement"
+            )
     gate["pass"] = not failures
     if failures:
         overall_failures.append({"label": label, "failures": failures})

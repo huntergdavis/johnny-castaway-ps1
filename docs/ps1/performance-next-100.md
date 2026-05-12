@@ -286,7 +286,7 @@ Post-v373 candidate deck after scalar read-table exhaustion:
 | 20 | Runtime shape | Split `fgRuntimeTryStageNextFrame()` into cold scene-policy setup and a smaller hot path. | Many exact-flat probes only shift hot code; shrinking the hot path may expose real wins. |
 | 21 | Runtime shape | Move scene-name policy checks into cached bit flags at runtime start. | Avoids adding more `fgSceneEquals()` branches for generated policies. |
 | 22 | Runtime shape | Replace table/count setup branches with a generated scene policy enum. | Keeps new generated ownership from growing the branch cascade. |
-| 23 | Validation | Add a gate failure if baseline labels do not match while `--require-improvement` is set. | Prevents false PASS like the v368 case-label mismatch. |
+| 23 | Validation | Done in v407: `--require-improvement` now fails if the baseline file has no matching case label. | Prevents false PASS like the v368/v385 label-mismatch cases while preserving exploratory warning-only comparisons. |
 | 24 | Validation | Add group-hit/read-delta expectations for read-group probes. | Exact-flat groups should fail immediately as "did not fire" instead of consuming full analysis. |
 | 25 | Validation | Add a stale-row verifier that reruns only matrix rows whose stats version does not match the current source/pack promotion. | Avoids optimizing against stale battle-card entries. |
 | 26 | Validation | Record direct-stage vs window-stage read counts in the candidate matrix. | Distinguishes candidates that need generated direct-stage ownership from append-table rows. |
