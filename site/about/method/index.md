@@ -137,7 +137,7 @@ Concretely, a pack contains:
   a CD-ROM sector boundary -- the loader can read what it needs
   without straddling sectors and forcing extra seeks.
 - **Palette.** A single CLUT for the whole scene, packed as PS1
-  16-bit BGR-1555 entries. The host-side capture is constrained to a
+  16-bit [BGR-1555]({{ '/docs/glossary/#rgb555' | relative_url }}) entries. The host-side capture is constrained to a
   scene-stable palette so the pack does not have to re-upload CLUTs
   per frame.
 - **Entry table.** One row per displayed frame. Each row is a fixed

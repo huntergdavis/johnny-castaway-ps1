@@ -255,7 +255,7 @@ diff block. Sector alignment is 2048 bytes so each block lands on
 a CD-ROM sector boundary – the loader can read what it needs
 without straddling sectors and forcing extra seeks.</li>
   <li><strong>Palette.</strong> A single CLUT for the whole scene, packed as PS1
-16-bit BGR-1555 entries. The host-side capture is constrained to a
+16-bit <a href="../../docs/glossary/#rgb555">BGR-1555</a> entries. The host-side capture is constrained to a
 scene-stable palette so the pack does not have to re-upload CLUTs
 per frame.</li>
   <li><strong>Entry table.</strong> One row per displayed frame. Each row is a fixed
