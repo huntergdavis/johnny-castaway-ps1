@@ -579,6 +579,13 @@ def get(section, key, default=0):
     value = sections.get(section, {}).get(key, default)
     return value if isinstance(value, int) else default
 
+def expected_scene_from_boot(boot_text):
+    parts = boot_text.split()
+    for idx, token in enumerate(parts):
+        if token == "fgpilot" and idx + 1 < len(parts):
+            return parts[idx + 1].lower()
+    return None
+
 failures = []
 warnings = []
 if not sections:
@@ -616,7 +623,13 @@ upload_bytes = get("gfx", "upload_bytes", 0)
 restore_bytes = get("gfx", "restore_bytes", 0)
 compose_pixels = get("gfx", "compose_pixels", get("frame", "pixels", 0))
 
+expected_scene_name = expected_scene_from_boot(boot)
 scene_name = str(sections.get("scene", {}).get("scene", "")).lower()
+if expected_scene_name and sections:
+    if scene_name != expected_scene_name:
+        failures.append(f"scene_mismatch expected={expected_scene_name} actual={scene_name or '?'}")
+    if any(line.startswith("JCPICK ") for line in tty_lines):
+        failures.append("explicit_scene_fell_through_to_picker")
 scene_entries = get("scene", "entries", 0)
 loop_start = get("timing", "loop_start", 0)
 advances = get("timing", "advances", 0)
@@ -692,6 +705,9 @@ summary = {
     "case_dir": str(Path(case_dir).resolve()),
     "log_file": str(log_path.resolve()),
     "sections": sections,
+    "expected": {
+        "scene": expected_scene_name,
+    },
     "build": {
         "ps_exe": {
             "path": "build-ps1/jcreborn.exe",

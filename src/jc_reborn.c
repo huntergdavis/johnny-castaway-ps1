@@ -798,6 +798,8 @@ static void fgLoopApplyVariant(const char *sceneName)
 
 static int ps1BootForcedSeed = -1;  /* -1 = use hardware RNG */
 static char ps1BootArgStorage[3][32];
+static char ps1BootOverrideSource[16];
+static char ps1BootOverrideText[128];
 static char ps1BootForegroundOverlayScene[32];
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
@@ -821,6 +823,8 @@ static void ps1ResetBootArgs(void)
         args[i] = NULL;
         ps1BootArgStorage[i][0] = '\0';
     }
+    ps1BootOverrideSource[0] = '\0';
+    ps1BootOverrideText[0] = '\0';
     ps1BootForegroundOverlayScene[0] = '\0';
     ps1BootCaptureMetaDirStorage[0] = '\0';
     ps1BootCaptureSceneLabelStorage[0] = '\0';
@@ -851,20 +855,13 @@ static void ps1ResetBootArgs(void)
 
 static int ps1CopyBootArg(int index, const char *src)
 {
-    size_t len;
-    char *copy;
-
     if (index < 0 || index >= 3 || !src) {
         return 0;
     }
 
     strncpy(ps1BootArgStorage[index], src, sizeof(ps1BootArgStorage[index]) - 1);
     ps1BootArgStorage[index][sizeof(ps1BootArgStorage[index]) - 1] = '\0';
-
-    len = strlen(ps1BootArgStorage[index]);
-    copy = safe_malloc(len + 1);
-    memcpy(copy, ps1BootArgStorage[index], len + 1);
-    args[index] = copy;
+    args[index] = ps1BootArgStorage[index];
     return 1;
 }
 
@@ -879,12 +876,29 @@ static char *ps1CopyBootString(char *dst, size_t dstSize, const char *src)
     return dst;
 }
 
-static void ps1ApplyBootOverride(char *buffer)
+static void ps1RememberBootOverride(const char *source, const char *buffer)
+{
+    ps1CopyBootString(ps1BootOverrideSource,
+                      sizeof(ps1BootOverrideSource),
+                      source ? source : "?");
+    ps1CopyBootString(ps1BootOverrideText,
+                      sizeof(ps1BootOverrideText),
+                      buffer ? buffer : "");
+    for (int i = 0; ps1BootOverrideText[i] != '\0'; i++) {
+        if (ps1IsSpace(ps1BootOverrideText[i])) {
+            ps1BootOverrideText[i] = ' ';
+        }
+    }
+}
+
+static int ps1ApplyBootOverride(char *buffer, const char *source)
 {
     char *tokens[32];
     int tokenCount = 0;
     char *cursor = buffer;
     int tokenBase = 0;
+
+    ps1RememberBootOverride(source, buffer);
 
 #if JC_BOOT_DIAG_LOGS
     /* JCBOOT diag: print the entire buffer so we can confirm which
@@ -926,7 +940,7 @@ static void ps1ApplyBootOverride(char *buffer)
     }
 
     if (tokenCount == 0) {
-        return;
+        return 0;
     }
 
     /* Scan for trailing "seed N" parameter anywhere in the token list */
@@ -1117,15 +1131,17 @@ static void ps1ApplyBootOverride(char *buffer)
     }
 
     if (tokenBase >= tokenCount) {
-        return;
+        return 1;
     }
 
     if (!strcmp(tokens[tokenBase], "fgpilot")) {
         if ((tokenBase + 1) < tokenCount && ps1CopyBootArg(0, tokens[tokenBase + 1]))
             numArgs = 1;
         argForegroundPilot = 1;
-        return;
+        return 1;
     }
+
+    return 1;
 }
 
 static void ps1LoadBootOverride(void)
@@ -1142,9 +1158,12 @@ static void ps1LoadBootOverride(void)
     if (file != NULL) {
         readCount = ps1_fread(buffer, 1, sizeof(buffer) - 1, file);
         ps1_fclose(file);
-        buffer[readCount] = '\0';
-        ps1ApplyBootOverride(buffer);
-        return;
+        if (readCount > 0) {
+            buffer[readCount] = '\0';
+            if (ps1ApplyBootOverride(buffer, "file")) {
+                return;
+            }
+        }
     }
 
     rawData = ps1_loadRawFile("\\BOOTMODE.TXT;1", &rawSize);
@@ -1153,16 +1172,37 @@ static void ps1LoadBootOverride(void)
         memcpy(buffer, rawData, readCount);
         free(rawData);
         buffer[readCount] = '\0';
-        ps1ApplyBootOverride(buffer);
-        return;
+        if (ps1ApplyBootOverride(buffer, "raw")) {
+            return;
+        }
     }
 
     if (PS1_EMBEDDED_BOOT_OVERRIDE[0] != '\0') {
         strncpy(buffer, PS1_EMBEDDED_BOOT_OVERRIDE, sizeof(buffer) - 1);
         buffer[sizeof(buffer) - 1] = '\0';
-        ps1ApplyBootOverride(buffer);
+        ps1ApplyBootOverride(buffer, "embedded");
         return;
     }
+}
+
+static void ps1LogBootSelection(const char *explicitScene)
+{
+    printf(
+        "JCBOOT source=%s fgpilot=%d scene=%s args=%d seed=%d loop=%d lowtide=%d night=%d holiday=%d raft=%d pos=%d,%d text=%s\n",
+        ps1BootOverrideSource[0] ? ps1BootOverrideSource : "none",
+        argForegroundPilot,
+        explicitScene ? explicitScene : "-",
+        numArgs,
+        ps1BootForcedSeed,
+        screensaverLoopDisabled ? 0 : 1,
+        hostForcedLowTide,
+        hostForcedNight,
+        hostForcedHoliday,
+        hostForcedRaftStage,
+        hostForcedIslandX,
+        hostForcedIslandY,
+        ps1BootOverrideText[0] ? ps1BootOverrideText : "-"
+    );
 }
 
 static void ps1PrintfProbe(const char *phase, const char *sceneName)
@@ -1655,6 +1695,11 @@ int main(int argc, char **argv)
     if (!argForegroundPilot) {
         argForegroundPilot = 1;
     }
+    ps1LogBootSelection(
+        (ps1BootForegroundOverlayScene[0] != '\0')
+            ? ps1BootForegroundOverlayScene
+            : ((numArgs >= 1) ? args[0] : NULL)
+    );
     ps1PrintfProbe("boot-override-loaded", NULL);
 
     loadTitleScreenEarly();
@@ -1791,7 +1836,6 @@ int main(int argc, char **argv)
     const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
-
 
     do {
         int skipWalkThisIteration = 0;

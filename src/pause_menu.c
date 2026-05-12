@@ -1541,9 +1541,10 @@ static void drawSystemMenu(void)
 }
 
 /* ---------------------------------------------------------------------------
- *  Scene Explorer — text-only sub-screen for v1. Thumbnails (320x208 SCR
- *  per scene) load on cursor change in a follow-up step. Layout fits on
- *  the current 8x8 panel without a thumbnail by using all rows for text.
+ *  Scene Explorer — chapter-select screen. Thumbnails are 320x240 raw
+ *  RGB555 SCR files streamed directly into the centered framebuffer rect
+ *  whenever the cursor changes; text/chrome are drawn over the loaded
+ *  pixels in the normal pause-menu OT.
  * ------------------------------------------------------------------------- */
 
 static int sceneExplorerFamilyForCursor(int cursor)
@@ -1571,10 +1572,11 @@ static void sceneExplorerEnsureThumbnail(void)
     if (cur == sceneExplorerLoadedCursor) return;
 
     /* grLoadSceneExplorerThumbnail LoadImages the new thumbnail to the
-     * framebuffer at (0,0,320,240). We do NOT touch menuFramebufferPrimed
-     * here — re-priming would have grDrawBackground repaint the paused
-     * scene's bgTile* over our thumbnail. The chrome strip's OT primitives
-     * draw on top of the LoadImage'd pixels each frame. */
+     * centered framebuffer rect immediately. We do NOT touch
+     * menuFramebufferPrimed here — re-priming would have grDrawBackground
+     * repaint the paused scene's bgTile* over our thumbnail. The chrome
+     * strip's OT primitives draw on top of the LoadImage'd pixels each
+     * frame. */
     if (grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug)) {
         sceneExplorerLoadedCursor = cur;
     }

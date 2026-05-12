@@ -4753,22 +4753,55 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
  * scrResources registry so we don't have to register synthetic SCR
  * resources for the 27 thumbnails (and grow as scenes validate).
  *
- * Format: raw 320x240 16-bit RGB555 LE, 153,600 bytes — pixel-format-
- * compatible with bgTile* but written into a DEDICATED standalone
- * buffer here so we don't disturb bgTile0/1/3/4 during a paused scene.
- * Touching bgTile* mid-pause caused crashes when the live scene's
- * bgTile size differed from 320x240 (ISLETEMP scenes, mostly): the
- * realloc churn either fragmented the heap or invalidated pointers
- * other paused-state code was still holding.
- *
- * The buffer is allocated lazily on first explorer entry and reclaimed
- * by grFreeSceneExplorerThumbnailBuffer when the user backs out. The
- * SCR is uploaded to the framebuffer directly via LoadImage; the menu
- * chrome's OT primitives draw on top.
+ * Format: raw 320x240 16-bit RGB555 LE, 153,600 bytes. The file is
+ * streamed in 16-row chunks directly to the framebuffer so Scene
+ * Explorer no longer needs a 153 KB heap allocation while paused. That
+ * allocation was fragile after the runtime grew persistent scene caches
+ * and could fail from heap fragmentation, leaving the explorer text-only.
  *
  * Returns 1 on success, 0 if the file isn't on disc.
  */
-static uint16 *gSceneExplorerThumbBuf = NULL;
+enum {
+    SCENE_EXPLORER_THUMB_W = 320,
+    SCENE_EXPLORER_THUMB_H = 240,
+    SCENE_EXPLORER_THUMB_ROWS_PER_READ = 16,
+};
+
+static uint16 gSceneExplorerThumbChunk[
+    SCENE_EXPLORER_THUMB_W * SCENE_EXPLORER_THUMB_ROWS_PER_READ
+];
+
+static void grClearSceneExplorerRect(int x, int y, int w, int h)
+{
+    RECT rect;
+
+    memset(gSceneExplorerThumbChunk, 0, sizeof(gSceneExplorerThumbChunk));
+
+    while (h > 0) {
+        int rows = h;
+        int clearX = x;
+        int remainingW = w;
+
+        if (rows > SCENE_EXPLORER_THUMB_ROWS_PER_READ)
+            rows = SCENE_EXPLORER_THUMB_ROWS_PER_READ;
+
+        while (remainingW > 0) {
+            int chunkW = remainingW;
+            if (chunkW > SCENE_EXPLORER_THUMB_W)
+                chunkW = SCENE_EXPLORER_THUMB_W;
+
+            setRECT(&rect, clearX, y, chunkW, rows);
+            LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
+            DrawSync(0);
+
+            clearX += chunkW;
+            remainingW -= chunkW;
+        }
+
+        y += rows;
+        h -= rows;
+    }
+}
 
 int grLoadSceneExplorerThumbnail(const char *slug)
 {
@@ -4815,68 +4848,40 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     if (!ps1_streamResolveFile(path, &cdfile))
         return 0;
 
-    /* Lazy-allocate one 320x240 16-bit scratch buffer (153,600 bytes).
-     * malloc may fail under heap pressure — return 0 and let the menu
-     * fall back to its text-only layout. */
-    if (gSceneExplorerThumbBuf == NULL) {
-        gSceneExplorerThumbBuf = (uint16*)malloc(320UL * 240UL * 2UL);
-        if (gSceneExplorerThumbBuf == NULL)
-            return 0;
-    }
-
     /* Clear the four bands around the centered thumbnail to black so
-     * the previous menu/scene pixels don't show through. We reuse the
-     * thumbnail scratch buffer (zero-filled below) as a generic source
-     * of zero bytes for each LoadImage; LoadImage reads only the rect's
-     * worth of bytes regardless of the buffer's nominal size, so the
-     * 153,600-byte buffer is enough for any band 153,600 bytes or smaller.
-     *
-     *      +------+------+------+
-     *      |  T   |  T   |  T   |   T = top band      (640 x 120)
-     *      +------+------+------+
-     *      |  L   | thumb|  R   |   L = left  (160 x 240)
-     *      |      |      |      |   R = right (160 x 240)
-     *      +------+------+------+
-     *      |  B   |  B   |  B   |   B = bottom band   (640 x 120)
-     *      +------+------+------+
-     */
-    memset(gSceneExplorerThumbBuf, 0, 320UL * 240UL * 2UL);
-    setRECT(&rect, 0, 0, 640, 120);
-    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
-    DrawSync(0);
-    setRECT(&rect, 0, 360, 640, 120);
-    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
-    DrawSync(0);
-    setRECT(&rect, 0, 120, 160, 240);
-    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
-    DrawSync(0);
-    setRECT(&rect, 480, 120, 160, 240);
-    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
-    DrawSync(0);
+     * the previous menu/scene pixels don't show through. Widths greater
+     * than 320 are split because the reusable chunk buffer is 320 pixels
+     * wide. */
+    grClearSceneExplorerRect(0, 0, 640, 120);
+    grClearSceneExplorerRect(0, 360, 640, 120);
+    grClearSceneExplorerRect(0, 120, 160, 240);
+    grClearSceneExplorerRect(480, 120, 160, 240);
 
-    if (!ps1_streamReadAlignedIntoFile(&cdfile, 0, 320UL * 240UL * 2UL,
-                                        (uint8 *)gSceneExplorerThumbBuf))
-        return 0;
+    for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
+         y += SCENE_EXPLORER_THUMB_ROWS_PER_READ) {
+        uint32 offset = (uint32)y * SCENE_EXPLORER_THUMB_W * 2UL;
+        uint32 bytes = SCENE_EXPLORER_THUMB_W *
+                       SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
 
-    /* DMA the thumbnail to the centered rect. The menu chrome's OT
-     * primitives are submitted later via DrawOTag and draw in the
-     * bottom band — they don't paint over the thumbnail because the
-     * panel rect lives at y>=416 (clear of the thumbnail's y=360 edge
-     * and the resulting gap is intentionally wider than 32 native rows
-     * so the chrome reads as its own band, not as a sliver). */
-    setRECT(&rect, 160, 120, 320, 240);
-    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
-    DrawSync(0);
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           (uint8 *)gSceneExplorerThumbChunk))
+            return 0;
+
+        setRECT(&rect, 160, 120 + y,
+                SCENE_EXPLORER_THUMB_W,
+                SCENE_EXPLORER_THUMB_ROWS_PER_READ);
+        LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
+        DrawSync(0);
+    }
 
     return 1;
 }
 
 void grFreeSceneExplorerThumbnailBuffer(void)
 {
-    if (gSceneExplorerThumbBuf) {
-        free(gSceneExplorerThumbBuf);
-        gSceneExplorerThumbBuf = NULL;
-    }
+    /* Thumbnails now stream through a static 16-row chunk buffer, so
+     * there is no per-entry heap state to release. Keep the function as
+     * the pause-menu cleanup hook. */
 }
 
 /*
