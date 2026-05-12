@@ -64,7 +64,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/hardware/' | relative_url }}">Hardware</a>
-    <p>The PS1 envelope this port runs inside — 33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+    <p>The PS1 envelope this port runs inside — 33.8688 MHz <a href="{{ '/docs/glossary/#mips' | relative_url }}">MIPS</a>, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
   </li>
   <li>
     <a href="{{ '/docs/devices/' | relative_url }}">Devices — what it runs on</a>

@@ -27,7 +27,7 @@ to the current battle card —
 "Performance" on a PS1 means a different shape of problem than performance
 on anything modern.
 
-The MIPS R3000A core runs at 33.8688 MHz with no FPU. The GPU is
+The [MIPS]({{ '/docs/glossary/#mips' | relative_url }}) R3000A core runs at 33.8688 MHz with no FPU. The GPU is
 fixed-function — sprites, primitives, an ordering table, no shaders. Audio
 is a separate processor with its own RAM. The CD is a 2x drive: 300 KB/s
 sustained, 150 ms cold seek. There is no memory bandwidth budget worth

@@ -29,7 +29,7 @@ the foreground pilot started looking like the answer.
 
 This is the era of "make the console boot." Cross-compilation through
 PSn00bSDK 0.24 inside a Docker image, the CD layout XML, a CMake
-configuration that targets MIPS, and the slow grind of CD-ROM I/O.
+configuration that targets [MIPS]({{ '/docs/glossary/#mips' | relative_url }}), and the slow grind of CD-ROM I/O.
 The graphics layer started at 700 lines and grew past 3,000 as
 primitive ordering bugs, sprite alignment quirks, and heap stability
 problems were tracked down one at a time. The acceptance bar was
