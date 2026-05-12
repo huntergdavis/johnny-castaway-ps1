@@ -7,6 +7,8 @@ description: Voice and tone guide for the Johnny Castaway PS1 site — the rhyth
 
 This page exists because the site has a deliberate voice and somebody is going to want to write a new page someday. The shorter version of what follows: read the in-game credits screen, then write like that. The longer version is below.
 
+This page is the public distillation. The 450-line internal source-of-truth that drafting agents read before new prose gets generated lives at [`site/_includes/voice-guide.md`]({{ site.github_url }}/blob/main/site/_includes/voice-guide.md) — it's anchored on a verbatim re-read of [hunterdavis.com](https://hunterdavis.com/) and carries the longer rationale for each rule here.
+
 <details class="page-toc" markdown="1">
 <summary>On this page</summary>
 
@@ -121,6 +123,12 @@ That's it. The disc plays. That's what mattered.
   — the long-form retrospective this guide is the public-facing
   distillation of. Read this guide first, that essay if you want
   the why behind the rules.
+- [`site/_includes/voice-guide.md`]({{ site.github_url }}/blob/main/site/_includes/voice-guide.md)
+  — the 450-line internal source-of-truth this page is distilled
+  from. Carries the full per-rule rationale, the original
+  hunterdavis.com 2026-04-26 anchor notes, and the specific phrases
+  that earned their way into the canonical list. Drafting agents
+  read this before generating new prose for the site.
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
   — what gets drafted by an LLM and what doesn't, with the voice
   guide as the editing-pass standard.
