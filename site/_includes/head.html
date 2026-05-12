@@ -4,6 +4,18 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
   {%- comment -%}
+    Legacy-but-still-honored Windows pinning hints. application-name
+    is what Windows Start / taskbar / Edge "App-ify this page" show
+    when a user pins the site (modern browsers prefer the manifest's
+    name field, but Edge still falls back to this meta when no
+    manifest is in scope). msapplication-TileColor mirrors the light
+    theme-color above so the pinned tile background matches the site
+    chrome. site.webmanifest carries the same identity for the PWA
+    install path; these supplement it for the non-manifest pin flow.
+  {%- endcomment -%}
+  <meta name="application-name" content="{{ site.title }}" />
+  <meta name="msapplication-TileColor" content="#0000A8" />
+  {%- comment -%}
     Tell the UA the page supports both schemes so native widgets
     (scrollbars, form controls, and the address-bar tint between
     page transitions) honor the user's prefers-color-scheme. The
