@@ -3420,7 +3420,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * 200 KB lower-rect alloc failure around minute 11 of a free-running session. */
     grDeactivateCleanBgRects();
     grSetCleanBgBlackMode(0);
-    if (blackBackdrop)
+    if (blackBackdrop || sceneSpecificBackdrop)
         grFreeCleanBgRects();
     fgReleaseStreamBuffers();
 
@@ -3758,7 +3758,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * ~93 KB) fails silently after 2-3 iterations. */
     fgRuntimeReset();
     fgReleaseStreamBuffers();
-    if (blackBackdrop || largeCleanSnapshot || deferWalkCleanRecapture) {
+    if (blackBackdrop || sceneSpecificBackdrop ||
+        largeCleanSnapshot || deferWalkCleanRecapture) {
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(0);
     } else {

@@ -3659,6 +3659,7 @@ void grFreeCleanBgRects(void)
 void grDeactivateCleanBgRects(void)
 {
     grResetCleanBgRects(0);
+    gGrCleanBgBlackMode = 0;
 }
 
 void grSetCleanBgBlackMode(int enabled)
