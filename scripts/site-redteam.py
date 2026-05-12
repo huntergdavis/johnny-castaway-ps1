@@ -39,12 +39,23 @@ LINK_ATTRS = {
 }
 
 
+HEADING_TAGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+
+
 class PageParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.links: list[tuple[str, str, str]] = []
         self.ids: set[str] = set()
         self.image_alts: list[tuple[str, str | None]] = []
+        # Heading-level sequence captured in source order. Used downstream
+        # to flag WCAG 1.3.1 hierarchy skips (e.g. h1 → h3 without h2).
+        self.headings: list[int] = []
+        self._in_heading: int | None = None
+        self._heading_text: list[str] = []
+        # Parallel list of heading text snippets so the diagnostic can
+        # name the offending heading rather than just its level.
+        self.heading_texts: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = dict(attrs)
@@ -54,10 +65,24 @@ class PageParser(HTMLParser):
             self.ids.add(attr_map["name"] or "")
         if tag == "img":
             self.image_alts.append((attr_map.get("src") or "", attr_map.get("alt")))
+        if tag in HEADING_TAGS:
+            self._in_heading = int(tag[1])
+            self._heading_text = []
         for attr in LINK_ATTRS.get(tag, ()):
             value = attr_map.get(attr)
             if value:
                 self.links.append((tag, attr, value))
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in HEADING_TAGS and self._in_heading is not None:
+            self.headings.append(self._in_heading)
+            self.heading_texts.append("".join(self._heading_text).strip())
+            self._in_heading = None
+            self._heading_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self._in_heading is not None:
+            self._heading_text.append(data)
 
 
 def split_srcset(value: str) -> list[str]:
@@ -145,6 +170,22 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         # silently eating `{{:toc}}` content. Cheap preventative guard.
         if EMPTY_CODE_RE.search(text):
             errors.append(f"{rel}: empty <code></code> element (content lost?)")
+        # WCAG 1.3.1 (Info and Relationships) — heading levels must not
+        # skip down. A page that goes from <h1> directly to <h3> hides
+        # the intermediate structure from screen readers walking the
+        # outline. Allowed: any descending step, or a level repeat, or
+        # ascending by exactly one. Forbidden: ascending by more than
+        # one. Templates emit one <h1> per page (layout-level), so a
+        # skip-down from the first body heading is the typical failure
+        # mode — author wrote `### Foo` where `## Foo` was intended.
+        prev_level: int | None = None
+        for level, htext in zip(parser.headings, parser.heading_texts):
+            if prev_level is not None and level > prev_level + 1:
+                preview = htext[:60] or "(empty heading)"
+                errors.append(
+                    f"{rel}: heading skip h{prev_level}->h{level}: '{preview}'"
+                )
+            prev_level = level
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
