@@ -170,6 +170,12 @@ A few things this project is deliberately not trying to be:
 - [/releases/]({{ '/releases/' | relative_url }}) -- short notes
   on every tagged version with links to the full release notes
   and the disc image.
+- [/credits/]({{ '/credits/' | relative_url }}) -- attribution
+  shelf for the people, tools, and fonts behind the project: Sierra
+  for the original screensaver and characters, the upstream
+  reverse-engineering ports, the PSn00bSDK / mkpsxiso / DuckStation
+  toolchain, spicyjpeg's MPL pad-poll example, the four self-hosted
+  SIL OFL fonts, and the CC0 ocean-ambience source.
 
 The repository is at
 [{{ site.repo }}]({{ site.github_url }}). Open source under GPL-3.0,
