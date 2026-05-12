@@ -1,0 +1,53 @@
+---
+permalink: /site.webmanifest
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  W3C web app manifest. Browsers honor this for "Install" / "Add to
+  Home Screen" affordances, theme-color fallback, and app-switcher
+  identity. The site isn't a service-worker-backed PWA — it's a
+  static Jekyll bundle — so `display: browser` keeps the page in
+  its normal Chrome rather than launching a standalone window.
+
+  start_url and scope use `site.canonical_baseurl` so the project's
+  GitHub Pages prefix survives the build's `--baseurl ""` override
+  (same pattern as humans.txt, robots.txt, security.txt, sitemap.xml,
+  json-ld.html). Icon paths are also prefixed so they resolve when
+  the manifest is fetched from the same prefixed origin.
+
+  Colors mirror the existing CSS palette: theme_color matches the
+  light-scheme `<meta name="theme-color">` (#0000A8 jc-blue-dim),
+  background_color matches the light-scheme body bg (#FFF6D9
+  jc-sun-cream). PWA spec only allows one of each — browsers don't
+  pick by media-query the way the meta-tag pair does — so the
+  light-scheme values win since they match the default served page.
+{%- endcomment -%}
+{
+  "name": "Johnny Castaway PS1",
+  "short_name": "JC PS1",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "start_url": "{{ site.canonical_baseurl }}/",
+  "scope": "{{ site.canonical_baseurl }}/",
+  "display": "browser",
+  "lang": "en",
+  "theme_color": "#0000A8",
+  "background_color": "#FFF6D9",
+  "icons": [
+    {
+      "src": "{{ site.canonical_baseurl }}/assets/img/branding/favicon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "{{ site.canonical_baseurl }}/assets/img/branding/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "{{ site.canonical_baseurl }}/assets/img/branding/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

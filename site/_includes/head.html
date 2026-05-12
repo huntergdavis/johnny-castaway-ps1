@@ -211,6 +211,15 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/img/branding/favicon-32.png' | relative_url }}" />
   <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/img/branding/favicon-16.png' | relative_url }}" />
   <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/branding/apple-touch-icon.png' | relative_url }}" />
+  {%- comment -%}
+    W3C web app manifest. Static metadata only — the site isn't a
+    service-worker-backed PWA — but the manifest gives browsers a
+    stable display name + theme/background color + icon set for
+    "Install" / "Add to Home Screen" / app-switcher identity.
+    Source: /site.webmanifest (hand-rolled, Liquid-templated for
+    canonical_baseurl).
+  {%- endcomment -%}
+  <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="{{ '/devlog/feed.xml' | relative_url }}" />
