@@ -2749,3 +2749,14 @@ the same `217088` byte PS-EXE bucket, so this is accepted only as source hygiene
 It does not move the public battle-card percentages; any future marker runtime
 must prove code-size neutrality and prefetch-budget ownership before emulator
 time.
+
+The WALKSTUF1 low v378 offscreen/hole-fill pass is rejected and closes another
+naive zero-runtime data-shape lane. Size-preserving draw clipping removed
+`179604` offscreen pixels and `23012` spans but still retimed the row into worse
+visible CD pressure (`1776 -> 1780`, blocking `72 -> 86`, hidden refill
+`22 -> 30`). True setup-prime tail clones were worse: the three-clone pass hit
+`1791` with blocking `113`, and the minimal `35:190` clone still hit `1780`
+with blocking `91`. WALKSTUF1 low now needs explicit generated phase ownership,
+sector-boundary frame splitting, or a custom format that preserves scheduler
+cadence; do not spend more emulator time on broad draw clips or simple payload
+aliases.
