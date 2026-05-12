@@ -126,6 +126,12 @@ design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob
 - [humans.txt]({{ '/humans.txt' | relative_url }}) — the same
   attribution surface in the IndieWeb-standard humans.txt
   format, mirroring this page's content.
+- [Feeds &amp; well-known endpoints]({{ '/docs/feeds/' | relative_url }})
+  — the reference for every machine-readable URL on the site;
+  humans.txt is one entry in a longer list that also covers
+  robots.txt, RFC 9116 security.txt, the W3C web manifest, the
+  Atom + JSON feeds for the devlog and lab, and the Schema.org
+  JSON-LD records emitted in every page's head.
 - [FAQ — Is this legal?]({{ '/faq/#is-this-legal' | relative_url }})
   — the short author-written restatement of the fan-port
   stance.
