@@ -121,6 +121,13 @@ blocking `83 -> 87`, and hidden refill `26 -> 28`. Close direct high-table
 follow-ups in this neighborhood; the next high work needs generated scheduler
 ownership, setup-safe noncontiguous residency, or pack-side byte removal.
 
+Latest rejected BUILDING2 high early group: v369 inserted `17..33` before the
+accepted high groups. It stayed exact-flat against v347 (`1603`,
+`1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads `61`,
+due `7`) while only shifting hot-symbol addresses by `+32` bytes. Close this
+early scalar row; BUILDING2 high now needs generated ownership or data-shape
+work rather than more hand table rows.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
