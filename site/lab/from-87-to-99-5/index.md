@@ -37,10 +37,11 @@ matrix, `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
 gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
 setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and the current mainline adds
-the WALKSTUF1 high `213..229` read-group/slack4 promotion plus the VISITOR3
-low frame128/frame129 resident-slot swap. The current
+the WALKSTUF1 high `213..229` read-group/slack4 promotion, the VISITOR3
+low frame128/frame129 resident-slot swap, and the WALKSTUF1 low
+staged-prepare-before-window scheduler fallback. The current
 public-capped average is
-**+0.3273% over target / 99.6792% target speed**, with roughly **17.07
+**+0.3267% over target / 99.6798% target speed**, with roughly **17.07
 percentage points** of over-target gap closed and about **12.58 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-11:
+Current battle-card rollup as of 2026-05-12:
 
 | Metric | Value |
 |---|---:|
@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-11:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3273%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6792%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-11T23:34:41` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3267%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6798%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T02:03:51` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-prepare-before-window-v331`, `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -107,13 +107,18 @@ aliases duplicate frame `123` to frame `121`, expands the second setup segment
 from `24` to `27` sectors, and copies frame `128` resident. That row is now
 superseded by the v327 frame128/frame129 resident-slot swap.
 
-Latest promoted WALKSTUF1 note: `walkstuf1-high-rg213-229-slack4-v316`
+Latest promoted WALKSTUF1 note: `walkstuf1-low-prepare-before-window-v331`
+lets low-tide `walkstuf1` staged visual prepare preempt a speculative
+CD-window refill at the 4-VBlank prepare point. Against the current low
+baseline it improves overrun `54 -> 53`, blocking `74 -> 72`, and prefetch
+overrun `24 -> 22`, with a bounded `1483/1429 -> 1484/1431` scene/target
+tradeoff. WALKSTUF1 high, BUILDING2 high/low, VISITOR3 low, and FISHING1 high
+passed flat controls. The prior high note: `walkstuf1-high-rg213-229-slack4-v316`
 extends the accepted high `201..213` read group through `213..229` and uses a
 high-tide-only slack4 guard. Against the current-layout high control it
 improves `1482/1429 -> 1480/1429`, overrun `53 -> 51`, blocking `102 -> 85`,
 loop reads `70 -> 69`, and due misses `19 -> 16`; hidden refill rises
-`16 -> 26` as an accepted public-loop/blocking tradeoff. Low remains on the
-v305 gap6-prefix/slack baseline under the refreshed current layout.
+`16 -> 26` as an accepted public-loop/blocking tradeoff.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,

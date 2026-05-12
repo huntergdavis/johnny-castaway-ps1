@@ -3636,11 +3636,24 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              heldSlackVBlanks);
                     }
                 }
-                didPrefetch = windowWouldRead
-                    ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
-                    : 0;
-                if (didPrefetch)
-                    schedOwner = PS1_PERF_SCHED_CD_WINDOW;
+                /* WALKSTUF1 low is visual-work bound at this slack point;
+                 * preparing first reduces due-path blocking more than the
+                 * skipped speculative window refill costs. */
+                if (windowWouldRead &&
+                    islandState.lowTide &&
+                    fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
+                    fgRuntimeCanPrepareStagedFrame()) {
+                    didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,
+                                                                       perfDetail);
+                    if (didPrepare)
+                        schedOwner = PS1_PERF_SCHED_VISUAL_PREPARE;
+                } else {
+                    didPrefetch = windowWouldRead
+                        ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
+                        : 0;
+                    if (didPrefetch)
+                        schedOwner = PS1_PERF_SCHED_CD_WINDOW;
+                }
             } else {
                 didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
                 if (didPrefetch)

@@ -75,8 +75,9 @@ alias plus frame-131 setup-prime copy, the low frame-123 resident alias
 plus frame-128 setup-segment copy, and the low frame128/frame129
 resident-slot swap, followed by the
 WALKSTUF1 high sector `201..213` and `213..229` read-group passes, the
-high-tide window-prefetch guard on the gap-compressed pack, and the low-tide
-gap-compressed prefix. The current VISITOR3 baseline is high `1071/1040`
+high-tide window-prefetch guard on the gap-compressed pack, the low-tide
+gap-compressed prefix, and the low-tide staged-prepare scheduler fallback.
+The current VISITOR3 baseline is high `1071/1040`
 and low `1072/1040` after the latest same-layout canary refresh; both paths
 keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
@@ -108,7 +109,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-11">2026-05-11</time>:
+Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 
 | Metric | Value |
 |---|---:|
@@ -120,10 +121,10 @@ Current battle-card rollup as of <time datetime="2026-05-11">2026-05-11</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3273%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6792%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-11T23:34:41` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3267%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6798%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T02:03:51` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-prepare-before-window-v331`, `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -159,7 +160,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-low-swap-f128-f129-v327`,
+  refreshed rows use `walkstuf1-low-prepare-before-window-v331`,
+  `visitor3-low-swap-f128-f129-v327`,
   `visitor3-low-f128-resident-seg27-v302`,
   `visitor3-high-f131-resident-alias121123-v299`,
   `visitor3-low-alias-noop114117-v292`,
@@ -1980,15 +1982,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-11T20:56:51</td>
-      <td>walkstuf1-high-rg213-229-slack4-v316</td>
-      <td>+3.8%</td>
+      <td>2026-05-12T02:03:51</td>
+      <td>walkstuf1-low-prepare-before-window-v331</td>
+      <td>+3.7%</td>
       <td class="spd-yellow">96.4%</td>
-      <td>1483/1429</td>
-      <td>74</td>
-      <td>24</td>
+      <td>1484/1431</td>
+      <td>72</td>
+      <td>22</td>
       <td>12</td>
-      <td>current layout control under high-tide-only WALKSTUF1 promotion; unchanged by candidate</td>
+      <td>low-tide staged-prepare scheduler fallback; overrun 54-&gt;53 and blocking 74-&gt;72 with bounded +1 scene/loop tradeoff</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

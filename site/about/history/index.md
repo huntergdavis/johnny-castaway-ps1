@@ -381,10 +381,10 @@ component-completeness phases:
   the 126 timing-bearing scene/tide rows on the headless-perf
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
-- Current mainline performance: VISITOR3 low frame128/frame129 resident-slot
-  swap on top of the WALKSTUF1 high `213..229` read-group/slack4 baseline
-  puts the public battle card at `+0.3273%` over target / `99.6792%`
-  target speed.
+- Current mainline performance: WALKSTUF1 low staged-prepare-before-window
+  scheduling on top of the VISITOR3 low frame128/frame129 resident-slot swap
+  and the WALKSTUF1 high `213..229` read-group/slack4 baseline puts the public
+  battle card at `+0.3267%` over target / `99.6798%` target speed.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
   headless optimization methodology to a release baseline; routed
   all 126 high/low scene variants through the perf matrix; clean-
