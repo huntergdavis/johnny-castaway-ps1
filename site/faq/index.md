@@ -53,6 +53,14 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port �
     },
     {
       "@type": "Question",
+      "name": "Can I sponsor or donate to this project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The project does not accept sponsorships, tips, or donations. The in-game credits read in part 'if you paid for this, you were cheated. Open source and free.' — that's the whole stance. The code is on GitHub under GPL-3.0; the disc image is a free download from the GitHub release page. There is no Patreon, GitHub Sponsors, Ko-fi, or PayPal link, and there will not be."
+      }
+    },
+    {
+      "@type": "Question",
       "name": {{ "What does '" | append: site.release.scenes_validated | append: " / " | append: site.release.scenes_total | append: " scenes validated' mean?" | jsonify }},
       "acceptedAnswer": {
         "@type": "Answer",
@@ -203,6 +211,19 @@ for the long-form essay on what "shipping a fan port in 2026"
 actually looks like — Sierra's permission, the GPL-3.0 / MPL-2.0
 license stack, and the "if you paid for this, you were cheated"
 voice that keeps the whole thing honest.
+
+### Can I sponsor or donate to this project?
+
+No. The project does not accept sponsorships, tips, or donations.
+The [in-game credits]({{ '/credits/' | relative_url }}) read in
+part "if you paid for this, you were cheated. Open source and
+free." — that's the whole stance. The code lives on
+[GitHub]({{ site.github_url }}) under
+[GPL-3.0]({{ '/legal/' | relative_url }}); the
+[disc image]({{ '/play/' | relative_url }}) is a free download
+from the GitHub release page. There is no Patreon, GitHub
+Sponsors, Ko-fi, or PayPal link, and there will not be. The work
+is the point.
 
 ### What does "{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated" mean?
 
