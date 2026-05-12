@@ -14,6 +14,7 @@ on:
       - "scripts/site-generate-library.py"
       - "scripts/site-relativize-build.py"
       - "scripts/site-build-static-root.sh"
+      - "scripts/site-redteam.py"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 
