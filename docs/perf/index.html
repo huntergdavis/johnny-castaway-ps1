@@ -190,7 +190,9 @@ high/low (<code class="language-plaintext highlighter-rouge">96.8%</code> / <cod
 BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
 remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
-work. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
+work. The latest BUILDING6 read-group probe (<code class="language-plaintext highlighter-rouge">181..197</code> / <code class="language-plaintext highlighter-rouge">269..285</code>) is
+closed because those direct-stage clusters produced <code class="language-plaintext highlighter-rouge">group_hits=0</code>, left
+<code class="language-plaintext highlighter-rouge">loop_reads=42</code>, and crossed the PS-EXE bucket. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
 BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
 WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
 high, WALKSTUF3 low, and ACTIVITY9 low moved into green after their

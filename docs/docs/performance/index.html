@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~16 min read · 4204 words
+          ~17 min read · 4253 words
         </p>
 
       <hr class="rule" />
@@ -269,7 +269,11 @@ and its machine-readable
 The current report has one guarded BUILDING2 candidate, no standalone-safe
 rows, and keeps VISITOR3 in the scheduler-owned or closed lane. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
-slack/scheduler proof.</p>
+slack/scheduler proof. The BUILDING6 v353 <code class="language-plaintext highlighter-rouge">181..197</code> / <code class="language-plaintext highlighter-rouge">269..285</code> probe is
+now the concrete counterexample for direct-stage clusters: the source table
+crossed the PS-EXE bucket, never produced a <code class="language-plaintext highlighter-rouge">group_hit</code>, and left active read
+counts unchanged, so BUILDING6 needs generated direct-stage ownership or a
+pack-side data-shape change rather than another local read-group row.</p>
 
 <h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
 

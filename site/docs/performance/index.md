@@ -154,7 +154,11 @@ and its machine-readable
 The current report has one guarded BUILDING2 candidate, no standalone-safe
 rows, and keeps VISITOR3 in the scheduler-owned or closed lane. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
-slack/scheduler proof.
+slack/scheduler proof. The BUILDING6 v353 `181..197` / `269..285` probe is
+now the concrete counterexample for direct-stage clusters: the source table
+crossed the PS-EXE bucket, never produced a `group_hit`, and left active read
+counts unchanged, so BUILDING6 needs generated direct-stage ownership or a
+pack-side data-shape change rather than another local read-group row.
 
 ## Experiments that didn't work
 
