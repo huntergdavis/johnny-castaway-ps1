@@ -156,6 +156,16 @@ blocking `83 -> 87`, and hidden refill `26 -> 28`. Close direct high-table
 follow-ups in this neighborhood; the next high work needs generated scheduler
 ownership, setup-safe noncontiguous residency, or pack-side byte removal.
 
+Latest rejected WALKSTUF1 high direct-group retry: v405/v406 tested the
+unclosed `178..194` retained-read candidate from the accepted v384 plan, first
+ungated and then with `minSlack=4`. Both variants fired the same bad schedule:
+loop reads improved `65 -> 64`, but scene regressed `1768 -> 1774`, active
+loop/target `1480/1432 -> 1486/1427`, overrun `48 -> 59`, blocking
+`83 -> 98`, and due misses `16 -> 17`; hidden refill improved only
+`26 -> 23`. Close the `178..194` hand-table lane. The remaining high-side
+mid-pack rows are not missing a simple slack threshold; they need generated
+deadline ownership, sector-boundary pack shaping, or actual payload reduction.
+
 Latest rejected WALKSTUF1 high window retune: v382 rechecked the old adjacent
 window-size signal as parameter-only probes. Current `54 KiB` remains the knee:
 `53 KiB` cut reads `67 -> 22` but regressed to `1820`, `1531/1434`, overrun
