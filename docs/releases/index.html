@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.6; built 2026-05-11" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-11" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -107,7 +107,7 @@
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
 
-<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code></strong> with
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> with
 <strong>63 / 63</strong> scenes signed off under the
 <a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
@@ -116,6 +116,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability" id="markdown-toc-v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability"><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> — Deterministic BOOTMODE scene selection + Scene Explorer preview stability</a></li>
       <li><a href="#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through" id="markdown-toc-v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> — WALKSTUF1 / VISITOR3 setup-segment compaction follow-through</a></li>
       <li><a href="#v085-ps1--full-126-row-headless-performance-matrix" id="markdown-toc-v085-ps1--full-126-row-headless-performance-matrix"><code class="language-plaintext highlighter-rouge">v0.8.5-ps1</code> — Full 126-row headless performance matrix</a></li>
       <li><a href="#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes" id="markdown-toc-v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes"><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> — Custom chapter-select thumbnails for all 63 scenes</a></li>
@@ -141,6 +142,40 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability"><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> — Deterministic BOOTMODE scene selection + Scene Explorer preview stability</h3>
+<p><time datetime="2026-05-11"><em>2026-05-11</em></time></p>
+
+<p>A stability and operability point release after <code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code>. It keeps the
+same 126-row headless performance matrix baseline, but fixes two release-risk
+surfaces: direct scene booting is now provable from the runtime log, and Scene
+Explorer thumbnails no longer need a large heap allocation while paused.</p>
+
+<ul>
+  <li><strong>BOOTMODE scene selection is deterministic and auditable.</strong> The PS1 runtime
+logs a single early <code class="language-plaintext highlighter-rouge">JCBOOT</code> line with the boot source, explicit scene, seed,
+loop mode, tide/night/holiday/raft state, island position, and normalized
+boot text before title/resources/sound side effects.</li>
+  <li><strong>Headless perf now fails if it measures the wrong scene.</strong> The iterator
+derives the expected scene from <code class="language-plaintext highlighter-rouge">fgpilot &lt;slug&gt;</code> boot strings and rejects
+runs that report a different <code class="language-plaintext highlighter-rouge">JCPERF2 scene</code> or fall through to <code class="language-plaintext highlighter-rouge">JCPICK</code>.</li>
+  <li><strong>Suzy black-backdrop scenes clean up after themselves.</strong> Scene-specific
+backdrop state now clears clean-bg black mode and frees clean-bg rect state
+on entry/cleanup, preventing the following scenes from losing island/tree
+background layers.</li>
+  <li><strong>Scene Explorer previews stream instead of malloc.</strong> Thumbnails load in
+16-row chunks through a static buffer, avoiding the fragile 153 KB paused-menu
+allocation that could leave the explorer text-only after long runs.</li>
+  <li><strong>Battle card unchanged numerically.</strong> Public rollup remains <code class="language-plaintext highlighter-rouge">+0.3156%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6902%</code> target speed; raw signed rollup remains <code class="language-plaintext highlighter-rouge">-0.4529%</code> /
+<code class="language-plaintext highlighter-rouge">100.4740%</code>.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.7/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.7-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code> — WALKSTUF1 / VISITOR3 setup-segment compaction follow-through</h3>
 <p><time datetime="2026-05-10"><em>2026-05-10</em></time></p>
@@ -497,7 +532,7 @@ is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">hun
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./">v0.8.6-ps1</a>)
+          (<a href="./">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
