@@ -112,6 +112,46 @@ DuckStation is the every-commit reference; for other emulators, real
 PS1 hardware via TonyHax, PS2/PS3 backwards-compat, and the BIOS
 requirement, see [/docs/devices/]({{ '/docs/devices/' | relative_url }}).
 
+## Verify your download {#verify}
+
+{%- comment -%}
+  Per-release maintenance: the two SHA-256 values below are pinned
+  to `site.release.tag` (the currently-released .bin and .cue). On
+  every milestone release, recompute via:
+
+      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.bin | sha256sum
+      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.cue | sha256sum
+
+  and update both rows in the table below. Same release-tag-specific
+  prose update class as the home-page narrative (a653c7703) and the
+  .bin/.cue size sweep (81ae66ca3). Future improvement: have the
+  release script write a sidecar `.sha256` file beside the .bin/.cue
+  artifacts so the table can be derived rather than hand-edited.
+{%- endcomment -%}
+Optional but recommended if you downloaded the disc image from a mirror
+or anywhere other than the official
+[GitHub release page]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
+For **`{{ site.release.tag }}`** the SHA-256 hashes are:
+
+| File          | SHA-256                                                            |
+| ------------- | ------------------------------------------------------------------ |
+| `jcreborn.bin` | `315d0c392c9d0cda488568971ab18139d858fe5098c0af6d77a602faa0c19acf` |
+| `jcreborn.cue` | `602fc8c63373be283bf514e25b8088cd090c987e0e626ee480c3f0f9dd5ffbc3` |
+
+To check your local copies, run:
+
+```bash
+sha256sum jcreborn.bin jcreborn.cue
+```
+
+(macOS: `shasum -a 256 jcreborn.bin jcreborn.cue`. Windows PowerShell:
+`Get-FileHash jcreborn.bin -Algorithm SHA256`.)
+
+If a hash differs from the values above, the file was altered in
+transit or by a mirror — re-download from the GitHub release page
+linked above. The hashes are pinned to **`{{ site.release.tag }}`**;
+older or newer releases will have different values.
+
 ## Original Sierra data files
 
 This port ships only the code that drives playback. The original

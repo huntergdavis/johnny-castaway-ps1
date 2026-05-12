@@ -161,6 +161,7 @@
 <ul id="markdown-toc">
   <li><a href="#latest-build" id="markdown-toc-latest-build">Latest build</a></li>
   <li><a href="#emulator" id="markdown-toc-emulator">Quickstart (DuckStation)</a></li>
+  <li><a href="#verify-your-download-verifyoptional-but-recommended-if-you-downloaded-the-disc-image-from-a-mirror" id="markdown-toc-verify-your-download-verifyoptional-but-recommended-if-you-downloaded-the-disc-image-from-a-mirror">Verify your download {#verify}Optional but recommended if you downloaded the disc image from a mirror</a></li>
   <li><a href="#original-sierra-data-files" id="markdown-toc-original-sierra-data-files">Original Sierra data files</a></li>
   <li><a href="#controls" id="markdown-toc-controls">Controls</a></li>
   <li><a href="#freeplay-controls" id="markdown-toc-freeplay-controls">Freeplay controls</a></li>
@@ -206,6 +207,43 @@ scenes will cycle on their own.</li>
 <p>DuckStation is the every-commit reference; for other emulators, real
 PS1 hardware via TonyHax, PS2/PS3 backwards-compat, and the BIOS
 requirement, see <a href="../docs/devices/">/docs/devices/</a>.</p>
+
+<h2 id="verify-your-download-verifyoptional-but-recommended-if-you-downloaded-the-disc-image-from-a-mirror">Verify your download {#verify}Optional but recommended if you downloaded the disc image from a mirror</h2>
+<p>or anywhere other than the official
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.7-ps1">GitHub release page</a>.
+For <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> the SHA-256 hashes are:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">File</th>
+      <th scope="col">SHA-256</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">jcreborn.bin</code></td>
+      <td><code class="language-plaintext highlighter-rouge">315d0c392c9d0cda488568971ab18139d858fe5098c0af6d77a602faa0c19acf</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">jcreborn.cue</code></td>
+      <td><code class="language-plaintext highlighter-rouge">602fc8c63373be283bf514e25b8088cd090c987e0e626ee480c3f0f9dd5ffbc3</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To check your local copies, run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sha256sum </span>jcreborn.bin jcreborn.cue
+</code></pre></div></div>
+
+<p>(macOS: <code class="language-plaintext highlighter-rouge">shasum -a 256 jcreborn.bin jcreborn.cue</code>. Windows PowerShell:
+<code class="language-plaintext highlighter-rouge">Get-FileHash jcreborn.bin -Algorithm SHA256</code>.)</p>
+
+<p>If a hash differs from the values above, the file was altered in
+transit or by a mirror — re-download from the GitHub release page
+linked above. The hashes are pinned to <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong>;
+older or newer releases will have different values.</p>
 
 <h2 id="original-sierra-data-files">Original Sierra data files</h2>
 
