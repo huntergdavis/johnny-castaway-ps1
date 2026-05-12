@@ -376,9 +376,14 @@ const char *fgLoopGetAllSlug(int index)
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
+#ifdef PS1_BUILD
     extern const char *pickerNextScene(const char *explicitScene,
                                        int sceneSetIdx);
     return pickerNextScene(explicitScene, sceneSetIdx);
+#else
+    (void)sceneSetIdx;
+    return explicitScene;
+#endif
 }
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
