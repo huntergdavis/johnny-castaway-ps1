@@ -140,12 +140,18 @@ want the raw documents behind the essays, use the
 <a href="../resources/">resource catalog</a>.</p>
 
 <p>Subscribe via
-<a href="./feed.xml" type="application/atom+xml">Atom</a>;
-the feed is reverse-chronological with rich summaries (no embedded
+<a href="./feed.xml" type="application/atom+xml">Atom</a>
+or
+<a href="./feed.json" type="application/feed+json">JSON Feed</a>;
+both are reverse-chronological with rich summaries (no embedded
 body — <code class="language-plaintext highlighter-rouge">site.html_pages</code> doesn’t pre-render content reliably the
-way <code class="language-plaintext highlighter-rouge">site.posts</code> does, so the feed is the headline-and-link
+way <code class="language-plaintext highlighter-rouge">site.posts</code> does, so the feeds are the headline-and-link
 pattern). Auto-discovery is wired into every page’s <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>, so
-most feed readers find it automatically.</p>
+most feed readers find them automatically. The
+<a href="../docs/feeds/">/docs/feeds/</a>
+reference page documents every machine-readable endpoint the site
+ships, including the matching pair for the
+<a href="../devlog/">devlog</a>.</p>
 
 <h2 id="contents">Contents</h2>
 
