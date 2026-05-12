@@ -192,6 +192,14 @@ did not create code-size or work-volume savings. Close manual cached policy
 flags as a speed lane. Keep policy bits only if they are generated with a
 larger scheduler-ownership table.
 
+Latest rejected no-holiday hot-path probe: v390 guarded the per-frame
+`fgBackdropStampHoliday()` call in foreground composition because all current
+perf boots use `holiday 0`. BUILDING2 low was exact-flat and shifted hot
+symbols by `+40` bytes; the WALKSTUF1 low sample was killed before `JCPERF2`.
+Close the standalone holiday-stamp guard. It is too small to move timing and
+should only return as part of a larger backdrop/holiday cleanup with stable
+layout padding.
+
 Latest rejected VISITOR5 low scalar group: v372 added the low-tide `9..25`
 read group after a v371 rerun confirmed the public row is current. It stayed
 exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
