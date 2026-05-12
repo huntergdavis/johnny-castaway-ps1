@@ -160,7 +160,7 @@ Post-v373 candidate deck after scalar read-table exhaustion:
 | 8 | Pack shape | For WALKSTUF1, search for resident-slot swaps that keep evicted frames before the old sector, never into padded tail. | v342 proved tail eviction is worse than the removed late read. |
 | 9 | Pack shape | Generate small "payload clone into setup slack" copies for only the exact hot frames, leaving original offsets valid. | Adds bytes in zero tail but avoids moving early-frame locality. |
 | 10 | Pack shape | Add a frame-local dictionary for repeated cleanup row headers in WALKSTUF1 v4 packs. | Existing exact duplicate payload scan found no full-frame duplicates; smaller metadata repetition may still exist. |
-| 11 | Pack shape | Build a WALKSTUF1-specific tail-trim parser that handles the entry-54 payload shape instead of aborting. | Generic trim-draw-tails cannot parse current WALKSTUF1, so one transform family is untested. |
+| 11 | Pack shape | Closed by v374: generic draw-tail trim with copy-through unparsable entries. | `--copy-unparseable` let the scan copy WALKSTUF1 entries `54` and `137`, but all parseable entries trimmed `0` bytes in both tides; no PS1 gate was warranted. |
 | 12 | Pack shape | Test PAL4 draw-row delta coding for WALKSTUF1 only, preserving v4 decode path behind a scene flag. | Targets byte pressure without changing cleanup geometry. |
 | 13 | Pack shape | Generate "no-op alias with local forward copy" entries for VISITOR3/WALKSTUF only when source frame remains ahead of current CD head. | Keeps cadence entries while avoiding reverse seeks. |
 | 14 | Pack shape | Repack BUILDING2 high/low by loop order while padding to original file size and keeping pack LBA fixed. | The current logical order is not necessarily CD-optimal after compaction. |

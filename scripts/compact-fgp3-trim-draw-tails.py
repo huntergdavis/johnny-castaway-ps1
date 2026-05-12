@@ -152,7 +152,12 @@ def trim_payload(payload: bytes) -> tuple[bytes, int]:
     return cleanup + encode_draw_rows(rows), trimmed_pixels
 
 
-def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> None:
+def convert(
+    input_path: Path,
+    output_path: Path,
+    pad_to_input_size: bool,
+    copy_unparseable: bool,
+) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
         raise SystemExit(f"pack too small: {input_path}")
@@ -204,6 +209,8 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
     trimmed_entries = 0
     trimmed_pixels = 0
     trimmed_bytes = 0
+    copied_unparseable_entries = 0
+    copied_unparseable_samples: list[str] = []
 
     for index, entry in enumerate(old_entries):
         source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
@@ -217,7 +224,13 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         try:
             new_payload, entry_trimmed_pixels = trim_payload(old_payload)
         except ValueError as exc:
-            raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+            if not copy_unparseable:
+                raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+            new_payload = old_payload
+            entry_trimmed_pixels = 0
+            copied_unparseable_entries += 1
+            if len(copied_unparseable_samples) < 8:
+                copied_unparseable_samples.append(f"{index}:{exc}")
         entry_trimmed_bytes = old_size - len(new_payload)
         if entry_trimmed_bytes:
             trimmed_entries += 1
@@ -271,8 +284,11 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         f"{input_path} -> {output_path}: {len(data)} -> {len(out)} bytes, "
         f"active_payload {old_payload_bytes} -> {len(payload_out)}, "
         f"trimmed_entries={trimmed_entries}, trimmed_pixels={trimmed_pixels}, "
-        f"trimmed_bytes={trimmed_bytes}"
+        f"trimmed_bytes={trimmed_bytes}, "
+        f"copied_unparseable_entries={copied_unparseable_entries}"
     )
+    if copied_unparseable_samples:
+        print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
 
 
 def main() -> None:
@@ -283,6 +299,11 @@ def main() -> None:
     parser.add_argument("output_fgp3", type=Path, nargs="?")
     parser.add_argument("--in-place", action="store_true")
     parser.add_argument("--pad-to-input-size", action="store_true")
+    parser.add_argument(
+        "--copy-unparseable",
+        action="store_true",
+        help="copy entries that do not match the compact draw-row parser instead of aborting",
+    )
     args = parser.parse_args()
 
     if args.in_place == bool(args.output_fgp3):
@@ -293,14 +314,14 @@ def main() -> None:
         ) as tmp:
             temp_path = Path(tmp.name)
         try:
-            convert(args.input_fgp3, temp_path, args.pad_to_input_size)
+            convert(args.input_fgp3, temp_path, args.pad_to_input_size, args.copy_unparseable)
             shutil.move(temp_path, args.input_fgp3)
         finally:
             if temp_path.exists():
                 temp_path.unlink()
     else:
         assert args.output_fgp3 is not None
-        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size)
+        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size, args.copy_unparseable)
 
 
 if __name__ == "__main__":
