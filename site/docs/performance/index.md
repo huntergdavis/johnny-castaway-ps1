@@ -307,9 +307,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3326%`
-exact public over target / `99.6742%` exact public target speed); the raw
-signed optimization matrix is `-0.4344%` / `100.4566%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3273%`
+exact public over target / `99.6792%` exact public target speed); the raw
+signed optimization matrix is `-0.4397%` / `100.4616%`.
 
 ## Scene Battle Card
 
@@ -891,7 +891,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3326% over target / 99.6742% target speed, with several
+  public average is now +0.3273% over target / 99.6792% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-11:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3326%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6742%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-11T21:25:51` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3273%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6792%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-11T23:34:41` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-swap-f128-f129-v327`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,7 +87,16 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-high-f131-resident-alias121123-v299`
+Latest promoted VISITOR3 note: `visitor3-low-swap-f128-f129-v327`
+keeps the existing low-tide setup budget but swaps which terminal payload is
+resident: frame `129` now occupies frame `128`'s paid segment2 slot while frame
+`128` points back to its original cold payload. Pack size, LBA, and source code
+stay fixed. Low improves `1079/1040 -> 1072/1040`, blocking `67 -> 64`, and
+loop-read time `67 -> 64`; due misses stay `11` and hidden refill stays `0`.
+The broad gate covered VISITOR3 high, WALKSTUF1 high/low, BUILDING2 high/low,
+FISHING1 high, and JOHNNY1 high, with longer Activity9/Mary3 canaries passing
+after the short broad run hit a frame-cap artifact. The prior high-side note:
+`visitor3-high-f131-resident-alias121123-v299`
 aliases duplicate high frames `121` and `123` to frame `120`, compacts the
 resident setup-prime tail, and copies frame `131` fully into paid setup-prime
 coverage without changing the `1555450` byte pack footprint. High improves
@@ -95,9 +104,8 @@ coverage without changing the `1555450` byte pack footprint. High improves
 `10 -> 9`, and loop-read time `58 -> 49`; due misses move `10 -> 9` and hidden
 refill stays `0`. Low is now `visitor3-low-f128-resident-seg27-v302`, which
 aliases duplicate frame `123` to frame `121`, expands the second setup segment
-from `24` to `27` sectors, and copies frame `128` resident. Low improves
-`1075/1039 -> 1071/1039`, blocking `67 -> 63`, loop reads `12 -> 11`, and due
-misses `12 -> 11`.
+from `24` to `27` sectors, and copies frame `128` resident. That row is now
+superseded by the v327 frame128/frame129 resident-slot swap.
 
 Latest promoted WALKSTUF1 note: `walkstuf1-high-rg213-229-slack4-v316`
 extends the accepted high `201..213` read group through `213..229` and uses a

@@ -20,9 +20,9 @@ and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3326%` over
-target / `99.6742%` target speed; the raw signed optimization matrix is
-`-0.4344%` / `100.4566%`.
+allocation. The public headless battle card is `+0.3273%` over
+target / `99.6792%` target speed; the raw signed optimization matrix is
+`-0.4397%` / `100.4616%`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

@@ -21,8 +21,8 @@ Date: 2026-04-25
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-optimization-plan.md` |
-| Lines | 2708 |
-| Approx. words | 75717 |
+| Lines | 2710 |
+| Approx. words | 75955 |
 | Code fences | 3 |
 
 ## Outline
@@ -40,7 +40,7 @@ Date: 2026-04-25
 -   Phase 3: Specialized FG2 Compositors
 -   Phase 4: FG2 Streaming, Prefetch, And CD Access
 -   Phase 5: Pack Format Improvements
--     VISITOR3 White-Whale Candidate Deck After v302
+-     VISITOR3 White-Whale Candidate Deck After v327
 
 ## Read it in context
 

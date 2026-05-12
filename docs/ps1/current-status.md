@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-11 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3326%` over target / `99.6742%` target speed).
+battle card is `+0.3273%` over target / `99.6792%` target speed).
 
 ## Overall
 
@@ -207,12 +207,16 @@ aliases duplicate frame `123` to frame `121`, expands the second setup segment
 from `24` to `27` sectors, copies frame `128` resident, and improves low again
 to `1071/1039`, blocking `63`, loop reads `11`, loop-read time `63`, and due
 misses `11`.
-The public battle card is now `+0.3326%` over target / `99.6742%` target speed
+The v327 low resident-slot swap moves frame `129` into the already paid frame
+`128` segment2 slot while frame `128` points back to its original cold payload.
+Low improves to `1072/1040`, blocking `64`, loop reads `11`, loop-read time
+`64`, and due misses `11` without changing pack size or LBA.
+The public battle card is now `+0.3273%` over target / `99.6792%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4344%` / `100.4566%`.
+raw signed optimization rollup is `-0.4397%` / `100.4616%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.07`
-public over-target points and added about `12.57` public target-speed points.
+public over-target points and added about `12.58` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -291,10 +295,10 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
-- Current `main` after `v0.8.7-ps1` — promotes the WALKSTUF1 high
-  `213..229` read-group extension plus high-tide slack4 guard and refreshes
-  same-layout canaries. The public battle card is `+0.3326%` /
-  `99.6742%`.
+- Current `main` after `v0.8.7-ps1` — promotes the VISITOR3 low
+  frame128/frame129 resident-slot swap on top of the WALKSTUF1 high
+  `213..229` read-group/slack4 baseline. The public battle card is
+  `+0.3273%` / `99.6792%`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

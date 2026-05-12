@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.7-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3326% public over target / 99.6742% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3273% public over target / 99.6792% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -26,7 +26,7 @@ from `v0.8.4-ps1`, keeps the full 126-row headless matrix as the public
 performance baseline, and hardens deterministic BOOTMODE scene selection,
 Suzy backdrop cleanup, and heapless Scene Explorer preview loading. The public
 battle card is now
-`+0.3326%` over target / `99.6742%` target speed across all 126
+`+0.3273%` over target / `99.6792%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -40,9 +40,10 @@ high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
 VISITOR3 low frame-123 resident alias plus frame-128 setup-segment copy,
 and WALKSTUF1 high sector `201..213` read-group follow-ups plus the WALKSTUF1
 high gap-compressed/window-prefetch guard and low gap6-prefix plus slack-guard
-follow-up, plus the current WALKSTUF1 high `213..229` read-group/slack4
-promotion; the raw signed optimization matrix is `-0.4344%` / `100.4566%`.
-That is about `17.07` public over-target points removed and `12.57` public
+follow-up, the WALKSTUF1 high `213..229` read-group/slack4 promotion, and the
+current VISITOR3 low frame128/frame129 resident-slot swap; the raw signed
+optimization matrix is `-0.4397%` / `100.4616%`.
+That is about `17.07` public over-target points removed and `12.58` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
