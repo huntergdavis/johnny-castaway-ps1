@@ -134,6 +134,12 @@ Latest rejected BUILDING2 high direct-stage ownership probe: v370 kept
 `foregroundPilotPlay` by `64` bytes. Close hand-coded sector exceptions; the
 next BUILDING2 high work should be generated metadata or pack/data-shape work.
 
+Latest rejected VISITOR5 low scalar group: v372 added the low-tide `9..25`
+read group after a v371 rerun confirmed the public row is current. It stayed
+exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
+`25`, due `0`) while adding code shape. Do not continue VISITOR5 low hand
+tables unless generated ownership changes the scheduling model.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
