@@ -47,6 +47,10 @@ class PageParser(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.links: list[tuple[str, str, str]] = []
         self.ids: set[str] = set()
+        # Parallel list capturing every id occurrence in source order
+        # (including duplicates the ids set silently dedupes). Used
+        # downstream for the duplicate-id WCAG 4.1.1 check.
+        self.id_occurrences: list[str] = []
         self.image_alts: list[tuple[str, str | None]] = []
         # Heading-level sequence captured in source order. Used downstream
         # to flag WCAG 1.3.1 hierarchy skips (e.g. h1 → h3 without h2).
@@ -61,8 +65,10 @@ class PageParser(HTMLParser):
         attr_map = dict(attrs)
         if "id" in attr_map and attr_map["id"]:
             self.ids.add(attr_map["id"] or "")
+            self.id_occurrences.append(attr_map["id"] or "")
         if tag == "a" and attr_map.get("name"):
             self.ids.add(attr_map["name"] or "")
+            self.id_occurrences.append(attr_map["name"] or "")
         if tag == "img":
             self.image_alts.append((attr_map.get("src") or "", attr_map.get("alt")))
         if tag in HEADING_TAGS:
@@ -186,6 +192,18 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
                     f"{rel}: heading skip h{prev_level}->h{level}: '{preview}'"
                 )
             prev_level = level
+        # WCAG 4.1.1 (Parsing) / Schema.org URL fragments — id values
+        # must be unique within a page. Two elements sharing the same
+        # id silently break in-page anchor jumps (browser jumps to
+        # the first occurrence; cross-refs to other instances can't
+        # disambiguate). Site-wide audit on 2026-05-12 found zero
+        # duplicates — this check locks that in.
+        seen_ids: set[str] = set()
+        for id_val in parser.id_occurrences:
+            if id_val in seen_ids:
+                errors.append(f"{rel}: duplicate id='{id_val}'")
+            else:
+                seen_ids.add(id_val)
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
