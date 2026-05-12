@@ -196,7 +196,13 @@ included with the released disc image; the host build requires
 the user to supply their own original Sierra data files
 (`RESOURCE.MAP`, `RESOURCE.001`). The released `.bin/.cue`
 contains pre-baked playback packs — derived data, no Sierra
-source files. See [/legal/]({{ '/legal/' | relative_url }}).
+source files. See [/legal/]({{ '/legal/' | relative_url }}) for
+the licensing companion and
+[/lab/fan-port-in-public/]({{ '/lab/fan-port-in-public/' | relative_url }})
+for the long-form essay on what "shipping a fan port in 2026"
+actually looks like — Sierra's permission, the GPL-3.0 / MPL-2.0
+license stack, and the "if you paid for this, you were cheated"
+voice that keeps the whole thing honest.
 
 ### What does "{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated" mean?
 
