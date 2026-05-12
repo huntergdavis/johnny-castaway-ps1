@@ -89,6 +89,18 @@ host-vs-PS1 reference frames where applicable.
     so they stay in sync if scenes.yml changes.
   {%- endcomment -%}
   {% for fam in families %}{% assign fam_count = sorted_scenes | where: "ads", fam | size %}<a href="#ads-{{ fam | downcase }}">{{ fam }} <span class="scenes-jump-count">({{ fam_count }})</span></a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+  &nbsp;·&nbsp;
+  {%- comment -%}
+    Random-scene affordance. `data-random-scene-trigger` is the hook
+    that /assets/js/random-scene.js looks for. The `hidden` attribute
+    keeps the link out of the no-JS view (a "feeling lucky" link
+    that doesn't actually randomize would be a regression on /scenes/);
+    the JS removes `hidden` only after it has at least one scene URL
+    to navigate to. Anchor href is harmless — same page — so even if
+    a screen reader exposes the hidden anchor accidentally, clicking
+    it is a no-op.
+  {%- endcomment -%}
+  <a href="#" data-random-scene-trigger hidden>Random scene →</a>
 </nav>
 
 <table class="scene-table">
