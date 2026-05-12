@@ -18,6 +18,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "inLanguage": "en",
   "mainEntity": [
     {
       "@type": "Question",
