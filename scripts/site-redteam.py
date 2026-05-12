@@ -11,6 +11,7 @@ Checks are intentionally local and boring:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from html.parser import HTMLParser
@@ -24,6 +25,17 @@ from fnmatch import fnmatch
 # eating regression class (e.g. ``{{:toc}}`` silently emitted as empty
 # <code></code>).
 EMPTY_CODE_RE = re.compile(r"<code(?:\s[^>]*)?>\s*</code>")
+
+# JSON-LD blocks: <script type="application/ld+json">...</script>. The
+# site emits 11+ Schema.org record types across ~1300+ blocks; a regression
+# that breaks the JSON body (e.g. an unescaped quote in a Liquid-interpolated
+# `description` field, or an `{{ }}` mis-emit inside a code-fenced template
+# that bleeds into a script block) would silently ship. Each block goes
+# through json.loads() — parse failures fail the build.
+JSONLD_RE = re.compile(
+    r'<script\s+type="application/ld\+json">(.+?)</script>',
+    re.DOTALL,
+)
 
 
 LINK_ATTRS = {
@@ -176,6 +188,21 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         # silently eating `{{:toc}}` content. Cheap preventative guard.
         if EMPTY_CODE_RE.search(text):
             errors.append(f"{rel}: empty <code></code> element (content lost?)")
+        # Every <script type="application/ld+json"> block must parse as
+        # valid JSON. The site emits 11 Schema.org record types across
+        # 1300+ blocks; a Liquid escaping mistake in a Schema.org field
+        # (e.g. an unescaped backtick in a description, an unquoted
+        # interpolation that emits a stray brace) silently breaks the
+        # structured-data signal for crawlers and the page still
+        # renders. Catch parse failures at build time.
+        for idx, jsonld in enumerate(JSONLD_RE.findall(text), start=1):
+            try:
+                json.loads(jsonld)
+            except json.JSONDecodeError as e:
+                errors.append(
+                    f"{rel}: JSON-LD block #{idx} parse error at "
+                    f"line {e.lineno} col {e.colno}: {e.msg}"
+                )
         # WCAG 1.3.1 (Info and Relationships) — heading levels must not
         # skip down. A page that goes from <h1> directly to <h3> hides
         # the intermediate structure from screen readers walking the
