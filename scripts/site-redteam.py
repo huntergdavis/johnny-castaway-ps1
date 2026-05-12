@@ -15,14 +15,20 @@ or is cheap enough to lock in even with zero past hits:
 - Heading levels never skip downward (WCAG 1.3.1; e.g. h1 → h3).
 - Every `id=""` is unique within its page (WCAG 4.1.1).
 - Every `<script type="application/ld+json">` block parses as valid JSON.
+- The /perf/ table rows match the CSV source-of-truth (no drift on
+  stats_version / last_run_at / blocking / prefetch / due / vblanks /
+  public-capped over_target).
 
 Excluded subtrees (preserved research) are passed via --exclude
-glob: typically `ps1/*`, `archive/*`, `general/*`, `readme/*`.
+glob: typically `ps1/*`, `archive/*`, `general/*`, `readme/*`. Note
+that `docs/ps1/performance-scene-matrix.csv` lives inside the excluded
+`ps1/*` subtree but is read directly by the /perf/ drift check.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import sys
@@ -159,6 +165,81 @@ def candidate_path(root: Path, page: Path, raw_path: str, baseurls: list[str]) -
     return target
 
 
+def _public_cap_otp(otp_str: str) -> str:
+    """Public-display rule on /perf/'s Over Target column: faster-than-
+    target rows (negative over_target_percent) render as `0.0%`."""
+    if otp_str in ("", "---"):
+        return "---"
+    try:
+        v = float(otp_str)
+    except ValueError:
+        return otp_str
+    return f"{max(0.0, v):.1f}%" if v >= 0 else "0.0%"
+
+
+def _check_perf_drift(csv_path: Path, html_path: Path) -> list[str]:
+    """Compare /perf/ rendered <tr> rows against the CSV source-of-truth.
+
+    Five fields per row are checked: stats_version, last_run_at,
+    blocking_vb, prefetch_overrun_vb, due_misses. The vblanks
+    (loop_vb/target_vb) and the public-capped over-target also get
+    compared but with format-tolerant whitespace handling. Notes column
+    is editorial and intentionally skipped.
+    """
+    out: list[str] = []
+    csv_rows: dict[str, dict[str, str]] = {}
+    with csv_path.open(encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            key = f"{row['scene_slug']}-{row['tide']}"
+            csv_rows[key] = row
+
+    text = html_path.read_text(encoding="utf-8", errors="replace")
+    # /perf/ has multiple <tbody> blocks (the rollup table + the main
+    # perf table). Match `<tr id="perf-…">` directly across the whole
+    # page — that id pattern is unique to per-scene rows and won't
+    # collide with any other table on the page.
+    tr_re = re.compile(r'<tr id="perf-([^"]+)">(.+?)</tr>', re.DOTALL)
+    td_re = re.compile(r"<td[^>]*>(.*?)</td>", re.DOTALL)
+    tag_re = re.compile(r"<[^>]+>")
+
+    for tr_match in tr_re.finditer(text):
+        rid = tr_match.group(1)
+        if rid not in csv_rows:
+            out.append(f"perf/index.html: row #{rid} has no matching CSV row")
+            continue
+        cells = [tag_re.sub("", c).strip() for c in td_re.findall(tr_match.group(2))]
+        if len(cells) < 11:
+            out.append(f"perf/index.html: row #{rid} has only {len(cells)} cells (<11)")
+            continue
+        r = csv_rows[rid]
+        # Col index: 0 scene, 1 tide, 2 status, 3 last_run, 4 stats_version,
+        # 5 over_target, 6 target_speed, 7 vblanks, 8 blocking, 9 prefetch,
+        # 10 due, 11 notes
+        expected = [
+            ("status", r["status"], cells[2]),
+            ("last_run_at", r["last_run_at"], cells[3]),
+            ("stats_version", r["stats_version"], cells[4]),
+            ("over_target_percent", _public_cap_otp(r["over_target_percent"]).replace("0.0%", "0.0%"), cells[5].replace("+", "")),
+            ("vblanks", f"{r['loop_vb']}/{r['target_vb']}", cells[7]),
+            ("blocking_vb", r["blocking_vb"] or "0", cells[8]),
+            ("prefetch_overrun_vb", r["prefetch_overrun_vb"] or "0", cells[9]),
+            ("due_misses", r["due_misses"] or "0", cells[10]),
+        ]
+        for field, csv_val, rendered_val in expected:
+            # Skip rows whose CSV has no measured value yet
+            if csv_val in ("", "---"):
+                continue
+            # The Over Target column tolerates +/- prefix variants
+            if field == "over_target_percent":
+                if rendered_val.lstrip("+-") == csv_val.lstrip("+-"):
+                    continue
+            if rendered_val != csv_val:
+                out.append(
+                    f"perf/index.html: row #{rid} {field}: rendered={rendered_val!r} csv={csv_val!r}"
+                )
+    return out
+
+
 def resolve_target(root: Path, page: Path, raw_path: str, baseurls: list[str]) -> Path | None:
     target = candidate_path(root, page, raw_path, baseurls)
     if target.is_dir():
@@ -265,6 +346,18 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
                 errors.append(f"{rel}: duplicate id='{id_val}'")
             else:
                 seen_ids.add(id_val)
+
+    # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
+    # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
+    # is the durable numeric source. Drift between the two is silent —
+    # caught a real regression on 2026-05-12 (building2-high stats_version
+    # / last_run_at / blocking_vb / prefetch_overrun_vb stayed at the
+    # pre-rg249-257 baseline after the CSV updated). Locking that audit
+    # in. Skips gracefully if either file is missing.
+    perf_csv = root / "ps1" / "performance-scene-matrix.csv"
+    perf_html = root / "perf" / "index.html"
+    if perf_csv.exists() and perf_html.exists():
+        errors.extend(_check_perf_drift(perf_csv, perf_html))
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
