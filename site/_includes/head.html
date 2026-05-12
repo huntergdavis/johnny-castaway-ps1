@@ -196,8 +196,15 @@
     an image they never use.
   {%- endcomment -%}
   {% if page.url == '/' %}
-  <link rel="preload" as="image"
-        href="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+  {%- comment -%}
+    Preload points at the WebP form of the hero (73 KB vs 147 KB PNG)
+    with type="image/webp" so browsers that don't accept WebP skip
+    the preload (type mismatch) and load the PNG from the <picture>
+    fallback in the body instead. Modern browsers preload the file
+    they will actually render.
+  {%- endcomment -%}
+  <link rel="preload" as="image" type="image/webp"
+        href="{{ '/assets/img/johnny6-ps1-date-dream.webp' | relative_url }}"
         fetchpriority="high" />
   {% endif %}
 

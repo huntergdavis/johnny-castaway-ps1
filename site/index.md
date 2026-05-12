@@ -6,11 +6,26 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero-frame">
-    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
-         width="1127" height="677"
-         fetchpriority="high"
-         decoding="async"
-         alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    {%- comment -%}
+      <picture> wraps the hero so modern browsers pull the lossless
+      WebP (73 KB) instead of the PNG (147 KB) — same pixels, half
+      the bytes. The fallback <img> keeps the PNG for browsers that
+      don't recognize <source type="image/webp"> (Chrome <32, Safari
+      <14, Firefox <65, IE). The preload in _includes/head.html
+      points at the WebP with type="image/webp" so modern browsers
+      preload the file they will actually use; older browsers skip
+      that preload (type mismatch) and fetch the PNG normally via
+      the fallback path.
+    {%- endcomment -%}
+    <picture>
+      <source type="image/webp"
+              srcset="{{ '/assets/img/johnny6-ps1-date-dream.webp' | relative_url }}" />
+      <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+           width="1127" height="677"
+           fetchpriority="high"
+           decoding="async"
+           alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    </picture>
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>

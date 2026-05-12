@@ -18,9 +18,8 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="./assets/fonts/inter-latin-400-normal.woff2" />
-  <link rel="preload" as="image"
-        href="./assets/img/johnny6-ps1-date-dream.png"
+        href="./assets/fonts/inter-latin-400-normal.woff2" /><link rel="preload" as="image" type="image/webp"
+        href="./assets/img/johnny6-ps1-date-dream.webp"
         fetchpriority="high" />
 
 
@@ -125,8 +124,10 @@
 
   <main id="main" class="main" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
-  <div class="hero-frame">
-    <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+  <div class="hero-frame"><picture>
+      <source type="image/webp" srcset="./assets/img/johnny6-ps1-date-dream.webp" />
+      <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    </picture>
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v0.8.7</p>
