@@ -438,9 +438,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3141%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6920%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4529%</code> / <code class="language-plaintext highlighter-rouge">100.4743%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3178%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6884%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4493%</code> / <code class="language-plaintext highlighter-rouge">100.4708%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -466,7 +466,7 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>,
-<code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>,
+<code class="language-plaintext highlighter-rouge">visitor5-high-current-v401</code>,
 <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>,
 <code class="language-plaintext highlighter-rouge">mary3-preserve-window-slack8-v149</code>,
 <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>,
@@ -566,7 +566,7 @@ rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-r
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>,
-<code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>,
+<code class="language-plaintext highlighter-rouge">visitor5-high-current-v401</code>,
 <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>,
 <code class="language-plaintext highlighter-rouge">mary3-preserve-window-slack8-v149</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-tail-trim-stageguard-v127</code>,
@@ -1035,7 +1035,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3141% over target / 99.6920% target speed, with several
+public average is now +0.3178% over target / 99.6884% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

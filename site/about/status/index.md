@@ -20,9 +20,9 @@ and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3141%` over
-target / `99.6920%` target speed; the raw signed optimization matrix is
-`-0.4529%`.
+allocation. The public headless battle card is `+0.3178%` over
+target / `99.6884%` target speed; the raw signed optimization matrix is
+`-0.4493%`.
 The newest accepted WALKSTUF1 high `444..456` read group keeps the fixed
 `217088` byte PS-EXE bucket and public `1480/1432` timing while lowering
 WALKSTUF1 high loop reads to `65` and loop-read time to `284`. BUILDING2 high

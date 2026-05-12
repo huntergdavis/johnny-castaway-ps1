@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3141%` over target / `99.6920%` target speed).
+battle card is `+0.3178%` over target / `99.6884%` target speed).
 
 ## Overall
 
@@ -227,9 +227,9 @@ The v379 BUILDING2 high read-group pass adds `226..242` between the accepted
 overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and
 loop-read time `262 -> 254`; BUILDING2 low, VISITOR3 low, FISHING1 high, and
 WALKSTUF1 high/low controls stayed flat.
-The public battle card is now `+0.3141%` over target / `99.6920%` target speed
+The public battle card is now `+0.3178%` over target / `99.6884%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4529%`.
+raw signed optimization rollup is `-0.4493%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.08`
 public over-target points and added about `12.59` public target-speed points.
@@ -315,9 +315,9 @@ Milestone releases:
   read group plus the BUILDING6 scene-local slack4 guard, WALKSTUF1 high
   `344..360`, `422..434`, and `444..456`, WALKSTUF1 low staged-prepare
   scheduler fallback, and VISITOR3 low tail pack-only compaction. The public
-  battle card is `+0.3141%` / `99.6920%`; BUILDING2 high is `1351/1313`, and
-  WALKSTUF1 high stays `1480/1432` with loop reads `65` and loop-read time
-  `284`.
+  battle card is `+0.3178%` / `99.6884%`; BUILDING2 high is `1351/1313`,
+  WALKSTUF1 high stays `1480/1432` with loop reads `65`, and VISITOR5 high is
+  refreshed at `1107/1090`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

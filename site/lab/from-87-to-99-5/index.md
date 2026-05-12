@@ -43,7 +43,7 @@ staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
 pack-only CD-pressure compaction, the BUILDING6 scene-local slack4 guard, and
 the BUILDING2 high `226..242` retained-read group. The current
 public-capped average is
-**+0.3141% over target / 99.6920% target speed**, with roughly **17.08
+**+0.3178% over target / 99.6884% target speed**, with roughly **17.08
 percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

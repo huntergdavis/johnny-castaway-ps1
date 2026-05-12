@@ -193,10 +193,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3141%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6920%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T13:14:33` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-rg444-456-v384`, `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3178%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6884%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T15:53:59` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor5-high-current-v401`, `walkstuf1-high-rg444-456-v384`, `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -250,7 +250,7 @@ and this page.
   `building6-window-slack4-v364`,
   `walkstuf3-high-compact-fgp3-v163`,
   `building2-low-restore-window-slack4-v160`,
-  `visitor5-high-compact-fgp3-noautoprime-v158`,
+  `visitor5-high-current-v401`,
   `building1-compact-fgp3-noautoprime-v157`,
   `mary3-preserve-window-slack8-v149`,
   `missing-scenes-current-v001`,
@@ -1959,15 +1959,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor5-high"><code>visitor5</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T13:01:12</td>
-      <td>visitor5-high-compact-fgp3-noautoprime-v158</td>
-      <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
-      <td>1104/1092</td>
-      <td>11</td>
-      <td>11</td>
+      <td>2026-05-12T15:53:59</td>
+      <td>visitor5-high-current-v401</td>
+      <td>+1.6%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>1107/1090</td>
+      <td>16</td>
+      <td>16</td>
       <td>0</td>
-      <td>padded compact FGP3/v4 high pack with VISITOR5 auto-prime disabled; paired low compact rejected</td>
+      <td>current-layout refresh after later EXE bucket/layout changes; compact FGP3 high pack with VISITOR5 auto-prime disabled remains accepted</td>
     </tr>
     <tr id="perf-visitor5-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor5-low"><code>visitor5</code></a></td>

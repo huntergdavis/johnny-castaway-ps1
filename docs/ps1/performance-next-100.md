@@ -48,10 +48,11 @@ v347 BUILDING2 high `249..257` read-group pressure reduction, the v354
 JOHNNY6 compact-FGP3 metadata/restore-minus-current promotion, the v364
 BUILDING6 scene-local slack4 window-refill guard, the v379 BUILDING2 high
 `226..242` read-group promotion, and the v383/v384 WALKSTUF1 high
-`422..434` / `444..456` same-speed CD-work reductions:
-`+0.3141%` public average over target / `99.6920%` public target speed across
+`422..434` / `444..456` same-speed CD-work reductions, plus the v401
+VISITOR5 high current-layout refresh:
+`+0.3178%` public average over target / `99.6884%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4529%`. Since the compact full-matrix baseline was about
+`-0.4493%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.08` public over-target points and added about `12.59`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
@@ -205,6 +206,15 @@ read group after a v371 rerun confirmed the public row is current. It stayed
 exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
 `25`, due `0`) while adding code shape. Do not continue VISITOR5 low hand
 tables unless generated ownership changes the scheduling model.
+
+Latest rejected VISITOR5 high scalar group and baseline refresh: v401 reran the
+accepted current-layout high row at `1107/1090`, overrun `17`,
+blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
+top `99..111` group. The group saved one read but regressed timing to
+`1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
+VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
+target / `99.6884%` target speed. Close direct VISITOR5 high hand tables
+unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected JOHNNY1 scalar group: v373 added shared `131..147` after both
 tides ranked it as their top low-risk grouped-window candidate. High stayed
