@@ -86,6 +86,16 @@ VISITOR3 high still hits the known missing-`JCPERF2` measurement defect. This
 moves BUILDING6 high/low into green and sets the current rollup to `+0.3159%`
 / `99.6903%` public and `-0.4511%` / `100.4726%` raw signed.
 
+Latest rejected WALKSTUF1 low setup-owned cluster: the current read-plan's top
+`291..307` signal was tested as reusable setup residency in v365 instead of an
+active-loop read group. It reduced loop `1484 -> 1479`, overrun `53 -> 50`,
+hidden refill `22 -> 21`, and loop reads `67 -> 65`, but the setup/CD phase
+made visible blocking worse (`72 -> 92`), raised due misses (`12 -> 16`),
+lowered target (`1431 -> 1429`), and regressed scene time (`1776 -> 1783`).
+Close additive setup segments around this cluster; the low row now needs
+phase-preserving pack shrink/relocation or generated deadline ownership, not
+another fixed setup read.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
