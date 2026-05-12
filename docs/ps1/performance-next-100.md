@@ -128,6 +128,12 @@ due `7`) while only shifting hot-symbol addresses by `+32` bytes. Close this
 early scalar row; BUILDING2 high now needs generated ownership or data-shape
 work rather than more hand table rows.
 
+Latest rejected BUILDING2 high direct-stage ownership probe: v370 kept
+`17..33` and denied exact-min direct-stage only for BUILDING2 high sector
+`17`. It was still exact-flat on all key metrics while growing
+`foregroundPilotPlay` by `64` bytes. Close hand-coded sector exceptions; the
+next BUILDING2 high work should be generated metadata or pack/data-shape work.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
