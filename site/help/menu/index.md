@@ -22,7 +22,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/pause-main.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen. The top-level dispatch screen: resume, open Scene Set Options or Scene Explorer (both new in v0.8.4-ps1), enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System." fetchpriority="high" />
+    <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Pause Menu screen. The top-level dispatch screen: resume, open Scene Set Options or Scene Explorer (both new in v0.8.4-ps1), enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System." fetchpriority="high" />
   </picture>
   <figcaption>Marker frame 3036, captured frame 3040, delta 4.</figcaption>
 </figure>
@@ -36,7 +36,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/scene-set.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/scene-set.png' | relative_url }}" alt="Captured PS1 screenshot of the Scene Set Options screen. Scene-pool selector and picker policy in one place: pick a Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits, Visitors, Activities, or Misc & Suzy) and choose Random / Sequential / Original Sierra dispatch." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/scene-set.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Scene Set Options screen. Scene-pool selector and picker policy in one place: pick a Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits, Visitors, Activities, or Misc & Suzy) and choose Random / Sequential / Original Sierra dispatch." loading="lazy" />
   </picture>
   <figcaption>Marker frame 3564, captured frame 3565, delta 1.</figcaption>
 </figure>
@@ -50,7 +50,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/scene-explorer.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/scene-explorer.png' | relative_url }}" alt="Captured PS1 screenshot of the Scene Explorer screen. The chapter-select grid. Each entry shows a captured-on-PS1 thumbnail, scene title, family, frame count, and pack name, with LEFT/RIGHT to step one scene and L1/R1 to step one family." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/scene-explorer.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Scene Explorer screen. The chapter-select grid. Each entry shows a captured-on-PS1 thumbnail, scene title, family, frame count, and pack name, with LEFT/RIGHT to step one scene and L1/R1 to step one family." loading="lazy" />
   </picture>
   <figcaption>Marker frame 4142, captured frame 4145, delta 3.</figcaption>
 </figure>
@@ -64,7 +64,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/freeplay-options.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/freeplay-options.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Options screen. The Freeplay debug entry page: gag catalog, visitor catalog, controls, and the clear-screen rebuild action." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/freeplay-options.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Freeplay Options screen. The Freeplay debug entry page: gag catalog, visitor catalog, controls, and the clear-screen rebuild action." loading="lazy" />
   </picture>
   <figcaption>Marker frame 4740, captured frame 4740, delta 0.</figcaption>
 </figure>
@@ -78,7 +78,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/freeplay-gags.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/freeplay-gags.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Gags screen. Selector for direct Johnny actions. Each entry shows the source bitmap, frame count, rough RAM cost, and a one-line behavior note." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/freeplay-gags.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Freeplay Gags screen. Selector for direct Johnny actions. Each entry shows the source bitmap, frame count, rough RAM cost, and a one-line behavior note." loading="lazy" />
   </picture>
   <figcaption>Marker frame 5248, captured frame 5250, delta 2.</figcaption>
 </figure>
@@ -92,7 +92,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/freeplay-visitors.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/freeplay-visitors.png' | relative_url }}" alt="Captured PS1 screenshot of the Freeplay Visitors screen. Selector for external events and visitors, with the same asset metadata as the gag catalog." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/freeplay-visitors.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Freeplay Visitors screen. Selector for external events and visitors, with the same asset metadata as the gag catalog." loading="lazy" />
   </picture>
   <figcaption>Marker frame 5826, captured frame 5830, delta 4.</figcaption>
 </figure>
@@ -106,7 +106,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/controls.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/controls.png' | relative_url }}" alt="Captured PS1 screenshot of the Controls screen. The on-disc reminder for Freeplay controls: walking, speed modifiers, fishing, clear screen, world toggles, and pause." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/controls.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Controls screen. The on-disc reminder for Freeplay controls: walking, speed modifiers, fishing, clear screen, world toggles, and pause." loading="lazy" />
   </picture>
   <figcaption>Marker frame 6404, captured frame 6405, delta 1.</figcaption>
 </figure>
@@ -120,7 +120,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/world-options.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/world-options.png' | relative_url }}" alt="Captured PS1 screenshot of the World Options screen. Visual state controls: day or night, tide, raft stage, holiday selector, island-position editor, and Back." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/world-options.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the World Options screen. Visual state controls: day or night, tide, raft stage, holiday selector, island-position editor, and Back." loading="lazy" />
   </picture>
   <figcaption>Marker frame 7032, captured frame 7035, delta 3.</figcaption>
 </figure>
@@ -134,7 +134,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/holidays.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/holidays.png' | relative_url }}" alt="Captured PS1 screenshot of the Holidays screen. Holiday mode and forced holiday selection: Auto Date, None, Original 4, or Expanded calendar." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/holidays.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Holidays screen. Holiday mode and forced holiday selection: Auto Date, None, Original 4, or Expanded calendar." loading="lazy" />
   </picture>
   <figcaption>Marker frame 7600, captured frame 7600, delta 0.</figcaption>
 </figure>
@@ -148,7 +148,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/island-position.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/island-position.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Island Position screen. Manual X/Y offset editor for the island anchor, plus an Auto/Manual mode toggle." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/island-position.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Set Island Position screen. Manual X/Y offset editor for the island anchor, plus an Auto/Manual mode toggle." loading="lazy" />
   </picture>
   <figcaption>Marker frame 8178, captured frame 8180, delta 2.</figcaption>
 </figure>
@@ -162,7 +162,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/accessibility.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/accessibility.png' | relative_url }}" alt="Captured PS1 screenshot of the Accessibility screen. Captions, sound, footsteps, Sound Test, and Back." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/accessibility.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Accessibility screen. Captions, sound, footsteps, Sound Test, and Back." loading="lazy" />
   </picture>
   <figcaption>Marker frame 8806, captured frame 8810, delta 4.</figcaption>
 </figure>
@@ -176,7 +176,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/sound-test.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/sound-test.png' | relative_url }}" alt="Captured PS1 screenshot of the Sound Test screen. A selector for individual SPU sound effects: choose an effect, see whether it is present, and play it on demand." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/sound-test.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Sound Test screen. A selector for individual SPU sound effects: choose an effect, see whether it is present, and play it on demand." loading="lazy" />
   </picture>
   <figcaption>Marker frame 9374, captured frame 9375, delta 1.</figcaption>
 </figure>
@@ -190,7 +190,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/system.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/system.png' | relative_url }}" alt="Captured PS1 screenshot of the System screen. Save settings, set time/date, set RNG seed, cycle perf logging, reset current scene, or advance to the next scene." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/system.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the System screen. Save settings, set time/date, set RNG seed, cycle perf logging, reset current scene, or advance to the next scene." loading="lazy" />
   </picture>
   <figcaption>Marker frame 10002, captured frame 10005, delta 3.</figcaption>
 </figure>
@@ -204,7 +204,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/set-time-date.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/set-time-date.png' | relative_url }}" alt="Captured PS1 screenshot of the Set Time And Date screen. Software clock editor. The date drives holiday lookup and lets testers jump directly to seasonal overlays." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/set-time-date.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Set Time And Date screen. Software clock editor. The date drives holiday lookup and lets testers jump directly to seasonal overlays." loading="lazy" />
   </picture>
   <figcaption>Marker frame 10530, captured frame 10530, delta 0.</figcaption>
 </figure>
@@ -218,7 +218,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <figure>
   <picture>
     <source type="image/webp" srcset="{{ '/assets/img/help/menu/set-rng-seed.webp' | relative_url }}" />
-    <img src="{{ '/assets/img/help/menu/set-rng-seed.png' | relative_url }}" alt="Captured PS1 screenshot of the Set RNG Seed screen. Deterministic random-seed editor for repeatable visual tests and bug reports." loading="lazy" />
+    <img src="{{ '/assets/img/help/menu/set-rng-seed.png' | relative_url }}" width="640" height="448" alt="Captured PS1 screenshot of the Set RNG Seed screen. Deterministic random-seed editor for repeatable visual tests and bug reports." loading="lazy" />
   </picture>
   <figcaption>Marker frame 11108, captured frame 11110, delta 2.</figcaption>
 </figure>
