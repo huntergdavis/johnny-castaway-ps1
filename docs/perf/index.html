@@ -202,8 +202,9 @@ linked in the Rollup section.</p>
 </p>
 
 <p>No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
-BUILDING2 restore-minus-current pack passes, the BUILDING2 high <code class="language-plaintext highlighter-rouge">60..72</code>
-and low <code class="language-plaintext highlighter-rouge">365..381</code> grouped-read passes, the VISITOR3 low scoped
+BUILDING2 restore-minus-current pack passes, the BUILDING2 high <code class="language-plaintext highlighter-rouge">60..72</code>,
+<code class="language-plaintext highlighter-rouge">249..257</code>, and <code class="language-plaintext highlighter-rouge">226..242</code> grouped-read passes plus the low <code class="language-plaintext highlighter-rouge">365..381</code>
+pass, the VISITOR3 low scoped
 composite-helper pass, the WALKSTUF1 compact FGP3/v4 restore-minus-current
 pass, the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups, the
 BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
@@ -229,7 +230,8 @@ and low <code class="language-plaintext highlighter-rouge">1072/1040</code> afte
 keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (<code class="language-plaintext highlighter-rouge">96.8%</code> / <code class="language-plaintext highlighter-rouge">96.4%</code>), VISITOR3 high/low
-(<code class="language-plaintext highlighter-rouge">97.1%</code> / <code class="language-plaintext highlighter-rouge">97.0%</code>), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
+(<code class="language-plaintext highlighter-rouge">97.1%</code> / <code class="language-plaintext highlighter-rouge">97.0%</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">97.2%</code> / <code class="language-plaintext highlighter-rouge">97.7%</code>),
+VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
 work. JOHNNY6 high/low moved into green after the compact-FGP3 metadata plus
@@ -306,19 +308,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.3159%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.3141%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.6903%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.6920%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-12T09:15:23</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-12T11:59:49</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; newest optimized/code-headroom rows use <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>, <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-prepare-before-window-v331</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg213-229-slack4-v316</code>, <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>, <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>, <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>, <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>, <code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>, <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>, <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized/code-headroom rows use <code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>, <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>, <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-prepare-before-window-v331</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg213-229-slack4-v316</code>, <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>, <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>, <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>, <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>, <code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>, <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>, <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -361,7 +363,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-prepare-before-window-v331</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-prepare-before-window-v331</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-swap-f128-f129-v327</code>,
@@ -800,15 +803,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-11T20:56:51</td>
-      <td>walkstuf1-high-rg213-229-slack4-v316</td>
-      <td>+3.1%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1352/1311</td>
-      <td>56</td>
-      <td>20</td>
+      <td>2026-05-12T11:59:49</td>
+      <td>building2-high-rg226-242-v379</td>
+      <td>+2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1351/1313</td>
+      <td>50</td>
+      <td>17</td>
       <td>7</td>
-      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
+      <td>retained read group adds 226..242 between accepted 60..72 and 249..257; scene 1603-&gt;1602 loop 1352-&gt;1351 target 1311-&gt;1313 overrun 41-&gt;38 blocking 55-&gt;50 hidden refill 19-&gt;17 loop_read_vb 262-&gt;254; selected controls flat</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>

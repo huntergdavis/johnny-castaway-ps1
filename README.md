@@ -44,12 +44,12 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.7-ps1`** — deterministic BOOTMODE scene selection + Scene Explorer preview stability |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3159% over target / 99.6903% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3141% over target / 99.6920% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
 
-- `main` after `v0.8.7-ps1` — BUILDING6 scene-local slack4 window-refill guard on top of the JOHNNY6 compact-FGP3 metadata plus restore-minus-current promotion, BUILDING2 high `249..257`, WALKSTUF1 high `344..360`, VISITOR3 low tail pack compaction, and the WALKSTUF1 low staged-prepare fallback. Public rollup is now `+0.3159%` over target / `99.6903%` target speed; BUILDING6 high/low move from fresh current `2479/2453` and `2482/2456` to `2471/2456` and `2474/2455`, with both tides now green.
+- `main` after `v0.8.7-ps1` — BUILDING2 high now keeps retained read groups `60..72`, `226..242`, and `249..257` on top of the BUILDING6 scene-local slack4 guard, JOHNNY6 compact-FGP3 metadata plus restore-minus-current promotion, WALKSTUF1 high `344..360`, VISITOR3 low tail pack compaction, and the WALKSTUF1 low staged-prepare fallback. Public rollup is now `+0.3141%` over target / `99.6920%` target speed; BUILDING2 high moves to `1351/1313`, overrun `38`, blocking `50`, and loop-read time `254`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection, expected-scene gates in the headless perf harness, Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail streaming. Public rollup remains `+0.3156%` over target / `99.6902%` target speed.
 - `v0.8.6-ps1` — WALKSTUF1 low gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch / slack4 guard, and VISITOR3 high/low setup-segment resident copies for frames `131` / `128`. Public rollup `+0.3157%` over target / `99.6902%` target speed.
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline.

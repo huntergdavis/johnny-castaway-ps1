@@ -119,8 +119,9 @@ linked in the Rollup section.</p>
 </p>
 
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
-BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`
-and low `365..381` grouped-read passes, the VISITOR3 low scoped
+BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`,
+`249..257`, and `226..242` grouped-read passes plus the low `365..381`
+pass, the VISITOR3 low scoped
 composite-helper pass, the WALKSTUF1 compact FGP3/v4 restore-minus-current
 pass, the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups, the
 BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
@@ -146,7 +147,8 @@ and low `1072/1040` after the latest same-layout canary refresh; both paths
 keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`96.8%` / `96.4%`), VISITOR3 high/low
-(`97.1%` / `97.0%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
+(`97.1%` / `97.0%`), BUILDING2 high/low (`97.2%` / `97.7%`),
+VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
 work. JOHNNY6 high/low moved into green after the compact-FGP3 metadata plus
@@ -191,10 +193,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3159%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6903%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T09:15:23` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3141%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6920%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T11:59:49` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -230,7 +232,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-prepare-before-window-v331`,
+  refreshed rows use `building2-high-rg226-242-v379`,
+  `walkstuf1-low-prepare-before-window-v331`,
   `walkstuf1-high-rg344-360-v340`,
   `visitor3-low-tail-pack-only-v338`,
   `visitor3-low-swap-f128-f129-v327`,
@@ -668,15 +671,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-11T20:56:51</td>
-      <td>walkstuf1-high-rg213-229-slack4-v316</td>
-      <td>+3.1%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1352/1311</td>
-      <td>56</td>
-      <td>20</td>
+      <td>2026-05-12T11:59:49</td>
+      <td>building2-high-rg226-242-v379</td>
+      <td>+2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1351/1313</td>
+      <td>50</td>
+      <td>17</td>
       <td>7</td>
-      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
+      <td>retained read group adds 226..242 between accepted 60..72 and 249..257; scene 1603->1602 loop 1352->1351 target 1311->1313 overrun 41->38 blocking 55->50 hidden refill 19->17 loop_read_vb 262->254; selected controls flat</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>

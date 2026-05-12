@@ -39,11 +39,12 @@ setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and the current mainline adds
 the WALKSTUF1 high `213..229` and `344..360` read-group promotions, the
 VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
-staged-prepare-before-window scheduler fallback, and the VISITOR3 low
-tail pack-only CD-pressure compaction. The current
+staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
+pack-only CD-pressure compaction, the BUILDING6 scene-local slack4 guard, and
+the BUILDING2 high `226..242` retained-read group. The current
 public-capped average is
-**+0.3250% over target / 99.6814% target speed**, with roughly **17.07
-percentage points** of over-target gap closed and about **12.58 target-speed
+**+0.3141% over target / 99.6920% target speed**, with roughly **17.08
+percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -134,9 +135,9 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of `{{ site.release.tag }}` there are no red or yellow rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `111` rows are green and `15`
-remain orange. The current under-99 focus set is WALKSTUF1 high/low,
+As of the current mainline there are no orange or red rows left on the
+[battle card]({{ '/perf/' | relative_url }}): `115` rows are green and `11`
+remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
 VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
