@@ -184,6 +184,14 @@ not blocked by that local priority inversion. Close BUILDING2 low
 prepare-before-window; future low work needs generated refill ownership,
 pack-side byte/cleanup reduction, or selective preprocessing.
 
+Latest rejected runtime-shape probe: v389 cached hot scene-policy bits at
+runtime start and replaced repeated scene-name checks in the scheduler/window
+helpers. BUILDING2 low, VISITOR3 low, and WALKSTUF1 low were exact-flat;
+VISITOR3 high hit missing `JCPERF2` under the shifted layout; and the source
+did not create code-size or work-volume savings. Close manual cached policy
+flags as a speed lane. Keep policy bits only if they are generated with a
+larger scheduler-ownership table.
+
 Latest rejected VISITOR5 low scalar group: v372 added the low-tide `9..25`
 read group after a v371 rerun confirmed the public row is current. It stayed
 exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
