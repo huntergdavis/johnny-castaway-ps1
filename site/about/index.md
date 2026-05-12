@@ -176,3 +176,34 @@ The repository is at
 inherited from upstream
 [jno6809/jc_reborn](https://github.com/jno6809/jc_reborn) -- without
 that engine decode this port would not exist.
+
+## Pointing at this work
+
+If you're linking this project from a blog post, a paper, a retro-dev
+podcast's notes file, or anywhere a stable reference is more useful
+than a bare URL — here's the canonical format. The version pin
+matters; this is an active project and behavior changes between
+releases.
+
+**One-line web reference:**
+
+> Hunter Davis. *Johnny Castaway PS1*. `{{ site.release.tag }}`. <https://hunterdavis.com{{ site.canonical_baseurl }}/>
+
+**BibTeX:**
+
+```bibtex
+@misc{johnny-castaway-ps1,
+  author       = {Hunter Davis},
+  title        = {Johnny Castaway {PS1}: A fan port of Sierra's 1992 screensaver to the original PlayStation},
+  year         = {2026},
+  version      = "{{ site.release.tag }}",
+  howpublished = {\url{https://hunterdavis.com{{ site.canonical_baseurl }}/}},
+  note         = {Open source under GPL-3.0; code repository at \url{ {{- site.github_url -}} }}
+}
+```
+
+The version field tracks the current release tag, not the project's
+start date. For citing a specific release tagged in the past, swap
+in that tag (`v0.7.0-ps1`, `v0.8.1-ps1`, etc.) and adjust the year
+to match — the [release notes index]({{ '/releases/' | relative_url }})
+carries the dated headlines.
