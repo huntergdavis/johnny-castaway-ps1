@@ -1,0 +1,27 @@
+---
+permalink: /robots.txt
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Hand-rolled robots.txt. The site has no jekyll-sitemap plugin (its
+  default output would emit URLs without the `/johnny-castaway-ps1`
+  project prefix because the build runs `jekyll build --baseurl ""`),
+  so the sitemap is hand-rolled at /sitemap.xml and crawlers need a
+  separate pointer to it.
+
+  Permissive by default — every page on the site is public, the
+  noindex pages (auto-generated /source/, /resources/, /archaeology/regtest-references/cases/
+  wrappers) opt out via robots meta tag in the head template rather
+  than through a Disallow block here. That keeps crawl behaviour
+  consistent across crawlers that ignore robots.txt comments and
+  ones that don't.
+
+  Absolute URL via canonical_baseurl so the Sitemap directive survives
+  the build's path-portable `--baseurl ""` override, same pattern as
+  /sitemap.xml and the head template's canonical/og:url emitters.
+{%- endcomment -%}
+User-agent: *
+Allow: /
+
+Sitemap: {{ site.url }}{{ site.canonical_baseurl }}/sitemap.xml
