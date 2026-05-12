@@ -277,6 +277,13 @@ The issue tracker is at [{{ site.repo }}/issues]({{ site.github_url }}/issues).
 Bugs are tolerated, not invited — there's no contributor onboarding,
 just one author and a tip jar that doesn't exist. See the [FAQ]({{ '/faq/' | relative_url }}).
 
+For security-relevant reports (build/release supply-chain concerns,
+the published `.bin` / `.cue` disc image being mishandled by a
+download mirror), prefer the
+[GitHub Security Advisories]({{ site.github_url }}/security/advisories/new)
+channel named in
+[`/.well-known/security.txt`]({{ '/.well-known/security.txt' | relative_url }}).
+
 ## Related pages
 
 - [FAQ]({{ '/faq/' | relative_url }}) — author-written answers to
