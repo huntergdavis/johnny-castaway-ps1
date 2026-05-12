@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing4-ps1-shark.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing4-ps1-shark.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing4-ps1-shark.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="FISHING 4 on PS1 at night: a shark fin cuts the water on the right edge of the frame, a fishing line connecting it to Johnny standing under the palm tree on the island." />
+  </picture>
   <figcaption>
     FISHING 4 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

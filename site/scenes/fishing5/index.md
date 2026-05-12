@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing5-ps1-shark-bite.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing5-ps1-shark-bite.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing5-ps1-shark-bite.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="FISHING 5 on PS1 at night: a large grinning shark sits on the right side of the island mid-bite, with what is left of Johnny's gear in its jaws." />
+  </picture>
   <figcaption>
     FISHING 5 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

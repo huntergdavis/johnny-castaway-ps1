@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity11-ps1-bird-clothes-thief.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity11-ps1-bird-clothes-thief.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity11-ps1-bird-clothes-thief.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 11 on PS1 at night: a bird perches in the palm leaves holding Johnny's clothes while a naked Johnny stands in the water at the lower-left of the island." />
+  </picture>
   <figcaption>
     ACTIVITY 11 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

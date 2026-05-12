@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand9-ps1-tree-pants.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand9-ps1-tree-pants.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand9-ps1-tree-pants.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 9 on PS1 at night: Johnny stands right next to the palm tree, looking around in the pants-adjust idle pose." />
+  </picture>
   <figcaption>
     STAND 9 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity5-ps1-rain-dance.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity5-ps1-rain-dance.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity5-ps1-rain-dance.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 5 on PS1 at night: Johnny in costume mid-rain-dance with a storm-cloud thought bubble hovering over the palm tree." />
+  </picture>
   <figcaption>
     ACTIVITY 5 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

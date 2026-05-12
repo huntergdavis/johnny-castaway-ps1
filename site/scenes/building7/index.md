@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/building7-ps1-grill-fish.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/building7-ps1-grill-fish.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/building7-ps1-grill-fish.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="BUILDING 7 on PS1 at night: Johnny crouches next to a small fire on the left shoreline, mid-grill of a caught fish." />
+  </picture>
   <figcaption>
     BUILDING 7 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

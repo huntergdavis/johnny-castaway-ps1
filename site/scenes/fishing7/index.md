@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing7-ps1-starfish-right.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing7-ps1-starfish-right.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing7-ps1-starfish-right.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="FISHING 7 on PS1 at night: Johnny stands on the right side of the island holding a fishing rod, a starfish visible on the raft/dock next to him." />
+  </picture>
   <figcaption>
     FISHING 7 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

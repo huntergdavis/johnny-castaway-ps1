@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/visitor5-ps1-plane.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/visitor5-ps1-plane.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/visitor5-ps1-plane.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="VISITOR 5 on PS1 at night: a small biplane approaches from the upper-right while Johnny stands under the palm tree on his raft." />
+  </picture>
   <figcaption>
     VISITOR 5 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

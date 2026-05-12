@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity12-ps1-bird-on-head.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity12-ps1-bird-on-head.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity12-ps1-bird-on-head.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 12 on PS1 at night: Johnny stands under the palm tree with a white bird perched on top of his head, raising a red club." />
+  </picture>
   <figcaption>
     ACTIVITY 12 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

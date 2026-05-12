@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity8-ps1-bath.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity8-ps1-bath.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity8-ps1-bath.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 8 on PS1 at night: Johnny stands at the shoreline on the left side of the island, mid-bath in the surf." />
+  </picture>
   <figcaption>
     ACTIVITY 8 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

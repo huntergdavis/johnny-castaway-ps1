@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand1-ps1-edge-stand.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand1-ps1-edge-stand.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand1-ps1-edge-stand.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 1 on PS1 at night: Johnny stands at the leftmost edge of the island in an idle pose, a short subtle stand-loop scene." />
+  </picture>
   <figcaption>
     STAND 1 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

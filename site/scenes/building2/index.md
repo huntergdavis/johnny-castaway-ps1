@@ -13,9 +13,12 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/building2-ps1-airport.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/building2-ps1-airport.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/building2-ps1-airport.png' | relative_url }}"
        width="961" height="720" fetchpriority="high" decoding="async"
        alt="BUILDING 2 running on PS1: Johnny's sandcastle has been taken over by tiny lilliputians who are launching airplanes from it. The castle has a small red flag at its peak." />
+  </picture>
   <figcaption>BUILDING 2 on PS1 hardware. The sandcastle Johnny built has been turned into a lilliputian airport — tiny figures and planes against the persistent castle base. The dense per-frame foreground state is also why this scene's two perf-battle-card rows sit in the
   <a href="{{ '/perf/' | relative_url }}">yellow cluster</a> on /perf/ — clean-rect-heavy frames are the structural cost of the gag.</figcaption>
 </figure>

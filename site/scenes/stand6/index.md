@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand6-ps1-head-scratch.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand6-ps1-head-scratch.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand6-ps1-head-scratch.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 6 on PS1 at night: Johnny stands at the front of the island under the palm tree looking out over the moonlit ocean and scratching his head." />
+  </picture>
   <figcaption>
     STAND 6 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

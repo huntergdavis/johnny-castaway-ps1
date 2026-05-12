@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity10-ps1-seagull-steals-book.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity10-ps1-seagull-steals-book.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity10-ps1-seagull-steals-book.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 10 on PS1 at night: Johnny stands under the palm tree while a seagull flies away upper-right with the stolen book." />
+  </picture>
   <figcaption>
     ACTIVITY 10 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/mary3-ps1-mermaid-shore.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/mary3-ps1-mermaid-shore.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/mary3-ps1-mermaid-shore.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="MARY 3 on PS1 at night: Johnny stands at the center of the island under the palm tree, Mary the mermaid surfacing in the water at the lower-left shoreline." />
+  </picture>
   <figcaption>
     MARY 3 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

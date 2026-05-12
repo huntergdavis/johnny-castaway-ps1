@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/building3-ps1-nap.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/building3-ps1-nap.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/building3-ps1-nap.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="BUILDING 3 on PS1 at night: Johnny lies on the sand under the palm tree with a column of Z's rising up the palm's trunk." />
+  </picture>
   <figcaption>
     BUILDING 3 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.
