@@ -128,6 +128,15 @@
   }
 }
 
+/* ---------- View transitions ----------
+ * Chrome 126+ and Safari 18+ honor `@view-transition { navigation: auto }`
+ * to crossfade between same-origin documents on navigation. The default
+ * transition is a gentle opacity blend — visible polish on every internal
+ * link click without per-page authoring. Browsers without support ignore
+ * the at-rule entirely. Disabled below under prefers-reduced-motion so the
+ * crossfade doesn't fire for users who opt out of motion. */
+@view-transition { navigation: auto; }
+
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -1175,6 +1184,10 @@ dt:target {
   html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
   .btn:hover { transform: none; }
+  /* Suppress the cross-document crossfade for users who opt out of
+   * motion. Supported in the same browser cohort that ships
+   * @view-transition itself. */
+  @view-transition { navigation: none; }
 }
 
 /* ---------- Print ----------
