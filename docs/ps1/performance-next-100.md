@@ -2512,6 +2512,8 @@ pre-v0.8.0 row.
 | Runtime dirty/upload heuristics | Pack-emitted masks or upload plans replace hot runtime checks. |
 | Hard-coded read groups | Append-start trace or generated group metadata proves the group can fire; sectors `106..117` and `384..396` were exact no-ops even with extra retained capacity. |
 | JOHNNY1 current-fit read groups | Do not retry `131..147`, `145..161`, or `138..154` as local hand tables. The v177 probes stayed exact-flat on both tides with `group_hits=0`; retry only with generated append ownership, larger retained windows, or a different data shape. |
+| JOHNNY1 combined late read groups | Do not retry the paired `131..147` + `145..161` table as a scene-specific hand-authored source branch. The v391 current-baseline retest kept both tides exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`, loop reads `7`, and due misses `0`, while growing/shifting foreground hot code. A useful JOHNNY1 scheduler win now needs generated deadline ownership or a materially different retained-window design. |
+| JOHNNY1 zero-tail FGP3 compaction | Do not promote as part of the under-99 speed loop. The v392 pack-only compaction safely trims `129450` trailing zero bytes from each JOHNNY1 pack, but timing remains exact-flat and low-tide LBA shifts `14202 -> 14139`. Keep it as a possible future whole-disc footprint cleanup, not as a scene-speed baseline. |
 | Upload coordinate static tables | Do not retry; static tables grew `grDrawBackground` and did not move timing. |
 | Async CD | Async state ownership and polling metrics exist in a trace build. |
 | `Setloc` skipping | Full frame hashes and work-identity gates prove every frame rendered. |
