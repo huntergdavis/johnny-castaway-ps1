@@ -179,7 +179,7 @@ afterward, until the next clean palette upload. The fix is to gate every
 `LoadImage` call against the known CLUT rectangle and to keep palette
 uploads aligned to 16-pixel boundaries.
 
-### TTY printf is the only debug surface, and it's a sharp tool
+### [TTY]({{ '/docs/glossary/#tty' | relative_url }}) printf is the only debug surface, and it's a sharp tool
 
 DuckStation's TTY logging works reliably as of 2026-04-25 — the project can
 print from anywhere in the runtime and capture the output to a host log

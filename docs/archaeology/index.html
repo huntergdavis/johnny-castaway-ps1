@@ -296,7 +296,7 @@ roughly, everything went wrong:</p>
 
   <ul>
     <li>
-      <p><strong>TTY logging corrupted the runtime.</strong> The host port leans heavily
+      <p><strong><a href="../docs/glossary/#tty">TTY</a> logging corrupted the runtime.</strong> The host port leans heavily
 on <code class="language-plaintext highlighter-rouge">printf</code> and <code class="language-plaintext highlighter-rouge">vprintf</code> for tracing. On the PS1 those calls,
 routed through DuckStation’s TTY surface, were not safe in their
 unbounded form. Long scene playback would destabilize. The interim

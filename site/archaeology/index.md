@@ -188,7 +188,7 @@ the existing ADS/TTM/RES interpreters run on the [MIPS]({{ '/docs/glossary/#mips
 build came up. Resources loaded from the CD. Scenes ran. And then,
 roughly, everything went wrong:
 
-- **TTY logging corrupted the runtime.** The host port leans heavily
+- **[TTY]({{ '/docs/glossary/#tty' | relative_url }}) logging corrupted the runtime.** The host port leans heavily
   on `printf` and `vprintf` for tracing. On the PS1 those calls,
   routed through DuckStation's TTY surface, were not safe in their
   unbounded form. Long scene playback would destabilize. The interim
