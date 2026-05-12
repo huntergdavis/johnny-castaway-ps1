@@ -96,6 +96,15 @@ Close additive setup segments around this cluster; the low row now needs
 phase-preserving pack shrink/relocation or generated deadline ownership, not
 another fixed setup read.
 
+Latest rejected WALKSTUF1 low pack-transform retry: v366 ran the existing
+restore-minus-current transformer on the current low pack. Host-side it only
+saved about `2 KB` of restore work while growing active payload by about
+`1.2 KB`, and the focused gate confirmed the trade is wrong: loop regressed
+`1484 -> 1493`, target fell `1431 -> 1426`, overrun rose `53 -> 67`,
+blocking rose `72 -> 93`, hidden refill rose `22 -> 24`, and reads rose
+`67 -> 69`. Close second-pass restore-minus-current for WALKSTUF1 low as well
+as high.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
