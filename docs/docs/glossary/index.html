@@ -106,7 +106,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~21 min read · 5325 words
+          ~21 min read · 5419 words
         </p>
 
       <hr class="rule" />
@@ -197,6 +197,9 @@
 
 <dt id="rgb555">RGB555</dt>
 <dd>The PS1 GPU's 16-bit direct-color pixel format: 5 bits each for red / green / blue plus 1 bit for semi-transparency (sometimes called <em>STP</em>). Used for true-color textures, full-screen backgrounds, and the framebuffer itself. <a href="#scene-explorer">Scene Explorer</a> thumbnails are 320×240 RGB555 <code>.SCR</code> files loaded straight from the disc; <a href="#fg2-pack">FG2 packs</a> ship sprites in 4-bit <a href="#clut">CLUT-indexed</a> form instead because that's ~4× tighter in <a href="#vram">VRAM</a>. The format is the native cell of every other graphics term in this section.</dd>
+
+<dt id="backdrop">Backdrop</dt>
+<dd>The persistent island + ocean composite that lives behind every scene. Two layers: the static island bitmap (palms, beach, sky, sometimes holiday emblem) plus the live ocean band that animates regardless of foreground state. The runtime never redraws the full backdrop from scratch except on full scene swaps or pause-menu Clear; instead, <a href="#dirty-rect">dirty-rect bookkeeping</a> restores just the spans Johnny + props dirtied last frame. The <em>backdrop-key guard</em> (<code>v0.7.2-ps1</code>) prevents <a href="#story-loop-walks">story-loop walks</a> from running against a stale backdrop after a tide / night / holiday / raft-stage state change in the next scene's load.</dd>
 
 <dt id="dirty-rect">Dirty-rect bookkeeping</dt>
 <dd>Tracking which screen rectangles changed this frame so only those get redrawn from the background, instead of redrawing the whole framebuffer. The PS1 replay engine's dirty-rect path reduces per-frame data movement by 80–95%. Without it, the SPU and the GPU compete for memory bandwidth and audio glitches.</dd>
