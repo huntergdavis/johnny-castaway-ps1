@@ -140,6 +140,12 @@ exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
 `25`, due `0`) while adding code shape. Do not continue VISITOR5 low hand
 tables unless generated ownership changes the scheduling model.
 
+Latest rejected JOHNNY1 scalar group: v373 added shared `131..147` after both
+tides ranked it as their top low-risk grouped-window candidate. High stayed
+exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`, reads
+`7`, and due `0`, while code grew. Skip low and close direct JOHNNY1 grouped
+rows until generated ownership or pack shape changes.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
