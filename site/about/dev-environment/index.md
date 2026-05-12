@@ -11,7 +11,8 @@ image_height: 1086
 
 A photograph of the actual workflow as of `{{ site.release.tag }}`. Click the image for the full-resolution capture.
 
-<a href="{{ '/assets/img/dev-environment-2026-05-06.png' | relative_url }}">
+<a href="{{ '/assets/img/dev-environment-2026-05-06.webp' | relative_url }}"
+   title="Click for full-resolution (3816×2592 lossless WebP, ~4.1 MB; was 8.5 MB PNG)">
   <img src="{{ '/assets/img/dev-environment-2026-05-06-w1600.jpg' | relative_url }}"
        width="1600" height="1086"
        fetchpriority="high"
