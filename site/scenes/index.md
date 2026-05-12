@@ -166,6 +166,22 @@ host-vs-PS1 reference frames where applicable.
     </tr>
   </thead>
   <tbody>
+    {%- comment -%}
+      Two anchor systems coexist on this table:
+      - Per-scene row anchor `id="scene-<slug>"` on every <tr> so any
+        scene row is deep-linkable (e.g. /scenes/#scene-mary4). The
+        :target CSS rule highlights the targeted row; the existing
+        scroll-margin-top: 5rem on tr[id] clears the sticky header.
+      - Family-group anchor `<a id="ads-<family>">` injected into the
+        first cell of each family's first row, kept for the
+        scenes-jump nav and any external `#ads-<family>` refs. It's
+        visually-hidden but reachable as a fragment target. Empty
+        text plus aria-hidden so screen readers walking the row
+        don't double-announce the family name. Pulled out of the
+        previous one-id-per-tr design so both anchor systems can
+        coexist without collision (HTML disallows multiple ids per
+        element).
+    {%- endcomment -%}
     {% assign current_ads = "" %}
     {% for s in sorted_scenes %}
       {% if s.status == "validated"  %}{% assign cls = "ok"      %}{% endif %}
@@ -174,11 +190,12 @@ host-vs-PS1 reference frames where applicable.
       {% if s.status == "blocked"    %}{% assign cls = "blocked" %}{% endif %}
       {% if s.ads != current_ads %}
         {% assign current_ads = s.ads %}
-        <tr id="ads-{{ s.ads | downcase }}">
+        {% assign family_anchor = true %}
       {% else %}
-        <tr>
+        {% assign family_anchor = false %}
       {% endif %}
-        <td class="scene-tag">{{ s.ads }} {{ s.tag }}</td>
+      <tr id="scene-{{ s.slug }}">
+        <td class="scene-tag">{% if family_anchor %}<a id="ads-{{ s.ads | downcase }}" class="visually-hidden" aria-hidden="true"></a>{% endif %}{{ s.ads }} {{ s.tag }}</td>
         <td class="scene-name"><a href="{{ '/scenes/' | append: s.slug | append: '/' | relative_url }}">{{ s.slug }}</a></td>
         <td class="scene-status {{ cls }}">{{ s.status }}</td>
         <td>{% if s.last_verified != "" %}{% if s.last_verified contains '-ps1' %}<code>{{ s.last_verified }}</code>{% else %}<time datetime="{{ s.last_verified }}"><code>{{ s.last_verified }}</code></time>{% endif %}{% else %}—{% endif %}</td>
