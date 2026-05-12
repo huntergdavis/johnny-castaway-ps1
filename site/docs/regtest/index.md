@@ -406,6 +406,12 @@ scripts/check-character-screenshot.py  Overlay-backed character check
   — the magazine treatment of why regression testing isn't a CI
   feature on this project but a way of working. Reciprocal of
   the link from there to here.
+- [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}) —
+  the infrastructure-side companion to *regression as a lifestyle*:
+  the Dockerized PSn00bSDK build, the parallel headless DuckStation
+  runs, the `JCPERF` / `JCPERF2` log parsing, and the rule that every
+  accepted performance change becomes the next baseline. This page is
+  the reference manual for the orchestration the essay walks through.
 
 ## View source on GitHub
 
