@@ -162,18 +162,17 @@ requirement, see [/docs/devices/]({{ '/docs/devices/' | relative_url }}).
 ## Verify your download {#verify}
 
 {%- comment -%}
-  Per-release maintenance: the two SHA-256 values below are pinned
-  to `site.release.tag` (the currently-released .bin and .cue). On
-  every milestone release, recompute via:
+  Per-release maintenance: the two SHA-256 values below come from
+  `site.release.sha256_bin` / `site.release.sha256_cue` in _config.yml.
+  On every milestone release tag bump (release_date / tag / version),
+  recompute via:
 
       curl -sL https://github.com/.../releases/download/<tag>/jcreborn.bin | sha256sum
       curl -sL https://github.com/.../releases/download/<tag>/jcreborn.cue | sha256sum
 
-  and update both rows in the table below. Same release-tag-specific
-  prose update class as the home-page narrative (a653c7703) and the
-  .bin/.cue size sweep (81ae66ca3). Future improvement: have the
-  release script write a sidecar `.sha256` file beside the .bin/.cue
-  artifacts so the table can be derived rather than hand-edited.
+  and update those two fields in _config.yml's release: block.
+  Future improvement: scripts/release.sh writes a sidecar `.sha256`
+  file beside the .bin/.cue artifacts and the build reads from it.
 {%- endcomment -%}
 Optional but recommended if you downloaded the disc image from a mirror
 or anywhere other than the official
@@ -182,8 +181,8 @@ For **`{{ site.release.tag }}`** the SHA-256 hashes are:
 
 | File          | SHA-256                                                            |
 | ------------- | ------------------------------------------------------------------ |
-| `jcreborn.bin` | `315d0c392c9d0cda488568971ab18139d858fe5098c0af6d77a602faa0c19acf` |
-| `jcreborn.cue` | `602fc8c63373be283bf514e25b8088cd090c987e0e626ee480c3f0f9dd5ffbc3` |
+| `jcreborn.bin` | `{{ site.release.sha256_bin }}` |
+| `jcreborn.cue` | `{{ site.release.sha256_cue }}` |
 
 To check your local copies, run:
 
