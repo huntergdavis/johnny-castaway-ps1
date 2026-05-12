@@ -146,6 +146,39 @@ exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`, reads
 `7`, and due `0`, while code grew. Skip low and close direct JOHNNY1 grouped
 rows until generated ownership or pack shape changes.
 
+Post-v373 candidate deck after scalar read-table exhaustion:
+
+| # | Lane | Idea | Why it is different from the misses |
+| --- | --- | --- | --- |
+| 1 | Generated scheduler | Emit per-entry direct-stage-deny bits from the read-plan instead of scene/sector C branches. | Avoids hot-path code growth and can test whole candidate sets without address drift. |
+| 2 | Generated scheduler | Add per-read ownership class: setup-owned, hidden-prefetch-owned, visible-due-owned, or never-group. | Prevents candidates that save reads but steal visible cadence from being emitted. |
+| 3 | Generated scheduler | Generate a compact per-scene append table sorted by actual observed append starts, not sector ranges guessed by hand. | Current hand tables often do not fire even when the planner says fireable. |
+| 4 | Generated scheduler | Add a direct-stage grouped-window mode that is only enabled by generated metadata and only when first-gap slack exceeds a threshold. | Tests the early-cluster problem without permanent scene-specific C checks. |
+| 5 | Generated scheduler | Emit min/max slack bands per group from the trace, not one scalar `minSlackVBlanks`. | Many misses need a middle slack window: enough to group, not enough to starve present. |
+| 6 | Generated scheduler | Add a no-code runtime table blob in the pack metadata tail for read groups. | Lets pack transforms change scheduler behavior without growing `foregroundPilotPlay`. |
+| 7 | Pack shape | Try forward-order duplicate repacking with physical payload copies sorted by playback, then table offsets updated forward-only. | BUILDING2 aliasing failed because backward references caused seek churn. |
+| 8 | Pack shape | For WALKSTUF1, search for resident-slot swaps that keep evicted frames before the old sector, never into padded tail. | v342 proved tail eviction is worse than the removed late read. |
+| 9 | Pack shape | Generate small "payload clone into setup slack" copies for only the exact hot frames, leaving original offsets valid. | Adds bytes in zero tail but avoids moving early-frame locality. |
+| 10 | Pack shape | Add a frame-local dictionary for repeated cleanup row headers in WALKSTUF1 v4 packs. | Existing exact duplicate payload scan found no full-frame duplicates; smaller metadata repetition may still exist. |
+| 11 | Pack shape | Build a WALKSTUF1-specific tail-trim parser that handles the entry-54 payload shape instead of aborting. | Generic trim-draw-tails cannot parse current WALKSTUF1, so one transform family is untested. |
+| 12 | Pack shape | Test PAL4 draw-row delta coding for WALKSTUF1 only, preserving v4 decode path behind a scene flag. | Targets byte pressure without changing cleanup geometry. |
+| 13 | Pack shape | Generate "no-op alias with local forward copy" entries for VISITOR3/WALKSTUF only when source frame remains ahead of current CD head. | Keeps cadence entries while avoiding reverse seeks. |
+| 14 | Pack shape | Repack BUILDING2 high/low by loop order while padding to original file size and keeping pack LBA fixed. | The current logical order is not necessarily CD-optimal after compaction. |
+| 15 | Render data | Emit precomposed upload bands only for frames with background ownership proven by scene/tide/night state. | Raw upload-ready failed because pixels depended on cleanup/background state. |
+| 16 | Render data | Add a sidecar ownership mask for VISITOR3 and WALKSTUF cleanup/background/current pixels. | Converts unsafe upload-ready modeling into a provable pixel source. |
+| 17 | Render data | Compress upload-ready bands with row-RLE plus rect table, budgeted to zero-tail slack. | The budgeted VISITOR3 plan had bytes but no safe pixel source; compression may make safer subsets fit. |
+| 18 | Render data | Precompose only fully opaque sprite interior rows, leaving edges on current residual compositor. | Reduces upload/compose work without needing cleanup/background ownership at boundaries. |
+| 19 | Render data | Add per-frame dirty-rect coalescing metadata generated offline for JOHNNY1 and VISITOR5. | Their CD reads are already low; render/upload work may be the remaining fixed overhead. |
+| 20 | Runtime shape | Split `fgRuntimeTryStageNextFrame()` into cold scene-policy setup and a smaller hot path. | Many exact-flat probes only shift hot code; shrinking the hot path may expose real wins. |
+| 21 | Runtime shape | Move scene-name policy checks into cached bit flags at runtime start. | Avoids adding more `fgSceneEquals()` branches for generated policies. |
+| 22 | Runtime shape | Replace table/count setup branches with a generated scene policy enum. | Keeps new generated ownership from growing the branch cascade. |
+| 23 | Validation | Add a gate failure if baseline labels do not match while `--require-improvement` is set. | Prevents false PASS like the v368 case-label mismatch. |
+| 24 | Validation | Add group-hit/read-delta expectations for read-group probes. | Exact-flat groups should fail immediately as "did not fire" instead of consuming full analysis. |
+| 25 | Validation | Add a stale-row verifier that reruns only matrix rows whose stats version does not match the current source/pack promotion. | Avoids optimizing against stale battle-card entries. |
+| 26 | Validation | Record direct-stage vs window-stage read counts in the candidate matrix. | Distinguishes candidates that need generated direct-stage ownership from append-table rows. |
+| 27 | Validation | Add a hot-symbol drift budget to exploratory source probes by default. | Several misses only shifted addresses; catching that earlier reduces noise. |
+| 28 | Validation | Generate "next best non-scalar lane" recommendations after three same-family misses. | Keeps the headless optimizer from repeatedly trying inert table variants. |
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
