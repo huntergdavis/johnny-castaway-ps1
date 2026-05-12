@@ -175,6 +175,15 @@ Latest rejected BUILDING2 high direct-stage ownership probe: v370 kept
 `foregroundPilotPlay` by `64` bytes. Close hand-coded sector exceptions; the
 next BUILDING2 high work should be generated metadata or pack/data-shape work.
 
+Latest rejected BUILDING2 low scheduler ownership probe: v388 reran a fresh
+low baseline at `1619`, `1349/1318`, overrun `31`, blocking `81`, hidden
+refill `1`, reads `55`, and due `18`, then temporarily gave low-tide
+BUILDING2 the same staged-prepare-before-window priority that is accepted for
+WALKSTUF1 low. The result was exact-flat on every key metric, so the row is
+not blocked by that local priority inversion. Close BUILDING2 low
+prepare-before-window; future low work needs generated refill ownership,
+pack-side byte/cleanup reduction, or selective preprocessing.
+
 Latest rejected VISITOR5 low scalar group: v372 added the low-tide `9..25`
 read group after a v371 rerun confirmed the public row is current. It stayed
 exact-flat (`1371`, `1112/1090`, overrun `22`, blocking/refill `12`, reads
