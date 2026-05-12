@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+
+  <title>Devices — what it runs on — Johnny Castaway PS1</title>
+  <meta name="description" content="Reference for the devices the Johnny Castaway PS1 fan port has been tested against — DuckStation as the reference emulator, PCSX-Redux as a should-work, ePSXe as unverified, real PlayStation 1 (SCPH-7501) via TonyHax as the smoke-tested hardware path, plus the BIOS requirement and unconfirmed paths." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/devices/" /><meta property="og:title"        content="Devices — what it runs on — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference for the devices the Johnny Castaway PS1 fan port has been tested against — DuckStation as the reference emulator, PCSX-Redux as a should-work, ePSXe as unverified, real PlayStation 1 (SCPH-7501) via TonyHax as the smoke-tested hardware path, plus the BIOS requirement and unconfirmed paths." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/devices/" /><meta property="og:locale"       content="en_US" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-12" /><link rel="dns-prefetch" href="//github.com" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="../../sitemap.xml" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Devices — what it runs on", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/devices/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../perf/">Perf</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main" tabindex="-1">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference · device matrix</p>
+      <h1>Devices — what it runs on</h1>
+      <p class="subtitle">The emulator and hardware combinations the port has actually been tested against, plus the BIOS requirement and the paths the project has never tried.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~2 min read · 748 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The FAQ has short answers to “does it
+run on a real PS1?” and “which emulators work?”; this page is the
+honest long form. It lists what’s actually been booted, what’s
+expected to work but isn’t covered by every-commit testing, and what
+the project has never tried.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#tested--emulator" id="markdown-toc-tested--emulator">Tested · emulator</a></li>
+  <li><a href="#tested--hardware" id="markdown-toc-tested--hardware">Tested · hardware</a></li>
+  <li><a href="#should-work--unverified" id="markdown-toc-should-work--unverified">Should work · unverified</a></li>
+  <li><a href="#unsupported--out-of-scope" id="markdown-toc-unsupported--out-of-scope">Unsupported / out of scope</a></li>
+  <li><a href="#bios-requirement" id="markdown-toc-bios-requirement">BIOS requirement</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
+</ul>
+
+</details>
+
+<h2 id="tested--emulator">Tested · emulator</h2>
+
+<p><a href="../glossary/#duckstation">DuckStation</a>
+is the reference emulator. Every commit gets booted in it, the
+<a href="../regtest/">headless regression harness</a>
+runs in it via <code class="language-plaintext highlighter-rouge">-batch -nogui</code>, and the
+<a href="../glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.7%</code> target-speed</a>
+rollup the
+<a href="../../perf/">battle card</a>
+publishes is measured against it. If DuckStation reports a regression,
+it’s treated as a real bug. Other emulators are not in the every-commit
+gate.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Field</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Project</td>
+      <td>DuckStation</td>
+    </tr>
+    <tr>
+      <td>Tested cadence</td>
+      <td>Every commit (manual smoke) + every release via headless regtest</td>
+    </tr>
+    <tr>
+      <td>Platforms tested</td>
+      <td>Linux (developer’s daily driver)</td>
+    </tr>
+    <tr>
+      <td>Other platforms</td>
+      <td>DuckStation upstream supports Windows + macOS + Android; not gated by this project</td>
+    </tr>
+    <tr>
+      <td>BIOS</td>
+      <td>Real PlayStation BIOS (e.g. <code class="language-plaintext highlighter-rouge">scph1001.bin</code>) required — DuckStation refuses to boot without one (see <code class="language-plaintext highlighter-rouge">BIOS errors</code> in <a href="../regtest/"><code class="language-plaintext highlighter-rouge">/docs/regtest/</code></a>)</td>
+    </tr>
+    <tr>
+      <td>Notable upstream</td>
+      <td><a href="https://www.duckstation.org/">duckstation.org</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="tested--hardware">Tested · hardware</h2>
+
+<p>A real PlayStation 1 has been smoke-tested via the
+<a href="../glossary/#tonyhax">TonyHax</a>
+softmod path. This is not a long-term soak — boot success and a few
+minutes of scene cycling is the bar — but it confirms the build
+clears the actual hardware envelope, not just DuckStation’s HLE
+approximation.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Field</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Console</td>
+      <td>Sony PlayStation, model <code class="language-plaintext highlighter-rouge">SCPH-7501</code> (US, late-revision PSone-era motherboard)</td>
+    </tr>
+    <tr>
+      <td>Boot path</td>
+      <td>TonyHax softmod (<a href="https://github.com/socram8888/tonyhax"><code class="language-plaintext highlighter-rouge">socram8888/tonyhax</code></a>)</td>
+    </tr>
+    <tr>
+      <td>Media</td>
+      <td>Burned CD-R from the released <code class="language-plaintext highlighter-rouge">.bin</code>/<code class="language-plaintext highlighter-rouge">.cue</code> pair</td>
+    </tr>
+    <tr>
+      <td>Tested cadence</td>
+      <td>Per-milestone (not every commit)</td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td>Treat any boot success as a small miracle — the path is fragile by 2026 standards (1990s-era laser, decades-old drive, softmod brittleness). The <a href="../../lab/two-day-spi-bug/">SPI driver</a> story is one example of what shifts between HLE and metal.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The build is expected to run on any retail PlayStation 1 from the
+TonyHax-supported set, but only the SCPH-7501 listed above has been
+verified. PS2 and PS3 backwards-compatibility modes have not been
+tested and are not covered by the FISHING 1 bar.</p>
+
+<h2 id="should-work--unverified">Should work · unverified</h2>
+
+<p>These paths are expected to work but the project does not run them
+on every commit, so treat regressions as worth reporting.</p>
+
+<ul>
+  <li><strong>PCSX-Redux</strong> — A modern PS1 emulator with PSn00bSDK-friendly
+debug surfaces. Has not been part of the smoke gauntlet but is
+expected to boot. If a bug is DuckStation-specific, PCSX-Redux is
+the obvious second opinion.</li>
+  <li><strong>PS2 backwards-compat</strong> — The retail PS2’s PS1 mode runs original
+discs natively. The TonyHax path used here is the homebrew route;
+PS2-via-backwards-compat is plausible if a <code class="language-plaintext highlighter-rouge">.bin</code>/<code class="language-plaintext highlighter-rouge">.cue</code> is burned
+to a CD-R, but it has not been tested.</li>
+  <li><strong>PS3 backwards-compat</strong> — Limited to early SKUs (CECHA / CECHB)
+with hardware PS1 emulation. Untested.</li>
+  <li><strong>MemcardPro / similar SD-backed memory cards</strong> — The runtime
+reads/writes one block of memcard data for accessibility-toggle
+persistence. Behavior on SD-backed cards is unverified but expected
+to work (the read/write path is standard <code class="language-plaintext highlighter-rouge">MemCardRead</code> /
+<code class="language-plaintext highlighter-rouge">MemCardWrite</code>).</li>
+</ul>
+
+<h2 id="unsupported--out-of-scope">Unsupported / out of scope</h2>
+
+<ul>
+  <li><strong>ePSXe</strong> — Unverified. Not part of the regtest gate and not on
+the smoke list. PRs that target ePSXe-specific bugs are not
+in scope — the engineering bar is “passes DuckStation.”</li>
+  <li><strong>No-BIOS emulators</strong> (some HLE setups) — The project relies on
+PSn00bSDK and the standard <code class="language-plaintext highlighter-rouge">BIOS()</code> syscalls; running without a
+real BIOS is unsupported and will probably crash early.</li>
+  <li><strong>Streaming services / cloud retro players</strong> — Out of scope.</li>
+</ul>
+
+<h2 id="bios-requirement">BIOS requirement</h2>
+
+<p>DuckStation requires a real PlayStation 1 BIOS file. The project
+does not ship one — it’s a copyrighted Sony component. Dump from
+your own console or source from your own physical hardware. The
+<code class="language-plaintext highlighter-rouge">BIOS errors</code> callout in
+<a href="../regtest/"><code class="language-plaintext highlighter-rouge">/docs/regtest/</code></a>
+covers the symptoms when the BIOS is missing or wrong-region.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">scph1001.bin</code> filename appears in regtest docs because that’s
+the file the project’s CI matrix points at; any equivalent retail
+BIOS (<code class="language-plaintext highlighter-rouge">SCPH-101</code>, <code class="language-plaintext highlighter-rouge">SCPH-7001</code>, etc.) should work.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../play/">Play</a> — the download + quickstart entrypoint that links here for “does it run on X?” questions.</li>
+  <li><a href="../../faq/">FAQ</a> — short-form answers for the same audience.</li>
+  <li><a href="../regtest/">Regression testing</a> — the harness DuckStation is exercised by.</li>
+  <li><a href="../hardware/">Hardware</a> — the PS1 envelope this port targets (33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU, 2× CD drive at 300 KB/s).</li>
+  <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a> — a real story about what shifts between DuckStation HLE and real silicon.</li>
+  <li><a href="../glossary/">Glossary</a> — <a href="../glossary/#duckstation"><code class="language-plaintext highlighter-rouge">DuckStation</code></a>, <a href="../glossary/#tonyhax"><code class="language-plaintext highlighter-rouge">TonyHax</code></a>, <a href="../glossary/#target-speed"><code class="language-plaintext highlighter-rouge">target speed</code></a>, <a href="../glossary/#fishing1-bar"><code class="language-plaintext highlighter-rouge">fishing1-bar</code></a>.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (<a href="../../releases/">v0.8.7-ps1</a>)
+        </p>
+        <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/devices/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../archaeology/">Archaeology</a></li>
+          <li><a href="../glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
