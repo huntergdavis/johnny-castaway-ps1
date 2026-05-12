@@ -39,22 +39,41 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
 </section>
 
+{%- comment -%}
+  Trio of below-fold scene captures, each wrapped in <picture> so
+  modern browsers pull the lossless WebP (~half the bytes) and
+  older browsers fall through to the PNG. Same pattern as the hero
+  picture element above. loading="lazy" keeps each below-fold fetch
+  deferred until layout reaches it; the <img> retains the width/
+  height/alt attributes so CLS and screen-reader behavior are
+  unchanged. Combined trio drops from ~889 KB PNG to ~473 KB WebP
+  for browsers that accept it (~47% reduction).
+{%- endcomment -%}
 <section class="trio" aria-label="Selected PS1 captures">
   <figure>
     <a href="{{ '/scenes/activity9/' | relative_url }}">
-      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/activity9-ps1-boat.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island." />
+      </picture>
       <figcaption>ACTIVITY 9 · rain dance, boat passes</figcaption>
     </a>
   </figure>
   <figure>
     <a href="{{ '/scenes/johnny1/' | relative_url }}">
-      <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/johnny1-ps1-frog-clock.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      </picture>
       <figcaption>JOHNNY 1 · frog clock</figcaption>
     </a>
   </figure>
   <figure>
     <a href="{{ '/scenes/fishing1/' | relative_url }}">
-      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-cast.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      </picture>
       <figcaption>FISHING 1 · reference</figcaption>
     </a>
   </figure>
