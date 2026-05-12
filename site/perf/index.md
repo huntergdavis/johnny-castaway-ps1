@@ -48,8 +48,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">111 (88.1%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">15 (11.9%) ≥ 95%</span>
+  <span class="spd-key spd-green">113 (89.7%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">13 (10.3%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -83,10 +83,12 @@ keep fixed pack layout with deliberate setup tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`96.8%` / `96.4%`), VISITOR3 high/low
 (`97.1%` / `97.0%`), BUILDING2 high/low, VISITOR5 high/low, JOHNNY1 high/low,
-BUILDING4 low, BUILDING6 high/low, JOHNNY6 high/low, and the
-remaining wide-action
+BUILDING4 low, BUILDING6 high/low, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
-work. The latest BUILDING6 read-group probe (`181..197` / `269..285`) is
+work. JOHNNY6 high/low moved into green after the compact-FGP3 metadata plus
+restore-minus-current pass dropped both tides from `2832/2800` to
+`2829/2802` and `2830/2802` while cutting active-loop reads `12 -> 7`.
+The latest BUILDING6 read-group probe (`181..197` / `269..285`) is
 closed because those direct-stage clusters produced `group_hits=0`, left
 `loop_reads=42`, and crossed the PS-EXE bucket. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
 BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
@@ -123,10 +125,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3250%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6814%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T04:15:22` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3224%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6839%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T07:29:10` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `johnny6-compact-fgp3-v354`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -210,7 +212,7 @@ and this page.
   `activity9-fgp3-v072c`,
   `activity9-window-v072c`,
   `activity4-fishing4-v072c-prefetch-relief`,
-  `building4-6-johnny6-v072c-prefetch-relief`,
+  `johnny6-compact-fgp3-v354`,
   `activity1-v072c-current-refresh`,
   `mary2-prefetch-relief-v081`,
   `mary2-fgp3-padded-v081`,
@@ -1132,29 +1134,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-johnny6-high"><code>johnny6</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
-      <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
-      <td>2832/2800</td>
-      <td>28</td>
-      <td>28</td>
+      <td>2026-05-12T07:29:10</td>
+      <td>johnny6-compact-fgp3-v354</td>
+      <td>+1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>2829/2802</td>
+      <td>24</td>
+      <td>24</td>
       <td>0</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
+      <td>compact FGP3/v4 cleanup metadata plus restore-minus-current keeps footprint fixed and removes 5 active-loop reads</td>
     </tr>
     <tr id="perf-johnny6-low">
       <td><a class="scene-perf-rowlink" href="#perf-johnny6-low"><code>johnny6</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
-      <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
-      <td>2832/2800</td>
-      <td>28</td>
-      <td>28</td>
+      <td>2026-05-12T07:29:10</td>
+      <td>johnny6-compact-fgp3-v354</td>
+      <td>+1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>2830/2802</td>
+      <td>25</td>
+      <td>25</td>
       <td>0</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
+      <td>compact FGP3/v4 cleanup metadata plus restore-minus-current keeps footprint fixed and removes 5 active-loop reads</td>
     </tr>
     <tr id="perf-mary1-high">
       <td><a class="scene-perf-rowlink" href="#perf-mary1-high"><code>mary1</code></a></td>

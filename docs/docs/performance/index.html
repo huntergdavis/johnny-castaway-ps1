@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4253 words
+          ~17 min read · 4251 words
         </p>
 
       <hr class="rule" />
@@ -437,14 +437,15 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3250%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6814%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4420%</code> / <code class="language-plaintext highlighter-rouge">100.4637%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3224%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6839%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4446%</code> / <code class="language-plaintext highlighter-rouge">100.4662%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-f128-resident-seg27-v302</code>,
@@ -503,7 +504,6 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
-<code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>,
@@ -593,7 +593,7 @@ rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-r
 <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
-<code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
+<code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>,
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
@@ -787,8 +787,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>johnny6</code></td>
-      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
-      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
+      <td>+1.0% / 99.0% (2829/2802); blk 24</td>
+      <td>+1.0% / 99.0% (2830/2802); blk 25</td>
     </tr>
     <tr>
       <td><code>mary1</code></td>
@@ -1008,8 +1008,7 @@ bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
 now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
 the bottom of the yellow band after compact-pack promotion. The remaining
 hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
-VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low,
-and JOHNNY6 high/low,
+VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
 where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work.</li>
 </ol>
@@ -1027,7 +1026,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3250% over target / 99.6814% target speed, with several
+public average is now +0.3224% over target / 99.6839% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

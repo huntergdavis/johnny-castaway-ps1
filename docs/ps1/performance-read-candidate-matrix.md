@@ -5,12 +5,12 @@ artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
 - Source artifact root: `scratch/ps1-perf-iterate`
-- Candidate rows: `18484`
+- Candidate rows: `18802`
 - Standalone probes: `100`
-- Scheduler or guarded probes: `499`
-- Scheduler-owned only: `7029`
-- Closed exact ranges from experiment log: `3409`
-- Deferred under-target rows: `1690`
+- Scheduler or guarded probes: `519`
+- Scheduler-owned only: `7016`
+- Closed exact ranges from experiment log: `3612`
+- Deferred under-target rows: `1702`
 
 Recent hand-authored table probes proved that nominal read-count wins can
 still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
