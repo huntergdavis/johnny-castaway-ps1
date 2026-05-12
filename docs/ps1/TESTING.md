@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-12:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3267%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6798%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T03:46:31` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3250%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6814%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T04:15:22` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -107,18 +107,17 @@ refill stays `0`. Earlier low-side rows `visitor3-low-f128-resident-seg27-v302`
 and `visitor3-low-swap-f128-f129-v327` are now superseded by the v338 tail
 pack-only compaction above.
 
-Latest promoted WALKSTUF1 note: `walkstuf1-low-prepare-before-window-v331`
-lets low-tide `walkstuf1` staged visual prepare preempt a speculative
-CD-window refill at the 4-VBlank prepare point. Against the current low
-baseline it improves overrun `54 -> 53`, blocking `74 -> 72`, and prefetch
-overrun `24 -> 22`, with a bounded `1483/1429 -> 1484/1431` scene/target
-tradeoff. WALKSTUF1 high, BUILDING2 high/low, VISITOR3 low, and FISHING1 high
-passed flat controls. The prior high note: `walkstuf1-high-rg213-229-slack4-v316`
-extends the accepted high `201..213` read group through `213..229` and uses a
-high-tide-only slack4 guard. Against the current-layout high control it
-improves `1482/1429 -> 1480/1429`, overrun `53 -> 51`, blocking `102 -> 85`,
-loop reads `70 -> 69`, and due misses `19 -> 16`; hidden refill rises
-`16 -> 26` as an accepted public-loop/blocking tradeoff.
+Latest promoted WALKSTUF1 note: high is `walkstuf1-high-rg344-360-v340`, low is
+`walkstuf1-low-prepare-before-window-v331`. High extends the accepted
+`201..213` / `213..229` retained read groups with `344..360`. Against v316 high
+it keeps scene/loop flat at `1768/1480`, moves target `1429 -> 1432`, overrun
+`51 -> 48`, blocking `85 -> 83`, loop reads `69 -> 67`, loop-read VBlanks
+`301 -> 292`, due misses `16`, and hidden refill `26`. Low v331 keeps the
+staged-prepare scheduler fallback at `1484/1431`, overrun `53`, blocking `72`,
+and prefetch overrun `22`. WALKSTUF1 low, BUILDING2 high/low, VISITOR3 low,
+and FISHING1 high controls passed flat. The current `178..194` high retest is
+closed: it reduced reads but regressed scene/loop, overrun, blocking, and due
+misses.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,

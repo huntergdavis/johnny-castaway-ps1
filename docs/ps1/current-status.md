@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3267%` over target / `99.6798%` target speed).
+battle card is `+0.3250%` over target / `99.6814%` target speed).
 
 ## Overall
 
@@ -216,9 +216,13 @@ compacts frame `143` cleanup and moves frame `144` terminal cleanup into the
 already paid setup window. VISITOR3 low now reports `blocking_vb=58`,
 `loop_reads=10`, loop-read time `58`, and due misses `10`; non-VISITOR3
 controls stayed flat.
-The public battle card is now `+0.3267%` over target / `99.6798%` target speed
+The v340 WALKSTUF1 high read-group pass adds `344..360` after the accepted
+`201..213` and `213..229` groups. High remains `1480` loop VBlanks while target
+moves `1429 -> 1432`, overrun drops `51 -> 48`, blocking drops `85 -> 83`, and
+loop reads drop `69 -> 67`; low and selected controls stayed flat.
+The public battle card is now `+0.3250%` over target / `99.6814%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4403%` / `100.4621%`.
+raw signed optimization rollup is `-0.4420%` / `100.4637%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.07`
 public over-target points and added about `12.58` public target-speed points.
@@ -300,12 +304,13 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
-- Current `main` after `v0.8.7-ps1` — promotes the WALKSTUF1 low
-  staged-prepare-before-window scheduler fallback plus VISITOR3 low tail
-  pack-only compaction on top of the VISITOR3 low frame128/frame129
-  resident-slot swap and the WALKSTUF1 high `213..229` read-group/slack4
-  baseline. The public battle card is `+0.3267%` / `99.6798%`, with VISITOR3
-  low CD pressure down to `blocking_vb=58`.
+- Current `main` after `v0.8.7-ps1` — promotes the WALKSTUF1 high `344..360`
+  read group plus the WALKSTUF1 low staged-prepare scheduler fallback and
+  VISITOR3 low tail pack-only compaction on top of the VISITOR3 low
+  frame128/frame129 resident-slot swap and the WALKSTUF1 high `213..229`
+  read-group/slack4 baseline. The public battle card is `+0.3250%` /
+  `99.6814%`, with WALKSTUF1 high at `1480/1432` and VISITOR3 low CD pressure
+  down to `blocking_vb=58`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

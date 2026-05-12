@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3267%`
-exact public over target / `99.6798%` exact public target speed); the raw
-signed optimization matrix is `-0.4403%` / `100.4621%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3250%`
+exact public over target / `99.6814%` exact public target speed); the raw
+signed optimization matrix is `-0.4420%` / `100.4637%`.
 
 ## Scene Battle Card
 
 As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf1-high-rg344-360-v340`,
 `visitor3-low-tail-pack-only-v338`,
 `visitor3-low-f128-resident-seg27-v302`,
 `visitor3-high-f131-resident-alias121123-v299`,
@@ -414,7 +415,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-high-f131-resident-alias121123-v299`,
+rows now use `walkstuf1-high-rg344-360-v340`,
+`visitor3-high-f131-resident-alias121123-v299`,
 `visitor3-low-tail-pack-only-v338`,
 `visitor3-low-f128-resident-seg27-v302`,
 `visitor3-low-alias-noop114117-v292`,
@@ -805,8 +807,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+3.2% / 96.9% (1477/1431); due 17; blk 90</td>
-      <td>+3.5% / 96.6% (1478/1428); due 13; blk 75</td>
+      <td>+3.4% / 96.8% (1480/1432); due 16; blk 83</td>
+      <td>+3.7% / 96.4% (1484/1431); due 12; blk 72</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -840,15 +842,15 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
-1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
-   largest gap at `+51/+38` VBlanks after the VISITOR3 motion-copy,
+1. **Generated read grouping or setup/data-shape work.** WALKSTUF1 low/high are
+   now the largest gaps at `+53/+48` VBlanks after the latest high `344..360`
+   read group. BUILDING2 high/low (`+41/+31`) and VISITOR3 low/high
+   (`+32/+31`) are the next tight rows after the VISITOR3 motion-copy,
    setup-segment, setup-prime, guarded second-segment, resident-copy, and
    low no-op residual passes; its
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
-   data-shape work rather than hand-authored ranges. BUILDING2, BUILDING6, and
-   WALKSTUF1 remain the next wide-action/read-pressure rows after the WALKSTUF1
-   compact pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
+   data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
    same-layout append because `2111224` bytes of payload plus rect metadata
    exceed the current `970076` bytes of VISITOR3 high-pack slack. The
    budgeted analyzer target keeps this same-footprint lane alive with `78`
@@ -893,7 +895,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3267% over target / 99.6798% target speed, with several
+  public average is now +0.3250% over target / 99.6814% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

@@ -20,12 +20,13 @@ and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3267%` over
-target / `99.6798%` target speed; the raw signed optimization matrix is
-`-0.4403%` / `100.4621%`.
-The newest accepted VISITOR3 low tail pack compaction keeps the public timing
-flat at `1072/1040` while reducing CD pressure to `blocking_vb=58`,
-`loop_reads=10`, and due misses `10`.
+allocation. The public headless battle card is `+0.3250%` over
+target / `99.6814%` target speed; the raw signed optimization matrix is
+`-0.4420%` / `100.4637%`.
+The newest accepted WALKSTUF1 high `344..360` read group keeps scene/loop flat
+at `1768/1480` while moving target `1429 -> 1432`, overrun `51 -> 48`,
+blocking `85 -> 83`, and loop reads `69 -> 67`; VISITOR3 low tail compaction
+keeps `blocking_vb=58`, `loop_reads=10`, and due misses `10`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
