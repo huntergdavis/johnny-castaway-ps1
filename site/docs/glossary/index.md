@@ -134,6 +134,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 ## Hardware & toolchain {#hardware}
 
 <dl>
+<dt id="mips">MIPS</dt>
+<dd>The 32-bit RISC instruction-set architecture the PS1's CPU implements — a Sony-customized <em>R3000A</em> clocked at 33.8688 MHz. The acronym originally stood for <em>Microprocessor without Interlocked Pipeline Stages</em>; in practice the name covers the whole ISA family the chip belongs to. No FPU, no SIMD, no branch predictor. The toolchain target name is <code>mipsel-none-elf-gcc 12.3.0</code> shipped with <a href="#psn00bsdk">PSn00bSDK</a> 0.24 — the little-endian <code>mipsel-</code> prefix is correct: the PS1 runs MIPS little-endian, unlike the big-endian MIPS in many embedded targets. The single-core, single-thread, no-cache-coherency envelope is what most of the perf work on <a href="{{ '/perf/' | relative_url }}">/perf/</a> is constrained by.</dd>
+
 <dt id="psn00bsdk">PSn00bSDK</dt>
 <dd>Lameguy64's open-source PSX SDK, version 0.24 here. Replaces Sony's proprietary Psy-Q with permissively-licensed equivalents. Build pipeline: <code>cmake</code> + <code>mips-mipsel-none-elf-gcc</code> via the SDK's CMake module.</dd>
 
