@@ -75,3 +75,24 @@ them automatically.
   on GitHub. It is not surfaced here on purpose; the index above is the
   active record.
 </p>
+
+## Related pages
+
+- [Lab]({{ '/lab/' | relative_url }}) — the curated long-form
+  companion to this stream: seventeen feature-length retrospectives
+  with the benefit of hindsight that the worklogs above deliberately
+  lack. Read the devlog for *what happened on the day*, the lab for
+  *what it added up to*.
+- [Releases]({{ '/releases/' | relative_url }}) — short notes on
+  every tagged version, dated, with headline bullets and links to
+  the full release notes and the disc image.
+- [About — History]({{ '/about/history/' | relative_url }}) — the
+  eras-and-milestones narrative. The devlog is daily; this is the
+  zoomed-out timeline.
+- [Feeds &amp; well-known endpoints]({{ '/docs/feeds/' | relative_url }})
+  — the reference for every machine-readable endpoint on the site;
+  the devlog ships Atom + JSON Feed pair with full-content posts
+  for offline reading.
+- [FAQ]({{ '/faq/' | relative_url }}) — author-written answers to
+  the recurring questions a worklog skimmer doesn't have time to
+  reconstruct.
