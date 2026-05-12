@@ -105,6 +105,14 @@ blocking rose `72 -> 93`, hidden refill rose `22 -> 24`, and reads rose
 `67 -> 69`. Close second-pass restore-minus-current for WALKSTUF1 low as well
 as high.
 
+Latest rejected WALKSTUF1 low contiguous-prime retest: v367 raised the
+low-only setup-prime cap from `160 KiB` to `176 KiB` on the current baseline.
+The focused gate was exact-flat (`1776`, `1484/1431`, overrun `53`, blocking
+`72`, hidden refill `22`, reads `67`, due `12`), and the emitted read plan
+still reported setup coverage `prime=[2, 78]`. This closes scalar cap growth
+above `160 KiB`; the next WALKSTUF1 low work must be noncontiguous/generated
+residency, phase-preserving pack relocation/shrink, or scheduler ownership.
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
@@ -2275,7 +2283,7 @@ pre-v0.8.0 row.
 | MARY3 guarded prefetch-preserve | Done; keep as the current MARY3 baseline. MARY3 now preserves stage/window prefetch under clean pressure, but uses an `8` VBlank scene-local window-refill guard to keep hidden refill debt at zero. High improves `2402/2295 -> 2296/2294`, `overrun_vb 107 -> 2`, `blocking_vb 690 -> 53`, `loop_reads 255 -> 44`, and `due_misses 255 -> 13`; low improves `2402/2296 -> 2297/2295`, `106 -> 2`, `693 -> 51`, `255 -> 44`, and `255 -> 13`. The `7` VBlank retry is rejected because high tide regressed against the slack-8 baseline. The current rollup is tracked at the top of this file. |
 | VISITOR3 cleanup-only offscreen clip | Do not promote. Clipping only offscreen FGP3/v4 cleanup spans preserves pack sizes, entry offsets, LBAs, and PS-EXE bytes while trimming `5526` bytes, `58513` cleanup pixels, and `1299` cleanup spans per tide, but both focused v106 gates are exact-flat: high remains `1137/1024` with `blocking_vb=190`, low remains `1138/1024` with `blocking_vb=191`. Treat this as safe but inert; future offscreen work needs draw/CD phase ownership or a different measured counter. |
 | WALKSTUF1 high setup-prime cap 152 KiB | Do not promote. Raising the high-only cap from `144 KiB` to `152 KiB` extends setup coverage to sectors `2..76` and nominally cuts high loop reads `134 -> 133`, but regresses high `scene_vb 1880 -> 1884`, `loop_vb 1592 -> 1595`, `target_vb 1406 -> 1405`, `blocking_vb 275 -> 286`, and `due_misses 55 -> 57`. Treat `144 KiB` as the high-cap knee. |
-| WALKSTUF1 low setup-prime cap 168 KiB | Do not promote. Raising the low-only cap from `160 KiB` to `168 KiB` preserves pack LBA and PS-EXE bucket but is exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |
+| WALKSTUF1 low setup-prime cap 168/176 KiB | Do not promote. The older `168 KiB` cap preserved pack LBA and PS-EXE bucket but was exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. The current-baseline v367 `176 KiB` retest is also exact-flat at `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, reads `67`, and due `12`, with setup coverage still `prime=[2, 78]`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |
 | WALKSTUF1 low no-direct-stage branch | Do not promote as a broad scene-name check. It improves low visible metrics (`1604 -> 1601`, `blocking_vb 271 -> 214`, `due_misses 50 -> 34`) but regresses hidden refill (`prefetch_overrun_vb 54 -> 79`) and crosses the PS-EXE bucket. Keep the signal; retry only with a narrower direct-stage threshold or generated scheduler metadata. |
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
