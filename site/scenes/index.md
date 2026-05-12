@@ -14,6 +14,51 @@ description: The Johnny Castaway scene ledger — 63 scenes, current validation 
 {% assign blocked_count   = all_scenes | where: "status", "blocked"    | size %}
 {% assign total_count     = all_scenes | size %}
 
+{%- comment -%}
+  Schema.org ItemList. /scenes/ is a 63-item catalog of routed scenes;
+  ItemList is the Schema.org type Google maps into rich-result
+  carousels and AI agents consume as a structured catalog index.
+  Items are emitted in the same family-then-tag order as the rendered
+  table below (sorted_scenes), so the structured data and the visible
+  catalog don't drift.
+
+  `itemListOrder: ItemListUnordered` reflects that the multi-level
+  family-then-tag sort isn't a single-key ranking — each ListItem
+  still carries an explicit `position`, so consumers that care about
+  presentation order have it. site_root construction mirrors
+  _includes/json-ld.html for `--baseurl ""` durability.
+{%- endcomment -%}
+{%- assign jsonld_site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign jsonld_scenes = all_scenes | sort: "tag" | sort: "ads" -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Johnny Castaway PS1 — Scene ledger",
+  "description": {{ "All 63 routed scenes of the Johnny Castaway PS1 fan port, grouped by ADS family and ordered by tag." | jsonify }},
+  "url": {{ jsonld_site_root | append: '/scenes/' | jsonify }},
+  "inLanguage": "en",
+  "numberOfItems": {{ jsonld_scenes.size }},
+  "itemListOrder": "https://schema.org/ItemListUnordered",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ jsonld_site_root | append: '/' | jsonify }}
+  },
+  "itemListElement": [
+  {%- for s in jsonld_scenes -%}
+  {%- unless forloop.first %},{% endunless %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "name": {{ s.ads | append: ' ' | append: s.tag | jsonify }},
+      "url": {{ jsonld_site_root | append: '/scenes/' | append: s.slug | append: '/' | jsonify }}
+    }
+  {%- endfor %}
+  ]
+}
+</script>
+
 The original Johnny Castaway shipped 63 scenes — short looped vignettes
 the screensaver picked from at random. This port aims to reproduce all
 63 in original order on the PlayStation 1, with no scenes added or
