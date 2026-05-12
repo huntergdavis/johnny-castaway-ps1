@@ -382,6 +382,11 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 
 ## Related pages
 
+- [Devices — what it runs on]({{ '/docs/devices/' | relative_url }})
+  — the device matrix this harness exercises: DuckStation as the
+  every-commit reference (and what the BIOS-error symptoms look
+  like when the harness can't find one), plus the should-work-
+  unverified and real-PS1 paths the regtest doesn't currently cover.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the disc
   image is produced before regtest can run.
 - [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — the

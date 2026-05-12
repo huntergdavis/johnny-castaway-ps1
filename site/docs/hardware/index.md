@@ -214,6 +214,11 @@ specialized compositors, not a clock change — the clock isn't going up.
 
 ## Related pages
 
+- [Devices — what it runs on]({{ '/docs/devices/' | relative_url }})
+  — the specific tested instances of the hardware envelope this
+  page describes: DuckStation as the every-commit reference,
+  SCPH-7501 via TonyHax as the smoke-tested real PS1, plus the
+  should-work-unverified and unsupported lists.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — the cross-compile
   setup that targets this hardware.
 - [Build infrastructure]({{ '/docs/infrastructure/' | relative_url }}) — what
