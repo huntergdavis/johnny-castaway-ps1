@@ -336,9 +336,17 @@ in the research directory, but it has not been implemented.
   `SDL_PollEvent` → SPI driver row in the Input section.
 - [Glossary]({{ '/docs/glossary/' | relative_url }}) —
   definitions for the project-specific terms referenced
-  throughout this page (`OT`, `SPRT`, `FntFlush`, `SPI driver`,
-  `tx_len`, `VAG`, `SPU`, `VRAM`, etc.). Grouped by area, not
-  alphabetical.
+  throughout this page:
+  [`OT`]({{ '/docs/glossary/#ot' | relative_url }}),
+  [`FntFlush`]({{ '/docs/glossary/#fntflush' | relative_url }}),
+  [`SPI driver`]({{ '/docs/glossary/#spi' | relative_url }}),
+  [`tx_len`]({{ '/docs/glossary/#tx-len' | relative_url }}),
+  [`VAG`]({{ '/docs/glossary/#vag' | relative_url }}),
+  [`SPU`]({{ '/docs/glossary/#spu' | relative_url }}),
+  [`VRAM`]({{ '/docs/glossary/#vram' | relative_url }}),
+  [`RGB555`]({{ '/docs/glossary/#rgb555' | relative_url }}),
+  [`CLUT`]({{ '/docs/glossary/#clut' | relative_url }}).
+  Grouped by area, not alphabetical.
 
 ## View source on GitHub
 
