@@ -508,7 +508,8 @@ static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
     {201, 213, 0},
     {213, 229, 0},
     {344, 360, 0},
-    {422, 434, 0}
+    {422, 434, 0},
+    {444, 456, 0}
 };
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,

@@ -47,8 +47,8 @@ compaction, the v340 WALKSTUF1 high `344..360` read-group promotion, the
 v347 BUILDING2 high `249..257` read-group pressure reduction, the v354
 JOHNNY6 compact-FGP3 metadata/restore-minus-current promotion, the v364
 BUILDING6 scene-local slack4 window-refill guard, the v379 BUILDING2 high
-`226..242` read-group promotion, and the v383 WALKSTUF1 high `422..434`
-same-speed CD-work reduction:
+`226..242` read-group promotion, and the v383/v384 WALKSTUF1 high
+`422..434` / `444..456` same-speed CD-work reductions:
 `+0.3141%` public average over target / `99.6920%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4529%`. Since the compact full-matrix baseline was about
@@ -58,11 +58,11 @@ public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
 
 Latest promoted WALKSTUF1 baseline: high tide keeps the accepted `201..213`
-and `213..229` groups and adds `344..360` plus `422..434`. The v340 strict
+and `213..229` groups and adds `344..360`, `422..434`, and `444..456`. The v340 strict
 gate moved target `1429 -> 1432`, overrun `51 -> 48`, blocking `85 -> 83`,
 loop reads `69 -> 67`, and loop-read time `301 -> 292` while keeping
-scene/loop flat at `1768/1480`; the v383 follow-up keeps all timing metrics
-flat and lowers loop reads `67 -> 66` plus loop-read time `292 -> 286`.
+scene/loop flat at `1768/1480`; the v383/v384 follow-ups keep all timing
+metrics flat and lower loop reads `67 -> 65` plus loop-read time `292 -> 284`.
 Due misses stay `16`, hidden refill stays `26`, and low plus selected controls
 are exact-flat. Low remains on the v331 staged-prepare scheduler fallback at
 `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, and due misses
@@ -2383,6 +2383,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low read group `190..202` | Do not promote or retry as a direct retained-read table. The v381 focused gate used the matching baseline label and still rejected it: low regressed from `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, reads `67`, due `12` to `1784`, `1492/1423`, overrun `69`, blocking `90`, hidden refill `34`, reads `70`, due `13`. This closes the prior setup-segment signal in direct-table form too. |
 | WALKSTUF1 high read group `344..360` after v316 | Done; keep as a prerequisite for the current WALKSTUF1 high baseline. The v340 source-only promotion adds `{344,360}` after the accepted `{201,213}` and `{213,229}` high groups. Focused gate keeps scene/loop flat at `1768/1480`, moves target `1429 -> 1432`, overrun `51 -> 48`, blocking `85 -> 83`, loop reads `69 -> 67`, loop-read time `301 -> 292`, due misses `16`, and prefetch overrun `26`; WALKSTUF1 low plus BUILDING2 high/low, VISITOR3 low, and FISHING1 high controls stayed flat. Later BUILDING6, BUILDING2, and v383 WALKSTUF1 work supersede its rollup; current rollup is tracked at the top of this file. |
 | WALKSTUF1 high read group `422..434` after v340 | Done; keep as the current WALKSTUF1 high CD-work baseline. The v383 source-only promotion appends `{422,434}` after the accepted `{201,213}`, `{213,229}`, and `{344,360}` high groups. Focused gate keeps timing exact-flat at scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, and due misses `16`, while reducing loop reads `67 -> 66` and loop-read VBlanks `292 -> 286`. WALKSTUF1 low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls stayed flat. Public rollup is unchanged at `+0.3141%` / `99.6920%`; this is a lower-CD-pressure baseline, not a VBlank speed win. |
+| WALKSTUF1 high read group `444..456` after v383 | Done; keep as the current WALKSTUF1 high CD-work baseline. The v384 source-only promotion appends `{444,456}` after the accepted high groups through `{422,434}`. Focused gate keeps timing exact-flat at scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, and due misses `16`, while reducing loop reads `66 -> 65`, loop-read VBlanks `286 -> 284`, and hidden read time `203 -> 201`. WALKSTUF1 low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls stayed flat. Public rollup is unchanged at `+0.3141%` / `99.6920%`; this is another lower-CD-pressure baseline, not a VBlank speed win. |
 | WALKSTUF1 high read group `360..376` after v340 | Do not promote or retry as a direct high table. The v368 follow-up reduced loop reads `67 -> 65` and loop-read VBlanks `292 -> 289`, but regressed scene `1768 -> 1774`, active loop `1480 -> 1486`, target `1432 -> 1431`, overrun `48 -> 55`, blocking `83 -> 87`, and hidden refill `26 -> 28`. The late read saving is real but costs more cadence than it removes. |
 | WALKSTUF1 high window `53 KiB` / `55 KiB` current-baseline retune | Do not promote adjacent scalar window sizes. The v382 parameter-only probes showed both sides of the accepted `54 KiB` high window are phase-negative on the current layout: `53 KiB` regressed to `1820`, `1531/1434`, overrun `97`, blocking `115`, hidden refill `46`; `55 KiB` regressed to `1828`, `1539/1439`, overrun `100`, blocking `108`, hidden refill `49`. Lower read count alone is not progress when the active-loop cadence collapses. |
 | WALKSTUF1 high read group `156..164` | Do not promote or retry as a hand-authored high table. The v346 focused gate regressed high from the v340 baseline: scene `1768 -> 1774`, active loop `1480 -> 1486`, target `1432 -> 1427`, overrun `48 -> 59`, blocking `83 -> 102`, and due misses `16 -> 17`; hidden refill improved only `26 -> 23`, and loop reads stayed `67`. This closes the highest-ranked remaining current-compatible scalar high row; future high work needs generated deadline ownership or pack-side payload removal. |

@@ -319,7 +319,7 @@ signed optimization matrix is `-0.4529%` / `100.4743%`.
 
 As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`walkstuf1-high-rg422-434-v383`,
+`walkstuf1-high-rg444-456-v384`,
 `building2-high-rg226-242-v379`,
 `building6-window-slack4-v364`,
 `johnny6-compact-fgp3-v354`,
@@ -413,7 +413,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-10T04:38:21`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-12T13:14:33`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -421,7 +421,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf1-high-rg422-434-v383`,
+rows now use `walkstuf1-high-rg444-456-v384`,
 `building2-high-rg226-242-v379`,
 `building6-window-slack4-v364`,
 `visitor3-high-f131-resident-alias121123-v299`,
@@ -851,7 +851,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** WALKSTUF1 low/high are
-   now the largest gaps at `+53/+48` VBlanks after the latest high `422..434`
+   now the largest gaps at `+53/+48` VBlanks after the latest high `444..456`
    same-speed CD-work reduction. BUILDING2 high/low (`+38/+31`) and VISITOR3 low/high
    (`+32/+31`) are the next tight rows after the VISITOR3 motion-copy,
    setup-segment, setup-prime, guarded second-segment, resident-copy, and

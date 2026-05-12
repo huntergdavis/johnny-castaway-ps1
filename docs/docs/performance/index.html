@@ -446,7 +446,7 @@ signed optimization matrix is <code class="language-plaintext highlighter-rouge"
 
 <p>As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">walkstuf1-high-rg422-434-v383</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-rg444-456-v384</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>,
 <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
 <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>,
@@ -540,7 +540,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-10T04:38:21</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-12T13:14:33</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -548,7 +548,7 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg422-434-v383</code>,
+rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg444-456-v384</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-rg226-242-v379</code>,
 <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-f131-resident-alias121123-v299</code>,
@@ -978,7 +978,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> WALKSTUF1 low/high are
-now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">422..434</code>
+now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">444..456</code>
 same-speed CD-work reduction. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+38/+31</code>) and VISITOR3 low/high
 (<code class="language-plaintext highlighter-rouge">+32/+31</code>) are the next tight rows after the VISITOR3 motion-copy,
 setup-segment, setup-prime, guarded second-segment, resident-copy, and
