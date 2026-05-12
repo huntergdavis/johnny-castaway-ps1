@@ -17,6 +17,8 @@ or is cheap enough to lock in even with zero past hits:
 - Every `<script type="application/ld+json">` block parses as valid JSON.
 - Every real content page has a non-empty `<meta name="description">`
   (exempts redirect pages and explicitly-noindex'd surfaces).
+- Every real content page has a `<link rel="canonical">` (same
+  redirect / noindex exemption rule).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -75,6 +77,10 @@ META_REFRESH_RE = re.compile(
 )
 META_NOINDEX_RE = re.compile(
     r'<meta\s+name="robots"\s+content="[^"]*noindex',
+    re.IGNORECASE,
+)
+CANONICAL_RE = re.compile(
+    r'<link\s+rel="canonical"\s+href="[^"]+"',
     re.IGNORECASE,
 )
 
@@ -387,6 +393,21 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
             m = META_DESC_RE.search(text)
             if m is None or not m.group(1).strip():
                 errors.append(f"{rel}: missing or empty meta name=\"description\"")
+        # SEO deduplication — every real content page must carry a
+        # <link rel="canonical"> with an absolute URL. Search engines
+        # use it to consolidate duplicate-content surfaces (the same
+        # page reachable at multiple URLs, e.g. with and without
+        # trailing slash, with and without query string). The site's
+        # head.html emits the canonical via `site.url + canonical_baseurl
+        # + page.url`; a Liquid breakage or a future template refactor
+        # could silently drop it. Same exempt-synthetic-surfaces rule
+        # as the description check above (redirect pages are
+        # themselves duplicates, noindex'd surfaces shouldn't claim
+        # canonical authority). Site-wide audit on 2026-05-12 found
+        # zero violations; this check locks that in.
+        if not META_REFRESH_RE.search(text) and not META_NOINDEX_RE.search(text):
+            if not CANONICAL_RE.search(text):
+                errors.append(f"{rel}: missing <link rel=\"canonical\">")
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
