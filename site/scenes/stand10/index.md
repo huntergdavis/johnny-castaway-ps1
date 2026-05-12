@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand10-ps1-look-raft.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand10-ps1-look-raft.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand10-ps1-look-raft.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 10 on PS1 at night: Johnny stands on the right side of the island next to the palm tree, looking at his raft." />
+  </picture>
   <figcaption>
     STAND 10 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

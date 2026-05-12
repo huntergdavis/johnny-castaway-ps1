@@ -2,8 +2,8 @@
 layout: page
 title: Docs
 eyebrow: Reference manuals
-subtitle: Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.
-description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
+subtitle: Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, feeds &amp; well-known endpoints, and a glossary. The technical surface of the PS1 port.
+description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices (tested emulators + real PS1), audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, feeds and well-known endpoints, and a glossary of project vocabulary.
 ---
 
 A labor of love by Hunter Davis. The pages below are reference manuals for the
@@ -64,7 +64,11 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/hardware/' | relative_url }}">Hardware</a>
-    <p>The PS1 envelope this port runs inside — 33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+    <p>The PS1 envelope this port runs inside — 33.8688 MHz <a href="{{ '/docs/glossary/#mips' | relative_url }}">MIPS</a>, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/devices/' | relative_url }}">Devices — what it runs on</a>
+    <p>The emulator and hardware combinations actually tested: DuckStation as the every-commit reference, SCPH-7501 via TonyHax as the smoke-tested real PS1 path, PCSX-Redux + PS2/PS3 backwards-compat as should-work-unverified, plus the BIOS requirement and the paths the project has never tried.</p>
   </li>
   <li>
     <a href="{{ '/docs/audio/' | relative_url }}">Audio</a>
@@ -89,6 +93,10 @@ If you paid for this, you were cheated. Open source and free.
   <li>
     <a href="{{ '/docs/glossary/' | relative_url }}">Glossary</a>
     <p>The specific technical terms the rest of the docs use without scaffolding — FG2 packs, ADS, TTM, dirty-rect bookkeeping, FntFlush, the FISHING 1 bar, drawCredits. Grouped by area, not alphabetical.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/feeds/' | relative_url }}">Feeds &amp; well-known endpoints</a>
+    <p>Every machine-readable URL on the site: the Atom + JSON feeds for the devlog and lab, the hand-rolled sitemap, the RFC 9116 security.txt, robots.txt, humans.txt, the W3C web manifest, and the Schema.org JSON-LD records emitted in every page's head.</p>
   </li>
 </ul>
 

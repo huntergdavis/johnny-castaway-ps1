@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing8-ps1-fish-right.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing8-ps1-fish-right.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing8-ps1-fish-right.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="FISHING 8 on PS1 at night: Johnny stands on the right-side dock holding a caught fish on the line, fishing rod arched out toward the water." />
+  </picture>
   <figcaption>
     FISHING 8 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

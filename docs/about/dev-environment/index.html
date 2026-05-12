@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>The dev environment — Johnny Castaway PS1</title>
   <meta name="description" content="A photograph of the development environment behind the Johnny Castaway PS1 fan port — Hunter&#39;s own Dunking Bird auto-poker, the fresh editor, Claude and Codex sub-agents on separate worktrees, DuckStation running the latest build, and bottom-monitor system telemetry on KDE Neon (Debian backend)." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/dev-environment/" /><meta property="og:title"        content="The dev environment — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../../devlog/feed.xml" />
@@ -111,7 +112,7 @@
   <div class="page-body">
     <p>A photograph of the actual workflow as of <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code>. Click the image for the full-resolution capture.</p>
 
-<p><a href="../../assets/img/dev-environment-2026-05-06.png">
+<p><a href="../../assets/img/dev-environment-2026-05-06.webp" title="Click for full-resolution (3816×2592 lossless WebP, ~4.1 MB; was 8.5 MB PNG)">
   <img src="../../assets/img/dev-environment-2026-05-06-w1600.jpg" width="1600" height="1086" fetchpriority="high" decoding="async" alt="Multi-monitor PS1 development environment with Dunking Bird, the fresh editor, two AI agent windows (Claude and Codex), DuckStation, and bottom-monitor system telemetry on KDE Plasma." />
 </a></p>
 
@@ -190,6 +191,14 @@ perf) the screen layout above maps to.</li>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -212,8 +221,7 @@ perf) the screen layout above maps to.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>

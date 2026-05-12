@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/building6-ps1-lilliputians-no-bird.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/building6-ps1-lilliputians-no-bird.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/building6-ps1-lilliputians-no-bird.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="BUILDING 6 on PS1 at night: Johnny lies on the sand under the palm tree while lilliputians swarm in from both sides of the island carrying ropes." />
+  </picture>
   <figcaption>
     BUILDING 6 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/walkstuf1-ps1-yacht-party.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/walkstuf1-ps1-yacht-party.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/walkstuf1-ps1-yacht-party.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="WALKSTUF 1 on PS1 at night: a white yacht has pulled up next to the island with party-goers visible on its deck, the moon overhead and Johnny's island and palm tree on the right." />
+  </picture>
   <figcaption>
     WALKSTUF 1 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -128,6 +128,15 @@
   }
 }
 
+/* ---------- View transitions ----------
+ * Chrome 126+ and Safari 18+ honor `@view-transition { navigation: auto }`
+ * to crossfade between same-origin documents on navigation. The default
+ * transition is a gentle opacity blend — visible polish on every internal
+ * link click without per-page authoring. Browsers without support ignore
+ * the at-rule entirely. Disabled below under prefers-reduced-motion so the
+ * crossfade doesn't fire for users who opt out of motion. */
+@view-transition { navigation: auto; }
+
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -1170,11 +1179,49 @@ dt:target {
   background: var(--bg-alt);
 }
 
+/* ---------- Heading anchors ----------
+ * Hover-reveal "#" anchors appended to H2-H6 inside <main> by
+ * /assets/js/heading-anchors.js. Hidden by default; fade in on
+ * heading hover or when focused via keyboard tab. Skipped in print
+ * (the printable rule expansion `a::after { content: " <url>" }`
+ * would otherwise double up after each heading). */
+.heading-anchor {
+  display: inline-block;
+  margin-left: .35em;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  text-decoration: none;
+  color: var(--accent);
+  font-family: var(--font-pixel);
+  font-size: .85em;
+  font-weight: 400;
+  vertical-align: baseline;
+}
+h2:hover > .heading-anchor,
+h3:hover > .heading-anchor,
+h4:hover > .heading-anchor,
+h5:hover > .heading-anchor,
+h6:hover > .heading-anchor,
+.heading-anchor:focus-visible {
+  opacity: 1;
+}
+.heading-anchor:focus-visible {
+  outline: 2px solid var(--jc-cyan);
+  outline-offset: 2px;
+}
+@media print {
+  .heading-anchor { display: none; }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
   .btn:hover { transform: none; }
+  /* Suppress the cross-document crossfade for users who opt out of
+   * motion. Supported in the same browser cohort that ships
+   * @view-transition itself. */
+  @view-transition { navigation: none; }
 }
 
 /* ---------- Print ----------

@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand3-ps1-hat-adjust.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand3-ps1-hat-adjust.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand3-ps1-hat-adjust.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 3 on PS1 at night: Johnny stands at the leftmost edge of the island and lifts his hat in a short idle pose." />
+  </picture>
   <figcaption>
     STAND 3 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

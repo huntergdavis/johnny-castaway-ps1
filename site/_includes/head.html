@@ -20,6 +20,16 @@
     them. Standard meta-tag opt-out.
   {%- endcomment -%}
   <meta name="format-detection" content="telephone=no" />
+  {%- comment -%}
+    Referrer policy. `strict-origin-when-cross-origin` is the modern
+    browser default — pinning it explicitly documents the privacy
+    posture and prevents future browser-default drift toward weaker
+    policies. Same-origin requests get the full Referer; cross-origin
+    requests over HTTPS-to-HTTPS get only the origin (no path or
+    query); cross-origin downgrades to HTTP get no Referer at all.
+    Aligns with the site's zero-external-resources discipline.
+  {%- endcomment -%}
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>{% if page.title and page.url != "/" %}{{ page.title | escape }} — {{ site.title | escape }}{% else %}{{ site.title | escape }} — fan port{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description | escape }}" />
@@ -196,21 +206,41 @@
     an image they never use.
   {%- endcomment -%}
   {% if page.url == '/' %}
-  <link rel="preload" as="image"
-        href="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+  {%- comment -%}
+    Preload points at the WebP form of the hero (73 KB vs 147 KB PNG)
+    with type="image/webp" so browsers that don't accept WebP skip
+    the preload (type mismatch) and load the PNG from the <picture>
+    fallback in the body instead. Modern browsers preload the file
+    they will actually render.
+  {%- endcomment -%}
+  <link rel="preload" as="image" type="image/webp"
+        href="{{ '/assets/img/johnny6-ps1-date-dream.webp' | relative_url }}"
         fetchpriority="high" />
   {% endif %}
 
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
   <script defer src="{{ '/assets/js/key-nav.js' | relative_url }}"></script>
+  <script defer src="{{ '/assets/js/heading-anchors.js' | relative_url }}"></script>
   {%- if page.url == '/perf/' %}
   <script defer src="{{ '/assets/js/table-sort.js' | relative_url }}"></script>
+  {%- endif %}
+  {%- if page.url == '/scenes/' %}
+  <script defer src="{{ '/assets/js/random-scene.js' | relative_url }}"></script>
   {%- endif %}
 
   <link rel="icon" type="image/x-icon" href="{{ '/assets/img/branding/favicon.ico' | relative_url }}" />
   <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/img/branding/favicon-32.png' | relative_url }}" />
   <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/img/branding/favicon-16.png' | relative_url }}" />
   <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/branding/apple-touch-icon.png' | relative_url }}" />
+  {%- comment -%}
+    W3C web app manifest. Static metadata only — the site isn't a
+    service-worker-backed PWA — but the manifest gives browsers a
+    stable display name + theme/background color + icon set for
+    "Install" / "Add to Home Screen" / app-switcher identity.
+    Source: /site.webmanifest (hand-rolled, Liquid-templated for
+    canonical_baseurl).
+  {%- endcomment -%}
+  <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="{{ '/devlog/feed.xml' | relative_url }}" />

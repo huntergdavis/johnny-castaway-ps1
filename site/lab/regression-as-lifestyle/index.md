@@ -76,7 +76,7 @@ It catches different bugs.
 
 The biggest unlock was structured `printf`.
 
-Early on, logging was dangerous. Too much text through DuckStation's TTY path
+Early on, logging was dangerous. Too much text through DuckStation's [TTY]({{ '/docs/glossary/#tty' | relative_url }}) path
 changed timing or destabilized the run. That forced a weird era of framebuffer
 debugging: colored bars, one-pixel markers, screenshots decoded after the
 fact. Once bounded, gated TTY logging became reliable, performance work

@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity1-ps1-bellyflop.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity1-ps1-bellyflop.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity1-ps1-bellyflop.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 1 on PS1 at night: Johnny mid-air, arms outstretched, having just leapt off the palm tree, on his way to a belly-flop into the water." />
+  </picture>
   <figcaption>
     ACTIVITY 1 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

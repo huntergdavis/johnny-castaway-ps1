@@ -36,6 +36,15 @@ release:
   # docs/ps1/research/perf-matrix-latest/. Stored as a string so a
   # trailing zero (e.g. "99.50") doesn't get coerced.
   perf_target_speed_pct: "99.7"
+  # SHA-256 of the disc-image artifacts on the tagged GitHub release.
+  # Surfaced on /play/#verify so downloaders can verify mirror integrity.
+  # Compute on each release tag via:
+  #   curl -sL <repo>/releases/download/<tag>/jcreborn.bin | sha256sum
+  #   curl -sL <repo>/releases/download/<tag>/jcreborn.cue | sha256sum
+  # Future improvement: scripts/release.sh writes a sidecar `.sha256`
+  # file beside the .bin/.cue and this block reads from it.
+  sha256_bin: "315d0c392c9d0cda488568971ab18139d858fe5098c0af6d77a602faa0c19acf"
+  sha256_cue: "602fc8c63373be283bf514e25b8088cd090c987e0e626ee480c3f0f9dd5ffbc3"
 
 repo: "huntergdavis/johnny-castaway-ps1"
 github_url: "https://github.com/huntergdavis/johnny-castaway-ps1"

@@ -8,7 +8,7 @@ description: How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 
 
 A labor of love by Hunter Davis. This page documents the build pipeline that
 turns the source tree into `jcreborn.bin` + `jcreborn.cue`. The toolchain is
-[PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }}) 0.24 + a MIPS cross-compiler, both of which live inside a
+[PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }}) 0.24 + a [MIPS]({{ '/docs/glossary/#mips' | relative_url }}) cross-compiler, both of which live inside a
 reproducible Docker image so the build is identical on Linux, Intel macOS,
 Apple Silicon (via Rosetta 2), and Windows (via WSL2). The native macOS
 toolchain attempt was abandoned because the precompiled binaries from

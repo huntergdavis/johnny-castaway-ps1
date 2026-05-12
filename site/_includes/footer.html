@@ -15,6 +15,14 @@
           (<a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="{{ '/devlog/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a> ·
           <a href="{{ '/devlog/feed.json' | relative_url }}" type="application/feed+json">JSON</a>
@@ -61,19 +69,40 @@
         </p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
+        {%- comment -%}
+          aria-current="page" marks the current page in the nav so
+          screen readers announce "current page" on the active link.
+          Matches the contains-based pattern in _includes/header.html,
+          with two careful cases:
+
+          - Archaeology vs. Regtest cases. The Regtest case shelf
+            lives at /archaeology/regtest-references/cases/, so a
+            naive `contains '/archaeology/'` test would mark BOTH
+            links current on a case-shelf page. The cases-prefix is
+            tested first (longest match wins) and Archaeology only
+            fires when the page is NOT a case-shelf page.
+
+          - Glossary. The link goes to /docs/glossary/ specifically;
+            using `contains` would fire on any /docs/* page and the
+            header's Docs link already covers the section. Exact
+            match is the right precision here.
+        {%- endcomment -%}
+        {%- assign nav_cases_pfx = page.url | slice: 0, 38 -%}
+        {%- assign nav_is_cases  = false -%}
+        {%- if nav_cases_pfx == '/archaeology/regtest-references/cases/' -%}{%- assign nav_is_cases = true -%}{%- endif -%}
         <ul>
-          <li><a href="{{ '/help/'     | relative_url }}">Help</a></li>
-          <li><a href="{{ '/perf/'     | relative_url }}">Battle card</a></li>
-          <li><a href="{{ '/releases/' | relative_url }}">Releases</a></li>
-          <li><a href="{{ '/faq/'      | relative_url }}">FAQ</a></li>
-          <li><a href="{{ '/credits/'  | relative_url }}">Credits</a></li>
-          <li><a href="{{ '/hack/'     | relative_url }}">Hack</a></li>
-          <li><a href="{{ '/archaeology/' | relative_url }}">Archaeology</a></li>
-          <li><a href="{{ '/docs/glossary/' | relative_url }}">Glossary</a></li>
-          <li><a href="{{ '/source/'   | relative_url }}">Source library</a></li>
-          <li><a href="{{ '/resources/' | relative_url }}">Resources</a></li>
-          <li><a href="{{ '/archaeology/regtest-references/cases/' | relative_url }}">Regtest cases</a></li>
-          <li><a href="{{ '/legal/'    | relative_url }}">Legal</a></li>
+          <li><a href="{{ '/help/'     | relative_url }}"{% if page.url contains '/help/'     %} aria-current="page"{% endif %}>Help</a></li>
+          <li><a href="{{ '/perf/'     | relative_url }}"{% if page.url contains '/perf/'     %} aria-current="page"{% endif %}>Battle card</a></li>
+          <li><a href="{{ '/releases/' | relative_url }}"{% if page.url contains '/releases/' %} aria-current="page"{% endif %}>Releases</a></li>
+          <li><a href="{{ '/faq/'      | relative_url }}"{% if page.url contains '/faq/'      %} aria-current="page"{% endif %}>FAQ</a></li>
+          <li><a href="{{ '/credits/'  | relative_url }}"{% if page.url contains '/credits/'  %} aria-current="page"{% endif %}>Credits</a></li>
+          <li><a href="{{ '/hack/'     | relative_url }}"{% if page.url contains '/hack/'     %} aria-current="page"{% endif %}>Hack</a></li>
+          <li><a href="{{ '/archaeology/' | relative_url }}"{% if page.url contains '/archaeology/' and nav_is_cases == false %} aria-current="page"{% endif %}>Archaeology</a></li>
+          <li><a href="{{ '/docs/glossary/' | relative_url }}"{% if page.url == '/docs/glossary/' %} aria-current="page"{% endif %}>Glossary</a></li>
+          <li><a href="{{ '/source/'   | relative_url }}"{% if page.url contains '/source/'   %} aria-current="page"{% endif %}>Source library</a></li>
+          <li><a href="{{ '/resources/' | relative_url }}"{% if page.url == '/resources/' %} aria-current="page"{% endif %}>Resources</a></li>
+          <li><a href="{{ '/archaeology/regtest-references/cases/' | relative_url }}"{% if nav_is_cases %} aria-current="page"{% endif %}>Regtest cases</a></li>
+          <li><a href="{{ '/legal/'    | relative_url }}"{% if page.url contains '/legal/'    %} aria-current="page"{% endif %}>Legal</a></li>
         </ul>
       </nav>
     </div>

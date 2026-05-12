@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Glossary — Johnny Castaway PS1</title>
   <meta name="description" content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/glossary/" /><meta property="og:title"        content="Glossary — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../../devlog/feed.xml" />
@@ -102,7 +103,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~20 min read · 5030 words
+          ~20 min read · 5248 words
         </p>
 
       <hr class="rule" />
@@ -175,8 +176,11 @@
 <dt id="padscript">PADSCRIPT.TXT</dt>
 <dd>The build-time deterministic-input script at <code>config/ps1/PADSCRIPT.TXT</code>, embedded into the EXE by <code>scripts/build-ps1.sh</code>. The runtime only executes it when <a href="#bootmode">BOOTMODE.TXT</a> carries the <code>pad-script</code> or <code>pad-script-log</code> token, so the file is dormant for normal release builds. Four commands — <code>wait</code>, <code>tap</code>/<code>press</code>, <code>hold</code>, <code>shot</code>/<code>screenshot</code>/<code>mark</code> — drive a button vocabulary that covers the full pad (D-pad, <code>START</code> / <code>SELECT</code>, the four face buttons, <code>L1</code>–<code>R2</code>; combine masks with <code>+</code> or <code>,</code>). Durations are frames unless suffixed with <code>s</code> (60 Hz). Used by the pause-menu screenshot harness and pad-driven regtest routes; empty for everything else. Full grammar at <a href="../scripted-input/">/docs/scripted-input/</a>.</dd>
 
+<dt id="tty">TTY</dt>
+<dd>The PS1's serial debug output channel — historically a hardware UART, in this project a <code>printf()</code>-backed log line surface that <a href="#duckstation">DuckStation</a> exposes to host stdout / a per-run <code>tty.log</code> file. The runtime's structured diagnostic records all flow through TTY: <a href="#jcperf">JCPERF / JCPERF2</a> at <a href="#scene-end">scene-end</a>, <a href="#jcspi-jcpad">JCSPI / JCPAD</a> for controller-input diagnostics, <a href="#jcpadshot">JCPADSHOT</a> for screenshot markers, plus ad-hoc <code>printf()</code> debug. The <a href="#regtest">regtest harness</a> + <a href="../../lab/build-farm/">build farm</a> consume those records by grepping <code>tty.log</code> with no parser — flat <code>key=value</code> lines on purpose. TTY was effectively disabled for most of 2026-Q1 because per-frame <code>printf</code> was destabilizing scene timing (the <a href="#telemetry-overlay">telemetry overlay</a> was the only diagnostic surface during that window); restored 2026-04-25 with a gated, bounded-output printf path. Per-frame use is still discouraged in timing-bearing code.</dd>
+
 <dt id="jcpadshot">JCPADSHOT</dt>
-<dd>The screenshot-marker TTY line emitted by <a href="#padscript">PADSCRIPT.TXT</a>'s <code>shot</code> / <code>screenshot</code> / <code>mark</code> commands. Format: <code>JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code>. The headless harness greps these out of <code>tty.log</code> and copies the first captured PNG at or after each marker frame into the published asset path; that's how the auto-built <a href="../../help/menu/">menu help guide</a> knows which captured frame matches which sub-screen. Disambiguation: <code>JCPADSHOT</code> is a marker, not a diagnostic dump — distinct from <a href="#jcspi-jcpad">JCPAD</a> (the pad-layer cooked-event diagnostic) despite the prefix collision.</dd>
+<dd>The screenshot-marker <a href="#tty">TTY</a> line emitted by <a href="#padscript">PADSCRIPT.TXT</a>'s <code>shot</code> / <code>screenshot</code> / <code>mark</code> commands. Format: <code>JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code>. The headless harness greps these out of <code>tty.log</code> and copies the first captured PNG at or after each marker frame into the published asset path; that's how the auto-built <a href="../../help/menu/">menu help guide</a> knows which captured frame matches which sub-screen. Disambiguation: <code>JCPADSHOT</code> is a marker, not a diagnostic dump — distinct from <a href="#jcspi-jcpad">JCPAD</a> (the pad-layer cooked-event diagnostic) despite the prefix collision.</dd>
 
 <dt id="telemetry-overlay">Telemetry overlay</dt>
 <dd>The five-panel on-screen debug overlay drawn down the left edge of the frame, gated by <code>grPs1TelemetryEnabled</code> in <code>src/graphics_ps1.c</code> with row writes scattered through the ADS interpreter (<code>src/ads.c</code>) and helpers like <code>grPs1SetLastBmpTelemetry</code>. Built when text I/O was unsafe — for most of 2026-Q1 the project ran with TTY <code>printf</code> disabled (per-frame text logging was breaking timing and growing logs unboundedly), so the overlay <em>was</em> the diagnostic surface. The five panels: Drop/Load Diagnostics (top-left, <code>y=2</code>), Pilot Pack Diagnostics (upper-left, <code>y=30</code>), ADS Runtime Diagnostics (mid-left, <code>y=90</code>), Memory/Resource Pressure (mid-left, <code>y=174</code>), Story Transition Diagnostics (bottom-left, <code>y=222</code>). Off by default in release builds; the headless <a href="#regtest">regtest harness</a> runs <code>scripts/decode-ps1-bars.py</code> against captured frames to extract per-frame state from the overlay into <code>telemetry.json</code> — the visual channel doubles as a structured-data channel. Even after TTY <code>printf</code> was re-stabilised on 2026-04-25, the overlay remained the right tool for per-frame state because it can't perturb timing the way text I/O does. Permanent reference at <a href="../../source/docs/PS1_LEFT_DEBUG_PANEL/">docs/PS1_LEFT_DEBUG_PANEL.md</a>.</dd>
@@ -238,6 +242,9 @@
 <h2 id="hardware">Hardware &amp; toolchain</h2>
 
 <dl>
+<dt id="mips">MIPS</dt>
+<dd>The 32-bit RISC instruction-set architecture the PS1's CPU implements — a Sony-customized <em>R3000A</em> clocked at 33.8688 MHz. The acronym originally stood for <em>Microprocessor without Interlocked Pipeline Stages</em>; in practice the name covers the whole ISA family the chip belongs to. No FPU, no SIMD, no branch predictor. The toolchain target name is <code>mipsel-none-elf-gcc 12.3.0</code> shipped with <a href="#psn00bsdk">PSn00bSDK</a> 0.24 — the little-endian <code>mipsel-</code> prefix is correct: the PS1 runs MIPS little-endian, unlike the big-endian MIPS in many embedded targets. The single-core, single-thread, no-cache-coherency envelope is what most of the perf work on <a href="../../perf/">/perf/</a> is constrained by.</dd>
+
 <dt id="psn00bsdk">PSn00bSDK</dt>
 <dd>Lameguy64's open-source PSX SDK, version 0.24 here. Replaces Sony's proprietary Psy-Q with permissively-licensed equivalents. Build pipeline: <code>cmake</code> + <code>mips-mipsel-none-elf-gcc</code> via the SDK's CMake module.</dd>
 
@@ -408,6 +415,14 @@ that lets a definition stay terse without being curt.</li>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -430,8 +445,7 @@ that lets a definition stay terse without being curt.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>
@@ -439,7 +453,7 @@ that lets a definition stay terse without being curt.</li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>
           <li><a href="../../archaeology/">Archaeology</a></li>
-          <li><a href="./">Glossary</a></li>
+          <li><a href="./" aria-current="page">Glossary</a></li>
           <li><a href="../../source/">Source library</a></li>
           <li><a href="../../resources/">Resources</a></li>
           <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>

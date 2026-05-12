@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand2-ps1-pants-adjust.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand2-ps1-pants-adjust.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand2-ps1-pants-adjust.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 2 on PS1 at night: Johnny stands at the leftmost edge of the island in the pants-adjust idle pose, a short subtle stand-loop scene." />
+  </picture>
   <figcaption>
     STAND 2 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

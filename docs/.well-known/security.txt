@@ -1,0 +1,15 @@
+Contact: https://github.com/huntergdavis/johnny-castaway-ps1/issues
+Contact: https://github.com/huntergdavis/johnny-castaway-ps1/security/advisories/new
+Expires: 2027-05-12T00:00:00Z
+Preferred-Languages: en
+Canonical: https://hunterdavis.com/johnny-castaway-ps1/.well-known/security.txt
+Policy: https://hunterdavis.com/johnny-castaway-ps1/legal/
+
+# Johnny Castaway PS1 is a fan-port screensaver running on real PS1
+# and DuckStation. Security-relevant scope is narrow: the runtime
+# is read-only on hardware (no network, no file IO beyond memcard
+# saves) and the website is a static Jekyll site served by GitHub
+# Pages. The most useful disclosures are: build/release supply-chain
+# concerns, the regtest Docker images, and the published .bin/.cue
+# disc image being mishandled by a download mirror. Prefer the
+# GitHub Security Advisories link above for non-public reports.

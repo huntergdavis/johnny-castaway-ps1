@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/building5-ps1-fire.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/building5-ps1-fire.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/building5-ps1-fire.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="BUILDING 5 on PS1 at night: Johnny sits at the left shoreline next to a small fire, the moon visible above." />
+  </picture>
   <figcaption>
     BUILDING 5 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

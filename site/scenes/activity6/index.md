@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity6-ps1-reads.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity6-ps1-reads.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity6-ps1-reads.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 6 on PS1 at night: Johnny sits under the palm tree reading, the static-Johnny pose right before the falling-asleep beat and the coconut bonk." />
+  </picture>
   <figcaption>
     ACTIVITY 6 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -234,10 +234,20 @@ def build_markdown(captures: dict[str, dict[str, object]]) -> str:
             # element, or alt-only summarization) gets the screen's
             # purpose without having to back up and re-read context.
             alt = f"Captured PS1 screenshot of the {screen.title} screen. {screen.description}"
+            # PS1 menu screenshots are captured at the runtime's native
+            # 320x240 framebuffer and upscaled to 640x448 by DuckStation's
+            # output stage; the harness writes them out at the upscaled
+            # 640x448 size. Emitting width/height keeps the browser from
+            # CLS-shifting the page as the 15 below-fold images decode.
+            # Picture-element WebP wrapping is applied as a follow-up edit
+            # on the rendered page (see 4f0bbd127); next harness regen
+            # will drop that wrap, so re-running the harness needs a
+            # parallel re-wrap pass until this generator learns to emit
+            # <picture> directly.
             lines.extend(
                 [
                     "<figure>",
-                    f'  <img src="{src}" alt="{alt}" loading="lazy" />',
+                    f'  <img src="{src}" alt="{alt}" width="640" height="448" loading="lazy" />',
                     f"  <figcaption>Marker frame {marker}, captured frame {source}, delta {distance}.</figcaption>",
                     "</figure>",
                 ]

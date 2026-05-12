@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>PS1 Restore Rollout History — Johnny Castaway PS1</title>
   <meta name="description" content="Dated rollout chronology of the PS1 restore pilot, preserved verbatim from the research README." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/rollout-history/" /><meta property="og:title"        content="PS1 Restore Rollout History — Johnny Castaway PS1" />
@@ -24,11 +24,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../feed.xml" />
@@ -154,7 +155,7 @@
 top-level research README. It is historical context, not the active source
 of truth.</p>
 
-<h3 id="historical-rollout-chronology">Historical rollout chronology</h3>
+<h2 id="historical-rollout-chronology">Historical rollout chronology</h2>
 
 <p>The remainder of this document is preserved as a dated implementation history.
 Use <code class="language-plaintext highlighter-rouge">repo:/docs/ps1/research/CURRENT_STATUS_2026-03-21.md</code>
@@ -383,8 +384,10 @@ not the visible scene-entry regression.</p>
   <summary>On this page</summary>
 
 <ul id="markdown-toc">
-  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a></li>
-  <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a>    <ul>
+      <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+    </ul>
+  </li>
   <li><a href="#current-facts-from-the-repo" id="markdown-toc-current-facts-from-the-repo">Current facts from the repo</a>    <ul>
       <li><a href="#1-the-pc-and-ps1-rendering-models-do-not-match" id="markdown-toc-1-the-pc-and-ps1-rendering-models-do-not-match">1. The PC and PS1 rendering models do not match</a></li>
       <li><a href="#2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently" id="markdown-toc-2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently">2. The project already uses ISO space to trade for RAM, but inconsistently</a></li>
@@ -999,6 +1002,14 @@ right fit for general sprite animation assets.</li>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../feed.json" type="application/feed+json">JSON</a>
@@ -1021,8 +1032,7 @@ right fit for general sprite animation assets.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>

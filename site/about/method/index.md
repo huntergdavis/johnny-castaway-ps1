@@ -230,7 +230,7 @@ SPU DMA alignment, ADSR1 attack-rate orientation. Audio-on-real-
 hardware behavior is presumed-correct but unverified -- one of
 the open items. See commit `355227fa` for the full bug list.
 
-**TTY printf is the only real debug surface, and it has a price.**
+**[TTY]({{ '/docs/glossary/#tty' | relative_url }}) printf is the only real debug surface, and it has a price.**
 For most of 2026-Q1 the project ran with `debugMode=0` and
 "visual debugging" -- colored pixels via `LoadImage`, the
 [five-panel telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}), gated [`JCPERF`]({{ '/docs/glossary/#jcperf' | relative_url }}) summaries during

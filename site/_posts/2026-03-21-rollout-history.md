@@ -11,7 +11,7 @@ This file preserves the dated rollout chronology that used to live in the
 top-level research README. It is historical context, not the active source
 of truth.
 
-### Historical rollout chronology
+## Historical rollout chronology
 
 The remainder of this document is preserved as a dated implementation history.
 Use `repo:/docs/ps1/research/CURRENT_STATUS_2026-03-21.md`

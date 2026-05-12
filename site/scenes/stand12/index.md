@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand12-ps1-forward-hat.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand12-ps1-forward-hat.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand12-ps1-forward-hat.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 12 on PS1 at night: Johnny stands at the center of the island under the palm tree, looking forward and adjusting his hat." />
+  </picture>
   <figcaption>
     STAND 12 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -13,11 +13,14 @@ image_height: 448
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/johnny3-ps1-letter-suzy.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/johnny3-ps1-letter-suzy.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/johnny3-ps1-letter-suzy.png' | relative_url }}"
        width="640" height="448"
        fetchpriority="high"
        decoding="async"
        alt="JOHNNY 3 on PS1 at night: Johnny stands on the left side of the island writing a letter, a thought bubble above him showing him and Suzy embracing on a beach." />
+  </picture>
   <figcaption>
     JOHNNY 3 on PS1, captured headlessly via
     <a href="{{ '/docs/scripted-input/' | relative_url }}">scripts/run-regtest.sh</a>

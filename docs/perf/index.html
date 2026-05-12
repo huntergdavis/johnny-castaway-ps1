@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Performance battle card — Johnny Castaway PS1</title>
   <meta name="description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/perf/" /><meta property="og:title"        content="Performance battle card — Johnny Castaway PS1" />
@@ -22,12 +22,13 @@
 
   <link rel="stylesheet" href="../assets/css/main.css" />
   <script defer src="../assets/js/key-nav.js"></script>
+  <script defer src="../assets/js/heading-anchors.js"></script>
   <script defer src="../assets/js/table-sort.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../devlog/feed.xml" />
@@ -106,6 +107,47 @@
     </header>
 
   <div class="page-body">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Johnny Castaway PS1 — headless performance battle card",
+  "description": "Headless DuckStation timing matrix for the Johnny Castaway PS1 fan port: 126 scene/tide variants timed against captured target frame budgets, with public-capped target speed, blocking-read VBlanks, prefetch overrun, and per-variant CD pack metadata. Regenerated from the regtest harness output on every tagged release.",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/perf/",
+  "inLanguage": "en",
+  "keywords": ["PlayStation 1", "PSn00bSDK", "screensaver", "performance", "regression testing", "DuckStation", "fan port", "Johnny Castaway"],
+  "creator": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "isAccessibleForFree": true,
+  "dateModified": "2026-05-11",
+  "version": "v0.8.7-ps1",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "name": "Performance scene matrix (CSV)",
+      "encodingFormat": "text/csv",
+      "contentUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"
+    }
+  ],
+  "variableMeasured": [
+    { "@type": "PropertyValue", "name": "loop_vb", "description": "VBlanks per scene loop, measured by the headless DuckStation harness." },
+    { "@type": "PropertyValue", "name": "target_vb", "description": "VBlanks per scene loop, captured from the host reference run as the target frame budget." },
+    { "@type": "PropertyValue", "name": "over_target_percent", "description": "Public display: how far loop_vb is above target, capped at 0.0% so faster-than-target rows do not create negative debt." },
+    { "@type": "PropertyValue", "name": "blocking_vb", "description": "VBlanks spent in blocking CD reads — the headroom budget the prefetch window did not cover." },
+    { "@type": "PropertyValue", "name": "prefetch_overrun_vb", "description": "VBlanks where the prefetch window exceeded its budget — pack data still in flight when the runtime needed it." },
+    { "@type": "PropertyValue", "name": "loop_reads", "description": "Number of CD read transactions per scene loop." }
+  ]
+}
+</script>
 
 <p>A labor of love by Hunter Davis. This page is the other ledger
 that lives next to the <a href="../scenes/">scene ledger</a>.
@@ -2262,6 +2304,14 @@ from.</li>
           (<a href="../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -2284,10 +2334,9 @@ from.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../help/">Help</a></li>
-          <li><a href="./">Battle card</a></li>
+          <li><a href="./" aria-current="page">Battle card</a></li>
           <li><a href="../releases/">Releases</a></li>
           <li><a href="../faq/">FAQ</a></li>
           <li><a href="../credits/">Credits</a></li>

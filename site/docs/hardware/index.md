@@ -24,7 +24,7 @@ The PlayStation 1 was released in 1994. In 2026 it is a museum piece, but it is
 also the machine that runs `jcreborn.bin` on real hardware and inside
 DuckStation. The numbers that matter, in the order you usually trip over them:
 
-- **CPU:** MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
+- **CPU:** [MIPS]({{ '/docs/glossary/#mips' | relative_url }}) R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
 - **System RAM:** 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.
 - **[VRAM]({{ '/docs/glossary/#vram' | relative_url }}):** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
   of that on their own.
@@ -179,7 +179,7 @@ afterward, until the next clean palette upload. The fix is to gate every
 `LoadImage` call against the known CLUT rectangle and to keep palette
 uploads aligned to 16-pixel boundaries.
 
-### TTY printf is the only debug surface, and it's a sharp tool
+### [TTY]({{ '/docs/glossary/#tty' | relative_url }}) printf is the only debug surface, and it's a sharp tool
 
 DuckStation's TTY logging works reliably as of 2026-04-25 — the project can
 print from anywhere in the runtime and capture the output to a host log
@@ -214,6 +214,11 @@ specialized compositors, not a clock change — the clock isn't going up.
 
 ## Related pages
 
+- [Devices — what it runs on]({{ '/docs/devices/' | relative_url }})
+  — the specific tested instances of the hardware envelope this
+  page describes: DuckStation as the every-commit reference,
+  SCPH-7501 via TonyHax as the smoke-tested real PS1, plus the
+  should-work-unverified and unsupported lists.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — the cross-compile
   setup that targets this hardware.
 - [Build infrastructure]({{ '/docs/infrastructure/' | relative_url }}) — what

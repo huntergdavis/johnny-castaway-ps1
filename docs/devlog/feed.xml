@@ -14830,7 +14830,7 @@ clear it immediately via <code class="language-plaintext highlighter-rouge">stor
 top-level research README. It is historical context, not the active source
 of truth.</p>
 
-<h3 id="historical-rollout-chronology">Historical rollout chronology</h3>
+<h2 id="historical-rollout-chronology">Historical rollout chronology</h2>
 
 <p>The remainder of this document is preserved as a dated implementation history.
 Use <code class="language-plaintext highlighter-rouge">repo:/docs/ps1/research/CURRENT_STATUS_2026-03-21.md</code>
@@ -15059,8 +15059,10 @@ not the visible scene-entry regression.</p>
   <summary>On this page</summary>
 
 <ul id="markdown-toc">
-  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a></li>
-  <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a>    <ul>
+      <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+    </ul>
+  </li>
   <li><a href="#current-facts-from-the-repo" id="markdown-toc-current-facts-from-the-repo">Current facts from the repo</a>    <ul>
       <li><a href="#1-the-pc-and-ps1-rendering-models-do-not-match" id="markdown-toc-1-the-pc-and-ps1-rendering-models-do-not-match">1. The PC and PS1 rendering models do not match</a></li>
       <li><a href="#2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently" id="markdown-toc-2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently">2. The project already uses ISO space to trade for RAM, but inconsistently</a></li>

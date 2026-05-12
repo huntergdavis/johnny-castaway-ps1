@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>FAQ — Johnny Castaway PS1</title>
   <meta name="description" content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what&#39;s added vs preserved from the original 1992 Sierra screensaver." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" /><meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../assets/css/main.css" />
   <script defer src="../assets/js/key-nav.js"></script>
+  <script defer src="../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../devlog/feed.xml" />
@@ -354,13 +355,19 @@ compiling from source and want host-mode capture, you need
 
 <p>Yes — smoke-tested on a SCPH-7501 via the
 <a href="https://github.com/socram8888/tonyhax">TonyHax</a> softmod path.
-Your mileage may vary; treat any boot success as a small miracle.</p>
+Your mileage may vary; treat any boot success as a small miracle.
+The full device matrix — tested cadence, console model, boot path,
+media — is at
+<a href="../docs/devices/">/docs/devices/</a>.</p>
 
 <h3 id="which-emulators-are-supported">Which emulators are supported?</h3>
 
 <p>DuckStation is the only one tested every commit. PCSX-Redux
 should work. ePSXe is unverified. The release smoke gauntlet
-runs in headless DuckStation, so that one is the reference.</p>
+runs in headless DuckStation, so that one is the reference.
+<a href="../docs/devices/">/docs/devices/</a> has the
+fields-table reference: tested cadence, platforms, BIOS, and the
+should-work-unverified and unsupported lists.</p>
 
 <h3 id="does-it-run-at-native-rate">Does it run at native rate?</h3>
 
@@ -384,6 +391,15 @@ baseline of 87.1%.</p>
 tolerated, not invited. There is no contributor onboarding
 process and no “good first issue” label — see the <a href="../about/#what-this-isnt">non-goals on
 About</a>.</p>
+
+<p>For security-relevant reports (build/release supply-chain concerns,
+the published <code class="language-plaintext highlighter-rouge">.bin</code> / <code class="language-plaintext highlighter-rouge">.cue</code> disc image being mishandled by a
+download mirror), prefer the
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/security/advisories/new">GitHub Security Advisories</a>
+channel named in
+<a href="../.well-known/security.txt"><code class="language-plaintext highlighter-rouge">/.well-known/security.txt</code></a>.
+That’s the RFC 9116 path for private disclosures; public issues
+remain on the tracker above.</p>
 
 <hr />
 
@@ -531,6 +547,14 @@ above.</li>
           (<a href="../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -553,12 +577,11 @@ above.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../help/">Help</a></li>
           <li><a href="../perf/">Battle card</a></li>
           <li><a href="../releases/">Releases</a></li>
-          <li><a href="./">FAQ</a></li>
+          <li><a href="./" aria-current="page">FAQ</a></li>
           <li><a href="../credits/">Credits</a></li>
           <li><a href="../hack/">Hack</a></li>
           <li><a href="../archaeology/">Archaeology</a></li>

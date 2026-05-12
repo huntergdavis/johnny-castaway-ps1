@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/visitor6-ps1-coconut-eat.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/visitor6-ps1-coconut-eat.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/visitor6-ps1-coconut-eat.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="VISITOR 6 on PS1 at night: Johnny stands under the palm tree, a coconut on the sand to his right that he is about to pick up, crack on the trunk, and eat." />
+  </picture>
   <figcaption>
     VISITOR 6 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

@@ -1,0 +1,28 @@
+{
+  "name": "Johnny Castaway PS1",
+  "short_name": "JC PS1",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "start_url": "/johnny-castaway-ps1/",
+  "scope": "/johnny-castaway-ps1/",
+  "display": "browser",
+  "lang": "en",
+  "theme_color": "#0000A8",
+  "background_color": "#FFF6D9",
+  "icons": [
+    {
+      "src": "/johnny-castaway-ps1/assets/img/branding/favicon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/johnny-castaway-ps1/assets/img/branding/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

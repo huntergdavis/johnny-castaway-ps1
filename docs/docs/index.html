@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Docs — Johnny Castaway PS1</title>
-  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" /><meta property="og:title"        content="Docs — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices (tested emulators + real PS1), audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, feeds and well-known endpoints, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" /><meta property="og:title"        content="Docs — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices (tested emulators + real PS1), audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, feeds and well-known endpoints, and a glossary of project vocabulary." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../assets/css/main.css" />
   <script defer src="../assets/js/key-nav.js"></script>
+  <script defer src="../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../devlog/feed.xml" />
@@ -100,7 +101,7 @@
     <header class="page-header">
       <p class="eyebrow">Reference manuals</p>
       <h1>Docs</h1>
-      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.</p>
+      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, feeds &amp; well-known endpoints, and a glossary. The technical surface of the PS1 port.</p>
       <hr class="rule" />
     </header>
 
@@ -163,7 +164,11 @@ the project’s stance on contributions.</p>
   </li>
   <li>
     <a href="./hardware/">Hardware</a>
-    <p>The PS1 envelope this port runs inside — 33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+    <p>The PS1 envelope this port runs inside — 33.8688 MHz <a href="./glossary/#mips">MIPS</a>, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+  </li>
+  <li>
+    <a href="./devices/">Devices — what it runs on</a>
+    <p>The emulator and hardware combinations actually tested: DuckStation as the every-commit reference, SCPH-7501 via TonyHax as the smoke-tested real PS1 path, PCSX-Redux + PS2/PS3 backwards-compat as should-work-unverified, plus the BIOS requirement and the paths the project has never tried.</p>
   </li>
   <li>
     <a href="./audio/">Audio</a>
@@ -188,6 +193,10 @@ the project’s stance on contributions.</p>
   <li>
     <a href="./glossary/">Glossary</a>
     <p>The specific technical terms the rest of the docs use without scaffolding — FG2 packs, ADS, TTM, dirty-rect bookkeeping, FntFlush, the FISHING 1 bar, drawCredits. Grouped by area, not alphabetical.</p>
+  </li>
+  <li>
+    <a href="./feeds/">Feeds &amp; well-known endpoints</a>
+    <p>Every machine-readable URL on the site: the Atom + JSON feeds for the devlog and lab, the hand-rolled sitemap, the RFC 9116 security.txt, robots.txt, humans.txt, the W3C web manifest, and the Schema.org JSON-LD records emitted in every page's head.</p>
   </li>
 </ul>
 
@@ -250,6 +259,14 @@ the <a href="../lab/">Lab</a>.</p>
           (<a href="../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -272,8 +289,7 @@ the <a href="../lab/">Lab</a>.</p>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../help/">Help</a></li>
           <li><a href="../perf/">Battle card</a></li>
           <li><a href="../releases/">Releases</a></li>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Regression testing — Johnny Castaway PS1</title>
   <meta name="description" content="The PS1 port&#39;s headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/" /><meta property="og:title"        content="Regression testing — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../../devlog/feed.xml" />
@@ -102,7 +103,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1842 words
+          ~7 min read · 1939 words
         </p>
 
       <hr class="rule" />
@@ -581,6 +582,11 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
+  <li><a href="../devices/">Devices — what it runs on</a>
+— the device matrix this harness exercises: DuckStation as the
+every-commit reference (and what the BIOS-error symptoms look
+like when the harness can’t find one), plus the should-work-
+unverified and real-PS1 paths the regtest doesn’t currently cover.</li>
   <li><a href="../build/">Build &amp; toolchain</a> — how the disc
 image is produced before regtest can run.</li>
   <li><a href="../dev-workflow/">Development workflow</a> — the
@@ -605,6 +611,12 @@ surface the regtest binary is exercising.</li>
 — the magazine treatment of why regression testing isn’t a CI
 feature on this project but a way of working. Reciprocal of
 the link from there to here.</li>
+  <li><a href="../../lab/build-farm/">Lab: the 24/7 build farm</a> —
+the infrastructure-side companion to <em>regression as a lifestyle</em>:
+the Dockerized PSn00bSDK build, the parallel headless DuckStation
+runs, the <code class="language-plaintext highlighter-rouge">JCPERF</code> / <code class="language-plaintext highlighter-rouge">JCPERF2</code> log parsing, and the rule that every
+accepted performance change becomes the next baseline. This page is
+the reference manual for the orchestration the essay walks through.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
@@ -658,6 +670,14 @@ config, and 63-scene manifest with status + boot route.</li>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -680,8 +700,7 @@ config, and 63-scene manifest with status + boot route.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>

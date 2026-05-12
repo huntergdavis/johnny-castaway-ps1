@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/activity4-ps1-clean-dive.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/activity4-ps1-clean-dive.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/activity4-ps1-clean-dive.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="ACTIVITY 4 on PS1 at night: Johnny in the water at the lower-left of the island, post-clean-dive, with a small splash and a seagull above." />
+  </picture>
   <figcaption>
     ACTIVITY 4 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

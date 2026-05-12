@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hunterdavis.com/johnny-castaway-ps1/sitemap.xml

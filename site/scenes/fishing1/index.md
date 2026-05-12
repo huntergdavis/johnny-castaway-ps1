@@ -13,7 +13,10 @@ image_height: 677
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" fetchpriority="high" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-cast.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" fetchpriority="high" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  </picture>
   <figcaption>FISHING 1 on PS1 hardware. The reference scene.</figcaption>
 </figure>
 ## What happens
@@ -31,23 +34,32 @@ host-vs-PS1 frame diff is the project's whole signoff loop: a scene
 pixel across every applicable variant.
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-reference-arrival.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-reference-arrival.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-reference-arrival.png' | relative_url }}"
        width="640" height="480" loading="lazy" decoding="async"
        alt="FISHING 1 reference, host capture: Johnny arrives at the shoreline carrying a coiled fishing line." />
+  </picture>
   <figcaption>Reference · arrival. Johnny walks onto the shore with the rod tucked, line coiled. From the Sierra original via host capture.</figcaption>
 </figure>
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-reference-cast.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-reference-cast.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-reference-cast.png' | relative_url }}"
        width="640" height="480" loading="lazy" decoding="async"
        alt="FISHING 1 reference, host capture: Johnny mid-cast with the rod arched and the line trailing into the ocean." />
+  </picture>
   <figcaption>Reference · cast. Rod arched, line out. The PS1 build's hero shot at the top of this page is the same beat, replayed from the captured FG2 pack.</figcaption>
 </figure>
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-reference-catch.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-reference-catch.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-reference-catch.png' | relative_url }}"
        width="640" height="480" loading="lazy" decoding="async"
        alt="FISHING 1 reference, host capture: Johnny reels in a small red starfish that flies off the line back into the ocean." />
+  </picture>
   <figcaption>Reference · catch. The red starfish in flight — the line that gives the scene its caption ("He catches a starfish. He throws it back.").</figcaption>
 </figure>
 
@@ -71,14 +83,20 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-night.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
        width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
+  </picture>
   <figcaption>FISHING 1 · night variant. Full moon, dark sky and water, the same cast pose against the moonlit shore.</figcaption>
 </figure>
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-raft.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
        width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
+  </picture>
   <figcaption>FISHING 1 · raft-stage variant. Same scene with the cumulative raft-build state at completion.</figcaption>
 </figure>
 

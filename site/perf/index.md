@@ -5,6 +5,69 @@ subtitle: Click a column header to sort. Target Speed cells are color-coded — 
 description: The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers.
 ---
 
+{%- comment -%}
+  Schema.org Dataset structured data. The 126-row scene/tide timing
+  matrix on this page IS a published dataset — Google's Dataset Search
+  indexes Schema.org Dataset records, and AI/agent crawlers consume
+  the same. Hand-mirrored next to the matrix it describes so updates
+  stay in one place.
+
+  variableMeasured names six PropertyValue entries (loop_vb, target_vb,
+  over_target_percent, blocking_vb, prefetch_overrun_vb, loop_reads) —
+  the durable numeric measurements the body's column-by-column glossary
+  describes. The distribution.contentUrl points at the raw CSV in the
+  repo (durable source); the page itself is the landing page (url).
+
+  site_root construction mirrors _includes/json-ld.html: site.url +
+  site.canonical_baseurl + path. Absolute URLs survive the build's
+  --baseurl "" override.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign perf_csv_url = site.github_url | append: '/blob/main/docs/ps1/performance-scene-matrix.csv' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Johnny Castaway PS1 — headless performance battle card",
+  "description": "Headless DuckStation timing matrix for the Johnny Castaway PS1 fan port: 126 scene/tide variants timed against captured target frame budgets, with public-capped target speed, blocking-read VBlanks, prefetch overrun, and per-variant CD pack metadata. Regenerated from the regtest harness output on every tagged release.",
+  "url": {{ site_root | append: '/perf/' | jsonify }},
+  "inLanguage": "en",
+  "keywords": ["PlayStation 1", "PSn00bSDK", "screensaver", "performance", "regression testing", "DuckStation", "fan port", "Johnny Castaway"],
+  "creator": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "isAccessibleForFree": true,
+  {%- if site.release.release_date %}
+  "dateModified": {{ site.release.release_date | jsonify }},
+  {%- endif %}
+  "version": {{ site.release.tag | jsonify }},
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ site_root | append: '/' | jsonify }}
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "name": "Performance scene matrix (CSV)",
+      "encodingFormat": "text/csv",
+      "contentUrl": {{ perf_csv_url | jsonify }}
+    }
+  ],
+  "variableMeasured": [
+    { "@type": "PropertyValue", "name": "loop_vb", "description": "VBlanks per scene loop, measured by the headless DuckStation harness." },
+    { "@type": "PropertyValue", "name": "target_vb", "description": "VBlanks per scene loop, captured from the host reference run as the target frame budget." },
+    { "@type": "PropertyValue", "name": "over_target_percent", "description": "Public display: how far loop_vb is above target, capped at 0.0% so faster-than-target rows do not create negative debt." },
+    { "@type": "PropertyValue", "name": "blocking_vb", "description": "VBlanks spent in blocking CD reads — the headroom budget the prefetch window did not cover." },
+    { "@type": "PropertyValue", "name": "prefetch_overrun_vb", "description": "VBlanks where the prefetch window exceeded its budget — pack data still in flight when the runtime needed it." },
+    { "@type": "PropertyValue", "name": "loop_reads", "description": "Number of CD read transactions per scene loop." }
+  ]
+}
+</script>
+
 {% assign all_scenes      = site.data.scenes %}
 {% assign validated_count = all_scenes | where: "status", "validated"  | size %}
 {% assign total_count     = all_scenes | size %}

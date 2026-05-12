@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>PS1 hardware constraints — Johnny Castaway PS1</title>
   <meta name="description" content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/" /><meta property="og:title"        content="PS1 hardware constraints — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../../devlog/feed.xml" />
@@ -102,7 +103,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1850 words
+          ~7 min read · 1887 words
         </p>
 
       <hr class="rule" />
@@ -151,7 +152,7 @@ also the machine that runs <code class="language-plaintext highlighter-rouge">jc
 DuckStation. The numbers that matter, in the order you usually trip over them:</p>
 
 <ul>
-  <li><strong>CPU:</strong> MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.</li>
+  <li><strong>CPU:</strong> <a href="../glossary/#mips">MIPS</a> R3000A at 33.8688 MHz. 32-bit, no hardware floating point.</li>
   <li><strong>System RAM:</strong> 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.</li>
   <li><strong><a href="../glossary/#vram">VRAM</a>:</strong> 1 MB, owned by the GPU. Two 640×480 framebuffers eat 600 KB
 of that on their own.</li>
@@ -332,7 +333,7 @@ afterward, until the next clean palette upload. The fix is to gate every
 <code class="language-plaintext highlighter-rouge">LoadImage</code> call against the known CLUT rectangle and to keep palette
 uploads aligned to 16-pixel boundaries.</p>
 
-<h3 id="tty-printf-is-the-only-debug-surface-and-its-a-sharp-tool">TTY printf is the only debug surface, and it’s a sharp tool</h3>
+<h3 id="tty-printf-is-the-only-debug-surface-and-its-a-sharp-tool"><a href="../glossary/#tty">TTY</a> printf is the only debug surface, and it’s a sharp tool</h3>
 
 <p>DuckStation’s TTY logging works reliably as of 2026-04-25 — the project can
 print from anywhere in the runtime and capture the output to a host log
@@ -368,6 +369,11 @@ specialized compositors, not a clock change — the clock isn’t going up.</p>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
+  <li><a href="../devices/">Devices — what it runs on</a>
+— the specific tested instances of the hardware envelope this
+page describes: DuckStation as the every-commit reference,
+SCPH-7501 via TonyHax as the smoke-tested real PS1, plus the
+should-work-unverified and unsupported lists.</li>
   <li><a href="../build/">Build &amp; toolchain</a> — the cross-compile
 setup that targets this hardware.</li>
   <li><a href="../infrastructure/">Build infrastructure</a> — what
@@ -434,6 +440,14 @@ for per-frame <code class="language-plaintext highlighter-rouge">printf()</code>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -456,8 +470,7 @@ for per-frame <code class="language-plaintext highlighter-rouge">printf()</code>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>

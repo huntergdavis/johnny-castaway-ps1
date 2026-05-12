@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/stand16-ps1-spyglass-right.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/stand16-ps1-spyglass-right.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/stand16-ps1-spyglass-right.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="STAND 16 on PS1 at night: Johnny stands on the right side of the island holding a spyglass to his eye, scanning the horizon." />
+  </picture>
   <figcaption>
     STAND 16 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

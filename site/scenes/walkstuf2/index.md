@@ -14,11 +14,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/walkstuf2-ps1-raft-build.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/walkstuf2-ps1-raft-build.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/walkstuf2-ps1-raft-build.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="WALKSTUF 2 on PS1 at night: Johnny crouches over the raft frame on the right side of the island, building it up." />
+  </picture>
   <figcaption>
     WALKSTUF 2 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

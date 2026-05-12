@@ -382,6 +382,11 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 
 ## Related pages
 
+- [Devices — what it runs on]({{ '/docs/devices/' | relative_url }})
+  — the device matrix this harness exercises: DuckStation as the
+  every-commit reference (and what the BIOS-error symptoms look
+  like when the harness can't find one), plus the should-work-
+  unverified and real-PS1 paths the regtest doesn't currently cover.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the disc
   image is produced before regtest can run.
 - [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — the
@@ -406,6 +411,12 @@ scripts/check-character-screenshot.py  Overlay-backed character check
   — the magazine treatment of why regression testing isn't a CI
   feature on this project but a way of working. Reciprocal of
   the link from there to here.
+- [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}) —
+  the infrastructure-side companion to *regression as a lifestyle*:
+  the Dockerized PSn00bSDK build, the parallel headless DuckStation
+  runs, the `JCPERF` / `JCPERF2` log parsing, and the rule that every
+  accepted performance change becomes the next baseline. This page is
+  the reference manual for the orchestration the essay walks through.
 
 ## View source on GitHub
 

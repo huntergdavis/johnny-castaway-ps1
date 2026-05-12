@@ -14,6 +14,51 @@ description: The Johnny Castaway scene ledger — 63 scenes, current validation 
 {% assign blocked_count   = all_scenes | where: "status", "blocked"    | size %}
 {% assign total_count     = all_scenes | size %}
 
+{%- comment -%}
+  Schema.org ItemList. /scenes/ is a 63-item catalog of routed scenes;
+  ItemList is the Schema.org type Google maps into rich-result
+  carousels and AI agents consume as a structured catalog index.
+  Items are emitted in the same family-then-tag order as the rendered
+  table below (sorted_scenes), so the structured data and the visible
+  catalog don't drift.
+
+  `itemListOrder: ItemListUnordered` reflects that the multi-level
+  family-then-tag sort isn't a single-key ranking — each ListItem
+  still carries an explicit `position`, so consumers that care about
+  presentation order have it. site_root construction mirrors
+  _includes/json-ld.html for `--baseurl ""` durability.
+{%- endcomment -%}
+{%- assign jsonld_site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign jsonld_scenes = all_scenes | sort: "tag" | sort: "ads" -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Johnny Castaway PS1 — Scene ledger",
+  "description": {{ "All 63 routed scenes of the Johnny Castaway PS1 fan port, grouped by ADS family and ordered by tag." | jsonify }},
+  "url": {{ jsonld_site_root | append: '/scenes/' | jsonify }},
+  "inLanguage": "en",
+  "numberOfItems": {{ jsonld_scenes.size }},
+  "itemListOrder": "https://schema.org/ItemListUnordered",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ jsonld_site_root | append: '/' | jsonify }}
+  },
+  "itemListElement": [
+  {%- for s in jsonld_scenes -%}
+  {%- unless forloop.first %},{% endunless %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "name": {{ s.ads | append: ' ' | append: s.tag | jsonify }},
+      "url": {{ jsonld_site_root | append: '/scenes/' | append: s.slug | append: '/' | jsonify }}
+    }
+  {%- endfor %}
+  ]
+}
+</script>
+
 The original Johnny Castaway shipped 63 scenes — short looped vignettes
 the screensaver picked from at random. This port aims to reproduce all
 63 in original order on the PlayStation 1, with no scenes added or
@@ -89,6 +134,18 @@ host-vs-PS1 reference frames where applicable.
     so they stay in sync if scenes.yml changes.
   {%- endcomment -%}
   {% for fam in families %}{% assign fam_count = sorted_scenes | where: "ads", fam | size %}<a href="#ads-{{ fam | downcase }}">{{ fam }} <span class="scenes-jump-count">({{ fam_count }})</span></a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+  &nbsp;·&nbsp;
+  {%- comment -%}
+    Random-scene affordance. `data-random-scene-trigger` is the hook
+    that /assets/js/random-scene.js looks for. The `hidden` attribute
+    keeps the link out of the no-JS view (a "feeling lucky" link
+    that doesn't actually randomize would be a regression on /scenes/);
+    the JS removes `hidden` only after it has at least one scene URL
+    to navigate to. Anchor href is harmless — same page — so even if
+    a screen reader exposes the hidden anchor accidentally, clicking
+    it is a no-op.
+  {%- endcomment -%}
+  <a href="#" data-random-scene-trigger hidden>Random scene →</a>
 </nav>
 
 <table class="scene-table">
@@ -109,6 +166,22 @@ host-vs-PS1 reference frames where applicable.
     </tr>
   </thead>
   <tbody>
+    {%- comment -%}
+      Two anchor systems coexist on this table:
+      - Per-scene row anchor `id="scene-<slug>"` on every <tr> so any
+        scene row is deep-linkable (e.g. /scenes/#scene-mary4). The
+        :target CSS rule highlights the targeted row; the existing
+        scroll-margin-top: 5rem on tr[id] clears the sticky header.
+      - Family-group anchor `<a id="ads-<family>">` injected into the
+        first cell of each family's first row, kept for the
+        scenes-jump nav and any external `#ads-<family>` refs. It's
+        visually-hidden but reachable as a fragment target. Empty
+        text plus aria-hidden so screen readers walking the row
+        don't double-announce the family name. Pulled out of the
+        previous one-id-per-tr design so both anchor systems can
+        coexist without collision (HTML disallows multiple ids per
+        element).
+    {%- endcomment -%}
     {% assign current_ads = "" %}
     {% for s in sorted_scenes %}
       {% if s.status == "validated"  %}{% assign cls = "ok"      %}{% endif %}
@@ -117,11 +190,12 @@ host-vs-PS1 reference frames where applicable.
       {% if s.status == "blocked"    %}{% assign cls = "blocked" %}{% endif %}
       {% if s.ads != current_ads %}
         {% assign current_ads = s.ads %}
-        <tr id="ads-{{ s.ads | downcase }}">
+        {% assign family_anchor = true %}
       {% else %}
-        <tr>
+        {% assign family_anchor = false %}
       {% endif %}
-        <td class="scene-tag">{{ s.ads }} {{ s.tag }}</td>
+      <tr id="scene-{{ s.slug }}">
+        <td class="scene-tag">{% if family_anchor %}<a id="ads-{{ s.ads | downcase }}" class="visually-hidden" aria-hidden="true"></a>{% endif %}{{ s.ads }} {{ s.tag }}</td>
         <td class="scene-name"><a href="{{ '/scenes/' | append: s.slug | append: '/' | relative_url }}">{{ s.slug }}</a></td>
         <td class="scene-status {{ cls }}">{{ s.status }}</td>
         <td>{% if s.last_verified != "" %}{% if s.last_verified contains '-ps1' %}<code>{{ s.last_verified }}</code>{% else %}<time datetime="{{ s.last_verified }}"><code>{{ s.last_verified }}</code></time>{% endif %}{% else %}—{% endif %}</td>

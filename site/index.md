@@ -6,11 +6,26 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero-frame">
-    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
-         width="1127" height="677"
-         fetchpriority="high"
-         decoding="async"
-         alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    {%- comment -%}
+      <picture> wraps the hero so modern browsers pull the lossless
+      WebP (73 KB) instead of the PNG (147 KB) — same pixels, half
+      the bytes. The fallback <img> keeps the PNG for browsers that
+      don't recognize <source type="image/webp"> (Chrome <32, Safari
+      <14, Firefox <65, IE). The preload in _includes/head.html
+      points at the WebP with type="image/webp" so modern browsers
+      preload the file they will actually use; older browsers skip
+      that preload (type mismatch) and fetch the PNG normally via
+      the fallback path.
+    {%- endcomment -%}
+    <picture>
+      <source type="image/webp"
+              srcset="{{ '/assets/img/johnny6-ps1-date-dream.webp' | relative_url }}" />
+      <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+           width="1127" height="677"
+           fetchpriority="high"
+           decoding="async"
+           alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    </picture>
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>
@@ -24,44 +39,58 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
 </section>
 
+{%- comment -%}
+  Trio of below-fold scene captures, each wrapped in <picture> so
+  modern browsers pull the lossless WebP (~half the bytes) and
+  older browsers fall through to the PNG. Same pattern as the hero
+  picture element above. loading="lazy" keeps each below-fold fetch
+  deferred until layout reaches it; the <img> retains the width/
+  height/alt attributes so CLS and screen-reader behavior are
+  unchanged. Combined trio drops from ~889 KB PNG to ~473 KB WebP
+  for browsers that accept it (~47% reduction).
+{%- endcomment -%}
 <section class="trio" aria-label="Selected PS1 captures">
   <figure>
     <a href="{{ '/scenes/activity9/' | relative_url }}">
-      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/activity9-ps1-boat.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island." />
+      </picture>
       <figcaption>ACTIVITY 9 · rain dance, boat passes</figcaption>
     </a>
   </figure>
   <figure>
     <a href="{{ '/scenes/johnny1/' | relative_url }}">
-      <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/johnny1-ps1-frog-clock.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      </picture>
       <figcaption>JOHNNY 1 · frog clock</figcaption>
     </a>
   </figure>
   <figure>
     <a href="{{ '/scenes/fishing1/' | relative_url }}">
-      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-cast.webp' | relative_url }}" />
+        <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      </picture>
       <figcaption>FISHING 1 · reference</figcaption>
     </a>
   </figure>
 </section>
 
-<figure style="margin: 2rem auto; text-align: center;" aria-label="Scene Explorer running on PS1">
+<figure style="margin: 2rem auto; max-width: 24rem; border: 3px solid var(--frame-out); outline: 1px solid var(--frame-in); background: var(--jc-blue-deep);" aria-label="Scene Explorer running on PS1">
   <a href="{{ '/docs/pause-menu/#scene-explorer' | relative_url }}">
-    <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
-         width="640" height="448"
-         loading="lazy"
-         decoding="async"
-         style="max-width: 100%; height: auto;"
-         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, then cursor position 5/63 with a validated marker, then FISHING 5 — Eaten by a shark, then Family Fishing with 69 frames; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2 with navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+    <picture>
+      <source type="image/webp" srcset="{{ '/assets/img/scene-explorer-fishing5.webp' | relative_url }}" />
+      <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
+           width="640" height="448"
+           loading="lazy"
+           decoding="async"
+           style="display: block; width: 100%; height: auto;"
+           alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, then cursor position 5/63 with a validated marker, then FISHING 5 — Eaten by a shark, then Family Fishing with 69 frames; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2 with navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+    </picture>
   </a>
-  <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
-    <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
-    straight to any of the 63 scenes. Each entry shows a
-    captured-on-PS1 thumbnail, family, and frame count. New in
-    <a href="{{ '/releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes' | relative_url }}"><code>v0.8.4-ps1</code></a>;
-    this screenshot was itself captured headlessly via
-    <a href="{{ '/docs/scripted-input/' | relative_url }}">the scripted-input harness</a>.
-  </figcaption>
 </figure>
 
 <aside class="status-strip" aria-label="Project status">

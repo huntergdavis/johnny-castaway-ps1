@@ -237,12 +237,18 @@ compiling from source and want host-mode capture, you need
 Yes — smoke-tested on a SCPH-7501 via the
 [TonyHax](https://github.com/socram8888/tonyhax) softmod path.
 Your mileage may vary; treat any boot success as a small miracle.
+The full device matrix — tested cadence, console model, boot path,
+media — is at
+[/docs/devices/]({{ '/docs/devices/' | relative_url }}).
 
 ### Which emulators are supported?
 
 DuckStation is the only one tested every commit. PCSX-Redux
 should work. ePSXe is unverified. The release smoke gauntlet
 runs in headless DuckStation, so that one is the reference.
+[/docs/devices/]({{ '/docs/devices/' | relative_url }}) has the
+fields-table reference: tested cadence, platforms, BIOS, and the
+should-work-unverified and unsupported lists.
 
 ### Does it run at native rate?
 
@@ -266,6 +272,15 @@ If you must, the issue tracker is at
 tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
 About]({{ '/about/#what-this-isnt' | relative_url }}).
+
+For security-relevant reports (build/release supply-chain concerns,
+the published `.bin` / `.cue` disc image being mishandled by a
+download mirror), prefer the
+[GitHub Security Advisories]({{ site.github_url }}/security/advisories/new)
+channel named in
+[`/.well-known/security.txt`]({{ '/.well-known/security.txt' | relative_url }}).
+That's the RFC 9116 path for private disclosures; public issues
+remain on the tracker above.
 
 ---
 

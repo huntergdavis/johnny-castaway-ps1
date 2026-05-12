@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/johnny2-ps1-sos-note.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/johnny2-ps1-sos-note.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/johnny2-ps1-sos-note.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="JOHNNY 2 on PS1 at night: Johnny stands on the left shoreline holding a bottle, a thought bubble above him showing a sheet of paper labelled SOS." />
+  </picture>
   <figcaption>
     JOHNNY 2 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

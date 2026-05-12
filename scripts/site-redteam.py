@@ -1,16 +1,29 @@
 #!/usr/bin/env python3
 """Red-team a generated Johnny Castaway website build.
 
-Checks are intentionally local and boring:
-- generated HTML has no raw Liquid tags or workstation paths
-- local links and static assets resolve inside the build directory
-- fragment links point at real ids/named anchors
-- images have alt text
+Checks are intentionally local and boring. Each one is a preventative
+gate against a regression class that has either already shipped once
+or is cheap enough to lock in even with zero past hits:
+
+- Generated HTML has no raw Liquid tags (`{{` / `{%` leaked through).
+- No local filesystem paths (`/home/`, `/Users/`) leaked into output.
+- Every local href / static-asset src resolves inside the build dir.
+- Every fragment link points at a real `id=""` / `<a name="">` anchor.
+- Every `<img>` has non-empty alt text (WCAG 1.1.1).
+- Every `<img>` has both `width` and `height` attributes (CLS).
+- No empty `<code></code>` elements (Liquid/kramdown content-eating).
+- Heading levels never skip downward (WCAG 1.3.1; e.g. h1 → h3).
+- Every `id=""` is unique within its page (WCAG 4.1.1).
+- Every `<script type="application/ld+json">` block parses as valid JSON.
+
+Excluded subtrees (preserved research) are passed via --exclude
+glob: typically `ps1/*`, `archive/*`, `general/*`, `readme/*`.
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from html.parser import HTMLParser
@@ -24,6 +37,17 @@ from fnmatch import fnmatch
 # eating regression class (e.g. ``{{:toc}}`` silently emitted as empty
 # <code></code>).
 EMPTY_CODE_RE = re.compile(r"<code(?:\s[^>]*)?>\s*</code>")
+
+# JSON-LD blocks: <script type="application/ld+json">...</script>. The
+# site emits 11+ Schema.org record types across ~1300+ blocks; a regression
+# that breaks the JSON body (e.g. an unescaped quote in a Liquid-interpolated
+# `description` field, or an `{{ }}` mis-emit inside a code-fenced template
+# that bleeds into a script block) would silently ship. Each block goes
+# through json.loads() — parse failures fail the build.
+JSONLD_RE = re.compile(
+    r'<script\s+type="application/ld\+json">(.+?)</script>',
+    re.DOTALL,
+)
 
 
 LINK_ATTRS = {
@@ -39,25 +63,65 @@ LINK_ATTRS = {
 }
 
 
+HEADING_TAGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+
+
 class PageParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.links: list[tuple[str, str, str]] = []
         self.ids: set[str] = set()
+        # Parallel list capturing every id occurrence in source order
+        # (including duplicates the ids set silently dedupes). Used
+        # downstream for the duplicate-id WCAG 4.1.1 check.
+        self.id_occurrences: list[str] = []
         self.image_alts: list[tuple[str, str | None]] = []
+        # CLS: every <img> in body content should carry width + height
+        # attributes so the browser can reserve layout space before the
+        # bytes arrive. Captures (src, has_width, has_height) per img.
+        self.image_dims: list[tuple[str, bool, bool]] = []
+        # Heading-level sequence captured in source order. Used downstream
+        # to flag WCAG 1.3.1 hierarchy skips (e.g. h1 → h3 without h2).
+        self.headings: list[int] = []
+        self._in_heading: int | None = None
+        self._heading_text: list[str] = []
+        # Parallel list of heading text snippets so the diagnostic can
+        # name the offending heading rather than just its level.
+        self.heading_texts: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attr_map = dict(attrs)
         if "id" in attr_map and attr_map["id"]:
             self.ids.add(attr_map["id"] or "")
+            self.id_occurrences.append(attr_map["id"] or "")
         if tag == "a" and attr_map.get("name"):
             self.ids.add(attr_map["name"] or "")
+            self.id_occurrences.append(attr_map["name"] or "")
         if tag == "img":
             self.image_alts.append((attr_map.get("src") or "", attr_map.get("alt")))
+            self.image_dims.append((
+                attr_map.get("src") or "",
+                bool(attr_map.get("width")),
+                bool(attr_map.get("height")),
+            ))
+        if tag in HEADING_TAGS:
+            self._in_heading = int(tag[1])
+            self._heading_text = []
         for attr in LINK_ATTRS.get(tag, ()):
             value = attr_map.get(attr)
             if value:
                 self.links.append((tag, attr, value))
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in HEADING_TAGS and self._in_heading is not None:
+            self.headings.append(self._in_heading)
+            self.heading_texts.append("".join(self._heading_text).strip())
+            self._in_heading = None
+            self._heading_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self._in_heading is not None:
+            self._heading_text.append(data)
 
 
 def split_srcset(value: str) -> list[str]:
@@ -137,6 +201,19 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         for src, alt in parser.image_alts:
             if alt is None or not alt.strip():
                 errors.append(f"{rel}: image missing alt text ({src})")
+        # CLS: every <img> in body content needs width + height attrs
+        # so the browser can reserve layout space before the bytes
+        # arrive. Caught a real regression in ca59c899c (the v0.8.4
+        # menu-harness regen dropped width="640" height="448" from all
+        # 15 /help/menu/ images) — locked in by c04a5085a.
+        for src, has_w, has_h in parser.image_dims:
+            if not (has_w and has_h):
+                missing = []
+                if not has_w: missing.append("width")
+                if not has_h: missing.append("height")
+                errors.append(
+                    f"{rel}: image missing {' + '.join(missing)} attr (CLS): {src}"
+                )
         # Empty <code></code> elements almost always indicate a content
         # bug — typically Liquid ate something between backticks (e.g.
         # `{{:toc}}` interpreted as a Liquid tag and emitted nothing) or
@@ -145,6 +222,49 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         # silently eating `{{:toc}}` content. Cheap preventative guard.
         if EMPTY_CODE_RE.search(text):
             errors.append(f"{rel}: empty <code></code> element (content lost?)")
+        # Every <script type="application/ld+json"> block must parse as
+        # valid JSON. The site emits 11 Schema.org record types across
+        # 1300+ blocks; a Liquid escaping mistake in a Schema.org field
+        # (e.g. an unescaped backtick in a description, an unquoted
+        # interpolation that emits a stray brace) silently breaks the
+        # structured-data signal for crawlers and the page still
+        # renders. Catch parse failures at build time.
+        for idx, jsonld in enumerate(JSONLD_RE.findall(text), start=1):
+            try:
+                json.loads(jsonld)
+            except json.JSONDecodeError as e:
+                errors.append(
+                    f"{rel}: JSON-LD block #{idx} parse error at "
+                    f"line {e.lineno} col {e.colno}: {e.msg}"
+                )
+        # WCAG 1.3.1 (Info and Relationships) — heading levels must not
+        # skip down. A page that goes from <h1> directly to <h3> hides
+        # the intermediate structure from screen readers walking the
+        # outline. Allowed: any descending step, or a level repeat, or
+        # ascending by exactly one. Forbidden: ascending by more than
+        # one. Templates emit one <h1> per page (layout-level), so a
+        # skip-down from the first body heading is the typical failure
+        # mode — author wrote `### Foo` where `## Foo` was intended.
+        prev_level: int | None = None
+        for level, htext in zip(parser.headings, parser.heading_texts):
+            if prev_level is not None and level > prev_level + 1:
+                preview = htext[:60] or "(empty heading)"
+                errors.append(
+                    f"{rel}: heading skip h{prev_level}->h{level}: '{preview}'"
+                )
+            prev_level = level
+        # WCAG 4.1.1 (Parsing) / Schema.org URL fragments — id values
+        # must be unique within a page. Two elements sharing the same
+        # id silently break in-page anchor jumps (browser jumps to
+        # the first occurrence; cross-refs to other instances can't
+        # disambiguate). Site-wide audit on 2026-05-12 found zero
+        # duplicates — this check locks that in.
+        seen_ids: set[str] = set()
+        for id_val in parser.id_occurrences:
+            if id_val in seen_ids:
+                errors.append(f"{rel}: duplicate id='{id_val}'")
+            else:
+                seen_ids.add(id_val)
 
     for html, parser in pages.items():
         rel = html.relative_to(root)

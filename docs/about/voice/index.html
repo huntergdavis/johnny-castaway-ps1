@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Voice — Johnny Castaway PS1</title>
   <meta name="description" content="Voice and tone guide for the Johnny Castaway PS1 site — the rhythm, vocabulary, and disciplines the prose holds itself to. Written so contributors can match it." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/voice/" /><meta property="og:title"        content="Voice — Johnny Castaway PS1" />
@@ -22,11 +22,12 @@
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
   <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
 
   <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
         href="../../devlog/feed.xml" />
@@ -102,7 +103,7 @@
       <h1>Voice</h1>
       <p class="subtitle">The editorial standard behind every page on this domain.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1429 words
+          ~6 min read · 1514 words
         </p>
 
       <hr class="rule" />
@@ -110,6 +111,8 @@
 
   <div class="page-body">
     <p>This page exists because the site has a deliberate voice and somebody is going to want to write a new page someday. The shorter version of what follows: read the in-game credits screen, then write like that. The longer version is below.</p>
+
+<p>This page is the public distillation. The 450-line internal source-of-truth that drafting agents read before new prose gets generated lives at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/voice-guide.md"><code class="language-plaintext highlighter-rouge">site/_includes/voice-guide.md</code></a> — it’s anchored on a verbatim re-read of <a href="https://hunterdavis.com/">hunterdavis.com</a> and carries the longer rationale for each rule here.</p>
 
 <details class="page-toc">
   <summary>On this page</summary>
@@ -251,6 +254,12 @@ github.com/huntergdavis/johnny-castaway-ps1</p>
 — the long-form retrospective this guide is the public-facing
 distillation of. Read this guide first, that essay if you want
 the why behind the rules.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_includes/voice-guide.md"><code class="language-plaintext highlighter-rouge">site/_includes/voice-guide.md</code></a>
+— the 450-line internal source-of-truth this page is distilled
+from. Carries the full per-rule rationale, the original
+hunterdavis.com 2026-04-26 anchor notes, and the specific phrases
+that earned their way into the canonical list. Drafting agents
+read this before generating new prose for the site.</li>
   <li><a href="../../docs/agents/">AI sub-agents on this project</a>
 — what gets drafted by an LLM and what doesn’t, with the voice
 guide as the editing-pass standard.</li>
@@ -280,6 +289,14 @@ on.</li>
           (<a href="../../releases/">v0.8.7-ps1</a>)
         </p>
         <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
@@ -302,8 +319,7 @@ on.</li>
           Hunter's. The first drafts often were not.
         </p>
       </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <ul>
+      <nav class="footer-nav" aria-label="Footer"><ul>
           <li><a href="../../help/">Help</a></li>
           <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>

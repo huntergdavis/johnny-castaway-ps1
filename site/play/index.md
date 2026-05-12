@@ -5,6 +5,119 @@ subtitle: Latest build, quickstart, controls.
 description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
+{%- comment -%}
+  Schema.org HowTo structured data for the DuckStation quickstart.
+  Maps 1:1 to the prose steps in the "## Quickstart (DuckStation)"
+  section below. Google + agent crawlers consume HowTo for "how do
+  I run X" intents.
+
+  Steps are hand-mirrored next to the prose they describe — same
+  co-location discipline as the FAQPage on /faq/, Dataset on /perf/,
+  ItemList on /scenes/. If the quickstart steps change, this block
+  updates in the same commit.
+
+  site_root and quickstart_url match the canonical_baseurl pattern
+  used everywhere else so absolute URLs survive `--baseurl ""`.
+{%- endcomment -%}
+{%- assign play_site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign play_quickstart_url = play_site_root | append: '/play/#emulator' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to play Johnny Castaway PS1 in DuckStation",
+  "description": {{ "Download the .bin / .cue pair from the latest release, open the .cue in DuckStation, and let the screensaver idle. No menu to begin — the game IS the screensaver." | jsonify }},
+  "totalTime": "PT2M",
+  "url": {{ play_quickstart_url | jsonify }},
+  "inLanguage": "en",
+  "tool": [
+    { "@type": "HowToTool", "name": "DuckStation emulator", "url": "https://www.duckstation.org/" },
+    { "@type": "HowToTool", "name": "PlayStation 1 BIOS file (e.g. scph1001.bin) — required by DuckStation, not shipped by this project" }
+  ],
+  "supply": [
+    { "@type": "HowToSupply", "name": "jcreborn.bin (~76 MiB disc image)" },
+    { "@type": "HowToSupply", "name": "jcreborn.cue (71 B cue sheet)" }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Install DuckStation",
+      "text": "Install DuckStation on your platform of choice from duckstation.org.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Place files",
+      "text": "Drop jcreborn.cue and jcreborn.bin into the same folder.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Open the disc image",
+      "text": "In DuckStation: File → Start File… → pick jcreborn.cue.",
+      "url": {{ play_quickstart_url | jsonify }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Watch",
+      "text": "Hit start. The game runs as a screensaver — let it idle and the scenes will cycle on their own. There is no menu to begin; the game is the screensaver.",
+      "url": {{ play_quickstart_url | jsonify }}
+    }
+  ]
+}
+</script>
+
+{%- comment -%}
+  Schema.org SoftwareSourceCode. The home page emits SoftwareApplication
+  describing the playable artifact; /play/ is also the install entrypoint
+  for the source-code repository — `git clone` builds the same disc image
+  the .bin/.cue download serves. SourceCode is the Schema.org type for
+  source-code-hosting pages, distinct from SoftwareApplication's
+  playable-artifact framing. Both records are accurate facets of this
+  project.
+
+  programmingLanguage = C (the runtime is C against PSn00bSDK; host
+  build pipeline scripts are Python but not the shipped artifact).
+  runtimePlatform names the actual target. codeRepository + author +
+  license + version mirror the same canonical values the home-page
+  SoftwareApplication block uses, so JSON-LD consumers that merge
+  records by URL get consistent author/license/version triples.
+{%- endcomment -%}
+{%- assign play_repo_url = site.github_url -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": {{ site.title | jsonify }},
+  "description": {{ "Source code for the Johnny Castaway PS1 fan port. C against PSn00bSDK, build pipeline in Docker, regtest harness in headless DuckStation. Open source under GPL-3.0." | jsonify }},
+  "url": {{ play_site_root | append: '/play/' | jsonify }},
+  "codeRepository": {{ play_repo_url | jsonify }},
+  "programmingLanguage": "C",
+  "runtimePlatform": "Sony PlayStation",
+  "targetProduct": {{ play_repo_url | append: '/releases/tag/' | append: site.release.tag | jsonify }},
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "isAccessibleForFree": true,
+  "version": {{ site.release.tag | jsonify }},
+  {%- if site.release.release_date %}
+  "dateModified": {{ site.release.release_date | jsonify }},
+  {%- endif %}
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ play_site_root | append: '/' | jsonify }}
+  }
+}
+</script>
+
 <details class="page-toc" markdown="1">
 <summary>On this page</summary>
 
@@ -41,6 +154,49 @@ payload routed onto the disc.
    scenes will cycle on their own.
 
 There is no menu to "begin." The game *is* the screensaver.
+
+DuckStation is the every-commit reference; for other emulators, real
+PS1 hardware via TonyHax, PS2/PS3 backwards-compat, and the BIOS
+requirement, see [/docs/devices/]({{ '/docs/devices/' | relative_url }}).
+
+## Verify your download {#verify}
+
+{%- comment -%}
+  Per-release maintenance: the two SHA-256 values below come from
+  `site.release.sha256_bin` / `site.release.sha256_cue` in _config.yml.
+  On every milestone release tag bump (release_date / tag / version),
+  recompute via:
+
+      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.bin | sha256sum
+      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.cue | sha256sum
+
+  and update those two fields in _config.yml's release: block.
+  Future improvement: scripts/release.sh writes a sidecar `.sha256`
+  file beside the .bin/.cue artifacts and the build reads from it.
+{%- endcomment -%}
+Optional but recommended if you downloaded the disc image from a mirror
+or anywhere other than the official
+[GitHub release page]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
+For **`{{ site.release.tag }}`** the SHA-256 hashes are:
+
+| File          | SHA-256                                                            |
+| ------------- | ------------------------------------------------------------------ |
+| `jcreborn.bin` | `{{ site.release.sha256_bin }}` |
+| `jcreborn.cue` | `{{ site.release.sha256_cue }}` |
+
+To check your local copies, run:
+
+```bash
+sha256sum jcreborn.bin jcreborn.cue
+```
+
+(macOS: `shasum -a 256 jcreborn.bin jcreborn.cue`. Windows PowerShell:
+`Get-FileHash jcreborn.bin -Algorithm SHA256`.)
+
+If a hash differs from the values above, the file was altered in
+transit or by a mirror — re-download from the GitHub release page
+linked above. The hashes are pinned to **`{{ site.release.tag }}`**;
+older or newer releases will have different values.
 
 ## Original Sierra data files
 

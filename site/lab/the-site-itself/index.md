@@ -271,6 +271,13 @@ None of this is novel work. Every piece is a Jekyll trick somebody else has done
 
 ## Cross-links
 
+- [/docs/feeds/]({{ '/docs/feeds/' | relative_url }}) — the
+  reference companion to this essay: every machine-readable endpoint
+  on the site (the four feeds, the sitemap, robots.txt, the RFC 9116
+  security.txt, humans.txt, the W3C web manifest, and the seven
+  Schema.org JSON-LD record types in every page's head), with paths,
+  MIME types, and auto-discovery hooks. The essay tells the story;
+  /docs/feeds/ is the spec.
 - [/sitemap.xml]({{ '/sitemap.xml' | relative_url }}) — the
   hand-rolled sitemap this article documents.
 - [/devlog/feed.xml]({{ '/devlog/feed.xml' | relative_url }}) and

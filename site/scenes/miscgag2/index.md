@@ -13,11 +13,14 @@ image_height: 720
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/miscgag2-ps1-bath-towel.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/miscgag2-ps1-bath-towel.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/miscgag2-ps1-bath-towel.png' | relative_url }}"
        width="961" height="720"
        fetchpriority="high"
        decoding="async"
        alt="MISCGAG 2 on PS1 at night: Johnny stands under the palm tree with a small white towel spread on the sand next to him, set up for a bath that the shark will interrupt." />
+  </picture>
   <figcaption>
     MISCGAG 2 on PS1, captured during the v0.8.4-ps1
     <a href="{{ '/lab/chapter-select-grind/' | relative_url }}">chapter-select grind</a>.

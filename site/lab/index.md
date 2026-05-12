@@ -41,12 +41,18 @@ want the raw documents behind the essays, use the
 [resource catalog]({{ '/resources/' | relative_url }}).
 
 Subscribe via
-<a href="{{ '/lab/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a>;
-the feed is reverse-chronological with rich summaries (no embedded
+<a href="{{ '/lab/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a>
+or
+<a href="{{ '/lab/feed.json' | relative_url }}" type="application/feed+json">JSON Feed</a>;
+both are reverse-chronological with rich summaries (no embedded
 body — `site.html_pages` doesn't pre-render content reliably the
-way `site.posts` does, so the feed is the headline-and-link
+way `site.posts` does, so the feeds are the headline-and-link
 pattern). Auto-discovery is wired into every page's `<head>`, so
-most feed readers find it automatically.
+most feed readers find them automatically. The
+[/docs/feeds/]({{ '/docs/feeds/' | relative_url }})
+reference page documents every machine-readable endpoint the site
+ships, including the matching pair for the
+[devlog]({{ '/devlog/' | relative_url }}).
 
 ## Contents
 

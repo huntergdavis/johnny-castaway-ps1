@@ -70,7 +70,7 @@ What didn't work, in this era:
   showed up as scene playback corruption. The interim answer was
   "visual debugging" -- colored pixels via `LoadImage`, the
   [five-panel telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}), and `debugMode=0` to disable
-  noisy text paths. Reliable TTY printf would not return until
+  noisy text paths. Reliable [TTY]({{ '/docs/glossary/#tty' | relative_url }}) printf would not return until
   **2026-04-25**.
 - **A faithful TTM/ADS interpreter on the PS1 produced
   "Johnny disappears" bugs that moved as fast as they were

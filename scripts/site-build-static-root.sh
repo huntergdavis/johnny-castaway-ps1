@@ -20,7 +20,13 @@ fi
   --destination "$ROOT/docs"
 
 python3 "$ROOT/scripts/site-relativize-build.py" "$ROOT/docs"
-rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/robots.txt"
+# Strip Jekyll's site-root feed.xml (the site ships dedicated
+# /devlog/feed.xml and /lab/feed.xml; the default at /feed.xml is
+# noise). robots.txt is intentionally kept — the hand-rolled
+# site/robots.txt emits a Sitemap directive using canonical_baseurl
+# so the build's `--baseurl ""` override doesn't strip the project
+# prefix from the sitemap URL.
+rm -f "$ROOT/docs/feed.xml"
 
 # A11y: kramdown markdown-table headers render as bare `<th>` without
 # scope. WCAG H63 wants column headers to declare scope="col" so screen

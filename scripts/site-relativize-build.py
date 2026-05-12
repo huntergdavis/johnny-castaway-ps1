@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 
-ATTR_RE = re.compile(r"""(?P<prefix>\b(?:href|src|poster|content)=["'])(?P<url>[^"']+)(?P<suffix>["'])""")
+ATTR_RE = re.compile(r"""(?P<prefix>\b(?:href|src|srcset|poster|content)=["'])(?P<url>[^"']+)(?P<suffix>["'])""")
 URL_RE = re.compile(r"""url\((?P<quote>["']?)(?P<url>/[^)"']+)(?P=quote)\)""")
 
 

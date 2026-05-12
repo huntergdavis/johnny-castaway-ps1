@@ -108,7 +108,15 @@ layout: default
         {% endif %}
       </div>
       <div class="scene-pager-up">
-        <a href="{{ '/scenes/' | relative_url }}">↑ scene ledger</a>
+        {%- comment -%}
+          Deep-link back to the row that represents the current scene
+          rather than the top of the ledger. The per-row anchor
+          `scene-<slug>` exists on every <tr> (132fb3866); the existing
+          :target CSS highlights the destination row so the reader's
+          eye lands on it after the jump. Falls back gracefully if the
+          row is later removed — browser just lands at the top.
+        {%- endcomment -%}
+        <a href="{{ '/scenes/#scene-' | append: page.slug | relative_url }}">↑ scene ledger</a>
       </div>
       <div class="scene-pager-next">
         {% if scene_next %}
