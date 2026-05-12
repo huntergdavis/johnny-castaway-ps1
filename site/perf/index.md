@@ -2149,3 +2149,9 @@ and this page.
 - [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
   — the durable numeric source the table on this page is rendered
   from.
+- [/docs/feeds/]({{ '/docs/feeds/' | relative_url }}) — the same
+  126-row matrix is also published as a Schema.org `Dataset`
+  JSON-LD record inline at the top of this page, with
+  `distribution.contentUrl` pointing at the CSV above. The feeds
+  reference documents every machine-readable endpoint on the site;
+  this page is the Dataset entry.
