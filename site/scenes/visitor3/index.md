@@ -48,7 +48,7 @@ were evidence-gathering positions, not runtime pins.
 
 ## Notable runtime history
 
-`VISITOR 3` remains one of the high-leverage orange-band rows on the
+`VISITOR 3` remains one of the high-leverage yellow-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
 `{{ site.release.tag }}`. After the compact metadata work, motion-copy payloads,
 high-only frame `117` target-hull promotion, the v214 high setup-prime pass,
@@ -58,7 +58,7 @@ v238 high frame-127/frame-130 resident-copy compaction, and the v248 low
 frame-114/frame-117 no-op residual compaction, `visitor3` high
 and low now run around
 [`96.5%` and `95.3%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-instead of sitting in the red/yellow bands. The wide multi-view stitch (the red ship
+instead of sitting in the red/orange bands. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
 harder than most scenes; the remaining timing gap is concentrated in the

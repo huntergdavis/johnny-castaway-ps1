@@ -30,7 +30,7 @@ image_height: 720
     <a href="{{ '/docs/captions/' | relative_url }}">caption audit</a>'s
     "jogs around the island" guess for this scene — that gag is
     <a href="{{ '/scenes/walkstuf3/' | relative_url }}">WALKSTUF 3</a>.)
-    Engineering retro: WALKSTUF 1 is the orange-band perf scene
+    Engineering retro: WALKSTUF 1 is the yellow-band perf scene
     on <a href="{{ '/perf/' | relative_url }}">/perf/</a>
     (95.6% / 95.8% target speed) — both packs were converted to
     compact FGP3/v4 restore-minus-current in

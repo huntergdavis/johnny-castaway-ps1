@@ -29,7 +29,7 @@ matrix as the public performance baseline.
 
 - **Public rollup:** `+0.3215%` over target / `99.6847%` target speed.
 - **Raw signed rollup:** `-0.4470%` over target / `100.4685%` target speed.
-- **Bands:** `111` green, `15` orange, `0` yellow, `0` red.
+- **Bands:** `111` green, `15` yellow, `0` orange, `0` red.
 - **Under-99 focus set:** WALKSTUF1 low/high, VISITOR3 high/low, BUILDING2
   high/low, VISITOR5 high/low, JOHNNY1 high/low, BUILDING4 low, BUILDING6
   high/low, and JOHNNY6 high/low.

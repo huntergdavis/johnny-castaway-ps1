@@ -136,7 +136,7 @@ host-vs-PS1 reference frames where applicable.
 The headless-perf battle card now lives on its own page at
 [/perf/]({{ '/perf/' | relative_url }}). Clicking a column header
 there sorts the 126-variant matrix by that field; the Target Speed
-cells stay color-coded green / yellow / red so a glance gives the
+cells stay color-coded green / yellow / orange / red so a glance gives the
 shape.
 
 Validation (the table above) is one bar; performance (the battle

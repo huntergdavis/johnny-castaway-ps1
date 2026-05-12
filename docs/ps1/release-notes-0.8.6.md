@@ -18,8 +18,8 @@ setup-segment resident-copy promotions for frames `131` and `128`.
 - **Raw optimization headroom.** The uncapped signed rollup is `-0.4529%`
   over target / `100.4740%` target speed, versus v0.8.5's `-0.4470%` /
   `100.4685%`.
-- **Bands unchanged at the band edges.** `111` green, `15` orange, `0`
-  yellow, `0` red — same shape as v0.8.5; the headroom showed up inside the
+- **Bands unchanged at the band edges.** `111` green, `15` yellow, `0`
+  orange, `0` red — same shape as v0.8.5; the headroom showed up inside the
   green band rather than promoting another row across the `99%` line.
 - **Methodology delta vs v0.8.5.** About `0.0058` public over-target points
   removed and `0.0055` public target-speed points gained.
@@ -42,10 +42,10 @@ setup-segment resident-copy promotions for frames `131` and `128`.
 
 - **Public rollup:** `+0.3157%` over target / `99.6902%` target speed.
 - **Raw signed rollup:** `-0.4529%` over target / `100.4740%` target speed.
-- **Bands:** `111` green, `15` orange, `0` yellow, `0` red.
+- **Bands:** `111` green, `15` yellow, `0` orange, `0` red.
 - **Under-99 focus set:** WALKSTUF1 low/high, VISITOR3 high/low, BUILDING2
   high/low, VISITOR5 high/low, JOHNNY1 high/low, BUILDING4 low, BUILDING6
-  high/low, and JOHNNY6 high/low. (Same scenes as v0.8.5; the orange band
+  high/low, and JOHNNY6 high/low. (Same scenes as v0.8.5; the yellow band
   membership did not change in this release.)
 - **VISITOR3 baseline:** high `1070/1039` with `49` blocking VBlanks, `9`
   loop reads, and `9` due misses after the v299 frame-131 resident-alias

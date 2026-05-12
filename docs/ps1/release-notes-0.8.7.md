@@ -37,9 +37,9 @@ independent of a large paused-menu heap allocation.
 - **Methodology total:** about `17.08` public over-target points removed and
   `+12.59` public target-speed points gained since the compact full-matrix
   baseline.
-- **Bands:** `111` green, `15` orange, `0` yellow, `0` red.
+- **Bands:** `111` green, `15` yellow, `0` orange, `0` red.
 - **Under-99 focus set:** WALKSTUF1 high/low, VISITOR3 high/low, BUILDING2
-  high/low, VISITOR5 low, JOHNNY1 high, and the remaining orange rows. This
+  high/low, VISITOR5 low, JOHNNY1 high, and the remaining yellow rows. This
   release does not change the performance row membership.
 
 ## Verification

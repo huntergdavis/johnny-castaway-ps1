@@ -156,7 +156,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/perf/' | relative_url }}">Headless-perf battle card</a>
-    <p>The other bar: 126 scene/tide variants timed against target frame budget. Sortable headers, color-coded Target Speed (≥99% green, ≥95% orange, ≥90% yellow, &lt;90% red). Currently averaging {{ site.release.perf_target_speed_pct }}% target speed.</p>
+    <p>The other bar: 126 scene/tide variants timed against target frame budget. Sortable headers, color-coded Target Speed (≥99% green, ≥95% yellow, ≥90% orange, &lt;90% red). Currently averaging {{ site.release.perf_target_speed_pct }}% target speed.</p>
   </li>
   <li>
     <a href="{{ '/archaeology/' | relative_url }}">The full story</a>

@@ -64,7 +64,7 @@ window-prefetch / slack4 guard on the gap-compressed pack, and the
 VISITOR3 high/low setup-segment resident copies for frames `131` / `128`.
 
 - **126 / 126 rows remain timing-bearing.** No row regressed; band shape
-  (`111` green, `15` orange, `0` yellow, `0` red) is unchanged from v0.8.5.
+  (`111` green, `15` yellow, `0` orange, `0` red) is unchanged from v0.8.5.
 - **Public rollup `+0.3157%` / `99.6902%` target speed.** Down from
   v0.8.5's `+0.3215%` / `99.6847%`.
 - **Raw signed rollup `-0.4529%` / `100.4740%` target speed.** Down from

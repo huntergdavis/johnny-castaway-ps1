@@ -872,7 +872,7 @@ Next plausible wins, in priority order:
    bytes, but dense scenes still pay per-span/per-pixel runtime costs.
 5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
    now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
-   the bottom of the orange band after compact-pack promotion. The remaining
+   the bottom of the yellow band after compact-pack promotion. The remaining
    hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low,
    and JOHNNY6 high/low,

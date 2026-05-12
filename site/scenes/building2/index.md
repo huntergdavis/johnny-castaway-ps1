@@ -55,7 +55,7 @@ to `validated` and a row turns green in the
 ## Notable runtime history
 
 `BUILDING 2` straddles the
-[perf battle card]({{ '/perf/' | relative_url }})'s orange band after the
+[perf battle card]({{ '/perf/' | relative_url }})'s yellow band after the
 low restore-minus-current/slack-4 pass — high and low tide are both at
 `97.6%`, close to but not yet at native [target speed]({{ '/docs/glossary/#target-speed' | relative_url }}). Its
 [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})-heavy
