@@ -64,6 +64,10 @@ class PageParser(HTMLParser):
         # downstream for the duplicate-id WCAG 4.1.1 check.
         self.id_occurrences: list[str] = []
         self.image_alts: list[tuple[str, str | None]] = []
+        # CLS: every <img> in body content should carry width + height
+        # attributes so the browser can reserve layout space before the
+        # bytes arrive. Captures (src, has_width, has_height) per img.
+        self.image_dims: list[tuple[str, bool, bool]] = []
         # Heading-level sequence captured in source order. Used downstream
         # to flag WCAG 1.3.1 hierarchy skips (e.g. h1 → h3 without h2).
         self.headings: list[int] = []
@@ -83,6 +87,11 @@ class PageParser(HTMLParser):
             self.id_occurrences.append(attr_map["name"] or "")
         if tag == "img":
             self.image_alts.append((attr_map.get("src") or "", attr_map.get("alt")))
+            self.image_dims.append((
+                attr_map.get("src") or "",
+                bool(attr_map.get("width")),
+                bool(attr_map.get("height")),
+            ))
         if tag in HEADING_TAGS:
             self._in_heading = int(tag[1])
             self._heading_text = []
@@ -180,6 +189,19 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         for src, alt in parser.image_alts:
             if alt is None or not alt.strip():
                 errors.append(f"{rel}: image missing alt text ({src})")
+        # CLS: every <img> in body content needs width + height attrs
+        # so the browser can reserve layout space before the bytes
+        # arrive. Caught a real regression in ca59c899c (the v0.8.4
+        # menu-harness regen dropped width="640" height="448" from all
+        # 15 /help/menu/ images) — locked in by c04a5085a.
+        for src, has_w, has_h in parser.image_dims:
+            if not (has_w and has_h):
+                missing = []
+                if not has_w: missing.append("width")
+                if not has_h: missing.append("height")
+                errors.append(
+                    f"{rel}: image missing {' + '.join(missing)} attr (CLS): {src}"
+                )
         # Empty <code></code> elements almost always indicate a content
         # bug — typically Liquid ate something between backticks (e.g.
         # `{{:toc}}` interpreted as a Liquid tag and emitted nothing) or
