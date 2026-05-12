@@ -649,6 +649,12 @@ reduced low-tide `loop_reads 55 -> 54`, but regressed `scene_vb 1657 -> 1661`,
 leaving hidden refill at `5`. Do not retry this tail group as a local source
 table; saved reads after `365..381` still need scheduler-owned placement.
 
+Current BUILDING2 low early group gate: `67..73` is closed. Unguarded grouping
+cut blocking `81 -> 76` and loop reads `55 -> 54`, but regressed scene/loop,
+target, public overrun, and hidden refill (`1619/1349/1318/31/1` to
+`1621/1351/1316/35/3`). The slack-4 guarded variant stayed exact-flat, so this
+range is not a useful local table.
+
 Current BUILDING2 low mid-cluster group gate: the `204..220` group has the
 same strict blocker as restore-minus-current. Guards at `8` and `7` VBlanks
 were exact-flat (`1383/1304`, `blocking_vb=118`, `prefetch_overrun_vb=5`).
@@ -2182,6 +2188,7 @@ pre-v0.8.0 row.
 | BUILDING2 high read group `226..238` | Do not promote as a hand-authored group. The v348 probe fired and reduced loop reads `61 -> 59`, but all key metrics stayed exact-flat and read time worsened (`loop_read_vb 262 -> 263`, total read VBlanks `402 -> 403`, hidden read time `207 -> 208`). Transaction count alone is not progress for this row; retry only through generated deadline placement or pack-side byte reduction. |
 | BUILDING2 high read group `210..226` | Do not promote or retry as a hand-authored table. The focused v176 probe kept layout fixed but stayed exact-flat at `1599`, `1349/1316`, `overrun_vb=33`, `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`, and `group_hits=0`; the row remains scheduler-owned-only despite being append-start fireable in the planner. |
 | BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
+| BUILDING2 low read group `67..73` | Do not promote as a local read group. Unguarded reduced blocking `81 -> 76` and loop reads `55 -> 54`, but regressed scene `1619 -> 1621`, loop `1349 -> 1351`, target `1318 -> 1316`, overrun `31 -> 35`, and hidden refill `1 -> 3`; the slack-4 guarded variant was exact-flat and did not fire a useful append. |
 | BUILDING2 low restore-minus-current retry | Do not promote as a pack-only change. It improves low as far as `1383 -> 1346`, overrun `79 -> 35`, blocking `118 -> 50`, and loop reads `55 -> 52`, but hidden refill regresses `5 -> 13`; temporary setup-prime and stage-guard salvages did not fix that. Retry only with generated scheduler/refill ownership or a second data-shape change that reduces active CD pressure before shortening the render cadence. |
 | BUILDING2 low restore-minus-current plus window slack `5` | Do not promote or retry as a local slack guard. It fixes the strict hidden-refill blocker (`prefetch_overrun_vb 5 -> 0`) and improves loop/overrun (`1383/1304 -> 1360/1313`, overrun `79 -> 47`), but it starves active presentation and regresses visible blocking `118 -> 180` plus due misses `22 -> 43`. This proves the low transform needs generated refill placement, not simply fewer low-slack window reads. |
 | BUILDING6 `48 KiB` window plus `15..39` read group | Do not promote or retry as a scalar window/group change. It reduced loop reads from `74 -> 32` high and `73 -> 31` low, but regressed high `2520/2442 -> 2568/2443`, blocking `62 -> 115`, hidden refill `64 -> 117`, and low `2515/2437 -> 2565/2445`, blocking `70 -> 115`, hidden refill `66 -> 96`. BUILDING6 needs generated scheduler ownership or a shrinking/selective FGP2 data-shape encoder before another read-count group. |
