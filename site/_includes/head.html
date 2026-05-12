@@ -20,6 +20,16 @@
     them. Standard meta-tag opt-out.
   {%- endcomment -%}
   <meta name="format-detection" content="telephone=no" />
+  {%- comment -%}
+    Referrer policy. `strict-origin-when-cross-origin` is the modern
+    browser default — pinning it explicitly documents the privacy
+    posture and prevents future browser-default drift toward weaker
+    policies. Same-origin requests get the full Referer; cross-origin
+    requests over HTTPS-to-HTTPS get only the origin (no path or
+    query); cross-origin downgrades to HTTP get no Referer at all.
+    Aligns with the site's zero-external-resources discipline.
+  {%- endcomment -%}
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>{% if page.title and page.url != "/" %}{{ page.title | escape }} — {{ site.title | escape }}{% else %}{{ site.title | escape }} — fan port{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description | escape }}" />
