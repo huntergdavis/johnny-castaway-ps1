@@ -233,7 +233,7 @@ in a small dedicated ordering table (`capOt[]`):
 - **Slot N-2** — a `POLY_F4` flat quad at full transparent black, sized to
   the actual line count (1–4 lines), positioned along the bottom of the
   640x480 frame. The semi-trans bit lets the underlying scene show through.
-- **Slot N-3** — one `SPRT` per glyph, sampled from the pause-menu font
+- **Slot N-3** — one [`SPRT`]({{ '/docs/glossary/#sprt' | relative_url }}) per glyph, sampled from the pause-menu font
   atlas at draw size 16x16. Lines are centered horizontally inside the
   band.
 
