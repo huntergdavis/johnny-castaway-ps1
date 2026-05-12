@@ -96,21 +96,26 @@ JSON-LD records inside its head. Multiple `<script type="application/ld+json">`
 blocks are valid — crawlers merge them — so each record is conditional
 on the page kind:
 
-| Record type           | Emitted on                                                  |
-| --------------------- | ----------------------------------------------------------- |
-| `WebSite`             | every page                                                  |
-| `SoftwareApplication` | the home page only (`GameApplication` · `Screensaver`)      |
-| `BreadcrumbList`      | every page except the home page                             |
-| `BlogPosting`         | devlog posts (`layout: post` + `date`)                      |
-| `Article`             | lab essays (`/lab/<slug>/` with `date`, excludes the index) |
-| `CreativeWork`        | per-scene pages (`layout: scene`)                           |
-| `FAQPage`             | [/faq/]({{ '/faq/' | relative_url }})                       |
+| Record type            | Emitted on                                                                  |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `WebSite`              | every page                                                                  |
+| `SoftwareApplication`  | the home page only (`GameApplication` · `Screensaver`)                      |
+| `BreadcrumbList`       | every page except the home page                                             |
+| `BlogPosting`          | devlog posts (`layout: post` + `date`)                                      |
+| `Article`              | lab essays (`/lab/<slug>/` with `date`, excludes the index)                 |
+| `CreativeWork`         | per-scene pages (`layout: scene`)                                           |
+| `FAQPage`              | [/faq/]({{ '/faq/' | relative_url }})                                       |
+| `Dataset`              | [/perf/]({{ '/perf/' | relative_url }}) — the 126-row scene/tide matrix    |
+| `ItemList`             | [/scenes/]({{ '/scenes/' | relative_url }}) — all 63 scenes as ListItems   |
+| `HowTo`                | [/play/]({{ '/play/' | relative_url }}) — the DuckStation 4-step quickstart |
+| `SoftwareSourceCode`   | [/play/]({{ '/play/' | relative_url }}) — code repository + language        |
 
-The emission logic lives in
+The emission logic for the cross-page records lives in
 [`_includes/json-ld.html`]({{ site.github_url }}/blob/main/site/_includes/json-ld.html);
-the FAQPage block is inline at the bottom of
-[`site/faq/index.md`]({{ site.github_url }}/blob/main/site/faq/index.md)
-because it iterates the page's own Q&amp;A list.
+the page-specific records (`FAQPage`, `Dataset`, `ItemList`, `HowTo`,
+`SoftwareSourceCode`) are inline at the top of their respective
+source pages because each iterates page-local content the
+cross-page emitter doesn't see.
 
 ## Source on GitHub
 
