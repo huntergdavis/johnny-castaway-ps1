@@ -413,6 +413,15 @@ bytes, shifted the sound table by `+362`, but left low at `1098/1034`,
 blocking `112`, and due misses `19`; single-frame rollback of the accepted
 `119..123` motion cluster is not the missing win.
 
+Latest rejected VISITOR3 low direct-stage micro-guard: v408 denied the
+exact-min-slack direct-stage shortcut for low-tide source frame `117` only.
+The current v338 row stayed exact-flat at scene `1401`, active loop/target
+`1072/1040`, overrun `32`, blocking `58`, hidden refill `0`, loop reads `10`,
+and due `10`, while `foregroundPilotPlay` grew by `68` bytes and hot symbols
+shifted. Close frame-117 direct-stage denial; the next VISITOR3 work should use
+trace/heatmap-guided payload changes or generated ownership, not another
+single-frame branch.
+
 ## VISITOR3 white-whale backlog
 
 These are intentionally deeper than the exhausted scalar/read-group lanes.
@@ -461,7 +470,7 @@ Rank order is current working priority, not guaranteed payoff.
 | 39 | VISITOR3 late-cluster in-sector dictionary | Store repeated rows from frames `117..118` and `139..144` once inside their current sector neighborhoods. | Decoder path must be smaller than the saved CD/read pressure. |
 | 40 | VISITOR3 low prepared-frame priority inversion | Prefer window prefetch over visual prepare only for the known low precursor cluster. | Could waste prepared-present opportunities and regress loop timing. |
 | 41 | VISITOR3 low no-evict terminal segment policy | Keep `281..305` resident while testing extra low cluster ownership, because v221 proved stealing it regresses. | Needs a third residency owner or generated replacement. |
-| 42 | VISITOR3 low direct-stage deny for frame `117` only | Avoid staging frame `117` directly when it prevents a grouped window fill. | Direct-stage changes have been exact-flat or negative unless tightly scoped. |
+| 42 | VISITOR3 low direct-stage deny for frame `117` only | Closed by v408: exact-flat timing/read metrics with `foregroundPilotPlay` growth. | Do not retry as a hand-coded branch; use generated ownership or payload changes. |
 | 43 | VISITOR3 per-source-frame slack ledger | Build a CSV of held slack, staged validity, resident window, and next read per source frame. | Host model must match PS1 counters before trusting it. |
 | 44 | VISITOR3 scheduler simulator from JCPERF2 trace | Replay exact wait, prefetch, prepare, and advance decisions before writing C tables. | Requires richer trace export but avoids blind source probes. |
 | 45 | VISITOR3 low frame `117` original-payload rollback test | Confirm whether accepted motion payloads still help low after v216, instead of assuming old wins remain additive. | Repacking original larger payloads may require offset movement or padding control. |
