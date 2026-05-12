@@ -62,7 +62,7 @@ one.
 
 `v0.8.0`'s clean-rect pressure estimator used `fgBoundsW *
 fgBoundsH * 2`. Cheap, wrong: it ignored the
-[ocean wave band]({{ '/docs/glossary/#clean-rect' | relative_url }})
+[ocean wave band]({{ '/docs/glossary/#wave-band' | relative_url }})
 expansion and the upper/lower split rect that wide-action scenes
 emit. On `MARY 4`'s random-load path the real clean save was over
 `256 KiB`; the estimator under-counted and didn't release optional
