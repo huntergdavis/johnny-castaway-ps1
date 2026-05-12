@@ -6,7 +6,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
 ---
 
 {%- comment -%}
-  Schema.org FAQPage structured data. Mirrors the 16 H3 questions
+  Schema.org FAQPage structured data. Mirrors the 17 H3 questions
   on this page with 1â€“2 sentence summary answers. Google retired
   FAQ rich results for general sites in 2023, but Bing, AI agents,
   and embedded knowledge graphs still consume FAQPage. Hand-mirrored
