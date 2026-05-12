@@ -87,6 +87,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="clut">CLUT-indexed sprite</dt>
 <dd>The PS1 GPU's native texture format: 4-bit (16-color) or 8-bit (256-color) indices into a Color Lookup Table. The replay engine ships sprites in 4-bit indexed form (<code>indexedPixels</code>) with a per-pack palette LUT. The 4-pixel-unrolled inner blit loop and opaque-sprite fast path live in <code>graphics_ps1.c</code>.</dd>
 
+<dt id="rgb555">RGB555</dt>
+<dd>The PS1 GPU's 16-bit direct-color pixel format: 5 bits each for red / green / blue plus 1 bit for semi-transparency (sometimes called <em>STP</em>). Used for true-color textures, full-screen backgrounds, and the framebuffer itself. <a href="#scene-explorer">Scene Explorer</a> thumbnails are 320×240 RGB555 <code>.SCR</code> files loaded straight from the disc; <a href="#fg2-pack">FG2 packs</a> ship sprites in 4-bit <a href="#clut">CLUT-indexed</a> form instead because that's ~4× tighter in <a href="#vram">VRAM</a>. The format is the native cell of every other graphics term in this section.</dd>
+
 <dt id="dirty-rect">Dirty-rect bookkeeping</dt>
 <dd>Tracking which screen rectangles changed this frame so only those get redrawn from the background, instead of redrawing the whole framebuffer. The PS1 replay engine's dirty-rect path reduces per-frame data movement by 80–95%. Without it, the SPU and the GPU compete for memory bandwidth and audio glitches.</dd>
 
