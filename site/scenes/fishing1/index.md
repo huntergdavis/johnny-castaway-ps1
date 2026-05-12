@@ -74,14 +74,20 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-night.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
        width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
+  </picture>
   <figcaption>FISHING 1 · night variant. Full moon, dark sky and water, the same cast pose against the moonlit shore.</figcaption>
 </figure>
 
 <figure>
-  <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/fishing1-ps1-raft.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
        width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
+  </picture>
   <figcaption>FISHING 1 · raft-stage variant. Same scene with the cumulative raft-build state at completion.</figcaption>
 </figure>
 
