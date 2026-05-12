@@ -106,7 +106,7 @@
       <h1>Audio pipeline</h1>
       <p class="subtitle">SPU layout, sample preload, captured PLAY_SAMPLE replay, and where DuckStation's HLE diverges from the real hardware.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1947 words
+          ~7 min read · 1950 words
         </p>
 
       <hr class="rule" />
@@ -150,7 +150,7 @@ and its own job. Specs:</p>
 <ul>
   <li><strong>Voices:</strong> 24 simultaneous, each with hardware ADSR.</li>
   <li><strong>SPU RAM:</strong> 512 KB, dedicated. The CPU writes via DMA.</li>
-  <li><strong>Sample format:</strong> 4-bit ADPCM in 16-byte blocks (28 nibbles + flags).</li>
+  <li><strong>Sample format:</strong> 4-bit <a href="../glossary/#adpcm">ADPCM</a> in 16-byte blocks (28 nibbles + flags).</li>
   <li><strong>Sample rate:</strong> Up to 44.1 kHz.</li>
   <li><strong>Mixing:</strong> Done in hardware. The CPU sets per-voice volume and pitch;
 the SPU mixes and outputs.</li>
@@ -448,7 +448,8 @@ audio acceptance bar fits the project’s overall standard.</li>
   <li><a href="../../devlog/ocean-ambience-v0-6/">Devlog: ocean ambience v0.6</a>
 — the implementation worklog for the dedicated SPU voice that
 drives the ambience loop. Pairs with the Ocean ambience H2 above.</li>
-  <li><a href="../glossary/#vag">Glossary: VAG</a>
+  <li><a href="../glossary/#adpcm">Glossary: ADPCM</a>
+· <a href="../glossary/#vag">Glossary: VAG</a>
 · <a href="../glossary/#spu">Glossary: SPU</a>
 · <a href="../glossary/#play-sample">Glossary: PLAY_SAMPLE</a></li>
 </ul>
