@@ -244,7 +244,7 @@ CdReadSync(0, 0);                       /* Wait for completion */
 |---------------------|-----------------------------------|-----|
 | Surface management  | Software surfaces, direct pixels  | Hardware surfaces in VRAM, accessed via DMA |
 | Rendering model     | Immediate mode (draw, flip)       | Ordering tables (queue primitives, submit) |
-| Color format        | 8-bit indexed or 24/32-bit RGBA   | 16-bit RGB555, or 8-/4-bit indexed with CLUT |
+| Color format        | 8-bit indexed or 24/32-bit RGBA   | 16-bit [RGB555]({{ '/docs/glossary/#rgb555' | relative_url }}), or 8-/4-bit indexed with [CLUT]({{ '/docs/glossary/#clut' | relative_url }}) |
 | Timing              | Millisecond timer (`SDL_GetTicks`)| Frame counter (`VSync`) |
 | File I/O            | Standard C `stdio` (buffered)     | CD-ROM sectors (asynchronous, unbuffered) |
 

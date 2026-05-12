@@ -100,7 +100,7 @@ and the Scene Set pool entirely; whatever the cursor is on dispatches
 through [fgpilot]({{ '/docs/glossary/#fgpilot' | relative_url }}).
 
 The layout is a full-screen preview of one scene at a time: the
-selected scene's 320×240 RGB555 thumbnail fills the centered region
+selected scene's 320×240 [RGB555]({{ '/docs/glossary/#rgb555' | relative_url }}) thumbnail fills the centered region
 of the framebuffer, with a top chrome band carrying the page title,
 position counter (`N/63`), per-scene validation marker (`* validated`
 or `? pending` from `gSceneExplorer[].validated`), display name, and
