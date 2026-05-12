@@ -65,6 +65,19 @@ def u16(data: bytes, offset: int) -> int:
     return struct.unpack_from("<H", data, offset)[0]
 
 
+def parse_rect(value: str) -> tuple[int, int, int, int]:
+    raw_parts = value.replace("x", ",").split(",")
+    if len(raw_parts) != 4:
+        raise argparse.ArgumentTypeError("expected x,y,width,height")
+    try:
+        x, y, width, height = (int(part.strip()) for part in raw_parts)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("rect values must be integers") from exc
+    if width <= 0 or height <= 0:
+        raise argparse.ArgumentTypeError("rect width and height must be > 0")
+    return x, y, width, height
+
+
 def pal4_index(data: bytes, pixel: int) -> int:
     packed = data[pixel >> 1]
     return (packed & 0x0F) if (pixel & 1) else ((packed >> 4) & 0x0F)
@@ -232,6 +245,17 @@ def bbox(points: set[tuple[int, int]]) -> tuple[int, int, int, int] | None:
     return min_x, min_y, max(xs) - min_x + 1, max(ys) - min_y + 1
 
 
+def points_in_rect(pixels: dict[tuple[int, int], int],
+                   rect: tuple[int, int, int, int]) -> dict[tuple[int, int], int]:
+    x, y, width, height = rect
+    x2 = x + width
+    y2 = y + height
+    return {
+        point: value for point, value in pixels.items()
+        if x <= point[0] < x2 and y <= point[1] < y2
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-fg2", required=True, type=Path)
@@ -245,6 +269,17 @@ def main() -> None:
             "Source-frame number to encode as a self-contained residual keyframe. "
             "The frame first restores all prior foreground pixels, then redraws "
             "the full current foreground state."
+        ),
+    )
+    parser.add_argument(
+        "--restamp-rect",
+        action="append",
+        type=parse_rect,
+        default=[],
+        help=(
+            "Scene-local rect whose current foreground pixels are redrawn even "
+            "when unchanged. Use this for live background animation lanes that "
+            "must remain visually behind residual foreground sprites."
         ),
     )
     args = parser.parse_args()
@@ -276,6 +311,8 @@ def main() -> None:
                 point: value for point, value in current.items()
                 if prev_pixels.get(point) != value
             }
+            for rect in args.restamp_rect:
+                draw.update(points_in_rect(current, rect))
         dirty_points = set(cleanup) | set(draw.keys())
         dirty_bbox = bbox(dirty_points)
         if dirty_bbox is None:

@@ -872,6 +872,12 @@ PY
         # safer as explicit residual spans after the injected full-host lane.
         convert_pack_to_fgp3=1
       fi
+      if [ "$SCENE_SLUG" = "mary5" ]; then
+        # MARY 5 is residual-compressed, but live shoreline waves tick between
+        # frames. Restamp the lower actor band below so shark/Mary pixels stay
+        # visually above the wave animation without full-frame residual draws.
+        convert_pack_to_fgp3=1
+      fi
       if [ "$SCENE_SLUG" = "building2" ]; then
         # The Lilliputian sandcastle is scene-local state: it is built once,
         # then the red flag and planes originate from it. Foreground-only
@@ -1018,6 +1024,9 @@ if [ "$convert_pack_to_fgp3" = "1" ]; then
   high_fgp3_tmp="${PACK_PATH}.fgp3tmp"
   low_fgp3_tmp="${LOWTIDE_PACK_PATH}.fgp3tmp"
   fgp3_extra_args=()
+  if [ "$SCENE_SLUG" = "mary5" ]; then
+    fgp3_extra_args+=(--restamp-rect "80,315,300,70")
+  fi
   python3 "$SCRIPT_DIR/build-fg3-temporal-residual-pack.py" \
     --input-fg2 "$PACK_PATH" \
     "${fgp3_extra_args[@]}" \
