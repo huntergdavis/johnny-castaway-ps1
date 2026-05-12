@@ -338,6 +338,7 @@ in the research directory, but it has not been implemented.
   definitions for the project-specific terms referenced
   throughout this page:
   [`OT`]({{ '/docs/glossary/#ot' | relative_url }}),
+  [`SPRT`]({{ '/docs/glossary/#sprt' | relative_url }}),
   [`FntFlush`]({{ '/docs/glossary/#fntflush' | relative_url }}),
   [`SPI driver`]({{ '/docs/glossary/#spi' | relative_url }}),
   [`tx_len`]({{ '/docs/glossary/#tx-len' | relative_url }}),
