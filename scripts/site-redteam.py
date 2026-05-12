@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 """Red-team a generated Johnny Castaway website build.
 
-Checks are intentionally local and boring:
-- generated HTML has no raw Liquid tags or workstation paths
-- local links and static assets resolve inside the build directory
-- fragment links point at real ids/named anchors
-- images have alt text
+Checks are intentionally local and boring. Each one is a preventative
+gate against a regression class that has either already shipped once
+or is cheap enough to lock in even with zero past hits:
+
+- Generated HTML has no raw Liquid tags (`{{` / `{%` leaked through).
+- No local filesystem paths (`/home/`, `/Users/`) leaked into output.
+- Every local href / static-asset src resolves inside the build dir.
+- Every fragment link points at a real `id=""` / `<a name="">` anchor.
+- Every `<img>` has non-empty alt text (WCAG 1.1.1).
+- Every `<img>` has both `width` and `height` attributes (CLS).
+- No empty `<code></code>` elements (Liquid/kramdown content-eating).
+- Heading levels never skip downward (WCAG 1.3.1; e.g. h1 → h3).
+- Every `id=""` is unique within its page (WCAG 4.1.1).
+- Every `<script type="application/ld+json">` block parses as valid JSON.
+
+Excluded subtrees (preserved research) are passed via --exclude
+glob: typically `ps1/*`, `archive/*`, `general/*`, `readme/*`.
 """
 
 from __future__ import annotations
