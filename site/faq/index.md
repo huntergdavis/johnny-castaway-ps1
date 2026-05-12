@@ -273,6 +273,15 @@ tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
 About]({{ '/about/#what-this-isnt' | relative_url }}).
 
+For security-relevant reports (build/release supply-chain concerns,
+the published `.bin` / `.cue` disc image being mishandled by a
+download mirror), prefer the
+[GitHub Security Advisories]({{ site.github_url }}/security/advisories/new)
+channel named in
+[`/.well-known/security.txt`]({{ '/.well-known/security.txt' | relative_url }}).
+That's the RFC 9116 path for private disclosures; public issues
+remain on the tracker above.
+
 ---
 
 ## Original game
