@@ -59,12 +59,13 @@ previous-frame D4 delta promotion, and the v458 WALKSTUF1 high current-control
 refresh, the v460 VISITOR3 high frame137 previous-frame D4 CD-pressure
 promotion, and the v462 VISITOR3 high frame132 D4 plus slack4 CD-pressure
 promotion, the v464 VISITOR3 high one-sector frame132 setup-segment, and the
-v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion:
-`+0.3010%` public average over target / `99.7044%` public target speed across
+v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion, and the
+v474 WALKSTUF1 low `78..91` first post-prime boundary read-group promotion:
+`+0.2977%` public average over target / `99.7075%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4660%` / `100.4868%`. Since the compact full-matrix baseline was about
+`-0.4693%` / `100.4899%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.10` public over-target points and added about `12.60`
+removed about `17.10` public over-target points and added about `12.61`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
 
@@ -103,17 +104,22 @@ reduction.
 
 Latest promoted WALKSTUF1 baseline: both tides now share the accepted
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`
-read groups. The v340 strict gate moved high target `1429 -> 1432`, overrun
+read groups, and low tide adds the first post-prime boundary extension
+`78..91`. The v340 strict gate moved high target `1429 -> 1432`, overrun
 `51 -> 48`, blocking `85 -> 83`, loop reads `69 -> 67`, and loop-read time
 `301 -> 292` while keeping scene/loop flat at `1768/1480`; the v383/v384
 follow-ups keep all high timing metrics flat and lower loop reads `67 -> 65`
-plus loop-read time `292 -> 284`. Due misses stay `16` and hidden refill stays
-`26` in the v428 artifact; the v458 current-control refresh records the current
-accepted high row at `1476/1434`, overrun `42`, blocking `81`, hidden refill
-`23`, loop reads `65`, loop-read time `282`, and due misses `16`. Low stays on
-the v331 staged-prepare scheduler fallback at `1484/1431`, overrun `53`,
-blocking `72`, hidden refill `22`, and due misses `12`, while v428 lowers low
-loop reads `67 -> 66` and loop-read time `288 -> 287`.
+plus loop-read time `292 -> 284`. The v458 current-control refresh records the
+current accepted high row at `1476/1434`, overrun `42`, blocking `81`, hidden
+refill `23`, loop reads `65`, loop-read time `282`, and due misses `16`. The
+v474 low boundary fix extends the failed `78..90` row to `78..91` so it owns
+the overlapping sector-89 follow-up read; low improves scene `1776 -> 1770`,
+active loop/target `1484/1431 -> 1478/1431`, overrun `53 -> 47`, blocking
+`72 -> 64`, hidden refill `22 -> 20`, loop reads `66 -> 64`, loop-read time
+`287 -> 286`, and due misses `12 -> 11`. WALKSTUF1 high, BUILDING2 high/low,
+and VISITOR3 high/low canaries stayed on accepted profiles with fixed pack
+LBA/sectors and PS-EXE bucket. This promotion adds about `0.0033` public
+over-target points removed and `0.0031` public target-speed points gained.
 
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
@@ -254,8 +260,9 @@ Latest rejected WALKSTUF1 low first post-setup retained group: v472 tested
 `78..90`, the current read-plan's long-first-gap post-prime candidate. It did
 reduce due misses `12 -> 11`, but it regressed scene `1776 -> 1780`, active
 loop/target `1484/1431 -> 1488/1428`, overrun `53 -> 60`, blocking `72 -> 79`,
-hidden refill `22 -> 27`, and loop reads `66 -> 68`. Close `78..90` as another
-plain retained table that needs scheduler ownership before it can help.
+hidden refill `22 -> 27`, and loop reads `66 -> 68`. Close the narrowed
+`78..90` form specifically; v474's promoted `78..91` boundary-fixed form owns
+the overlapping sector-89 follow-up and is now the accepted low baseline.
 
 Latest rejected runtime-shape cache: v473 cached scene/tide policy bits and
 the window-slack threshold at scene start, replacing hot-loop scene-name
@@ -417,8 +424,9 @@ top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
 target / `99.6884%` target speed at that point. Current rollup after the v458
-WALKSTUF1 high current-control refresh and v464 VISITOR3 high setup-segment
-promotion is `+0.3010%` / `99.7044%`. Close direct VISITOR5 high hand tables
+WALKSTUF1 high current-control refresh, v464 VISITOR3 high setup-segment
+promotion, and v474 WALKSTUF1 low boundary read group is `+0.2977%` /
+`99.7075%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
@@ -2750,7 +2758,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low read group `285..297` after v428 | Do not promote or retry as a shared/direct retained table. The v429 focused gate used the v428 shared dual-tail baseline and saved reads (`66 -> 64`), but regressed low to scene `1784`, active loop/target `1492/1430`, overrun `62`, blocking `81`, hidden refill `28`, and due misses `12`. This closes the smaller mid-cluster form that was not covered by `273..297` or `285..309`; the cluster now needs generated deadline ownership, byte-removing pack work, or a custom representation. |
 | WALKSTUF1 low read group `291..297` after v428 | Do not promote or retry as a shared/direct retained table. The v430 focused gate narrowed v429 to the smallest fireable row, but stayed exact-flat against v428: `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, reads `66`, and due misses `12`. It adds source/data shape without a measurable work win. |
 | WALKSTUF1 low read group `303..309` after v428 | Do not promote or retry as a shared/direct retained table. The v431 focused gate tested the later mid-cluster fire point and also stayed exact-flat against v428: `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, reads `66`, and due misses `12`. Direct rows in this subcluster are inert unless scheduler ownership changes. |
-| WALKSTUF1 low read group `78..90` | Do not promote or retry as a narrowed early hand table. The v412 current-baseline probe tried the smaller form of the old failed `78..94` row and kept pack LBA plus EXE bucket fixed, but regressed low to `1780`, `1488/1428`, overrun `60`, blocking `79`, refill `27`, reads/due `69/11`. The due-miss reduction is not useful when public timing and read count worsen. |
+| WALKSTUF1 low read group `78..90` | Do not promote or retry as a narrowed early hand table. The v412/v472 current-baseline probes kept pack LBA plus EXE bucket fixed and reduced due misses, but regressed low timing and CD pressure. The accepted successor is the v474 boundary-fixed `78..91` form, which owns the overlapping sector-89 follow-up and is tracked at the top of this file. |
 | WALKSTUF1 low read group `273..297` | Do not promote or retry as a direct retained table. The v416 current-baseline probe was the remaining large medium-risk low cluster and did save reads (`67 -> 64`), but it regressed scene `1776 -> 1782`, active loop `1484 -> 1490`, overrun `53 -> 59`, blocking `72 -> 80`, and prefetch overrun `22 -> 26` with fixed pack LBA and EXE bucket. This closes the last plausible large low hand table; future low work needs generated deadline ownership, byte-removing pack transforms, or a custom representation that preserves cadence. |
 | WALKSTUF1 low boundary-frame `gap6` prefix pack | Do not promote or retry as a cleanup-gap pack move. The v417 f38/f39-only variant moved `sound_events_offset 920531 -> 920087` inside the fixed `1535263` byte pack and kept LBA stable, but it regressed low to scene `1780`, active loop/target `1488/1429`, overrun `59`, blocking `78`, and prefetch overrun `29` while reads stayed `67`. Narrow prefix cleanup is still phase-negative; future low pack work must remove bytes while preserving CD cadence or change the runtime representation. |
 | WALKSTUF1 low scratch-copy narrow upload | Do not promote or retry as a runtime upload path. The v418 scene-gated X-band uploader grew the PS-EXE bucket by one sector and failed before `JCPERF2` even with layout changes allowed. The copy-to-scratch cost overwhelms any narrower DMA benefit; upload-byte work must be prepacked/upload-ready or avoided before runtime. |

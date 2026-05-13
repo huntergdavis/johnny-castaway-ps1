@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-13:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3033%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7023%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T00:28:12` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-high-frame137-delta-v460`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2977%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7075%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-13T04:11:55` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-rg78-91-v474`, `visitor3-low-frame132-delta-v470`, `visitor3-high-frame132-setupseg1-v464`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,13 +87,12 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-high-frame137-delta-v460` stores high
-frame `137` as a 503-byte D4 previous-frame delta against frame `136`, keeping
-scene and active timing flat at `1402` and `1071/1040` while cutting blocking
-`52 -> 51` and loop-read time `52 -> 51`. Pack footprint, pack LBA, and the
-`217088` byte PS-EXE bucket stay fixed; VISITOR3 low, WALKSTUF1 high/low,
-BUILDING2 high/low, VISITOR5 high/low, and FISHING1 high canaries stayed on
-accepted profiles. This is a CD-pressure baseline, not a public speed win.
+Latest promoted VISITOR3 note: `visitor3-high-frame132-setupseg1-v464` keeps
+the frame137 D4 delta, stores frame `132` as a 768-byte D4 delta, and preloads
+that payload through one high-tide setup sector. High improves to `1067/1039`,
+overrun `28`, blocking `45`, reads/due `8/8`, with hidden refill `0`.
+`visitor3-low-frame132-delta-v470` keeps low at `1068/1041`, overrun `27`,
+reads/due `9/9`, and cuts blocking/read time `51 -> 50`.
 
 `visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
 while moving frame `128` into the
@@ -122,20 +121,14 @@ The focused gate keeps scene/loop flat at `1619/1349`, improves target
 misses `17 -> 15`. BUILDING2 high, FISHING1 high, WALKSTUF1 high, and the
 broad completed canaries stayed on accepted profiles.
 
-Latest promoted WALKSTUF1 note: high is `walkstuf1-high-current-v458-refresh`,
-low is `walkstuf1-low-shared-dual-tail-v428`. The shared table extends the
-accepted `201..213` / `213..229` retained read groups with `344..360`,
-`422..434`, and the same-speed `443..455` / `444..456` CD-work reductions.
-Against v316 high it keeps scene/loop flat at `1768/1480`, moves target
-`1429 -> 1432`, overrun `51 -> 48`, blocking `85 -> 83`, loop reads
-`69 -> 65`, loop-read VBlanks `301 -> 284`, due misses `16`, and hidden refill
-`26`; the v458 current-control refresh records the current accepted high row at
-`1764`, `1476/1434`, overrun `42`, blocking `81`, refill `23`, loop-read
-VBlanks `282`, and due misses `16`. Low keeps the staged-prepare scheduler
-fallback at `1484/1431`, overrun
-`53`, blocking `72`, and prefetch overrun `22`, while v428 lowers low loop
-reads `67 -> 66` and loop-read VBlanks `288 -> 287`. BUILDING2 high,
-FISHING1 high, and VISITOR3 low controls passed flat against current HEAD.
+Latest promoted WALKSTUF1 note: high is `walkstuf1-high-current-v458-refresh`;
+low is `walkstuf1-low-rg78-91-v474`. The shared table keeps the accepted
+`201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`
+rows, then extends the low-tide first post-prime boundary to `78..91`. High
+stays `1476/1434`, overrun `42`, blocking `81`, refill `23`, reads/due
+`65/16`; low improves to `1478/1431`, overrun `47`, blocking `64`, refill
+`20`, reads/due `64/11`. BUILDING2 high/low and VISITOR3 high/low controls
+passed flat against current HEAD.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,
