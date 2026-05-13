@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-13 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2977%` over target / `99.7075%` target speed).
+battle card is `+0.2954%` over target / `99.7097%` target speed).
 
 ## Overall
 
@@ -220,9 +220,10 @@ already paid setup window. VISITOR3 low now reports `blocking_vb=58`,
 `loop_reads=10`, loop-read time `58`, and due misses `10`; non-VISITOR3
 controls stayed flat.
 The later v452/v470 low D4 passes move frame `129` to a 609-byte previous-frame
-delta and frame `132` to a 768-byte previous-frame delta. Low now reports
-`1068/1041`, overrun `27`, `blocking_vb=50`, loop reads `9`, loop-read time
-`50`, due misses `9`, hidden refill `0`, and fixed pack LBA/sectors.
+delta and frame `132` to a 768-byte previous-frame delta; v477 relocates that
+frame132 payload into an unused setup-prime gap. Low now reports `1065/1041`,
+overrun `24`, `blocking_vb=45`, loop reads `8`, loop-read time `45`, due
+misses `8`, hidden refill `0`, and fixed pack LBA/sectors.
 The v340/v383/v384/v428/v474 WALKSTUF1 read-group passes add `344..360`,
 `422..434`, `443..455`, and `444..456` after the accepted `201..213` and
 `213..229` groups, then extend the first low-tide post-prime retained boundary
@@ -236,9 +237,9 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2977%` over target / `99.7075%` target speed
+The public battle card is now `+0.2954%` over target / `99.7097%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4693%`.
+raw signed optimization rollup is `-0.4716%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.10`
 public over-target points and added about `12.61` public target-speed points.
@@ -274,12 +275,12 @@ v299 high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
 and the v302 low frame-123 resident alias plus frame-128 setup-segment copy,
 plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack, the VISITOR3 low
-frame129/frame132 D4 deltas, and the VISITOR3 high frame132/frame137 D4 deltas with a
-high-tide slack4 window guard plus a one-sector high setup segment for frame
-`132`.
+frame129/frame132 D4 deltas plus the frame132 setup-prime gap relocation, and
+the VISITOR3 high frame132/frame137 D4 deltas with a high-tide slack4 window
+guard plus a one-sector high setup segment for frame `132`.
 VISITOR3 high is now
 `1067/1039` with `blocking_vb=45`; low is
-`1068/1041` with `blocking_vb=50`. BUILDING2 high/low are `1351/1311` and
+`1065/1041` with `blocking_vb=45`. BUILDING2 high/low are `1351/1311` and
 `1349/1320`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1476/1434` and `1478/1431`, WALKSTUF3 high/low are `2310/2290` and
@@ -328,14 +329,14 @@ Milestone releases:
   BUILDING6 scene-local slack4 guard, WALKSTUF1 high
   `344..360`, `422..434`, and shared dual-tail `443..455` / `444..456`,
   WALKSTUF1 low staged-prepare scheduler fallback, VISITOR3 low tail
-  pack-only compaction plus frame129/frame132 D4, and VISITOR3 high frame132/137 D4 plus
-  one-sector frame132 setup residency, plus WALKSTUF1 low `78..91` retained
-  post-prime boundary ownership. The public battle card is `+0.2977%` /
-  `99.7075%`;
+  pack-only compaction plus frame129/frame132 D4 and frame132 setup-prime gap
+  relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
+  residency, plus WALKSTUF1 low `78..91` retained post-prime boundary
+  ownership. The public battle card is `+0.2954%` / `99.7097%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
-  reads `64`, VISITOR3 high is `1067/1039`, VISITOR3 low is `1068/1041` with
-  blocking/read time `50`, and VISITOR5 high is refreshed at
+  reads `64`, VISITOR3 high is `1067/1039`, VISITOR3 low is `1065/1041` with
+  blocking/read time `45`, and VISITOR5 high is refreshed at
   `1107/1090`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene

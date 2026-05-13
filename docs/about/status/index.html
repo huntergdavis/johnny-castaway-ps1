@@ -103,7 +103,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1982 words
+          ~7 min read · 1976 words
         </p>
 
       <hr class="rule" />
@@ -124,16 +124,15 @@ and the chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3190%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6873%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4480%</code>.
-The newest accepted WALKSTUF1 shared dual-tail table keeps the fixed
-<code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket and public high/low timing at <code class="language-plaintext highlighter-rouge">1480/1432</code> and
-<code class="language-plaintext highlighter-rouge">1484/1431</code>, while WALKSTUF1 high loop reads stay <code class="language-plaintext highlighter-rouge">65</code> and low loop reads drop
-to <code class="language-plaintext highlighter-rouge">66</code>. BUILDING2 high currently measures <code class="language-plaintext highlighter-rouge">1351/1311</code>, overrun <code class="language-plaintext highlighter-rouge">40</code>,
-blocking <code class="language-plaintext highlighter-rouge">54</code>, hidden refill <code class="language-plaintext highlighter-rouge">18</code>, and due misses <code class="language-plaintext highlighter-rouge">7</code>.
-VISITOR3 low tail compaction keeps <code class="language-plaintext highlighter-rouge">blocking_vb=58</code>, <code class="language-plaintext highlighter-rouge">loop_reads=10</code>, and due
-misses <code class="language-plaintext highlighter-rouge">10</code>.
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2954%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7097%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4716%</code>.
+The newest accepted VISITOR3 low frame132 setup-prime relocation keeps the
+fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
+<code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1065/1041</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>,
+blocking <code class="language-plaintext highlighter-rouge">45</code>, reads/due <code class="language-plaintext highlighter-rouge">8/8</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1434</code>
+and <code class="language-plaintext highlighter-rouge">1478/1431</code>, and BUILDING2 high currently measures <code class="language-plaintext highlighter-rouge">1351/1311</code>, overrun
+<code class="language-plaintext highlighter-rouge">40</code>, blocking <code class="language-plaintext highlighter-rouge">54</code>, hidden refill <code class="language-plaintext highlighter-rouge">18</code>, and due misses <code class="language-plaintext highlighter-rouge">7</code>.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in

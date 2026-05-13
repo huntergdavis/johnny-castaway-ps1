@@ -139,16 +139,18 @@ frame-114/frame-117 plus frame-113 no-op residual compaction, the high
 frame-140/tail setup-segment copy, the high frame-121/frame-123 resident
 alias plus frame-131 setup-prime copy, the low frame-123 resident alias
 plus frame-128 setup-segment copy, and the low frame128/frame129
-resident-slot swap plus frame129/frame132 D4 deltas, followed by the
+resident-slot swap plus frame129/frame132 D4 deltas and frame132 setup-prime
+gap relocation, followed by the
 WALKSTUF1 high sector `201..213`, `213..229`, `344..360`, `422..434`, and `444..456` read-group passes plus the low `78..91` boundary fix, the
 high-tide window-prefetch guard on the gap-compressed pack, the low-tide
 gap-compressed prefix, and the low-tide staged-prepare scheduler fallback.
 The current VISITOR3 baseline is high `1067/1039`
-and low `1068/1041` after the frame129/frame132-delta promotions; both paths
+and low `1065/1041` after the frame129/frame132-delta promotions and low
+frame132 setup-prime relocation; both paths
 keep fixed pack layout with deliberate setup/data-shape tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`97.2%` / `96.8%`), VISITOR3 high/low
-(`97.4%` / `97.5%`), BUILDING2 high/low (`97.0%` / `97.8%`),
+(`97.4%` / `97.7%`), BUILDING2 high/low (`97.0%` / `97.8%`),
 VISITOR5 high/low, JOHNNY1 high/low,
 BUILDING4 low, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
@@ -194,10 +196,10 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2977%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7075%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T04:11:55` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-rg78-91-v474`, `visitor3-low-frame132-delta-v470`, `visitor3-high-frame132-setupseg1-v464`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.2954%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7097%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-13T05:05:11` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-low-frame132-primegap-v477`, `walkstuf1-low-rg78-91-v474`, `visitor3-high-frame132-setupseg1-v464`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -234,10 +236,10 @@ and this page.
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed rows use `walkstuf1-low-rg78-91-v474`,
+  `visitor3-low-frame132-primegap-v477`,
   `visitor3-high-frame132-setupseg1-v464`,
   `walkstuf1-high-current-v458-refresh`,
   `building2-low-delta-v454`,
-  `visitor3-low-frame132-delta-v470`,
   `building2-high-rg206-230-cap24-v441`,
   `visitor3-low-tail-pack-only-v338`,
   `visitor3-low-swap-f128-f129-v327`,
@@ -1923,15 +1925,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-13T03:34:42</td>
-      <td>visitor3-low-frame132-delta-v470</td>
-      <td>+2.6%</td>
-      <td class="spd-yellow">97.5%</td>
-      <td>1068/1041</td>
-      <td>50</td>
+      <td>2026-05-13T05:05:11</td>
+      <td>visitor3-low-frame132-primegap-v477</td>
+      <td>+2.3%</td>
+      <td class="spd-yellow">97.7%</td>
+      <td>1065/1041</td>
+      <td>45</td>
       <td>0</td>
-      <td>9</td>
-      <td>custom frame129 and frame132 D4 previous-frame deltas keep low at 1068/1041, overrun 27, reads/due 9/9, while cutting blocking/read time 51 -> 50 with pack LBA and 217088-byte PS-EXE bucket stable; broad canaries stayed flat</td>
+      <td>8</td>
+      <td>pack-only relocation of the existing frame132 D4 payload into the unused setup-prime gap at sector 99; low improves to 1065/1041, overrun 24, reads/due 8/8, blocking/read time 45, with pack LBA/sectors and PS-EXE bucket stable</td>
     </tr>
     <tr id="perf-visitor4-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor4-high"><code>visitor4</code></a></td>

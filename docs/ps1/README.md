@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.7-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3010% public over target / 99.7044% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2954% public over target / 99.7097% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -26,7 +26,7 @@ from `v0.8.4-ps1`, keeps the full 126-row headless matrix as the public
 performance baseline, and hardens deterministic BOOTMODE scene selection,
 Suzy backdrop cleanup, and heapless Scene Explorer preview loading. The public
 battle card is now
-`+0.3010%` over target / `99.7044%` target speed across all 126
+`+0.2954%` over target / `99.7097%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -50,9 +50,9 @@ the WALKSTUF1 high `422..434` / `444..456`
 CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 `444..456` dual-tail reduction, plus VISITOR3 low frame129/frame132 and high
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
-frame132 setup segment;
-the raw signed optimization matrix is `-0.4660%`.
-That is about `17.10` public over-target points removed and `12.60` public
+frame132 setup segment and VISITOR3 low frame132 setup-prime gap relocation;
+the raw signed optimization matrix is `-0.4716%`.
+That is about `17.10` public over-target points removed and `12.61` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
@@ -66,11 +66,11 @@ misses stay `16`, hidden refill stays `26`, and low plus selected controls stay
 flat. The `422..434`, `443..455`, and `444..456` groups are same-speed CD-work
 reductions, so they do not count as VBlank speed wins.
 
-The latest WALKSTUF1 low baseline is the v428 shared dual-tail table on top of
-the v331 staged-prepare scheduler fallback. Low remains `1484/1431` at
-`96.43%` target speed with overrun `53`, blocking `72`, hidden refill `22`, and
-due misses `12`, while loop reads drop `67 -> 66` and loop-read time
-`288 -> 287`.
+The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
+on top of the shared tail groups and v331 staged-prepare scheduler fallback.
+Low improves to `1478/1431` at `96.82%` target speed with overrun `47`,
+blocking `64`, hidden refill `20`, loop reads `64`, loop-read time `286`, and
+due misses `11`.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24
@@ -87,8 +87,9 @@ LBA/sectors, and `217088` byte PS-EXE bucket fixed while moving high
 `1071/1040 -> 1067/1039`: overrun `31 -> 28`, blocking `50 -> 45`, loop reads
 `9 -> 8`, loop-read time `50 -> 45`, and due misses `9 -> 8`; hidden refill
 stays `0`. The latest low row keeps the v452 frame128/frame129 resident-slot
-swap plus frame129 D4 delta and adds a v470 frame132 D4 delta at `1068/1041`,
-overrun `27`, blocking `50`, loop reads/due `9/9`, hidden refill `0`.
+swap plus frame129 D4 delta and v470 frame132 D4 delta, then relocates frame
+`132` into an unused setup-prime gap at sector `99`: `1065/1041`, overrun
+`24`, blocking `45`, loop reads/due `8/8`, hidden refill `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler
