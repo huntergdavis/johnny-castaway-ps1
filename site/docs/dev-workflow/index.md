@@ -147,7 +147,7 @@ That builds the PS1 executable inside Docker, regenerates the CD image,
 and launches DuckStation with the cue. The boot script no longer passes
 `-fastboot`, so the BIOS chime plays first — handy for volume calibration
 before the scene loads. The game then boots straight into whatever scene
-`BOOTMODE.TXT` named.
+[`BOOTMODE.TXT`]({{ '/docs/glossary/#bootmode' | relative_url }}) named.
 
 ### 4. Validate variants
 
