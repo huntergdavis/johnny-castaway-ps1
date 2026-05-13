@@ -5,7 +5,7 @@ ads: FISHING
 tag: 4
 slug: fishing4
 status: validated
-description: "FISHING.ADS scene 4: Johnny hooks a shark and gets pulled around the ocean like a water-skier behind a speedboat. Validated 2026-05-08."
+description: "FISHING.ADS scene 4: Johnny hooks a shark and gets pulled around the ocean like a water-skier behind a speedboat. Validated 2026-05-01."
 image: /assets/img/fishing4-ps1-shark.png
 image_alt: "FISHING 4 on PS1 at night: a shark fin cuts the water on the right edge of the frame, a fishing line connecting it to Johnny standing under the palm tree on the island."
 image_width: 961

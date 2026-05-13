@@ -5,7 +5,7 @@ ads: FISHING
 tag: 5
 slug: fishing5
 status: validated
-description: "FISHING.ADS scene 5: Johnny goes fishing, gets eaten by a shark, then spat back out. Validated 2026-05-08."
+description: "FISHING.ADS scene 5: Johnny goes fishing, gets eaten by a shark, then spat back out. Validated 2026-05-02."
 image: /assets/img/fishing5-ps1-shark-bite.png
 image_alt: "FISHING 5 on PS1 at night: a large grinning shark sits on the right side of the island mid-bite, with what is left of Johnny's gear in its jaws."
 image_width: 961

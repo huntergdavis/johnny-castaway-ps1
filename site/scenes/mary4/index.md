@@ -5,7 +5,7 @@ ads: MARY
 tag: 4
 slug: mary4
 status: validated
-description: "MARY.ADS scene 4: Johnny works on his raft to get off the island; Mary sees and is heartbroken that he plans to leave. Validated 2026-05-08."
+description: "MARY.ADS scene 4: Johnny works on his raft to get off the island; Mary sees and is heartbroken that he plans to leave. Validated 2026-05-03."
 image: /assets/img/mary4-ps1-raft-heartbreak.png
 image_alt: "MARY 4 on PS1: Johnny working on his raft on the island while Mary the mermaid watches from the water, heartbroken."
 image_width: 961

@@ -6,7 +6,7 @@ tag: 6
 slug: activity6
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 6: Johnny sits under the palm reading, falls asleep, and a coconut drops on his head. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 6: Johnny sits under the palm reading, falls asleep, and a coconut drops on his head. Validated 2026-05-05."
 image: /assets/img/activity6-ps1-reads.png
 image_alt: "ACTIVITY 6 on PS1 at night: Johnny sits under the palm tree reading, the static-Johnny pose right before the falling-asleep beat and the coconut bonk."
 image_width: 961

@@ -5,7 +5,7 @@ ads: STAND
 tag: 15
 slug: stand15
 status: validated
-description: "STAND.ADS scene 15: Johnny stands and looks around with a spyglass. Validated 2026-05-08."
+description: "STAND.ADS scene 15: Johnny stands and looks around with a spyglass. Validated 2026-05-04."
 image: /assets/img/stand15-ps1-spyglass.png
 image_alt: "STAND 15 on PS1 at night: Johnny stands on the left edge of the island holding a spyglass to his eye, scanning the horizon."
 image_width: 961

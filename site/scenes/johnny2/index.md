@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 2
 slug: johnny2
 status: validated
-description: "JOHNNY.ADS scene 2: a bottle washes up on the shore; Johnny puts an SOS note inside and tosses it back into the ocean. Validated 2026-05-08."
+description: "JOHNNY.ADS scene 2: a bottle washes up on the shore; Johnny puts an SOS note inside and tosses it back into the ocean. Validated 2026-05-02."
 image: /assets/img/johnny2-ps1-sos-note.png
 image_alt: "JOHNNY 2 on PS1 at night: Johnny stands on the left shoreline holding a bottle, a thought bubble above him showing a sheet of paper labelled SOS."
 image_width: 961

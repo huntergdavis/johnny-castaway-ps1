@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 3
 slug: johnny3
 status: validated
-description: "JOHNNY.ADS scene 3: Johnny writes and sends a letter to Suzy. Validated 2026-05-08."
+description: "JOHNNY.ADS scene 3: Johnny writes and sends a letter to Suzy. Validated 2026-05-02."
 image: /assets/img/johnny3-ps1-letter-suzy.png
 image_alt: "JOHNNY 3 on PS1 at night: Johnny stands on the left side of the island writing a letter, a thought bubble above him showing him and Suzy embracing on a beach."
 image_width: 640

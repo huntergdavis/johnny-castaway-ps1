@@ -5,7 +5,7 @@ ads: STAND
 tag: 3
 slug: stand3
 status: validated
-description: "STAND.ADS scene 3: Johnny stands at the edge of the island and adjusts his hat. Validated 2026-05-08."
+description: "STAND.ADS scene 3: Johnny stands at the edge of the island and adjusts his hat. Validated 2026-05-04."
 image: /assets/img/stand3-ps1-hat-adjust.png
 image_alt: "STAND 3 on PS1 at night: Johnny stands at the leftmost edge of the island and lifts his hat in a short idle pose."
 image_width: 961

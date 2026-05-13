@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 7
 slug: building7
 status: validated
-description: "BUILDING.ADS scene 7: Johnny builds a fire, grills a fish on it, and eats the fish. Validated 2026-05-08."
+description: "BUILDING.ADS scene 7: Johnny builds a fire, grills a fish on it, and eats the fish. Validated 2026-05-05."
 image: /assets/img/building7-ps1-grill-fish.png
 image_alt: "BUILDING 7 on PS1 at night: Johnny crouches next to a small fire on the left shoreline, mid-grill of a caught fish."
 image_width: 961

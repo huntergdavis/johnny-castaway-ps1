@@ -6,7 +6,7 @@ tag: 1
 slug: walkstuf1
 status: validated
 last_verified: "2026-05-05"
-description: "WALKSTUF.ADS scene 1: Johnny parties on a passing yacht, returns to the island drunk, and passes out. Validated 2026-05-08."
+description: "WALKSTUF.ADS scene 1: Johnny parties on a passing yacht, returns to the island drunk, and passes out. Validated 2026-05-05."
 image: /assets/img/walkstuf1-ps1-yacht-party.png
 image_alt: "WALKSTUF 1 on PS1 at night: a white yacht has pulled up next to the island with party-goers visible on its deck, the moon overhead and Johnny's island and palm tree on the right."
 image_width: 961

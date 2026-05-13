@@ -6,7 +6,7 @@ tag: 11
 slug: activity11
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 11: A bird swoops in and steals Johnny's clothes. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 11: A bird swoops in and steals Johnny's clothes. Validated 2026-05-05."
 image: /assets/img/activity11-ps1-bird-clothes-thief.png
 image_alt: "ACTIVITY 11 on PS1 at night: a bird perches in the palm leaves holding Johnny's clothes while a naked Johnny stands in the water at the lower-left of the island."
 image_width: 961

@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 5
 slug: building5
 status: validated
-description: "BUILDING.ADS scene 5: Johnny builds a small fire on the beach and sits next to it. Validated 2026-05-08."
+description: "BUILDING.ADS scene 5: Johnny builds a small fire on the beach and sits next to it. Validated 2026-05-05."
 image: /assets/img/building5-ps1-fire.png
 image_alt: "BUILDING 5 on PS1 at night: Johnny sits at the left shoreline next to a small fire, the moon visible above."
 image_width: 961

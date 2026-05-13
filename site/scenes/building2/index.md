@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 2
 slug: building2
 status: validated
-description: "BUILDING.ADS scene 2: Johnny builds a sandcastle; tiny lilliputians take it over and launch airplanes from it. Validated 2026-05-08."
+description: "BUILDING.ADS scene 2: Johnny builds a sandcastle; tiny lilliputians take it over and launch airplanes from it. Validated 2026-05-05."
 image: /assets/img/building2-ps1-airport.png
 image_alt: "BUILDING 2 on PS1: Johnny's sandcastle on the beach with tiny lilliputians launching airplanes from it."
 image_width: 961

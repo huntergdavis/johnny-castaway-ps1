@@ -5,7 +5,7 @@ ads: SUZY
 tag: 2
 slug: suzy2
 status: validated
-description: "SUZY.ADS scene 2: Johnny drifts in on his raft and is reunited with Suzy. Validated 2026-05-08."
+description: "SUZY.ADS scene 2: Johnny drifts in on his raft and is reunited with Suzy. Validated 2026-05-04."
 image: /assets/img/suzy2-ps1-rendezvous.png
 image_alt: "SUZY 2 on PS1: Suzy and Johnny embrace on the beach back home, his raft beached on the sand beside them, the city skyline behind."
 image_width: 961

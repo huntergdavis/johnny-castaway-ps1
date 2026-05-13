@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 4
 slug: johnny4
 status: validated
-description: "JOHNNY.ADS scene 4: Johnny's own SOS bottle washes back onto the shore. Validated 2026-05-08."
+description: "JOHNNY.ADS scene 4: Johnny's own SOS bottle washes back onto the shore. Validated 2026-05-03."
 image: /assets/img/johnny4-ps1-bottle-returns.png
 image_alt: "JOHNNY 4 on PS1 at night: Johnny stands on the left shoreline holding the bottle that just washed back, a red question-mark hovering above his head."
 image_width: 961

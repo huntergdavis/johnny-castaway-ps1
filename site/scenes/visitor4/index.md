@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 4
 slug: visitor4
 status: validated
-description: "VISITOR.ADS scene 4: Johnny shakes the palm tree; a coconut falls and rolls into the ocean. Validated 2026-05-08."
+description: "VISITOR.ADS scene 4: Johnny shakes the palm tree; a coconut falls and rolls into the ocean. Validated 2026-05-04."
 image: /assets/img/visitor4-ps1-coconut-rolls.png
 image_alt: "VISITOR 4 on PS1 at night: Johnny stands beside the palm tree, a freshly fallen coconut on the sand at his feet, about to roll right off the island into the ocean."
 image_width: 961

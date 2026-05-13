@@ -6,7 +6,7 @@ tag: 12
 slug: activity12
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 12: A bird lands on Johnny's head and he clubs himself trying to hit the bird. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 12: A bird lands on Johnny's head and he clubs himself trying to hit the bird. Validated 2026-05-05."
 image: /assets/img/activity12-ps1-bird-on-head.png
 image_alt: "ACTIVITY 12 on PS1 at night: Johnny stands under the palm tree with a white bird perched on top of his head, raising a red club."
 image_width: 961

@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 3
 slug: building3
 status: validated
-description: "BUILDING.ADS scene 3: Johnny lies down on the sand, rolls over, and takes a nap. Validated 2026-05-08."
+description: "BUILDING.ADS scene 3: Johnny lies down on the sand, rolls over, and takes a nap. Validated 2026-05-05."
 image: /assets/img/building3-ps1-nap.png
 image_alt: "BUILDING 3 on PS1 at night: Johnny lies on the sand under the palm tree, eyes closed, with a column of Z's rising up the palm's trunk."
 image_width: 961

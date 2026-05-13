@@ -5,7 +5,7 @@ ads: FISHING
 tag: 6
 slug: fishing6
 status: validated
-description: "FISHING.ADS scene 6: Johnny catches a fish; it spits water in his face and he throws it back. Validated 2026-05-08."
+description: "FISHING.ADS scene 6: Johnny catches a fish; it spits water in his face and he throws it back. Validated 2026-05-01."
 image: /assets/img/fishing6-ps1-spits-water.png
 image_alt: "FISHING 6 on PS1 at night: Johnny stands at the left shoreline holding a green fish that is squirting water directly into his face."
 image_width: 961

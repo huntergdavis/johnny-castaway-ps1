@@ -6,7 +6,7 @@ tag: 10
 slug: activity10
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 10: Johnny sits reading and a seagull swoops in and steals the book. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 10: Johnny sits reading and a seagull swoops in and steals the book. Validated 2026-05-05."
 image: /assets/img/activity10-ps1-seagull-steals-book.png
 image_alt: "ACTIVITY 10 on PS1 at night: Johnny stands under the palm tree while a seagull flies away upper-right with the stolen book."
 image_width: 961

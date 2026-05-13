@@ -5,7 +5,7 @@ ads: STAND
 tag: 12
 slug: stand12
 status: validated
-description: "STAND.ADS scene 12: Johnny looks forward and adjusts his hat. Validated 2026-05-08."
+description: "STAND.ADS scene 12: Johnny looks forward and adjusts his hat. Validated 2026-05-04."
 image: /assets/img/stand12-ps1-forward-hat.png
 image_alt: "STAND 12 on PS1 at night: Johnny stands at the center of the island under the palm tree, looking forward and adjusting his hat."
 image_width: 961

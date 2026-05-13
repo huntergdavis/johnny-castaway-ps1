@@ -5,7 +5,7 @@ ads: STAND
 tag: 10
 slug: stand10
 status: validated
-description: "STAND.ADS scene 10: Johnny looks at his raft and then looks around. Validated 2026-05-08."
+description: "STAND.ADS scene 10: Johnny looks at his raft and then looks around. Validated 2026-05-04."
 image: /assets/img/stand10-ps1-look-raft.png
 image_alt: "STAND 10 on PS1 at night: Johnny stands on the right side of the island next to the palm tree, looking at his raft."
 image_width: 961

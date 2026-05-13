@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 6
 slug: johnny6
 status: validated
-description: "JOHNNY.ADS scene 6: Johnny is back at his office desk, daydreaming about his time on the island. Validated 2026-05-08."
+description: "JOHNNY.ADS scene 6: Johnny is back at his office desk, daydreaming about his time on the island. Validated 2026-05-03."
 image: /assets/img/johnny6-ps1-date-dream.png
 image_alt: "JOHNNY 6 on PS1: Johnny dreams about his island date — pixel art rendering on PlayStation."
 image_width: 1127

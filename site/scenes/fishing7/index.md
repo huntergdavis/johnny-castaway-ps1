@@ -5,7 +5,7 @@ ads: FISHING
 tag: 7
 slug: fishing7
 status: validated
-description: "FISHING.ADS scene 7: Johnny fishes off the right side of the island, hooks a starfish, and throws it back. Validated 2026-05-08."
+description: "FISHING.ADS scene 7: Johnny fishes off the right side of the island, hooks a starfish, and throws it back. Validated 2026-05-03."
 image: /assets/img/fishing7-ps1-starfish-right.png
 image_alt: "FISHING 7 on PS1 at night: Johnny stands on the right side of the island holding a fishing rod, a starfish visible on the raft/dock next to him."
 image_width: 961

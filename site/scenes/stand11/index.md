@@ -5,7 +5,7 @@ ads: STAND
 tag: 11
 slug: stand11
 status: validated
-description: "STAND.ADS scene 11: Johnny stands on the left side of the island and looks around. Validated 2026-05-08."
+description: "STAND.ADS scene 11: Johnny stands on the left side of the island and looks around. Validated 2026-05-04."
 image: /assets/img/stand11-ps1-left-look.png
 image_alt: "STAND 11 on PS1 at night: Johnny stands on the left side of the island next to the palm tree's trunk in the look-around idle pose."
 image_width: 961

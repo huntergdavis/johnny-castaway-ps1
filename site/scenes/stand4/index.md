@@ -5,7 +5,7 @@ ads: STAND
 tag: 4
 slug: stand4
 status: validated
-description: "STAND.ADS scene 4: Johnny stands at the front of the island and adjusts his hat. Validated 2026-05-08."
+description: "STAND.ADS scene 4: Johnny stands at the front of the island and adjusts his hat. Validated 2026-05-04."
 image: /assets/img/stand4-ps1-front-hat.png
 image_alt: "STAND 4 on PS1 at night: Johnny stands at the front of the island under the palm tree, adjusting his hat in a short idle pose."
 image_width: 961

@@ -5,7 +5,7 @@ ads: STAND
 tag: 6
 slug: stand6
 status: validated
-description: "STAND.ADS scene 6: Johnny looks out at the ocean and scratches his head. Validated 2026-05-08."
+description: "STAND.ADS scene 6: Johnny looks out at the ocean and scratches his head. Validated 2026-05-04."
 image: /assets/img/stand6-ps1-head-scratch.png
 image_alt: "STAND 6 on PS1 at night: Johnny stands at the front of the island under the palm tree looking out over the moonlit ocean and scratching his head."
 image_width: 961

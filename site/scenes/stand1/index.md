@@ -5,7 +5,7 @@ ads: STAND
 tag: 1
 slug: stand1
 status: validated
-description: "STAND.ADS scene 1: Johnny stands at the edge of the island. Validated 2026-05-08."
+description: "STAND.ADS scene 1: Johnny stands at the edge of the island. Validated 2026-05-03."
 image: /assets/img/stand1-ps1-edge-stand.png
 image_alt: "STAND 1 on PS1 at night: Johnny stands at the leftmost edge of the island in an idle pose, a short subtle stand-loop scene."
 image_width: 961

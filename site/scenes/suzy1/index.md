@@ -5,7 +5,7 @@ ads: SUZY
 tag: 1
 slug: suzy1
 status: validated
-description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08."
+description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-04."
 image: /assets/img/suzy1-ps1-letter-daydream.png
 image_alt: "SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on."
 image_width: 961

@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 4
 slug: building4
 status: validated
-description: "BUILDING.ADS scene 4: Johnny sleeps on the sand and lilliputians tie him down with ropes (Gulliver-style). Validated 2026-05-08."
+description: "BUILDING.ADS scene 4: Johnny sleeps on the sand and lilliputians tie him down with ropes (Gulliver-style). Validated 2026-05-05."
 image: /assets/img/building4-ps1-lilliputians.png
 image_alt: "BUILDING 4 on PS1 at night: Johnny lies under the palm tree while a crowd of lilliputian figures swarms onto the island carrying their gear, mid-Gulliver-tie-down."
 image_width: 961

@@ -5,7 +5,7 @@ ads: STAND
 tag: 9
 slug: stand9
 status: validated
-description: "STAND.ADS scene 9: Johnny stands by the palm tree, looks around, and adjusts his pants. Validated 2026-05-08."
+description: "STAND.ADS scene 9: Johnny stands by the palm tree, looks around, and adjusts his pants. Validated 2026-05-04."
 image: /assets/img/stand9-ps1-tree-pants.png
 image_alt: "STAND 9 on PS1 at night: Johnny stands right next to the palm tree, looking around in the pants-adjust idle pose."
 image_width: 961
