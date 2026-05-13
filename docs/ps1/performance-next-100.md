@@ -293,6 +293,19 @@ LBA. The focused gate still regressed low from `1776`, `1484/1431`, overrun
 generated deadline ownership, phase-fixed byte removal, or a custom
 representation that reduces render/upload work without moving CD cadence.
 
+Latest rejected WALKSTUF1 low phase-fixed cleanup compaction: v442 kept every
+payload offset and the sound-event table fixed, then shrank cleanup payload
+sizes in place. The broad `frames 38..215` pass cut `5292` encoded bytes and
+collapsed cleanup spans `39188 -> 36798`, but regressed pressure despite fixed
+CD phase: scene/loop stayed `1776/1484`, while target fell `1431 -> 1430`,
+overrun rose `53 -> 54`, blocking rose `72 -> 74`, and hidden refill rose
+`22 -> 25`. The frame-210-only binary variant was exact-flat at `1776`,
+`1484/1431`, blocking `72`, hidden refill `22`, reads/due `66/12`. Close
+preserve-offset cleanup-gap compaction for WALKSTUF1 low; the safe form is
+inert and the broad form adds cleanup pressure. The next low-side swing needs
+generated deadline/refill ownership, sector-read-changing byte removal, or a
+custom render/upload representation that does not add cleanup pixels.
+
 Latest rejected WALKSTUF1 low runtime narrow upload: v418 tested a
 scene-gated dirty X-band uploader that copied narrow row bands into a 64 KiB
 scratch buffer before `LoadImage`, hoping to turn the large host-side upload
