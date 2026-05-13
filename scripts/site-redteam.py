@@ -33,6 +33,8 @@ or is cheap enough to lock in even with zero past hits:
   over/speed) matches the CSV-computed aggregates.
 - `/docs/performance/` reference-manual rollup (same four aggregates,
   different sentence shape) matches the CSV-computed aggregates.
+- `/lab/from-87-to-99-5/` post-validation retrospective's bold
+  public-capped pair matches the CSV-computed values.
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -226,6 +228,63 @@ def _public_cap_otp(otp_str: str) -> str:
     except ValueError:
         return otp_str
     return f"{max(0.0, v):.1f}%" if v >= 0 else "0.0%"
+
+
+def _check_lab_87_rollup(csv_path: Path, html_path: Path) -> list[str]:
+    """Compare /lab/from-87-to-99-5/'s current-public-capped sentence
+    against the CSV.
+
+    The retrospective essay quotes the public-capped over/speed pair
+    in a bold sentence: "**+X% over target / Y% target speed**".
+    Only two values to check (no raw signed pair); same drift class
+    as the other rollup surfaces.
+    """
+    out: list[str] = []
+    pub_over = 0.0
+    pub_speed = 0.0
+    n = 0
+    with csv_path.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            otp = r.get("over_target_percent", "").strip()
+            lvb = r.get("loop_vb", "").strip()
+            tvb = r.get("target_vb", "").strip()
+            if not otp or otp == "-" or not lvb or not tvb or lvb == "-" or tvb == "-":
+                continue
+            try:
+                otp_f = float(otp)
+                sp_f = float(tvb) / float(lvb) * 100.0
+            except (ValueError, ZeroDivisionError):
+                continue
+            pub_over += max(0.0, otp_f)
+            pub_speed += min(100.0, sp_f)
+            n += 1
+    if n == 0:
+        return out
+    over_csv = f"{pub_over / n:.4f}"
+    speed_csv = f"{pub_speed / n:.4f}"
+    text = html_path.read_text(encoding="utf-8", errors="replace")
+    # Anchor on "current public-capped average is" so the regex
+    # doesn't match the earlier "+17.4% / 87.1%" historical baseline.
+    m = re.search(
+        r'current\s*public-?capped\s*average\s*is\s*'
+        r'<strong>\+(\d+\.\d+)%\s*over\s*target\s*/\s*(\d+\.\d+)%\s*target\s*speed</strong>',
+        text, re.DOTALL | re.IGNORECASE,
+    )
+    if not m:
+        return out
+    rendered_over = m.group(1)
+    rendered_speed = m.group(2)
+    if rendered_over != over_csv:
+        out.append(
+            f"lab/from-87-to-99-5/index.html: rollup public_over"
+            f" rendered={rendered_over!r} csv={over_csv!r}"
+        )
+    if rendered_speed != speed_csv:
+        out.append(
+            f"lab/from-87-to-99-5/index.html: rollup public_speed"
+            f" rendered={rendered_speed!r} csv={speed_csv!r}"
+        )
+    return out
 
 
 def _check_perf_doc_rollup(csv_path: Path, html_path: Path) -> list[str]:
@@ -719,6 +778,14 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
     perf_doc_html = root / "docs" / "performance" / "index.html"
     if perf_csv.exists() and perf_doc_html.exists():
         errors.extend(_check_perf_doc_rollup(perf_csv, perf_doc_html))
+
+    # /lab/from-87-to-99-5/ post-validation retrospective also quotes
+    # the public-capped pair in a bold sentence. Caught a ~0.0025%
+    # drift on 2026-05-13; fixed in 4c46ed1cb. Locking in the fourth
+    # rollup surface.
+    lab_87_html = root / "lab" / "from-87-to-99-5" / "index.html"
+    if perf_csv.exists() and lab_87_html.exists():
+        errors.extend(_check_lab_87_rollup(perf_csv, lab_87_html))
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
