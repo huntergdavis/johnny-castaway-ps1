@@ -113,7 +113,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
       "name": "Where do I file bugs?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "If you must, the issue tracker is on GitHub. Bugs are tolerated, not invited. There is no contributor onboarding process and no 'good first issue' label."
+        "text": "If you must, the issue tracker is on GitHub. Bugs are tolerated, not invited. There is no contributor onboarding process and no 'good first issue' label. When you file, name the device (emulator + version, or real hardware model) â€” the devices reference lists which paths are tested every commit vs unverified."
       }
     },
     {
