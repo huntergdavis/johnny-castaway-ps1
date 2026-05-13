@@ -130,10 +130,18 @@ against frame `91`, shrinking `6035 -> 2056` bytes and reducing the modeled
 span by two sectors, but it regressed hard: scene `1776 -> 1790`,
 active loop/target `1484/1431 -> 1498/1421`, overrun `53 -> 77`, blocking
 `72 -> 114`, refill `22 -> 35`, reads `66 -> 70`, and due misses
-`12 -> 17`. Close frames `181`, `100`, `187`, and `92` as standalone D4
-deltas; WALKSTUF1 low needs paired scheduler/deadline ownership, payload
-placement that avoids changing visible CD cadence, or a different custom data
-shape if this mechanism is retried.
+`12 -> 17`. v465 tried frame `189` against frame `188`, shrinking
+`5382 -> 1444` bytes and saving one loop read, but still regressed active
+loop/target `1484/1431 -> 1487/1429`, overrun `53 -> 58`, blocking `72 -> 80`,
+refill `22 -> 23`, and due `12 -> 13`. v466 then combined frame `28` D4
+hole-fill with setup-prime sidecar relocation for late frames `181`, `187`,
+and `189`; it preserved pack LBA and saved one loop read, hidden refill
+`22 -> 19`, but regressed overrun `53 -> 55`, blocking `72 -> 82`, and due
+`12 -> 15` while moving hot foreground symbols. Close frames `181`, `100`,
+`187`, `189`, `92`, and setup-hole D4 relocation as standalone/hand-coded D4
+lanes; WALKSTUF1 low needs generated scheduler/deadline ownership, a cold
+sidecar that does not grow hot loop code, or a different custom data shape if
+this mechanism is retried.
 
 Latest rejected WALKSTUF1 high D4 probe: v457 encoded high frame `100` against
 frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
