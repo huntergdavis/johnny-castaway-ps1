@@ -299,7 +299,12 @@ If you must, the issue tracker is at
 [{{ site.repo }}/issues]({{ site.github_url }}/issues). Bugs are
 tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
-About]({{ '/about/#what-this-isnt' | relative_url }}).
+About]({{ '/about/#what-this-isnt' | relative_url }}). When you
+file, name the device (emulator + version, or real hardware
+model) — the
+[devices reference]({{ '/docs/devices/' | relative_url }}) lists
+which paths are tested every commit vs unverified, so the report
+lands faster if it pins which it was.
 
 For security-relevant reports (build/release supply-chain concerns,
 the published `.bin` / `.cue` disc image being mishandled by a
