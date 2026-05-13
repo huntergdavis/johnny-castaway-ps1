@@ -362,6 +362,14 @@ exit `137`. No metrics were accepted and the source table was restored. Treat
 layout; future work needs generated deadline ownership or pack-side data shape,
 not another scalar retained-read row.
 
+Latest rejected WALKSTUF1 low shared-table split: v491 separated the shared
+WALKSTUF1 retained-read table so low tide kept only the low-promoted `78..91`
+and `443..455` groups while high retained its full group set. The focused low
+harness exited `137` before `JCPERF2`; the orphaned emulator only reached
+early boot/asset loads after another minute and produced no scene-complete
+metrics. Restore the shared table; low needs generated scheduler/data-shape
+ownership rather than manual removal of high-only groups.
+
 Latest rejected WALKSTUF1 low first post-setup retained group: v472 tested
 `78..90`, the current read-plan's long-first-gap post-prime candidate. It did
 reduce due misses `12 -> 11`, but it regressed scene `1776 -> 1780`, active
