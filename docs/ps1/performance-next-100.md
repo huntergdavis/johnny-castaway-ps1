@@ -451,6 +451,16 @@ groups. The focused pass was exact-flat at scene `1602`, active loop/target
 foreground symbols. Close narrow early scalar groups in this cluster; the
 next BUILDING2 high work needs generated ownership or pack-side work reduction.
 
+Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
+read-plan top-ranked `3..27` retained-read row before the accepted high groups.
+The probe could not produce a valid gate: the normal focused run and
+case-local-CD retry were both host-killed with exit `137` before `JCPERF2`, and
+the intermediate skip-build retry only reached the sound preload before the
+emulator was orphaned. No runtime metrics were accepted and the source table was
+restored. Do not promote `3..27` as a scalar row from these artifacts; retry
+early-cluster ownership only after the harness is stable or through generated
+metadata/pack-side work reduction.
+
 Latest rejected VISITOR3 high current-layout frame129 D4 retest: v469 reran
 the large `17025 -> 609` byte frame `129` delta after v464 gave frame `132`
 setup-segment ownership. The run emitted complete metrics but failed strict
