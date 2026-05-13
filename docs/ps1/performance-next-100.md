@@ -545,6 +545,14 @@ the current append state. Remaining BUILDING2 high work needs generated
 deadline/append-start ownership or pack-side byte/work reduction, not another
 plain retained table.
 
+Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
+the accepted high rows to test whether starting before the failed `60..76`
+extension could use an earlier slack gap and save two modeled reads. The gate
+was exact-flat at scene `1602`, active loop/target `1351/1311`, overrun `40`,
+blocking `54`, hidden refill `18`, reads/due `58/7`, and loop-read VBlanks
+`257`. Close `53..77` as another scalar row; the early cluster is not missing
+just a wider or earlier table entry.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
