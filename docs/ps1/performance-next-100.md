@@ -292,6 +292,17 @@ read-table queue mostly as cleanup; the larger WALKSTUF1 low gain needs a
 generated frame-deadline owner or a data/upload reduction before the CD
 clusters rather than more hand-authored thresholds.
 
+Latest rejected WALKSTUF1 low post-prepare refill sweep: v609-v612 tested
+whether low tide could keep the accepted visual prepare-before-window policy
+and then reclaim CD window work from leftover held slack. Slack6 did not fire
+and stayed exact-flat at `1770`, `1478/1431`, overrun `47`,
+blocking/refill `64/20`, reads `62`. Any-slack, slack2, and slack4 fired but
+all regressed to `1776`, `1484/1428`, overrun `56`, blocking/refill `81/23`,
+reads `66`, and due misses `14`. Close this branch as binary no-op/regress;
+future W1 low work needs generated frame-deadline ownership or pack/upload
+work reduction before scheduling, not a second speculative window after
+prepare.
+
 Latest promoted WALKSTUF1 low shared-tail CD-work reduction: v598 promoted
 the only safe result from the v591-v597 tail closure as a shared table row
 instead of a low-only branch. Low timing stays exact-flat at scene `1770`,

@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4378 words
+          ~17 min read · 4425 words
         </p>
 
       <hr class="rule" />
@@ -451,6 +451,12 @@ exact-flat, and the rows that saved reads paid the win back as visible-loop,
 target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.</p>
+
+<p>The latest WALKSTUF1 low scheduler sweep tested post-prepare window refill
+thresholds. Conservative slack did not fire; lower thresholds fired but
+regressed loop, blocking, refill, and due misses. That closes the cheap
+prepare-then-refill branch and leaves generated frame-deadline ownership or
+pack/upload work reduction as the next low-side path.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 

@@ -322,6 +322,12 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.
 
+The latest WALKSTUF1 low scheduler sweep tested post-prepare window refill
+thresholds. Conservative slack did not fire; lower thresholds fired but
+regressed loop, blocking, refill, and due misses. That closes the cheap
+prepare-then-refill branch and leaves generated frame-deadline ownership or
+pack/upload work reduction as the next low-side path.
+
 ## Scene Battle Card
 
 As of 2026-05-13, all 126 scene/tide variants have current headless
