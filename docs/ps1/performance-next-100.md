@@ -109,6 +109,18 @@ refill `0`; `group_hits` stayed `0` while foreground hot code shifted
 VISITOR3 high terminal read-group tables; this cluster needs generated
 scheduler ownership or pack-side byte relocation, not another hand table.
 
+Latest rejected VISITOR3 high setup-prime frame133 relocation: v488 compressed
+high frame `129` to its known 609-byte D4 payload, compacted frames `130` and
+`131` earlier inside the setup-prime window, and moved full frame `133` into
+the freed setup-prime gap at sectors `150..160`. The shape preserved the
+`1555450` byte pack footprint and fixed LBA/sectors, but it could not produce
+a valid gate: normal, skip-build, and case-local-CD focused runs were all
+killed with exit `137` before `JCPERF2`; the orphaned local-CD emulator
+produced no late metrics after an additional wait. Restore source and
+`VISITOR3.FG2`; do not promote this residency layout without first proving the
+frame129 D4/prime-compaction ownership path in a deterministic local validator
+or with a stable non-orphaning harness.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
