@@ -21,8 +21,8 @@ A PS1 port of Sierra's classic Johnny Castaway screen saver. All 63 scenes are v
 | Field | Value |
 |---|---:|
 | Source path | `README.md` |
-| Lines | 251 |
-| Approx. words | 2401 |
+| Lines | 252 |
+| Approx. words | 2436 |
 | Code fences | 1 |
 
 ## Outline

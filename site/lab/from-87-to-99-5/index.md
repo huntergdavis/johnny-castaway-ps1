@@ -38,10 +38,11 @@ gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
 setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and `v0.8.8-ps1` promotes the
 follow-on VISITOR3, WALKSTUF1, BUILDING2, BUILDING6, and VISITOR5 rows through
-the VISITOR5 high `30..46` retained-read win. The current
+the VISITOR5 high `30..46` retained-read win. Current mainline then brings
+VISITOR5 low over the same `30..46` retained-read line. The current
 public-capped average is
-**+0.2837% over target / 99.7212% target speed**, with roughly **17.12
-percentage points** of over-target gap closed and about **12.62 target-speed
+**+0.2786% over target / 99.7262% target speed**, with roughly **17.12
+percentage points** of over-target gap closed and about **12.63 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -133,9 +134,9 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no orange or red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `116` rows are green and `10`
+[battle card]({{ '/perf/' | relative_url }}): `117` rows are green and `9`
 remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
-VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
+VISITOR3 high/low, BUILDING2 high/low, JOHNNY1 high/low, and BUILDING4 low.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some

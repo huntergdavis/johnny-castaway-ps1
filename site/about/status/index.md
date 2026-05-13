@@ -16,20 +16,19 @@ holiday, raft-stage):
 `v0.8.8-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed and
 timing-bearing, deterministic BOOTMODE scene selection is logged and gated,
-and VISITOR5 high now has a green `30..46` retained-read baseline. The
+and VISITOR5 high/low now share green `30..46` retained-read baselines. The
 chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2837%` over
-target / `99.7212%` target speed; the raw signed optimization matrix is
-`-0.4835%` / `100.5035%`.
-The newest accepted VISITOR3 low pack-only relocation moves frame137 into the
-existing setup-prime in-data gap beside frame132, improving low to `1062/1040`,
-overrun `22`, blocking `42`, and reads/due `7/7` without hidden refill.
-VISITOR5 high's `30..46` retained-read row moves that scene
-to `1101/1096`, overrun `5`, blocking/refill `5`, reads/due `18/0`, and green
-status. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
+allocation. The public headless battle card is `+0.2786%` over
+target / `99.7262%` target speed; the raw signed optimization matrix is
+`-0.4886%` / `100.5086%`.
+The newest accepted VISITOR5 low retained-read promotion mirrors the high-side
+`30..46` shape, improving low to `1102/1097`, overrun `5`, blocking/refill
+`5`, reads/due `18/0`, and green status. VISITOR5 high's matching row measures
+`1101/1096`, overrun `5`, blocking/refill `5`, reads/due `18/0`. The VISITOR3
+low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
@@ -160,8 +159,9 @@ Pulled from the live narrative in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
 - **Milestone release cadence.** `v0.8.8-ps1` promotes the VISITOR5 high
-  `30..46` retained-read group and moves that row into green on top of the
-  v0.8.7 stability hardening. `v0.8.7-ps1` is the deterministic BOOTMODE
+  `30..46` retained-read group and current mainline reuses that shape for
+  VISITOR5 low; both rows are now green on top of the v0.8.7 stability
+  hardening. `v0.8.7-ps1` is the deterministic BOOTMODE
   scene selection and Scene Explorer preview stability point release on top of
   the v0.8.6 performance follow-through: direct-scene boots are logged and
   gated, Suzy backdrop cleanup restores scene state, and Scene Explorer

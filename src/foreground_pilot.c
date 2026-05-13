@@ -513,7 +513,7 @@ static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kVisitor5LowReadGroups12[] = {
-    {23, 47, 0}
+    {30, 46, 0}
 };
 
 static const struct TFgPilotReadGroup kVisitor5HighReadGroups12[] = {

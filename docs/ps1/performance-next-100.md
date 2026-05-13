@@ -64,14 +64,28 @@ v474 WALKSTUF1 low `78..91` first post-prime boundary read-group promotion,
 the v477 VISITOR3 low frame132 setup-prime gap relocation, the v496
 VISITOR5 high `30..46` retained-read promotion, the v501 VISITOR3 high
 frame137 sector-203 setup relocation, and the v510 VISITOR3 low frame137
-setup-prime gap relocation:
-`+0.2837%` public average over target / `99.7212%` public target speed across
+setup-prime gap relocation, and the v526 VISITOR5 low `30..46` retained-read
+promotion:
+`+0.2786%` public average over target / `99.7262%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4835%` / `100.5035%`. Since the compact full-matrix baseline was about
+`-0.4886%` / `100.5086%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.12` public over-target points and added about `12.62`
-public target-speed points. Green rows are now `116 / 126`, with `10` yellow
+removed about `17.12` public over-target points and added about `12.63`
+public target-speed points. Green rows are now `117 / 126`, with `9` yellow
 rows remaining and no orange/red rows.
+
+Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
+`30..46` retained-read group shape for low tide instead of the older `23..47`
+low-side group. The binary sweep also checked `30..54` and `9..33`; both were
+exact-flat at `1104/1092`, blocking/refill `11`, and loop reads `19`. The
+promoted v526 gate improves scene `1363 -> 1361`, active loop/target
+`1104/1092 -> 1102/1097`, overrun `12 -> 5`, blocking/refill `11 -> 5`, loop
+reads `19 -> 18`, and due misses stay `0`; pack LBA/sectors stay
+`24394/173`, and the PS-EXE bucket stays `217088`. VISITOR5 high, VISITOR3
+high/low, BUILDING2 high/low, and WALKSTUF1 high/low canaries stayed
+exact-flat. This moves VISITOR5 low into green and leaves the under-99 focus
+set at WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1
+low/high, and BUILDING4 low.
 
 Latest promoted VISITOR3 high speed baseline: keep the v299 resident
 frame-131 placement, the v291 frame-140/tail setup-segment placement, store
@@ -2343,8 +2357,8 @@ pass originally pointed at WALKSTUF1 low/high, VISITOR3 low/high, BUILDING4
 high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1,
 BUILDING6, ACTIVITY9 high, JOHNNY6, and BUILDING6 slack4 passes, the current
 top generated graphics/scheduler targets are WALKSTUF1 low/high, BUILDING2
-high/low, VISITOR3 low/high, VISITOR5 low, JOHNNY1 residual read/data-shape
-work, and BUILDING4 low.
+high/low, VISITOR3 low/high, JOHNNY1 residual read/data-shape work, and
+BUILDING4 low.
 Do not retry whole-payload direct16; use selective/compressed bands or
 setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired

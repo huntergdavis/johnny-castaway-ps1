@@ -383,13 +383,14 @@ component-completeness phases:
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 - Current mainline performance: the post-v0.8.7 optimization arc now includes
   VISITOR3 high's frame137 sector-203 setup relocation, VISITOR5 high's
-  `30..46` retained-read group, VISITOR3 low's frame132 setup-prime
+  `30..46` retained-read group, VISITOR5 low's matching `30..46` retained-read
+  group, VISITOR3 low's frame132 setup-prime
   relocation, WALKSTUF1 low's `78..91` retained-read boundary, and BUILDING2
-  low's previous-frame D4 deltas. The public battle card is `+0.2837%` over
-  target / `99.7212%` target speed; raw signed rollup is `-0.4835%` /
-  `100.5035%`. VISITOR3 high measures `1065/1039` with `blocking_vb=41`;
-  WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and VISITOR3 high/low remain
-  the main under-99 tactical queue.
+  low's previous-frame D4 deltas. The public battle card is `+0.2786%` over
+  target / `99.7262%` target speed; raw signed rollup is `-0.4886%` /
+  `100.5086%`. VISITOR5 low measures `1102/1097` with `blocking_vb=5`;
+  WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
+  and BUILDING4 low remain the under-99 tactical queue.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
   headless optimization methodology to a release baseline; routed
   all 126 high/low scene variants through the perf matrix; clean-
@@ -398,7 +399,9 @@ component-completeness phases:
 - Latest performance release: **`v0.8.8-ps1`** — VISITOR5 high `30..46`
   retained-read promotion. Public rollup is `+0.2867%` over target /
   `99.7183%` target speed; raw signed rollup is `-0.4805%` /
-  `100.5006%`.
+  `100.5006%`. Current mainline also promotes VISITOR5 low with the matching
+  `30..46` retained-read shape, moving the live battle card to
+  `+0.2786%` over target / `99.7262%` target speed.
 - Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
   scene selection, expected-scene gates in the headless perf harness,
   Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail

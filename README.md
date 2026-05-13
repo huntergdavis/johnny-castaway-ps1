@@ -44,14 +44,15 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.8-ps1`** — VISITOR5 high retained-read promotion |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.2837% over target / 99.7212% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.2786% over target / 99.7262% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
-The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current post-release mainline win: VISITOR3 low now relocates the frame137 D4 payload into the existing setup-prime in-data gap, improving to `1062/1040`, overrun `22`, blocking `42`, reads/due `7/7`, with public rollup `+0.2837%` over target / `99.7212%` target speed and raw signed rollup `-0.4835%` / `100.5035%`.
+The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current post-release mainline win: VISITOR5 low now mirrors the accepted high-tide `30..46` retained-read shape, improving to `1102/1097`, overrun `5`, blocking/refill `5`, reads/due `18/0`, with public rollup `+0.2786%` over target / `99.7262%` target speed and raw signed rollup `-0.4886%` / `100.5086%`.
 
 Recent releases:
 
+- Current mainline after `v0.8.8-ps1` — VISITOR5 low now uses the low-tide `30..46` retained-read group, improving from `1104/1092` to `1102/1097` and moving that row into green. Bands are now `117` green and `9` yellow.
 - `v0.8.8-ps1` — VISITOR5 high now uses a high-tide `30..46` retained-read group, improving to `1101/1096`, overrun `5`, blocking/refill `5`, reads/due `18/0`, and moving that row into green. Public rollup is `+0.2867%` over target / `99.7183%` target speed; raw signed rollup is `-0.4805%` / `100.5006%`; bands are `116` green and `10` yellow.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection, expected-scene gates in the headless perf harness, Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail streaming. Public rollup remains `+0.3156%` over target / `99.6902%` target speed.
 - `v0.8.6-ps1` — WALKSTUF1 low gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch / slack4 guard, and VISITOR3 high/low setup-segment resident copies for frames `131` / `128`. Public rollup `+0.3157%` over target / `99.6902%` target speed.

@@ -106,7 +106,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3474 words
+          ~14 min read · 3506 words
         </p>
 
       <hr class="rule" />
@@ -501,13 +501,14 @@ battle card. The retrospective is at
 <a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.</li>
   <li>Current mainline performance: the post-v0.8.7 optimization arc now includes
 VISITOR3 high’s frame137 sector-203 setup relocation, VISITOR5 high’s
-<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR3 low’s frame132 setup-prime
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR5 low’s matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
+group, VISITOR3 low’s frame132 setup-prime
 relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, and BUILDING2
-low’s previous-frame D4 deltas. The public battle card is <code class="language-plaintext highlighter-rouge">+0.2837%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7212%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4835%</code> /
-<code class="language-plaintext highlighter-rouge">100.5035%</code>. VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1065/1039</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=41</code>;
-WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and VISITOR3 high/low remain
-the main under-99 tactical queue.</li>
+low’s previous-frame D4 deltas. The public battle card is <code class="language-plaintext highlighter-rouge">+0.2786%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7262%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4886%</code> /
+<code class="language-plaintext highlighter-rouge">100.5086%</code>. VISITOR5 low measures <code class="language-plaintext highlighter-rouge">1102/1097</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=5</code>;
+WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
+and BUILDING4 low remain the under-99 tactical queue.</li>
   <li>Performance-baseline release: <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> — promoted the
 headless optimization methodology to a release baseline; routed
 all 126 high/low scene variants through the perf matrix; clean-
@@ -516,7 +517,9 @@ arc from <code class="language-plaintext highlighter-rouge">+17.4%</code> over t
   <li>Latest performance release: <strong><code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code></strong> — VISITOR5 high <code class="language-plaintext highlighter-rouge">30..46</code>
 retained-read promotion. Public rollup is <code class="language-plaintext highlighter-rouge">+0.2867%</code> over target /
 <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4805%</code> /
-<code class="language-plaintext highlighter-rouge">100.5006%</code>.</li>
+<code class="language-plaintext highlighter-rouge">100.5006%</code>. Current mainline also promotes VISITOR5 low with the matching
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape, moving the live battle card to
+<code class="language-plaintext highlighter-rouge">+0.2786%</code> over target / <code class="language-plaintext highlighter-rouge">99.7262%</code> target speed.</li>
   <li>Latest stability release: <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> — deterministic BOOTMODE
 scene selection, expected-scene gates in the headless perf harness,
 Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail
