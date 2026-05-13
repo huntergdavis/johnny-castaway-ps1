@@ -212,6 +212,16 @@ byte PS-EXE bucket stay fixed. BUILDING2 high, FISHING1 high, WALKSTUF1 high,
 and broad completed canaries stayed flat. Use this as the current baseline
 for future BUILDING2 low comparisons.
 
+Latest rejected BUILDING2 low D4-hole repack: v479 reran the pack compactor
+after teaching the restore-minus-current tool to skip existing D4 payloads.
+The transform found no further cleanup-minus-current savings, then repacked
+payloads after the accepted frame `71`/`77` D4 holes while preserving total
+file size and LBA. The focused gate regressed low from `1619`, `1349/1320`,
+overrun `29`, blocking `70`, refill `0`, reads/due `52/15` to `1627`,
+`1357/1318`, overrun `39`, blocking `73`, refill `2`, reads/due `55/17`.
+Close hole-closing repacks after v454; future BUILDING2 low pack work must
+preserve CD phase explicitly or reduce real work without moving later payloads.
+
 Latest promoted BUILDING6 slack baseline: keep the compact-FGP3/v4 pack shape
 and add a scene-local `4` VBlank window-refill minimum. Fresh current-layout
 baselines were high `2744`, `2479/2453`, overrun `26`, blocking `26`, hidden

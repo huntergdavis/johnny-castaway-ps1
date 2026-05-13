@@ -23,6 +23,7 @@ HEADER = "<4sHHHHHHHHHHIIIHH"
 ENTRY = "<HhhHHHII"
 HEADER_SIZE = struct.calcsize(HEADER)
 ENTRY_SIZE = struct.calcsize(ENTRY)
+DELTA_SENTINEL = 0xFFFE
 
 
 @dataclass
@@ -182,6 +183,9 @@ def encode_cleanup_rows(rows: list[Row]) -> bytes:
 
 
 def compact_payload(payload: bytes) -> tuple[bytes, PayloadStats, PayloadStats]:
+    if len(payload) >= 2 and read_u16(payload, 0) == DELTA_SENTINEL:
+        return payload, PayloadStats(), PayloadStats()
+
     cleanup_rows, draw_offset = parse_cleanup_rows(payload, 0, len(payload))
     draw_by_y, _end = parse_draw_intervals(payload, draw_offset, len(payload))
 
