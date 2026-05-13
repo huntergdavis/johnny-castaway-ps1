@@ -306,6 +306,17 @@ overrun `29`, blocking `70`, refill `0`, reads/due `52/15` to `1627`,
 Close hole-closing repacks after v454; future BUILDING2 low pack work must
 preserve CD phase explicitly or reduce real work without moving later payloads.
 
+Latest rejected BUILDING2 low middle-row replacement: v505 replaced the
+accepted `{318,330}` row with the planner-ranked wider `{314,338}` span while
+keeping `{238,250}` and `{365,381}` unchanged. The replacement did reduce CD
+pressure (`loop_reads 52 -> 50`, loop-read time `221 -> 217`, blocking
+`70 -> 66`, due misses `15 -> 13`) and kept hidden refill at `0`, but strict
+public cadence regressed: scene `1619 -> 1623`, active loop/target
+`1349/1320 -> 1353/1321`, and overrun `29 -> 32`. Keep `{318,330}` as the
+accepted middle row. Future BUILDING2 low read work needs generated
+deadline/refill ownership or pack-side work reduction before replacing
+accepted rows.
+
 Latest promoted BUILDING6 slack baseline: keep the compact-FGP3/v4 pack shape
 and add a scene-local `4` VBlank window-refill minimum. Fresh current-layout
 baselines were high `2744`, `2479/2453`, overrun `26`, blocking `26`, hidden
@@ -2972,6 +2983,7 @@ pre-v0.8.0 row.
 | BUILDING2 low read group `67..91` with 24-sector capacity | Do not promote or retry as a hand-authored group. The v443 unguarded row proves the larger capacity can fire and cut loop reads `55 -> 51`, but it regresses scene `1619 -> 1630`, active loop/target `1349/1318 -> 1360/1315`, overrun `31 -> 45`, blocking `81 -> 110`, hidden refill `1 -> 4`, and due misses `18 -> 22`. The v444 `minSlack=4` binary is exact-flat, so the simple choices are phase-negative or inert. This early cluster needs generated refill/deadline ownership or a pack-side byte reduction before retrying. |
 | BUILDING2 low read group `250..258` | Do not promote as a hand-authored group. The v400 current read-plan refresh marked it as a standalone long-gap candidate, but the focused probe regressed low to scene `1625`, active loop/target `1355/1317`, overrun `38`, blocking `88`, and hidden refill `2` while only reducing reads `55 -> 54`. This closes another direct low table; remaining low work needs generated refill ownership or pack-side data-shape reduction. |
 | BUILDING2 low read group `243..259` | Do not promote or retry as a hand-authored grouped-append table. The v413 current-plan probe looked better than the closed `250..258` row because it covered reads `103..105` and modeled two saved reads, but it actually regressed low to scene `1625`, active loop/target `1355/1320`, overrun `35`, and loop reads `57` while only nudging blocking `81 -> 79` and due misses `18 -> 17`. The v414 `minSlack=4` scheduler guard made the row exact-flat with no work reduction. This cluster needs generated refill ownership or byte/cleanup removal, not another local table. |
+| BUILDING2 low read group replacement `314..338` for accepted `318..330` | Do not promote or retry as a hand-authored replacement. The v505 focused gate saved real CD work (`loop_reads 52 -> 50`, loop-read time `221 -> 217`, blocking `70 -> 66`, due `15 -> 13`) but regressed public timing to scene `1623`, active loop/target `1353/1321`, overrun `32`. Keep `{318,330}` until generated deadline/refill ownership or pack-side work reduction changes the phase model. |
 | Zero-byte restore perf marker prune | Do not promote as source cleanup. Guarding `ps1PerfMarkRestore(0)` at five residual/direct restore call sites kept VISITOR3 low exact-flat and shifted hot symbols (`foregroundPilotPlay +8`, graphics helpers +40), so it adds phase risk without speed. |
 | VISITOR3 motion-aware existing transform scan | No remaining win in the old cleanup/draw-tail transform family. A scratch wrapper that skipped `0xffff` motion markers byte-identically found zero positive VISITOR3 high deltas, zero draw-tail low deltas, and only a low frame `143` restore-minus-current change that grew `2857 -> 2861` bytes. New VISITOR3 attempts need a generated data shape or scheduler-owned metadata, not another pass of these transformers. |
 | WALKSTUF1 high second restore-minus-current pass | Do not promote as a pack-only change. The v351 probe reduced restore bytes `725714 -> 725550`, but grew active payload `918345 -> 918551` and regressed high from `1768`, `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, reads `67`, due `16` to `1784`, `1496/1416`, overrun `80`, blocking `120`, hidden refill `35`, reads `74`, due `19`. |
