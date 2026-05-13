@@ -563,6 +563,14 @@ frame132 setup-prime relocation is `+0.2954%` / `99.7097%`. Close direct
 VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
+Follow-up v490 tested the read-plan's lower visible-risk high-tide row
+`30..46` after correcting the source gate so the high branch actually ran.
+The focused harness reached the VISITOR5 FG stream but was killed with exit
+`137` before `JCPERF2`; the orphaned DuckStation process continued issuing
+small VISITOR5 reads for another minute and still emitted no scene-complete
+metrics. Restore the source table and keep direct high-tide scalar groups
+closed until generated scheduler metadata can prove deadline ownership.
+
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
 sides of the late `297..321` exact-read/window split. Denying the direct-stage
 shortcut for that sector band saved reads (`67 -> 65`) but regressed target
