@@ -87,6 +87,18 @@ at `1068/1041`, blocking `51`, reads/due `9/9`. This promotion adds about
 `0.0023` public over-target points removed and `0.0021` public target-speed
 points gained, moving VISITOR3 high to `97.38%` target speed.
 
+Latest rejected VISITOR3 high frame133 D4 attempt: v484 stored frame `133` as
+a 14288-byte chained previous-frame D4 delta against the already-decoded frame
+`132`, shrinking that payload from `17069` bytes and sector span `211..221`
+to `211..219`. Local decode validation proved every candidate frame matched
+the accepted baseline byte-for-byte, but runtime ownership was unsafe: the
+initial staged candidate emitted incomplete correctness (`trip=1`,
+`last_frame=132`, `sound_events=7/8`), the staged-decode repair stalled
+without `JCPERF2`, and the due-load-only/no-stage variant was killed before
+metrics. Restore source and `VISITOR3.FG2`; do not retry frame133 chained D4
+without first designing explicit staged/prepared ownership for previous-frame
+delta payloads.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
@@ -777,7 +789,7 @@ Rank order is current working priority, not guaranteed payoff.
 | 12 | Duplicate only subpayload spans inside current sectors | If full entry duplication is phase-negative, duplicate only the spans that trigger extra sectors into slack bytes in the same sector group. | Needs pack surgery below entry granularity. |
 | 13 | VISITOR3 terminal frame split: early core plus late tail | Split large entries into an early resident core and a late small residual, reducing blocking at due time without moving the whole payload. | Requires pack/runtime support for two payload sources per frame. |
 | 14 | Palette-index RLE for repeated water/background strips | VISITOR3 late frames likely contain repeated water/background runs. A VISITOR3-specific RLE substream could be tiny and decode into PAL4 spans. | Decoder code size and branch cost. |
-| 15 | Extend previous-frame D4 deltas beyond frames `129`/`132` | v452 proved a tiny prior-frame delta can remove one VISITOR3 low due read, and v470 proved frame `132` can shave one more blocking/read VBlank without moving pack LBA or growing the executable bucket. Re-rank frame `137` and the terminal cluster for the same mechanism, one frame at a time. | Multi-frame delta probes can cross the executable bucket or no-op public timing; every extension needs focused plus broad gates and should promote only on speed or visible CD-pressure movement. |
+| 15 | Extend previous-frame D4 deltas beyond frames `129`/`132` | v452 proved a tiny prior-frame delta can remove one VISITOR3 low due read, and v470 proved frame `132` can shave one more blocking/read VBlank without moving pack LBA or growing the executable bucket. Re-rank frame `137` and the terminal cluster for the same mechanism, one frame at a time. | v484 proved high frame `133` chained D4 is byte-valid but runtime-unsafe with current staged/prepared ownership. Multi-frame delta probes need explicit ownership gates before focused plus broad timing gates. |
 | 16 | Generated per-frame copy-previous-background mode | Motion-copy is one instance. Generalize to copy selected previous background regions plus smaller draw deltas for frames that are near-identical but not simple X translations. | Copy regions can propagate stale pixels if cleanup ownership is wrong. |
 | 17 | Pre-baked clean-rect cache for VISITOR3 yacht region | Keep a small cached clean background rectangle for the yacht travel band to make cleanup cheaper than reading/restoring dynamic spans. | RAM pressure and correctness with island/water overlays. |
 | 18 | Tide-specific opcode selection | High and low differ: high accepted frame `115`, low rejected every precursor. Generate independent opcode families and never assume paired eligibility. | More tooling complexity and broader visual verification burden. |
