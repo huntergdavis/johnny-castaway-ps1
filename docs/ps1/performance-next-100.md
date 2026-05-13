@@ -315,6 +315,15 @@ inert and the broad form adds cleanup pressure. The next low-side swing needs
 generated deadline/refill ownership, sector-read-changing byte removal, or a
 custom render/upload representation that does not add cleanup pixels.
 
+Latest rejected WALKSTUF1 low prepare-threshold sweep: v446/v447 tried moving
+the accepted staged-prepare priority from the normal `4` VBlank slack point to
+the two adjacent binary choices, `5` and `3`, without changing packs or layout.
+Both directions regressed the row to scene `1782`, active loop `1490`, blocking
+`84`, and larger hidden refill (`24` / `31`) while moving no key metric in the
+right direction. Close scalar prepare-threshold tuning; WALKSTUF1 low still
+needs generated deadline ownership or pack/data-shape work, not a different
+single slack constant.
+
 Latest rejected WALKSTUF1 low runtime narrow upload: v418 tested a
 scene-gated dirty X-band uploader that copied narrow row bands into a 64 KiB
 scratch buffer before `LoadImage`, hoping to turn the large host-side upload
