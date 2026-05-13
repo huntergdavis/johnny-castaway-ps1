@@ -298,3 +298,10 @@ channel named in
   — the full controls and sub-screen surface.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — every scene
   the original game had, validation status, last-verified release tag.
+- [Performance battle card]({{ '/perf/' | relative_url }}) — the
+  second ledger: 126-variant headless-DuckStation timing matrix
+  for "does this scene hit its target frame budget on PS1
+  hardware?", sortable with color-coded target speed cells.
+- [About]({{ '/about/' | relative_url }}) — the long-form
+  project overview for the "wait, what *is* this?" question
+  before you click Download.
