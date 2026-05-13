@@ -214,6 +214,18 @@ and restore-minus-current grew active payload). The focused gate saved one read
 generated deadline ownership or a custom data/upload representation, not a
 low-only hand table.
 
+Latest rejected WALKSTUF1 low setup-prime prefix-hole fill: v509 moved frame
+`78` / source `137` and frame `80` / source `141` into the already-covered
+`296`-byte prefix hole before `data_offset=4392`, using `247` bytes while
+keeping pack LBA, file size, source, and PS-EXE bucket fixed. The focused gate
+failed structurally with missing `JCPERF2` and invalid byte reads around
+`0x4209FC4D..0x4209FC79` at PC `0x80034D20`, then hit the clean-retry prefetch
+drop path. Close prefix metadata/setup holes as FGP3 payload targets: even when
+the sector is setup-prime resident, payload entries must stay in the data area
+or in a mechanically proven in-data hole. Future WALKSTUF1 low relocation work
+needs a valid in-data hole, generated/code-neutral residency, or a custom
+upload/data representation.
+
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
 `4708 -> 1484` bytes and reducing its modeled sector span from four to three.
@@ -2674,7 +2686,7 @@ display, tearing, frame drops, or weakened pause input.
 | 262 | WALKSTUF1 cleanup-minus-next-current | Omit cleanup spans that are immediately covered by the next frame, not just the current frame. | Current restore-minus-current helped; the hot clusters may still restore pixels that become hidden one frame later. |
 | 263 | WALKSTUF1 restore deferral proof | Delay selected cleanup restores by one held frame when the exposed background is not visible yet. | This targets cleanup work without changing payload layout, but needs a strict visual-frame proof. |
 | 264 | WALKSTUF1 retained-sector scratch sidecar | Keep one hot 12-sector cluster resident in a small scratch buffer loaded during existing setup reads instead of adding a new setup read. | v269 failed because the new setup segment cost more than it saved. |
-| 265 | WALKSTUF1 setup-prime hole fill | Repack early hot payloads into sectors already covered by the accepted `2..74` setup-prime window. | Prime-cap raises failed; using the already-paid residency may avoid setup debt. |
+| 265 | WALKSTUF1 setup-prime prefix-hole fill | Closed by v509 for prefix holes. Do not move FGP3 payload entries before `data_offset`, even if those sectors are covered by setup-prime. | v509 used `247` of `296` bytes in the prefix hole and failed structurally with missing `JCPERF2` plus invalid byte reads. Retry only with a proven in-data hole or generated/code-neutral residency. |
 | 266 | WALKSTUF1 sector-aligned frame split | Split large hot payloads so the due portion sits before a sector boundary and cold tail can be prefetched later. | Several misses are sector-phase problems rather than raw byte problems. |
 | 267 | WALKSTUF1 frame-hold retimer around `145..155` | Stretch a long-safe hold before the hot cluster only if the next sector window is resident, preserving total scene cadence. | Cleanup v264 proved the cluster can improve public timing but hidden refill must be owned. |
 | 268 | WALKSTUF1 generated refill reservation map | Emit a tiny per-frame table that blocks window reads in frames that would steal visible cadence and forces them into known hidden slack. | Prepare-before-window v273 proved naive priority inversion hurts; generated reservations need exact phase ownership. |
@@ -3000,6 +3012,7 @@ pre-v0.8.0 row.
 | BUILDING2 high read group `23..29` | Do not promote or retry as a narrower early hand table. The v434 focused gate stayed exact-flat at scene `1603`, `1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads/due `61/7`, while shifting tracked hot symbols by `+4`. |
 | BUILDING2 duplicate-payload entry-table aliasing | Do not promote or retry as raw backreferences. Both high and low packs have exact duplicate residual payloads, but v359 full aliasing creates reverse/mixed seek debt and regresses high to `1454/1305` with `blocking_vb=195` and low to `1457/1314` with `blocking_vb=228`. v360's `16 KiB`-limited version still regresses high/low to `1368`/`1369` loop VBlanks, v361's adjacent-only alias is exact-flat, and v507's high-only frame71-to-frame70 adjacent alias is also exact-flat at the current `1602`, `1351/1311`, `blocking_vb=54` baseline. Duplicate compression needs generated forward-order copy/no-op semantics or an explicit runtime alias cache, not reused older offsets in the stream table. |
 | BUILDING2 high setup segment `202..226` | Do not promote or retry as a local source segment. The v508 focused gate saved loop reads `58 -> 55`, but regressed to `1619`, `1358/1308`, overrun `50`, blocking `61`, and hidden refill `25`, with hot foreground symbols shifted by `+172` bytes. Setup ownership for the middle cluster needs generated/code-neutral metadata or pack-side work reduction first. |
+| WALKSTUF1 low setup-prime prefix-hole payload relocation | Do not promote or retry for prefix holes. The v509 source-neutral pack rewrite moved frames `78` and `80` into the `296`-byte prefix before `data_offset=4392`, kept file size/LBA/source/PS-EXE fixed, but failed structurally with missing `JCPERF2`, invalid byte reads near `0x4209FC4D`, and a clean-retry prefetch drop. Prefix setup-prime sectors are metadata/setup territory, not safe FGP3 payload storage. |
 | BUILDING2 low setup segment `67..73` | Do not promote or retry as an additive setup-prime edge segment. The v362 probe made the top low cluster reusable during setup, but it regressed low to `1630`, `1354/1314`, overrun `40`, blocking `132`, and due misses `29` while saving only one loop read. This confirms the `67..73` cluster is phase-sensitive: it cannot be solved by simply moving the read to setup or by the earlier scalar read group. |
 | BUILDING2 high read group `83..95` | Do not promote as a hand-authored group. The v352 probe and slack-4 guard both cut one read and one loop VBlank, but target fell `1311 -> 1309`, overrun regressed `41 -> 42`, blocking regressed `55 -> 56`, and hidden refill regressed `19 -> 20`. This closes the lower-visible-risk table row; remaining BUILDING2 high work needs generated deadline ownership or pack-side byte reduction. |
 | BUILDING2 high read group `210..226` | Do not promote or retry as a hand-authored table. The focused v176 probe kept layout fixed but stayed exact-flat at `1599`, `1349/1316`, `overrun_vb=33`, `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`, and `group_hits=0`; the row remains scheduler-owned-only despite being append-start fireable in the planner. |
