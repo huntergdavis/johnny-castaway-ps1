@@ -303,6 +303,18 @@ future W1 low work needs generated frame-deadline ownership or pack/upload
 work reduction before scheduling, not a second speculative window after
 prepare.
 
+Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
+the two interior gaps left by tiny D4 frames before the `218..230` near-miss
+cluster, first together and then independently. Removing both gaps shifted
+payloads earlier by `14562` bytes but regressed to `1627`, `1357/1318`,
+overrun `39`, blocking/refill `73/2`, reads `55`, due `17`. Removing only the
+later gap was worse on CD (`blocking/refill 87/3`, reads `58`, due `19`);
+removing only the earlier gap still failed at `1623`, `1353/1317`, overrun
+`36`, blocking/refill `76/2`. Close broad physical gap compaction: the holes
+are phase-bearing padding, and the BUILDING2 low near-miss still needs a
+targeted one-sector byte reduction near `218..230`, generated deadline
+ownership, or upload/restore work reduction.
+
 Latest promoted WALKSTUF1 low shared-tail CD-work reduction: v598 promoted
 the only safe result from the v591-v597 tail closure as a shared table row
 instead of a low-only branch. Low timing stays exact-flat at scene `1770`,

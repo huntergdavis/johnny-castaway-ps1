@@ -328,6 +328,12 @@ regressed loop, blocking, refill, and due misses. That closes the cheap
 prepare-then-refill branch and leaves generated frame-deadline ownership or
 pack/upload work reduction as the next low-side path.
 
+The latest BUILDING2 low pack-side attempt compacted D4-created interior holes
+before the `218..230` near-miss cluster. Removing those holes shifted payloads
+earlier but regressed loop timing and CD/refill pressure, so broad physical
+gap removal is closed; any BUILDING2 low retry needs a targeted byte reduction
+or generated deadline owner around the cluster.
+
 ## Scene Battle Card
 
 As of 2026-05-13, all 126 scene/tide variants have current headless

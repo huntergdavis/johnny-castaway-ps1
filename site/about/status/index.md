@@ -34,7 +34,9 @@ fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
 and `1478/1431`; the latest WALKSTUF1 scalar and post-prepare scheduler
 closures kept that timing unchanged and moved the next attempt toward
-generated ownership or pack-side work. BUILDING2 high currently measures
+generated ownership or pack-side work. BUILDING2 low physical gap compaction
+also closed as phase-negative, leaving targeted byte reduction or generated
+deadline ownership for that near-miss. BUILDING2 high currently measures
 `1351/1311`, overrun
 `40`, blocking `54`, hidden refill `18`, and due misses `7`.
 The live ledger is at

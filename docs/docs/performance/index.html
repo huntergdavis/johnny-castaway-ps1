@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4425 words
+          ~17 min read · 4476 words
         </p>
 
       <hr class="rule" />
@@ -457,6 +457,12 @@ thresholds. Conservative slack did not fire; lower thresholds fired but
 regressed loop, blocking, refill, and due misses. That closes the cheap
 prepare-then-refill branch and leaves generated frame-deadline ownership or
 pack/upload work reduction as the next low-side path.</p>
+
+<p>The latest BUILDING2 low pack-side attempt compacted D4-created interior holes
+before the <code class="language-plaintext highlighter-rouge">218..230</code> near-miss cluster. Removing those holes shifted payloads
+earlier but regressed loop timing and CD/refill pressure, so broad physical
+gap removal is closed; any BUILDING2 low retry needs a targeted byte reduction
+or generated deadline owner around the cluster.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
