@@ -76,3 +76,10 @@ for the longer version.
 The current high/low rows are close to target at `2655/2633` VBlanks with
 `0` due misses. `SUZY 1` is also measured now, using the longer timing window
 that scene requires.
+
+`v0.8.7-ps1` hardened the cleanup path for Suzy's home-beach backdrop:
+scene-specific state now clears clean-bg black mode and frees clean-bg
+rect state on entry and cleanup, so the following island-side scene
+doesn't lose its palm or tree background layers after a SUZY play.
+Same fix applies to `SUZY 1`; the two scenes share the home-beach
+non-island backdrop.

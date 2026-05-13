@@ -191,6 +191,13 @@ The current high/low rows are close to target at <code class="language-plaintext
 <code class="language-plaintext highlighter-rouge">0</code> due misses. <code class="language-plaintext highlighter-rouge">SUZY 1</code> is also measured now, using the longer timing window
 that scene requires.</p>
 
+<p><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> hardened the cleanup path for Suzy’s home-beach backdrop:
+scene-specific state now clears clean-bg black mode and frees clean-bg
+rect state on entry and cleanup, so the following island-side scene
+doesn’t lose its palm or tree background layers after a SUZY play.
+Same fix applies to <code class="language-plaintext highlighter-rouge">SUZY 1</code>; the two scenes share the home-beach
+non-island backdrop.</p>
+
   </div>
 
   <footer class="post-footer">

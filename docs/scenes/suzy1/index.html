@@ -186,6 +186,14 @@ They need a longer <code class="language-plaintext highlighter-rouge">12000</cod
 lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame timing window. The current rows are close
 to target at <code class="language-plaintext highlighter-rouge">5763/5738</code> VBlanks for both tides.</p>
 
+<p><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> hardened the cleanup path for Suzy’s home-beach backdrop:
+scene-specific state now clears clean-bg black mode and frees clean-bg
+rect state on entry and cleanup, so the following island-side scene
+doesn’t lose its palm or tree background layers after a SUZY play.
+Before the fix, long random runs could leave residue from the
+black-backdrop frames bleeding into the next scene’s
+<a href="../../docs/glossary/#dirty-rect">dirty-rect bookkeeping</a>.</p>
+
   </div>
 
   <footer class="post-footer">
