@@ -472,7 +472,11 @@ refill regresses `18 -> 19`, and overrun moves `40 -> 41` while reads drop
 `1602`, `1351/1311`, overrun `40`, blocking `54`, refill `18`, reads/due
 `58/7`. Together with the earlier paired high probe, close BUILDING2 high
 frames `71` and `77` as standalone D4 deltas; high still needs generated
-deadline ownership or a different pack shape.
+deadline ownership or a different pack shape. The v492 current-baseline
+frame71 retest reconfirmed this closure: `6656 -> 13` bytes, fixed pack
+footprint/LBA, valid `JCPERF2`, and exact-flat timing/pressure at `1602`,
+`1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, reads/due
+`58/7`.
 
 Latest rejected BUILDING2 high aligned middle group: v467 replaced the accepted
 `206..230` read group with the current read-plan's largest `202..226` signal,
