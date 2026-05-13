@@ -186,6 +186,14 @@ Latest rejected BUILDING2 high direct-stage ownership probe: v370 kept
 `foregroundPilotPlay` by `64` bytes. Close hand-coded sector exceptions; the
 next BUILDING2 high work should be generated metadata or pack/data-shape work.
 
+Latest rejected BUILDING2 high middle-cluster retest: v419 tried the refreshed
+`210..222` row after the accepted `226..242` promotion, avoiding the overlap
+that made the older `210..226` attempt inert. The group fired and reduced loop
+reads `61 -> 59`, but it regressed high from `1602`, `1351/1313`, overrun
+`38`, blocking `50`, hidden refill `17` to `1607`, `1356/1311`, overrun `45`,
+blocking `57`, hidden refill `23`. Close `210..222` as another local table;
+the middle cluster needs generated phase ownership or real byte reduction.
+
 Latest rejected BUILDING2 low scheduler ownership probe: v388 reran a fresh
 low baseline at `1619`, `1349/1318`, overrun `31`, blocking `81`, hidden
 refill `1`, reads `55`, and due `18`, then temporarily gave low-tide
@@ -2456,6 +2464,7 @@ pre-v0.8.0 row.
 | BUILDING2 low setup segment `67..73` | Do not promote or retry as an additive setup-prime edge segment. The v362 probe made the top low cluster reusable during setup, but it regressed low to `1630`, `1354/1314`, overrun `40`, blocking `132`, and due misses `29` while saving only one loop read. This confirms the `67..73` cluster is phase-sensitive: it cannot be solved by simply moving the read to setup or by the earlier scalar read group. |
 | BUILDING2 high read group `83..95` | Do not promote as a hand-authored group. The v352 probe and slack-4 guard both cut one read and one loop VBlank, but target fell `1311 -> 1309`, overrun regressed `41 -> 42`, blocking regressed `55 -> 56`, and hidden refill regressed `19 -> 20`. This closes the lower-visible-risk table row; remaining BUILDING2 high work needs generated deadline ownership or pack-side byte reduction. |
 | BUILDING2 high read group `210..226` | Do not promote or retry as a hand-authored table. The focused v176 probe kept layout fixed but stayed exact-flat at `1599`, `1349/1316`, `overrun_vb=33`, `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`, and `group_hits=0`; the row remains scheduler-owned-only despite being append-start fireable in the planner. |
+| BUILDING2 high read group `210..222` | Do not promote or retry as a hand-authored table. The v419 current-baseline retest saved reads (`61 -> 59`) but regressed scene `1602 -> 1607`, active loop `1351 -> 1356`, target `1313 -> 1311`, overrun `38 -> 45`, blocking `50 -> 57`, and prefetch overrun `17 -> 23`. This confirms the middle cluster is phase-negative when forced locally. |
 | BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
 | BUILDING2 low read group `67..73` | Do not promote as a local read group. Unguarded reduced blocking `81 -> 76` and loop reads `55 -> 54`, but regressed scene `1619 -> 1621`, loop `1349 -> 1351`, target `1318 -> 1316`, overrun `31 -> 35`, and hidden refill `1 -> 3`; the slack-4 guarded variant was exact-flat and did not fire a useful append. |
 | BUILDING2 low read group `250..258` | Do not promote as a hand-authored group. The v400 current read-plan refresh marked it as a standalone long-gap candidate, but the focused probe regressed low to scene `1625`, active loop/target `1355/1317`, overrun `38`, blocking `88`, and hidden refill `2` while only reducing reads `55 -> 54`. This closes another direct low table; remaining low work needs generated refill ownership or pack-side data-shape reduction. |
