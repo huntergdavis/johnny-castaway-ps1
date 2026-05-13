@@ -317,6 +317,15 @@ refill regresses `18 -> 19`, and overrun moves `40 -> 41` while reads drop
 frames `71` and `77` as standalone D4 deltas; high still needs generated
 deadline ownership or a different pack shape.
 
+Latest rejected BUILDING2 high aligned middle group: v467 replaced the accepted
+`206..230` read group with the current read-plan's largest `202..226` signal,
+leaving `226..242` in place as the follow-up. The rerun was exact-flat at
+scene `1602`, active loop/target `1351/1311`, overrun `40`, blocking `54`,
+hidden refill `18`, reads/due `58/7`, while shifting hot foreground symbols
+and growing `foregroundPilotPlay` by `156` bytes. Keep `206..230`; close
+middle-cluster hand-table alignment. BUILDING2 high now needs generated
+deadline ownership or pack-side byte/work reduction.
+
 Latest rejected VISITOR3 low grouped-append ownership: v421-v423 tested the
 remaining tight `206..230` low cluster without adding setup residency. A
 low-only 24-sector grouped append with `minSlack=4`, the same group unguarded,
