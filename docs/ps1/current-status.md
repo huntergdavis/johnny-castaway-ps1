@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3178%` over target / `99.6884%` target speed).
+battle card is `+0.3196%` over target / `99.6867%` target speed).
 
 ## Overall
 
@@ -216,20 +216,22 @@ compacts frame `143` cleanup and moves frame `144` terminal cleanup into the
 already paid setup window. VISITOR3 low now reports `blocking_vb=58`,
 `loop_reads=10`, loop-read time `58`, and due misses `10`; non-VISITOR3
 controls stayed flat.
-The v340/v383/v384 WALKSTUF1 high read-group passes add `344..360`,
-`422..434`, and `444..456` after the accepted `201..213` and `213..229`
-groups. High remains `1480/1432`, overrun `48`, blocking `83`, and hidden
-refill `26`; the latest two passes are same-speed CD-work reductions that
-lower loop reads `67 -> 65` and loop-read time `292 -> 284`. Low and selected
-controls stayed flat.
-The v379 BUILDING2 high read-group pass adds `226..242` between the accepted
-`60..72` and `249..257` groups. High improves `1352/1311 -> 1351/1313`,
-overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and
-loop-read time `262 -> 254`; BUILDING2 low, VISITOR3 low, FISHING1 high, and
-WALKSTUF1 high/low controls stayed flat.
-The public battle card is now `+0.3178%` over target / `99.6884%` target speed
+The v340/v383/v384/v428 WALKSTUF1 read-group passes add `344..360`,
+`422..434`, `443..455`, and `444..456` after the accepted `201..213` and
+`213..229` groups. High remains `1480/1432`, overrun `48`, blocking `83`, and
+hidden refill `26`, with loop reads down `69 -> 65` and loop-read time
+`301 -> 284` from the v316 baseline. Low remains `1484/1431`, overrun `53`,
+blocking `72`, hidden refill `22`, and due misses `12`, while the shared
+dual-tail pass lowers low loop reads `67 -> 66` and loop-read time
+`288 -> 287`.
+The BUILDING2 high current-control row keeps the accepted `60..72`,
+`226..242`, and `249..257` retained groups. On current HEAD it measures
+`1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, loop reads `61`,
+and due misses `7`; the older v379 `1351/1313` artifact no longer reproduces
+after later layout changes.
+The public battle card is now `+0.3196%` over target / `99.6867%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4493%`.
+raw signed optimization rollup is `-0.4474%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.08`
 public over-target points and added about `12.59` public target-speed points.
@@ -267,7 +269,7 @@ plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack.
 VISITOR3 high is now
 `1071/1040` with `blocking_vb=52`; low is
-`1072/1040` with `blocking_vb=58`. BUILDING2 high/low are `1351/1313` and
+`1072/1040` with `blocking_vb=58`. BUILDING2 high/low are `1352/1311` and
 `1349/1318`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1480/1432` and `1484/1431`, WALKSTUF3 high/low are `2310/2290` and
@@ -313,11 +315,12 @@ canaries.
 Milestone releases:
 - Current `main` after `v0.8.7-ps1` — promotes the BUILDING2 high `226..242`
   read group plus the BUILDING6 scene-local slack4 guard, WALKSTUF1 high
-  `344..360`, `422..434`, and `444..456`, WALKSTUF1 low staged-prepare
-  scheduler fallback, and VISITOR3 low tail pack-only compaction. The public
-  battle card is `+0.3178%` / `99.6884%`; BUILDING2 high is `1351/1313`,
-  WALKSTUF1 high stays `1480/1432` with loop reads `65`, and VISITOR5 high is
-  refreshed at `1107/1090`.
+  `344..360`, `422..434`, and shared dual-tail `443..455` / `444..456`,
+  WALKSTUF1 low staged-prepare scheduler fallback, and VISITOR3 low tail
+  pack-only compaction. The public battle card is `+0.3196%` / `99.6867%`;
+  BUILDING2 high currently measures `1352/1311`, WALKSTUF1 high stays
+  `1480/1432` with loop reads `65`, WALKSTUF1 low stays `1484/1431` with loop
+  reads `66`, and VISITOR5 high is refreshed at `1107/1090`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

@@ -311,16 +311,17 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3178%`
-exact public over target / `99.6884%` exact public target speed); the raw
-signed optimization matrix is `-0.4493%` / `100.4708%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3196%`
+exact public over target / `99.6867%` exact public target speed); the raw
+signed optimization matrix is `-0.4474%` / `100.4690%`.
 
 ## Scene Battle Card
 
 As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`walkstuf1-high-rg444-456-v384`,
-`building2-high-rg226-242-v379`,
+`walkstuf1-high-shared-dual-tail-v428`,
+`walkstuf1-low-shared-dual-tail-v428`,
+`building2-high-current-v428-control`,
 `building6-window-slack4-v364`,
 `johnny6-compact-fgp3-v354`,
 `visitor3-low-tail-pack-only-v338`,
@@ -413,7 +414,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-12T13:14:33`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-12T18:50:43`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -421,8 +422,9 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf1-high-rg444-456-v384`,
-`building2-high-rg226-242-v379`,
+rows now use `walkstuf1-high-shared-dual-tail-v428`,
+`walkstuf1-low-shared-dual-tail-v428`,
+`building2-high-current-v428-control`,
 `building6-window-slack4-v364`,
 `visitor3-high-f131-resident-alias121123-v299`,
 `visitor3-low-tail-pack-only-v338`,
@@ -906,7 +908,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3178% over target / 99.6884% target speed, with several
+  public average is now +0.3196% over target / 99.6867% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

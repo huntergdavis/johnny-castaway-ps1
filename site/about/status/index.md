@@ -20,14 +20,14 @@ and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3178%` over
-target / `99.6884%` target speed; the raw signed optimization matrix is
-`-0.4493%`.
-The newest accepted WALKSTUF1 high `444..456` read group keeps the fixed
-`217088` byte PS-EXE bucket and public `1480/1432` timing while lowering
-WALKSTUF1 high loop reads to `65` and loop-read time to `284`. BUILDING2 high
-is `1351/1313`, overrun `38`, blocking `50`, hidden refill `17`, and loop-read
-time `254`.
+allocation. The public headless battle card is `+0.3196%` over
+target / `99.6867%` target speed; the raw signed optimization matrix is
+`-0.4474%`.
+The newest accepted WALKSTUF1 shared dual-tail table keeps the fixed
+`217088` byte PS-EXE bucket and public high/low timing at `1480/1432` and
+`1484/1431`, while WALKSTUF1 high loop reads stay `65` and low loop reads drop
+to `66`. BUILDING2 high currently measures `1352/1311`, overrun `41`,
+blocking `55`, hidden refill `19`, and due misses `7`.
 VISITOR3 low tail compaction keeps `blocking_vb=58`, `loop_reads=10`, and due
 misses `10`.
 The live ledger is at

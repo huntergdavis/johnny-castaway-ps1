@@ -193,10 +193,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3178%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6884%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T15:53:59` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor5-high-current-v401`, `walkstuf1-high-rg444-456-v384`, `building2-high-rg226-242-v379`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3196%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6867%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T18:50:43` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `building2-high-current-v428-control`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -232,9 +232,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-high-rg444-456-v384`,
-  `building2-high-rg226-242-v379`,
-  `walkstuf1-low-prepare-before-window-v331`,
+  refreshed rows use `walkstuf1-high-shared-dual-tail-v428`,
+  `walkstuf1-low-shared-dual-tail-v428`,
+  `building2-high-current-v428-control`,
   `visitor3-low-tail-pack-only-v338`,
   `visitor3-low-swap-f128-f129-v327`,
   `visitor3-low-f128-resident-seg27-v302`,
@@ -671,15 +671,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-12T11:59:49</td>
-      <td>building2-high-rg226-242-v379</td>
-      <td>+2.9%</td>
-      <td class="spd-yellow">97.2%</td>
-      <td>1351/1313</td>
-      <td>50</td>
-      <td>17</td>
+      <td>2026-05-12T18:47:01</td>
+      <td>building2-high-current-v428-control</td>
+      <td>+3.1%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1352/1311</td>
+      <td>55</td>
+      <td>19</td>
       <td>7</td>
-      <td>retained read group adds 226..242 between accepted 60..72 and 249..257; scene 1603->1602 loop 1352->1351 target 1311->1313 overrun 41->38 blocking 55->50 hidden refill 19->17 loop_read_vb 262->254; selected controls flat</td>
+      <td>current-control refresh with accepted 60..72, 226..242, and 249..257 groups; clean current and v428 candidate both measure scene 1603 loop/target 1352/1311 overrun 41 blocking 55 hidden refill 19 reads/due 61/7; older v379 1351/1313 artifact no longer reproduces on current HEAD</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
@@ -2043,29 +2043,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-12T13:14:33</td>
-      <td>walkstuf1-high-rg444-456-v384</td>
+      <td>2026-05-12T18:50:43</td>
+      <td>walkstuf1-high-shared-dual-tail-v428</td>
       <td>+3.4%</td>
       <td class="spd-yellow">96.8%</td>
       <td>1480/1432</td>
       <td>83</td>
       <td>26</td>
       <td>16</td>
-      <td>high-tide read group adds 444..456 after accepted 201..229, 344..360, and 422..434 groups; scene/loop/target stay flat at 1768/1480/1432 while loop_reads 66-&gt;65 and loop_read_vb 286-&gt;284; low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls flat</td>
+      <td>shared dual-tail table keeps accepted high groups 201..213, 213..229, 344..360, 422..434, 443..455, and 444..456; high stays flat at scene/loop/target 1768/1480/1432 with reads 65 and loop_read_vb 284 while low gets the CD-work reduction</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-12T02:03:51</td>
-      <td>walkstuf1-low-prepare-before-window-v331</td>
+      <td>2026-05-12T18:49:38</td>
+      <td>walkstuf1-low-shared-dual-tail-v428</td>
       <td>+3.7%</td>
       <td class="spd-yellow">96.4%</td>
       <td>1484/1431</td>
       <td>72</td>
       <td>22</td>
       <td>12</td>
-      <td>low-tide staged-prepare scheduler fallback; overrun 54-&gt;53 and blocking 74-&gt;72 with bounded +1 scene/loop tradeoff</td>
+      <td>shared dual-tail table adds 443..455 beside accepted high 444..456; low timing stays 1776 and 1484/1431 with overrun 53 blocking 72 refill 22 due 12 while loop_reads 67-&gt;66 and loop_read_vb 288-&gt;287</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

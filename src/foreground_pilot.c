@@ -509,6 +509,7 @@ static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
     {213, 229, 0},
     {344, 360, 0},
     {422, 434, 0},
+    {443, 455, 0},
     {444, 456, 0}
 };
 
@@ -3031,8 +3032,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             (uint8)(sizeof(kBuilding2HighReadGroups12) /
                                     sizeof(kBuilding2HighReadGroups12[0]));
                     }
-                } else if (!islandState.lowTide &&
-                           fgSceneEquals(sceneName, "walkstuf1")) {
+                } else if (fgSceneEquals(sceneName, "walkstuf1")) {
                     streamReadGroups = kWalkstuf1HighReadGroups12;
                     streamReadGroupCount =
                         (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
@@ -3899,6 +3899,10 @@ void foregroundPilotPlay(void)
         fgPlayOceanRuntimeScene(gForegroundPilotScene);
         return;
     }
+
+    /* PS1 perf is layout-sensitive: keep compact-scene branch simplifications
+     * from moving downstream hot text. Compact fgpilot scenes return above. */
+    __asm__ volatile("nop\nnop\nnop");
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(gForegroundPilotScene, "titlecopy")) {

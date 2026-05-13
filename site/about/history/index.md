@@ -382,12 +382,13 @@ component-completeness phases:
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 - Current mainline performance: BUILDING2 high `226..242`, BUILDING6 scene-local
-  slack4, WALKSTUF1 high `344..360` plus `422..434` and `444..456`, VISITOR3 low tail pack
-  compaction, and WALKSTUF1 low staged-prepare-before-window scheduling put
-  the public battle card at `+0.3178%` over target / `99.6884%` target speed.
-  BUILDING2 high is now `1351/1313` with `blocking_vb=50`, WALKSTUF1 high is
-  `1480/1432` with `65` loop reads, and VISITOR3 low CD pressure is down to
-  `blocking_vb=58`.
+  slack4, WALKSTUF1 high `344..360` plus `422..434` and shared dual-tail
+  `443..455` / `444..456`, VISITOR3 low tail pack compaction, and WALKSTUF1
+  low staged-prepare-before-window scheduling put the public battle card at
+  `+0.3196%` over target / `99.6867%` target speed. BUILDING2 high currently
+  measures `1352/1311` with `blocking_vb=55`, WALKSTUF1 high is `1480/1432`
+  with `65` loop reads, WALKSTUF1 low is `1484/1431` with `66` loop reads, and
+  VISITOR3 low CD pressure is down to `blocking_vb=58`.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
   headless optimization methodology to a release baseline; routed
   all 126 high/low scene variants through the perf matrix; clean-
