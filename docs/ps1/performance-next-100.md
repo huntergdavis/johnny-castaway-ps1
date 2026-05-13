@@ -342,6 +342,10 @@ scene `1782`, active loop/target `1490/1433`, overrun `57`, blocking `76`, and
 hidden refill `26`. Close this retest as another phase-negative hand table;
 future low work needs generated deadline ownership, sector-boundary planning,
 or a custom format that changes work without moving the visible-loop cadence.
+The v494 low-only narrower `285..297` table confirms the same class under the
+current v474 baseline: reads improve `64 -> 63`, but scene/loop regress
+`1770/1478 -> 1778/1486`, overrun `47 -> 55`, blocking `64 -> 75`, and hidden
+refill `20 -> 26`.
 
 Latest rejected WALKSTUF1 low low-risk direct group: v381 tested `190..202`,
 the safest remaining current-fit retained-read row from the v331 plan. It had
