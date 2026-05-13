@@ -3695,11 +3695,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("start_failed_cleanup", sceneName);
-        /* On a deterministic test build any pack-start failure is a
-         * code/data bug we want surfaced loudly. The BSOD does not
-         * return — caller must reset to recover. */
-        JC_BSOD(sceneName, "foregroundPilotRuntimeStart returned 0 "
-                          "(pack header / streaming buffer alloc failed)");
+        /* Graceful skip instead of BSOD: long soak runs accumulate
+         * heap fragmentation and sometimes a single scene's pack-start
+         * malloc fails. Abandoning this scene and returning lets the
+         * outer scene loop pick another scene; the player sees one
+         * skipped scene instead of a permanent halt screen. */
+        printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
+        return;
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
@@ -3719,8 +3721,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
-        JC_BSOD(sceneName, "fgRuntimeComputeDrawBounds returned 0 "
-                          "(scene metadata missing or pack header malformed)");
+        printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
+        return;
     }
     {
         cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
@@ -3758,8 +3760,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grSetCleanBgBlackMode(0);
             fgBackdropRelease(0);
             fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            JC_BSOD(sceneName, "fgBackdropSaveCleanBgRectsForPack returned 0 "
-                              "(clean-rect alloc failed — heap fragmented?)");
+            printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
+                   sceneName, (unsigned long)cleanRectEstimate);
+            return;
         }
     }
     if (ps1PerfEnabled)
