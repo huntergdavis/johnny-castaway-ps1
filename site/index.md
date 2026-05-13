@@ -173,7 +173,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/faq/' | relative_url }}">FAQ</a>
-    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
+    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, can I sponsor or donate, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
   </li>
   <li>
     <a href="{{ '/about/method/' | relative_url }}">How the port works</a>
