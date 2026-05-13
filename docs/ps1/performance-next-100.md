@@ -335,6 +335,14 @@ overrun `40 -> 70`; hidden refill, reads, and due misses stayed `18`, `58`,
 and `7`. Close small BUILDING2 high D4 sector-boundary deltas; remaining
 adjacent-frame savings are too small for hot runtime decode.
 
+Latest rejected VISITOR3 high current-layout frame129 D4 retest: v469 reran
+the large `17025 -> 609` byte frame `129` delta after v464 gave frame `132`
+setup-segment ownership. The run emitted complete metrics but failed strict
+baseline matching because the accepted v464 artifact uses an older case label;
+the counters were exact-flat at scene `1402`, active loop/target `1067/1039`,
+overrun `28`, blocking `45`, hidden refill `0`, reads/due `8/8`. Close
+standalone VISITOR3 high frame `129`; it remains inert on the current layout.
+
 Latest rejected VISITOR3 low grouped-append ownership: v421-v423 tested the
 remaining tight `206..230` low cluster without adding setup residency. A
 low-only 24-sector grouped append with `minSlack=4`, the same group unguarded,
