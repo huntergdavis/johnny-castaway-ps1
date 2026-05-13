@@ -332,6 +332,16 @@ WALKSTUF1 high manually matched the accepted `1768`, `1480/1432`, blocking
 `83`, hidden refill `26`, reads/due `65/16`. Close this as non-promotable
 runtime-shape cleanup: it shifts hot symbols but does not move VBlank counters.
 
+Latest rejected VISITOR3 low window-slack sweep: v449/v450 lowered the
+low-tide dual-segment window-refill guard from the accepted `4` VBlanks to `3`
+and then `2`. Both variants stayed exact-flat at scene `1401`, active
+loop/target `1072/1040`, overrun `32`, blocking `58`, hidden refill `0`,
+loop reads `10`, and due misses `10`, while shifting hot symbols and growing
+`foregroundPilotPlay` by `8` bytes. Close scalar VISITOR3 low window-slack
+guard tuning; the remaining low cluster is not exposed through this threshold
+and needs compression/aliasing inside existing resident bytes, generated
+deadline metadata, or a custom pack-authored representation.
+
 Latest rejected WALKSTUF1 low runtime narrow upload: v418 tested a
 scene-gated dirty X-band uploader that copied narrow row bands into a 64 KiB
 scratch buffer before `LoadImage`, hoping to turn the large host-side upload
