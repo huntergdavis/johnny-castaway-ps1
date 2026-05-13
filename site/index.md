@@ -131,8 +131,8 @@ outliers, [`v0.8.4`]({{ '/releases/#v084-ps1--custom-chapter-select-thumbnails-f
 chapter-select thumbnails plus a scene-page reconciliation against the
 on-PS1 packs, [`v0.8.5`]({{ '/releases/#v085-ps1--full-126-row-headless-performance-matrix' | relative_url }}) promotes the full 126-row timing-bearing
 matrix, [`v0.8.6`]({{ '/releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through' | relative_url }}) lands the WALKSTUF1 / VISITOR3 setup-segment
-compaction follow-through, and [`v0.8.7`]({{ '/releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability' | relative_url }}) hardens deterministic
-scene booting plus Scene Explorer preview loading — the public battle card now averages
+compaction follow-through, [`v0.8.7`]({{ '/releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability' | relative_url }}) hardens deterministic
+scene booting plus Scene Explorer preview loading, and [`v0.8.8`]({{ '/releases/#v088-ps1--visitor5-high-retained-read-promotion' | relative_url }}) promotes VISITOR5 high into green — the public battle card now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the timing-bearing rows (public-capped; the
 optimization-side raw signed average is past target). The two

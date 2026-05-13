@@ -311,15 +311,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3111%`
-exact public over target / `99.6949%` exact public target speed); the raw
-signed optimization matrix is `-0.4559%` / `100.4772%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2867%`
+exact public over target / `99.7183%` exact public target speed); the raw
+signed optimization matrix is `-0.4805%` / `100.5006%`.
 
 ## Scene Battle Card
 
-As of 2026-05-12, all 126 scene/tide variants have current headless
+As of 2026-05-13, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`building2-low-rg238-250-v445`,
+`visitor5-high-rg30-46-v496`,
 `walkstuf1-high-shared-dual-tail-v428`,
 `walkstuf1-low-shared-dual-tail-v428`,
 `building2-high-rg206-230-cap24-v441`,
@@ -574,7 +574,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+3.1% / 97.0% (1351/1311); due 7; blk 54</td>
+      <td>+3.0% / 97.0% (1351/1311); due 7; blk 54</td>
       <td>+2.3% / 97.8% (1349/1319); due 17; blk 80</td>
     </tr>
     <tr>
@@ -910,7 +910,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3111% over target / 99.6949% target speed, with several
+  public average is now +0.2867% over target / 99.7183% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

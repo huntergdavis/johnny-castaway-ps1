@@ -22,6 +22,31 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.8-ps1` — VISITOR5 high retained-read promotion
+<time datetime="2026-05-13"><em>2026-05-13</em></time>
+
+A performance point release after `v0.8.7-ps1`. It keeps deterministic
+BOOTMODE scene selection, Suzy backdrop cleanup, and heapless Scene Explorer
+preview loading, then promotes the verified VISITOR5 high-tide `30..46`
+retained-read group.
+
+- **VISITOR5 high moves into green.** Active loop/target improves
+  `1107/1090 -> 1101/1096`, overrun falls `17 -> 5`, blocking/refill falls
+  `16 -> 5`, loop reads fall `19 -> 18`, and due misses remain `0`.
+- **Battle card improves.** Public rollup is now `+0.2867%` over target /
+  `99.7183%` target speed; raw signed rollup is `-0.4805%` / `100.5006%`.
+- **Band shape is cleaner.** `116` rows are green, `10` are yellow, `0`
+  orange, and `0` red.
+- **The next outliers are explicit.** WALKSTUF1 low, BUILDING2 high,
+  WALKSTUF1 high, VISITOR3 high/low, and BUILDING2 low remain the main
+  under-99 tactical queue.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.8/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.8-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.7-ps1` — Deterministic BOOTMODE scene selection + Scene Explorer preview stability
 <time datetime="2026-05-11"><em>2026-05-11</em></time>
 

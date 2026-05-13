@@ -63,9 +63,9 @@ v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion, the
 v474 WALKSTUF1 low `78..91` first post-prime boundary read-group promotion,
 the v477 VISITOR3 low frame132 setup-prime gap relocation, and the v496
 VISITOR5 high `30..46` retained-read promotion:
-`+0.2866%` public average over target / `99.7183%` public target speed across
+`+0.2867%` public average over target / `99.7183%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4804%` / `100.5006%`. Since the compact full-matrix baseline was about
+`-0.4805%` / `100.5006%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.11` public over-target points and added about `12.62`
 public target-speed points. Green rows are now `116 / 126`, with `10` yellow

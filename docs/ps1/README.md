@@ -12,21 +12,19 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.7-ps1` |
+| Release | `v0.8.8-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2866% public over target / 99.7183% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2867% public over target / 99.7183% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.7-ps1` is the current stability point release after the `v0.8.6-ps1`
-performance follow-through. It keeps all 63 scenes visually/audibly validated,
-preserves the custom Scene Explorer thumbnails and reconciled scene metadata
-from `v0.8.4-ps1`, keeps the full 126-row headless matrix as the public
-performance baseline, and hardens deterministic BOOTMODE scene selection,
-Suzy backdrop cleanup, and heapless Scene Explorer preview loading. The public
-battle card is now
-`+0.2866%` over target / `99.7183%` target speed across all 126
+`v0.8.8-ps1` is the current performance point release after the `v0.8.7-ps1`
+stability hardening. It keeps all 63 scenes visually/audibly validated,
+preserves deterministic BOOTMODE scene selection and heapless Scene Explorer
+preview loading, and promotes the VISITOR5 high-tide `30..46` retained-read
+group. The public battle card is now
+`+0.2867%` over target / `99.7183%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -50,9 +48,10 @@ the WALKSTUF1 high `422..434` / `444..456`
 CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 `444..456` dual-tail reduction, plus VISITOR3 low frame129/frame132 and high
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
-frame132 setup segment and VISITOR3 low frame132 setup-prime gap relocation;
-the raw signed optimization matrix is `-0.4716%`.
-That is about `17.10` public over-target points removed and `12.61` public
+frame132 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
+and the VISITOR5 high `30..46` retained-read group; the raw signed
+optimization matrix is `-0.4805%`.
+That is about `17.11` public over-target points removed and `12.62` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
@@ -315,6 +314,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.8.md](release-notes-0.8.8.md) — VISITOR5 high retained-read promotion release notes
 - [release-notes-0.8.7.md](release-notes-0.8.7.md) — deterministic boot selection and Scene Explorer preview stability release notes
 - [release-notes-0.8.6.md](release-notes-0.8.6.md) — WALKSTUF1 / VISITOR3 setup-segment compaction release notes
 - [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes

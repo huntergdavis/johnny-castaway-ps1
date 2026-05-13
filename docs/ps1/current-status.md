@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-13 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2866%` over target / `99.7183%` target speed).
+battle card is `+0.2867%` over target / `99.7183%` target speed).
 
 ## Overall
 
@@ -237,9 +237,9 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2866%` over target / `99.7183%` target speed
+The public battle card is now `+0.2867%` over target / `99.7183%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4804%`.
+raw signed optimization rollup is `-0.4805%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.11`
 public over-target points and added about `12.62` public target-speed points.
@@ -333,7 +333,7 @@ Milestone releases:
   relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
   residency, plus WALKSTUF1 low `78..91` retained post-prime boundary
   ownership, and VISITOR5 high `30..46` retained-read ownership. The public
-  battle card is `+0.2866%` / `99.7183%`;
+  battle card is `+0.2867%` / `99.7183%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `64`, VISITOR3 high is `1067/1039`, VISITOR3 low is `1065/1041` with

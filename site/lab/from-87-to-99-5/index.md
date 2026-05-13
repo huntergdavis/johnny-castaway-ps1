@@ -36,17 +36,12 @@ reconciliation, `v0.8.5-ps1` promotes the full 126-row timing-bearing
 matrix, `v0.8.6-ps1` carries that baseline forward with the WALKSTUF1
 gap-compression / slack-guard pair and the VISITOR3 frame-`131`/`128`
 setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
-booting plus Scene Explorer preview streaming, and the current mainline adds
-the WALKSTUF1 high `213..229`, `344..360`, `422..434`, and `444..456` read-group promotions, the
-VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
-staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
-pack-only CD-pressure compaction, the BUILDING6 scene-local slack4 guard, and
-the BUILDING2 high `206..230` / `226..242` retained-read groups plus
-24-sector grouped-read capacity, and the WALKSTUF1 shared
-dual-tail low/high CD-work row. The current
+booting plus Scene Explorer preview streaming, and `v0.8.8-ps1` promotes the
+follow-on VISITOR3, WALKSTUF1, BUILDING2, BUILDING6, and VISITOR5 rows through
+the VISITOR5 high `30..46` retained-read win. The current
 public-capped average is
-**+0.3190% over target / 99.6873% target speed**, with roughly **17.08
-percentage points** of over-target gap closed and about **12.59 target-speed
+**+0.2867% over target / 99.7183% target speed**, with roughly **17.11
+percentage points** of over-target gap closed and about **12.62 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what

@@ -76,7 +76,7 @@ Current battle-card rollup as of 2026-05-13:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2866%` exact, public-capped) |
+| Timing-bearing average over target | `+0.3%` (`0.2867%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7183%` exact, public-capped) |
 | Latest perf matrix run | `2026-05-13T07:24:08` |
 | Stats version | mixed; newest optimized/code-headroom rows use `visitor5-high-rg30-46-v496`, `visitor3-low-frame132-primegap-v477`, `walkstuf1-low-rg78-91-v474`, `visitor3-high-frame132-setupseg1-v464`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |

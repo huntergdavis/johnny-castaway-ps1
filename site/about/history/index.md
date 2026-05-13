@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.7-ps1
+eyebrow: 2025-10 to v0.8.8-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, and the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, and the v0.8.8-ps1 VISITOR5 high performance release.
 ---
 
 <details class="page-toc" markdown="1">
@@ -381,26 +381,29 @@ component-completeness phases:
   the 126 timing-bearing scene/tide rows on the headless-perf
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
-- Current mainline performance: BUILDING2 high `206..230` / `226..242` plus
-  24-sector grouped-read capacity, BUILDING6 scene-local slack4, WALKSTUF1 high
-  `344..360` plus `422..434` and shared dual-tail
-  `443..455` / `444..456`, VISITOR3 low tail pack compaction, and WALKSTUF1
-  low staged-prepare-before-window scheduling put the public battle card at
-  `+0.3190%` over target / `99.6873%` target speed. BUILDING2 high currently
-  measures `1351/1311` with `blocking_vb=54`, WALKSTUF1 high is `1480/1432`
-  with `65` loop reads, WALKSTUF1 low is `1484/1431` with `66` loop reads, and
-  VISITOR3 low CD pressure is down to `blocking_vb=58`.
+- Current mainline performance: the post-v0.8.7 optimization arc now includes
+  VISITOR5 high's `30..46` retained-read group, VISITOR3 low's frame132
+  setup-prime relocation, WALKSTUF1 low's `78..91` retained-read boundary, and
+  BUILDING2 low's previous-frame D4 deltas. The public battle card is
+  `+0.2867%` over target / `99.7183%` target speed; raw signed rollup is
+  `-0.4805%` / `100.5006%`. VISITOR5 high measures `1101/1096` with
+  `blocking_vb=5`; WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and
+  VISITOR3 high/low remain the main under-99 tactical queue.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
   headless optimization methodology to a release baseline; routed
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
+- Latest performance release: **`v0.8.8-ps1`** — VISITOR5 high `30..46`
+  retained-read promotion. Public rollup is `+0.2867%` over target /
+  `99.7183%` target speed; raw signed rollup is `-0.4805%` /
+  `100.5006%`.
 - Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
   scene selection, expected-scene gates in the headless perf harness,
   Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail
   streaming. Public rollup remains `+0.3156%` over target /
   `99.6902%` target speed.
-- Latest performance release: **`v0.8.6-ps1`** — WALKSTUF1 low
+- Previous performance release: **`v0.8.6-ps1`** — WALKSTUF1 low
   gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch /
   slack4 guard, and VISITOR3 high/low setup-segment resident copies for
   frames `131` / `128`. Public rollup `+0.3157%` over target /

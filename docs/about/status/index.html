@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,11 +102,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state after v0.8.7-ps1</p>
+      <p class="eyebrow">Component-level state after v0.8.8-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1965 words
+          ~8 min read · 2026 words
         </p>
 
       <hr class="rule" />
@@ -115,25 +115,30 @@
   <div class="page-body">
     <h2 id="headline">Headline</h2>
 
-<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong>. Scenes validated
+<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code></strong>. Scenes validated
 under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
-<code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is the current release: every row in the live per-scene
+<code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed and
 timing-bearing, deterministic BOOTMODE scene selection is logged and gated,
-and the chapter-select grid in the in-game
+and VISITOR5 high now has a green <code class="language-plaintext highlighter-rouge">30..46</code> retained-read baseline. The
+chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3225%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6839%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4447%</code> / <code class="language-plaintext highlighter-rouge">100.4662%</code>.
-The newest accepted WALKSTUF1 high <code class="language-plaintext highlighter-rouge">344..360</code> read group keeps scene/loop flat
-at <code class="language-plaintext highlighter-rouge">1768/1480</code> while moving target <code class="language-plaintext highlighter-rouge">1429 -&gt; 1432</code>, overrun <code class="language-plaintext highlighter-rouge">51 -&gt; 48</code>,
-blocking <code class="language-plaintext highlighter-rouge">85 -&gt; 83</code>, and loop reads <code class="language-plaintext highlighter-rouge">69 -&gt; 67</code>; VISITOR3 low tail compaction
-keeps <code class="language-plaintext highlighter-rouge">blocking_vb=58</code>, <code class="language-plaintext highlighter-rouge">loop_reads=10</code>, and due misses <code class="language-plaintext highlighter-rouge">10</code>.
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2867%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4805%</code>.
+The newest accepted VISITOR5 high <code class="language-plaintext highlighter-rouge">30..46</code> retained-read row moves that scene
+to <code class="language-plaintext highlighter-rouge">1101/1096</code>, overrun <code class="language-plaintext highlighter-rouge">5</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, reads/due <code class="language-plaintext highlighter-rouge">18/0</code>, and green
+status. The VISITOR3 low frame132 setup-prime relocation keeps the
+fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
+<code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1065/1041</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>,
+blocking <code class="language-plaintext highlighter-rouge">45</code>, reads/due <code class="language-plaintext highlighter-rouge">8/8</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1434</code>
+and <code class="language-plaintext highlighter-rouge">1478/1431</code>, and BUILDING2 high currently measures <code class="language-plaintext highlighter-rouge">1351/1311</code>, overrun
+<code class="language-plaintext highlighter-rouge">40</code>, blocking <code class="language-plaintext highlighter-rouge">54</code>, hidden refill <code class="language-plaintext highlighter-rouge">18</code>, and due misses <code class="language-plaintext highlighter-rouge">7</code>.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in
@@ -239,7 +244,7 @@ done.”</p>
     <tr>
       <td>CD packaging (mkpsxiso)</td>
       <td>Complete</td>
-      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is ~79 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
+      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> is ~79 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
     </tr>
   </tbody>
 </table>
@@ -293,7 +298,7 @@ harness output is the SoT for build-and-boot regressions.</p>
 <ul>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
-loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code>
+loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code>
 has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.7%</code>
 target speed across all 126 timing-bearing rows after the VISITOR3,
 WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
@@ -338,7 +343,9 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is the deterministic BOOTMODE
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> promotes the VISITOR5 high
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group and moves that row into green on top of the
+v0.8.7 stability hardening. <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is the deterministic BOOTMODE
 scene selection and Scene Explorer preview stability point release on top of
 the v0.8.6 performance follow-through: direct-scene boots are logged and
 gated, Suzy backdrop cleanup restores scene state, and Scene Explorer
@@ -415,7 +422,7 @@ this page uses without scaffolding.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.7-ps1</a>)
+          (<a href="../../releases/">v0.8.8-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
