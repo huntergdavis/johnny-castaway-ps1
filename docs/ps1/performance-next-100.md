@@ -257,6 +257,18 @@ loop/target `1484/1431 -> 1488/1428`, overrun `53 -> 60`, blocking `72 -> 79`,
 hidden refill `22 -> 27`, and loop reads `66 -> 68`. Close `78..90` as another
 plain retained table that needs scheduler ownership before it can help.
 
+Latest rejected runtime-shape cache: v473 cached scene/tide policy bits and
+the window-slack threshold at scene start, replacing hot-loop scene-name
+checks in D4 gating, direct-stage, visitor fallthrough, WALKSTUF1 window
+gating, and the prepare-before-window branch. WALKSTUF1 low stayed exact-flat
+at `1776`, `1484/1431`, overrun `53`, blocking `72`, refill `22`, reads/due
+`66/12`; BUILDING2 high also stayed exact-flat at `1602`, `1351/1311`,
+overrun `40`, blocking `54`, refill `18`, reads/due `58/7`. The PS-EXE bucket
+stayed `217088`, but BUILDING2 high moved/got larger hot symbols
+(`fgRuntimeLoadSceneFrame +284`, `foregroundPilotPlay +168`). Close naive
+scene-policy caching as a speed lane; retry only as a broader cold-policy
+refactor with a hot-symbol budget and same-layout proof.
+
 Latest rejected WALKSTUF1 high direct group: v368 appended the current
 read-plan `360..376` candidate after the accepted `344..360` group. It cut
 reads `67 -> 65` and loop-read VBlanks `292 -> 289`, but regressed scene
