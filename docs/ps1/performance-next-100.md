@@ -97,9 +97,13 @@ v455 then tried the safer `190..202` neighborhood by encoding only frame `100`
 against frame `99`, shrinking `4683 -> 586` bytes and reducing its span from
 three sectors to one, but the focused gate was exact-flat at `1776`,
 `1484/1431`, overrun `53`, blocking `72`, refill `22`, reads/due `66/12`.
-Close frames `181` and `100` as standalone D4 deltas; WALKSTUF1 low needs
-paired scheduler/deadline ownership or a different sector-boundary byte removal
-if this mechanism is retried.
+v456 then tried late-tail frame `187` against frame `186`, shrinking
+`4764 -> 731` bytes and reducing its modeled span from roughly four sectors to
+one. The first run died before metrics, and the clean rerun was exact-flat at
+`1776`, `1484/1431`, overrun `53`, blocking `72`, refill `22`, reads/due
+`66/12`. Close frames `181`, `100`, and `187` as standalone D4 deltas;
+WALKSTUF1 low needs paired scheduler/deadline ownership or a different
+sector-boundary byte removal if this mechanism is retried.
 
 Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
 and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.
