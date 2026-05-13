@@ -54,7 +54,7 @@ This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relati
 
 ## Variants applicable
 
-- **night** — Dusk/night palette swap (BOOTMODE `night 1`).
+- **night** — Dusk/night palette swap ([BOOTMODE]({{ '/docs/glossary/#bootmode' | relative_url }}) `night 1`).
 - **low-tide** — Tide state variant; different shoreline geometry (BOOTMODE `lowtide 1`).
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
