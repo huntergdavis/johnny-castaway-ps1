@@ -607,6 +607,16 @@ refill `18`, reads/due `58/7`, while hot foreground symbols shifted and
 retained row; BUILDING2 high now needs generated deadline/append-start
 ownership or pack-side upload/cleanup reduction.
 
+Latest rejected BUILDING2 high setup-owned middle cluster: v508 added a
+high-tide-only reusable setup segment for sectors `202..226`, the same middle
+cluster that read-plan ranking keeps surfacing after direct tables closed. It
+did lower loop reads `58 -> 55`, but regressed scene `1602 -> 1619`, active
+loop/target `1351/1311 -> 1358/1308`, overrun `40 -> 50`, blocking
+`54 -> 61`, and hidden refill `18 -> 25`, with hot foreground symbols shifted
+by `+172` bytes. Close local setup-owned `202..226`; the cluster needs
+code-neutral generated ownership or pack-side visual-work reduction, not a new
+source setup segment.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
@@ -2989,6 +2999,7 @@ pre-v0.8.0 row.
 | BUILDING2 high read group `17..25` | Do not promote as a hand-authored group. The v400 current read-plan refresh marked it medium risk, and the probe saved one read plus hidden refill `17 -> 16`, but it regressed high to scene `1603`, active loop/target `1352/1312`, overrun `40`, and blocking `51`. The early cluster is still phase-negative under the current grouped-append code shape. |
 | BUILDING2 high read group `23..29` | Do not promote or retry as a narrower early hand table. The v434 focused gate stayed exact-flat at scene `1603`, `1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads/due `61/7`, while shifting tracked hot symbols by `+4`. |
 | BUILDING2 duplicate-payload entry-table aliasing | Do not promote or retry as raw backreferences. Both high and low packs have exact duplicate residual payloads, but v359 full aliasing creates reverse/mixed seek debt and regresses high to `1454/1305` with `blocking_vb=195` and low to `1457/1314` with `blocking_vb=228`. v360's `16 KiB`-limited version still regresses high/low to `1368`/`1369` loop VBlanks, v361's adjacent-only alias is exact-flat, and v507's high-only frame71-to-frame70 adjacent alias is also exact-flat at the current `1602`, `1351/1311`, `blocking_vb=54` baseline. Duplicate compression needs generated forward-order copy/no-op semantics or an explicit runtime alias cache, not reused older offsets in the stream table. |
+| BUILDING2 high setup segment `202..226` | Do not promote or retry as a local source segment. The v508 focused gate saved loop reads `58 -> 55`, but regressed to `1619`, `1358/1308`, overrun `50`, blocking `61`, and hidden refill `25`, with hot foreground symbols shifted by `+172` bytes. Setup ownership for the middle cluster needs generated/code-neutral metadata or pack-side work reduction first. |
 | BUILDING2 low setup segment `67..73` | Do not promote or retry as an additive setup-prime edge segment. The v362 probe made the top low cluster reusable during setup, but it regressed low to `1630`, `1354/1314`, overrun `40`, blocking `132`, and due misses `29` while saving only one loop read. This confirms the `67..73` cluster is phase-sensitive: it cannot be solved by simply moving the read to setup or by the earlier scalar read group. |
 | BUILDING2 high read group `83..95` | Do not promote as a hand-authored group. The v352 probe and slack-4 guard both cut one read and one loop VBlank, but target fell `1311 -> 1309`, overrun regressed `41 -> 42`, blocking regressed `55 -> 56`, and hidden refill regressed `19 -> 20`. This closes the lower-visible-risk table row; remaining BUILDING2 high work needs generated deadline ownership or pack-side byte reduction. |
 | BUILDING2 high read group `210..226` | Do not promote or retry as a hand-authored table. The focused v176 probe kept layout fixed but stayed exact-flat at `1599`, `1349/1316`, `overrun_vb=33`, `blocking_vb=48`, `prefetch_overrun_vb=12`, `loop_reads=61`, and `group_hits=0`; the row remains scheduler-owned-only despite being append-start fireable in the planner. |
