@@ -165,6 +165,19 @@ for frame `158`; together with the earlier frame `59`, `92`, `181`, `187`,
 and `189` failures, previous-frame deltas need generated deadline ownership or
 a code-neutral resident-slot plan before they are worth another runtime gate.
 
+Latest rejected WALKSTUF1 low resident-hole D4 swing: v522 created a valid
+setup-prime in-data hole without evicting startup frames by encoding frame `28`
+as D4 (`6764 -> 3098` bytes), then moved frame `158`'s D4 payload plus tiny
+full frames `137` and `78` into that hole. The pack footprint, LBA, and
+`217088` byte PS-EXE bucket stayed fixed, but the focused gate regressed hard:
+scene `1770 -> 1792`, active loop/target `1478/1431 -> 1500/1427`, overrun
+`47 -> 73`, blocking `64 -> 104`, hidden refill `20 -> 28`, loop reads
+`64 -> 69`, and due misses `11 -> 15`. Close frame28-created resident holes
+paired with frame158 D4; the startup decode and hot predicate/code-shape debt
+outweigh resident ownership. Future WALKSTUF1 low hole work needs either
+zero-decode alias/slack, a generated low-CPU representation, or explicit
+deadline ownership before moving hot payloads into setup-prime holes.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
