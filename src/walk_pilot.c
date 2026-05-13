@@ -207,11 +207,28 @@ static void walkPilotRestoreClean(void)
 }
 
 
-static void walkPilotEnsureBmp(void)
+/* Returns 1 on success (sprites present in slot), 0 on silent load
+ * failure. grLoadBmp doesn't return a status, so we check the slot's
+ * sprite count afterward — the PSB and BMP fallback paths both leave
+ * numSprites[0] == 0 when their allocations fail. Without this check,
+ * a malloc failure in mid-soak (heap fragmentation after many scene
+ * cycles) marked the BMP as loaded anyway and fgWalkRender entered
+ * walkAnimate with no sprite data, which spins forever waiting for a
+ * scene-end that never fires. Caught 2026-05-13: two consecutive long
+ * runs hung at the 6th JOHNWALK load (runtime ~444s, scene activity9
+ * after 4 prior JCMEM clean-retry events). */
+static int walkPilotEnsureBmp(void)
 {
-    if (gWalkBmpLoaded) return;
+    if (gWalkBmpLoaded) return 1;
     grLoadBmp(&gWalkBmpSlot, 0, "JOHNWALK.BMP");
+    if (gWalkBmpSlot.numSprites[0] == 0) {
+        extern int printf(const char *, ...);
+        printf("JCWALK: ensureBmp JOHNWALK load failed numSprites=0; "
+               "skipping walk (teleport)\n");
+        return 0;
+    }
     gWalkBmpLoaded = 1;
+    return 1;
 }
 
 
@@ -234,7 +251,13 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
     if (fromSpot == toSpot && fromHdg == toHdg)
         return 0;
 
-    walkPilotEnsureBmp();
+    if (!walkPilotEnsureBmp()) {
+        /* JOHNWALK.BMP/PSB load failed silently (likely malloc under
+         * heap pressure). Bail out and let the next scene take over —
+         * visual cost is one ugly teleport instead of an infinite
+         * hang in walkAnimate with no sprite data. */
+        return 0;
+    }
     walkRenderResetCache();
 
     /* Suppress runtime compose for the entire walk. Without this, every
@@ -284,8 +307,25 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 
     int timerLeft = 1;
     int walkDone  = 0;
+    /* Hard cap on walk duration. A legitimate walk is bounded by Sierra's
+     * pre-baked route (max ~8 spots × ~30 VBlanks per pose ≈ 240 VBlanks).
+     * 600 VBlanks (~10s) is well past that. The cap exists because long
+     * soaks deterministically deadlock somewhere inside walkAnimate /
+     * grBeginFrame on certain transitions (observed: building7 →
+     * activity9 at the 6th walk in a row, runtime ~444s); without a
+     * cap the screensaver hangs forever. The visual cost on a real hang
+     * is a brief frozen pose; on legitimate walks the cap never fires. */
+    int walkFrameCount = 0;
+    const int WALK_FRAME_LIMIT = 600;
 
     while (!walkDone) {
+        if (++walkFrameCount > WALK_FRAME_LIMIT) {
+            extern int printf(const char *, ...);
+            printf("JCWALK: frame-cap hit at %d frames, forcing walkDone\n",
+                   walkFrameCount);
+            walkDone = 1;
+            break;
+        }
         grBeginFrame();
         /* Start from the previous scene's clean rects first. This clears
          * foreground leftovers and shoreline wave residue, and mirrors the

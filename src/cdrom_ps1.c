@@ -892,18 +892,33 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
             return NULL;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking poll with bounded VBlank wait. Previously this
+         * called CdReadSync(1, NULL) in blocking mode and the timeout
+         * decrement was meaningless because the inner call sleeps
+         * until completion — when DuckStation's CD-ROM emulator
+         * failed to deliver the completion IRQ (observed deterministically
+         * on the 6th JOHNWALK.PSB read of a soak run, ~runtime 444s),
+         * the runtime hung forever. Mode 0 = non-blocking poll: returns
+         * 2 if busy, 1 if done, <0 on error. Cap at 240 VBlanks (~4s)
+         * which is well beyond any legitimate 2x CD read worst case
+         * (max ~2 sectors per VBlank, even a 256-sector chunk reads
+         * in ~128 VBlanks). Bailing out cleanly lets the caller
+         * return NULL and graceful degradation kicks in. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(0, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
             free(sectorBuffer);
-            return NULL;  /* Read error */
+            return NULL;  /* Read error or timeout */
         }
 
         sectorsRead += chunkSectors;
@@ -1036,12 +1051,18 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             return 0;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Same non-blocking poll + 240-VBlank cap as ps1_streamReadFromCdFile
+         * above. Mode 1 (blocking) would hang forever if DuckStation's CD-ROM
+         * emulator drops the completion IRQ — observed on long soak runs. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(0, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
@@ -1141,12 +1162,17 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             return 0;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
+         * applied in ps1_streamReadFromCdFile + ps1_streamReadFromCdFileInto. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(0, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
@@ -1210,12 +1236,17 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
             return NULL;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
+         * applied above. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(0, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             free(fileBuffer);
             return NULL;
         }
