@@ -172,8 +172,8 @@ A few things this project is deliberately not trying to be:
   map, freeplay controls, real-hardware notes.
 - [/faq/]({{ '/faq/' | relative_url }}) -- author-written
   answers to "what is this," "do I need Sierra files," "is this
-  legal," "does it run at native rate," and the other recurring
-  questions.
+  legal," "can I sponsor or donate," "does it run at native rate,"
+  and the other recurring questions.
 - [/releases/]({{ '/releases/' | relative_url }}) -- short notes
   on every tagged version with links to the full release notes
   and the disc image.
