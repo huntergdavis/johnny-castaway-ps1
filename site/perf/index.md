@@ -188,7 +188,7 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3224%` exact, public-capped) |
+| Timing-bearing average over target | `+0.3%` (`0.3225%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.6839%` exact, public-capped) |
 | Latest perf matrix run | `2026-05-12T07:29:10` |
 | Stats version | mixed across rows; newest optimized/code-headroom rows use `johnny6-compact-fgp3-v354`, `building2-high-rg249-257-v347`, `walkstuf1-high-rg344-360-v340`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-low-prepare-before-window-v331`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
