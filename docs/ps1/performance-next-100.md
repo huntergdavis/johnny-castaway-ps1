@@ -56,7 +56,8 @@ retained-read promotion, the v451 VISITOR5 low compact FGP3/v4 plus
 `23..47` retained-read promotion, the v452 VISITOR3 low frame129
 custom D4 delta promotion, the v454 BUILDING2 low frame71/frame77
 previous-frame D4 delta promotion, and the v458 WALKSTUF1 high current-control
-refresh, and the v460 VISITOR3 high frame137 previous-frame D4 CD-pressure
+refresh, the v460 VISITOR3 high frame137 previous-frame D4 CD-pressure
+promotion, and the v462 VISITOR3 high frame132 D4 plus slack4 CD-pressure
 promotion:
 `+0.3033%` public average over target / `99.7023%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
@@ -67,17 +68,21 @@ public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
 
 Latest promoted VISITOR3 high CD-pressure baseline: keep the v299 resident
-frame-131 placement, the v291 frame-140/tail setup-segment placement, and store
-frame `137` as a 503-byte D4 previous-frame delta against frame `136`. The
-v460 focused gate keeps scene and active timing flat at `1402` and
-`1071/1040`, while reducing visible blocking `52 -> 51`, loop-read VBlanks
-`52 -> 51`, delivered sectors `390 -> 388`, and overread bytes
-`21791 -> 18139`; loop reads and due misses stay `9/9`, hidden refill stays
-`0`, pack LBA/sectors stay `22611/760`, the pack footprint stays `1555450`
-bytes, and the PS-EXE bucket stays `217088`. VISITOR3 low, WALKSTUF1 high/low,
-BUILDING2 high/low, VISITOR5 high/low, and FISHING1 high canaries stayed on
-accepted profiles. This is a CD-pressure baseline, not a public speed win; the
-rollup remains `+0.3033%` over target / `99.7023%` target speed.
+frame-131 placement, the v291 frame-140/tail setup-segment placement, store
+frame `137` as a 503-byte D4 previous-frame delta against frame `136`, and add
+frame `132` as a 768-byte D4 delta against frame `131`. The useful raw
+frame132-only candidate cut loop `1071 -> 1068` and blocking `51 -> 46`, but
+introduced `prefetch_overrun_vb=1`, so v462 keeps the frame132 data shape only
+with a high-tide VISITOR3 slack4 window guard. The promoted gate keeps scene
+and active timing flat at `1402` and `1071/1040`, while reducing visible
+blocking `51 -> 50`, loop-read VBlanks `51 -> 50`, delivered sectors
+`388 -> 387`, and overread bytes `18139 -> 16704`; loop reads and due misses
+stay `9/9`, hidden refill and prefetch overrun stay `0`, pack LBA/sectors stay
+`22611/760`, the pack footprint stays `1555450` bytes, and the PS-EXE bucket
+stays `217088`. VISITOR3 low, WALKSTUF1 high/low, and BUILDING2 high/low
+canaries stayed on accepted profiles. This is a CD-pressure baseline, not a
+public speed win; the rollup remains `+0.3033%` over target / `99.7023%`
+target speed.
 
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, and store frame `129` as a

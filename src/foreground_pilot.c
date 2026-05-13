@@ -214,6 +214,7 @@ enum {
 #define FG_MARY3_WINDOW_MIN_SLACK_VBLANKS 8
 #define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS 4
+#define FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 4
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
@@ -777,8 +778,11 @@ fgDecodeFrameDelta(uint8 *data,
 
 static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
 {
-    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
-        return islandState.lowTide ? frameIndex == 129 : frameIndex == 137;
+    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3")) {
+        if (islandState.lowTide)
+            return frameIndex == 129;
+        return frameIndex == 132 || frameIndex == 137;
+    }
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
         return frameIndex == 71 || frameIndex == 77;
     return 0;
@@ -980,6 +984,8 @@ static uint16 fgRuntimeWindowMinSlackVBlanks(void)
         return FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS;
     if (fgSceneEquals(gFgRuntime.sceneName, "building6"))
         return FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS;
+    if (!islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
+        return FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS;
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
         return FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS;
     return FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;
@@ -988,6 +994,31 @@ static uint16 fgRuntimeWindowMinSlackVBlanks(void)
 static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
 {
     return slackVBlanks >= fgRuntimeWindowMinSlackVBlanks();
+}
+
+static int fgRuntimeShouldDirectStageEntry(uint16 frameIndex,
+                                           const struct TFgPilotEntry *entry,
+                                           uint16 slackVBlanks)
+{
+    uint16 minSlack;
+
+    if (entry == NULL ||
+        entry->dataSize > FG_PREFETCH_DIRECT_STAGE_MAX_BYTES)
+        return 0;
+
+    minSlack = fgRuntimeWindowMinSlackVBlanks();
+    if (slackVBlanks == minSlack)
+        return 1;
+
+    /* VISITOR3 high frame132 is tiny after D4 compression, but a 3-VBlank
+     * direct stage can take 4 VBlanks. Pull it into the earlier slack slot. */
+    if (!islandState.lowTide &&
+        frameIndex == 132 &&
+        fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+        slackVBlanks > minSlack)
+        return 1;
+
+    return 0;
 }
 
 static int fgSceneUsesBlackBackdrop(const char *sceneName)
@@ -2502,8 +2533,9 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                     ps1PerfMarkPrefetchSkipNoSlack();
                 return 0;
             }
-            if (slackVBlanks == fgRuntimeWindowMinSlackVBlanks() &&
-                entry->dataSize <= FG_PREFETCH_DIRECT_STAGE_MAX_BYTES) {
+            if (fgRuntimeShouldDirectStageEntry(nextFrameIndex,
+                                                entry,
+                                                slackVBlanks)) {
                 stageTick = fgReadTickCounter();
                 if (ps1PerfEnabled)
                     ps1PerfBeginPrefetchRead(slackVBlanks);

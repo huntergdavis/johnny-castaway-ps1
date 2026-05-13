@@ -21,8 +21,8 @@ Quick-start entrypoint for the PS1 branch. The primary render path is
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/README.md` |
-| Lines | 363 |
-| Approx. words | 2728 |
+| Lines | 364 |
+| Approx. words | 2739 |
 | Code fences | 2 |
 
 ## Outline

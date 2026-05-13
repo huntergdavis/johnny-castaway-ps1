@@ -197,7 +197,7 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Timing-bearing average over target | `+0.3%` (`0.3033%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7023%` exact, public-capped) |
 | Latest perf matrix run | `2026-05-13T00:28:12` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-high-frame137-delta-v460`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-high-frame132-delta-slack4-v462`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -233,7 +233,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-high-frame137-delta-v460`,
+  refreshed rows use `visitor3-high-frame132-delta-slack4-v462`,
   `walkstuf1-high-current-v458-refresh`,
   `building2-low-delta-v454`,
   `visitor3-low-frame129-delta-v452`,
@@ -1909,15 +1909,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-13T00:28:12</td>
-      <td>visitor3-high-frame137-delta-v460</td>
+      <td>2026-05-13T01:58:32</td>
+      <td>visitor3-high-frame132-delta-slack4-v462</td>
       <td>+3.0%</td>
       <td class="spd-yellow">97.1%</td>
       <td>1071/1040</td>
-      <td>51</td>
+      <td>50</td>
       <td>0</td>
       <td>9</td>
-      <td>frame 137 D4 previous-frame delta; CD-pressure win only, loop target speed unchanged</td>
+      <td>frames 132 and 137 D4 previous-frame deltas plus high-tide slack4 guard; CD-pressure win only, loop target speed unchanged</td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>

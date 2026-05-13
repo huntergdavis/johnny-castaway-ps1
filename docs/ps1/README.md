@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.7-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3190% public over target / 99.6873% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.3033% public over target / 99.7023% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -26,7 +26,7 @@ from `v0.8.4-ps1`, keeps the full 126-row headless matrix as the public
 performance baseline, and hardens deterministic BOOTMODE scene selection,
 Suzy backdrop cleanup, and heapless Scene Explorer preview loading. The public
 battle card is now
-`+0.3190%` over target / `99.6873%` target speed across all 126
+`+0.3033%` over target / `99.7023%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -48,9 +48,10 @@ the BUILDING6 scene-local slack4 guard, the BUILDING2 high `226..242`
 and `206..230` retained-read groups plus 24-sector grouped-read capacity,
 the WALKSTUF1 high `422..434` / `444..456`
 CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
-`444..456` dual-tail reduction;
-the raw signed optimization matrix is `-0.4480%`.
-That is about `17.08` public over-target points removed and `12.59` public
+`444..456` dual-tail reduction, plus VISITOR3 low frame129 and high
+frame132/frame137 D4 previous-frame deltas;
+the raw signed optimization matrix is `-0.4637%`.
+That is about `17.09` public over-target points removed and `12.60` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.

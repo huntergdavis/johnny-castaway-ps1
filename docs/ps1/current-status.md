@@ -266,21 +266,23 @@ setup-segment copy, the v292 low frame-114/frame-117 no-op payload alias, the
 v299 high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
 and the v302 low frame-123 resident alias plus frame-128 setup-segment copy,
 plus the WALKSTUF1 high v288
-gap1/window-prefetch guard and low v289 gap1 prefix pack.
+gap1/window-prefetch guard and low v289 gap1 prefix pack, the VISITOR3 low
+frame129 D4 delta, and the VISITOR3 high frame132/frame137 D4 deltas with a
+high-tide slack4 window guard.
 VISITOR3 high is now
-`1071/1040` with `blocking_vb=52`; low is
-`1072/1040` with `blocking_vb=58`. BUILDING2 high/low are `1351/1311` and
-`1349/1318`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
+`1071/1040` with `blocking_vb=50`; low is
+`1068/1041` with `blocking_vb=51`. BUILDING2 high/low are `1351/1311` and
+`1349/1320`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
-`1480/1432` and `1484/1431`, WALKSTUF3 high/low are `2310/2290` and
+`1476/1434` and `1484/1431`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
-(`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
+(`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
 low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
-matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
-BUILDING2 residual work, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
+matrix; the next true outliers are residual WALKSTUF1 work,
+BUILDING2 high residual work, VISITOR3 high/low, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
 BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
 VISITOR3 local C
 read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
