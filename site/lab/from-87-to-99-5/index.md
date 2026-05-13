@@ -41,10 +41,11 @@ the WALKSTUF1 high `213..229`, `344..360`, `422..434`, and `444..456` read-group
 VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
 staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
 pack-only CD-pressure compaction, the BUILDING6 scene-local slack4 guard, and
-the BUILDING2 high `226..242` retained-read group, and the WALKSTUF1 shared
+the BUILDING2 high `206..230` / `226..242` retained-read groups plus
+24-sector grouped-read capacity, and the WALKSTUF1 shared
 dual-tail low/high CD-work row. The current
 public-capped average is
-**+0.3196% over target / 99.6867% target speed**, with roughly **17.08
+**+0.3190% over target / 99.6873% target speed**, with roughly **17.08
 percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

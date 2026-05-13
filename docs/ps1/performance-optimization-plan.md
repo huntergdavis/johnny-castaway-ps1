@@ -2778,6 +2778,15 @@ refill `19 -> 17`, and loop-read time `262 -> 254`. Future BUILDING2 high work
 should prefer full-cluster phase probes or generated deadline ownership over
 count-only microgroups.
 
+BUILDING2 high v441 updates that lesson for the current layout: the same
+cluster family only moved again after the grouped-read capacity grew to 24
+sectors and the `206..230` span was added ahead of `226..242`. The 16-sector
+`206..230` probe was exact-flat, but the 24-sector version improved current
+high to `1602`, `1351/1311`, overrun `40`, blocking `54`, hidden refill `18`,
+loop reads `58`, and due `7` while BUILDING2 low, WALKSTUF1 high/low, and
+VISITOR3 low stayed flat. Future BUILDING2 high experiments should treat group
+capacity and sector range as a coupled binary, not independent scalar knobs.
+
 The same full-cluster lesson does not transfer directly to WALKSTUF1 low. The
 v380 retest of `285..309` on the newer baseline saved reads (`67 -> 63`) and one
 due miss, but the visible cadence got worse: `1776 -> 1782` scene,

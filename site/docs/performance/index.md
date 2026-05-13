@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3196%`
-exact public over target / `99.6867%` exact public target speed); the raw
-signed optimization matrix is `-0.4474%` / `100.4690%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3190%`
+exact public over target / `99.6873%` exact public target speed); the raw
+signed optimization matrix is `-0.4480%` / `100.4696%`.
 
 ## Scene Battle Card
 
@@ -321,7 +321,7 @@ As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
 `walkstuf1-high-shared-dual-tail-v428`,
 `walkstuf1-low-shared-dual-tail-v428`,
-`building2-high-current-v428-control`,
+`building2-high-rg206-230-cap24-v441`,
 `building6-window-slack4-v364`,
 `johnny6-compact-fgp3-v354`,
 `visitor3-low-tail-pack-only-v338`,
@@ -424,7 +424,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `walkstuf1-high-shared-dual-tail-v428`,
 `walkstuf1-low-shared-dual-tail-v428`,
-`building2-high-current-v428-control`,
+`building2-high-rg206-230-cap24-v441`,
 `building6-window-slack4-v364`,
 `visitor3-high-f131-resident-alias121123-v299`,
 `visitor3-low-tail-pack-only-v338`,
@@ -908,7 +908,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3196% over target / 99.6867% target speed, with several
+  public average is now +0.3190% over target / 99.6873% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

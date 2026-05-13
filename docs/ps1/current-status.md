@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-12 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.3196%` over target / `99.6867%` target speed).
+battle card is `+0.3190%` over target / `99.6873%` target speed).
 
 ## Overall
 
@@ -225,13 +225,13 @@ blocking `72`, hidden refill `22`, and due misses `12`, while the shared
 dual-tail pass lowers low loop reads `67 -> 66` and loop-read time
 `288 -> 287`.
 The BUILDING2 high current-control row keeps the accepted `60..72`,
-`226..242`, and `249..257` retained groups. On current HEAD it measures
-`1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, loop reads `61`,
-and due misses `7`; the older v379 `1351/1313` artifact no longer reproduces
-after later layout changes.
-The public battle card is now `+0.3196%` over target / `99.6867%` target speed
+`206..230`, `226..242`, and `249..257` retained groups with 24-sector grouped
+capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
+`54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
+`1351/1313` artifact no longer reproduces after later layout changes.
+The public battle card is now `+0.3190%` over target / `99.6873%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4474%`.
+raw signed optimization rollup is `-0.4480%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.08`
 public over-target points and added about `12.59` public target-speed points.
@@ -269,7 +269,7 @@ plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack.
 VISITOR3 high is now
 `1071/1040` with `blocking_vb=52`; low is
-`1072/1040` with `blocking_vb=58`. BUILDING2 high/low are `1352/1311` and
+`1072/1040` with `blocking_vb=58`. BUILDING2 high/low are `1351/1311` and
 `1349/1318`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1480/1432` and `1484/1431`, WALKSTUF3 high/low are `2310/2290` and
@@ -313,12 +313,13 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
-- Current `main` after `v0.8.7-ps1` — promotes the BUILDING2 high `226..242`
-  read group plus the BUILDING6 scene-local slack4 guard, WALKSTUF1 high
+- Current `main` after `v0.8.7-ps1` — promotes the BUILDING2 high `206..230`
+  and `226..242` read groups plus 24-sector grouped-read capacity, the
+  BUILDING6 scene-local slack4 guard, WALKSTUF1 high
   `344..360`, `422..434`, and shared dual-tail `443..455` / `444..456`,
   WALKSTUF1 low staged-prepare scheduler fallback, and VISITOR3 low tail
-  pack-only compaction. The public battle card is `+0.3196%` / `99.6867%`;
-  BUILDING2 high currently measures `1352/1311`, WALKSTUF1 high stays
+  pack-only compaction. The public battle card is `+0.3190%` / `99.6873%`;
+  BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1480/1432` with loop reads `65`, WALKSTUF1 low stays `1484/1431` with loop
   reads `66`, and VISITOR5 high is refreshed at `1107/1090`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer

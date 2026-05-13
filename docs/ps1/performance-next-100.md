@@ -49,11 +49,12 @@ JOHNNY6 compact-FGP3 metadata/restore-minus-current promotion, the v364
 BUILDING6 scene-local slack4 window-refill guard, the v379 BUILDING2 high
 `226..242` read-group promotion, the v383/v384 WALKSTUF1 high
 `422..434` / `444..456` same-speed CD-work reductions, the v401 VISITOR5 high
-current-layout refresh, and the v428 WALKSTUF1 shared `443..455` / `444..456`
-dual-tail CD-work reduction:
-`+0.3196%` public average over target / `99.6867%` public target speed across
+current-layout refresh, the v428 WALKSTUF1 shared `443..455` / `444..456`
+dual-tail CD-work reduction, and the v441 BUILDING2 high `206..230` plus
+24-sector grouped-read capacity promotion:
+`+0.3190%` public average over target / `99.6873%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4474%`. Since the compact full-matrix baseline was about
+`-0.4480%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.08` public over-target points and added about `12.59`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
@@ -70,12 +71,14 @@ plus loop-read time `292 -> 284`. Due misses stay `16` and hidden refill stays
 overrun `53`, blocking `72`, hidden refill `22`, and due misses `12`, while
 v428 lowers low loop reads `67 -> 66` and loop-read time `288 -> 287`.
 
-BUILDING2 high current-control note: keep the accepted `60..72`, `226..242`,
-and `249..257` groups, but the older v379 `1351/1313` artifact no longer
-reproduces after later layout changes. The v428 current-control row measures
-`1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, loop-read time
-`262`, loop reads `61`, and due misses `7`; use this as the current baseline
-for future BUILDING2 high comparisons.
+Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
+and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.
+The v441 current-control row improves scene `1603 -> 1602`, active loop/target
+`1352/1311 -> 1351/1311`, overrun `41 -> 40`, blocking `55 -> 54`, hidden
+refill `19 -> 18`, loop reads `61 -> 58`, and loop-read time `262 -> 257`;
+due misses stay `7`. BUILDING2 low, WALKSTUF1 high/low, and VISITOR3 low
+canaries stayed flat. Use this as the current baseline for future BUILDING2
+high comparisons.
 
 Latest promoted BUILDING6 slack baseline: keep the compact-FGP3/v4 pack shape
 and add a scene-local `4` VBlank window-refill minimum. Fresh current-layout
@@ -247,8 +250,8 @@ blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
 top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
-target / `99.6884%` target speed at that point. Current rollup after the v428
-WALKSTUF1/B2 control refresh is `+0.3196%` / `99.6867%`. Close direct VISITOR5 high hand tables
+target / `99.6884%` target speed at that point. Current rollup after the v441
+BUILDING2 high grouped-capacity promotion is `+0.3190%` / `99.6873%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
@@ -2474,7 +2477,8 @@ pre-v0.8.0 row.
 | BUILDING2 high restore-minus-current cleanup | Done; keep as a high-tide-only pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame only in `BUILDING2.FG2`, preserving the `1303332` byte CD footprint, pack LBA `6180`, and the `215040` byte PS-EXE bucket. High improves `1394/1301 -> 1353/1311`, `overrun_vb 93 -> 42`, `blocking_vb 138 -> 56`, and `loop_reads 68 -> 62`; low stays on the prior pack because the both-tide transform regressed hidden prefetch overrun `8 -> 13`. The current rollup is tracked at the top of this file. |
 | BUILDING2 high read group `60..72` | Done; keep as a high-tide-only retained stream group. The range was the only current scheduler-or-guarded matrix candidate with zero overread and medium visible gaps after the v108 pack pass. It grows `foregroundPilotPlay` by `12` bytes but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 high improves `1353/1311 -> 1349/1316`, `overrun_vb 42 -> 33`, `blocking_vb 56 -> 48`, `prefetch_overrun_vb 20 -> 12`, and `loop_reads 62 -> 61`; VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
 | BUILDING2 high read group `249..257` | Done; keep as a same-speed high-tide retained stream group. The v347 row adds `{249,257}` after the accepted `60..72` group, keeps scene/loop/target/overrun flat at `1603`, `1352/1311`, and `41`, and reduces blocking `56 -> 55`, hidden refill `20 -> 19`, loop reads `62 -> 61`, and loop-read VBlanks `266 -> 262`. BUILDING2 low, VISITOR3 low, FISHING1 high, and WALKSTUF1 high/low controls stayed exact-flat. The current rollup is tracked at the top of this file. |
-| BUILDING2 high read group `226..242` | Done; keep as the accepted high-tide retained stream group between accepted `60..72` and `249..257`, but use the current-control row at the top of this file for future comparisons. The original v379 row improved scene `1603 -> 1602`, active loop `1352/1311 -> 1351/1313`, overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and loop-read VBlanks `262 -> 254` while preserving `loop_reads=61`, `due_misses=7`, pack LBA/sectors `6181/637`, and the `217088` byte PS-EXE bucket. Later layout changes no longer reproduce that exact `1351/1313` artifact; current HEAD measures `1352/1311`, overrun `41`, blocking `55`, and hidden refill `19`. |
+| BUILDING2 high read group `226..242` | Done; keep as the accepted high-tide retained stream group between accepted `60..72` and `249..257`, but use the current-control row at the top of this file for future comparisons. The original v379 row improved scene `1603 -> 1602`, active loop `1352/1311 -> 1351/1313`, overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and loop-read VBlanks `262 -> 254` while preserving `loop_reads=61`, `due_misses=7`, pack LBA/sectors `6181/637`, and the `217088` byte PS-EXE bucket. Later layout changes no longer reproduce that exact `1351/1313` artifact; the current v441 baseline measures `1351/1311`, overrun `40`, blocking `54`, and hidden refill `18`. |
+| BUILDING2 high read group `206..230` with 24-sector grouped capacity | Done; keep as the current high-tide retained stream capacity baseline. The first `{206,230}` probe under the old 16-sector capacity was exact-flat, then v441 raised the grouped-read capacity to 24 sectors and kept the row. Focused high improves scene `1603 -> 1602`, active loop `1352/1311 -> 1351/1311`, overrun `41 -> 40`, blocking `55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read VBlanks `262 -> 257`; due stays `7`, pack LBA/sectors and the PS-EXE bucket stay fixed. BUILDING2 low, WALKSTUF1 high/low, and VISITOR3 low canaries stayed exact-flat. |
 | BUILDING2 high read group `226..238` | Do not promote as a hand-authored group. The v348 probe fired and reduced loop reads `61 -> 59`, but all key metrics stayed exact-flat and read time worsened (`loop_read_vb 262 -> 263`, total read VBlanks `402 -> 403`, hidden read time `207 -> 208`). Transaction count alone is not progress for this row; retry only through generated deadline placement or pack-side byte reduction. |
 | BUILDING2 high read group `17..25` | Do not promote as a hand-authored group. The v400 current read-plan refresh marked it medium risk, and the probe saved one read plus hidden refill `17 -> 16`, but it regressed high to scene `1603`, active loop/target `1352/1312`, overrun `40`, and blocking `51`. The early cluster is still phase-negative under the current grouped-append code shape. |
 | BUILDING2 high read group `23..29` | Do not promote or retry as a narrower early hand table. The v434 focused gate stayed exact-flat at scene `1603`, `1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads/due `61/7`, while shifting tracked hot symbols by `+4`. |
@@ -2532,7 +2536,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 high read group `344..360` after v316 | Done; keep as a prerequisite for the current WALKSTUF1 high baseline. The v340 source-only promotion adds `{344,360}` after the accepted `{201,213}` and `{213,229}` high groups. Focused gate keeps scene/loop flat at `1768/1480`, moves target `1429 -> 1432`, overrun `51 -> 48`, blocking `85 -> 83`, loop reads `69 -> 67`, loop-read time `301 -> 292`, due misses `16`, and prefetch overrun `26`; WALKSTUF1 low plus BUILDING2 high/low, VISITOR3 low, and FISHING1 high controls stayed flat. Later BUILDING6, BUILDING2, and v383 WALKSTUF1 work supersede its rollup; current rollup is tracked at the top of this file. |
 | WALKSTUF1 high read group `422..434` after v340 | Done; keep as a prerequisite for the current WALKSTUF1 shared CD-work baseline. The v383 source-only promotion appends `{422,434}` after the accepted `{201,213}`, `{213,229}`, and `{344,360}` high groups. Focused gate keeps timing exact-flat at scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, and due misses `16`, while reducing loop reads `67 -> 66` and loop-read VBlanks `292 -> 286`. WALKSTUF1 low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls stayed flat. Current rollup is tracked at the top of this file; this is a lower-CD-pressure baseline, not a VBlank speed win. |
 | WALKSTUF1 high read group `444..456` after v383 | Done; keep as a prerequisite for the current WALKSTUF1 shared CD-work baseline. The v384 source-only promotion appends `{444,456}` after the accepted high groups through `{422,434}`. Focused gate keeps timing exact-flat at scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, and due misses `16`, while reducing loop reads `66 -> 65`, loop-read VBlanks `286 -> 284`, and hidden read time `203 -> 201`. WALKSTUF1 low, BUILDING2 high, FISHING1 high, and VISITOR3 low controls stayed flat. Current rollup is tracked at the top of this file; this is another lower-CD-pressure baseline, not a VBlank speed win. |
-| WALKSTUF1 shared low/high tail read groups `443..455` / `444..456` | Done; keep as the current WALKSTUF1 low CD-work baseline. The v428 promotion adds `{443,455}` beside the accepted high `{444,456}` in the shared WALKSTUF1 table and routes the same table for both tides, with a cold PS1 layout pad to keep hot text stable. Low timing stays `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, and due misses `12`, while loop reads drop `67 -> 66` and loop-read VBlanks `288 -> 287`. High stays `1768`, `1480/1432`, reads `65`; VISITOR3 low and BUILDING2 clean-current controls stay flat. Public rollup is now `+0.3196%` / `99.6867%` after the BUILDING2 high current-control refresh; this is a CD-work win, not a VBlank speed win. |
+| WALKSTUF1 shared low/high tail read groups `443..455` / `444..456` | Done; keep as the current WALKSTUF1 low CD-work baseline. The v428 promotion adds `{443,455}` beside the accepted high `{444,456}` in the shared WALKSTUF1 table and routes the same table for both tides, with a cold PS1 layout pad to keep hot text stable. Low timing stays `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22`, and due misses `12`, while loop reads drop `67 -> 66` and loop-read VBlanks `288 -> 287`. High stays `1768`, `1480/1432`, reads `65`; VISITOR3 low and BUILDING2 clean-current controls stay flat. Current public rollup is tracked at the top of this file after the later BUILDING2 high v441 promotion; this is a CD-work win, not a VBlank speed win. |
 | WALKSTUF1 high read group `268..280` after v384 | Do not promote or retry as a hand-authored retained table. The v385 focused probe looked clean in the read plan but regressed the current high baseline from scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, reads `65`, due `16` to scene `1772`, active loop `1484/1424`, overrun `60`, blocking `98`, hidden refill `27`, reads `66`, due `17`. This closes the remaining low-visible-risk mid-pack direct table; future high-side attempts need generated deadline ownership or pack-side byte/geometry removal. |
 | WALKSTUF1 high read group `287..311` plus shifted follow-ups | Do not promote as a plain retained table. The v436 direct and slack4 variants saved CD work (`reads/due 65/16 -> 63/15`, refill `26 -> 24`) but regressed visible blocking `83 -> 84` with no public speed gain. The `309..325` replacement was exact-flat, and stacking `312..324` regressed to `1776`, `1488/1433`, overrun `55`, blocking `97`. This lane needs generated deadline ownership or data-shape removal before retrying. |
 | WALKSTUF1 high read group `238..246` after v384 | Do not promote or retry as a hand-authored retained table. The v395 focused probe kept layout fixed but regressed high from scene `1768`, active loop `1480/1432`, overrun `48`, blocking `83`, hidden refill `26`, reads `65`, due `16` to scene `1778`, active loop `1490/1420`, overrun `70`, blocking `111`, hidden refill `32`, reads `68`, due `19`. Mid-pack high rows are now closed unless generated deadline ownership or pack-side data-shape changes alter the scheduler phase. |
