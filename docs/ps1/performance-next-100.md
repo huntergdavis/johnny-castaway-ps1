@@ -669,6 +669,15 @@ by `+172` bytes. Close local setup-owned `202..226`; the cluster needs
 code-neutral generated ownership or pack-side visual-work reduction, not a new
 source setup segment.
 
+Latest rejected BUILDING2 high D4 retry: v514 applied the accepted low-tide
+frame `71`/`77` previous-frame D4 transforms to high tide. The byte win was
+real (`6656 -> 13` and `8828 -> 909`) and saved one loop read (`58 -> 57`),
+but high regressed strict counters: scene stayed `1602`, active loop stayed
+`1351`, target `1311 -> 1310`, overrun `40 -> 41`, blocking `54 -> 56`,
+hidden refill `18 -> 19`, and due misses stayed `7`. Keep the low-tide D4
+promotion only; do not retry high frame71/frame77 D4 without a code-neutral
+decode predicate or generated deadline ownership.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
