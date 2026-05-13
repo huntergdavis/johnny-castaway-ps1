@@ -326,6 +326,15 @@ and growing `foregroundPilotPlay` by `156` bytes. Keep `206..230`; close
 middle-cluster hand-table alignment. BUILDING2 high now needs generated
 deadline ownership or pack-side byte/work reduction.
 
+Latest rejected BUILDING2 high micro D4 sector-boundary probe: v468 encoded
+frame `91` as a previous-frame D4 delta against frame `90`, shrinking
+`8867 -> 8766` bytes and moving the payload end from sector `150` to `149`.
+It cut visible blocking `54 -> 53`, but the decode/code-shape cost regressed
+scene `1602 -> 1631`, active loop/target `1351/1311 -> 1380/1310`, and
+overrun `40 -> 70`; hidden refill, reads, and due misses stayed `18`, `58`,
+and `7`. Close small BUILDING2 high D4 sector-boundary deltas; remaining
+adjacent-frame savings are too small for hot runtime decode.
+
 Latest rejected VISITOR3 low grouped-append ownership: v421-v423 tested the
 remaining tight `206..230` low cluster without adding setup residency. A
 low-only 24-sector grouped append with `minSlack=4`, the same group unguarded,
