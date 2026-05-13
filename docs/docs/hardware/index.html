@@ -342,8 +342,8 @@ uploads aligned to 16-pixel boundaries.</p>
 print from anywhere in the runtime and capture the output to a host log
 file. But text I/O changes timing. A <code class="language-plaintext highlighter-rouge">printf</code> in a per-frame hot path will
 move VBlank cadence enough to mask or invent the very bugs being debugged.
-The project uses TTY for one-shot snapshots (<code class="language-plaintext highlighter-rouge">JCPAUSE</code>, <code class="language-plaintext highlighter-rouge">JCPERF</code>,
-<code class="language-plaintext highlighter-rouge">JCPERF2</code>, <code class="language-plaintext highlighter-rouge">JCPAD</code>, <code class="language-plaintext highlighter-rouge">JCSPI</code>) and a colored on-framebuffer telemetry
+The project uses TTY for one-shot snapshots (<a href="../glossary/#jcpause"><code class="language-plaintext highlighter-rouge">JCPAUSE</code></a>, <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code></a>,
+<code class="language-plaintext highlighter-rouge">JCPERF2</code>, <a href="../glossary/#jcspi-jcpad"><code class="language-plaintext highlighter-rouge">JCPAD</code></a>, <code class="language-plaintext highlighter-rouge">JCSPI</code>) and a colored on-framebuffer telemetry
 overlay for steady-state visibility. See
 <a href="../performance/">Performance work</a> for how the
 perf module gates print levels.</p>
