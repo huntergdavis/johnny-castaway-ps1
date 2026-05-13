@@ -261,7 +261,7 @@ build is 15–30 minutes; rebuilds are fully cached. Image tag:
 <p><code class="language-plaintext highlighter-rouge">v0.5.x</code> adds an opt-in pad-script layer for headless menu and flow tests.
 The canonical runbook is <a href="../scripted-input/">Scripted input harness</a>.
 The PS1 build embeds <code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> at compile time and only
-uses it when <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> includes <code class="language-plaintext highlighter-rouge">pad-script</code> or <code class="language-plaintext highlighter-rouge">pad-script-log</code>.
+uses it when <a href="../glossary/#bootmode"><code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a> includes <code class="language-plaintext highlighter-rouge">pad-script</code> or <code class="language-plaintext highlighter-rouge">pad-script-log</code>.
 Scripted buttons are merged into the same active-high pad mask as the real
 controller, after analog-stick folding, so the pause menu and Freeplay code
 do not know whether a human or a test script pressed Start.</p>
