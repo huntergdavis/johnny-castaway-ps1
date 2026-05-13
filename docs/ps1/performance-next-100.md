@@ -273,6 +273,20 @@ refill cadence. The next WALKSTUF1 low path should be generated frame-deadline
 ownership, pack-side byte reduction before those clusters, or upload/restore
 work removal rather than more hand-authored read-group thresholds.
 
+Latest rejected WALKSTUF1 low scalar-closure follow-up: v586-v590 moved
+through the next fresh rows after the scheduler-guard batch. `{305,329,0}` was
+exact-flat at the accepted `1770`, `1478/1431`, overrun `47`,
+blocking/refill `64/20`, reads/due `64/11`. `{148,172,0}` and `{148,172,4}`
+were both destructive, regressing active loop/target to `1490/1429`, overrun
+`61`, blocking `88`, refill `32`, and due misses `13` while only cutting loop
+reads to `62`. `{364,388,0}` and `{364,388,4}` were the only mildly useful
+signal, cutting reads `64 -> 61`, but still regressing active loop/target to
+`1481/1433`, overrun `48`, blocking `68`, and refill `24`. Close `305..329`,
+`148..172`, and `364..388` for scalar guarded forms. This leaves the remaining
+read-table queue mostly as cleanup; the larger WALKSTUF1 low gain needs a
+generated frame-deadline owner or a data/upload reduction before the CD
+clusters rather than more hand-authored thresholds.
+
 Latest rejected WALKSTUF1 low boundary-extension retry: v475 replaced the
 accepted `78..91` first post-prime retained-read group with `78..98` so the
 same 3.21s gap could also cover the next `91..98` read while still fitting the
