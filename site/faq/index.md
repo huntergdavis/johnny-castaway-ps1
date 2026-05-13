@@ -2,7 +2,7 @@
 title: FAQ
 eyebrow: Author-written answers
 subtitle: This is the only conversation surface. There's no comments box, no Discord, no Discussions tab — read on.
-description: Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver.
+description: Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, sponsorship stance, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver.
 ---
 
 {%- comment -%}
