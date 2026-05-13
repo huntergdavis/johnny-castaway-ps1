@@ -526,6 +526,15 @@ groups. The focused pass was exact-flat at scene `1602`, active loop/target
 foreground symbols. Close narrow early scalar groups in this cluster; the
 next BUILDING2 high work needs generated ownership or pack-side work reduction.
 
+Latest rejected BUILDING2 high accepted-row extension: v498 extended the
+promoted `{60,72}` row to `{60,76}` after the current read plan ranked it as
+a balanced low-visible-risk 16-sector candidate. The extra sectors saved one
+loop read (`58 -> 57`) but regressed visible timing and refill: scene/loop
+`1602/1351 -> 1608/1357`, target `1311 -> 1309`, overrun `40 -> 48`,
+blocking `54 -> 60`, and hidden refill `18 -> 26`. Keep `{60,72}` as the
+early boundary; further BUILDING2 high progress needs generated deadline
+ownership or pack-side work reduction rather than wider hand-authored rows.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
