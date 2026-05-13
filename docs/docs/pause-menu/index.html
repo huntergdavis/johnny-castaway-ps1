@@ -106,7 +106,7 @@
       <h1>Pause menu</h1>
       <p class="subtitle">Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1521 words
+          ~6 min read · 1579 words
         </p>
 
       <hr class="rule" />
@@ -318,6 +318,13 @@ header <code class="language-plaintext highlighter-rouge">src/scene_explorer_dat
 <code class="language-plaintext highlighter-rouge">scripts/build-scene-explorer-data.py</code> from <code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code>
 and the per-scene <code class="language-plaintext highlighter-rouge">site/scenes/&lt;slug&gt;/index.md</code> titles, so the
 in-game menu strings stay in sync with the website ledger.</p>
+
+<p>Since <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> the loader streams each thumbnail through a static
+16-row chunk buffer instead of allocating the full 153 KB image at
+once. The paused heap is thin (the runtime never freed pre-pause
+state), so the prior malloc could fail after long sessions and leave
+the explorer text-only. The streaming path is allocation-free and
+robust to that fragmentation.</p>
 
 <p>Pinning persists in two <code class="language-plaintext highlighter-rouge">int</code> flags read by the screensaver loop at
 the top of each iteration: <code class="language-plaintext highlighter-rouge">pauseMenuRequestPlayScene</code> (one-shot,
