@@ -53,11 +53,12 @@ current-layout refresh, the v428 WALKSTUF1 shared `443..455` / `444..456`
 dual-tail CD-work reduction, the v441 BUILDING2 high `206..230` plus
 24-sector grouped-read capacity promotion, the v445 BUILDING2 low `238..250`
 retained-read promotion, the v451 VISITOR5 low compact FGP3/v4 plus
-`23..47` retained-read promotion, and the v452 VISITOR3 low frame129
-custom D4 delta promotion:
-`+0.3072%` public average over target / `99.6985%` public target speed across
+`23..47` retained-read promotion, the v452 VISITOR3 low frame129
+custom D4 delta promotion, and the v454 BUILDING2 low frame71/frame77
+previous-frame D4 delta promotion:
+`+0.3066%` public average over target / `99.6991%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4598%` / `100.4809%`. Since the compact full-matrix baseline was about
+`-0.4604%` / `100.4815%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.09` public over-target points and added about `12.60`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
@@ -104,13 +105,15 @@ due misses stay `7`. BUILDING2 low, WALKSTUF1 high/low, and VISITOR3 low
 canaries stayed flat. Use this as the current baseline for future BUILDING2
 high comparisons.
 
-Latest promoted BUILDING2 low baseline: keep accepted `318..330` and
-`365..381`, add `238..250`, and keep the v441 24-sector grouped-read capacity.
-The v445 focused row keeps scene/loop flat at `1619/1349`, improves target
-`1318 -> 1319`, overrun `31 -> 30`, blocking `81 -> 80`, loop reads `55 -> 53`,
-loop-read time `230 -> 227`, and due misses `18 -> 17`; hidden refill stays
-`1`. BUILDING2 high, WALKSTUF1 high/low, and VISITOR3 low canaries stayed
-flat. Use this as the current baseline for future BUILDING2 low comparisons.
+Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
+and `365..381`, then store frames `71` and `77` as previous-frame D4 deltas
+against frames `70` and `76`. The v454 focused row keeps scene/loop flat at
+`1619/1349`, improves target `1319 -> 1320`, overrun `30 -> 29`, blocking
+`80 -> 70`, prefetch overrun `1 -> 0`, loop reads `53 -> 52`, loop-read time
+`227 -> 221`, and due misses `17 -> 15`; pack LBA/sectors and the `217088`
+byte PS-EXE bucket stay fixed. BUILDING2 high, FISHING1 high, WALKSTUF1 high,
+and broad completed canaries stayed flat. Use this as the current baseline
+for future BUILDING2 low comparisons.
 
 Latest promoted BUILDING6 slack baseline: keep the compact-FGP3/v4 pack shape
 and add a scene-local `4` VBlank window-refill minimum. Fresh current-layout
@@ -282,8 +285,8 @@ blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
 top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
-target / `99.6884%` target speed at that point. Current rollup after the v452
-VISITOR3 low frame129-delta promotion is `+0.3072%` / `99.6985%`. Close direct VISITOR5 high hand tables
+target / `99.6884%` target speed at that point. Current rollup after the v454
+BUILDING2 low frame71/frame77 delta promotion is `+0.3066%` / `99.6991%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both

@@ -702,10 +702,10 @@ static uint32 fgReadU32(const uint8 *p)
 }
 
 static int __attribute__((noinline, optimize("Os")))
-fgDecodeVisitor3Delta(uint8 *data,
-                      struct TFgPilotEntry *entry,
-                      const uint8 *baseData,
-                      uint32 baseSize)
+fgDecodeFrameDelta(uint8 *data,
+                   struct TFgPilotEntry *entry,
+                   const uint8 *baseData,
+                   uint32 baseSize)
 {
     uint8 *stream;
     uint16 expandedSize;
@@ -773,6 +773,15 @@ fgDecodeVisitor3Delta(uint8 *data,
         return 0;
     entry->dataSize = expandedSize;
     return 1;
+}
+
+static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
+{
+    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
+        return islandState.lowTide && frameIndex == 129;
+    if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
+        return frameIndex == 71 || frameIndex == 77;
+    return 0;
 }
 
 static void fgParseHeader(const uint8 *data, struct TFgPilotHeader *out)
@@ -2725,9 +2734,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 
         loadBuffer = gFgRuntime.frameBuffer;
         if (baseFrameData != NULL &&
-            fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
-            islandState.lowTide &&
-            frameIndex == 129 &&
+            fgRuntimeUsesPreviousFrameDelta(frameIndex) &&
             gFgRuntime.prefetchFrameBuffer != NULL &&
             loadedEntry.dataSize <= gFgRuntime.prefetchFrameBufferSize) {
             loadBuffer = gFgRuntime.prefetchFrameBuffer;
@@ -2761,10 +2768,10 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
             }
         }
 
-        if (!fgDecodeVisitor3Delta(loadBuffer,
-                                   &loadedEntry,
-                                   baseFrameData,
-                                   baseFrameSize)) {
+        if (!fgDecodeFrameDelta(loadBuffer,
+                                &loadedEntry,
+                                baseFrameData,
+                                baseFrameSize)) {
             if (ps1PerfEnabled)
                 ps1PerfMarkTripwire();
             return 0;

@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-12:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3072%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6985%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T22:07:59` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3066%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6991%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T22:45:20` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -104,6 +104,15 @@ The prior high-side note remains `visitor3-high-f131-resident-alias121123-v299`,
 which aliases duplicate high frames `121` and `123` to frame `120`, compacts
 the resident setup-prime tail, and copies frame `131` fully into paid
 setup-prime coverage without changing the `1555450` byte pack footprint.
+
+Latest promoted BUILDING2 low note: `building2-low-delta-v454` keeps the
+accepted `238..250`, `318..330`, and `365..381` retained reads, then stores
+frames `71` and `77` as previous-frame D4 deltas against frames `70` and `76`.
+The focused gate keeps scene/loop flat at `1619/1349`, improves target
+`1319 -> 1320`, overrun `30 -> 29`, blocking `80 -> 70`, prefetch overrun
+`1 -> 0`, loop reads `53 -> 52`, loop-read VBlanks `227 -> 221`, and due
+misses `17 -> 15`. BUILDING2 high, FISHING1 high, WALKSTUF1 high, and the
+broad completed canaries stayed on accepted profiles.
 
 Latest promoted WALKSTUF1 note: high is `walkstuf1-high-shared-dual-tail-v428`,
 low is `walkstuf1-low-shared-dual-tail-v428`. The shared table extends the
@@ -152,7 +161,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
 `activity9-high-compact-fgp3-v167`,
-`building2-low-rg238-250-v445`,
+`building2-low-delta-v454`,
 `building6-compact-fgp3-v165`,
 `walkstuf3-high-compact-fgp3-v163`,
 `building2-low-restore-window-slack4-v160`,
