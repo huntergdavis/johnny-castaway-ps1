@@ -37,7 +37,7 @@ Inside freeplay, press **Start** again to open the same pause menu. Choose
 frog clock while freeplay releases sprite slots, clean-rect memory, captions,
 and its live island backdrop.
 
-Boot-token entry remains available for test discs:
+[`BOOTMODE.TXT`]({{ '/docs/glossary/#bootmode' | relative_url }}) token entry remains available for test discs:
 
 ```text
 fgpilot freeplay
