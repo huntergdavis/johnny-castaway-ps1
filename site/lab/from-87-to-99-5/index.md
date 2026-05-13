@@ -134,9 +134,9 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of `{{ site.release.tag }}` there are no red or yellow rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `111` rows are green and `15`
-remain orange. The current under-99 focus set is WALKSTUF1 high/low,
+As of `{{ site.release.tag }}` there are no red or orange rows left on the
+[battle card]({{ '/perf/' | relative_url }}): `113` rows are green and `13`
+remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
 VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
