@@ -178,6 +178,17 @@ outweigh resident ownership. Future WALKSTUF1 low hole work needs either
 zero-decode alias/slack, a generated low-CPU representation, or explicit
 deadline ownership before moving hot payloads into setup-prime holes.
 
+Latest rejected WALKSTUF1 low same-order D4 compaction: v523 encoded frame
+`100` as the previously exact-flat D4 delta (`4683 -> 586` bytes), then
+compacted every later payload earlier by `4097` bytes while keeping the sound
+table offset, total pack size, LBA, sectors, and PS-EXE bucket fixed. This
+avoided reverse seeks, but the phase shift was still negative: focused low
+regressed scene `1770 -> 1784`, active loop/target `1478/1431 ->
+1492/1426`, overrun `47 -> 66`, blocking `64 -> 99`, hidden refill
+`20 -> 29`, and due misses `11 -> 15`; loop reads stayed `64`. Close
+same-order D4 tail compaction for WALKSTUF1 low unless a generated planner can
+also retarget the retained-read sectors and deadlines.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
