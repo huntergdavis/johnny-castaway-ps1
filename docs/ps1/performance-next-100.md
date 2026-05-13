@@ -347,6 +347,15 @@ loop/target `1480/1432 -> 1486/1427`, overrun `48 -> 59`, blocking
 mid-pack rows are not missing a simple slack threshold; they need generated
 deadline ownership, sector-boundary pack shaping, or actual payload reduction.
 
+Latest rejected WALKSTUF1 high staged-prepare ownership probe: v483 removed the
+low-tide guard from the accepted WALKSTUF1 prepare-before-window scheduler
+branch so high tide would prepare the staged visual frame before speculative
+window refill. Low's rule does not transfer: focused high regressed scene
+`1764 -> 1787`, active loop/target `1476/1434 -> 1499/1425`, overrun
+`42 -> 74`, blocking `81 -> 103`, refill `23 -> 32`, and reads `65 -> 67`.
+Keep the staged-prepare-before-window rule low-only; high still needs explicit
+generated ownership or data-shape reduction, not the low visual-work heuristic.
+
 Latest rejected WALKSTUF1 high window retune: v382 rechecked the old adjacent
 window-size signal as parameter-only probes. Current `54 KiB` remains the knee:
 `53 KiB` cut reads `67 -> 22` but regressed to `1820`, `1531/1434`, overrun
