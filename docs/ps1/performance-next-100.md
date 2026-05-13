@@ -155,6 +155,16 @@ lanes are generated deadline ownership, custom payload shrinking/aliasing
 before reordering, or physical relocation only after creating true in-window
 slack that leaves startup entries resident.
 
+Latest rejected WALKSTUF1 low standalone D4: v513 tested the largest unclosed
+tight-cluster D4 byte signal, frame `158`, which shrinks `5232 -> 3181` bytes
+against previous frame `157`. The focused gate showed the familiar byte trap:
+scene `1770 -> 1778`, active loop/target `1478/1431 -> 1486/1429`, overrun
+`47 -> 57`, blocking `64 -> 80`, hidden refill `20 -> 21`, loop reads stayed
+`64`, and due misses worsened `11 -> 14`. Close standalone WALKSTUF1 low D4
+for frame `158`; together with the earlier frame `59`, `92`, `181`, `187`,
+and `189` failures, previous-frame deltas need generated deadline ownership or
+a code-neutral resident-slot plan before they are worth another runtime gate.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
