@@ -54,11 +54,12 @@ dual-tail CD-work reduction, the v441 BUILDING2 high `206..230` plus
 24-sector grouped-read capacity promotion, the v445 BUILDING2 low `238..250`
 retained-read promotion, the v451 VISITOR5 low compact FGP3/v4 plus
 `23..47` retained-read promotion, the v452 VISITOR3 low frame129
-custom D4 delta promotion, and the v454 BUILDING2 low frame71/frame77
-previous-frame D4 delta promotion:
-`+0.3066%` public average over target / `99.6991%` public target speed across
+custom D4 delta promotion, the v454 BUILDING2 low frame71/frame77
+previous-frame D4 delta promotion, and the v458 WALKSTUF1 high current-control
+refresh:
+`+0.3033%` public average over target / `99.7023%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4604%` / `100.4815%`. Since the compact full-matrix baseline was about
+`-0.4637%` / `100.4846%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.09` public over-target points and added about `12.60`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
@@ -83,9 +84,12 @@ read groups. The v340 strict gate moved high target `1429 -> 1432`, overrun
 `301 -> 292` while keeping scene/loop flat at `1768/1480`; the v383/v384
 follow-ups keep all high timing metrics flat and lower loop reads `67 -> 65`
 plus loop-read time `292 -> 284`. Due misses stay `16` and hidden refill stays
-`26`. Low stays on the v331 staged-prepare scheduler fallback at `1484/1431`,
-overrun `53`, blocking `72`, hidden refill `22`, and due misses `12`, while
-v428 lowers low loop reads `67 -> 66` and loop-read time `288 -> 287`.
+`26` in the v428 artifact; the v458 current-control refresh records the current
+accepted high row at `1476/1434`, overrun `42`, blocking `81`, hidden refill
+`23`, loop reads `65`, loop-read time `282`, and due misses `16`. Low stays on
+the v331 staged-prepare scheduler fallback at `1484/1431`, overrun `53`,
+blocking `72`, hidden refill `22`, and due misses `12`, while v428 lowers low
+loop reads `67 -> 66` and loop-read time `288 -> 287`.
 
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
@@ -104,6 +108,16 @@ one. The first run died before metrics, and the clean rerun was exact-flat at
 `66/12`. Close frames `181`, `100`, and `187` as standalone D4 deltas;
 WALKSTUF1 low needs paired scheduler/deadline ownership or a different
 sector-boundary byte removal if this mechanism is retried.
+
+Latest rejected WALKSTUF1 high D4 probe: v457 encoded high frame `100` against
+frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
+`217088` byte PS-EXE bucket. The first focused gate appeared to pass only
+because the matrix row still pointed at the older v428 `1480/1432` profile.
+After restoring source/pack and rerunning the current control, both candidate
+and control measured `1764`, `1476/1434`, overrun `42`, blocking `81`, refill
+`23`, loop reads `65`, loop-read time `282`, and due misses `16`. Close high
+frame `100` as a standalone D4 delta and require fresh current controls before
+accepting WALKSTUF1 high stale-row wins.
 
 Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
 and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.
@@ -294,8 +308,8 @@ blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
 top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
-target / `99.6884%` target speed at that point. Current rollup after the v454
-BUILDING2 low frame71/frame77 delta promotion is `+0.3066%` / `99.6991%`. Close direct VISITOR5 high hand tables
+target / `99.6884%` target speed at that point. Current rollup after the v458
+WALKSTUF1 high current-control refresh is `+0.3033%` / `99.7023%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
