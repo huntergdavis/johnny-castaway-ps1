@@ -190,6 +190,14 @@ scene `1770 -> 1783`, active loop/target `1478/1431 -> 1491/1424`, overrun
 residency, or a custom data shape that does not pull more sectors into this
 visible phase.
 
+Latest rejected WALKSTUF1 low guarded scheduler-owned table: v497 split the
+shared table so low tide preserved accepted rows and added `{273,285,8}` behind
+an 8-VBlank slack gate. It saved one loop read (`64 -> 63`) but regressed
+blocking/refill `64/20 -> 66/21`, with scene, loop/target, overrun, and due
+misses flat at `1770`, `1478/1431`, `47`, and `11`. Close `273..285` in
+low-only guarded-table form; continue to generated deadline ownership or a
+custom data shape that removes work without changing hot-loop table/code shape.
+
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
 `4708 -> 1484` bytes and reducing its modeled sector span from four to three.
