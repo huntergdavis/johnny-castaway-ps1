@@ -175,6 +175,33 @@ out and the foreground-only diff drops him.</p>
 
 <p>A yacht pulls up; Johnny boards and parties with the crowd on board. He comes back to the island visibly drunk, staggers a few steps, and passes out on the sand. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier “jogs around the island” caption-mapping guess was wrong (no jogging in the on-PS1 pack).</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">WALKSTUF 1</code> is one of the named scenes on the
+<a href="../../perf/">performance battle card</a> that got
+release-tagged attention after the v0.8.0 baseline. The longer
+boarding-and-party section is one of the
+<a href="../../docs/glossary/#multi-view-stitch">wide multi-view stitch</a>
+scenes where the wide-action pack landed in the yellow band post-validation:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code></strong> — WALKSTUF1 compact foreground performance pass. First
+release tag specifically targeting this scene’s
+<a href="../../docs/glossary/#over-target">over_target</a>
+shape.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code></strong> — WALKSTUF1 low gap6-prefix + slack-guard
+promotion; WALKSTUF1 high window-prefetch + slack4 guard on the
+gap-compressed pack. Setup-segment compaction follow-through that
+kept the matrix’s 126 / 126 timing-bearing band shape intact.</li>
+</ul>
+
+<p>Both rows now run in the green/yellow band on the live battle card.
+The matrix-wide arc from 87.1% to 99.5% target speed is documented at
+<a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>;
+the per-experiment log at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>
+enumerates every accepted and rejected probe by version.</p>
+
 <h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
 
 <p>The same way every scene does: under the FISHING 1 bar.</p>

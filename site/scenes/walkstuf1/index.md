@@ -62,6 +62,31 @@ out and the foreground-only diff drops him.
 
 A yacht pulls up; Johnny boards and parties with the crowd on board. He comes back to the island visibly drunk, staggers a few steps, and passes out on the sand. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "jogs around the island" caption-mapping guess was wrong (no jogging in the on-PS1 pack).
 
+## Notable runtime history
+
+`WALKSTUF 1` is one of the named scenes on the
+[performance battle card]({{ '/perf/' | relative_url }}) that got
+release-tagged attention after the v0.8.0 baseline. The longer
+boarding-and-party section is one of the
+[wide multi-view stitch]({{ '/docs/glossary/#multi-view-stitch' | relative_url }})
+scenes where the wide-action pack landed in the yellow band post-validation:
+
+- **`v0.8.3-ps1`** — WALKSTUF1 compact foreground performance pass. First
+  release tag specifically targeting this scene's
+  [over_target]({{ '/docs/glossary/#over-target' | relative_url }})
+  shape.
+- **`v0.8.6-ps1`** — WALKSTUF1 low gap6-prefix + slack-guard
+  promotion; WALKSTUF1 high window-prefetch + slack4 guard on the
+  gap-compressed pack. Setup-segment compaction follow-through that
+  kept the matrix's 126 / 126 timing-bearing band shape intact.
+
+Both rows now run in the green/yellow band on the live battle card.
+The matrix-wide arc from 87.1% to 99.5% target speed is documented at
+[/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }});
+the per-experiment log at
+[`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+enumerates every accepted and rejected probe by version.
+
 ### How this scene gets validated
 
 The same way every scene does: under the FISHING 1 bar.
