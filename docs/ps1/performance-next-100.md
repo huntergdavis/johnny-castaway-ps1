@@ -262,6 +262,16 @@ at `61/7`, but lost the v379 win: scene `1602 -> 1603`, active loop/target
 refill `17 -> 19`. Keep `226..242`; close adjacent replacement hand nudges
 unless generated deadline ownership or pack-side byte reduction changes phase.
 
+Latest rejected BUILDING2 high reusable setup segment: v459 retained the early
+`11..27` sector cluster through the existing setup-segment buffer instead of
+raising a contiguous setup-prime window. It cut loop reads `58 -> 55` and
+loop-read VBlanks `257 -> 250`, but regressed scene `1602 -> 1619`,
+active loop/target `1351/1311 -> 1359/1310`, overrun `40 -> 49`, blocking
+`54 -> 62`, and hidden refill `18 -> 26`, while growing hot foreground code by
+`192` bytes. Close hand-authored BUILDING2 high setup segments; retry this
+class only as generated ownership metadata, pack-side byte reduction, or
+selective/preprocessed render data.
+
 Latest rejected VISITOR3 low grouped-append ownership: v421-v423 tested the
 remaining tight `206..230` low cluster without adding setup residency. A
 low-only 24-sector grouped append with `minSlack=4`, the same group unguarded,
