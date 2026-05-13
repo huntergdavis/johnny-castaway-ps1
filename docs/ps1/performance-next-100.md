@@ -559,6 +559,15 @@ blocking `54`, hidden refill `18`, reads/due `58/7`, and loop-read VBlanks
 `257`. Close `53..77` as another scalar row; the early cluster is not missing
 just a wider or earlier table entry.
 
+Latest rejected BUILDING2 high tail-adjacent row: v503 appended `{298,322}`
+after the accepted high rows to test the current read plan's medium-risk
+two-read tail-adjacent candidate. The focused gate stayed exact-flat at scene
+`1602`, active loop/target `1351/1311`, overrun `40`, blocking `54`, hidden
+refill `18`, reads/due `58/7`, while hot foreground symbols shifted and
+`foregroundPilotPlay` grew by `164` bytes. Close `298..322` as another scalar
+retained row; BUILDING2 high now needs generated deadline/append-start
+ownership or pack-side upload/cleanup reduction.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
@@ -2937,6 +2946,7 @@ pre-v0.8.0 row.
 | BUILDING2 high read group `226..242` | Done; keep as the accepted high-tide retained stream group between accepted `60..72` and `249..257`, but use the current-control row at the top of this file for future comparisons. The original v379 row improved scene `1603 -> 1602`, active loop `1352/1311 -> 1351/1313`, overrun `41 -> 38`, blocking `55 -> 50`, hidden refill `19 -> 17`, and loop-read VBlanks `262 -> 254` while preserving `loop_reads=61`, `due_misses=7`, pack LBA/sectors `6181/637`, and the `217088` byte PS-EXE bucket. Later layout changes no longer reproduce that exact `1351/1313` artifact; the current v441 baseline measures `1351/1311`, overrun `40`, blocking `54`, and hidden refill `18`. |
 | BUILDING2 high read group `206..230` with 24-sector grouped capacity | Done; keep as the current high-tide retained stream capacity baseline. The first `{206,230}` probe under the old 16-sector capacity was exact-flat, then v441 raised the grouped-read capacity to 24 sectors and kept the row. Focused high improves scene `1603 -> 1602`, active loop `1352/1311 -> 1351/1311`, overrun `41 -> 40`, blocking `55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read VBlanks `262 -> 257`; due stays `7`, pack LBA/sectors and the PS-EXE bucket stay fixed. BUILDING2 low, WALKSTUF1 high/low, and VISITOR3 low canaries stayed exact-flat. |
 | BUILDING2 high read group `226..238` | Do not promote as a hand-authored group. The v348 probe fired and reduced loop reads `61 -> 59`, but all key metrics stayed exact-flat and read time worsened (`loop_read_vb 262 -> 263`, total read VBlanks `402 -> 403`, hidden read time `207 -> 208`). Transaction count alone is not progress for this row; retry only through generated deadline placement or pack-side byte reduction. |
+| BUILDING2 high read group `298..322` | Do not promote or retry as a hand-authored table. The v503 focused gate completed with no key movement: scene `1602`, active loop/target `1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, loop reads `58`, and due misses `7`, while hot foreground symbols shifted and `foregroundPilotPlay` grew by `164` bytes. |
 | BUILDING2 high read group `17..25` | Do not promote as a hand-authored group. The v400 current read-plan refresh marked it medium risk, and the probe saved one read plus hidden refill `17 -> 16`, but it regressed high to scene `1603`, active loop/target `1352/1312`, overrun `40`, and blocking `51`. The early cluster is still phase-negative under the current grouped-append code shape. |
 | BUILDING2 high read group `23..29` | Do not promote or retry as a narrower early hand table. The v434 focused gate stayed exact-flat at scene `1603`, `1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads/due `61/7`, while shifting tracked hot symbols by `+4`. |
 | BUILDING2 duplicate-payload entry-table aliasing | Do not promote or retry as raw backreferences. Both high and low packs have `67,719` bytes of exact duplicate residual payloads, but v359 full aliasing creates reverse/mixed seek debt and regresses high to `1454/1305` with `blocking_vb=195` and low to `1457/1314` with `blocking_vb=228`. v360's `16 KiB`-limited version still regresses high/low to `1368`/`1369` loop VBlanks, and v361's adjacent-only alias is exact-flat. Duplicate compression needs generated forward-order copy/no-op semantics or an explicit runtime alias cache, not reused older offsets in the stream table. |
