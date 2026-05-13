@@ -321,6 +321,17 @@ overrun `53 -> 69`, blocking `72 -> 90`, hidden refill `22 -> 34`, reads
 `67 -> 70`, and due `12 -> 13`. Close the direct `190..202` lane; remaining
 WALKSTUF1 low work should not spend more time on plain retained tables.
 
+Latest rejected WALKSTUF1 low low-risk tail direct group: v486 tested the
+current visible-cost planner's unclosed `371..387` retained-read candidate,
+which was distinct from the older setup-owned `371..387` segment failure. The
+normal focused gate was host-killed before `JCPERF2`; the clean case-local-CD
+retry ran past the baseline finish window and was still issuing dense tail
+sector reads around `44s` with no `JCPERF2` before the wrapper was killed with
+exit `137`. No metrics were accepted and the source table was restored. Treat
+`371..387` direct grouping as phase-negative/inconclusive under the current
+layout; future work needs generated deadline ownership or pack-side data shape,
+not another scalar retained-read row.
+
 Latest rejected WALKSTUF1 low first post-setup retained group: v472 tested
 `78..90`, the current read-plan's long-first-gap post-prime candidate. It did
 reduce due misses `12 -> 11`, but it regressed scene `1776 -> 1780`, active
