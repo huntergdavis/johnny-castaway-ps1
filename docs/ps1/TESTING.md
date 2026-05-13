@@ -109,6 +109,12 @@ shared retained-read row as a same-speed CD-work reduction. Low stays at
 reads drop `64 -> 62` and loop-read time `286 -> 281`. WALKSTUF1 high,
 VISITOR3 high/low, and BUILDING2 high/low stayed exact-flat.
 
+Latest rejected WALKSTUF1 note: `walkstuf1-origin-rebase-v616` dry-ran the
+compact-origin rebase compactor over both accepted W1 packs and found
+`0` saved bytes / `0` rewritten frames. No pack or timing matrix changed; W1
+pack-side work now needs row-level canonicalization, generated ownership, or
+upload/restore reduction rather than whole-payload origin rebasing.
+
 `visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
 while moving frame `128` into the
 accepted resident slot and storing frame `129` as a 609-byte custom D4 delta

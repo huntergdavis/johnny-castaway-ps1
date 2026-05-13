@@ -230,6 +230,10 @@ frame132/frame137 setup-prime gap relocations, followed by the
 WALKSTUF1 high sector <code class="language-plaintext highlighter-rouge">201..213</code>, <code class="language-plaintext highlighter-rouge">213..229</code>, <code class="language-plaintext highlighter-rouge">344..360</code>, <code class="language-plaintext highlighter-rouge">422..434</code>, and <code class="language-plaintext highlighter-rouge">444..456</code> read-group passes plus the low <code class="language-plaintext highlighter-rouge">78..91</code> boundary fix, the
 high-tide window-prefetch guard on the gap-compressed pack, the low-tide
 gap-compressed prefix, and the low-tide staged-prepare scheduler fallback.
+The latest log-only WALKSTUF1 scan closed compact-origin rebasing for both W1
+packs with <code class="language-plaintext highlighter-rouge">0</code> saved bytes / <code class="language-plaintext highlighter-rouge">0</code> rewritten frames, so the next W1 pack-side
+lane is row-level canonicalization, generated ownership, or upload/restore
+work reduction rather than a whole-payload rebase.
 The current VISITOR3 baseline is high <code class="language-plaintext highlighter-rouge">1065/1039</code>
 and low <code class="language-plaintext highlighter-rouge">1062/1040</code> after the frame129/frame132/frame137-delta promotions,
 the high frame132/frame137 sector-203 setup relocation, and low

@@ -303,6 +303,15 @@ future W1 low work needs generated frame-deadline ownership or pack/upload
 work reduction before scheduling, not a second speculative window after
 prepare.
 
+Latest rejected WALKSTUF1 compact-origin rebase: v616 dry-ran the VISITOR3
+origin-rebase compactor over both accepted W1 packs (`WALK1LOW.FG2` and
+`WALKSTUF1.FG2`) for frames `0..215`. Both packs returned `total_saved=0`,
+`applied_saved=0`, and `frames_rewritten=0`, so no pack was modified and no
+PS1 timing gate was warranted. Close full-payload origin rebasing for current
+W1 data; the next pack-side path needs smaller row-span/header
+canonicalization, a scene-local dictionary, generated frame-deadline ownership,
+or upload/restore work reduction rather than another whole-payload rebase.
+
 Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
 the two interior gaps left by tiny D4 frames before the `218..230` near-miss
 cluster, first together and then independently. Removing both gaps shifted
