@@ -121,6 +121,19 @@ and VISITOR3 high/low canaries stayed on accepted profiles with fixed pack
 LBA/sectors and PS-EXE bucket. This promotion adds about `0.0033` public
 over-target points removed and `0.0031` public target-speed points gained.
 
+Latest rejected WALKSTUF1 low boundary-extension retry: v475 replaced the
+accepted `78..91` first post-prime retained-read group with `78..98` so the
+same 3.21s gap could also cover the next `91..98` read while still fitting the
+24-sector grouped window. The extra sectors were phase-negative: low regressed
+scene `1770 -> 1783`, active loop/target `1478/1431 -> 1491/1424`, overrun
+`47 -> 67`, blocking `64 -> 101`, hidden refill `20 -> 26`, loop reads
+`64 -> 65`, loop-read time `286 -> 303`, and due misses `11 -> 15`. Keep
+`78..91` as the accepted endpoint; with older `78..94` already closed and
+`78..98` worse, do not hand-extend the early WALKSTUF1 low group past sector
+`91`. The next low work needs generated deadline ownership, cold sidecar
+residency, or a custom data shape that does not pull more sectors into this
+visible phase.
+
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
 `4708 -> 1484` bytes and reducing its modeled sector span from four to three.
