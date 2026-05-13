@@ -367,8 +367,12 @@ WALKSTUF1 retained-read table so low tide kept only the low-promoted `78..91`
 and `443..455` groups while high retained its full group set. The focused low
 harness exited `137` before `JCPERF2`; the orphaned emulator only reached
 early boot/asset loads after another minute and produced no scene-complete
-metrics. Restore the shared table; low needs generated scheduler/data-shape
-ownership rather than manual removal of high-only groups.
+metrics. After stopping the external long-run relauncher, the v492 clean
+rerun completed with valid metrics and was exact-flat at scene `1770`, active
+loop/target `1478/1431`, overrun `47`, blocking `64`, hidden refill `20`, and
+reads/due `64/11` while only shifting hot symbols. Restore the shared table;
+low needs generated scheduler/data-shape ownership rather than manual removal
+of high-only groups.
 
 Latest rejected WALKSTUF1 low first post-setup retained group: v472 tested
 `78..90`, the current read-plan's long-first-gap post-prime candidate. It did
