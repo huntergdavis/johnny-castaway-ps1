@@ -19,6 +19,8 @@ or is cheap enough to lock in even with zero past hits:
   (exempts redirect pages and explicitly-noindex'd surfaces).
 - Every real content page has a `<link rel="canonical">` (same
   redirect / noindex exemption rule).
+- Every real content page has a `<meta property="og:image">` (same
+  redirect / noindex exemption rule) — social cards need it.
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -81,6 +83,10 @@ META_NOINDEX_RE = re.compile(
 )
 CANONICAL_RE = re.compile(
     r'<link\s+rel="canonical"\s+href="[^"]+"',
+    re.IGNORECASE,
+)
+OG_IMAGE_RE = re.compile(
+    r'<meta\s+property="og:image"\s+content="[^"]+"',
     re.IGNORECASE,
 )
 
@@ -408,6 +414,21 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         if not META_REFRESH_RE.search(text) and not META_NOINDEX_RE.search(text):
             if not CANONICAL_RE.search(text):
                 errors.append(f"{rel}: missing <link rel=\"canonical\">")
+        # Social-card image — every real content page must carry a
+        # non-empty <meta property="og:image"> tag. Without it,
+        # Facebook / LinkedIn / Slack / Discord / Twitter / Mastodon
+        # cards fall back to text-only previews (or, worse, scrape a
+        # random first image from the body). The site's head.html
+        # emits og:image via `page.image | default: site.image`, so
+        # a forgotten frontmatter field falls through to the default
+        # site OG image — but a Liquid breakage in the template would
+        # silently drop the tag entirely. Same redirect / noindex
+        # exemption rule. Site-wide audit on 2026-05-12 confirmed
+        # 612+ pages all carry og:image with valid asset URLs; this
+        # check locks that in.
+        if not META_REFRESH_RE.search(text) and not META_NOINDEX_RE.search(text):
+            if not OG_IMAGE_RE.search(text):
+                errors.append(f"{rel}: missing <meta property=\"og:image\">")
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
