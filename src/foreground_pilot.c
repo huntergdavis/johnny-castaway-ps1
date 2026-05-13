@@ -3805,20 +3805,41 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
-    while (foregroundPilotRuntimeActive()) {
-        int advancedThisLoop = 0;
+    /* Per-scene wall-clock cap. Some scenes (observed: activity9 at the
+     * 13th deterministic pick of a long soak, runtime ~443 s) silently
+     * hang inside this runtime loop after the normal Nth frame — the CD
+     * load completes, walks succeed, but the scene's natural end never
+     * fires. Cap at 5400 VBlanks (90 s) so the screensaver isn't stuck
+     * forever; legitimate scenes are 10-60 s, so 90 s is comfortably
+     * past the longest natural duration. The cap fires a JCTMOUT
+     * telemetry line and breaks the loop, falling through to the normal
+     * teardown path — the outer scene loop then picks another scene. */
+    {
+        uint32 sceneLoopStartTick = (uint32)VSync(-1);
+        const uint32 SCENE_LOOP_MAX_VBLANKS = 5400u;
+        while (foregroundPilotRuntimeActive()) {
+            int advancedThisLoop = 0;
 
-        /* Pause-menu request: break out so jc_reborn's outer loop can
-         * advance to next scene or restart the loop. The flag is
-         * cleared by the consumer in jc_reborn.c. */
-        if (pauseMenuRequestNextScene ||
-            pauseMenuRequestResetLoop ||
-            pauseMenuRequestFreeplay ||
-            pauseMenuRequestSceneSetCycle ||
-            pauseMenuRequestPlayScene >= 0 ||
-            pauseMenuRequestLoopScene >= 0) {
-            break;
-        }
+            if (((uint32)VSync(-1) - sceneLoopStartTick) > SCENE_LOOP_MAX_VBLANKS) {
+                printf("JCTMOUT scene=%s frame=%u/%u vblanks=%lu force-end\n",
+                       sceneName,
+                       (unsigned)gFgRuntime.frameIndex,
+                       (unsigned)gFgRuntime.header.frameCount,
+                       (unsigned long)((uint32)VSync(-1) - sceneLoopStartTick));
+                break;
+            }
+
+            /* Pause-menu request: break out so jc_reborn's outer loop can
+             * advance to next scene or restart the loop. The flag is
+             * cleared by the consumer in jc_reborn.c. */
+            if (pauseMenuRequestNextScene ||
+                pauseMenuRequestResetLoop ||
+                pauseMenuRequestFreeplay ||
+                pauseMenuRequestSceneSetCycle ||
+                pauseMenuRequestPlayScene >= 0 ||
+                pauseMenuRequestLoopScene >= 0) {
+                break;
+            }
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             uint16 prepareElapsedVBlanks = 0;
@@ -3954,13 +3975,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             }
             fgRuntimeMarkFrameRendered();
         }
-        if (!advancedThisLoop) {
-            if (perfDetail)
-                perfPhaseTick = ps1PerfTick();
-            foregroundPilotRuntimeAdvance();
-            if (perfDetail)
-                ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
-                                       ps1PerfElapsedVBlanks(perfPhaseTick));
+            if (!advancedThisLoop) {
+                if (perfDetail)
+                    perfPhaseTick = ps1PerfTick();
+                foregroundPilotRuntimeAdvance();
+                if (perfDetail)
+                    ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
+                                           ps1PerfElapsedVBlanks(perfPhaseTick));
+            }
         }
     }
     if (ps1PerfEnabled) {
