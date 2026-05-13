@@ -164,6 +164,8 @@ The disc plays. That was always the point. It also plays at near native rate now
 - [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}) — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.
 - [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the stability follow-on that left this article's matrix mean untouched.
 - [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — formerly the red outlier, now a yellow-band pack/data-shape target.
+- [/scenes/walkstuf1/]({{ '/scenes/walkstuf1/' | relative_url }}) — yellow-band high/low; v0.8.3 compact foreground + v0.8.6 setup-segment passes were tagged at this scene.
+- [/scenes/building2/]({{ '/scenes/building2/' | relative_url }}) — yellow-band high/low; clean-rect-heavy Lilliputian-airport pack with the broadest under-99 focus set.
 - [/scenes/activity9/]({{ '/scenes/activity9/' | relative_url }}) — wide-boat scene; padded FGP3 + scoped low-tide read group case study.
 - [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — clean-rect-heavy variant; representative of the drop-prefetch unlock.
 - [/scenes/fishing1/]({{ '/scenes/fishing1/' | relative_url }}) — the canary scene the matrix tracks against every release.
