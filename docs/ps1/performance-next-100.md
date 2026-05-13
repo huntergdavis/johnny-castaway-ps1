@@ -121,6 +121,14 @@ produced no late metrics after an additional wait. Restore source and
 frame129 D4/prime-compaction ownership path in a deterministic local validator
 or with a stable non-orphaning harness.
 
+Latest rejected VISITOR3 high frame134 D4 attempt: v489 encoded frame `134`
+in place as a previous-frame D4 delta against full frame `133`, shrinking the
+payload `17001 -> 14202` bytes without changing pack footprint or LBA. The
+focused gate was killed with exit `137` before `JCPERF2`, and the orphaned
+emulator produced no late metrics after a one-minute wait. Restore source and
+`VISITOR3.FG2`; avoid further high-tide D4 additions with large command counts
+until a deterministic D4 ownership validator explains the pre-metric hang.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
