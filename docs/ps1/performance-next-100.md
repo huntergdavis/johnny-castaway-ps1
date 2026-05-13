@@ -143,7 +143,11 @@ and `189`; it preserved pack LBA and saved one loop read, hidden refill
 `22 -> 19`, but regressed overrun `53 -> 55`, blocking `72 -> 82`, and due
 `12 -> 15` while moving hot foreground symbols. Close frames `181`, `100`,
 `187`, `189`, `92`, and setup-hole D4 relocation as standalone/hand-coded D4
-lanes; WALKSTUF1 low needs generated scheduler/deadline ownership, a cold
+lanes. v471 then tried the untested earlier frame `59`, shrinking
+`4200 -> 1452` bytes and collapsing sectors `109..111` to one sector, but it
+stayed exact-flat at `1776`, `1484/1431`, overrun `53`, blocking `72`, refill
+`22`, reads/due `66/12`, while growing/shifting hot foreground symbols.
+WALKSTUF1 low needs generated scheduler/deadline ownership, a cold
 sidecar that does not grow hot loop code, or a different custom data shape if
 this mechanism is retried.
 
