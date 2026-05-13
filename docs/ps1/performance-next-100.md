@@ -99,6 +99,16 @@ metrics. Restore source and `VISITOR3.FG2`; do not retry frame133 chained D4
 without first designing explicit staged/prepared ownership for previous-frame
 delta payloads.
 
+Latest rejected VISITOR3 high terminal read-group attempt: v487 added a
+high-only grouped append for sectors `228..252`, targeting the current
+terminal cluster for frames `135..137`. The focused gate completed with valid
+`JCPERF2` metrics but stayed exact-flat at scene `1402`, active loop/target
+`1067/1039`, overrun `28`, blocking `45`, loop reads/due `8/8`, and hidden
+refill `0`; `group_hits` stayed `0` while foreground hot code shifted
+(`foregroundPilotPlay +52` bytes). Restore the source and close scalar
+VISITOR3 high terminal read-group tables; this cluster needs generated
+scheduler ownership or pack-side byte relocation, not another hand table.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
