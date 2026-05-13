@@ -21,6 +21,9 @@ or is cheap enough to lock in even with zero past hits:
   redirect / noindex exemption rule).
 - Every real content page has a `<meta property="og:image">` (same
   redirect / noindex exemption rule) — social cards need it.
+- Every `<th>` in rendered output carries a `scope=` attr (WCAG H63
+  header-cell association; locked in after the kramdown styled-form
+  fix in 452fe5654).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -89,6 +92,8 @@ OG_IMAGE_RE = re.compile(
     r'<meta\s+property="og:image"\s+content="[^"]+"',
     re.IGNORECASE,
 )
+TH_RE = re.compile(r'<th\b[^>]*>', re.IGNORECASE)
+TH_SCOPE_RE = re.compile(r'\bscope=', re.IGNORECASE)
 
 
 LINK_ATTRS = {
@@ -429,6 +434,20 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         if not META_REFRESH_RE.search(text) and not META_NOINDEX_RE.search(text):
             if not OG_IMAGE_RE.search(text):
                 errors.append(f"{rel}: missing <meta property=\"og:image\">")
+        # WCAG H63 (Using th element to identify row and column
+        # headers) — every <th> in the rendered output must declare
+        # `scope` so screen readers and table-summarization tools
+        # correctly associate each header cell with the column / row
+        # of data it describes. The build pipeline post-processes
+        # kramdown's bare <th> and <th style="..."> emissions into
+        # <th scope="col"> via two perl substitutions in
+        # site-build-static-root.sh (commits 0aa242991 / 5796b7569
+        # / 452fe5654); this check locks in that both passes ran.
+        # The third site-wide audit on 2026-05-12 confirmed all 1124
+        # <th> tags carry scope across the non-research tree.
+        for m in TH_RE.finditer(text):
+            if not TH_SCOPE_RE.search(m.group(0)):
+                errors.append(f"{rel}: <th> missing scope= attr: {m.group(0)}")
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
