@@ -180,7 +180,18 @@ frame-114/frame-117 no-op residual compaction, the v327 low resident-slot
 swap, and the v338 low tail pack-only compaction, <code class="language-plaintext highlighter-rouge">visitor3</code> high
 and low now run around
 <a href="../../docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">97.1%</code> and <code class="language-plaintext highlighter-rouge">97.0%</code> target speed</a>
-instead of sitting in the red/orange bands. The wide multi-view stitch (the red ship
+instead of sitting in the red/orange bands.</p>
+
+<p>Two of those experiment-version steps map cleanly to public release
+tags: <a href="../../releases/#v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code></a>
+was the first release tagged specifically at VISITOR 3 (guarded-read
+performance pass), and
+<a href="../../releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.6-ps1</code></a>
+landed the setup-segment resident copies for frames <code class="language-plaintext highlighter-rouge">131</code> / <code class="language-plaintext highlighter-rouge">128</code>
+on both tides. The internal <code class="language-plaintext highlighter-rouge">vNNN</code>
+versions above are the
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md">performance-experiment-log</a>
+sequence; the release tags are when batches of them shipped publicly. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 <a href="../../docs/glossary/#prefetch-window">prefetch window</a>
 harder than most scenes; the remaining timing gap is concentrated in the

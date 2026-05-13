@@ -62,7 +62,18 @@ frame-114/frame-117 no-op residual compaction, the v327 low resident-slot
 swap, and the v338 low tail pack-only compaction, `visitor3` high
 and low now run around
 [`97.1%` and `97.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-instead of sitting in the red/orange bands. The wide multi-view stitch (the red ship
+instead of sitting in the red/orange bands.
+
+Two of those experiment-version steps map cleanly to public release
+tags: [`v0.8.2-ps1`]({{ '/releases/#v082-ps1--visitor3-guarded-read-performance' | relative_url }})
+was the first release tagged specifically at VISITOR 3 (guarded-read
+performance pass), and
+[`v0.8.6-ps1`]({{ '/releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through' | relative_url }})
+landed the setup-segment resident copies for frames `131` / `128`
+on both tides. The internal `vNNN`
+versions above are the
+[performance-experiment-log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+sequence; the release tags are when batches of them shipped publicly. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
 harder than most scenes; the remaining timing gap is concentrated in the
