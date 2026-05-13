@@ -254,6 +254,17 @@ overrun `53 -> 62`, blocking `72 -> 81`, and hidden refill `22 -> 28`. Close
 manual direct-stage-deny branches for WALKSTUF1 low clusters; they reduce
 transactions but move the cost into visible cadence.
 
+Latest rejected WALKSTUF1 low boundary-frame prefix-gap pack: v417 tested the
+narrowest remaining prefix-gap data-shape swing by applying the accepted
+`gap6` cleanup merge only to frames `38` and `39`, moving the sound table
+`920531 -> 920087` while preserving the `1535263` byte pack footprint and pack
+LBA. The focused gate still regressed low from `1776`, `1484/1431`, overrun
+`53`, blocking `72`, hidden refill `22`, reads/due `67/12` to `1780`,
+`1488/1429`, overrun `59`, blocking `78`, hidden refill `29`, reads/due
+`67/11`. Close boundary-frame cleanup-gap widening; WALKSTUF1 low now needs
+generated deadline ownership, phase-fixed byte removal, or a custom
+representation that reduces render/upload work without moving CD cadence.
+
 Latest rejected JOHNNY1 scalar group: v373 added shared `131..147` after both
 tides ranked it as their top low-risk grouped-window candidate. High stayed
 exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`, reads
@@ -2468,6 +2479,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low read group `285..309` current-baseline retest | Do not promote or retry as a hand-authored retained table. The v380 focused retest fired and saved reads (`67 -> 63`) plus due misses (`12 -> 11`), but it regressed low from `1776`, `1484/1431`, overrun `53`, blocking `72`, hidden refill `22` to `1782`, `1490/1433`, overrun `57`, blocking `76`, hidden refill `26`. The late cluster remains phase-negative even on the newer baseline; use generated deadline ownership, sector-boundary frame planning, or a custom data format instead. |
 | WALKSTUF1 low read group `78..90` | Do not promote or retry as a narrowed early hand table. The v412 current-baseline probe tried the smaller form of the old failed `78..94` row and kept pack LBA plus EXE bucket fixed, but regressed low to `1780`, `1488/1428`, overrun `60`, blocking `79`, refill `27`, reads/due `69/11`. The due-miss reduction is not useful when public timing and read count worsen. |
 | WALKSTUF1 low read group `273..297` | Do not promote or retry as a direct retained table. The v416 current-baseline probe was the remaining large medium-risk low cluster and did save reads (`67 -> 64`), but it regressed scene `1776 -> 1782`, active loop `1484 -> 1490`, overrun `53 -> 59`, blocking `72 -> 80`, and prefetch overrun `22 -> 26` with fixed pack LBA and EXE bucket. This closes the last plausible large low hand table; future low work needs generated deadline ownership, byte-removing pack transforms, or a custom representation that preserves cadence. |
+| WALKSTUF1 low boundary-frame `gap6` prefix pack | Do not promote or retry as a cleanup-gap pack move. The v417 f38/f39-only variant moved `sound_events_offset 920531 -> 920087` inside the fixed `1535263` byte pack and kept LBA stable, but it regressed low to scene `1780`, active loop/target `1488/1429`, overrun `59`, blocking `78`, and prefetch overrun `29` while reads stayed `67`. Narrow prefix cleanup is still phase-negative; future low pack work must remove bytes while preserving CD cadence or change the runtime representation. |
 | WALKSTUF1 low read group `297..313` current-baseline retest | Do not promote or retry as a direct retained table. The v394 focused gate proved the high-upside cluster fires, cutting reads `67 -> 66` and due misses `12 -> 11`, but it regressed scene `1776 -> 1778`, active loop/target `1484/1431 -> 1486/1430`, overrun `53 -> 56`, blocking `72 -> 73`, and hidden refill `22 -> 25` with fixed LBA and fixed PS-EXE bucket. This reinforces that tight-gap low clusters need generated deadline ownership or pack/data-shape changes, not more source-table append groups. |
 | WALKSTUF1 low read group `297..321` current-baseline retest | Do not promote or retry as a direct retained table. The v399 24-sector version saved more reads when unguarded (`67 -> 63`) but regressed scene/loop to `1782/1490`, overrun `59`, blocking `87`, hidden refill `23`, and due misses `13`. Slack6 and slack8 guards were exact-flat and produced no key work-volume win. This closes larger scalar grouped appends over the late `297..321` cluster; future work needs generated deadline ownership or pack-side byte removal. |
 | WALKSTUF1 low late direct-stage/window ownership | Do not promote or retry as a hand-coded scene branch. The v402 direct-stage-deny branch saved reads `67 -> 65` but regressed target `1431 -> 1429`, blocking `72 -> 76`, and hidden refill `22 -> 27`; the binary opposite, forcing direct-stage for sectors `297..321`, kept scene/loop flat but still regressed target `1431 -> 1429`, blocking `72 -> 73`, and hidden refill `22 -> 24`. This closes manual direct-stage toggles for the late cluster; use generated reservation metadata or pack/data-shape work instead. |
