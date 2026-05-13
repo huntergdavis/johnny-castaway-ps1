@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-12:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3111%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6949%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T21:13:11` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor5-low-compact-rg23-47-v451`, `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3072%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6985%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T22:07:59` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,25 +87,23 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-low-tail-pack-only-v338`
-keeps the existing low-tide setup budget and rewrites only the low pack tail:
-frame `143` cleanup is encoded as one bounded compact span per active row, and
-frame `144` becomes a compact full-frame cleanup payload that fits inside the
-already paid tail setup window. Pack size, LBA, and source code stay fixed.
-Low remains `1072/1040` with overrun `32`, while `blocking_vb 64 -> 58`,
-`loop_reads 11 -> 10`, loop-read time `64 -> 58`, and due misses `11 -> 10`.
-WALKSTUF1 high, BUILDING2 high/low, and FISHING1 high stayed exact-flat; the
-current VISITOR3 high boot still has a separate missing-`JCPERF2` measurement
-defect, so it is tracked outside this low-pack promotion. The prior high-side note:
-`visitor3-high-f131-resident-alias121123-v299`
-aliases duplicate high frames `121` and `123` to frame `120`, compacts the
-resident setup-prime tail, and copies frame `131` fully into paid setup-prime
-coverage without changing the `1555450` byte pack footprint. High improves
-`1074/1038 -> 1070/1039`, overrun `36 -> 31`, blocking `58 -> 49`, loop reads
-`10 -> 9`, and loop-read time `58 -> 49`; due misses move `10 -> 9` and hidden
-refill stays `0`. Earlier low-side rows `visitor3-low-f128-resident-seg27-v302`
-and `visitor3-low-swap-f128-f129-v327` are now superseded by the v338 tail
-pack-only compaction above.
+Latest promoted VISITOR3 note: `visitor3-low-frame129-delta-v452`
+keeps the low pack footprint and LBA fixed while moving frame `128` into the
+accepted resident slot and storing frame `129` as a 609-byte custom D4 delta
+against that resident payload. The narrowed decoder is gated to VISITOR3 low
+frame `129`; Freeplay diagnostics are default-off so the PS-EXE stays in the
+`217088` byte bucket. Low improves scene `1401 -> 1397`, active loop/target
+`1072/1040 -> 1068/1041`, overrun `32 -> 27`, blocking `58 -> 51`,
+loop reads `10 -> 9`, loop-read time `58 -> 51`, and due misses `10 -> 9`.
+VISITOR3 high, BUILDING2 high/low, WALKSTUF1 high/low, VISITOR5 high/low, and
+FISHING1 high canaries stayed on accepted profiles. Earlier low-side rows
+`visitor3-low-f128-resident-seg27-v302`,
+`visitor3-low-swap-f128-f129-v327`, and
+`visitor3-low-tail-pack-only-v338` are now superseded by this frame129 delta.
+The prior high-side note remains `visitor3-high-f131-resident-alias121123-v299`,
+which aliases duplicate high frames `121` and `123` to frame `120`, compacts
+the resident setup-prime tail, and copies frame `131` fully into paid
+setup-prime coverage without changing the `1555450` byte pack footprint.
 
 Latest promoted WALKSTUF1 note: high is `walkstuf1-high-shared-dual-tail-v428`,
 low is `walkstuf1-low-shared-dual-tail-v428`. The shared table extends the

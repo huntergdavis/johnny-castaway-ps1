@@ -69,7 +69,14 @@ extern int ps1SoftTimeEnabled;
 #define FP_CAPTION_Y0 396
 #define FP_CAPTION_X1 604
 #define FP_CAPTION_Y1 474
+#ifndef FREEPLAY_DIAG_LOGS
+#define FREEPLAY_DIAG_LOGS 0
+#endif
+#if FREEPLAY_DIAG_LOGS
 #define FP_LOG(level, args) do { if (gFreeplayTelemetryLevel >= (level)) printf args; } while (0)
+#else
+#define FP_LOG(level, args) do { (void)(level); } while (0)
+#endif
 
 enum TFpFace {
     FP_FACE_E = 0,

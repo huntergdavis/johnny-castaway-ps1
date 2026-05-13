@@ -44,13 +44,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.7-ps1`** — deterministic BOOTMODE scene selection + Scene Explorer preview stability |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3111% over target / 99.6949% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.3072% over target / 99.6985% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
 
-- `main` after `v0.8.7-ps1` — VISITOR5 low now uses the padded compact FGP3/v4 restore-minus-current pack plus a compact-only `23..47` retained read, moving to `1104/1092`, overrun `12`, blocking/refill `11`, loop reads `19`, and loop-read VBlanks `91`. BUILDING2 high keeps the 24-sector grouped-read capacity, BUILDING2 low keeps the `238..250` retained read, and public rollup is now `+0.3111%` over target / `99.6949%` target speed; WALKSTUF1 high/low and VISITOR3 low remain the top under-99 rows.
+- `main` after `v0.8.7-ps1` — VISITOR3 low now stores frame `129` as a 609-byte custom D4 delta against moved resident frame `128`, improving to `1068/1041`, overrun `27`, blocking `51`, reads/due `9/9`, with pack LBA and the `217088` byte PS-EXE bucket stable. Public rollup is now `+0.3072%` over target / `99.6985%` target speed; WALKSTUF1 high/low, BUILDING2 high, and VISITOR3 high/low remain the top under-99 rows.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection, expected-scene gates in the headless perf harness, Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail streaming. Public rollup remains `+0.3156%` over target / `99.6902%` target speed.
 - `v0.8.6-ps1` — WALKSTUF1 low gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch / slack4 guard, and VISITOR3 high/low setup-segment resident copies for frames `131` / `128`. Public rollup `+0.3157%` over target / `99.6902%` target speed.
 - `v0.8.5-ps1` — full 126-row headless performance matrix baseline.

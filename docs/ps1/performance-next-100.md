@@ -1,17 +1,17 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-10
+Date: 2026-05-12
 
 Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
 | `loop_vb` | `1068` |
-| `target_vb` | `1074` |
+| `target_vb` | `1072` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `0.0% public` (`-0.56%` raw signed) |
-| `blocking_vb` | `2` |
-| `prefetch_overrun_vb` | `2` |
+| `remaining_over_target` | `0.0% public` (`-0.37%` raw signed) |
+| `blocking_vb` | `5` |
+| `prefetch_overrun_vb` | `5` |
 | `loop_reads` | `20` |
 | `upload_bytes` | `10638080` |
 | `restore_bytes` | `251144` |
@@ -52,15 +52,28 @@ BUILDING6 scene-local slack4 window-refill guard, the v379 BUILDING2 high
 current-layout refresh, the v428 WALKSTUF1 shared `443..455` / `444..456`
 dual-tail CD-work reduction, the v441 BUILDING2 high `206..230` plus
 24-sector grouped-read capacity promotion, the v445 BUILDING2 low `238..250`
-retained-read promotion, and the v451 VISITOR5 low compact FGP3/v4 plus
-`23..47` retained-read promotion:
-`+0.3111%` public average over target / `99.6949%` public target speed across
+retained-read promotion, the v451 VISITOR5 low compact FGP3/v4 plus
+`23..47` retained-read promotion, and the v452 VISITOR3 low frame129
+custom D4 delta promotion:
+`+0.3072%` public average over target / `99.6985%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4559%` / `100.4772%`. Since the compact full-matrix baseline was about
+`-0.4598%` / `100.4809%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.09` public over-target points and added about `12.59`
+removed about `17.09` public over-target points and added about `12.60`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
+
+Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
+frame `128` into the accepted resident slot, and store frame `129` as a
+609-byte custom D4 delta against that resident payload. The v452 focused gate
+improves scene `1401 -> 1397`, active loop/target `1072/1040 -> 1068/1041`,
+overrun `32 -> 27`, blocking `58 -> 51`, loop reads `10 -> 9`, loop-read time
+`58 -> 51`, and due misses `10 -> 9`, while the pack LBA, `1555450` byte pack
+footprint, and `217088` byte PS-EXE bucket stay fixed. VISITOR3 high,
+BUILDING2 high/low, WALKSTUF1 high/low, VISITOR5 high/low, and FISHING1 high
+canaries stayed on accepted profiles. Use this as the current VISITOR3 low
+baseline; future VISITOR3 work should extend custom data shapes only when the
+decoder/code-size cost stays within the current executable bucket.
 
 Latest promoted WALKSTUF1 baseline: both tides now share the accepted
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`
@@ -260,8 +273,8 @@ blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
 top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
-target / `99.6884%` target speed at that point. Current rollup after the v451
-VISITOR5 low compact/read promotion is `+0.3111%` / `99.6949%`. Close direct VISITOR5 high hand tables
+target / `99.6884%` target speed at that point. Current rollup after the v452
+VISITOR3 low frame129-delta promotion is `+0.3072%` / `99.6985%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
@@ -339,9 +352,8 @@ and then `2`. Both variants stayed exact-flat at scene `1401`, active
 loop/target `1072/1040`, overrun `32`, blocking `58`, hidden refill `0`,
 loop reads `10`, and due misses `10`, while shifting hot symbols and growing
 `foregroundPilotPlay` by `8` bytes. Close scalar VISITOR3 low window-slack
-guard tuning; the remaining low cluster is not exposed through this threshold
-and needs compression/aliasing inside existing resident bytes, generated
-deadline metadata, or a custom pack-authored representation.
+guard tuning; v452 proved the remaining low cluster responds to compression
+inside existing resident bytes, not scalar slack-threshold changes.
 
 Latest rejected WALKSTUF1 low runtime narrow upload: v418 tested a
 scene-gated dirty X-band uploader that copied narrow row bands into a 64 KiB
@@ -542,7 +554,7 @@ Rank order is current working priority, not guaranteed payoff.
 | 12 | Duplicate only subpayload spans inside current sectors | If full entry duplication is phase-negative, duplicate only the spans that trigger extra sectors into slack bytes in the same sector group. | Needs pack surgery below entry granularity. |
 | 13 | VISITOR3 terminal frame split: early core plus late tail | Split large entries into an early resident core and a late small residual, reducing blocking at due time without moving the whole payload. | Requires pack/runtime support for two payload sources per frame. |
 | 14 | Palette-index RLE for repeated water/background strips | VISITOR3 late frames likely contain repeated water/background runs. A VISITOR3-specific RLE substream could be tiny and decode into PAL4 spans. | Decoder code size and branch cost. |
-| 15 | Cross-frame residual XOR dictionary | Store differences from the prior residual payload rather than full compact spans for frames with similar geometry. | Runtime needs prior residual dictionary state and must handle random entry starts safely. |
+| 15 | Extend previous-frame D4 deltas beyond frame `129` | v452 proved a tiny prior-frame delta can remove one VISITOR3 low due read without moving pack LBA or growing the executable bucket. Re-rank frames `132`, `137`, and the terminal cluster for the same mechanism, one frame at a time. | Multi-frame delta probes already crossed the executable bucket before the Freeplay diagnostic gate and can regress canaries; every extension needs focused plus broad gates. |
 | 16 | Generated per-frame copy-previous-background mode | Motion-copy is one instance. Generalize to copy selected previous background regions plus smaller draw deltas for frames that are near-identical but not simple X translations. | Copy regions can propagate stale pixels if cleanup ownership is wrong. |
 | 17 | Pre-baked clean-rect cache for VISITOR3 yacht region | Keep a small cached clean background rectangle for the yacht travel band to make cleanup cheaper than reading/restoring dynamic spans. | RAM pressure and correctness with island/water overlays. |
 | 18 | Tide-specific opcode selection | High and low differ: high accepted frame `115`, low rejected every precursor. Generate independent opcode families and never assume paired eligibility. | More tooling complexity and broader visual verification burden. |
@@ -739,13 +751,12 @@ inside the original `354227` byte footprint, then add a low-tide compact-only
 123 -> 91`; due misses stay `0`, pack LBA stays `24394`, pack sectors stay
 `173`, and the PS-EXE bucket stays `217088`. VISITOR5 high, BUILDING2
 high/low, WALKSTUF1 high/low, VISITOR3 low, and FISHING1 high canaries stayed
-on their accepted profiles. Public rollup is now `+0.3111%` over target /
-`99.6949%` target speed, raw signed rollup is `-0.4559%` / `100.4772%`, and
-the headless methodology has removed about `17.09` public over-target points
-while adding about `12.59` target-speed points since the compact full-matrix
-baseline. The next top rows are WALKSTUF1 low/high, VISITOR3 low/high,
-BUILDING2 high/low, VISITOR5 high, JOHNNY1 high/low, BUILDING4 low, and the
-remaining under-99 tail.
+on their accepted profiles. At v451 the public rollup was `+0.3111%` over
+target / `99.6949%` target speed, raw signed rollup was `-0.4559%` /
+`100.4772%`; v452 supersedes that rollup with the VISITOR3 low frame129 delta
+above. The next top rows are WALKSTUF1 low/high, BUILDING2 high, VISITOR3
+high/low, BUILDING2 low, VISITOR5 high, JOHNNY1 high/low, BUILDING4 low, and
+the remaining under-99 tail.
 
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
 `BUILDING1.FG2` and `BUIL1LOW.FG2` to padded compact FGP3/v4
@@ -2646,11 +2657,12 @@ pre-v0.8.0 row.
 | VISITOR3 pack-only tail duplication | Do not retry as a layout-only tail move. The v180 no-source duplication of frames `139..144` kept pack sizes/LBAs fixed but regressed high/low to `1122/1027` and `1130/1024`, added `prefetch_overrun_vb=3` on both tides, and raised blocking by `+4` on both. The terminal payload phase is negative unless paired with scheduler ownership or precomposed data. |
 | VISITOR3 low frame-128 resident segment copy | Done; keep as the prerequisite for the current VISITOR3 low slot-swap baseline. The v302 pack/source promotion aliases duplicate low frame `123` to frame `121`, compacts frames `118..128` into the second setup segment, grows that segment from `24` to `27` sectors, and copies frame `128` resident without changing the `1555450` byte pack footprint. Focused and broad gates improve low `scene_vb 1402 -> 1399`, active loop `1075/1039 -> 1071/1039`, overrun `36 -> 32`, blocking `67 -> 63`, loop reads `12 -> 11`, loop-read VBlanks `67 -> 63`, and due misses `12 -> 11`; hidden refill stays `0`, and VISITOR3 high plus controls stay flat. The v327 frame128/frame129 resident-slot swap and v338 tail compaction supersede this row by moving low to `1072/1040`, overrun `32`, blocking `58`, loop-read time `58`, and due misses `10`. Current rollup is tracked at the top of this file. |
 | VISITOR3 low frame128/frame129 resident-slot swap | Done; keep as the prerequisite for the current VISITOR3 low tail baseline. The v327 pack-only promotion copies frame `129` into frame `128`'s already paid segment2 resident slot and points frame `128` back to its original cold payload. Pack size `1555450`, low LBA `23371`, sectors `760`, source code, loop reads, due misses, and hidden refill stay fixed. Focused and broad gates improve low `scene_vb 1408 -> 1401`, active loop `1079/1040 -> 1072/1040`, overrun `39 -> 32`, blocking `67 -> 64`, and loop-read time `67 -> 64`; VISITOR3 high, WALKSTUF1 high/low, BUILDING2 high/low, FISHING1 high, JOHNNY1 high, and the longer Activity9/Mary3 canaries stay flat. The v338 tail pack-only compaction supersedes this row's CD-pressure counters while keeping the same public timing. |
-| VISITOR3 low tail pack-only compaction | Done; keep as the current VISITOR3 low baseline. The v338 pack-only pass rewrites only `VIST3LOW.FG2`: frame `143` cleanup becomes one bounded compact span per active row (`3497 -> 2857` bytes) and frame `144` terminal cleanup becomes one compact full-width span per row (`3744 -> 1908` bytes), moving frame `144` from exclusive sector `306` to `305` inside the already paid tail setup window. Focused gate improves low CD pressure with public timing flat: `1072/1040`, overrun `32`, blocking `64 -> 58`, loop reads `11 -> 10`, loop-read time `64 -> 58`, and due misses `11 -> 10`; hidden refill remains `0`, pack footprint/LBA/sectors stay `1555450`/`23371`/`760`, and no source changes are needed. WALKSTUF1 high, BUILDING2 high/low, and FISHING1 high controls stay exact-flat; the current VISITOR3 high boot still has a separate missing-`JCPERF2` measurement defect and is not attributed to this low-pack change. |
+| VISITOR3 low tail pack-only compaction | Done; keep as the prerequisite for the current VISITOR3 low frame129-delta baseline. The v338 pack-only pass rewrites only `VIST3LOW.FG2`: frame `143` cleanup becomes one bounded compact span per active row (`3497 -> 2857` bytes) and frame `144` terminal cleanup becomes one compact full-width span per row (`3744 -> 1908` bytes), moving frame `144` from exclusive sector `306` to `305` inside the already paid tail setup window. Focused gate improves low CD pressure with public timing flat: `1072/1040`, overrun `32`, blocking `64 -> 58`, loop reads `11 -> 10`, loop-read time `64 -> 58`, and due misses `11 -> 10`; hidden refill remains `0`, pack footprint/LBA/sectors stay `1555450`/`23371`/`760`, and no source changes are needed. The v452 frame129 delta supersedes this row's public timing and CD-pressure counters. |
+| VISITOR3 low frame129 D4 delta | Done; keep as the current VISITOR3 low baseline. The v452 pack/runtime promotion moves frame `128` into the accepted resident slot and stores frame `129` as a 609-byte custom D4 delta against frame `128` inside freed payload space. Focused and broad gates improve low to scene `1397`, active loop/target `1068/1041`, overrun `27`, blocking `51`, loop reads/due `9/9`, and loop-read time `51`; hidden refill stays `0`, pack footprint/LBA/sectors stay `1555450`/`23371`/`760`, and the PS-EXE bucket stays `217088`. VISITOR3 high, WALKSTUF1 high/low, BUILDING2 high/low, VISITOR5 high/low, and FISHING1 high canaries stayed on accepted profiles. |
 | VISITOR3 low extra setup residency after v338 | Do not retry as another retained segment. The v397/v398 segment sweep proved all direct forms are closed on the current baseline: full `206..305` residency disabled effective prefetch and regressed to `1119/1034`, blocking `475`, reads/due `143`; same-footprint `206..230` swapping lost the accepted tail and regressed to `1073/1038`, overrun `35`, blocking `67`, reads/due `12`; additive third-segment `206..230` plus accepted `150..177` and `281..305` failed structurally before `JCPERF2`. Keep the current v338 resident budget; remaining VISITOR3 low work must compress/alias one payload inside existing resident bytes or use generated deadline ownership without another setup buffer. |
 | VISITOR3 low tiny setup segment `190..199` | Do not promote or retry as a retained setup segment. The v415 focused probe was intentionally smaller than the closed `206..230`/`206..305` swings and did reduce CD pressure (`blocking_vb 58 -> 54`, reads/due `10/10 -> 9/9`), but strict timing regressed from scene `1401`, active loop/target `1072/1040`, overrun `32` to scene `1407`, active loop/target `1073/1040`, overrun `33`. This proves the setup-debt problem applies even to the isolated first late read; future VISITOR3 low work needs existing-resident-byte compression/aliasing or generated deadline ownership, not more setup buffers. |
 | VISITOR3 low grouped append `206..230` / `218..230` | Do not promote or retry as a local read-group table. The v421-v423 sweep tried guarded and unguarded `206..230` with a 24-sector capacity plus a normal-capacity `218..230` append-edge variant; all completed variants stayed exact-flat at `1401`, `1072/1040`, overrun `32`, blocking `58`, hidden refill `0`, reads/due `10/10`, while growing/shifting foreground hot code. Future ownership for this cluster needs generated scheduler metadata beyond the existing grouped-append path or pack-side byte placement inside current resident coverage. |
-| VISITOR3 motion-copy frames `119..123` plus high frame `115` | Done; keep as part of the current VISITOR3 baseline, now superseded by later sparse/re-anchor/setup/no-op/resident-slot passes. The v181 scene-specific compact motion marker moves already-composited background rows, restores exposed clean spans, and draws only residual pixels; v182 applies the same family of state-hull motion-copy payload to high-tide frame `115`. Later v188/v189/v193/v202/v204/v205/v206/v207/v213/v214/v216/v227/v234/v237/v238/v248/v249/v291/v292/v299/v302/v327 passes move the accepted profile to high `1071/1040` and low `1072/1040` while preserving the `1555450` byte footprints, current LBAs `22473/23371`, and the `217088` byte PS-EXE bucket. Next retries should expand motion-copy through generated eligibility, not hand-tail repoints. |
+| VISITOR3 motion-copy frames `119..123` plus high frame `115` | Done; keep as part of the current VISITOR3 baseline, now superseded by later sparse/re-anchor/setup/no-op/resident-slot/frame-delta passes. The v181 scene-specific compact motion marker moves already-composited background rows, restores exposed clean spans, and draws only residual pixels; v182 applies the same family of state-hull motion-copy payload to high-tide frame `115`. Later v188/v189/v193/v202/v204/v205/v206/v207/v213/v214/v216/v227/v234/v237/v238/v248/v249/v291/v292/v299/v302/v327/v338/v452 passes move the accepted profile to high `1071/1040` and low `1068/1041` while preserving the `1555450` byte footprints, current LBAs `22473/23371`, and the `217088` byte PS-EXE bucket. Next retries should expand motion-copy through generated eligibility, not hand-tail repoints. |
 | VISITOR3 frame `116` opcode-1 hull shapes | Do not promote or retry without a different format. The v195 target-hull shape saved `7800` active bytes but regressed high to `1109/1028` with hidden refill `2`; the v208 copy-only hull shape saved `9102` bytes and removed cleanup rows, but regressed high harder to `1114/1029`, overrun `85`, and blocking `114`. Frame `116` is a byte trap under the current motion opcode. |
 | VISITOR3 v184 terminal zero/origin/read probes | Do not promote or retry as scalar pack surgery or hand tables. Terminal zero-run trimming saved `0` bytes; compact-origin rebasing saved only `12` high-tide bytes at frame `113`, saved `0` low-tide bytes, and no terminal bytes; low hull-mode precursor retries still regressed frame `117` to `1110/1028`; and terminal `16`-sector read groups cut some reads but regressed high `1104 -> 1108` and low `1108 -> 1112`. Next VISITOR3 work needs a custom data format, precomposed ownership, or generated deadline scheduling. |
 | VISITOR3 v185 motion row-copy runtime path | Do not promote. The generic same-row pointer-copy variant crossed the PS-EXE bucket `215040 -> 217088` and shifted VISITOR3 pack LBAs by one sector. The narrowed left-tile-only variant stayed at `215040` with fixed LBAs, but was exact-flat on both tides: high stayed `1104/1030`, `blocking_vb=128`, `loop_reads=23`; low stayed `1108/1028`, `blocking_vb=143`, `loop_reads=27`. Motion-copy CPU is no longer the limiting VISITOR3 lever at this granularity. |

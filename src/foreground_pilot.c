@@ -164,6 +164,9 @@ enum {
     FG_PACK_ENTRY_SIZE = 20,
     FG_PACK_METADATA_PREFIX_BYTES = 8192
 };
+#define FG_DELTA_PAYLOAD_SENTINEL 0xfffeu
+#define FG_DELTA_PAYLOAD_MAGIC0 0x44u /* 'D' */
+#define FG_DELTA_PAYLOAD_MAGIC1 0x34u /* '4' */
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
 #define FG_ACTIVITY9_HIGH_WINDOW_BYTES (32UL * 1024UL)
 #define FG_ACTIVITY9_LOW_WINDOW_BYTES (20UL * 1024UL)
@@ -696,6 +699,80 @@ static uint32 fgReadU32(const uint8 *p)
            ((uint32)p[1] << 8) |
            ((uint32)p[2] << 16) |
            ((uint32)p[3] << 24);
+}
+
+static int __attribute__((noinline, optimize("Os")))
+fgDecodeVisitor3Delta(uint8 *data,
+                      struct TFgPilotEntry *entry,
+                      const uint8 *baseData,
+                      uint32 baseSize)
+{
+    uint8 *stream;
+    uint16 expandedSize;
+    uint16 commandCount;
+    uint32 readOffset;
+    uint32 writeOffset;
+
+    if (data == NULL || entry == NULL)
+        return 0;
+
+    if (entry->dataSize < 8u ||
+        fgReadU16(data) != FG_DELTA_PAYLOAD_SENTINEL ||
+        data[2] != FG_DELTA_PAYLOAD_MAGIC0 ||
+        data[3] != FG_DELTA_PAYLOAD_MAGIC1) {
+        return 1;
+    }
+
+    if (baseData == NULL ||
+        gFgRuntime.streamScratch == NULL ||
+        entry->dataSize > gFgRuntime.streamScratchSize)
+        return 0;
+
+    memcpy(gFgRuntime.streamScratch, data, entry->dataSize);
+    stream = gFgRuntime.streamScratch;
+    expandedSize = fgReadU16(stream + 4);
+    commandCount = fgReadU16(stream + 6);
+    readOffset = 8u;
+    writeOffset = 0;
+
+    while (commandCount > 0) {
+        uint8 opcode;
+        uint16 length;
+
+        if (readOffset >= entry->dataSize)
+            return 0;
+        opcode = stream[readOffset++];
+        if (opcode == 0) {
+            uint16 baseOffset;
+            if (readOffset + 4u > entry->dataSize)
+                return 0;
+            baseOffset = fgReadU16(stream + readOffset);
+            length = fgReadU16(stream + readOffset + 2u);
+            readOffset += 4u;
+            if ((uint32)baseOffset + (uint32)length > baseSize ||
+                writeOffset + (uint32)length > (uint32)expandedSize)
+                return 0;
+            memcpy(data + writeOffset, baseData + baseOffset, length);
+            writeOffset += length;
+        } else {
+            if (readOffset + 2u > entry->dataSize)
+                return 0;
+            length = fgReadU16(stream + readOffset);
+            readOffset += 2u;
+            if (readOffset + (uint32)length > entry->dataSize ||
+                writeOffset + (uint32)length > (uint32)expandedSize)
+                return 0;
+            memcpy(data + writeOffset, stream + readOffset, length);
+            readOffset += length;
+            writeOffset += length;
+        }
+        commandCount--;
+    }
+
+    if (writeOffset != (uint32)expandedSize)
+        return 0;
+    entry->dataSize = expandedSize;
+    return 1;
 }
 
 static void fgParseHeader(const uint8 *data, struct TFgPilotHeader *out)
@@ -2583,6 +2660,11 @@ static int fgRuntimeWindowPrefetchWouldRead(void)
 static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 {
     const struct TFgPilotEntry *entry = fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
+    const uint8 *baseFrameData;
+    uint32 baseFrameSize;
+    uint8 *loadBuffer;
+    uint8 useAlternateLoadBuffer = 0;
+    struct TFgPilotEntry loadedEntry;
     int entryIsEmpty;
     int stagedResult;
 
@@ -2616,7 +2698,10 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
         return 1;
     }
 
-    gFgRuntime.currentEntry = *entry;
+    baseFrameData = gFgRuntime.currentFrameData;
+    baseFrameSize = gFgRuntime.currentEntry.dataSize;
+    loadedEntry = *entry;
+    gFgRuntime.currentEntry = loadedEntry;
     gFgRuntime.currentFrameData = NULL;
     gFgRuntime.frameRendered = 0;
 
@@ -2626,45 +2711,75 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
      * 89 KB squid-emerge frame was failing its second-iteration contiguous
      * alloc after the heap fragmented). frameBuffer and streamScratch are
      * allocated once at foregroundPilotRuntimeStart. */
-    if (gFgRuntime.currentEntry.dataSize > 0 &&
-        gFgRuntime.currentEntry.width > 0 &&
-        gFgRuntime.currentEntry.height > 0) {
+    if (loadedEntry.dataSize > 0 &&
+        loadedEntry.width > 0 &&
+        loadedEntry.height > 0) {
         if (gFgRuntime.frameBuffer == NULL ||
-            gFgRuntime.currentEntry.dataSize > gFgRuntime.frameBufferSize ||
+            loadedEntry.dataSize > gFgRuntime.frameBufferSize ||
             !gFgRuntime.packCdFileValid ||
             gFgRuntime.streamScratch == NULL) {
             if (ps1PerfEnabled)
                 ps1PerfMarkTripwire();
             return 0;
         }
-        if (fgRuntimeCopyEntryFromWindow(&gFgRuntime.currentEntry,
-                                         gFgRuntime.frameBuffer,
+
+        loadBuffer = gFgRuntime.frameBuffer;
+        if (baseFrameData != NULL &&
+            fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+            islandState.lowTide &&
+            frameIndex == 129 &&
+            gFgRuntime.prefetchFrameBuffer != NULL &&
+            loadedEntry.dataSize <= gFgRuntime.prefetchFrameBufferSize) {
+            loadBuffer = gFgRuntime.prefetchFrameBuffer;
+            useAlternateLoadBuffer = 1;
+        }
+
+        if (fgRuntimeCopyEntryFromWindow(&loadedEntry,
+                                         loadBuffer,
                                          1)) {
-            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
-        } else if (fgRuntimeEntryFitsWindow(&gFgRuntime.currentEntry)) {
-            if (!fgRuntimeFillWindowForEntry(&gFgRuntime.currentEntry, 0, 0, NULL) ||
-                !fgRuntimeCopyEntryFromWindow(&gFgRuntime.currentEntry,
-                                              gFgRuntime.frameBuffer,
+            /* Loaded from the retained setup/window cache. */
+        } else if (fgRuntimeEntryFitsWindow(&loadedEntry)) {
+            if (!fgRuntimeFillWindowForEntry(&loadedEntry, 0, 0, NULL) ||
+                !fgRuntimeCopyEntryFromWindow(&loadedEntry,
+                                              loadBuffer,
                                               0)) {
                 if (ps1PerfEnabled)
                     ps1PerfMarkTripwire();
                 return 0;
             }
-            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
         } else {
             fgRuntimeClearVolatileSetupSegment();
             if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
-                                                gFgRuntime.currentEntry.dataOffset,
-                                                gFgRuntime.currentEntry.dataSize,
-                                                gFgRuntime.frameBuffer,
+                                                loadedEntry.dataOffset,
+                                                loadedEntry.dataSize,
+                                                loadBuffer,
                                                 gFgRuntime.streamScratch,
                                                 gFgRuntime.streamScratchSize)) {
                 if (ps1PerfEnabled)
                     ps1PerfMarkTripwire();
                 return 0;
             }
-            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
         }
+
+        if (!fgDecodeVisitor3Delta(loadBuffer,
+                                   &loadedEntry,
+                                   baseFrameData,
+                                   baseFrameSize)) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
+            return 0;
+        }
+
+        if (useAlternateLoadBuffer) {
+            uint8 *oldFrameBuffer = gFgRuntime.frameBuffer;
+            uint32 oldFrameBufferSize = gFgRuntime.frameBufferSize;
+            gFgRuntime.frameBuffer = gFgRuntime.prefetchFrameBuffer;
+            gFgRuntime.frameBufferSize = gFgRuntime.prefetchFrameBufferSize;
+            gFgRuntime.prefetchFrameBuffer = oldFrameBuffer;
+            gFgRuntime.prefetchFrameBufferSize = oldFrameBufferSize;
+        }
+        gFgRuntime.currentEntry = loadedEntry;
+        gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
     }
 
     gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
