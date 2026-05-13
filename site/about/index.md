@@ -157,6 +157,13 @@ A few things this project is deliberately not trying to be:
 - [/hack/]({{ '/hack/' | relative_url }}) -- a learning path for
   hackers who want to read the C, port to another machine, or
   understand the debugging loops.
+- [/docs/]({{ '/docs/' | relative_url }}) -- twenty reference
+  manuals covering build, captions, holidays, pause menu, freeplay,
+  story-loop walks, regtest, scripted input, performance, hardware,
+  devices, audio, infrastructure, file formats, AI sub-agents,
+  vision-classifier, the SDL2 → PSn00bSDK API mapping, dev
+  workflow, feeds + well-known endpoints, and the project
+  glossary.
 - [/source/]({{ '/source/' | relative_url }}) and
   [/resources/]({{ '/resources/' | relative_url }}) -- the complete
   documentation shelf and asset catalog.
