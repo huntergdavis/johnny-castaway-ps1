@@ -196,15 +196,19 @@ multi-frame D4 sector-boundary compression for WALKSTUF1 low under the current
 decoder/cadence; future byte cuts need a lower-CPU representation or generated
 CD ownership.
 
-Latest rejected WALKSTUF1 high D4 probe: v457 encoded high frame `100` against
+Latest rejected WALKSTUF1 high D4 probes: v457 encoded high frame `100` against
 frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
 `217088` byte PS-EXE bucket. The first focused gate appeared to pass only
 because the matrix row still pointed at the older v428 `1480/1432` profile.
 After restoring source/pack and rerunning the current control, both candidate
 and control measured `1764`, `1476/1434`, overrun `42`, blocking `81`, refill
-`23`, loop reads `65`, loop-read time `282`, and due misses `16`. Close high
-frame `100` as a standalone D4 delta and require fresh current controls before
-accepting WALKSTUF1 high stale-row wins.
+`23`, loop reads `65`, loop-read time `282`, and due misses `16`. v482 then
+encoded frame `175` against frame `174`, shrinking `4529 -> 2096` bytes, but
+the focused current gate had no key metric improvement and measured target
+drift `1434 -> 1433`, overrun `42 -> 43`, blocking `81`, refill `23`, and
+reads/due `65/16`. Close standalone WALKSTUF1 high D4 sector-boundary deltas
+under the current decoder/cadence; future byte cuts need a lower-CPU
+representation or generated CD ownership before retrying.
 
 Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
 and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.
