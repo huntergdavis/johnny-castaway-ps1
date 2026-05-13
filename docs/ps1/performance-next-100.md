@@ -324,6 +324,14 @@ right direction. Close scalar prepare-threshold tuning; WALKSTUF1 low still
 needs generated deadline ownership or pack/data-shape work, not a different
 single slack constant.
 
+Latest rejected runtime policy-cache probe: v448 cached the hot scene-policy
+checks for WALKSTUF1, VISITOR3, BUILDING2, MARY3, and BUILDING6 into a runtime
+flag byte instead of repeated `strcmp` calls. WALKSTUF1 low stayed exact-flat
+at `1776`, `1484/1431`, blocking `72`, hidden refill `22`, reads/due `66/12`;
+WALKSTUF1 high manually matched the accepted `1768`, `1480/1432`, blocking
+`83`, hidden refill `26`, reads/due `65/16`. Close this as non-promotable
+runtime-shape cleanup: it shifts hot symbols but does not move VBlank counters.
+
 Latest rejected WALKSTUF1 low runtime narrow upload: v418 tested a
 scene-gated dirty X-band uploader that copied narrow row bands into a 64 KiB
 scratch buffer before `LoadImage`, hoping to turn the large host-side upload
