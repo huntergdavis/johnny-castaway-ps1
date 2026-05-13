@@ -13,11 +13,14 @@ A photograph of the actual workflow as of `{{ site.release.tag }}`. Click the im
 
 <a href="{{ '/assets/img/dev-environment-2026-05-06.webp' | relative_url }}"
    title="Click for full-resolution (3816×2592 lossless WebP, ~4.1 MB; was 8.5 MB PNG)">
-  <img src="{{ '/assets/img/dev-environment-2026-05-06-w1600.jpg' | relative_url }}"
-       width="1600" height="1086"
-       fetchpriority="high"
-       decoding="async"
-       alt="Multi-monitor PS1 development environment with Dunking Bird, the fresh editor, two AI agent windows (Claude and Codex), DuckStation, and bottom-monitor system telemetry on KDE Plasma." />
+  <picture>
+    <source type="image/webp" srcset="{{ '/assets/img/dev-environment-2026-05-06-w1600.webp' | relative_url }}" />
+    <img src="{{ '/assets/img/dev-environment-2026-05-06-w1600.jpg' | relative_url }}"
+         width="1600" height="1086"
+         fetchpriority="high"
+         decoding="async"
+         alt="Multi-monitor PS1 development environment with Dunking Bird, the fresh editor, two AI agent windows (Claude and Codex), DuckStation, and bottom-monitor system telemetry on KDE Plasma." />
+  </picture>
 </a>
 
 ## What's in the frame

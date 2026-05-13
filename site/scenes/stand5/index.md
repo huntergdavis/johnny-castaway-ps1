@@ -5,7 +5,7 @@ ads: STAND
 tag: 5
 slug: stand5
 status: validated
-description: "STAND.ADS scene 5: Johnny stands at the front of the island and looks out over the ocean. Validated 2026-05-08."
+description: "STAND.ADS scene 5: Johnny stands at the front of the island and looks out over the ocean. Validated 2026-05-04."
 image: /assets/img/stand5-ps1-look-out.png
 image_alt: "STAND 5 on PS1 at night: Johnny stands at the front of the island under the palm tree, looking out over the moonlit ocean."
 image_width: 961

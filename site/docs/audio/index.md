@@ -25,7 +25,7 @@ and its own job. Specs:
 
 - **Voices:** 24 simultaneous, each with hardware ADSR.
 - **SPU RAM:** 512 KB, dedicated. The CPU writes via DMA.
-- **Sample format:** 4-bit ADPCM in 16-byte blocks (28 nibbles + flags).
+- **Sample format:** 4-bit [ADPCM]({{ '/docs/glossary/#adpcm' | relative_url }}) in 16-byte blocks (28 nibbles + flags).
 - **Sample rate:** Up to 44.1 kHz.
 - **Mixing:** Done in hardware. The CPU sets per-voice volume and pitch;
   the SPU mixes and outputs.
@@ -290,7 +290,8 @@ are noted in case the project ever needs them.
 - [Devlog: ocean ambience v0.6]({{ '/devlog/ocean-ambience-v0-6/' | relative_url }})
   — the implementation worklog for the dedicated SPU voice that
   drives the ambience loop. Pairs with the Ocean ambience H2 above.
-- [Glossary: VAG]({{ '/docs/glossary/#vag' | relative_url }})
+- [Glossary: ADPCM]({{ '/docs/glossary/#adpcm' | relative_url }})
+  · [Glossary: VAG]({{ '/docs/glossary/#vag' | relative_url }})
   · [Glossary: SPU]({{ '/docs/glossary/#spu' | relative_url }})
   · [Glossary: PLAY_SAMPLE]({{ '/docs/glossary/#play-sample' | relative_url }})
 

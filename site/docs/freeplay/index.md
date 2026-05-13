@@ -9,7 +9,7 @@ description: "Freeplay and debug mode in the Johnny Castaway PS1 port: controls,
 Freeplay is the first mode in the PS1 port where Johnny is not just being
 replayed from a captured foreground pack. The player walks him around the
 island directly. The rest of the world still uses the same hard-won PS1
-runtime pieces: the ocean backdrop, sparse clean-rect restoration, holiday
+runtime pieces: the ocean [backdrop]({{ '/docs/glossary/#backdrop' | relative_url }}), sparse clean-rect restoration, holiday
 overlays, SPU sounds, captions, and the pause-menu UI.
 
 The important distinction is architectural. `fishing1`, `fishing2`, and
@@ -37,7 +37,7 @@ Inside freeplay, press **Start** again to open the same pause menu. Choose
 frog clock while freeplay releases sprite slots, clean-rect memory, captions,
 and its live island backdrop.
 
-Boot-token entry remains available for test discs:
+[`BOOTMODE.TXT`]({{ '/docs/glossary/#bootmode' | relative_url }}) token entry remains available for test discs:
 
 ```text
 fgpilot freeplay

@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Closed captions — Johnny Castaway PS1</title>
   <meta name="description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" /><meta property="og:title"        content="Closed captions — Johnny Castaway PS1" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Closed captions — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -62,6 +64,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Closed captions", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" }]
 }
 </script>
@@ -242,10 +245,10 @@ genuinely interchangeable from the corpus.</p>
   <thead>
     <tr>
       <th scope="col">ADS file</th>
-      <th style="text-align: right">Entries</th>
-      <th style="text-align: right">HIGH</th>
-      <th style="text-align: right">MED</th>
-      <th style="text-align: right">LOW</th>
+      <th style="text-align: right" scope="col">Entries</th>
+      <th style="text-align: right" scope="col">HIGH</th>
+      <th style="text-align: right" scope="col">MED</th>
+      <th style="text-align: right" scope="col">LOW</th>
       <th scope="col">Notes</th>
     </tr>
   </thead>
@@ -466,7 +469,7 @@ with <code class="language-plaintext highlighter-rouge">abr=1</code> (semi-trans
   <li><strong>Slot N-2</strong> — a <code class="language-plaintext highlighter-rouge">POLY_F4</code> flat quad at full transparent black, sized to
 the actual line count (1–4 lines), positioned along the bottom of the
 640x480 frame. The semi-trans bit lets the underlying scene show through.</li>
-  <li><strong>Slot N-3</strong> — one <code class="language-plaintext highlighter-rouge">SPRT</code> per glyph, sampled from the pause-menu font
+  <li><strong>Slot N-3</strong> — one <a href="../glossary/#sprt"><code class="language-plaintext highlighter-rouge">SPRT</code></a> per glyph, sampled from the pause-menu font
 atlas at draw size 16x16. Lines are centered horizontally inside the
 band.</li>
 </ul>
@@ -553,6 +556,8 @@ describes-the-gag-not-the-frame).</li>
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/captions/index.md" rel="noopener">Edit this page on GitHub</a> →

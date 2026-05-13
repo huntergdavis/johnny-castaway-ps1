@@ -36,12 +36,21 @@ rm -f "$ROOT/docs/feed.xml"
 # because every `<th>` in the site's rendered HTML is a column header
 # (no row-headers in use). Skip preserved project research where we
 # don't own the markup.
+#
+# Two passes: bare `<th>` (no attrs) AND `<th style="text-align: ...">`.
+# kramdown emits the style form for any column with `:---:` / `:---` /
+# `---:` markers in the source, which the original regex missed —
+# left 423 right-aligned column headers across the site without
+# scope. Naturally idempotent: the second pattern looks for
+# `<th style="..."">` ending immediately at the close-bracket, so
+# a re-run on already-scope'd output (`<th style="..." scope="col">`)
+# doesn't match.
 find "$ROOT/docs" -type f -name '*.html' \
   -not -path "$ROOT/docs/ps1/*" \
   -not -path "$ROOT/docs/archive/*" \
   -not -path "$ROOT/docs/general/*" \
   -not -path "$ROOT/docs/readme/*" \
-  -exec perl -pi -e 's|<th>|<th scope="col">|g' {} +
+  -exec perl -pi -e 's|<th>|<th scope="col">|g; s|<th style="([^"]*)">|<th style="$1" scope="col">|g;' {} +
 
 # Whitespace-normalize only the website output, NOT the preserved project
 # research living at docs/ps1/, docs/archive/, docs/general/, docs/readme/.

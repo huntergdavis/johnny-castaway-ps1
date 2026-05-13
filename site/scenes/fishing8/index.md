@@ -5,7 +5,7 @@ ads: FISHING
 tag: 8
 slug: fishing8
 status: validated
-description: "FISHING.ADS scene 8: Johnny fishes off the right side of the island and reels in a fish. Validated 2026-05-08."
+description: "FISHING.ADS scene 8: Johnny fishes off the right side of the island and reels in a fish. Validated 2026-05-03."
 image: /assets/img/fishing8-ps1-fish-right.png
 image_alt: "FISHING 8 on PS1 at night: Johnny stands on the right-side dock holding a caught fish on the line, fishing rod arched out toward the water."
 image_width: 961

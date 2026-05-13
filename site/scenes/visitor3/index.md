@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 3
 slug: visitor3
 status: validated
-description: "VISITOR.ADS scene 3: Johnny waves down what he thinks is a small boat, but the perspective gag reveals it's actually a huge boat. Validated 2026-05-08."
+description: "VISITOR.ADS scene 3: Johnny waves down what he thinks is a small boat, but the perspective gag reveals it's actually a huge boat. Validated 2026-05-04."
 image: /assets/img/visitor3-ps1-perspective.png
 image_alt: "VISITOR 3 on PS1: Johnny on the island waving down a passing boat that turns out to be much larger than it looked."
 image_width: 961
@@ -19,7 +19,7 @@ image_height: 720
        width="961" height="720" fetchpriority="high" decoding="async"
        alt="VISITOR 3 running on PS1: Johnny on the island waving down a passing boat. The perspective gag reveals the boat is much larger than it first appeared." />
   </picture>
-  <figcaption>VISITOR 3 on PS1 hardware. The perspective gag — Johnny waves what he thinks is a small nearby boat; it turns out to be a huge one farther out. The wide multi-view stitch this scene needs to render is also why the two perf-battle-card rows for VISITOR 3 are the only red entries on /perf/ at the current release.</figcaption>
+  <figcaption>VISITOR 3 on PS1 hardware. The perspective gag — Johnny waves what he thinks is a small nearby boat; it turns out to be a huge one farther out. The wide multi-view stitch this scene needs to render is also why the two perf-battle-card rows for VISITOR 3 are the lowest in the yellow band on /perf/ at the current release (around 97% target speed after the v0.8.2 + v0.8.6 release-tagged passes).</figcaption>
 </figure>
 
 Validated on 2026-05-04.
@@ -62,7 +62,18 @@ frame-114/frame-117 no-op residual compaction, the v327 low resident-slot
 swap, and the v338 low tail pack-only compaction, `visitor3` high
 and low now run around
 [`97.1%` and `97.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-instead of sitting in the red/orange bands. The wide multi-view stitch (the red ship
+instead of sitting in the red/orange bands.
+
+Two of those experiment-version steps map cleanly to public release
+tags: [`v0.8.2-ps1`]({{ '/releases/#v082-ps1--visitor3-guarded-read-performance' | relative_url }})
+was the first release tagged specifically at VISITOR 3 (guarded-read
+performance pass), and
+[`v0.8.6-ps1`]({{ '/releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through' | relative_url }})
+landed the setup-segment resident copies for frames `131` / `128`
+on both tides. The internal `vNNN`
+versions above are the
+[performance-experiment-log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+sequence; the release tags are when batches of them shipped publicly. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
 harder than most scenes; the remaining timing gap is concentrated in the

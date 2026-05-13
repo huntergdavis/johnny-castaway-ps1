@@ -5,7 +5,7 @@ ads: JOHNNY
 tag: 5
 slug: johnny5
 status: validated
-description: "JOHNNY.ADS scene 5: Johnny writes a fresh SOS and sends the bottle out. Validated 2026-05-08."
+description: "JOHNNY.ADS scene 5: Johnny writes a fresh SOS and sends the bottle out. Validated 2026-05-03."
 image: /assets/img/johnny5-ps1-sos-send.png
 image_alt: "JOHNNY 5 on PS1 at night: Johnny stands on the left shoreline holding the bottle he is about to throw out, the SOS message already corked inside."
 image_width: 961

@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Performance work — Johnny Castaway PS1</title>
   <meta name="description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" /><meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -62,6 +64,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Performance work", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" }]
 }
 </script>
@@ -103,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4305 words
+          ~17 min read · 4251 words
         </p>
 
       <hr class="rule" />
@@ -177,7 +180,7 @@ gated so it adds zero cost when off.</p>
 <p>Three signal sources:</p>
 
 <ul>
-  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
+  <li><strong><a href="../glossary/#tty">TTY</a> printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
 <code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
 on-demand records cross the TTY surface; per-frame text is forbidden in
 hot paths because it perturbs timing.</li>
@@ -315,7 +318,7 @@ scenes, but worse loop/blocking/refill timing overall. The
 optimization changed code shape enough that CD scheduling phase
 shifted unfavorably. Kept <code class="language-plaintext highlighter-rouge">-O2</code>.</li>
   <li><strong>Holiday overlap restamping.</strong> Seed holiday decoration into the
-clean backdrop and only restamp it when the current FG2 frame
+clean <a href="../glossary/#backdrop">backdrop</a> and only restamp it when the current FG2 frame
 overlaps. Logically sound, but the active fishing1 frames overlap
 the Christmas decoration enough that this didn’t reduce dirty work.
 Pure no-op, rejected.</li>
@@ -438,20 +441,16 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3111%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6949%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4559%</code> / <code class="language-plaintext highlighter-rouge">100.4772%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3225%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6839%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4447%</code> / <code class="language-plaintext highlighter-rouge">100.4662%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-12, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">building2-low-rg238-250-v445</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-high-shared-dual-tail-v428</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-low-shared-dual-tail-v428</code>,
-<code class="language-plaintext highlighter-rouge">building2-high-rg206-230-cap24-v441</code>,
-<code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
 <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-f128-resident-seg27-v302</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-f131-resident-alias121123-v299</code>,
@@ -468,7 +467,7 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>,
-<code class="language-plaintext highlighter-rouge">visitor5-high-current-v401</code>,
+<code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>,
 <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>,
 <code class="language-plaintext highlighter-rouge">mary3-preserve-window-slack8-v149</code>,
 <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>,
@@ -542,7 +541,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-12T18:50:43</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-10T04:38:21</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -550,11 +549,7 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code>.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-shared-dual-tail-v428</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-low-shared-dual-tail-v428</code>,
-<code class="language-plaintext highlighter-rouge">building2-low-rg238-250-v445</code>,
-<code class="language-plaintext highlighter-rouge">building2-high-rg206-230-cap24-v441</code>,
-<code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>,
+rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg344-360-v340</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-f131-resident-alias121123-v299</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-f128-resident-seg27-v302</code>,
@@ -570,7 +565,7 @@ rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-s
 <code class="language-plaintext highlighter-rouge">building6-compact-fgp3-v165</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>,
-<code class="language-plaintext highlighter-rouge">visitor5-high-current-v401</code>,
+<code class="language-plaintext highlighter-rouge">visitor5-high-compact-fgp3-noautoprime-v158</code>,
 <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>,
 <code class="language-plaintext highlighter-rouge">mary3-preserve-window-slack8-v149</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-tail-trim-stageguard-v127</code>,
@@ -701,8 +696,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+3.1% / 97.0% (1351/1311); due 7; blk 54</td>
-      <td>+2.3% / 97.8% (1349/1319); due 17; blk 80</td>
+      <td>+2.5% / 97.6% (1349/1316); due 7; blk 48</td>
+      <td>+2.5% / 97.6% (1349/1316); due 19; blk 83</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -982,8 +977,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> WALKSTUF1 low/high are
-now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">444..456</code>
-same-speed CD-work reduction. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+38/+31</code>) and VISITOR3 low/high
+now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">344..360</code>
+read group. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+41/+31</code>) and VISITOR3 low/high
 (<code class="language-plaintext highlighter-rouge">+32/+31</code>) are the next tight rows after the VISITOR3 motion-copy,
 setup-segment, setup-prime, guarded second-segment, resident-copy, and
 low no-op residual passes; its
@@ -1019,11 +1014,7 @@ the bottom of the yellow band after compact-pack promotion. The remaining
 hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
 VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
 where hand-authored read groups and scalar window changes have
-repeatedly shifted cadence instead of safely removing work. The latest
-BUILDING4 low v387 pass closes the local <code class="language-plaintext highlighter-rouge">178..202</code> append group and
-<code class="language-plaintext highlighter-rouge">40/48 KiB</code> stream-window growth: reads fell, but visible blocking and loop
-overrun rose sharply, so that row now needs generated deadline ownership or
-pack-side byte reduction rather than larger raw fresh fills.</li>
+repeatedly shifted cadence instead of safely removing work.</li>
 </ol>
 
 <p>The author considers the current build comfortable for the validated scenes,
@@ -1039,7 +1030,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3111% over target / 99.6949% target speed, with several
+public average is now +0.3225% over target / 99.6839% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired
@@ -1171,6 +1162,8 @@ TTY records into per-run summary JSON files.</li>
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/performance/index.md" rel="noopener">Edit this page on GitHub</a> →

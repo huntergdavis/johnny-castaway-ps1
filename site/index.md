@@ -126,12 +126,12 @@ bugfixing, performance, and feature polish; the
 keeps long randomized runs stable, the [`v0.8.0` performance
 baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }})
 promoted the headless optimization methodology, the
-v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
-outliers, `v0.8.4` walked all 63 packs on hardware to ship custom
+[`v0.8.2`]({{ '/releases/#v082-ps1--visitor3-guarded-read-performance' | relative_url }}) + [`v0.8.3`]({{ '/releases/#v083-ps1--walkstuf1-compact-foreground-performance' | relative_url }}) follow-ons closed the VISITOR3 and WALKSTUF1
+outliers, [`v0.8.4`]({{ '/releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes' | relative_url }}) walked all 63 packs on hardware to ship custom
 chapter-select thumbnails plus a scene-page reconciliation against the
-on-PS1 packs, `v0.8.5` promotes the full 126-row timing-bearing
-matrix, `v0.8.6` lands the WALKSTUF1 / VISITOR3 setup-segment
-compaction follow-through, and `v0.8.7` hardens deterministic
+on-PS1 packs, [`v0.8.5`]({{ '/releases/#v085-ps1--full-126-row-headless-performance-matrix' | relative_url }}) promotes the full 126-row timing-bearing
+matrix, [`v0.8.6`]({{ '/releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through' | relative_url }}) lands the WALKSTUF1 / VISITOR3 setup-segment
+compaction follow-through, and [`v0.8.7`]({{ '/releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability' | relative_url }}) hardens deterministic
 scene booting plus Scene Explorer preview loading — the public battle card now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the timing-bearing rows (public-capped; the
@@ -173,7 +173,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/faq/' | relative_url }}">FAQ</a>
-    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
+    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, can I sponsor or donate, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
   </li>
   <li>
     <a href="{{ '/about/method/' | relative_url }}">How the port works</a>
@@ -205,7 +205,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Eighteen reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
+    <p>Twenty reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, feeds &amp; well-known endpoints, and a glossary.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>

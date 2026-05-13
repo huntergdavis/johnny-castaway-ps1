@@ -31,7 +31,7 @@ surfaces: direct scene booting is now provable from the runtime log, and Scene
 Explorer thumbnails no longer need a large heap allocation while paused.
 
 - **BOOTMODE scene selection is deterministic and auditable.** The PS1 runtime
-  logs a single early `JCBOOT` line with the boot source, explicit scene, seed,
+  logs a single early [`JCBOOT`]({{ '/docs/glossary/#jcboot' | relative_url }}) line with the boot source, explicit scene, seed,
   loop mode, tide/night/holiday/raft state, island position, and normalized
   boot text before title/resources/sound side effects.
 - **Headless perf now fails if it measures the wrong scene.** The iterator

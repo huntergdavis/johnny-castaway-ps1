@@ -24,7 +24,7 @@ real hardware to ship. Before this loop, the in-game [Scene Explorer]({{ '/docs/
 chapter-select grid showed an auto-generated frame for each pack —
 whatever the build pipeline picked at thumbnail-bake time. After this
 loop, every grid slot is a frame the human author chose while the pack
-played on PS1, encoded as a 320×240 RGB555 SCR, and bundled onto the
+played on PS1, encoded as a 320×240 [RGB555]({{ '/docs/glossary/#rgb555' | relative_url }}) SCR, and bundled onto the
 disc.
 
 The surprising thing wasn't the thumbnails. It was how many of the

@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 7
 slug: visitor7
 status: validated
-description: "VISITOR.ADS scene 7: Johnny cracks a coconut on the palm trunk and eats it — no-shake variant of VISITOR 6. Validated 2026-05-08."
+description: "VISITOR.ADS scene 7: Johnny cracks a coconut on the palm trunk and eats it — no-shake variant of VISITOR 6. Validated 2026-05-04."
 image: /assets/img/visitor7-ps1-coconut-crack.png
 image_alt: "VISITOR 7 on PS1 at night: Johnny stands at the base of the palm tree cracking a coconut against the trunk, the no-shake variant of the VISITOR 6 coconut sequence."
 image_width: 961

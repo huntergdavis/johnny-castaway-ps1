@@ -6,7 +6,7 @@ subtitle: On this port, tests are not a CI checkbox. They are how the work think
 description: "A methodology essay about the Johnny Castaway PS1 regression suite: host references, DuckStation capture, frame metadata, perf logs, and human review."
 date: 2026-04-26
 image: /assets/img/visitor3-ps1-perspective.png
-image_alt: VISITOR 3 — the canonical two-red-rows perf-battle multi-view stitch scene. The kind of regression artifact the headless harness captures and the essay describes. Captured on PS1 hardware via the validation harness.
+image_alt: VISITOR 3 — the canonical multi-view stitch perf-battle scene that the headless harness measures every release. Sits at the bottom of the yellow band after the v0.8.2 + v0.8.6 release-tagged passes; the kind of regression artifact this essay describes. Captured on PS1 hardware via the validation harness.
 image_width: 961
 image_height: 720
 ---

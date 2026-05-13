@@ -5,7 +5,7 @@ ads: STAND
 tag: 8
 slug: stand8
 status: validated
-description: "STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-08."
+description: "STAND.ADS scene 8: Johnny stands on the right side of the island, looks around, and scratches his head. Validated 2026-05-04."
 image: /assets/img/stand8-ps1-right-scratch.png
 image_alt: "STAND 8 on PS1 at night: Johnny stands on the right side of the island under the palm tree in the look-around-and-scratch-head idle."
 image_width: 961

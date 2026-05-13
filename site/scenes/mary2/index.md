@@ -5,7 +5,7 @@ ads: MARY
 tag: 2
 slug: mary2
 status: validated
-description: "MARY.ADS scene 2: Mary the mermaid swims up while Johnny is fishing; he mistakes her for a fish on the line, then reels in a boot. Validated 2026-05-08."
+description: "MARY.ADS scene 2: Mary the mermaid swims up while Johnny is fishing; he mistakes her for a fish on the line, then reels in a boot. Validated 2026-05-03."
 image: /assets/img/mary2-ps1-mermaid-fish.png
 image_alt: "MARY 2 on PS1 at night: Johnny stands on his raft fishing with the rod arched out over the water while Mary the mermaid surfaces near the shoreline."
 image_width: 961

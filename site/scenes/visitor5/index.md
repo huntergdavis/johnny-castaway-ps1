@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 5
 slug: visitor5
 status: validated
-description: "VISITOR.ADS scene 5: Johnny sees a plane overhead, throws a coconut at it, and the plane crashes. Validated 2026-05-08."
+description: "VISITOR.ADS scene 5: Johnny sees a plane overhead, throws a coconut at it, and the plane crashes. Validated 2026-05-04."
 image: /assets/img/visitor5-ps1-plane.png
 image_alt: "VISITOR 5 on PS1 at night: a small biplane approaches from the upper-right while Johnny stands under the palm tree on his raft, about to throw a coconut at it."
 image_width: 961

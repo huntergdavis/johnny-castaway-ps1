@@ -137,7 +137,7 @@ Concretely, a pack contains:
   a CD-ROM sector boundary -- the loader can read what it needs
   without straddling sectors and forcing extra seeks.
 - **Palette.** A single CLUT for the whole scene, packed as PS1
-  16-bit BGR-1555 entries. The host-side capture is constrained to a
+  16-bit [BGR-1555]({{ '/docs/glossary/#rgb555' | relative_url }}) entries. The host-side capture is constrained to a
   scene-stable palette so the pack does not have to re-upload CLUTs
   per frame.
 - **Entry table.** One row per displayed frame. Each row is a fixed
@@ -329,3 +329,8 @@ regressions ship.
   — magazine retrospective on the choice between "looks similar"
   and pixel-perfect-with-host-capture that defined the rest of
   this method. The decision behind every section above.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — magazine treatment of applying this method to every routed
+  scene, one capture-encode-replay-validate loop at a time. This
+  page is the recipe; that essay is what running it 63 times
+  actually looked like, including the last-cluster hard cases.

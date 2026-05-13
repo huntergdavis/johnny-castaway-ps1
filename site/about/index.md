@@ -157,6 +157,13 @@ A few things this project is deliberately not trying to be:
 - [/hack/]({{ '/hack/' | relative_url }}) -- a learning path for
   hackers who want to read the C, port to another machine, or
   understand the debugging loops.
+- [/docs/]({{ '/docs/' | relative_url }}) -- twenty reference
+  manuals covering build, captions, holidays, pause menu, freeplay,
+  story-loop walks, regtest, scripted input, performance, hardware,
+  devices, audio, infrastructure, file formats, AI sub-agents,
+  vision-classifier, the SDL2 → PSn00bSDK API mapping, dev
+  workflow, feeds + well-known endpoints, and the project
+  glossary.
 - [/source/]({{ '/source/' | relative_url }}) and
   [/resources/]({{ '/resources/' | relative_url }}) -- the complete
   documentation shelf and asset catalog.
@@ -165,11 +172,17 @@ A few things this project is deliberately not trying to be:
   map, freeplay controls, real-hardware notes.
 - [/faq/]({{ '/faq/' | relative_url }}) -- author-written
   answers to "what is this," "do I need Sierra files," "is this
-  legal," "does it run at native rate," and the other recurring
-  questions.
+  legal," "can I sponsor or donate," "does it run at native rate,"
+  and the other recurring questions.
 - [/releases/]({{ '/releases/' | relative_url }}) -- short notes
   on every tagged version with links to the full release notes
   and the disc image.
+- [/credits/]({{ '/credits/' | relative_url }}) -- attribution
+  shelf for the people, tools, and fonts behind the project: Sierra
+  for the original screensaver and characters, the upstream
+  reverse-engineering ports, the PSn00bSDK / mkpsxiso / DuckStation
+  toolchain, spicyjpeg's MPL pad-poll example, the four self-hosted
+  SIL OFL fonts, and the CC0 ocean-ambience source.
 
 The repository is at
 [{{ site.repo }}]({{ site.github_url }}). Open source under GPL-3.0,

@@ -135,6 +135,10 @@ design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob
 - [FAQ — Is this legal?]({{ '/faq/#is-this-legal' | relative_url }})
   — the short author-written restatement of the fan-port
   stance.
+- [About — Pointing at this work]({{ '/about/#pointing-at-this-work' | relative_url }})
+  — one-line web reference + BibTeX block for linking the project
+  from a blog post, paper, or retro-dev podcast's notes file. The
+  version pin matters; this is an active project.
 
 ---
 

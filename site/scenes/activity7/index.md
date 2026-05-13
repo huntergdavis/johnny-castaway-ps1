@@ -6,7 +6,7 @@ tag: 7
 slug: activity7
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 7: Johnny sits reading a book, but the book is upside-down. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 7: Johnny sits reading a book, but the book is upside-down. Validated 2026-05-05."
 image: /assets/img/activity7-ps1-upside-down-book.png
 image_alt: "ACTIVITY 7 on PS1 at night: Johnny sits under the palm reading, a red question-mark thought bubble hovering over his head — he cannot make sense of the book because it is upside-down."
 image_width: 961

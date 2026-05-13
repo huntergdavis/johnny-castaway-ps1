@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Pause menu — Johnny Castaway PS1</title>
   <meta name="description" content="How the Johnny Castaway PS1 pause menu works: controls, twelve sub-screens (Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), freeplay/debug integration, persisted memcard options, and the embedded 8x8 font shared with captions." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/" /><meta property="og:title"        content="Pause menu — Johnny Castaway PS1" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Pause menu — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="How the Johnny Castaway PS1 pause menu works: controls, twelve sub-screens (Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), freeplay/debug integration, persisted memcard options, and the embedded 8x8 font shared with captions." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -62,6 +64,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Pause menu", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/" }]
 }
 </script>
@@ -103,7 +106,7 @@
       <h1>Pause menu</h1>
       <p class="subtitle">Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1521 words
+          ~6 min read · 1579 words
         </p>
 
       <hr class="rule" />
@@ -268,7 +271,7 @@ and the Scene Set pool entirely; whatever the cursor is on dispatches
 through <a href="../glossary/#fgpilot">fgpilot</a>.</p>
 
 <p>The layout is a full-screen preview of one scene at a time: the
-selected scene’s 320×240 RGB555 thumbnail fills the centered region
+selected scene’s 320×240 <a href="../glossary/#rgb555">RGB555</a> thumbnail fills the centered region
 of the framebuffer, with a top chrome band carrying the page title,
 position counter (<code class="language-plaintext highlighter-rouge">N/63</code>), per-scene validation marker (<code class="language-plaintext highlighter-rouge">* validated</code>
 or <code class="language-plaintext highlighter-rouge">? pending</code> from <code class="language-plaintext highlighter-rouge">gSceneExplorer[].validated</code>), display name, and
@@ -316,6 +319,13 @@ header <code class="language-plaintext highlighter-rouge">src/scene_explorer_dat
 and the per-scene <code class="language-plaintext highlighter-rouge">site/scenes/&lt;slug&gt;/index.md</code> titles, so the
 in-game menu strings stay in sync with the website ledger.</p>
 
+<p>Since <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> the loader streams each thumbnail through a static
+16-row chunk buffer instead of allocating the full 153 KB image at
+once. The paused heap is thin (the runtime never freed pre-pause
+state), so the prior malloc could fail after long sessions and leave
+the explorer text-only. The streaming path is allocation-free and
+robust to that fragmentation.</p>
+
 <p>Pinning persists in two <code class="language-plaintext highlighter-rouge">int</code> flags read by the screensaver loop at
 the top of each iteration: <code class="language-plaintext highlighter-rouge">pauseMenuRequestPlayScene</code> (one-shot,
 cleared after the scene runs) and <code class="language-plaintext highlighter-rouge">pauseMenuRequestLoopScene</code> (loop,
@@ -358,7 +368,7 @@ preview image is absent.</p>
     </tr>
     <tr>
       <td>Clear</td>
-      <td>Cancels transient actions, shows the frog clock, rebuilds the clean island backdrop, and returns Johnny to idle.</td>
+      <td>Cancels transient actions, shows the frog clock, rebuilds the clean island <a href="../glossary/#backdrop">backdrop</a>, and returns Johnny to idle.</td>
     </tr>
   </tbody>
 </table>
@@ -571,6 +581,8 @@ files the Scene Explorer loads on cursor change.</li>
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/pause-menu/index.md" rel="noopener">Edit this page on GitHub</a> →

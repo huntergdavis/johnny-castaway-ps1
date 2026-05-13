@@ -5,7 +5,7 @@ ads: MARY
 tag: 5
 slug: mary5
 status: validated
-description: "MARY.ADS scene 5: Johnny finishes packing the raft and says goodbye to Mary before sailing off. Validated 2026-05-08."
+description: "MARY.ADS scene 5: Johnny finishes packing the raft and says goodbye to Mary before sailing off. Validated 2026-05-03."
 image: /assets/img/mary5-ps1-goodbye.png
 image_alt: "MARY 5 on PS1 at night: Johnny stands on the island holding Mary the mermaid in a goodbye embrace, the scene's packed raft sitting ready on the right side of the island, the moon overhead."
 image_width: 961

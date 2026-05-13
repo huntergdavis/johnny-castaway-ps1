@@ -6,7 +6,7 @@ tag: 3
 slug: walkstuf3
 status: validated
 last_verified: "2026-05-04"
-description: "WALKSTUF.ADS scene 3: Johnny jogs around the island. Validated 2026-05-08."
+description: "WALKSTUF.ADS scene 3: Johnny jogs around the island. Validated 2026-05-04."
 image: /assets/img/walkstuf3-ps1-jog.png
 image_alt: "WALKSTUF 3 on PS1 at night: Johnny mid-stride on the left side of the island, jogging in front of the palm tree."
 image_width: 961

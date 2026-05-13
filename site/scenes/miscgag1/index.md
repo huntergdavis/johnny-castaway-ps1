@@ -5,7 +5,7 @@ ads: MISCGAG
 tag: 1
 slug: miscgag1
 status: validated
-description: "MISCGAG.ADS scene 1: Johnny gets so hot in the sun that he melts. Validated 2026-05-08."
+description: "MISCGAG.ADS scene 1: Johnny gets so hot in the sun that he melts. Validated 2026-05-03."
 image: /assets/img/miscgag1-ps1-melts.png
 image_alt: "MISCGAG 1 on PS1 at night: Johnny lies flat on the sand under the palm tree, melted into a puddle by the heat."
 image_width: 961

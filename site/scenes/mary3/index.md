@@ -5,7 +5,7 @@ ads: MARY
 tag: 3
 slug: mary3
 status: validated
-description: "MARY.ADS scene 3: Mary and Johnny exchange gifts at the shoreline and make plans to go on a date. Validated 2026-05-08."
+description: "MARY.ADS scene 3: Mary and Johnny exchange gifts at the shoreline and make plans to go on a date. Validated 2026-05-03."
 image: /assets/img/mary3-ps1-mermaid-shore.png
 image_alt: "MARY 3 on PS1 at night: Johnny stands at the center of the island under the palm tree, Mary the mermaid surfacing in the water at the lower-left shoreline."
 image_width: 961

@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 6
 slug: visitor6
 status: validated
-description: "VISITOR.ADS scene 6: Johnny shakes the palm, drops a coconut, cracks it on the trunk, and eats it. Validated 2026-05-08."
+description: "VISITOR.ADS scene 6: Johnny shakes the palm, drops a coconut, cracks it on the trunk, and eats it. Validated 2026-05-04."
 image: /assets/img/visitor6-ps1-coconut-eat.png
 image_alt: "VISITOR 6 on PS1 at night: Johnny stands under the palm tree, a coconut on the sand to his right that he is about to pick up, crack on the trunk, and eat."
 image_width: 961

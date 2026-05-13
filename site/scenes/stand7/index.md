@@ -5,7 +5,7 @@ ads: STAND
 tag: 7
 slug: stand7
 status: validated
-description: "STAND.ADS scene 7: Johnny looks to the right and lifts his hat. Validated 2026-05-08."
+description: "STAND.ADS scene 7: Johnny looks to the right and lifts his hat. Validated 2026-05-04."
 image: /assets/img/stand7-ps1-look-right-hat.png
 image_alt: "STAND 7 on PS1 at night: Johnny stands on the right side of the island under the palm tree, facing right and lifting his hat."
 image_width: 961

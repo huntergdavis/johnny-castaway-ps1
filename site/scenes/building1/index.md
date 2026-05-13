@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 1
 slug: building1
 status: validated
-description: "BUILDING.ADS scene 1: Johnny tries to build a sandcastle; it slumps mid-build, and he stomps on it. Validated 2026-05-08."
+description: "BUILDING.ADS scene 1: Johnny tries to build a sandcastle; it slumps mid-build, and he stomps on it. Validated 2026-05-05."
 image: /assets/img/building1-ps1-sandcastle.png
 image_alt: "BUILDING 1 on PS1 at night: Johnny stands next to a slumping yellow sandcastle on the left side of the island, mid-build, the moment before the stomp."
 image_width: 961

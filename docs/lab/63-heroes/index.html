@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>63 heroes — Johnny Castaway PS1</title>
   <meta name="description" content="A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/" /><meta property="og:title"        content="63 heroes — Johnny Castaway PS1" />
@@ -15,7 +16,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny3-ps1-letter-suzy.png" />
   <meta property="og:image:alt"    content="Johnny standing on the island writing a letter at night, romantic-thought-bubble overhead picturing himself with Suzy embracing on a beach. The one frame the v0.8.4 chapter-select grind missed and the headless harness filled in." /><meta property="og:image:width"  content="640" />
   <meta property="og:image:height" content="448" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny3-ps1-letter-suzy.png" /><meta name="twitter:image:alt" content="Johnny standing on the island writing a letter at night, romantic-thought-bubble overhead picturing himself with Suzy embracing on a beach. The one frame the v0.8.4 chapter-select grind missed and the headless harness filled in." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny3-ps1-letter-suzy.png" /><meta name="twitter:title"       content="63 heroes — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="A retrospective on the per-scene hero-image rollout — how the v0.8.4 chapter-select-grind captures became 62 of 63 figured-and-figcaptioned scene pages, what frame-selection patterns repeated, what cross-link clusters emerged, and how the missing scene was filled in headlessly." /><meta name="twitter:image:alt" content="Johnny standing on the island writing a letter at night, romantic-thought-bubble overhead picturing himself with Suzy embracing on a beach. The one frame the v0.8.4 chapter-select grind missed and the headless harness filled in." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -64,6 +66,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "63 heroes", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/" }]
 }
 </script><script type="application/ld+json">
@@ -76,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/63-heroes/",
   "inLanguage": "en",
-  "wordCount": 1500,
+  "wordCount": 1658,
   "timeRequired": "PT6M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny3-ps1-letter-suzy.png",
@@ -139,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1441 words
+          ~6 min read · 1599 words
         </p>
 
       <hr class="rule" />
@@ -156,6 +159,7 @@
   <li><a href="#engineering-retros-that-didnt-justify-a-doc" id="markdown-toc-engineering-retros-that-didnt-justify-a-doc">Engineering retros that didn’t justify a doc</a></li>
   <li><a href="#the-one-scene-the-chapter-select-grind-missed" id="markdown-toc-the-one-scene-the-chapter-select-grind-missed">The one scene the chapter-select grind missed</a></li>
   <li><a href="#final-shape" id="markdown-toc-final-shape">Final shape</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -244,6 +248,32 @@
 
 <p>The full list of per-scene pages with their heroes is at <a href="../../scenes/">/scenes/</a>. The matching commit history is on the project’s <a href="https://github.com/huntergdavis/johnny-castaway-ps1/commits/main">main branch</a> — every scene’s hero is one focused commit, mergeable and revertable on its own.</p>
 
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../scenes/">Scene ledger</a> — where every
+hero now sits, linked from a per-scene page with figcaption +
+per-page OG override.</li>
+  <li><a href="../chapter-select-grind/">Lab: the chapter-select grind</a>
+— the <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> loop that captured 62 of the 63 hero frames
+on hardware in one named pass. The rollout described here was
+the consume-side of that producer.</li>
+  <li><a href="../the-63-scene-grind/">Lab: the 63-scene grind</a>
+— the earlier validation grind that made every scene heroable
+in the first place. Hero rollout is the post-validation polish
+pass; this is the pre-rollout signoff pass.</li>
+  <li><a href="../the-site-itself/">Lab: the site itself, as a small program</a>
+— the per-page OG override machinery (image / image_alt /
+image_width / image_height frontmatter routed through
+<code class="language-plaintext highlighter-rouge">_includes/head.html</code>) that makes each scene page’s social card
+carry its hero instead of the site default.</li>
+  <li><a href="../../docs/captions/">Captions</a> — the
+paired post-validation reconciliation surface: the chapter-select
+grind’s hardware capture loop is where caption-mismaps were
+surfaced, fixed in the per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles + bodies, and
+documented in the corrections section.</li>
+</ul>
+
   </div>
   <footer class="post-footer">
   <hr class="rule" />
@@ -306,6 +336,8 @@
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../../docs/feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/63-heroes/index.md" rel="noopener">Edit this page on GitHub</a> →

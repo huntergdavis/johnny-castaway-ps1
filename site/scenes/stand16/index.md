@@ -5,7 +5,7 @@ ads: STAND
 tag: 16
 slug: stand16
 status: validated
-description: "STAND.ADS scene 16: Johnny stands on the right side of the island and looks around with a spyglass. Validated 2026-05-08."
+description: "STAND.ADS scene 16: Johnny stands on the right side of the island and looks around with a spyglass. Validated 2026-05-04."
 image: /assets/img/stand16-ps1-spyglass-right.png
 image_alt: "STAND 16 on PS1 at night: Johnny stands on the right side of the island holding a spyglass to his eye, scanning the horizon."
 image_width: 961

@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Johnny Castaway PS1 — fan port</title>
   <meta name="description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/" /><meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Johnny Castaway PS1 — a fan port" />
+  <meta name="twitter:description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -69,6 +71,7 @@
   "name": "Johnny Castaway PS1",
   "url": "https://hunterdavis.com/johnny-castaway-ps1/",
   "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
   "applicationCategory": "GameApplication",
   "applicationSubCategory": "Screensaver",
   "operatingSystem": "Sony PlayStation",
@@ -212,12 +215,12 @@ bugfixing, performance, and feature polish; the
 keeps long randomized runs stable, the <a href="./releases/#v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0</code> performance
 baseline</a>
 promoted the headless optimization methodology, the
-v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
-outliers, <code class="language-plaintext highlighter-rouge">v0.8.4</code> walked all 63 packs on hardware to ship custom
+<a href="./releases/#v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2</code></a> + <a href="./releases/#v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3</code></a> follow-ons closed the VISITOR3 and WALKSTUF1
+outliers, <a href="./releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes"><code class="language-plaintext highlighter-rouge">v0.8.4</code></a> walked all 63 packs on hardware to ship custom
 chapter-select thumbnails plus a scene-page reconciliation against the
-on-PS1 packs, <code class="language-plaintext highlighter-rouge">v0.8.5</code> promotes the full 126-row timing-bearing
-matrix, <code class="language-plaintext highlighter-rouge">v0.8.6</code> lands the WALKSTUF1 / VISITOR3 setup-segment
-compaction follow-through, and <code class="language-plaintext highlighter-rouge">v0.8.7</code> hardens deterministic
+on-PS1 packs, <a href="./releases/#v085-ps1--full-126-row-headless-performance-matrix"><code class="language-plaintext highlighter-rouge">v0.8.5</code></a> promotes the full 126-row timing-bearing
+matrix, <a href="./releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.6</code></a> lands the WALKSTUF1 / VISITOR3 setup-segment
+compaction follow-through, and <a href="./releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability"><code class="language-plaintext highlighter-rouge">v0.8.7</code></a> hardens deterministic
 scene booting plus Scene Explorer preview loading — the public battle card now averages
 <a href="./docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.7%</code> target speed</a>
 across the timing-bearing rows (public-capped; the
@@ -259,7 +262,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./faq/">FAQ</a>
-    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
+    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, can I sponsor or donate, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
   </li>
   <li>
     <a href="./about/method/">How the port works</a>
@@ -291,7 +294,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./docs/">Reference docs</a>
-    <p>Eighteen reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
+    <p>Twenty reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, devices, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, feeds &amp; well-known endpoints, and a glossary.</p>
   </li>
   <li>
     <a href="./source/">Source library</a>
@@ -384,7 +387,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/63-heroes/">63 heroes</a>
       <span class="summary">How every per-scene page on the site got its own captured-on-PS1 hero image — and the cross-link clusters that emerged from writing one figcaption at a time.</span>
-      <span class="summary devlog-read-time">~5 min read · 1441 words</span>
+      <span class="summary devlog-read-time">~6 min read · 1599 words</span>
     </div>
   </li>
 
@@ -420,7 +423,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/the-site-itself/">The site itself, as a small program</a>
       <span class="summary">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</span>
-      <span class="summary devlog-read-time">~14 min read · 3683 words</span>
+      <span class="summary devlog-read-time">~15 min read · 3869 words</span>
     </div>
   </li>
 
@@ -543,6 +546,8 @@ the user supplies themselves.</p>
           <a href="./humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="./sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="./docs/feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/index.md" rel="noopener">Edit this page on GitHub</a> →

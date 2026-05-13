@@ -77,7 +77,7 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 
 ## Variants
 
-- **night** — Dusk/night palette swap (BOOTMODE `night 1`).
+- **night** — Dusk/night palette swap ([BOOTMODE]({{ '/docs/glossary/#bootmode' | relative_url }}) `night 1`).
 - **low-tide** — Tide state variant; different shoreline geometry (BOOTMODE `lowtide 1`).
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
@@ -118,8 +118,8 @@ the entire headless-perf matrix. Re-measured on every release; its
 `loop_vb` vs `target_vb` ratio is the load-bearing reference frame
 for "did this matrix-wide change just regress the easiest path."
 The latest rollup at `{{ site.release.tag }}` lands at
-`1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target
-speed, `blocking_vb=2` — the raw signed CSV row is `-0.6%` / `100.6%`. That is
+`1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target
+speed, `blocking_vb=5` — the raw signed CSV row is `-0.4%` / `100.4%`. That is
 what "the FISHING 1 bar" means as a *timing* claim alongside the visual one.
 
 The

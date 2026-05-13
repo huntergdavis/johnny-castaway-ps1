@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>FISHING 1 — Catches a starfish, throws it back — Johnny Castaway PS1</title>
   <meta name="description" content="FISHING.ADS scene 1: Johnny fishes; the line hooks a starfish, which he throws back. Validated under the FISHING 1 bar." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/fishing1/" /><meta property="og:title"        content="FISHING 1 — Catches a starfish, throws it back — Johnny Castaway PS1" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/fishing1-ps1-cast.png" />
   <meta property="og:image:alt"    content="FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." /><meta property="og:image:width"  content="1127" />
   <meta property="og:image:height" content="677" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/fishing1-ps1-cast.png" /><meta name="twitter:image:alt" content="FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/fishing1-ps1-cast.png" /><meta name="twitter:title"       content="FISHING 1 — Catches a starfish, throws it back — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="FISHING.ADS scene 1: Johnny fishes; the line hooks a starfish, which he throws back. Validated under the FISHING 1 bar." /><meta name="twitter:image:alt" content="FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -62,6 +64,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "FISHING 1 — Catches a starfish, throws it back", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/fishing1/" }]
 }
 </script><script type="application/ld+json">
@@ -186,7 +189,7 @@ This scene clears the <a href="../../about/method/">FISHING 1 bar</a> — pixel-
 <h2 id="variants">Variants</h2>
 
 <ul>
-  <li><strong>night</strong> — Dusk/night palette swap (BOOTMODE <code class="language-plaintext highlighter-rouge">night 1</code>).</li>
+  <li><strong>night</strong> — Dusk/night palette swap (<a href="../../docs/glossary/#bootmode">BOOTMODE</a> <code class="language-plaintext highlighter-rouge">night 1</code>).</li>
   <li><strong>low-tide</strong> — Tide state variant; different shoreline geometry (BOOTMODE <code class="language-plaintext highlighter-rouge">lowtide 1</code>).</li>
   <li><strong>holiday</strong> — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE <code class="language-plaintext highlighter-rouge">holiday N</code>).</li>
   <li><strong>raft-stage</strong> — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE <code class="language-plaintext highlighter-rouge">raft-stage N</code>).</li>
@@ -226,8 +229,8 @@ the entire headless-perf matrix. Re-measured on every release; its
 <code class="language-plaintext highlighter-rouge">loop_vb</code> vs <code class="language-plaintext highlighter-rouge">target_vb</code> ratio is the load-bearing reference frame
 for “did this matrix-wide change just regress the easiest path.”
 The latest rollup at <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> lands at
-<code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">0.0%</code> public over target, <code class="language-plaintext highlighter-rouge">100.0%</code> public target
-speed, <code class="language-plaintext highlighter-rouge">blocking_vb=2</code> — the raw signed CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. That is
+<code class="language-plaintext highlighter-rouge">1068 / 1072 VBlanks</code>, <code class="language-plaintext highlighter-rouge">0.0%</code> public over target, <code class="language-plaintext highlighter-rouge">100.0%</code> public target
+speed, <code class="language-plaintext highlighter-rouge">blocking_vb=5</code> — the raw signed CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. That is
 what “the FISHING 1 bar” means as a <em>timing</em> claim alongside the visual one.</p>
 
 <p>The
@@ -316,6 +319,8 @@ requires that the canary doesn’t move backward.</p>
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../../docs/feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/scenes/fishing1/index.md" rel="noopener">Edit this page on GitHub</a> →

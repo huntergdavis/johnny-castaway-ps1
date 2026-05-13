@@ -5,7 +5,7 @@ ads: STAND
 tag: 2
 slug: stand2
 status: validated
-description: "STAND.ADS scene 2: Johnny stands and hitches up his pants. Validated 2026-05-08."
+description: "STAND.ADS scene 2: Johnny stands and hitches up his pants. Validated 2026-05-04."
 image: /assets/img/stand2-ps1-pants-adjust.png
 image_alt: "STAND 2 on PS1 at night: Johnny stands at the leftmost edge of the island in the pants-adjust idle pose, a short subtle stand-loop scene."
 image_width: 961

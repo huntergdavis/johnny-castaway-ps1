@@ -6,7 +6,7 @@ tag: 8
 slug: activity8
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 8: Johnny takes a bath, then walks behind the palm tree to hide his nakedness. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 8: Johnny takes a bath, then walks behind the palm tree to hide his nakedness. Validated 2026-05-05."
 image: /assets/img/activity8-ps1-bath.png
 image_alt: "ACTIVITY 8 on PS1 at night: Johnny stands at the shoreline on the left side of the island, mid-bath in the surf, before he walks behind the palm to dress."
 image_width: 961

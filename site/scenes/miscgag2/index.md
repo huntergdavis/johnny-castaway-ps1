@@ -5,7 +5,7 @@ ads: MISCGAG
 tag: 2
 slug: miscgag2
 status: validated
-description: "MISCGAG.ADS scene 2: Johnny goes to take a bath in the surf and a shark turns up and scares him off. Validated 2026-05-08."
+description: "MISCGAG.ADS scene 2: Johnny goes to take a bath in the surf and a shark turns up and scares him off. Validated 2026-05-03."
 image: /assets/img/miscgag2-ps1-bath-towel.png
 image_alt: "MISCGAG 2 on PS1 at night: Johnny stands under the palm tree with a small white towel spread on the sand next to him, set up for a bath that the shark will interrupt."
 image_width: 961

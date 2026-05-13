@@ -6,7 +6,7 @@ tag: 2
 slug: walkstuf2
 status: validated
 last_verified: "2026-05-04"
-description: "WALKSTUF.ADS scene 2: Johnny works on his raft. Validated 2026-05-08."
+description: "WALKSTUF.ADS scene 2: Johnny works on his raft. Validated 2026-05-04."
 image: /assets/img/walkstuf2-ps1-raft-build.png
 image_alt: "WALKSTUF 2 on PS1 at night: Johnny crouches over the raft frame on the right side of the island, building it up."
 image_width: 961

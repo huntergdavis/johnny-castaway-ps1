@@ -5,7 +5,7 @@ ads: SUZY
 tag: 1
 slug: suzy1
 status: validated
-description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08."
+description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-04."
 image: /assets/img/suzy1-ps1-letter-daydream.png
 image_alt: "SUZY 1 on PS1: Suzy stands on a beach in front of a city skyline holding a letter from Johnny, a thought bubble above her head showing the island Johnny is castaway on."
 image_width: 961
@@ -71,3 +71,11 @@ FG2 runtime for SUZY scenes.
 They need a longer `12000`-frame matrix budget because the valid scene-end
 lands after the default `7200`-frame timing window. The current rows are close
 to target at `5763/5738` VBlanks for both tides.
+
+`v0.8.7-ps1` hardened the cleanup path for Suzy's home-beach backdrop:
+scene-specific state now clears clean-bg black mode and frees clean-bg
+rect state on entry and cleanup, so the following island-side scene
+doesn't lose its palm or tree background layers after a SUZY play.
+Before the fix, long random runs could leave residue from the
+black-backdrop frames bleeding into the next scene's
+[dirty-rect bookkeeping]({{ '/docs/glossary/#dirty-rect' | relative_url }}).

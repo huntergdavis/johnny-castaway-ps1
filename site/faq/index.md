@@ -2,11 +2,11 @@
 title: FAQ
 eyebrow: Author-written answers
 subtitle: This is the only conversation surface. There's no comments box, no Discord, no Discussions tab — read on.
-description: Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver.
+description: Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, sponsorship stance, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver.
 ---
 
 {%- comment -%}
-  Schema.org FAQPage structured data. Mirrors the 16 H3 questions
+  Schema.org FAQPage structured data. Mirrors the 17 H3 questions
   on this page with 1–2 sentence summary answers. Google retired
   FAQ rich results for general sites in 2023, but Bing, AI agents,
   and embedded knowledge graphs still consume FAQPage. Hand-mirrored
@@ -18,6 +18,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port �
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "inLanguage": "en",
   "mainEntity": [
     {
       "@type": "Question",
@@ -49,6 +50,14 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port �
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "The code is GPL-3.0 and entirely original (or derived from other GPL/MPL code with attribution). The Johnny Castaway character and original Sierra assets are not included with the released disc image; the host build requires the user to supply their own original Sierra data files. The released .bin/.cue contains pre-baked playback packs only."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I sponsor or donate to this project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The project does not accept sponsorships, tips, or donations. The in-game credits read in part 'if you paid for this, you were cheated. Open source and free.' — that's the whole stance. The code is on GitHub under GPL-3.0; the disc image is a free download from the GitHub release page. There is no Patreon, GitHub Sponsors, Ko-fi, or PayPal link, and there will not be."
       }
     },
     {
@@ -104,7 +113,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port �
       "name": "Where do I file bugs?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "If you must, the issue tracker is on GitHub. Bugs are tolerated, not invited. There is no contributor onboarding process and no 'good first issue' label."
+        "text": "If you must, the issue tracker is on GitHub. Bugs are tolerated, not invited. There is no contributor onboarding process and no 'good first issue' label. When you file, name the device (emulator + version, or real hardware model) — the devices reference lists which paths are tested every commit vs unverified."
       }
     },
     {
@@ -196,7 +205,26 @@ included with the released disc image; the host build requires
 the user to supply their own original Sierra data files
 (`RESOURCE.MAP`, `RESOURCE.001`). The released `.bin/.cue`
 contains pre-baked playback packs — derived data, no Sierra
-source files. See [/legal/]({{ '/legal/' | relative_url }}).
+source files. See [/legal/]({{ '/legal/' | relative_url }}) for
+the licensing companion and
+[/lab/fan-port-in-public/]({{ '/lab/fan-port-in-public/' | relative_url }})
+for the long-form essay on what "shipping a fan port in 2026"
+actually looks like — Sierra's permission, the GPL-3.0 / MPL-2.0
+license stack, and the "if you paid for this, you were cheated"
+voice that keeps the whole thing honest.
+
+### Can I sponsor or donate to this project?
+
+No. The project does not accept sponsorships, tips, or donations.
+The [in-game credits]({{ '/credits/' | relative_url }}) read in
+part "if you paid for this, you were cheated. Open source and
+free." — that's the whole stance. The code lives on
+[GitHub]({{ site.github_url }}) under
+[GPL-3.0]({{ '/legal/' | relative_url }}); the
+[disc image]({{ '/play/' | relative_url }}) is a free download
+from the GitHub release page. There is no Patreon, GitHub
+Sponsors, Ko-fi, or PayPal link, and there will not be. The work
+is the point.
 
 ### What does "{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated" mean?
 
@@ -271,7 +299,12 @@ If you must, the issue tracker is at
 [{{ site.repo }}/issues]({{ site.github_url }}/issues). Bugs are
 tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
-About]({{ '/about/#what-this-isnt' | relative_url }}).
+About]({{ '/about/#what-this-isnt' | relative_url }}). When you
+file, name the device (emulator + version, or real hardware
+model) — the
+[devices reference]({{ '/docs/devices/' | relative_url }}) lists
+which paths are tested every commit vs unverified, so the report
+lands faster if it pins which it was.
 
 For security-relevant reports (build/release supply-chain concerns,
 the published `.bin` / `.cue` disc image being mishandled by a
@@ -400,6 +433,20 @@ prior ports and toolchain authors this build stands on.
 - [About]({{ '/about/' | relative_url }}) — the project
   overview if you want the long-form version of "What is
   this?".
+- [Docs]({{ '/docs/' | relative_url }}) — twenty reference
+  manuals behind every "how does X work?" question (build,
+  captions, holidays, pause menu, freeplay, walks, regtest,
+  scripted input, performance, hardware, devices, audio,
+  infrastructure, file formats, AI sub-agents,
+  vision-classifier, API mapping, dev workflow, feeds +
+  well-known endpoints, glossary).
+- [Devlog]({{ '/devlog/' | relative_url }}) — dated, unedited
+  worklogs for the day-by-day "when did X happen and what was
+  tried first?" question.
+- [Lab]({{ '/lab/' | relative_url }}) — seventeen feature-length
+  retrospectives for the "but why did it end up that way?"
+  question, with the benefit of hindsight the worklogs above
+  deliberately lack.
 - [Glossary]({{ '/docs/glossary/' | relative_url }}) —
   vocabulary anchor for terms (`FG2 pack`, `FISHING 1 bar`,
   `target speed`, `host build`) used throughout the answers

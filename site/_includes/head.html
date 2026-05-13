@@ -4,6 +4,18 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
   {%- comment -%}
+    Legacy-but-still-honored Windows pinning hints. application-name
+    is what Windows Start / taskbar / Edge "App-ify this page" show
+    when a user pins the site (modern browsers prefer the manifest's
+    name field, but Edge still falls back to this meta when no
+    manifest is in scope). msapplication-TileColor mirrors the light
+    theme-color above so the pinned tile background matches the site
+    chrome. site.webmanifest carries the same identity for the PWA
+    install path; these supplement it for the non-manifest pin flow.
+  {%- endcomment -%}
+  <meta name="application-name" content="{{ site.title }}" />
+  <meta name="msapplication-TileColor" content="#0000A8" />
+  {%- comment -%}
     Tell the UA the page supports both schemes so native widgets
     (scrollbars, form controls, and the address-bar tint between
     page transitions) honor the user's prefers-color-scheme. The
@@ -18,8 +30,21 @@
     (208 KiB), frame indices, line counts, percentages — and a
     surprise tap-to-call popup is the wrong affordance for any of
     them. Standard meta-tag opt-out.
+
+    `address=no` opts out of the parallel auto-linkify for postal
+    addresses — the site has zero postal addresses but the
+    detection heuristic occasionally fires on date+location
+    combinations (e.g. "December 25 2026" in the holidays calendar).
+    Defensive against false positives; costs nothing.
+
+    `email=no` opts out of the auto-linkify for email-shaped tokens.
+    The site has no mailto: links anywhere (the security.txt routes
+    disclosures via GitHub Issues / GitHub Security Advisories
+    instead); pinning prevents any future email-shaped technical
+    string (e.g. a sample `<user>@<host>` in code) from getting
+    turned into a tap-to-mail link.
   {%- endcomment -%}
-  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="telephone=no, address=no, email=no" />
   {%- comment -%}
     Referrer policy. `strict-origin-when-cross-origin` is the modern
     browser default — pinning it explicitly documents the privacy
@@ -76,7 +101,7 @@
   <link rel="canonical" href="{{ site.url }}{{ site.canonical_baseurl }}{{ page.url }}" />
 
   {%- comment -%}
-    Robots directives. The /source/ shelf is 337 auto-generated
+    Robots directives. The /source/ shelf is 344 auto-generated
     wrapper pages — one per project Markdown file outside the
     website tree — whose body is mostly the rendered source plus
     a "view on GitHub" link. Indexing all of them dilutes search
@@ -165,6 +190,16 @@
   {%- endif -%}
   <meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="{{ tw_image | escape }}" />
+  {%- comment -%}
+    twitter:title + twitter:description: Twitter/X DOES fall back
+    to og:title / og:description when these are absent, but explicit
+    declarations matter for the less-rigorous scrapers in the long
+    tail (some chat apps, embed services, archive-bots) that don't
+    walk the OG → Twitter fallback chain. Mirrors the og:title /
+    og:description values computed above so the strings stay in sync.
+  {%- endcomment -%}
+  <meta name="twitter:title"       content="{% if page.title and page.url != '/' %}{{ page.title | escape }} — {{ site.title | escape }}{% else %}{{ site.title | escape }} — a fan port{% endif %}" />
+  <meta name="twitter:description" content="{{ page.description | default: site.description | escape }}" />
   {%- comment -%}
     twitter:image:alt — accessibility property the Twitter/X card
     spec recommends for summary_large_image. Twitter/X does NOT

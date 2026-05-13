@@ -402,6 +402,19 @@ The supporting archaeology — the timeline, the team, the raw source
 documents — is split across [the era timeline]({{ '/archaeology/timeline/' | relative_url }}),
 [the team page]({{ '/archaeology/team/' | relative_url }}), and
 [the primary-source index]({{ '/archaeology/data/' | relative_url }}).
+The frozen-era shelves — kept findable so earlier methodologies
+don't vanish into commit history — include
+[the binary-library era]({{ '/archaeology/binary-library/' | relative_url }})
+(the retired heavy-regression corpus),
+[the host-script review]({{ '/archaeology/host-script-review/' | relative_url }})
+(the host-side identification pipeline as it stood before the
+bespoke-scene loop took over),
+[the retired scripts]({{ '/archaeology/retired-scripts/' | relative_url }})
+(fourteen tools from the binary-library era),
+[the retired sources]({{ '/archaeology/retired-src/' | relative_url }})
+(three minimal bring-up programs from PS1 first-boot), and
+[the vision-classifier artifacts]({{ '/archaeology/vision-artifacts/' | relative_url }})
+(reference-bank self-check, pipeline manifest, captured regtest run).
 For the exhaustive shelves, use the [source library]({{ '/source/' | relative_url }}),
 the [resource catalog]({{ '/resources/' | relative_url }}), and the
 [regtest case pages]({{ '/archaeology/regtest-references/cases/' | relative_url }}).

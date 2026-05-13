@@ -5,7 +5,7 @@ ads: VISITOR
 tag: 1
 slug: visitor1
 status: validated
-description: "VISITOR.ADS scene 1: Johnny looks around the island and completely misses a speedboat driving by behind him. Validated 2026-05-08."
+description: "VISITOR.ADS scene 1: Johnny looks around the island and completely misses a speedboat driving by behind him. Validated 2026-05-04."
 image: /assets/img/visitor1-ps1-misses-speedboat.png
 image_alt: "VISITOR 1 on PS1 at night: a red and white speedboat zips past on the upper-left of the frame while Johnny stands at the front of the island looking the other way."
 image_width: 961

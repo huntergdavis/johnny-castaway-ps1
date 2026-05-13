@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
 
   <title>Glossary — Johnny Castaway PS1</title>
   <meta name="description" content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/glossary/" /><meta property="og:title"        content="Glossary — Johnny Castaway PS1" />
@@ -13,7 +14,8 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Glossary — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.7; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -62,6 +64,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "inLanguage": "en",
   "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Glossary", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/glossary/" }]
 }
 </script>
@@ -103,7 +106,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~20 min read · 5248 words
+          ~23 min read · 5809 words
         </p>
 
       <hr class="rule" />
@@ -191,6 +194,15 @@
 <dl>
 <dt id="clut">CLUT-indexed sprite</dt>
 <dd>The PS1 GPU's native texture format: 4-bit (16-color) or 8-bit (256-color) indices into a Color Lookup Table. The replay engine ships sprites in 4-bit indexed form (<code>indexedPixels</code>) with a per-pack palette LUT. The 4-pixel-unrolled inner blit loop and opaque-sprite fast path live in <code>graphics_ps1.c</code>.</dd>
+
+<dt id="rgb555">RGB555</dt>
+<dd>The PS1 GPU's 16-bit direct-color pixel format: 5 bits each for red / green / blue plus 1 bit for semi-transparency (sometimes called <em>STP</em>). The PS1 actually packs the channels as <code>STP|B5|G5|R5</code> in memory (so technically <em>BGR-1555</em> — blue in the low bits, red in the high bits, STP in the topmost), but the project's prose uses the more common <em>RGB555</em> name for the format itself; the byte order matters in writes to VRAM via <code>LoadImage</code>. Used for true-color textures, full-screen backgrounds, and the framebuffer itself. <a href="#scene-explorer">Scene Explorer</a> thumbnails are 320×240 RGB555 <code>.SCR</code> files loaded straight from the disc; <a href="#fg2-pack">FG2 packs</a> ship sprites in 4-bit <a href="#clut">CLUT-indexed</a> form instead because that's ~4× tighter in <a href="#vram">VRAM</a>. The format is the native cell of every other graphics term in this section.</dd>
+
+<dt id="backdrop">Backdrop</dt>
+<dd>The persistent island + ocean composite that lives behind every scene. Two layers: the static island bitmap (palms, beach, sky, sometimes holiday emblem) plus the live ocean band that animates regardless of foreground state. The runtime never redraws the full backdrop from scratch except on full scene swaps or pause-menu Clear; instead, <a href="#dirty-rect">dirty-rect bookkeeping</a> restores just the spans Johnny + props dirtied last frame. The <em>backdrop-key guard</em> (<code>v0.7.2-ps1</code>) prevents <a href="#story-loop-walks">story-loop walks</a> from running against a stale backdrop after a tide / night / holiday / raft-stage state change in the next scene's load.</dd>
+
+<dt id="sprt">SPRT (and the GPU primitive family)</dt>
+<dd>A fixed-shape PS1 GPU primitive struct from PSn00bSDK's <code>psxgpu.h</code>: a rectangular textured sprite (position, size, UV, CLUT, color tint). The runtime allocates one per textured rect it wants drawn, fills the fields, and links it into the <a href="#ot">ordering table</a> via <code>addPrim</code> — the GPU consumes the table on the next <code>DrawOTag</code>. Used heavily on this project for caption glyph rendering (one <code>SPRT</code> per glyph against a shared font atlas), pause-menu chrome, and any rectangular sprite the foreground replay can't ship as a baked diff. Part of a family that also includes <code>POLY_F4</code> / <code>POLY_FT4</code> (flat-shaded or textured quads), <code>TILE</code> (solid-color rect, no texture lookup), and <code>LINE_F2</code> (line primitives); SPRT is the workhorse because most of what this port draws is rectangular and textured.</dd>
 
 <dt id="dirty-rect">Dirty-rect bookkeeping</dt>
 <dd>Tracking which screen rectangles changed this frame so only those get redrawn from the background, instead of redrawing the whole framebuffer. The PS1 replay engine's dirty-rect path reduces per-frame data movement by 80–95%. Without it, the SPU and the GPU compete for memory bandwidth and audio glitches.</dd>
@@ -309,6 +321,12 @@
 
 <dt id="jcperf">JCPERF / JCPERF2</dt>
 <dd>The structured TTY printf records the runtime emits at <a href="#scene-end">scene-end</a>. <code>JCPERF</code> is the original line: vblank totals, <code>target_vb</code>/<code>loop_vb</code>, <code>over_target</code>, <code>blocking_vb</code>, <code>alloc_fail</code>. <code>JCPERF2</code> is the v0.8.0-era extension: stream-window, prefetch-hits, read-group, plus the clean-rect pressure split (wave-band, upper, lower) added in <code>v0.8.1</code>. Both are flat <code>key=value</code> sequences on a single line so the headless DuckStation runner can grep them out of <code>tty.log</code> with no parser; <a href="#regtest">regtest</a> + the <a href="../../lab/build-farm/">build farm</a> consume them to fill the <a href="../../perf/">/perf/</a> matrix and gate promotion on no-worse aggregates.</dd>
+
+<dt id="jcpause">JCPAUSE</dt>
+<dd>The TTY printf prefix for the pause-menu one-shot snapshot. Emitted when the user opens the pause menu — a single line capturing the runtime state at that moment (current scene, frame index, tide/night/holiday flags, freeplay state, audio voice slots). Useful for reproducing a bug report from a screenshot: the snapshot in <code>tty.log</code> pins exactly which configuration was on screen when the menu was opened. Like the other JC-prefixed records, gated by the bounded-output printf path restored 2026-04-25 and ignored by the headless <a href="#regtest">regtest</a> consumers (only <code>JCPERF</code> drives the perf matrix).</dd>
+
+<dt id="jcboot">JCBOOT</dt>
+<dd>The TTY printf prefix the runtime uses for boot-related log lines. As of <code>v0.8.7-ps1</code> the runtime emits a <em>single early</em> <code>JCBOOT</code> line at boot-time, naming the boot source, explicit scene, seed, loop mode, tide / night / holiday / raft state, island position, and normalized boot text — <em>before</em> title screens, resource loads, or sound side effects run. Pair with the scene-end <a href="#jcperf">JCPERF / JCPERF2</a> lines: <code>JCBOOT</code> says <em>what was asked to play</em>; <code>JCPERF2</code> says <em>what actually played</em>. The headless perf iterator now derives the expected scene from each <code>fgpilot &lt;slug&gt;</code> boot string and rejects any run where <code>JCBOOT</code>'s scene disagrees with <code>JCPERF2</code>'s — catching the "measured the wrong scene" silent-pass failure mode the deterministic-boot release closed.</dd>
 
 <dt id="over-target">over_target</dt>
 <dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; raw negative CSV values mean the run finished <em>under</em> the budget. Public reporting caps those faster rows at <code>0.0%</code> so fast scenes do not offset slow-scene debt. The matrix-wide public aggregate at <code>v0.8.7-ps1</code> is <code>+0.3%</code> across the 126 timing-bearing rows.</dd>
@@ -434,6 +452,8 @@ that lets a definition stay terse without being curt.</li>
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
           &nbsp;·&nbsp;
           <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../feeds/">reference</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/glossary/index.md" rel="noopener">Edit this page on GitHub</a> →

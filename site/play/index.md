@@ -277,6 +277,13 @@ The issue tracker is at [{{ site.repo }}/issues]({{ site.github_url }}/issues).
 Bugs are tolerated, not invited — there's no contributor onboarding,
 just one author and a tip jar that doesn't exist. See the [FAQ]({{ '/faq/' | relative_url }}).
 
+For security-relevant reports (build/release supply-chain concerns,
+the published `.bin` / `.cue` disc image being mishandled by a
+download mirror), prefer the
+[GitHub Security Advisories]({{ site.github_url }}/security/advisories/new)
+channel named in
+[`/.well-known/security.txt`]({{ '/.well-known/security.txt' | relative_url }}).
+
 ## Related pages
 
 - [FAQ]({{ '/faq/' | relative_url }}) — author-written answers to
@@ -291,3 +298,10 @@ just one author and a tip jar that doesn't exist. See the [FAQ]({{ '/faq/' | rel
   — the full controls and sub-screen surface.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — every scene
   the original game had, validation status, last-verified release tag.
+- [Performance battle card]({{ '/perf/' | relative_url }}) — the
+  second ledger: 126-variant headless-DuckStation timing matrix
+  for "does this scene hit its target frame budget on PS1
+  hardware?", sortable with color-coded target speed cells.
+- [About]({{ '/about/' | relative_url }}) — the long-form
+  project overview for the "wait, what *is* this?" question
+  before you click Download.

@@ -5,7 +5,7 @@ ads: MARY
 tag: 1
 slug: mary1
 status: validated
-description: "MARY.ADS scene 1: Johnny goes on a date with Mary the mermaid. Validated 2026-05-08."
+description: "MARY.ADS scene 1: Johnny goes on a date with Mary the mermaid. Validated 2026-05-03."
 image: /assets/img/mary1-ps1-dinner-date.png
 image_alt: "MARY 1 on PS1 at night: Johnny and Mary the mermaid sit together at a small table under the palm tree on the island, mid-dinner-date, the moon overhead and the raft beside them."
 image_width: 961

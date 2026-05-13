@@ -185,8 +185,8 @@ DuckStation's TTY logging works reliably as of 2026-04-25 — the project can
 print from anywhere in the runtime and capture the output to a host log
 file. But text I/O changes timing. A `printf` in a per-frame hot path will
 move VBlank cadence enough to mask or invent the very bugs being debugged.
-The project uses TTY for one-shot snapshots (`JCPAUSE`, `JCPERF`,
-`JCPERF2`, `JCPAD`, `JCSPI`) and a colored on-framebuffer telemetry
+The project uses TTY for one-shot snapshots ([`JCPAUSE`]({{ '/docs/glossary/#jcpause' | relative_url }}), [`JCPERF`]({{ '/docs/glossary/#jcperf' | relative_url }}),
+`JCPERF2`, [`JCPAD`]({{ '/docs/glossary/#jcspi-jcpad' | relative_url }}), `JCSPI`) and a colored on-framebuffer telemetry
 overlay for steady-state visibility. See
 [Performance work]({{ '/docs/performance/' | relative_url }}) for how the
 perf module gates print levels.

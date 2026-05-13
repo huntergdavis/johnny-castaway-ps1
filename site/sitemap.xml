@@ -29,7 +29,7 @@ sitemap: false
   {%- comment -%}
     Skip /source/<wrapper>/ pages — they carry `noindex, follow`
     in their head meta (see _includes/head.html, commit
-    1cd72dda8) since they're 337 thin wrappers around project
+    1cd72dda8) since they're 344 thin wrappers around project
     Markdown files. Listing noindex'd URLs in a sitemap is a
     signal mismatch; same URL-prefix gate as the head template
     so the two stay in sync. The /source/ landing (the canonical

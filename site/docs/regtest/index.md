@@ -102,7 +102,7 @@ Or specify explicitly with `--bios /path/to/bios/`.
 `v0.5.x` adds an opt-in pad-script layer for headless menu and flow tests.
 The canonical runbook is [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}).
 The PS1 build embeds `config/ps1/PADSCRIPT.TXT` at compile time and only
-uses it when `BOOTMODE.TXT` includes `pad-script` or `pad-script-log`.
+uses it when [`BOOTMODE.TXT`]({{ '/docs/glossary/#bootmode' | relative_url }}) includes `pad-script` or `pad-script-log`.
 Scripted buttons are merged into the same active-high pad mask as the real
 controller, after analog-stick folding, so the pause menu and Freeplay code
 do not know whether a human or a test script pressed Start.

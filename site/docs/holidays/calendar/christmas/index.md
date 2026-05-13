@@ -28,7 +28,7 @@ From [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml):
 
 Dimensions: **56 × 65** pixels. Anchored at island position **(404, 267)**.
 
-This is one of the four **original Sierra sprites** preserved from the 1992 game. `existing_sprite` index `2`. The asset is the original full-island scene — Johnny appears in costume, the palm or message bottle is reskinned. The four originals are New Year's Day, St. Patrick's Day, Halloween, and Christmas; together they pin holiday IDs 1–4.
+This is one of the four **original Sierra sprites** preserved from the 1992 game. `existing_sprite` index `2`. The asset is the original full-island scene — Johnny appears in costume, the palm or message bottle is reskinned. The four originals are New Year's Day, St. Patrick's Day, Halloween, and Christmas; together they pin holiday IDs 1–4. See [the holidays landing]({{ '/docs/holidays/' | relative_url }}) for the full 36-entry list including the 32 added by this port.
 
 ## Palette
 

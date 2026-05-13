@@ -5,7 +5,7 @@ ads: BUILDING
 tag: 6
 slug: building6
 status: validated
-description: "BUILDING.ADS scene 6: Lilliputians tie Johnny down while he sleeps — the no-bird variant of the BUILDING 4 gag. Validated 2026-05-08."
+description: "BUILDING.ADS scene 6: Lilliputians tie Johnny down while he sleeps — the no-bird variant of the BUILDING 4 gag. Validated 2026-05-05."
 image: /assets/img/building6-ps1-lilliputians-no-bird.png
 image_alt: "BUILDING 6 on PS1 at night: Johnny lies on the sand under the palm tree while lilliputians swarm in from both sides of the island carrying ropes."
 image_width: 961

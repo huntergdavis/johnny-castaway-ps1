@@ -5,7 +5,7 @@ ads: ACTIVITY
 tag: 9
 slug: activity9
 status: validated
-description: "ACTIVITY.ADS scene 9: Johnny in costume rain-dances; a boat carrying a couple passes by, he drops the costume, and the couple keeps sailing. Validated 2026-05-08."
+description: "ACTIVITY.ADS scene 9: Johnny in costume rain-dances; a boat carrying a couple passes by, he drops the costume, and the couple keeps sailing. Validated 2026-05-05."
 image: /assets/img/activity9-ps1-boat.png
 image_alt: "ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island."
 image_width: 1127
