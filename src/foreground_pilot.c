@@ -3083,6 +3083,22 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             uint8 cleanMemoryRelief = 0;
             uint16 packFlags;
             uint16 i;
+            /* Free the 148 KB walk-clean snapshot before any per-scene
+             * malloc. After ~46 scenes a long soak run accumulated heap
+             * fragmentation around it and johnny1's pack-header /
+             * frame-buffer allocs failed (BSOD at frame=46). The reactive
+             * walk-clean-release inside the clean-rect-save retry was too
+             * late — failure happened upstream in fgLoadMetadataPrefix /
+             * gFgFrameBuffer malloc. Releasing it here gives the new
+             * scene's big allocs contiguous heap; the snapshot is
+             * recaptured for free at walkPilotCaptureCleanWalkAreaIfStale
+             * before the next walk render. */
+            if (walkPilotCleanBufferAllocated()) {
+                printf("JCMEM proactive walk-clean-release scene=%s walkKB=%lu\n",
+                       sceneName,
+                       walkPilotCleanBufferBytes() / 1024UL);
+                walkPilotReleaseCleanWalkArea();
+            }
             /* Trigger closed-caption lookup only when captions are active.
              * Normal playback keeps captions off, so avoid scene-name checks
              * and ADS caption lookup on the default path. */

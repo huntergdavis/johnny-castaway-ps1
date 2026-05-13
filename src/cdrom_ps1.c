@@ -829,7 +829,6 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     uint32_t offsetInBuffer;
     uint32_t fileLba;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -987,7 +986,6 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     CdlLOC loc;
     uint32_t offsetInBuffer;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -1111,7 +1109,6 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     CdlLOC loc;
     uint32_t fileLba;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -1200,7 +1197,6 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
     CdlLOC loc;
     uint32_t sectorsRead;
     int syncResult;
-    int timeout;
 
     enum { PS1_CD_READ_CHUNK_SECTORS = 8 };
 
