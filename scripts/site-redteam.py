@@ -29,6 +29,8 @@ or is cheap enough to lock in even with zero past hits:
   the first body mention (locked in after the f2deceef7 56-page sweep).
 - `/perf/` At-a-glance rollup over_target + target_speed exact
   values match the CSV-computed aggregates (4-decimal precision).
+- `/about/status/` headline rollup (public over/speed + raw signed
+  over/speed) matches the CSV-computed aggregates.
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -222,6 +224,75 @@ def _public_cap_otp(otp_str: str) -> str:
     except ValueError:
         return otp_str
     return f"{max(0.0, v):.1f}%" if v >= 0 else "0.0%"
+
+
+def _check_status_rollup(csv_path: Path, html_path: Path) -> list[str]:
+    """Compare /about/status/'s headline rollup against the CSV.
+
+    The page emits a single sentence with four hand-typed exact
+    aggregates: public over, public speed (capped at 100), raw
+    signed over (no floor), raw signed speed (no ceiling). All
+    four come from the same scene-matrix CSV and use the same
+    public-cap / no-cap rules as elsewhere on the site.
+    """
+    out: list[str] = []
+    pub_over = 0.0
+    pub_speed = 0.0
+    raw_over = 0.0
+    raw_speed = 0.0
+    n = 0
+    with csv_path.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            otp = r.get("over_target_percent", "").strip()
+            lvb = r.get("loop_vb", "").strip()
+            tvb = r.get("target_vb", "").strip()
+            if not otp or otp == "-" or not lvb or not tvb or lvb == "-" or tvb == "-":
+                continue
+            try:
+                otp_f = float(otp)
+                sp_f = float(tvb) / float(lvb) * 100.0
+            except (ValueError, ZeroDivisionError):
+                continue
+            pub_over += max(0.0, otp_f)
+            pub_speed += min(100.0, sp_f)
+            raw_over += otp_f
+            raw_speed += sp_f
+            n += 1
+    if n == 0:
+        return out
+
+    expected = {
+        "public_over": f"+{pub_over / n:.4f}",
+        "public_speed": f"{pub_speed / n:.4f}",
+        "raw_over": f"-{abs(raw_over / n):.4f}" if raw_over < 0 else f"+{raw_over / n:.4f}",
+        "raw_speed": f"{raw_speed / n:.4f}",
+    }
+    text = html_path.read_text(encoding="utf-8", errors="replace")
+    # Match the canonical sentence shape:
+    # "public ... battle card is `+X%` over target / `Y%` target speed;
+    #  the raw signed ... matrix is `-Z%` / `W%`"
+    m = re.search(
+        r'public[^<]*battle card[^<]*<code[^>]*>([+-]?\d+\.\d+)%</code>'
+        r'\s*over\s*target\s*/\s*<code[^>]*>(\d+\.\d+)%</code>\s*target\s*speed[^<]*;'
+        r'[^<]*raw\s*signed[^<]*<code[^>]*>([+-]?\d+\.\d+)%</code>'
+        r'\s*/\s*<code[^>]*>(\d+\.\d+)%</code>',
+        text, re.DOTALL | re.IGNORECASE,
+    )
+    if not m:
+        return out
+    rendered = {
+        "public_over": m.group(1),
+        "public_speed": m.group(2),
+        "raw_over": m.group(3),
+        "raw_speed": m.group(4),
+    }
+    for k, exp in expected.items():
+        rend = rendered[k]
+        if rend.lstrip("+") != exp.lstrip("+"):
+            out.append(
+                f"about/status/index.html: rollup {k} rendered={rend!r} csv={exp!r}"
+            )
+    return out
 
 
 def _check_perf_drift(csv_path: Path, html_path: Path) -> list[str]:
@@ -560,6 +631,17 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
     perf_html = root / "perf" / "index.html"
     if perf_csv.exists() and perf_html.exists():
         errors.extend(_check_perf_drift(perf_csv, perf_html))
+
+    # /about/status/ headline carries the same four perf-rollup
+    # aggregate values (public over, public speed, raw signed over,
+    # raw signed speed) — hand-maintained and prone to the same drift
+    # as the /perf/ rollup. Caught a real regression on 2026-05-13
+    # (~0.0025% drift across all four values; fixed in 7ba495a50).
+    # Locking that audit in. Skips gracefully if either file is
+    # missing.
+    status_html = root / "about" / "status" / "index.html"
+    if perf_csv.exists() and status_html.exists():
+        errors.extend(_check_status_rollup(perf_csv, status_html))
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
