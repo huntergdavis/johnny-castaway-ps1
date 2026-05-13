@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-13:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2786%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7262%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T12:02:56` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-low-rg78-91-v474`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-13T15:23:15` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -102,6 +102,12 @@ accepted `30..46` retained-read shape on low tide. Low improves from
 `1104/1092` to `1102/1097`, overrun `12 -> 5`, blocking/refill `11 -> 5`,
 and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
+
+Latest promoted WALKSTUF1 note: `walkstuf1-shared-rg427-443-v598` adds a
+shared retained-read row as a same-speed CD-work reduction. Low stays at
+`1478/1431`, overrun `47`, blocking/refill `64/20`, and due `11`, while loop
+reads drop `64 -> 62` and loop-read time `286 -> 281`. WALKSTUF1 high,
+VISITOR3 high/low, and BUILDING2 high/low stayed exact-flat.
 
 `visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
 while moving frame `128` into the

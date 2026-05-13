@@ -198,8 +198,8 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2786%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7262%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T12:02:56` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-low-rg78-91-v474`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-13T15:23:15` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -2065,15 +2065,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-13T04:11:55</td>
-      <td>walkstuf1-low-rg78-91-v474</td>
+      <td>2026-05-13T15:23:15</td>
+      <td>walkstuf1-shared-rg427-443-v598</td>
       <td>+3.3%</td>
       <td class="spd-yellow">96.8%</td>
       <td>1478/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>shared retained-read table extends the first post-prime boundary to 78..91; low improves scene 1776-&gt;1770, loop/target 1484/1431-&gt;1478/1431, overrun 53-&gt;47, blocking 72-&gt;64, refill 22-&gt;20, reads/due 66/12-&gt;64/11, and loop-read time 287-&gt;286 while high and BUILDING2/VISITOR3 canaries stayed flat</td>
+      <td>shared retained-read table adds 427..443 as a same-speed CD-work reduction; low timing stays scene 1770 and loop/target 1478/1431 with overrun 47, blocking 64, refill 20, and due 11 while loop reads drop 64-&gt;62 and loop-read time drops 286-&gt;281; high plus BUILDING2/VISITOR3 canaries stayed flat</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

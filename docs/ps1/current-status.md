@@ -228,22 +228,22 @@ delta and frame `132` to a 768-byte previous-frame delta; v477 relocates that
 frame132 payload into an unused setup-prime gap. Low now reports `1065/1041`,
 overrun `24`, `blocking_vb=45`, loop reads `8`, loop-read time `45`, due
 misses `8`, hidden refill `0`, and fixed pack LBA/sectors.
-The v340/v383/v384/v428/v474 WALKSTUF1 read-group passes add `344..360`,
-`422..434`, `443..455`, and `444..456` after the accepted `201..213` and
-`213..229` groups, then extend the first low-tide post-prime retained boundary
-to `78..91`. High remains on the current-control `1476/1434` profile with
+The v340/v383/v384/v428/v474/v598 WALKSTUF1 read-group passes add `344..360`,
+`422..434`, `427..443`, `443..455`, and `444..456` after the accepted
+`201..213` and `213..229` groups, then extend the first low-tide post-prime
+retained boundary to `78..91`. High remains on the current-control `1476/1434` profile with
 overrun `42`, blocking `81`, hidden refill `23`, loop reads `65`, and due
 misses `16`. Low now improves to `1478/1431`, overrun `47`, blocking `64`,
-hidden refill `20`, loop reads `64`, loop-read time `286`, and due misses
+hidden refill `20`, loop reads `62`, loop-read time `281`, and due misses
 `11`.
 The BUILDING2 high current-control row keeps the accepted `60..72`,
 `206..230`, `226..242`, and `249..257` retained groups with 24-sector grouped
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2852%` over target / `99.7198%` target speed
+The public battle card is now `+0.2786%` over target / `99.7262%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4820%` / `100.5021%`.
+raw signed optimization rollup is `-0.4886%` / `100.5086%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.11`
 public over-target points and added about `12.62` public target-speed points.
@@ -336,13 +336,14 @@ Milestone releases:
   pack-only compaction plus frame129/frame132 D4 and frame132 setup-prime gap
   relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
   residency plus frame137 co-residency, plus WALKSTUF1 low `78..91` retained
-  post-prime boundary ownership, and VISITOR5 high `30..46` retained-read
-  ownership. The public battle card is `+0.2852%` / `99.7198%`;
+  post-prime boundary ownership and shared `427..443` CD-work reduction, and
+  VISITOR5 high/low `30..46` retained-read ownership. The public battle card is
+  `+0.2786%` / `99.7262%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
-  reads `64`, VISITOR3 high is `1065/1039` with blocking/read time `41`,
-  VISITOR3 low is `1065/1041` with blocking/read time `45`, and VISITOR5 high is now green at
-  `1101/1096`.
+  reads `62`, VISITOR3 high is `1065/1039` with blocking/read time `41`,
+  VISITOR3 low is `1062/1040` with blocking/read time `42`, and VISITOR5
+  high/low are now green at `1101/1096` and `1102/1097`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless
