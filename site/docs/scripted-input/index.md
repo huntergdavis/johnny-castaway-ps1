@@ -144,6 +144,13 @@ a screenshot, and a page on the website.
 - [Glossary: BOOTMODE.TXT]({{ '/docs/glossary/#bootmode' | relative_url }})
   — the boot-token surface that selects `pad-script` and
   `pad-script-log` modes.
+- [Glossary: PADSCRIPT.TXT]({{ '/docs/glossary/#padscript' | relative_url }})
+  — the script-source file this page documents; embedded at
+  build time by `scripts/build-ps1.sh`.
+- [Glossary: JCPADSHOT]({{ '/docs/glossary/#jcpadshot' | relative_url }})
+  — the TTY screenshot-marker line the `shot` / `screenshot` /
+  `mark` commands emit, consumed by the harness to copy captured
+  frames into the menu help guide.
 - [Devlog: scripted-pad menu harness]({{ '/devlog/scripted-pad-menu-harness/' | relative_url }})
   — the implementation narrative.
 - [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})

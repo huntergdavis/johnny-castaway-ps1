@@ -106,7 +106,7 @@
       <h1>Scripted input harness</h1>
       <p class="subtitle">Headless controller routes for menu testing, screenshot capture, and repeatable PS1 bug repros.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~3 min read · 810 words
+          ~3 min read · 853 words
         </p>
 
       <hr class="rule" />
@@ -312,6 +312,13 @@ the headless DuckStation runner that consumes the pad script
   <li><a href="../glossary/#bootmode">Glossary: BOOTMODE.TXT</a>
 — the boot-token surface that selects <code class="language-plaintext highlighter-rouge">pad-script</code> and
 <code class="language-plaintext highlighter-rouge">pad-script-log</code> modes.</li>
+  <li><a href="../glossary/#padscript">Glossary: PADSCRIPT.TXT</a>
+— the script-source file this page documents; embedded at
+build time by <code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code>.</li>
+  <li><a href="../glossary/#jcpadshot">Glossary: JCPADSHOT</a>
+— the TTY screenshot-marker line the <code class="language-plaintext highlighter-rouge">shot</code> / <code class="language-plaintext highlighter-rouge">screenshot</code> /
+<code class="language-plaintext highlighter-rouge">mark</code> commands emit, consumed by the harness to copy captured
+frames into the menu help guide.</li>
   <li><a href="../../devlog/scripted-pad-menu-harness/">Devlog: scripted-pad menu harness</a>
 — the implementation narrative.</li>
   <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
