@@ -27,6 +27,8 @@ or is cheap enough to lock in even with zero past hits:
 - Every page has a non-empty `<title>` (WCAG 2.4.2 Page Titled).
 - Scene pages — meta description's "Validated YYYY-MM-DD" matches
   the first body mention (locked in after the f2deceef7 56-page sweep).
+- `/perf/` At-a-glance rollup over_target + target_speed exact
+  values match the CSV-computed aggregates (4-decimal precision).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -282,6 +284,56 @@ def _check_perf_drift(csv_path: Path, html_path: Path) -> list[str]:
                 out.append(
                     f"perf/index.html: row #{rid} {field}: rendered={rendered_val!r} csv={csv_val!r}"
                 )
+
+    # Rollup-table parity: the At-a-glance rollup carries two
+    # hand-typed exact aggregates that must match what awk would
+    # compute from the CSV. Caught a real regression on 2026-05-13
+    # (rollup said 0.3224% over target, CSV computed 0.3225%);
+    # locking that audit in. The rollup uses the same public-cap
+    # rules as the per-row column: over_target floors at 0,
+    # target_speed ceils at 100, each averaged across all timing-
+    # bearing rows.
+    over_sum = 0.0
+    speed_sum = 0.0
+    n = 0
+    for r in csv_rows.values():
+        otp = r.get("over_target_percent", "").strip()
+        lvb = r.get("loop_vb", "").strip()
+        tvb = r.get("target_vb", "").strip()
+        if not otp or otp == "-" or not lvb or not tvb or lvb == "-" or tvb == "-":
+            continue
+        try:
+            otp_f = max(0.0, float(otp))
+            sp_f = min(100.0, float(tvb) / float(lvb) * 100.0)
+        except (ValueError, ZeroDivisionError):
+            continue
+        over_sum += otp_f
+        speed_sum += sp_f
+        n += 1
+    if n > 0:
+        over_csv = f"{over_sum / n:.4f}"
+        speed_csv = f"{speed_sum / n:.4f}"
+        # Rollup cells use literal `0.3225%` / `99.6839%` strings.
+        # Format: "<code>+0.3%</code> (<code>0.3225%</code> exact, public-capped)".
+        # The "exact" suffix anchors the precision-4 value.
+        rollup_over = re.search(
+            r'over target.*?<code[^>]*>(\d+\.\d+)%</code>\s+exact',
+            text, re.DOTALL | re.IGNORECASE,
+        )
+        rollup_speed = re.search(
+            r'average target speed.*?<code[^>]*>(\d+\.\d+)%</code>\s+exact',
+            text, re.DOTALL | re.IGNORECASE,
+        )
+        if rollup_over and rollup_over.group(1) != over_csv:
+            out.append(
+                f"perf/index.html: rollup over_target rendered={rollup_over.group(1)!r}"
+                f" csv={over_csv!r}"
+            )
+        if rollup_speed and rollup_speed.group(1) != speed_csv:
+            out.append(
+                f"perf/index.html: rollup target_speed rendered={rollup_speed.group(1)!r}"
+                f" csv={speed_csv!r}"
+            )
     return out
 
 
