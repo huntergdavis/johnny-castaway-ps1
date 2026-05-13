@@ -787,7 +787,7 @@ static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
 {
     if (fgSceneEquals(gFgRuntime.sceneName, "visitor3")) {
         if (islandState.lowTide)
-            return frameIndex == 129 || frameIndex == 132;
+            return frameIndex == 129 || frameIndex == 132 || frameIndex == 137;
         return frameIndex == 132 || frameIndex == 137;
     }
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))

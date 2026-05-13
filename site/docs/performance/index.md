@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2852%`
-exact public over target / `99.7198%` exact public target speed); the raw
-signed optimization matrix is `-0.4820%` / `100.5021%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2837%`
+exact public over target / `99.7212%` exact public target speed); the raw
+signed optimization matrix is `-0.4835%` / `100.5035%`.
 
 ## Scene Battle Card
 
@@ -321,7 +321,7 @@ As of 2026-05-13, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
 `visitor3-high-frame137-sector203-v501`,
 `visitor5-high-rg30-46-v496`,
-`visitor3-low-frame132-primegap-v477`,
+`visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
 `walkstuf1-high-current-v458-refresh`,
 `building2-low-delta-v454`,
@@ -421,7 +421,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-12T18:50:43`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-13T10:10:23`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -431,7 +431,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `visitor3-high-frame137-sector203-v501`,
 `visitor5-high-rg30-46-v496`,
-`visitor3-low-frame132-primegap-v477`,
+`visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
 `walkstuf1-high-current-v458-refresh`,
 `building2-low-delta-v454`,
@@ -807,8 +807,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+3.0% / 97.1% (1070/1039); due 9; blk 49</td>
-      <td>+3.1% / 97.0% (1071/1039); due 11; blk 63</td>
+      <td>+2.5% / 97.6% (1065/1039); due 7; blk 41</td>
+      <td>+2.1% / 97.9% (1062/1040); due 7; blk 42</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -923,7 +923,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2852% over target / 99.7198% target speed, with several
+  public average is now +0.2837% over target / 99.7212% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

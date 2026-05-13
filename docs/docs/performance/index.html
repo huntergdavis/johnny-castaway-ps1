@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2852%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7198%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4820%</code> / <code class="language-plaintext highlighter-rouge">100.5021%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2837%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7212%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4835%</code> / <code class="language-plaintext highlighter-rouge">100.5035%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -451,7 +451,7 @@ signed optimization matrix is <code class="language-plaintext highlighter-rouge"
 perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">visitor3-high-frame137-sector203-v501</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-high-rg30-46-v496</code>,
-<code class="language-plaintext highlighter-rouge">visitor3-low-frame132-primegap-v477</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg78-91-v474</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-current-v458-refresh</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>,
@@ -551,7 +551,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-12T18:50:43</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-13T10:10:23</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -561,7 +561,7 @@ and <code class="language-plaintext highlighter-rouge">due</code> called out whe
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
 rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-frame137-sector203-v501</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-high-rg30-46-v496</code>,
-<code class="language-plaintext highlighter-rouge">visitor3-low-frame132-primegap-v477</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg78-91-v474</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-current-v458-refresh</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>,
@@ -937,8 +937,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+3.0% / 97.1% (1070/1039); due 9; blk 49</td>
-      <td>+3.1% / 97.0% (1071/1039); due 11; blk 63</td>
+      <td>+2.5% / 97.6% (1065/1039); due 7; blk 41</td>
+      <td>+2.1% / 97.9% (1062/1040); due 7; blk 42</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -1055,7 +1055,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2852% over target / 99.7198% target speed, with several
+public average is now +0.2837% over target / 99.7212% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

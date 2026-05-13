@@ -385,9 +385,9 @@ component-completeness phases:
   VISITOR3 high's frame137 sector-203 setup relocation, VISITOR5 high's
   `30..46` retained-read group, VISITOR3 low's frame132 setup-prime
   relocation, WALKSTUF1 low's `78..91` retained-read boundary, and BUILDING2
-  low's previous-frame D4 deltas. The public battle card is `+0.2852%` over
-  target / `99.7198%` target speed; raw signed rollup is `-0.4820%` /
-  `100.5021%`. VISITOR3 high measures `1065/1039` with `blocking_vb=41`;
+  low's previous-frame D4 deltas. The public battle card is `+0.2837%` over
+  target / `99.7212%` target speed; raw signed rollup is `-0.4835%` /
+  `100.5035%`. VISITOR3 high measures `1065/1039` with `blocking_vb=41`;
   WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and VISITOR3 high/low remain
   the main under-99 tactical queue.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
