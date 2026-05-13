@@ -183,6 +183,19 @@ WALKSTUF1 low needs generated scheduler/deadline ownership, a cold
 sidecar that does not grow hot loop code, or a different custom data shape if
 this mechanism is retried.
 
+Latest rejected WALKSTUF1 low sector-boundary D4 retry: v480 encoded frame
+`140` against frame `139`, shrinking `4296 -> 1968` bytes in the lower-risk
+`273..285` cluster without moving later payload offsets. The focused pass was
+exact-flat at scene `1770`, active loop/target `1478/1431`, overrun `47`,
+blocking `64`, refill `20`, reads/due `64/11`. v481 then batched non-adjacent
+hot-cluster frames `140`, `145`, `152`, `155`, `158`, and `161`, saving
+`10925` payload bytes and cutting reads `64 -> 62` plus refill `20 -> 19`, but
+regressed scene `1770 -> 1798`, active loop/target `1478/1431 -> 1506/1423`,
+overrun `47 -> 83`, blocking `64 -> 90`, and due misses `11 -> 15`. Close
+multi-frame D4 sector-boundary compression for WALKSTUF1 low under the current
+decoder/cadence; future byte cuts need a lower-CPU representation or generated
+CD ownership.
+
 Latest rejected WALKSTUF1 high D4 probe: v457 encoded high frame `100` against
 frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
 `217088` byte PS-EXE bucket. The first focused gate appeared to pass only
