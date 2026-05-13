@@ -119,9 +119,15 @@ v456 then tried late-tail frame `187` against frame `186`, shrinking
 `4764 -> 731` bytes and reducing its modeled span from roughly four sectors to
 one. The first run died before metrics, and the clean rerun was exact-flat at
 `1776`, `1484/1431`, overrun `53`, blocking `72`, refill `22`, reads/due
-`66/12`. Close frames `181`, `100`, and `187` as standalone D4 deltas;
-WALKSTUF1 low needs paired scheduler/deadline ownership or a different
-sector-boundary byte removal if this mechanism is retried.
+`66/12`. v461 tested an earlier lower-command-count candidate, frame `92`
+against frame `91`, shrinking `6035 -> 2056` bytes and reducing the modeled
+span by two sectors, but it regressed hard: scene `1776 -> 1790`,
+active loop/target `1484/1431 -> 1498/1421`, overrun `53 -> 77`, blocking
+`72 -> 114`, refill `22 -> 35`, reads `66 -> 70`, and due misses
+`12 -> 17`. Close frames `181`, `100`, `187`, and `92` as standalone D4
+deltas; WALKSTUF1 low needs paired scheduler/deadline ownership, payload
+placement that avoids changing visible CD cadence, or a different custom data
+shape if this mechanism is retried.
 
 Latest rejected WALKSTUF1 high D4 probe: v457 encoded high frame `100` against
 frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
