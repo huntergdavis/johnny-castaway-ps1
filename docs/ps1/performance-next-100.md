@@ -132,6 +132,19 @@ emulator produced no late metrics after a one-minute wait. Restore source and
 `VISITOR3.FG2`; avoid further high-tide D4 additions with large command counts
 until a deterministic D4 ownership validator explains the pre-metric hang.
 
+Latest rejected WALKSTUF1 low physical-reorder swing: v511 made the tight
+frame `146..154` cluster setup-prime resident without source code by reordering
+valid `WALK1LOW.FG2` payload bytes. It preserved the `1535263` byte pack,
+`data_offset=4392`, `sound_offset=920531`, LBA/sectors, and the PS-EXE bucket,
+but displacing the early ramp was worse than the resident-cluster win: focused
+low regressed scene `1770 -> 1795`, active loop/target `1478/1431 ->
+1503/1424`, overrun `47 -> 79`, blocking `64 -> 120`, loop reads `64 -> 71`,
+and due misses `11 -> 19`. Close broad setup-prime physical reordering for
+WALKSTUF1 low unless the swap is same-sector/same-window and does not push the
+startup ramp out of resident coverage. The next viable WALKSTUF1 low lanes are
+generated deadline ownership, custom payload shrinking/aliasing before
+reordering, or a smaller resident-slot swap backed by exact read-plan proof.
+
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
 custom D4 delta against that resident payload, and store frame `132` as a
