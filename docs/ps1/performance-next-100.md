@@ -535,6 +535,16 @@ blocking `54 -> 60`, and hidden refill `18 -> 26`. Keep `{60,72}` as the
 early boundary; further BUILDING2 high progress needs generated deadline
 ownership or pack-side work reduction rather than wider hand-authored rows.
 
+Latest rejected BUILDING2 high late low-risk row: v499 appended the current
+read-plan's largest unclosed low-visible-risk candidate, `{312,336}`, after the
+accepted high rows. The focused gate completed but stayed exact-flat at scene
+`1602`, active loop/target `1351/1311`, overrun `40`, blocking `54`, hidden
+refill `18`, reads/due `58/7`, loop-read VBlanks `257`, and `group_hits=0`.
+Close late scalar row `312..336`; the modeled tail savings are not exposed by
+the current append state. Remaining BUILDING2 high work needs generated
+deadline/append-start ownership or pack-side byte/work reduction, not another
+plain retained table.
+
 Latest rejected BUILDING2 high full early-cluster group: v485 inserted the
 read-plan top-ranked `3..27` retained-read row before the accepted high groups.
 The probe could not produce a valid gate: the normal focused run and
