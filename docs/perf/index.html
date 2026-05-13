@@ -339,14 +339,12 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
   </tbody>
 </table>
 
-<p>Latest rejected W1 pack-side note: <code class="language-plaintext highlighter-rouge">walkstuf1-draw-gap-preserve-v617-v619</code>
-saved <code class="language-plaintext highlighter-rouge">77..94 KiB</code> and removed <code class="language-plaintext highlighter-rouge">40k..53k</code> draw-span gaps by merging only
-already-known foreground pixels, but it failed timing. Low gap4 cut reads
-<code class="language-plaintext highlighter-rouge">62 -&gt; 59</code> while regressing to <code class="language-plaintext highlighter-rouge">1480/1426</code>, overrun <code class="language-plaintext highlighter-rouge">54</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">75/29</code>; low gap1 stayed loop-flat but target/refill-negative;
-high gap1 regressed to <code class="language-plaintext highlighter-rouge">1486/1424</code>, overrun <code class="language-plaintext highlighter-rouge">62</code>, blocking/refill <code class="language-plaintext highlighter-rouge">90/38</code>.
-Close preserve-offset W1 draw-gap coalescing and move to semantic row/strip
-compression, generated ownership, or upload/restore reduction.</p>
+<p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-window-resweep-v620</code> retested explicit
+low-tide stream windows after the shared <code class="language-plaintext highlighter-rouge">427..443</code> row. Current <code class="language-plaintext highlighter-rouge">40 KiB</code>
+remains best; <code class="language-plaintext highlighter-rouge">36</code>, <code class="language-plaintext highlighter-rouge">38</code>, <code class="language-plaintext highlighter-rouge">42</code>, <code class="language-plaintext highlighter-rouge">44</code>, and <code class="language-plaintext highlighter-rouge">48 KiB</code> all cut reads to <code class="language-plaintext highlighter-rouge">22..31</code>
+but regressed loop to <code class="language-plaintext highlighter-rouge">1521..1533</code>, overrun to <code class="language-plaintext highlighter-rouge">85..97</code>, blocking to
+<code class="language-plaintext highlighter-rouge">96..109</code>, and refill to <code class="language-plaintext highlighter-rouge">41..55</code>. W1 low now needs generated deadlines or
+data/upload reduction, not more read-count-only window retuning.</p>
 
 <p>The durable numeric source is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>.

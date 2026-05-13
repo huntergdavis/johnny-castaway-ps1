@@ -326,6 +326,16 @@ pack-side lane needs semantic/precomposed strip or row-template compression
 that reduces spans without increasing draw pixels, or generated frame-deadline
 ownership/upload reduction.
 
+Latest rejected WALKSTUF1 low window resweep: v620 retested explicit low-tide
+stream windows after the shared `427..443` row changed the read shape. Current
+default `40 KiB` remains best at `1770`, `1478/1431`, overrun `47`,
+blocking/refill `64/20`, reads `62`, due `11`. Explicit `36`, `38`, `42`,
+`44`, and `48 KiB` all cut reads (`22..31`) but regressed loop to
+`1521..1533`, overrun to `85..97`, blocking to `96..109`, and refill to
+`41..55`. Close low-window retuning: W1 low is not solved by read count alone;
+the next attempt must reduce visual/upload work or use generated deadlines
+that avoid visible/refill ownership.
+
 Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
 the two interior gaps left by tiny D4 frames before the `218..230` near-miss
 cluster, first together and then independently. Removing both gaps shifted

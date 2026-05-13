@@ -109,14 +109,12 @@ shared retained-read row as a same-speed CD-work reduction. Low stays at
 reads drop `64 -> 62` and loop-read time `286 -> 281`. WALKSTUF1 high,
 VISITOR3 high/low, and BUILDING2 high/low stayed exact-flat.
 
-Latest rejected WALKSTUF1 note: `walkstuf1-draw-gap-preserve-v617-v619`
-replayed known palette-index foreground pixels and merged only already-known
-draw-span gaps. The transform saved `77..94 KiB` and removed `40k..53k` spans,
-but failed timing: low gap4 cut reads `62 -> 59` while regressing to
-`1480/1426`, overrun `54`, blocking/refill `75/29`; low gap1 stayed loop-flat
-but target/refill-negative; high gap1 regressed to `1486/1424`, overrun `62`,
-blocking/refill `90/38`. W1 pack-side work now needs semantic row/strip
-compression, generated ownership, or upload/restore reduction.
+Latest rejected WALKSTUF1 note: `walkstuf1-low-window-resweep-v620` retested
+explicit low-tide stream windows after the shared `427..443` row. Current
+`40 KiB` remains best; `36`, `38`, `42`, `44`, and `48 KiB` all cut reads to
+`22..31` but regressed loop to `1521..1533`, overrun to `85..97`, blocking to
+`96..109`, and refill to `41..55`. W1 low now needs generated deadlines or
+data/upload reduction, not more read-count-only window retuning.
 
 `visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
 while moving frame `128` into the

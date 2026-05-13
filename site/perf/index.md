@@ -206,14 +206,12 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Latest rejected W1 pack-side note: `walkstuf1-draw-gap-preserve-v617-v619`
-saved `77..94 KiB` and removed `40k..53k` draw-span gaps by merging only
-already-known foreground pixels, but it failed timing. Low gap4 cut reads
-`62 -> 59` while regressing to `1480/1426`, overrun `54`,
-blocking/refill `75/29`; low gap1 stayed loop-flat but target/refill-negative;
-high gap1 regressed to `1486/1424`, overrun `62`, blocking/refill `90/38`.
-Close preserve-offset W1 draw-gap coalescing and move to semantic row/strip
-compression, generated ownership, or upload/restore reduction.
+Latest rejected W1 note: `walkstuf1-low-window-resweep-v620` retested explicit
+low-tide stream windows after the shared `427..443` row. Current `40 KiB`
+remains best; `36`, `38`, `42`, `44`, and `48 KiB` all cut reads to `22..31`
+but regressed loop to `1521..1533`, overrun to `85..97`, blocking to
+`96..109`, and refill to `41..55`. W1 low now needs generated deadlines or
+data/upload reduction, not more read-count-only window retuning.
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
