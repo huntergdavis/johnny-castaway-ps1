@@ -891,23 +891,29 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
             return NULL;
         }
 
-        /* Non-blocking poll with bounded VBlank wait. Previously this
-         * called CdReadSync(1, NULL) in blocking mode and the timeout
-         * decrement was meaningless because the inner call sleeps
-         * until completion — when DuckStation's CD-ROM emulator
-         * failed to deliver the completion IRQ (observed deterministically
-         * on the 6th JOHNWALK.PSB read of a soak run, ~runtime 444s),
-         * the runtime hung forever. Mode 0 = non-blocking poll: returns
-         * 2 if busy, 1 if done, <0 on error. Cap at 240 VBlanks (~4s)
-         * which is well beyond any legitimate 2x CD read worst case
-         * (max ~2 sectors per VBlank, even a 256-sector chunk reads
-         * in ~128 VBlanks). Bailing out cleanly lets the caller
-         * return NULL and graceful degradation kicks in. */
+        /* Non-blocking CD-ROM completion poll with bounded VBlank cap.
+         * PSn00bSDK CdReadSync mode-flag semantics are inverted from what
+         * a naive reading of the API suggests:
+         *   - mode 0 is the BLOCKING version, which spins inside its own
+         *     `while (_pending_sectors > 0)` loop and calls _poll_retry
+         *     on internal timeout — never returns to the caller until
+         *     the read either completes or _poll_retry returns < 0
+         *     (which doesn't happen when the IRQ is silently missed, as
+         *     observed deterministically on the 6th JOHNWALK.PSB read at
+         *     runtime ~447s during 24-hour soaks).
+         *   - mode 1 is the NON-BLOCKING poll: returns 0 if all sectors
+         *     are in, _pending_sectors (> 0) if still pending, or < 0
+         *     on disk error / broken read.
+         * Cap the outer wait at 240 VBlanks (~4 s); a legitimate 256-
+         * sector 2x read finishes in ~128 VBlanks worst case. After the
+         * cap, syncResult > 0 falls through to the error path below
+         * which frees the sector buffer and returns NULL, letting the
+         * caller (PSB load → walk teardown) degrade gracefully. */
         {
             int vsyncWait = 240;
             do {
                 VSync(0);
-                syncResult = CdReadSync(0, NULL);
+                syncResult = CdReadSync(1, NULL);
             } while (syncResult > 0 && --vsyncWait > 0);
         }
 
@@ -1050,13 +1056,14 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         }
 
         /* Same non-blocking poll + 240-VBlank cap as ps1_streamReadFromCdFile
-         * above. Mode 1 (blocking) would hang forever if DuckStation's CD-ROM
-         * emulator drops the completion IRQ — observed on long soak runs. */
+         * above. Mode 0 (blocking) would hang forever if DuckStation's CD-ROM
+         * emulator drops the completion IRQ — observed on long soak runs.
+         * Mode 1 returns _pending_sectors (>0) / 0 (done) / <0 (error). */
         {
             int vsyncWait = 240;
             do {
                 VSync(0);
-                syncResult = CdReadSync(0, NULL);
+                syncResult = CdReadSync(1, NULL);
             } while (syncResult > 0 && --vsyncWait > 0);
         }
 
@@ -1160,12 +1167,14 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         }
 
         /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
-         * applied in ps1_streamReadFromCdFile + ps1_streamReadFromCdFileInto. */
+         * applied in ps1_streamReadFromCdFile + ps1_streamReadFromCdFileInto.
+         * Mode 1 (not 0): mode 0 spins in PSn00bSDK's internal blocking
+         * loop and never returns when the CD-ROM IRQ is silently missed. */
         {
             int vsyncWait = 240;
             do {
                 VSync(0);
-                syncResult = CdReadSync(0, NULL);
+                syncResult = CdReadSync(1, NULL);
             } while (syncResult > 0 && --vsyncWait > 0);
         }
 
@@ -1233,12 +1242,12 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
         }
 
         /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
-         * applied above. */
+         * applied above. Mode 1 is non-blocking; mode 0 blocks. */
         {
             int vsyncWait = 240;
             do {
                 VSync(0);
-                syncResult = CdReadSync(0, NULL);
+                syncResult = CdReadSync(1, NULL);
             } while (syncResult > 0 && --vsyncWait > 0);
         }
 
