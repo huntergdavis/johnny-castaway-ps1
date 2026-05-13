@@ -118,14 +118,28 @@ linked in the Rollup section.</p>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
 </p>
 
-No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
-BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`
+No timing-bearing row is in the red band after the
+[VISITOR3]({{ '/scenes/visitor3/' | relative_url }}),
+[BUILDING4]({{ '/scenes/building4/' | relative_url }}), and
+[BUILDING2]({{ '/scenes/building2/' | relative_url }})
+restore-minus-current pack passes, the BUILDING2 high `60..72`
 and low `365..381` grouped-read passes, the VISITOR3 low scoped
-composite-helper pass, the WALKSTUF1 compact FGP3/v4 restore-minus-current
-pass, the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups, the
-BUILDING2 low restore-minus-current/slack-4 pass, the WALKSTUF3 high
-compact-FGP3/v4 pass, the BUILDING6 compact-FGP3/v4 pass, the ACTIVITY9 high
-compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the JOHNNY1
+composite-helper pass, the
+[WALKSTUF1]({{ '/scenes/walkstuf1/' | relative_url }})
+compact FGP3/v4 restore-minus-current
+pass, the
+[BUILDING1]({{ '/scenes/building1/' | relative_url }})/[VISITOR5]({{ '/scenes/visitor5/' | relative_url }})
+compact-FGP3 no-autoprime follow-ups, the
+BUILDING2 low restore-minus-current/slack-4 pass, the
+[WALKSTUF3]({{ '/scenes/walkstuf3/' | relative_url }})
+high
+compact-FGP3/v4 pass, the
+[BUILDING6]({{ '/scenes/building6/' | relative_url }})
+compact-FGP3/v4 pass, the
+[ACTIVITY9]({{ '/scenes/activity9/' | relative_url }})
+high
+compact-FGP3/v4 pass, the WALKSTUF3 low compact-FGP3/v4 pass, the
+[JOHNNY1]({{ '/scenes/johnny1/' | relative_url }})
 compact-FGP3/v4 pass, the ACTIVITY9 low compact-FGP3/v4 pass, and the
 VISITOR3 motion-copy/code-headroom/CD-pressure passes plus the low/high
 persistent setup-segment, high frame-126/frame-125 re-anchor passes, the
