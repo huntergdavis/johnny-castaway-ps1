@@ -345,7 +345,9 @@ or a custom format that changes work without moving the visible-loop cadence.
 The v494 low-only narrower `285..297` table confirms the same class under the
 current v474 baseline: reads improve `64 -> 63`, but scene/loop regress
 `1770/1478 -> 1778/1486`, overrun `47 -> 55`, blocking `64 -> 75`, and hidden
-refill `20 -> 26`.
+refill `20 -> 26`. The v495 safer tail `387..399` table is also phase-negative:
+reads improve `64 -> 63`, but scene/loop regress `1770/1478 -> 1771/1479`,
+overrun `47 -> 48`, blocking `64 -> 66`, and hidden refill `20 -> 22`.
 
 Latest rejected WALKSTUF1 low low-risk direct group: v381 tested `190..202`,
 the safest remaining current-fit retained-read row from the v331 plan. It had
