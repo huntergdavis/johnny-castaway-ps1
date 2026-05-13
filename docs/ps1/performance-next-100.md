@@ -87,14 +87,19 @@ plus loop-read time `292 -> 284`. Due misses stay `16` and hidden refill stays
 overrun `53`, blocking `72`, hidden refill `22`, and due misses `12`, while
 v428 lowers low loop reads `67 -> 66` and loop-read time `288 -> 287`.
 
-Latest rejected WALKSTUF1 low D4 probe: v453 encoded frame `181` as a
+Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
 `4708 -> 1484` bytes and reducing its modeled sector span from four to three.
 Both runtime shapes preserved pack LBA and the `217088` byte PS-EXE bucket and
 improved public cadence (`1484/1431 -> 1481/1433`, overrun `53 -> 48`), but
 visible blocking regressed `72 -> 76` and due misses regressed `12 -> 14`.
-Close frame `181` as a standalone D4 delta; it needs paired scheduler/deadline
-ownership if retried.
+v455 then tried the safer `190..202` neighborhood by encoding only frame `100`
+against frame `99`, shrinking `4683 -> 586` bytes and reducing its span from
+three sectors to one, but the focused gate was exact-flat at `1776`,
+`1484/1431`, overrun `53`, blocking `72`, refill `22`, reads/due `66/12`.
+Close frames `181` and `100` as standalone D4 deltas; WALKSTUF1 low needs
+paired scheduler/deadline ownership or a different sector-boundary byte removal
+if this mechanism is retried.
 
 Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
 and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.
