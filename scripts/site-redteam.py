@@ -24,6 +24,7 @@ or is cheap enough to lock in even with zero past hits:
 - Every `<th>` in rendered output carries a `scope=` attr (WCAG H63
   header-cell association; locked in after the kramdown styled-form
   fix in 452fe5654).
+- Every page has a non-empty `<title>` (WCAG 2.4.2 Page Titled).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -94,6 +95,7 @@ OG_IMAGE_RE = re.compile(
 )
 TH_RE = re.compile(r'<th\b[^>]*>', re.IGNORECASE)
 TH_SCOPE_RE = re.compile(r'\bscope=', re.IGNORECASE)
+TITLE_RE = re.compile(r'<title>([^<]*)</title>', re.IGNORECASE)
 
 
 LINK_ATTRS = {
@@ -448,6 +450,23 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         for m in TH_RE.finditer(text):
             if not TH_SCOPE_RE.search(m.group(0)):
                 errors.append(f"{rel}: <th> missing scope= attr: {m.group(0)}")
+        # WCAG 2.4.2 (Page Titled) — every page needs a non-empty
+        # <title>. Browser tabs, history entries, search results, and
+        # screen-reader page-identification announcements all derive
+        # from it; an empty or missing <title> degrades all four
+        # surfaces silently. head.html builds it via `{% if page.title %}
+        # {{ page.title | escape }} — {{ site.title | escape }}`,
+        # defaulting to the site title alone for the home page. A
+        # Liquid breakage or a forgotten frontmatter `title:` would
+        # silently drop it. Site-wide audit on 2026-05-12 confirmed
+        # 615 / 615 pages have non-empty titles. Redirect pages get
+        # "Redirecting…" via the redirect layout and don't need a
+        # separate exemption — they DO have a non-empty title — but
+        # the noindex / refresh skip stays in place for consistency
+        # with the other meta-tag checks.
+        m = TITLE_RE.search(text)
+        if m is None or not m.group(1).strip():
+            errors.append(f"{rel}: missing or empty <title>")
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
