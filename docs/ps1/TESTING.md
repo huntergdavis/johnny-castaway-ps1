@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-12:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.3190%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6873%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T19:52:57` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.3184%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6878%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T20:28:59` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -154,6 +154,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
 `activity9-high-compact-fgp3-v167`,
+`building2-low-rg238-250-v445`,
 `building6-compact-fgp3-v165`,
 `walkstuf3-high-compact-fgp3-v163`,
 `building2-low-restore-window-slack4-v160`,
