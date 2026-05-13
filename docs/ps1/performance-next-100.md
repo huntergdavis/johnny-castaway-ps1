@@ -140,10 +140,20 @@ but displacing the early ramp was worse than the resident-cluster win: focused
 low regressed scene `1770 -> 1795`, active loop/target `1478/1431 ->
 1503/1424`, overrun `47 -> 79`, blocking `64 -> 120`, loop reads `64 -> 71`,
 and due misses `11 -> 19`. Close broad setup-prime physical reordering for
-WALKSTUF1 low unless the swap is same-sector/same-window and does not push the
-startup ramp out of resident coverage. The next viable WALKSTUF1 low lanes are
-generated deadline ownership, custom payload shrinking/aliasing before
-reordering, or a smaller resident-slot swap backed by exact read-plan proof.
+WALKSTUF1 low unless the swap does not push the startup ramp out of resident
+coverage.
+
+Latest rejected WALKSTUF1 low near-equal resident-slot swap: v512 swapped setup
+frames `26..36` with hot frames `148..157`, a range-size delta of only `-3`
+bytes. The hot cluster became setup-prime resident in sectors `47..71`, entries
+`37..147` shifted by only `-3` bytes, and the pack/LBA/PS-EXE identity stayed
+fixed. It still failed harder than v511: scene `1770 -> 1798`, active
+loop/target `1478/1431 -> 1506/1424`, overrun `47 -> 82`, blocking `64 ->
+131`, hidden refill `20 -> 24`, loop reads `64 -> 70`, and due misses `11 ->
+22`. Close early-ramp physical swaps entirely. The next viable WALKSTUF1 low
+lanes are generated deadline ownership, custom payload shrinking/aliasing
+before reordering, or physical relocation only after creating true in-window
+slack that leaves startup entries resident.
 
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, store frame `129` as a 609-byte
