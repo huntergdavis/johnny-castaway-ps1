@@ -50,14 +50,15 @@ BUILDING6 scene-local slack4 window-refill guard, the v379 BUILDING2 high
 `226..242` read-group promotion, the v383/v384 WALKSTUF1 high
 `422..434` / `444..456` same-speed CD-work reductions, the v401 VISITOR5 high
 current-layout refresh, the v428 WALKSTUF1 shared `443..455` / `444..456`
-dual-tail CD-work reduction, and the v441 BUILDING2 high `206..230` plus
-24-sector grouped-read capacity promotion, plus the v445 BUILDING2 low
-`238..250` retained-read promotion:
-`+0.3184%` public average over target / `99.6878%` public target speed across
+dual-tail CD-work reduction, the v441 BUILDING2 high `206..230` plus
+24-sector grouped-read capacity promotion, the v445 BUILDING2 low `238..250`
+retained-read promotion, and the v451 VISITOR5 low compact FGP3/v4 plus
+`23..47` retained-read promotion:
+`+0.3111%` public average over target / `99.6949%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4486%` / `100.4702%`. Since the compact full-matrix baseline was about
+`-0.4559%` / `100.4772%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.08` public over-target points and added about `12.59`
+removed about `17.09` public over-target points and added about `12.59`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
 
@@ -259,8 +260,8 @@ blocking/refill `16`, reads `19`, and due `0`, then tested the read plan's
 top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
-target / `99.6884%` target speed at that point. Current rollup after the v445
-BUILDING2 low `238..250` promotion is `+0.3184%` / `99.6878%`. Close direct VISITOR5 high hand tables
+target / `99.6884%` target speed at that point. Current rollup after the v451
+VISITOR5 low compact/read promotion is `+0.3111%` / `99.6949%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
@@ -727,6 +728,24 @@ ACTIVITY9, and FISHING1 canaries stayed on their accepted profiles. The next
 top rows are WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 low/high,
 VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low, and the
 remaining under-99 rows.
+
+Latest promoted VISITOR5 low compact FGP3/read-ownership baseline: convert
+`VIST5LOW.FG2` to the same padded compact FGP3/v4 restore-minus-current pack
+inside the original `354227` byte footprint, then add a low-tide compact-only
+`23..47` retained read after the current HEAD raised grouped-read capacity to
+24 sectors. Low improves scene `1371 -> 1363`, active loop/target
+`1112/1090 -> 1104/1092`, overrun `22 -> 12`, `blocking_vb 12 -> 11`,
+`prefetch_overrun_vb 12 -> 11`, `loop_reads 25 -> 19`, and `loop_read_vb
+123 -> 91`; due misses stay `0`, pack LBA stays `24394`, pack sectors stay
+`173`, and the PS-EXE bucket stays `217088`. VISITOR5 high, BUILDING2
+high/low, WALKSTUF1 high/low, VISITOR3 low, and FISHING1 high canaries stayed
+on their accepted profiles. Public rollup is now `+0.3111%` over target /
+`99.6949%` target speed, raw signed rollup is `-0.4559%` / `100.4772%`, and
+the headless methodology has removed about `17.09` public over-target points
+while adding about `12.59` target-speed points since the compact full-matrix
+baseline. The next top rows are WALKSTUF1 low/high, VISITOR3 low/high,
+BUILDING2 high/low, VISITOR5 high, JOHNNY1 high/low, BUILDING4 low, and the
+remaining under-99 tail.
 
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
 `BUILDING1.FG2` and `BUIL1LOW.FG2` to padded compact FGP3/v4

@@ -193,10 +193,10 @@ Current battle-card rollup as of <time datetime="2026-05-12">2026-05-12</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3184%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6878%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T20:28:59` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.3111%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6949%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-12T21:13:11` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor5-low-compact-rg23-47-v451`, `building2-low-rg238-250-v445`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-high-shared-dual-tail-v428`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 The durable numeric source is
@@ -301,7 +301,7 @@ and this page.
   `stale-zero2-v072b-current-refresh`,
   `stale-zero-v072b-current-refresh`,
   `stale-top-v072b-current-refresh`,
-  `visitor5-v072-prefetch-relief`,
+  `visitor5-low-compact-rg23-47-v451`,
   `mismatch-top-v072-current-refresh`,
   `stand-family-v072-current-refresh`,
   `visitor4-v072-current-refresh`,
@@ -1974,15 +1974,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor5-low"><code>visitor5</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T00:23:01</td>
-      <td>visitor5-v072-prefetch-relief</td>
-      <td>+2.0%</td>
-      <td class="spd-yellow">98.0%</td>
-      <td>1112/1090</td>
-      <td>12</td>
-      <td>12</td>
+      <td>2026-05-12T21:13:11</td>
+      <td>visitor5-low-compact-rg23-47-v451</td>
+      <td>+1.1%</td>
+      <td class="spd-yellow">98.9%</td>
+      <td>1104/1092</td>
+      <td>11</td>
+      <td>11</td>
       <td>0</td>
-      <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>compact low FGP3/v4 restore-minus-current pack plus low-tide compact-only 23..47 retained read improves current low to scene 1363, loop/target 1104/1092, overrun 12, blocking/refill 11, reads/due 19/0</td>
     </tr>
     <tr id="perf-visitor6-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor6-high"><code>visitor6</code></a></td>
