@@ -312,6 +312,20 @@ W1 data; the next pack-side path needs smaller row-span/header
 canonicalization, a scene-local dictionary, generated frame-deadline ownership,
 or upload/restore work reduction rather than another whole-payload rebase.
 
+Latest rejected WALKSTUF1 preserve-offset draw-gap coalescing: v617-v619
+replayed known palette-index foreground pixels and merged only draw-span gaps
+that were already known foreground. The transform produced large byte/span
+savings (`77..94 KiB` and `40k..53k` merged gaps depending on tide/gap cap),
+but timing moved the wrong way: low gap4 cut reads `62 -> 59` while regressing
+to `1772`, `1480/1426`, overrun `54`, blocking/refill `75/29`; low gap1 was
+scene/loop-flat but target/refill-negative at `1478/1424`, overrun `54`,
+blocking/refill `77/27`; high gap1 regressed to `1774`, `1486/1424`,
+overrun `62`, blocking/refill `90/38`, reads `74`. Close preserve-offset
+draw-gap coalescing for W1: savings that add pixels are not enough. The next
+pack-side lane needs semantic/precomposed strip or row-template compression
+that reduces spans without increasing draw pixels, or generated frame-deadline
+ownership/upload reduction.
+
 Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
 the two interior gaps left by tiny D4 frames before the `218..230` near-miss
 cluster, first together and then independently. Removing both gaps shifted

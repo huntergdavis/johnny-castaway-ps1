@@ -109,11 +109,14 @@ shared retained-read row as a same-speed CD-work reduction. Low stays at
 reads drop `64 -> 62` and loop-read time `286 -> 281`. WALKSTUF1 high,
 VISITOR3 high/low, and BUILDING2 high/low stayed exact-flat.
 
-Latest rejected WALKSTUF1 note: `walkstuf1-origin-rebase-v616` dry-ran the
-compact-origin rebase compactor over both accepted W1 packs and found
-`0` saved bytes / `0` rewritten frames. No pack or timing matrix changed; W1
-pack-side work now needs row-level canonicalization, generated ownership, or
-upload/restore reduction rather than whole-payload origin rebasing.
+Latest rejected WALKSTUF1 note: `walkstuf1-draw-gap-preserve-v617-v619`
+replayed known palette-index foreground pixels and merged only already-known
+draw-span gaps. The transform saved `77..94 KiB` and removed `40k..53k` spans,
+but failed timing: low gap4 cut reads `62 -> 59` while regressing to
+`1480/1426`, overrun `54`, blocking/refill `75/29`; low gap1 stayed loop-flat
+but target/refill-negative; high gap1 regressed to `1486/1424`, overrun `62`,
+blocking/refill `90/38`. W1 pack-side work now needs semantic row/strip
+compression, generated ownership, or upload/restore reduction.
 
 `visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
 while moving frame `128` into the
