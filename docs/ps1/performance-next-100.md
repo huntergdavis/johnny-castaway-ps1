@@ -191,13 +191,18 @@ scene `1770 -> 1783`, active loop/target `1478/1431 -> 1491/1424`, overrun
 residency, or a custom data shape that does not pull more sectors into this
 visible phase.
 
-Latest rejected WALKSTUF1 low guarded scheduler-owned table: v497 split the
-shared table so low tide preserved accepted rows and added `{273,285,8}` behind
-an 8-VBlank slack gate. It saved one loop read (`64 -> 63`) but regressed
-blocking/refill `64/20 -> 66/21`, with scene, loop/target, overrun, and due
-misses flat at `1770`, `1478/1431`, `47`, and `11`. Close `273..285` in
-low-only guarded-table form; continue to generated deadline ownership or a
-custom data shape that removes work without changing hot-loop table/code shape.
+Latest rejected WALKSTUF1 low mid-row retained-read family: v502 split the
+WALKSTUF1 table by tide and tested `{196,208}`, `{190,202}`, `{209,225}`, and
+`{225,241}` as low-only rows. `{196,208}` and `{225,241}` were exact-flat at
+`1770`, `1478/1431`, overrun `47`, blocking/refill `64/20`, and reads/due
+`64/11`, with added hot code shape. `{190,202}` regressed to `1490/1428`,
+overrun `62`, blocking `96`, refill `27`, due `15`; `{209,225}` saved one loop
+read (`64 -> 63`) but still regressed to `1490/1431`, overrun `59`, blocking
+`93`, refill `30`, due `14`. This closes the current low-only scalar mid-row
+table family. The older v497 guarded `{273,285,8}` row also remains closed
+because it saved one read but regressed blocking/refill `64/20 -> 66/21`.
+Continue with generated deadline ownership, source-neutral pack relocation, or
+upload/restore work reduction instead of more hand-authored retained rows.
 
 Latest rejected WALKSTUF1 low D4 probes: v453 encoded frame `181` as a
 previous-frame delta against frame `180`, shrinking that payload
