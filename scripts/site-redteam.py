@@ -31,6 +31,8 @@ or is cheap enough to lock in even with zero past hits:
   values match the CSV-computed aggregates (4-decimal precision).
 - `/about/status/` headline rollup (public over/speed + raw signed
   over/speed) matches the CSV-computed aggregates.
+- `/docs/performance/` reference-manual rollup (same four aggregates,
+  different sentence shape) matches the CSV-computed aggregates.
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -224,6 +226,72 @@ def _public_cap_otp(otp_str: str) -> str:
     except ValueError:
         return otp_str
     return f"{max(0.0, v):.1f}%" if v >= 0 else "0.0%"
+
+
+def _check_perf_doc_rollup(csv_path: Path, html_path: Path) -> list[str]:
+    """Compare /docs/performance/'s reference-manual rollup against the CSV.
+
+    The reference quotes the same four aggregates as /about/status/ but in
+    a different sentence shape:
+      "...(`X%` exact public over target / `Y%` exact public target
+       speed); the raw signed optimization matrix is `Z%` / `W%`."
+    Locking parity across the /perf/, /about/status/, and /docs/performance/
+    surfaces means hand-typed rollups stay in agreement everywhere.
+    """
+    out: list[str] = []
+    pub_over = 0.0
+    pub_speed = 0.0
+    raw_over = 0.0
+    raw_speed = 0.0
+    n = 0
+    with csv_path.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            otp = r.get("over_target_percent", "").strip()
+            lvb = r.get("loop_vb", "").strip()
+            tvb = r.get("target_vb", "").strip()
+            if not otp or otp == "-" or not lvb or not tvb or lvb == "-" or tvb == "-":
+                continue
+            try:
+                otp_f = float(otp)
+                sp_f = float(tvb) / float(lvb) * 100.0
+            except (ValueError, ZeroDivisionError):
+                continue
+            pub_over += max(0.0, otp_f)
+            pub_speed += min(100.0, sp_f)
+            raw_over += otp_f
+            raw_speed += sp_f
+            n += 1
+    if n == 0:
+        return out
+    expected = {
+        "public_over": f"{pub_over / n:.4f}",
+        "public_speed": f"{pub_speed / n:.4f}",
+        "raw_over": f"-{abs(raw_over / n):.4f}" if raw_over < 0 else f"+{raw_over / n:.4f}",
+        "raw_speed": f"{raw_speed / n:.4f}",
+    }
+    text = html_path.read_text(encoding="utf-8", errors="replace")
+    m = re.search(
+        r'<code[^>]*>(\d+\.\d+)%</code>\s*exact\s*public\s*over\s*target'
+        r'\s*/\s*<code[^>]*>(\d+\.\d+)%</code>\s*exact\s*public\s*target\s*speed[^<]*\);'
+        r'[^<]*raw\s*signed\s*optimization\s*matrix\s*is\s*<code[^>]*>([+-]?\d+\.\d+)%</code>'
+        r'\s*/\s*<code[^>]*>(\d+\.\d+)%</code>',
+        text, re.DOTALL | re.IGNORECASE,
+    )
+    if not m:
+        return out
+    rendered = {
+        "public_over": m.group(1),
+        "public_speed": m.group(2),
+        "raw_over": m.group(3),
+        "raw_speed": m.group(4),
+    }
+    for k, exp in expected.items():
+        rend = rendered[k]
+        if rend.lstrip("+") != exp.lstrip("+"):
+            out.append(
+                f"docs/performance/index.html: rollup {k} rendered={rend!r} csv={exp!r}"
+            )
+    return out
 
 
 def _check_status_rollup(csv_path: Path, html_path: Path) -> list[str]:
@@ -642,6 +710,15 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
     status_html = root / "about" / "status" / "index.html"
     if perf_csv.exists() and status_html.exists():
         errors.extend(_check_status_rollup(perf_csv, status_html))
+
+    # /docs/performance/ reference manual quotes the same four
+    # aggregates in a different sentence shape. Caught a stale
+    # `0.3224%` (twice) + `-0.4446%` on 2026-05-13; fixed in
+    # 5f666f6bc. Locking that audit in across the third hand-typed
+    # rollup surface on the site.
+    perf_doc_html = root / "docs" / "performance" / "index.html"
+    if perf_csv.exists() and perf_doc_html.exists():
+        errors.extend(_check_perf_doc_rollup(perf_csv, perf_doc_html))
 
     for html, parser in pages.items():
         rel = html.relative_to(root)
