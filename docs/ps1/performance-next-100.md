@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-12
+Date: 2026-05-13
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -56,7 +56,8 @@ retained-read promotion, the v451 VISITOR5 low compact FGP3/v4 plus
 `23..47` retained-read promotion, the v452 VISITOR3 low frame129
 custom D4 delta promotion, the v454 BUILDING2 low frame71/frame77
 previous-frame D4 delta promotion, and the v458 WALKSTUF1 high current-control
-refresh:
+refresh, and the v460 VISITOR3 high frame137 previous-frame D4 CD-pressure
+promotion:
 `+0.3033%` public average over target / `99.7023%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4637%` / `100.4846%`. Since the compact full-matrix baseline was about
@@ -64,6 +65,19 @@ all `126` timing-bearing rows. The raw signed optimization matrix is
 removed about `17.09` public over-target points and added about `12.60`
 public target-speed points. Green rows are now `115 / 126`, with `11` yellow
 rows remaining and no orange/red rows.
+
+Latest promoted VISITOR3 high CD-pressure baseline: keep the v299 resident
+frame-131 placement, the v291 frame-140/tail setup-segment placement, and store
+frame `137` as a 503-byte D4 previous-frame delta against frame `136`. The
+v460 focused gate keeps scene and active timing flat at `1402` and
+`1071/1040`, while reducing visible blocking `52 -> 51`, loop-read VBlanks
+`52 -> 51`, delivered sectors `390 -> 388`, and overread bytes
+`21791 -> 18139`; loop reads and due misses stay `9/9`, hidden refill stays
+`0`, pack LBA/sectors stay `22611/760`, the pack footprint stays `1555450`
+bytes, and the PS-EXE bucket stays `217088`. VISITOR3 low, WALKSTUF1 high/low,
+BUILDING2 high/low, VISITOR5 high/low, and FISHING1 high canaries stayed on
+accepted profiles. This is a CD-pressure baseline, not a public speed win; the
+rollup remains `+0.3033%` over target / `99.7023%` target speed.
 
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
 frame `128` into the accepted resident slot, and store frame `129` as a
@@ -319,7 +333,8 @@ top `99..111` group. The group saved one read but regressed timing to
 `1112/1091`, overrun `21`, blocking/refill `18`. The public CSV now stamps
 VISITOR5 high as `visitor5-high-current-v401`; rollup is `+0.3178%` over
 target / `99.6884%` target speed at that point. Current rollup after the v458
-WALKSTUF1 high current-control refresh is `+0.3033%` / `99.7023%`. Close direct VISITOR5 high hand tables
+WALKSTUF1 high current-control refresh and v460 VISITOR3 high CD-pressure
+promotion is `+0.3033%` / `99.7023%`. Close direct VISITOR5 high hand tables
 unless a generated scheduler or pack-side data-shape pass changes ownership.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both

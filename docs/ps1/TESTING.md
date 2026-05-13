@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-12:
+Current battle-card rollup as of 2026-05-13:
 
 | Metric | Value |
 |---|---:|
@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-12:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.3033%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7023%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-12T23:36:40` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-13T00:28:12` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-high-frame137-delta-v460`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor3-low-frame129-delta-v452`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `walkstuf1-low-shared-dual-tail-v428`, `visitor5-high-current-v401`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,8 +87,16 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-low-frame129-delta-v452`
-keeps the low pack footprint and LBA fixed while moving frame `128` into the
+Latest promoted VISITOR3 note: `visitor3-high-frame137-delta-v460` stores high
+frame `137` as a 503-byte D4 previous-frame delta against frame `136`, keeping
+scene and active timing flat at `1402` and `1071/1040` while cutting blocking
+`52 -> 51` and loop-read time `52 -> 51`. Pack footprint, pack LBA, and the
+`217088` byte PS-EXE bucket stay fixed; VISITOR3 low, WALKSTUF1 high/low,
+BUILDING2 high/low, VISITOR5 high/low, and FISHING1 high canaries stayed on
+accepted profiles. This is a CD-pressure baseline, not a public speed win.
+
+`visitor3-low-frame129-delta-v452` keeps the low pack footprint and LBA fixed
+while moving frame `128` into the
 accepted resident slot and storing frame `129` as a 609-byte custom D4 delta
 against that resident payload. The narrowed decoder is gated to VISITOR3 low
 frame `129`; Freeplay diagnostics are default-off so the PS-EXE stays in the

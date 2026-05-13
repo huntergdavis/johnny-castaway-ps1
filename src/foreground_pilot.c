@@ -778,7 +778,7 @@ fgDecodeFrameDelta(uint8 *data,
 static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
 {
     if (fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
-        return islandState.lowTide && frameIndex == 129;
+        return islandState.lowTide ? frameIndex == 129 : frameIndex == 137;
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
         return frameIndex == 71 || frameIndex == 77;
     return 0;
