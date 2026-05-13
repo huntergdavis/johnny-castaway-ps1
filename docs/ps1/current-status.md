@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-13 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2954%` over target / `99.7097%` target speed).
+battle card is `+0.2866%` over target / `99.7183%` target speed).
 
 ## Overall
 
@@ -237,12 +237,12 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2954%` over target / `99.7097%` target speed
+The public battle card is now `+0.2866%` over target / `99.7183%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4716%`.
+raw signed optimization rollup is `-0.4804%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.10`
-public over-target points and added about `12.61` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.11`
+public over-target points and added about `12.62` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -291,7 +291,7 @@ low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
 matrix; the next true outliers are residual WALKSTUF1 work,
-BUILDING2 high residual work, VISITOR3 high/low, BUILDING2 low, VISITOR5 high/low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
+BUILDING2 high residual work, VISITOR3 high/low, BUILDING2 low, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
 BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
 VISITOR3 local C
 read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
@@ -332,12 +332,13 @@ Milestone releases:
   pack-only compaction plus frame129/frame132 D4 and frame132 setup-prime gap
   relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
   residency, plus WALKSTUF1 low `78..91` retained post-prime boundary
-  ownership. The public battle card is `+0.2954%` / `99.7097%`;
+  ownership, and VISITOR5 high `30..46` retained-read ownership. The public
+  battle card is `+0.2866%` / `99.7183%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `64`, VISITOR3 high is `1067/1039`, VISITOR3 low is `1065/1041` with
-  blocking/read time `45`, and VISITOR5 high is refreshed at
-  `1107/1090`.
+  blocking/read time `45`, and VISITOR5 high is now green at
+  `1101/1096`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless

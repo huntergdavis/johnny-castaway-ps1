@@ -138,7 +138,7 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no orange or red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `115` rows are green and `11`
+[battle card]({{ '/perf/' | relative_url }}): `116` rows are green and `10`
 remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
 VISITOR3 high/low, BUILDING2 high/low, VISITOR5 low, and JOHNNY1 high.
 The optimization plan at

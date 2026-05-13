@@ -61,13 +61,14 @@ promotion, and the v462 VISITOR3 high frame132 D4 plus slack4 CD-pressure
 promotion, the v464 VISITOR3 high one-sector frame132 setup-segment, the
 v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion, the
 v474 WALKSTUF1 low `78..91` first post-prime boundary read-group promotion,
-and the v477 VISITOR3 low frame132 setup-prime gap relocation:
-`+0.2954%` public average over target / `99.7097%` public target speed across
+the v477 VISITOR3 low frame132 setup-prime gap relocation, and the v496
+VISITOR5 high `30..46` retained-read promotion:
+`+0.2866%` public average over target / `99.7183%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4716%` / `100.4920%`. Since the compact full-matrix baseline was about
+`-0.4804%` / `100.5006%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.10` public over-target points and added about `12.61`
-public target-speed points. Green rows are now `115 / 126`, with `11` yellow
+removed about `17.11` public over-target points and added about `12.62`
+public target-speed points. Green rows are now `116 / 126`, with `10` yellow
 rows remaining and no orange/red rows.
 
 Latest promoted VISITOR3 high speed baseline: keep the v299 resident
@@ -594,7 +595,22 @@ The focused harness reached the VISITOR5 FG stream but was killed with exit
 `137` before `JCPERF2`; the orphaned DuckStation process continued issuing
 small VISITOR5 reads for another minute and still emitted no scene-complete
 metrics. Restore the source table and keep direct high-tide scalar groups
-closed until generated scheduler metadata can prove deadline ownership.
+closed unless a clean rerun proves the row with no external relauncher noise.
+
+Latest promoted VISITOR5 high baseline: v496 reran that same lower-risk
+`30..46` high-tide row after stopping the external long-run relauncher that
+had been corrupting focused perf runs. The focused gate passed at
+`scratch/ps1-perf-iterate/visitor5-high-rg30-46-v496-focused/20260513-072408-2952191/summary.json`,
+and broad canaries passed at
+`scratch/ps1-perf-iterate/visitor5-high-rg30-46-v496-canaries/20260513-072519-2959484/summary.json`.
+VISITOR5 high improves scene `1365 -> 1359`, active loop/target
+`1107/1090 -> 1101/1096`, overrun `17 -> 5`, blocking/refill `16 -> 5`,
+loop reads `19 -> 18`, and loop-read VBlanks `99 -> 84`; due misses remain
+`0`, pack LBA/sectors stay `24221/173`, and the PS-EXE bucket stays `217088`.
+VISITOR5 low, WALKSTUF1 high/low, BUILDING2 high/low, VISITOR3 high/low, and
+FISHING1 high canaries stayed on accepted profiles. This moves VISITOR5 high
+to `99.55%` target speed and into green, adding about `0.0088` public
+over-target points removed and `0.0086` public target-speed points gained.
 
 Latest rejected WALKSTUF1 low direct-stage ownership lane: v402 tested both
 sides of the late `297..321` exact-read/window split. Denying the direct-stage

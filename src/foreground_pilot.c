@@ -516,6 +516,10 @@ static const struct TFgPilotReadGroup kVisitor5LowReadGroups12[] = {
     {23, 47, 0}
 };
 
+static const struct TFgPilotReadGroup kVisitor5HighReadGroups12[] = {
+    {30, 46, 0}
+};
+
 static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
     {78, 91, 0},
     {201, 213, 0},
@@ -3203,13 +3207,19 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
                                 sizeof(kWalkstuf1HighReadGroups12[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                           islandState.lowTide &&
                            gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual &&
                            fgSceneEquals(sceneName, "visitor5")) {
-                    streamReadGroups = kVisitor5LowReadGroups12;
-                    streamReadGroupCount =
-                        (uint8)(sizeof(kVisitor5LowReadGroups12) /
-                                sizeof(kVisitor5LowReadGroups12[0]));
+                    if (islandState.lowTide) {
+                        streamReadGroups = kVisitor5LowReadGroups12;
+                        streamReadGroupCount =
+                            (uint8)(sizeof(kVisitor5LowReadGroups12) /
+                                    sizeof(kVisitor5LowReadGroups12[0]));
+                    } else {
+                        streamReadGroups = kVisitor5HighReadGroups12;
+                        streamReadGroupCount =
+                            (uint8)(sizeof(kVisitor5HighReadGroups12) /
+                                    sizeof(kVisitor5HighReadGroups12[0]));
+                    }
                 }
                 gFgRuntime.streamReadGroups = streamReadGroups;
                 gFgRuntime.streamReadGroupCount = streamReadGroupCount;

@@ -20,10 +20,12 @@ and the chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2954%` over
-target / `99.7097%` target speed; the raw signed optimization matrix is
-`-0.4716%`.
-The newest accepted VISITOR3 low frame132 setup-prime relocation keeps the
+allocation. The public headless battle card is `+0.2866%` over
+target / `99.7183%` target speed; the raw signed optimization matrix is
+`-0.4804%`.
+The newest accepted VISITOR5 high `30..46` retained-read row moves that scene
+to `1101/1096`, overrun `5`, blocking/refill `5`, reads/due `18/0`, and green
+status. The VISITOR3 low frame132 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1065/1041`, overrun `24`,
 blocking `45`, reads/due `8/8`. WALKSTUF1 high/low now measure `1476/1434`
