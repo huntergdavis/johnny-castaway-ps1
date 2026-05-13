@@ -25,6 +25,8 @@ or is cheap enough to lock in even with zero past hits:
   header-cell association; locked in after the kramdown styled-form
   fix in 452fe5654).
 - Every page has a non-empty `<title>` (WCAG 2.4.2 Page Titled).
+- Scene pages — meta description's "Validated YYYY-MM-DD" matches
+  the first body mention (locked in after the f2deceef7 56-page sweep).
 - The /perf/ table rows match the CSV source-of-truth (no drift on
   stats_version / last_run_at / blocking / prefetch / due / vblanks /
   public-capped over_target).
@@ -96,6 +98,7 @@ OG_IMAGE_RE = re.compile(
 TH_RE = re.compile(r'<th\b[^>]*>', re.IGNORECASE)
 TH_SCOPE_RE = re.compile(r'\bscope=', re.IGNORECASE)
 TITLE_RE = re.compile(r'<title>([^<]*)</title>', re.IGNORECASE)
+VALIDATED_DATE_RE = re.compile(r'Validated\s+(?:on\s+)?(\d{4}-\d{2}-\d{2})')
 
 
 LINK_ATTRS = {
@@ -467,6 +470,32 @@ def check_build(root: Path, baseurls: list[str], require_relative: bool, exclude
         m = TITLE_RE.search(text)
         if m is None or not m.group(1).strip():
             errors.append(f"{rel}: missing or empty <title>")
+        # Scene pages — meta description's "Validated YYYY-MM-DD"
+        # must match the first body mention. Both are hand-written
+        # in the same source file (the description in frontmatter,
+        # the body in the markdown) so they can drift if an editor
+        # touches one without the other. Site-wide audit on
+        # 2026-05-12 caught 56 such drifts (mostly from the v0.8.4
+        # chapter-select grind regenerating descriptions without
+        # touching the body validation date); locked in by f2deceef7.
+        # This check makes any future re-drift fail the build.
+        # Scoped to /scenes/<slug>/ pages — the scene-page layout
+        # is the only surface that emits the "Validated YYYY-MM-DD"
+        # phrase in both description and body.
+        rel_str = rel.as_posix()
+        if rel_str.startswith("scenes/") and rel_str.endswith("/index.html") and rel_str != "scenes/index.html":
+            m_desc = META_DESC_RE.search(text)
+            if m_desc:
+                dm_desc = VALIDATED_DATE_RE.search(m_desc.group(1))
+                # Find body Validated — exclude the description meta
+                # tag itself by stripping it before scanning.
+                body = META_DESC_RE.sub("", text, count=1)
+                dm_body = VALIDATED_DATE_RE.search(body)
+                if dm_desc and dm_body and dm_desc.group(1) != dm_body.group(1):
+                    errors.append(
+                        f"{rel}: Validated date mismatch — "
+                        f"description={dm_desc.group(1)} body={dm_body.group(1)}"
+                    )
 
     # /perf/ row freshness vs CSV. The /perf/ table's <tr> rows are
     # hand-written HTML; the CSV at docs/ps1/performance-scene-matrix.csv
