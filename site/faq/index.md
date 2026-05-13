@@ -428,6 +428,20 @@ prior ports and toolchain authors this build stands on.
 - [About]({{ '/about/' | relative_url }}) — the project
   overview if you want the long-form version of "What is
   this?".
+- [Docs]({{ '/docs/' | relative_url }}) — twenty reference
+  manuals behind every "how does X work?" question (build,
+  captions, holidays, pause menu, freeplay, walks, regtest,
+  scripted input, performance, hardware, devices, audio,
+  infrastructure, file formats, AI sub-agents,
+  vision-classifier, API mapping, dev workflow, feeds +
+  well-known endpoints, glossary).
+- [Devlog]({{ '/devlog/' | relative_url }}) — dated, unedited
+  worklogs for the day-by-day "when did X happen and what was
+  tried first?" question.
+- [Lab]({{ '/lab/' | relative_url }}) — seventeen feature-length
+  retrospectives for the "but why did it end up that way?"
+  question, with the benefit of hindsight the worklogs above
+  deliberately lack.
 - [Glossary]({{ '/docs/glossary/' | relative_url }}) —
   vocabulary anchor for terms (`FG2 pack`, `FISHING 1 bar`,
   `target speed`, `host build`) used throughout the answers
