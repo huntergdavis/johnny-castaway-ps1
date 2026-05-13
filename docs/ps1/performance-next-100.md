@@ -395,6 +395,14 @@ overrun `40 -> 70`; hidden refill, reads, and due misses stayed `18`, `58`,
 and `7`. Close small BUILDING2 high D4 sector-boundary deltas; remaining
 adjacent-frame savings are too small for hot runtime decode.
 
+Latest rejected BUILDING2 high narrow early group: v478 added the current
+read-plan-compatible `23..29` retained-read row ahead of the accepted high
+groups. The focused pass was exact-flat at scene `1602`, active loop/target
+`1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, loop reads
+`58`, due misses `7`, and `group_hits=0`, while growing/shifting hot
+foreground symbols. Close narrow early scalar groups in this cluster; the
+next BUILDING2 high work needs generated ownership or pack-side work reduction.
+
 Latest rejected VISITOR3 high current-layout frame129 D4 retest: v469 reran
 the large `17025 -> 609` byte frame `129` delta after v464 gave frame `132`
 setup-segment ownership. The run emitted complete metrics but failed strict
