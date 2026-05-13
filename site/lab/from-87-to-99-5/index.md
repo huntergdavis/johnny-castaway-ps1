@@ -42,7 +42,7 @@ VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
 staged-prepare-before-window scheduler fallback, and the VISITOR3 low
 tail pack-only CD-pressure compaction. The current
 public-capped average is
-**+0.3250% over target / 99.6814% target speed**, with roughly **17.07
+**+0.3225% over target / 99.6839% target speed**, with roughly **17.07
 percentage points** of over-target gap closed and about **12.58 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
