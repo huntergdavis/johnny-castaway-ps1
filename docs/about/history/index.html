@@ -106,7 +106,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3468 words
+          ~13 min read · 3474 words
         </p>
 
       <hr class="rule" />
@@ -500,13 +500,14 @@ the 126 timing-bearing scene/tide rows on the headless-perf
 battle card. The retrospective is at
 <a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.</li>
   <li>Current mainline performance: the post-v0.8.7 optimization arc now includes
-VISITOR5 high’s <code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR3 low’s frame132
-setup-prime relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, and
-BUILDING2 low’s previous-frame D4 deltas. The public battle card is
-<code class="language-plaintext highlighter-rouge">+0.2867%</code> over target / <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; raw signed rollup is
-<code class="language-plaintext highlighter-rouge">-0.4805%</code> / <code class="language-plaintext highlighter-rouge">100.5006%</code>. VISITOR5 high measures <code class="language-plaintext highlighter-rouge">1101/1096</code> with
-<code class="language-plaintext highlighter-rouge">blocking_vb=5</code>; WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and
-VISITOR3 high/low remain the main under-99 tactical queue.</li>
+VISITOR3 high’s frame137 sector-203 setup relocation, VISITOR5 high’s
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR3 low’s frame132 setup-prime
+relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, and BUILDING2
+low’s previous-frame D4 deltas. The public battle card is <code class="language-plaintext highlighter-rouge">+0.2852%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7198%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4820%</code> /
+<code class="language-plaintext highlighter-rouge">100.5021%</code>. VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1065/1039</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=41</code>;
+WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high, and VISITOR3 high/low remain
+the main under-99 tactical queue.</li>
   <li>Performance-baseline release: <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> — promoted the
 headless optimization methodology to a release baseline; routed
 all 126 high/low scene variants through the perf matrix; clean-

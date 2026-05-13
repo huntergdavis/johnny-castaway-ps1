@@ -44,11 +44,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.8-ps1`** — VISITOR5 high retained-read promotion |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.2867% over target / 99.7183% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; public-capped average is **+0.2852% over target / 99.7198% target speed**. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
-The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Recent releases:
+The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current post-release mainline win: VISITOR3 high now relocates the frame137 D4 payload into the existing sector-203 setup segment beside frame132, improving to `1065/1039`, overrun `26`, blocking `41`, reads/due `7/7`, with public rollup `+0.2852%` over target / `99.7198%` target speed and raw signed rollup `-0.4820%` / `100.5021%`.
+
+Recent releases:
 
 - `v0.8.8-ps1` — VISITOR5 high now uses a high-tide `30..46` retained-read group, improving to `1101/1096`, overrun `5`, blocking/refill `5`, reads/due `18/0`, and moving that row into green. Public rollup is `+0.2867%` over target / `99.7183%` target speed; raw signed rollup is `-0.4805%` / `100.5006%`; bands are `116` green and `10` yellow.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection, expected-scene gates in the headless perf harness, Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail streaming. Public rollup remains `+0.3156%` over target / `99.6902%` target speed.

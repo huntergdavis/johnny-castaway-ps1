@@ -311,15 +311,21 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2867%`
-exact public over target / `99.7183%` exact public target speed); the raw
-signed optimization matrix is `-0.4805%` / `100.5006%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2852%`
+exact public over target / `99.7198%` exact public target speed); the raw
+signed optimization matrix is `-0.4820%` / `100.5021%`.
 
 ## Scene Battle Card
 
 As of 2026-05-13, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-frame137-sector203-v501`,
 `visitor5-high-rg30-46-v496`,
+`visitor3-low-frame132-primegap-v477`,
+`walkstuf1-low-rg78-91-v474`,
+`walkstuf1-high-current-v458-refresh`,
+`building2-low-delta-v454`,
+`visitor5-low-compact-rg23-47-v451`,
 `walkstuf1-high-shared-dual-tail-v428`,
 `walkstuf1-low-shared-dual-tail-v428`,
 `building2-high-rg206-230-cap24-v441`,
@@ -423,7 +429,14 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf1-high-shared-dual-tail-v428`,
+rows now use `visitor3-high-frame137-sector203-v501`,
+`visitor5-high-rg30-46-v496`,
+`visitor3-low-frame132-primegap-v477`,
+`walkstuf1-low-rg78-91-v474`,
+`walkstuf1-high-current-v458-refresh`,
+`building2-low-delta-v454`,
+`visitor5-low-compact-rg23-47-v451`,
+`walkstuf1-high-shared-dual-tail-v428`,
 `walkstuf1-low-shared-dual-tail-v428`,
 `building2-low-rg238-250-v445`,
 `building2-high-rg206-230-cap24-v441`,
@@ -910,7 +923,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2867% over target / 99.7183% target speed, with several
+  public average is now +0.2852% over target / 99.7198% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

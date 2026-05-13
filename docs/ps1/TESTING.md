@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-13:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2867%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7183%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T07:24:08` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor5-high-rg30-46-v496`, `visitor3-low-frame132-primegap-v477`, `walkstuf1-low-rg78-91-v474`, `visitor3-high-frame132-setupseg1-v464`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2852%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7198%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-13T08:30:37` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `visitor3-low-frame132-primegap-v477`, `walkstuf1-low-rg78-91-v474`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `visitor5-low-compact-rg23-47-v451`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -87,10 +87,11 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted VISITOR3 note: `visitor3-high-frame132-setupseg1-v464` keeps
-the frame137 D4 delta, stores frame `132` as a 768-byte D4 delta, and preloads
-that payload through one high-tide setup sector. High improves to `1067/1039`,
-overrun `28`, blocking `45`, reads/due `8/8`, with hidden refill `0`.
+Latest promoted VISITOR3 note: `visitor3-high-frame137-sector203-v501` keeps
+the frame132/frame137 D4 deltas and relocates frame `137` into the same
+one-sector high-tide setup segment as frame `132`. High improves to
+`1065/1039`, overrun `26`, blocking `41`, reads/due `7/7`, with hidden refill
+`0`.
 `visitor3-low-frame132-primegap-v477` relocates the existing low frame `132`
 D4 payload into the unused setup-prime gap at sector `99`, improving low to
 `1065/1041`, overrun `24`, blocking/read time `45`, and reads/due `8/8`.

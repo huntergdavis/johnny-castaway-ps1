@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2026 words
+          ~8 min read · 2056 words
         </p>
 
       <hr class="rule" />
@@ -128,10 +128,13 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2867%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4805%</code>.
-The newest accepted VISITOR5 high <code class="language-plaintext highlighter-rouge">30..46</code> retained-read row moves that scene
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2852%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7198%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4820%</code> / <code class="language-plaintext highlighter-rouge">100.5021%</code>.
+The newest accepted VISITOR3 high pack-only relocation moves frame137 into the
+existing sector-203 setup slot beside frame132, improving high to <code class="language-plaintext highlighter-rouge">1065/1039</code>,
+overrun <code class="language-plaintext highlighter-rouge">26</code>, blocking <code class="language-plaintext highlighter-rouge">41</code>, and reads/due <code class="language-plaintext highlighter-rouge">7/7</code> without hidden refill.
+VISITOR5 high’s <code class="language-plaintext highlighter-rouge">30..46</code> retained-read row moves that scene
 to <code class="language-plaintext highlighter-rouge">1101/1096</code>, overrun <code class="language-plaintext highlighter-rouge">5</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, reads/due <code class="language-plaintext highlighter-rouge">18/0</code>, and green
 status. The VISITOR3 low frame132 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and

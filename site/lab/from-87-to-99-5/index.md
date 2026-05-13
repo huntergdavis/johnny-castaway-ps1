@@ -40,7 +40,7 @@ booting plus Scene Explorer preview streaming, and `v0.8.8-ps1` promotes the
 follow-on VISITOR3, WALKSTUF1, BUILDING2, BUILDING6, and VISITOR5 rows through
 the VISITOR5 high `30..46` retained-read win. The current
 public-capped average is
-**+0.2867% over target / 99.7183% target speed**, with roughly **17.11
+**+0.2852% over target / 99.7198% target speed**, with roughly **17.11
 percentage points** of over-target gap closed and about **12.62 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

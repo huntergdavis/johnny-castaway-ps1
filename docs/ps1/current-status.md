@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-13 (`main` after `v0.8.7-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2867%` over target / `99.7183%` target speed).
+battle card is `+0.2852%` over target / `99.7198%` target speed).
 
 ## Overall
 
@@ -210,6 +210,10 @@ aliases duplicate frame `123` to frame `121`, expands the second setup segment
 from `24` to `27` sectors, copies frame `128` resident, and improves low again
 to `1071/1039`, blocking `63`, loop reads `11`, loop-read time `63`, and due
 misses `11`.
+The v501 pack-only high follow-up moves frame `137` into the same sector-203
+setup segment as frame `132`, improving high to `1065/1039`, overrun `26`,
+`blocking_vb=41`, loop reads `7`, loop-read time `41`, due misses `7`, and
+hidden refill `0`.
 The v327 low resident-slot swap moves frame `129` into the already paid frame
 `128` segment2 slot while frame `128` points back to its original cold payload.
 Low improves to `1072/1040`, blocking `64`, loop reads `11`, loop-read time
@@ -237,9 +241,9 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2867%` over target / `99.7183%` target speed
+The public battle card is now `+0.2852%` over target / `99.7198%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4805%`.
+raw signed optimization rollup is `-0.4820%` / `100.5021%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.11`
 public over-target points and added about `12.62` public target-speed points.
@@ -277,9 +281,9 @@ plus the WALKSTUF1 high v288
 gap1/window-prefetch guard and low v289 gap1 prefix pack, the VISITOR3 low
 frame129/frame132 D4 deltas plus the frame132 setup-prime gap relocation, and
 the VISITOR3 high frame132/frame137 D4 deltas with a high-tide slack4 window
-guard plus a one-sector high setup segment for frame `132`.
+guard plus a one-sector high setup segment for frames `132` and `137`.
 VISITOR3 high is now
-`1067/1039` with `blocking_vb=45`; low is
+`1065/1039` with `blocking_vb=41`; low is
 `1065/1041` with `blocking_vb=45`. BUILDING2 high/low are `1351/1311` and
 `1349/1320`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
@@ -331,13 +335,13 @@ Milestone releases:
   WALKSTUF1 low staged-prepare scheduler fallback, VISITOR3 low tail
   pack-only compaction plus frame129/frame132 D4 and frame132 setup-prime gap
   relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
-  residency, plus WALKSTUF1 low `78..91` retained post-prime boundary
-  ownership, and VISITOR5 high `30..46` retained-read ownership. The public
-  battle card is `+0.2867%` / `99.7183%`;
+  residency plus frame137 co-residency, plus WALKSTUF1 low `78..91` retained
+  post-prime boundary ownership, and VISITOR5 high `30..46` retained-read
+  ownership. The public battle card is `+0.2852%` / `99.7198%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
-  reads `64`, VISITOR3 high is `1067/1039`, VISITOR3 low is `1065/1041` with
-  blocking/read time `45`, and VISITOR5 high is now green at
+  reads `64`, VISITOR3 high is `1065/1039` with blocking/read time `41`,
+  VISITOR3 low is `1065/1041` with blocking/read time `45`, and VISITOR5 high is now green at
   `1101/1096`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
