@@ -250,6 +250,13 @@ overrun `53 -> 69`, blocking `72 -> 90`, hidden refill `22 -> 34`, reads
 `67 -> 70`, and due `12 -> 13`. Close the direct `190..202` lane; remaining
 WALKSTUF1 low work should not spend more time on plain retained tables.
 
+Latest rejected WALKSTUF1 low first post-setup retained group: v472 tested
+`78..90`, the current read-plan's long-first-gap post-prime candidate. It did
+reduce due misses `12 -> 11`, but it regressed scene `1776 -> 1780`, active
+loop/target `1484/1431 -> 1488/1428`, overrun `53 -> 60`, blocking `72 -> 79`,
+hidden refill `22 -> 27`, and loop reads `66 -> 68`. Close `78..90` as another
+plain retained table that needs scheduler ownership before it can help.
+
 Latest rejected WALKSTUF1 high direct group: v368 appended the current
 read-plan `360..376` candidate after the accepted `344..360` group. It cut
 reads `67 -> 65` and loop-read VBlanks `292 -> 289`, but regressed scene
