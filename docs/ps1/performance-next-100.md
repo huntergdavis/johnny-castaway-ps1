@@ -297,6 +297,17 @@ active loop/target `1351/1311 -> 1359/1310`, overrun `40 -> 49`, blocking
 class only as generated ownership metadata, pack-side byte reduction, or
 selective/preprocessed render data.
 
+Latest rejected BUILDING2 high D4 split: v463 isolated the only meaningful
+high-tide previous-frame delta candidates from the current scan. Frame `77`
+shrinks `8828 -> 909` bytes but repeats the high-side phase failure: loop stays
+`1351`, target drops `1311 -> 1310`, blocking regresses `54 -> 56`, hidden
+refill regresses `18 -> 19`, and overrun moves `40 -> 41` while reads drop
+`58 -> 57`. Frame `71` shrinks `6656 -> 13` bytes but is exact-flat at
+`1602`, `1351/1311`, overrun `40`, blocking `54`, refill `18`, reads/due
+`58/7`. Together with the earlier paired high probe, close BUILDING2 high
+frames `71` and `77` as standalone D4 deltas; high still needs generated
+deadline ownership or a different pack shape.
+
 Latest rejected VISITOR3 low grouped-append ownership: v421-v423 tested the
 remaining tight `206..230` low cluster without adding setup residency. A
 low-only 24-sector grouped append with `minSlack=4`, the same group unguarded,
