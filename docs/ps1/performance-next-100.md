@@ -360,7 +360,10 @@ sector reads around `44s` with no `JCPERF2` before the wrapper was killed with
 exit `137`. No metrics were accepted and the source table was restored. Treat
 `371..387` direct grouping as phase-negative/inconclusive under the current
 layout; future work needs generated deadline ownership or pack-side data shape,
-not another scalar retained-read row.
+not another scalar retained-read row. The v493 low-only table retest completed
+after stopping the external long-run relauncher and confirms the rejection:
+reads improved `64 -> 62`, but scene/loop regressed `1770/1478 -> 1774/1482`,
+overrun `47 -> 50`, blocking `64 -> 67`, and hidden refill `20 -> 23`.
 
 Latest rejected WALKSTUF1 low shared-table split: v491 separated the shared
 WALKSTUF1 retained-read table so low tide kept only the low-promoted `78..91`
