@@ -58,8 +58,8 @@ custom D4 delta promotion, the v454 BUILDING2 low frame71/frame77
 previous-frame D4 delta promotion, and the v458 WALKSTUF1 high current-control
 refresh, the v460 VISITOR3 high frame137 previous-frame D4 CD-pressure
 promotion, and the v462 VISITOR3 high frame132 D4 plus slack4 CD-pressure
-promotion, and the v464 VISITOR3 high one-sector frame132 setup-segment
-promotion:
+promotion, the v464 VISITOR3 high one-sector frame132 setup-segment, and the
+v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion:
 `+0.3010%` public average over target / `99.7044%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4660%` / `100.4868%`. Since the compact full-matrix baseline was about
@@ -86,16 +86,20 @@ at `1068/1041`, blocking `51`, reads/due `9/9`. This promotion adds about
 points gained, moving VISITOR3 high to `97.38%` target speed.
 
 Latest promoted VISITOR3 low baseline: keep the v338 tail compaction, move
-frame `128` into the accepted resident slot, and store frame `129` as a
-609-byte custom D4 delta against that resident payload. The v452 focused gate
-improves scene `1401 -> 1397`, active loop/target `1072/1040 -> 1068/1041`,
-overrun `32 -> 27`, blocking `58 -> 51`, loop reads `10 -> 9`, loop-read time
-`58 -> 51`, and due misses `10 -> 9`, while the pack LBA, `1555450` byte pack
-footprint, and `217088` byte PS-EXE bucket stay fixed. VISITOR3 high,
-BUILDING2 high/low, WALKSTUF1 high/low, VISITOR5 high/low, and FISHING1 high
-canaries stayed on accepted profiles. Use this as the current VISITOR3 low
-baseline; future VISITOR3 work should extend custom data shapes only when the
-decoder/code-size cost stays within the current executable bucket.
+frame `128` into the accepted resident slot, store frame `129` as a 609-byte
+custom D4 delta against that resident payload, and store frame `132` as a
+768-byte D4 delta against frame `131`. The v452 focused gate improves scene
+`1401 -> 1397`, active loop/target `1072/1040 -> 1068/1041`, overrun
+`32 -> 27`, blocking `58 -> 51`, loop reads `10 -> 9`, loop-read time
+`58 -> 51`, and due misses `10 -> 9`; the v470 follow-up keeps scene,
+loop/target, overrun, reads/due, hidden refill, pack LBA/sectors, and the
+`217088` byte PS-EXE bucket fixed while cutting blocking and loop-read time
+`51 -> 50`. VISITOR3 high, BUILDING2 high/low, WALKSTUF1 high, and a
+standalone WALKSTUF1 low rerun stayed on accepted profiles. Use this as the
+current VISITOR3 low baseline; future VISITOR3 work should extend custom data
+shapes only when the decoder/code-size cost stays within the current executable
+bucket and the focused gate shows either speed movement or visible CD-pressure
+reduction.
 
 Latest promoted WALKSTUF1 baseline: both tides now share the accepted
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`
@@ -671,7 +675,7 @@ Rank order is current working priority, not guaranteed payoff.
 | 12 | Duplicate only subpayload spans inside current sectors | If full entry duplication is phase-negative, duplicate only the spans that trigger extra sectors into slack bytes in the same sector group. | Needs pack surgery below entry granularity. |
 | 13 | VISITOR3 terminal frame split: early core plus late tail | Split large entries into an early resident core and a late small residual, reducing blocking at due time without moving the whole payload. | Requires pack/runtime support for two payload sources per frame. |
 | 14 | Palette-index RLE for repeated water/background strips | VISITOR3 late frames likely contain repeated water/background runs. A VISITOR3-specific RLE substream could be tiny and decode into PAL4 spans. | Decoder code size and branch cost. |
-| 15 | Extend previous-frame D4 deltas beyond frame `129` | v452 proved a tiny prior-frame delta can remove one VISITOR3 low due read without moving pack LBA or growing the executable bucket. Re-rank frames `132`, `137`, and the terminal cluster for the same mechanism, one frame at a time. | Multi-frame delta probes already crossed the executable bucket before the Freeplay diagnostic gate and can regress canaries; every extension needs focused plus broad gates. |
+| 15 | Extend previous-frame D4 deltas beyond frames `129`/`132` | v452 proved a tiny prior-frame delta can remove one VISITOR3 low due read, and v470 proved frame `132` can shave one more blocking/read VBlank without moving pack LBA or growing the executable bucket. Re-rank frame `137` and the terminal cluster for the same mechanism, one frame at a time. | Multi-frame delta probes can cross the executable bucket or no-op public timing; every extension needs focused plus broad gates and should promote only on speed or visible CD-pressure movement. |
 | 16 | Generated per-frame copy-previous-background mode | Motion-copy is one instance. Generalize to copy selected previous background regions plus smaller draw deltas for frames that are near-identical but not simple X translations. | Copy regions can propagate stale pixels if cleanup ownership is wrong. |
 | 17 | Pre-baked clean-rect cache for VISITOR3 yacht region | Keep a small cached clean background rectangle for the yacht travel band to make cleanup cheaper than reading/restoring dynamic spans. | RAM pressure and correctness with island/water overlays. |
 | 18 | Tide-specific opcode selection | High and low differ: high accepted frame `115`, low rejected every precursor. Generate independent opcode families and never assume paired eligibility. | More tooling complexity and broader visual verification burden. |

@@ -27,7 +27,7 @@ accepted performance baseline.
 | 10 | `johnny1` | `low` | 28.69 | 1.49% | 54.11% | 519.48% | 52 | large upload-ready payload; needs compression/selective bands; rect/frame 1.5 |
 | 11 | `johnny6` | `low` | 27.86 | 1.00% | 54.86% | 436.4% | 50 | candidate; rect/frame 1.52 |
 | 12 | `johnny1` | `high` | 27.65 | 1.44% | 54.11% | 519.48% | 50 | large upload-ready payload; needs compression/selective bands; rect/frame 1.5 |
-| 13 | `visitor3` | `low` | 27.52 | 2.59% | 54.7% | 1004.47% | 51 | x-band rect cap pressure; needs selective bands; rect/frame 1.61 |
+| 13 | `visitor3` | `low` | 27.02 | 2.59% | 53.79% | 1051.95% | 50 | x-band rect cap pressure; needs selective bands; rect/frame 1.62 |
 | 14 | `johnny6` | `high` | 26.81 | 0.96% | 54.86% | 436.4% | 48 | candidate; rect/frame 1.52 |
 | 15 | `visitor3` | `high` | 26.6 | 2.69% | 54.83% | 986.39% | 45 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
 | 16 | `walkstuf3` | `low` | 23.2 | 0.65% | 82.98% | 540.22% | 43 | large upload-ready payload; needs compression/selective bands; rect/frame 1.44 |

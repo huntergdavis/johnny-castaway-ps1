@@ -48,11 +48,11 @@ the BUILDING6 scene-local slack4 guard, the BUILDING2 high `226..242`
 and `206..230` retained-read groups plus 24-sector grouped-read capacity,
 the WALKSTUF1 high `422..434` / `444..456`
 CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
-`444..456` dual-tail reduction, plus VISITOR3 low frame129 and high
+`444..456` dual-tail reduction, plus VISITOR3 low frame129/frame132 and high
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132 setup segment;
 the raw signed optimization matrix is `-0.4660%`.
-That is about `17.09` public over-target points removed and `12.60` public
+That is about `17.10` public over-target points removed and `12.60` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
@@ -86,9 +86,9 @@ high setup segment. It keeps the `1555450` byte pack footprint, `22611/760`
 LBA/sectors, and `217088` byte PS-EXE bucket fixed while moving high
 `1071/1040 -> 1067/1039`: overrun `31 -> 28`, blocking `50 -> 45`, loop reads
 `9 -> 8`, loop-read time `50 -> 45`, and due misses `9 -> 8`; hidden refill
-stays `0`. The latest low row remains the v452 frame128/frame129 resident-slot
-swap plus frame129 D4 delta at `1068/1041`, overrun `27`, blocking `51`, loop
-reads/due `9/9`, hidden refill `0`.
+stays `0`. The latest low row keeps the v452 frame128/frame129 resident-slot
+swap plus frame129 D4 delta and adds a v470 frame132 D4 delta at `1068/1041`,
+overrun `27`, blocking `50`, loop reads/due `9/9`, hidden refill `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler
