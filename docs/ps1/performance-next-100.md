@@ -256,6 +256,23 @@ and VISITOR3 high/low canaries stayed on accepted profiles with fixed pack
 LBA/sectors and PS-EXE bucket. This promotion adds about `0.0033` public
 over-target points removed and `0.0031` public target-speed points gained.
 
+Latest rejected WALKSTUF1 low scheduler-guard batch: v580-v585 tested whether
+the fresh scheduler-owned matrix rows could be isolated with low-tide-only
+`minSlack` thresholds instead of plain retained rows. `{242,266,4}`,
+`{285,309,5}`, and `{308,332,4}` were exact-flat at the accepted `1770`,
+`1478/1431`, overrun `47`, blocking/refill `64/20`, reads/due `64/11`.
+`{285,309,4}` fired but regressed scene `1770 -> 1776`, active loop
+`1478 -> 1484`, overrun `47 -> 51`, blocking `64 -> 70`, refill `20 -> 25`,
+while reads/due improved `64/11 -> 60/10`. `{141,165,0}` and `{141,165,4}`
+both improved blocking `64 -> 63` and reads/due `64/11 -> 62/10`, but still
+regressed scene `1770 -> 1776`, active loop `1478 -> 1484`, overrun
+`47 -> 52`, and refill `20 -> 25`. Close scalar/scheduler-threshold ownership
+for `242..266`, `285..309`, `308..332`, and `141..165`; the useful CD wins
+sit behind a binary cliff where the firing threshold still steals visible or
+refill cadence. The next WALKSTUF1 low path should be generated frame-deadline
+ownership, pack-side byte reduction before those clusters, or upload/restore
+work removal rather than more hand-authored read-group thresholds.
+
 Latest rejected WALKSTUF1 low boundary-extension retry: v475 replaced the
 accepted `78..91` first post-prime retained-read group with `78..98` so the
 same 3.21s gap could also cover the next `91..98` read while still fitting the
