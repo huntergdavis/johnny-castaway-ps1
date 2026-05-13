@@ -129,9 +129,9 @@ promoted the headless optimization methodology, the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
 outliers, `v0.8.4` walked all 63 packs on hardware to ship custom
 chapter-select thumbnails plus a scene-page reconciliation against the
-on-PS1 packs, `v0.8.5` promotes the full 126-row timing-bearing
-matrix, `v0.8.6` lands the WALKSTUF1 / VISITOR3 setup-segment
-compaction follow-through, and `v0.8.7` hardens deterministic
+on-PS1 packs, [`v0.8.5`]({{ '/releases/#v085-ps1--full-126-row-headless-performance-matrix' | relative_url }}) promotes the full 126-row timing-bearing
+matrix, [`v0.8.6`]({{ '/releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through' | relative_url }}) lands the WALKSTUF1 / VISITOR3 setup-segment
+compaction follow-through, and [`v0.8.7`]({{ '/releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability' | relative_url }}) hardens deterministic
 scene booting plus Scene Explorer preview loading — the public battle card now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the timing-bearing rows (public-capped; the
