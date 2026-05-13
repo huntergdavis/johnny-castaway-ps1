@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4318 words
+          ~17 min read · 4378 words
         </p>
 
       <hr class="rule" />
@@ -444,6 +444,13 @@ CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <co
 the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2786%</code>
 exact public over target / <code class="language-plaintext highlighter-rouge">99.7262%</code> exact public target speed); the raw
 signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4886%</code> / <code class="language-plaintext highlighter-rouge">100.5086%</code>.</p>
+
+<p>The latest WALKSTUF1 high scalar retained-read closure tested the remaining
+shared append rows after the <code class="language-plaintext highlighter-rouge">427..443</code> CD-work baseline. Some candidates were
+exact-flat, and the rows that saved reads paid the win back as visible-loop,
+target, or refill debt. The next high-side attempt should use generated
+deadline ownership, pack-side byte/phase reduction, or upload/restore work
+removal rather than another hand-authored scalar append.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 

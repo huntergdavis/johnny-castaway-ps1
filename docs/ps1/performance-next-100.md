@@ -305,6 +305,19 @@ target-speed win. The closed tail rows are `303..319`, `155..171`, `91..107`,
 `405..421`, and `378..394`; `405..421` remains the best near-miss because it
 lowered scene/loop by one but cost one blocking/refill VBlank.
 
+Latest rejected WALKSTUF1 high scalar-closure batch: v599-v608 tested the
+remaining high-ranked shared retained-read rows after the v598 baseline. The
+exact-flat/no-op rows were `{295,319,0}`, `{238,262,5}`, and `{306,330,0}` at
+the accepted high timing `1764`, `1476/1434`, overrun `42`,
+blocking/refill `81/23`, reads `65`. `{84,108,0}`, `{164,188,0}`,
+`{156,180,0}`, and the lower-risk `{268,280,0}` were visibly phase-negative,
+with `{268,280,0}` still regressing to `1772`, `1484/1424`, overrun `60`,
+blocking/refill `98/27`. `{238,262,0}` / `{238,262,4}` and `{360,384,0}`
+saved reads or blocking but paid it back as scene/loop/refill debt. Close
+WALKSTUF1 high shared scalar appends for this phase; remaining high-side gain
+needs generated deadline ownership, pack-side byte/phase reduction before the
+cluster, or upload/restore work removal.
+
 Latest rejected WALKSTUF1 low boundary-extension retry: v475 replaced the
 accepted `78..91` first post-prime retained-read group with `78..98` so the
 same 3.21s gap could also cover the next `91..98` read while still fitting the

@@ -315,6 +315,13 @@ the public average is **+0.3% over target / 99.7% target speed** (`0.2786%`
 exact public over target / `99.7262%` exact public target speed); the raw
 signed optimization matrix is `-0.4886%` / `100.5086%`.
 
+The latest WALKSTUF1 high scalar retained-read closure tested the remaining
+shared append rows after the `427..443` CD-work baseline. Some candidates were
+exact-flat, and the rows that saved reads paid the win back as visible-loop,
+target, or refill debt. The next high-side attempt should use generated
+deadline ownership, pack-side byte/phase reduction, or upload/restore work
+removal rather than another hand-authored scalar append.
+
 ## Scene Battle Card
 
 As of 2026-05-13, all 126 scene/tide variants have current headless
