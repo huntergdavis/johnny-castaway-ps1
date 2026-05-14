@@ -1775,19 +1775,23 @@ int main(int argc, char **argv)
 
     graphicsInit();
     ps1PrintfProbe("graphics-init", NULL);
-    /* NOTE on pre-allocation: an earlier iteration tried to pre-allocate
-     * the walk-area clean buffer, the FG2 clean-rect snapshot buffers,
-     * and the FG2 streaming buffers all at boot — together ~700 KB of
-     * persistent allocation. That blew through PS1's boot heap budget
-     * (the first scene's 600 KB bgTile alloc returned NULL with a fatal
-     * error). Boot heap is tighter than application-loop heap because
-     * resource-table parses + title-screen state are still resident.
+    /* Pin the FG2 streaming buffers (frame buffer, prefetch frame buffer,
+     * stream scratch) at boot, AFTER graphicsInit has placed the ~600 KB
+     * bgTile allocation. The earlier all-at-once pre-allocation attempt
+     * (~700 KB worth of FG2 + walk-clean + clean-rect together) blew
+     * through the boot-heap budget; this trimmed version pins only the
+     * FG2 streaming family which is the biggest per-scene churn source.
+     * walk-clean and clean-rect buffers remain lazy for now — they reach
+     * peak size within a handful of scenes and stop growing.
      *
-     * Current strategy: lazy-allocate everything on first use. The
-     * `grDeactivateCleanBgRects` cleanup path keeps grown buffers alive
-     * across scenes, so once a buffer reaches its peak size it stops
-     * fragmenting the heap. Trade-off: a few scene cycles of
-     * fragmentation during the growth phase, but no boot-heap squeeze. */
+     * Sizes chosen conservatively (192 KB frame/prefetch, 64 KB scratch)
+     * so the per-scene `if (maxDataSize > gFgFrameBufferSize)` realloc
+     * branch in foregroundPilotRuntimeStart is skipped for every normal
+     * scene. A scene whose maxDataSize exceeds 192 KB still falls through
+     * to the existing dynamic realloc path (it'll fragment, but it's the
+     * old behavior — no regression). */
+    fgPrePrimeStreamBuffers(192UL * 1024UL, 64UL * 1024UL);
+    ps1PrintfProbe("fg-streams-pinned", NULL);
     int bootNightValid = hostBootForcedNightValid;
     int bootHolidayValid = hostBootForcedHolidayValid;
     int bootNight = hostForcedNight;
