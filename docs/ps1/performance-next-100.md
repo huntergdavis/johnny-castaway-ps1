@@ -317,6 +317,16 @@ two-phase `91..98` scalar ownership for this baseline. The next W1-low work
 should target generated deadline ownership for the `285..321` cluster or a
 custom pack representation that reduces bytes/spans before scheduling.
 
+Latest rejected WALKSTUF1 low late-cluster scalar retry: v633-v634 tested the
+read-plan's largest current-fit row, `297..321`, at slack `5` and `4`. Both
+runs stayed exact-flat at `1770`, `1478/1431`, overrun `47`,
+blocking/refill `64/20`, reads `62`, loop-read time `281`, due misses `11`,
+and `group_hits=0`; slack below `4` is unreachable under the W1-low window
+guard. Close plain `297..321` scalar ownership. The range is a real cluster,
+but the current runtime append boundary does not line up with it, so future
+generated ownership must use observed append starts or a pack reorder that
+changes the boundary.
+
 Latest rejected WALKSTUF1 compact-origin rebase: v616 dry-ran the VISITOR3
 origin-rebase compactor over both accepted W1 packs (`WALK1LOW.FG2` and
 `WALKSTUF1.FG2`) for frames `0..215`. Both packs returned `total_saved=0`,
@@ -1096,7 +1106,7 @@ retained-read tables.
 | 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. The standalone row saved reads but raised refill/blocking. | Gate high tide with both rows active through metadata, not new C branches, and enforce `blocking_vb <= 54`, `refill <= 18`. |
 | 6 | BUILDING2 high | Replace micro D4 frame91 with a no-decode sector-boundary shrink: row-header canonicalization, duplicate span aliasing, or local palette-run packing that decodes through the existing path. D4 proved the sector boundary mattered but CPU/cadence cost dominated. | Require the frame91 payload end to move back one sector while `foregroundPilotPlay` size and hot symbol addresses remain unchanged. |
 | 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. The trim failures show the tail is paying for timing, not just bytes. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
-| 8 | WALKSTUF1 low | Build a generated prepare-before-window plan for the late `285..321` cluster with an explicit cooldown after the accepted `78..91` row. Plain late rows either no-op or steal visible cadence. | Metadata-only low-tide probe, fail if due misses rise above `11` or blocking rises above `64`. |
+| 8 | WALKSTUF1 low | Build a generated prepare-before-window plan for the late `285..321` cluster using observed append starts, not raw sector rows. Plain late rows either no-op (`297..321`) or steal visible cadence. | Metadata-only low-tide probe must report nonzero ownership hits before timing; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Scene-local frame dictionary for repeated cleanup-row headers/spans across frames `146..158`. Full-frame duplicate scans failed, but repeated row metadata may still be compressible without changing visual work. | Host byte report must show at least one sector saved inside the hot cluster and no new hot decode branch. |
 | 11 | WALKSTUF1 low | Closed by v630-v632: two-phase `91..98` after accepted `78..91` is inert at slack `6/5/4`, and slack `3` is unreachable under the W1-low guard. | Do not retry as a scalar row unless generated deadline ownership can prove nonzero hits before timing. |
