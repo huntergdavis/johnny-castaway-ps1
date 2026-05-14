@@ -120,6 +120,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v0812-ps1--walkstuf1-low-frame77frame130-payload-trims" id="markdown-toc-v0812-ps1--walkstuf1-low-frame77frame130-payload-trims"><code class="language-plaintext highlighter-rouge">v0.8.12-ps1</code> — WALKSTUF1 low frame77/frame130 payload trims</a></li>
       <li><a href="#v0811-ps1--lazy-stream-buffer-release-regression-fix" id="markdown-toc-v0811-ps1--lazy-stream-buffer-release-regression-fix"><code class="language-plaintext highlighter-rouge">v0.8.11-ps1</code> — Lazy stream-buffer release-regression fix</a></li>
       <li><a href="#v0810-ps1--walkstuf1-low-no-shift-payload-follow-through" id="markdown-toc-v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code> — WALKSTUF1 low no-shift payload follow-through</a></li>
       <li><a href="#v089-ps1--walkstuf1-low-in-place-payload-reductions" id="markdown-toc-v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> — WALKSTUF1 low in-place payload reductions</a></li>
@@ -150,6 +151,30 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v0812-ps1--walkstuf1-low-frame77frame130-payload-trims"><code class="language-plaintext highlighter-rouge">v0.8.12-ps1</code> — WALKSTUF1 low frame77/frame130 payload trims</h3>
+<p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>
+
+<p>A performance point release after <code class="language-plaintext highlighter-rouge">v0.8.11-ps1</code>. It keeps the restored lazy
+stream allocation baseline and promotes two more same-speed WALKSTUF1 low
+no-shift payload reductions.</p>
+
+<ul>
+  <li><strong>WALKSTUF1 low advances to v795.</strong> Frames <code class="language-plaintext highlighter-rouge">77</code> and <code class="language-plaintext highlighter-rouge">130</code> now shrink
+in-place without moving pack offsets, pack LBA/sectors, or the PS-EXE bucket.</li>
+  <li><strong>Timing stays exact-flat.</strong> W1-low remains <code class="language-plaintext highlighter-rouge">1770/1478/1431</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, read time <code class="language-plaintext highlighter-rouge">60/272</code>, and due <code class="language-plaintext highlighter-rouge">11</code>, while active
+payload drops <code class="language-plaintext highlighter-rouge">879801 -&gt; 799694</code>.</li>
+  <li><strong>Battle card remains stable.</strong> Public rollup is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>;
+bands are <code class="language-plaintext highlighter-rouge">117</code> green and <code class="language-plaintext highlighter-rouge">9</code> yellow.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.12/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.12-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v0811-ps1--lazy-stream-buffer-release-regression-fix"><code class="language-plaintext highlighter-rouge">v0.8.11-ps1</code> — Lazy stream-buffer release-regression fix</h3>
 <p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>

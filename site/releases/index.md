@@ -22,6 +22,28 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.12-ps1` — WALKSTUF1 low frame77/frame130 payload trims
+<time datetime="2026-05-14"><em>2026-05-14</em></time>
+
+A performance point release after `v0.8.11-ps1`. It keeps the restored lazy
+stream allocation baseline and promotes two more same-speed WALKSTUF1 low
+no-shift payload reductions.
+
+- **WALKSTUF1 low advances to v795.** Frames `77` and `130` now shrink
+  in-place without moving pack offsets, pack LBA/sectors, or the PS-EXE bucket.
+- **Timing stays exact-flat.** W1-low remains `1770/1478/1431`,
+  blocking/refill `64/20`, read time `60/272`, and due `11`, while active
+  payload drops `879801 -> 799694`.
+- **Battle card remains stable.** Public rollup is `+0.2708%` over target /
+  `99.7337%` target speed; raw signed rollup is `-0.4963%` / `100.5160%`;
+  bands are `117` green and `9` yellow.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.12/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.12-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.11-ps1` — Lazy stream-buffer release-regression fix
 <time datetime="2026-05-14"><em>2026-05-14</em></time>
 
