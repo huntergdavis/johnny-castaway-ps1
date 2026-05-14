@@ -262,9 +262,9 @@ pixels, `5152` spans, and `315` draw rows. Low v653 clips frames `202..210`
 and stays exact-flat at `1478/1431` with blocking/refill `64/20`,
 loop reads/read VBlanks `62/281`, and due `11`, while dropping `39072` draw
 pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
-bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad offscreen clusters,
+bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae offscreen clusters,
 also exact-flat, dropping runtime frame rows/spans/pixels from
-`17298/135025/785455 -> 16663/121341/677987`. The public battle card is now
+`17298/135025/785455 -> 16663/121134/677418`. The public battle card is now
 `+0.2736%` over target /
 `99.7310%` target speed; the raw signed optimization rollup is `-0.4936%` /
 `100.5133%`.
@@ -375,7 +375,7 @@ Milestone releases:
   and `1537` frame rows, BUILDING2 high now drops late runtime rows/spans/pixels
   `18144/110717/468636 -> 18099/110110/464261`, WALKSTUF1 high is
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
-  reads `62` and rows/spans/pixels `16663/121341/677987`, VISITOR3 high is
+  reads `62` and rows/spans/pixels `16663/121134/677418`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
   `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are

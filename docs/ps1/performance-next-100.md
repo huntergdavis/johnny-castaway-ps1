@@ -70,8 +70,8 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664
-BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad offscreen work-volume clips:
+BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae offscreen work-volume clips:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -144,6 +144,9 @@ to `16663/121495/678413`.
 v684 clips mid-right frames `87..88` after the lower splits failed, stays
 exact-flat while removing `426` pixels and `154` spans, and drops runtime
 rows/spans/pixels to `16663/121341/677987`.
+v685 clips mid-right frames `89..92`, stays exact-flat while removing `569`
+pixels and `207` spans, and drops runtime rows/spans/pixels to
+`16663/121134/677418`.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill

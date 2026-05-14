@@ -76,11 +76,11 @@ reductions, so they do not count as VBlank speed wins.
 
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
 on top of the shared tail groups, v331 staged-prepare scheduler fallback, and
-the v653/v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684 isolated offscreen work-volume clips. Low improves to
+the v653/v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685 isolated offscreen work-volume clips. Low improves to
 `1478/1431` at `96.82%` target speed with overrun `47`, blocking `64`, hidden
 refill `20`, loop reads `62`, loop-read time `281`, and due misses `11`; the
-latest v684 clip keeps those timing/CD metrics flat while dropping runtime frame
-rows/spans/pixels from `16663/121495/678413 -> 16663/121341/677987`.
+latest v685 clip keeps those timing/CD metrics flat while dropping runtime frame
+rows/spans/pixels from `16663/121341/677987 -> 16663/121134/677418`.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24
