@@ -238,13 +238,13 @@ clips frames `27..28`, still exact-flat, and drops rows/spans/pixels to
 `walkstuf1-low-left2e-offscreen-v678` clips frame `65`, still exact-flat, and
 drops rows/spans/pixels to `16663/122035/679951`.
 
-Latest rejected W1 note: `walkstuf1-low-left2d-offscreen-v677` bisected the
-early-left2 cliff toward the proven-safe `66..74` boundary by testing only
-`64..65`. It removed `6795` pixels, `1054` spans, and `15` rows, but still
-reproduced the full cliff: scene/loop `1770/1478 -> 1782/1490`, blocking
-`64 -> 97`, refill `20 -> 28`, reads `62 -> 63`, and due misses `11 -> 15`.
-Frame `65` is now proven safe, making frame `64` the current direct adjacent
-boundary trigger.
+Latest rejected W1 note: `walkstuf1-low-left2f-offscreen-v679` confirmed the
+early-left2 boundary by testing frame `64` alone on top of accepted frame `65`.
+It removed `3356` pixels, `527` spans, and `11` rows, but still reproduced the
+full cliff: scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
+`20 -> 28`, reads `62 -> 63`, and due misses `11 -> 15`. Direct clipping is
+now proven safe at `65+` and unsafe at `64`; remaining `58..63` needs a
+non-shrinking/hole-fill or scheduler-safe approach.
 
 Latest promoted BUILDING2 note: `building2-high-late-offscreen-v664` narrows the
 failed broad high-tide offscreen clip to late frames `168..177`, staying

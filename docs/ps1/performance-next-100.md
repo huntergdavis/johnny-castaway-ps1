@@ -148,6 +148,11 @@ The v677 `64..65` bisection also failed, despite only removing `6795` pixels,
 `1054` spans, and `15` rows, with the same `1782/1490`, blocking `97`, refill
 `28`, reads `63`, and due `15` profile. Frame `65` is now proven safe, making
 frame `64` the current direct adjacent boundary trigger.
+The v679 frame `64` single-frame confirmation also failed with the same
+`1782/1490`, blocking `97`, refill `28`, reads `63`, and due `15` profile
+after removing only `3356` pixels, `527` spans, and `11` rows. Treat `64` as
+closed for direct clipping; remaining `58..63` needs non-shrinking/hole-fill or
+scheduler-safe treatment before another attempt.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`

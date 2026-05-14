@@ -371,13 +371,13 @@ clips frames <code class="language-plaintext highlighter-rouge">27..28</code>, s
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-left2e-offscreen-v678</code> clips frame <code class="language-plaintext highlighter-rouge">65</code>, still exact-flat, and
 drops rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16663/122035/679951</code>.</p>
 
-<p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-left2d-offscreen-v677</code> bisected the
-early-left2 cliff toward the proven-safe <code class="language-plaintext highlighter-rouge">66..74</code> boundary by testing only
-<code class="language-plaintext highlighter-rouge">64..65</code>. It removed <code class="language-plaintext highlighter-rouge">6795</code> pixels, <code class="language-plaintext highlighter-rouge">1054</code> spans, and <code class="language-plaintext highlighter-rouge">15</code> rows, but still
-reproduced the full cliff: scene/loop <code class="language-plaintext highlighter-rouge">1770/1478 -&gt; 1782/1490</code>, blocking
-<code class="language-plaintext highlighter-rouge">64 -&gt; 97</code>, refill <code class="language-plaintext highlighter-rouge">20 -&gt; 28</code>, reads <code class="language-plaintext highlighter-rouge">62 -&gt; 63</code>, and due misses <code class="language-plaintext highlighter-rouge">11 -&gt; 15</code>.
-Frame <code class="language-plaintext highlighter-rouge">65</code> is now proven safe, making frame <code class="language-plaintext highlighter-rouge">64</code> the current direct adjacent
-boundary trigger.</p>
+<p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-left2f-offscreen-v679</code> confirmed the
+early-left2 boundary by testing frame <code class="language-plaintext highlighter-rouge">64</code> alone on top of accepted frame <code class="language-plaintext highlighter-rouge">65</code>.
+It removed <code class="language-plaintext highlighter-rouge">3356</code> pixels, <code class="language-plaintext highlighter-rouge">527</code> spans, and <code class="language-plaintext highlighter-rouge">11</code> rows, but still reproduced the
+full cliff: scene/loop <code class="language-plaintext highlighter-rouge">1770/1478 -&gt; 1782/1490</code>, blocking <code class="language-plaintext highlighter-rouge">64 -&gt; 97</code>, refill
+<code class="language-plaintext highlighter-rouge">20 -&gt; 28</code>, reads <code class="language-plaintext highlighter-rouge">62 -&gt; 63</code>, and due misses <code class="language-plaintext highlighter-rouge">11 -&gt; 15</code>. Direct clipping is
+now proven safe at <code class="language-plaintext highlighter-rouge">65+</code> and unsafe at <code class="language-plaintext highlighter-rouge">64</code>; remaining <code class="language-plaintext highlighter-rouge">58..63</code> needs a
+non-shrinking/hole-fill or scheduler-safe approach.</p>
 
 <p>Latest promoted BUILDING2 note: <code class="language-plaintext highlighter-rouge">building2-high-late-offscreen-v664</code> narrows the
 failed broad high-tide offscreen clip to late frames <code class="language-plaintext highlighter-rouge">168..177</code>, staying
