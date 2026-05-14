@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2736%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7310%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T21:52:33` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-13T22:13:18` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Latest promoted W1 work-volume note: `walkstuf1-high-tailcompact-v657`
@@ -226,12 +226,12 @@ but regressed loop to `1521..1533`, overrun to `85..97`, blocking to
 `96..109`, and refill to `41..55`. W1 low now needs generated deadlines or
 data/upload reduction, not more read-count-only window retuning.
 
-Latest promoted BUILDING2 low note: `building2-low-rg218-229-slack8-v626`
-adds the slack-8 `218..229` row ahead of the accepted low groups. It improves
-scene/loop `1619/1349 -> 1614/1344`, target `1320 -> 1318`, overrun
-`29 -> 26`, blocking `70 -> 61`, keeps hidden refill at `0`, and cuts
-reads/due `52/15 -> 50/14`. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1
-high/low controls stayed exact-flat.
+Latest promoted BUILDING2 low note: `building2-low-offscreen-drawclip-v660`
+keeps the v626 slack-8 `218..229` retained-read row, then clips offscreen
+low-tide draw spans in-place. It stays exact-flat at `1614`, active
+loop/target `1344/1318`, overrun `26`, blocking/refill `61/0`, and reads/due
+`50/14`, while removing `120179` offscreen draw pixels, `25136` spans, and
+`1537` frame rows with fixed pack LBA/sectors and PS-EXE bucket.
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -726,15 +726,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-13T17:42:44</td>
-      <td>building2-low-rg218-229-slack8-v626</td>
+      <td>2026-05-13T22:13:18</td>
+      <td>building2-low-offscreen-drawclip-v660</td>
       <td>+2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1344/1318</td>
       <td>61</td>
       <td>0</td>
       <td>14</td>
-      <td>BUILDING2 low adds a slack-8 retained read group over 218..229 ahead of the accepted 238..250, 318..330, and 365..381 groups while preserving the frame71/frame77 previous-frame D4 delta baseline. Scene/loop improves 1619/1349 -> 1614/1344, target shifts 1320 -> 1318, overrun improves 29 -> 26, blocking 70 -> 61, prefetch overrun stays 0, loop reads 52 -> 50, loop-read time 221 -> 218, and due misses 15 -> 14. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low controls stayed flat.</td>
+      <td>same-speed BUILDING2 low offscreen draw-span clipping removes 120179 offscreen draw pixels, 25136 spans, and 1537 frame rows while preserving timing/CD at 1344/1318, overrun 26, blocking/refill 61/0, reads/due 50/14, pack LBA/sectors, and PS-EXE bucket</td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>

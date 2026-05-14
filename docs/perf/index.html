@@ -328,11 +328,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-13T21:52:33</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-13T22:13:18</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; newest optimized/code-headroom rows use <code class="language-plaintext highlighter-rouge">walkstuf1-high-tailcompact-v657</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-late-offscreen-v653</code>, <code class="language-plaintext highlighter-rouge">building4-low-offscreen-drawclip-v652</code>, <code class="language-plaintext highlighter-rouge">visitor3-high-tail-pack-v629</code>, <code class="language-plaintext highlighter-rouge">building2-low-rg218-229-slack8-v626</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-shared-rg427-443-v598</code>, <code class="language-plaintext highlighter-rouge">visitor5-low-rg30-46-v526</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>, <code class="language-plaintext highlighter-rouge">visitor5-high-rg30-46-v496</code>, <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>, <code class="language-plaintext highlighter-rouge">building2-high-rg206-230-cap24-v441</code>, <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>, <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg213-229-slack4-v316</code>, <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>, <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>, <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>, <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>, <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>, <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized/code-headroom rows use <code class="language-plaintext highlighter-rouge">building2-low-offscreen-drawclip-v660</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-tailcompact-v657</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-late-offscreen-v653</code>, <code class="language-plaintext highlighter-rouge">building4-low-offscreen-drawclip-v652</code>, <code class="language-plaintext highlighter-rouge">visitor3-high-tail-pack-v629</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-shared-rg427-443-v598</code>, <code class="language-plaintext highlighter-rouge">visitor5-low-rg30-46-v526</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>, <code class="language-plaintext highlighter-rouge">visitor5-high-rg30-46-v496</code>, <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>, <code class="language-plaintext highlighter-rouge">building2-high-rg206-230-cap24-v441</code>, <code class="language-plaintext highlighter-rouge">building6-window-slack4-v364</code>, <code class="language-plaintext highlighter-rouge">johnny6-compact-fgp3-v354</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-tail-pack-only-v338</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-high-rg213-229-slack4-v316</code>, <code class="language-plaintext highlighter-rouge">activity9-low-compact-fgp3-v174</code>, <code class="language-plaintext highlighter-rouge">johnny1-compact-fgp3-v173</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-low-compact-fgp3-v171</code>, <code class="language-plaintext highlighter-rouge">activity9-high-compact-fgp3-v167</code>, <code class="language-plaintext highlighter-rouge">walkstuf3-high-compact-fgp3-v163</code>, <code class="language-plaintext highlighter-rouge">building2-low-restore-window-slack4-v160</code>, <code class="language-plaintext highlighter-rouge">building1-compact-fgp3-noautoprime-v157</code>, <code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -359,12 +359,12 @@ but regressed loop to <code class="language-plaintext highlighter-rouge">1521..1
 <code class="language-plaintext highlighter-rouge">96..109</code>, and refill to <code class="language-plaintext highlighter-rouge">41..55</code>. W1 low now needs generated deadlines or
 data/upload reduction, not more read-count-only window retuning.</p>
 
-<p>Latest promoted BUILDING2 low note: <code class="language-plaintext highlighter-rouge">building2-low-rg218-229-slack8-v626</code>
-adds the slack-8 <code class="language-plaintext highlighter-rouge">218..229</code> row ahead of the accepted low groups. It improves
-scene/loop <code class="language-plaintext highlighter-rouge">1619/1349 -&gt; 1614/1344</code>, target <code class="language-plaintext highlighter-rouge">1320 -&gt; 1318</code>, overrun
-<code class="language-plaintext highlighter-rouge">29 -&gt; 26</code>, blocking <code class="language-plaintext highlighter-rouge">70 -&gt; 61</code>, keeps hidden refill at <code class="language-plaintext highlighter-rouge">0</code>, and cuts
-reads/due <code class="language-plaintext highlighter-rouge">52/15 -&gt; 50/14</code>. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1
-high/low controls stayed exact-flat.</p>
+<p>Latest promoted BUILDING2 low note: <code class="language-plaintext highlighter-rouge">building2-low-offscreen-drawclip-v660</code>
+keeps the v626 slack-8 <code class="language-plaintext highlighter-rouge">218..229</code> retained-read row, then clips offscreen
+low-tide draw spans in-place. It stays exact-flat at <code class="language-plaintext highlighter-rouge">1614</code>, active
+loop/target <code class="language-plaintext highlighter-rouge">1344/1318</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>, blocking/refill <code class="language-plaintext highlighter-rouge">61/0</code>, and reads/due
+<code class="language-plaintext highlighter-rouge">50/14</code>, while removing <code class="language-plaintext highlighter-rouge">120179</code> offscreen draw pixels, <code class="language-plaintext highlighter-rouge">25136</code> spans, and
+<code class="language-plaintext highlighter-rouge">1537</code> frame rows with fixed pack LBA/sectors and PS-EXE bucket.</p>
 
 <p>The durable numeric source is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>.
@@ -861,15 +861,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-13T17:42:44</td>
-      <td>building2-low-rg218-229-slack8-v626</td>
+      <td>2026-05-13T22:13:18</td>
+      <td>building2-low-offscreen-drawclip-v660</td>
       <td>+2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1344/1318</td>
       <td>61</td>
       <td>0</td>
       <td>14</td>
-      <td>BUILDING2 low adds a slack-8 retained read group over 218..229 ahead of the accepted 238..250, 318..330, and 365..381 groups while preserving the frame71/frame77 previous-frame D4 delta baseline. Scene/loop improves 1619/1349 -&gt; 1614/1344, target shifts 1320 -&gt; 1318, overrun improves 29 -&gt; 26, blocking 70 -&gt; 61, prefetch overrun stays 0, loop reads 52 -&gt; 50, loop-read time 221 -&gt; 218, and due misses 15 -&gt; 14. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low controls stayed flat.</td>
+      <td>same-speed BUILDING2 low offscreen draw-span clipping removes 120179 offscreen draw pixels, 25136 spans, and 1537 frame rows while preserving timing/CD at 1344/1318, overrun 26, blocking/refill 61/0, reads/due 50/14, pack LBA/sectors, and PS-EXE bucket</td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>

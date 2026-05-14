@@ -359,10 +359,13 @@ Milestone releases:
   post-prime boundary ownership and shared `427..443` CD-work reduction, and
   VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
   `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
-  tail-pack repack, BUILDING4 low offscreen draw-span clipping, and WALKSTUF1
-  high/low late-tail offscreen work reductions. The public
+  tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
+  offscreen draw-span work-volume clipping, and WALKSTUF1 high/low late-tail
+  offscreen work reductions. The public
   battle card is `+0.2736%` / `99.7310%`;
-  BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high is
+  BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
+  work-volume row at `1344/1318` after removing `120179` offscreen draw pixels
+  and `1537` frame rows, WALKSTUF1 high is
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62`, VISITOR3 high is `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is

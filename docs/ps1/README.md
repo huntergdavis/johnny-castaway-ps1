@@ -24,9 +24,10 @@ stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
-WALKSTUF1 high/low late-tail work-volume clips, and the WALKSTUF1 high
-late-tail physical compaction after the VISITOR3 high tail-pack repack and the
-VISITOR5 high/low and BUILDING2 low retained-read wins. The
+BUILDING2 low offscreen draw-span work-volume clip, the WALKSTUF1 high/low
+late-tail work-volume clips, and the WALKSTUF1 high late-tail physical
+compaction after the VISITOR3 high tail-pack repack and the VISITOR5 high/low
+and BUILDING2 low retained-read wins. The
 public battle card is now `+0.2736%` over target /
 `99.7310%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
@@ -54,8 +55,9 @@ CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
-`218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, and the
-BUILDING4 low offscreen draw-span clip; the raw signed optimization matrix is
+`218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, the
+BUILDING4 low offscreen draw-span clip, and the BUILDING2 low offscreen
+draw-span work-volume clip; the raw signed optimization matrix is
 `-0.4936%` / `100.5133%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
@@ -85,6 +87,14 @@ sectors. The v441 pass improves the current high row from scene `1603` to
 `55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read time
 `262 -> 257`; due misses stay `7`, pack LBA stays fixed, and BUILDING2 low,
 WALKSTUF1 high/low, and VISITOR3 low canaries stay flat.
+
+The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
+row, then clips offscreen low-tide draw spans in-place. It is a same-speed
+work-volume baseline at `1344/1318`, overrun `26`, blocking/refill `61/0`,
+loop reads/read time `50/218`, and due misses `14`, while removing `120179`
+offscreen draw pixels, `25136` spans, and `1537` frame rows. Pack size, LBA,
+sectors, and the `217088` byte PS-EXE bucket stay fixed, so this lowers low
+work pressure without counting as a VBlank speed win.
 
 The latest VISITOR3 high baseline keeps the resident-copy and D4 data-shape
 work, preloads the 768-byte frame `132` and 503-byte frame `137` D4 payloads

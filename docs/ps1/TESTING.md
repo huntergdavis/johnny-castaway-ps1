@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-13:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2736%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7310%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T21:31:34` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-late-offscreen-v654`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-13T22:13:18` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -116,6 +116,14 @@ frame-0-only low clipping proved phase-negative. Low stays exact-flat at
 pixels drop `824527 -> 785455`, spans `139288 -> 135025`, rows
 `17611 -> 17298`, dirty rows `27900 -> 27821`, and upload bytes
 `17856000 -> 17805440`.
+
+Latest promoted BUILDING2 low work-volume note:
+`building2-low-offscreen-drawclip-v660` clips low-tide offscreen draw spans
+in-place after the v626 `218..229` slack8 retained-read row. Timing/CD stays
+exact-flat at `1614`, active loop/target `1344/1318`, overrun `26`,
+blocking/refill `61/0`, reads/due `50/14`, while the runtime frame-row counter
+drops `17912 -> 16375`; host transform totals remove `120179` offscreen draw
+pixels and `25136` spans with fixed pack LBA/sectors and PS-EXE bucket.
 
 Latest rejected WALKSTUF1 note: `walkstuf1-low-window-resweep-v620` retested
 explicit low-tide stream windows after the shared `427..443` row. Current
