@@ -931,8 +931,8 @@ Next plausible wins, in priority order:
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
    where hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work. The latest
-   WALKSTUF1 low v747/v749/v750/v751 pass keeps the row exact-flat while
-   shrinking frames `51`, `49`, `47`, and `61` in-place (`879801 -> 862205`
+   WALKSTUF1 low v747/v749/v750/v751/v753 pass keeps the row exact-flat while
+   shrinking frames `51`, `49`, `47`, `61`, and `62` in-place (`879801 -> 858349`
    active payload), so W1-low now has a safe
    no-shift payload lane but still needs a sector/read timing conversion. The
    BUILDING4 low v387 pass closes the local `178..202` append group and
