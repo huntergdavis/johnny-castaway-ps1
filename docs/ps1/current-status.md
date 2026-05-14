@@ -259,17 +259,17 @@ BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
 improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
 prefetch overrun `34` while preserving fixed pack footprints and the `217088`
 byte PS-EXE bucket. WALKSTUF1 high/low now also carry late-tail work-volume
-clips, and high v732 adds frame55/frame138 offscreen clips. High stays exact-flat at
+clips, and high v733 adds frame55/frame138/frame51 offscreen clips. High stays exact-flat at
 `1476/1434` with blocking/refill `81/23`, reads/due `63/16`, while dropping
-runtime rows/spans/pixels to `17235/134035/766315`. Low v653 clips frames `202..210`
+runtime rows/spans/pixels to `17141/133396/760361`. Low v653 clips frames `202..210`
 and stays exact-flat at `1478/1431` with blocking/refill `64/20`,
 loop reads/read VBlanks `62/281`, and due `11`, while dropping `39072` draw
 pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
 bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen clusters,
 also exact-flat, dropping runtime frame rows/spans/pixels from
-`17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138 follow-up is
+`17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138/frame51 follow-up is
 also exact-flat and drops high runtime rows/spans/pixels
-`17296/134136/776856 -> 17235/134035/766315`. The public battle card is now
+`17296/134136/776856 -> 17141/133396/760361`. The public battle card is now
 `+0.2732%` over target /
 `99.7314%` target speed; the raw signed optimization rollup is `-0.4940%` /
 `100.5137%`.
@@ -372,7 +372,7 @@ Milestone releases:
   `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
   tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
-  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138 and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
+  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51 and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions. The public
   battle card is `+0.2732%` / `99.7314%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
@@ -380,7 +380,7 @@ Milestone releases:
   and `1537` frame rows, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
-  `17235/134035/766315`, WALKSTUF1 low is `1478/1431` with loop
+  `17141/133396/760361`, WALKSTUF1 low is `1478/1431` with loop
   reads `62` and rows/spans/pixels `16504/119364/667474`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
