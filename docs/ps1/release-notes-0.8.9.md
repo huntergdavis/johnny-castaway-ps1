@@ -18,11 +18,11 @@ mainline performance work through `walkstuf1-low-frame35-inplace-v759`.
   slack-8 row and v739 draw-tail trim improve it to `1339/1317`, overrun `22`,
   blocking/read time `53`/`150`, reads `37`, and due misses `12`.
 - **WALKSTUF1 low carries the newest no-shift pack baseline.** Frames `51`,
-  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, and `57` now shrink in-place while
+  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, and `33` now shrink in-place while
   preserving pack size, LBA/sectors, and the PS-EXE bucket. Timing stays
   exact-flat at `1478/1431`, overrun `47`, blocking/refill `64/20`, reads/read
   time `60/272`, and due misses `11`, while active payload drops
-  `879801 -> 835001`.
+  `879801 -> 832375`.
 - **Other current mainline wins are included.** VISITOR3 high keeps its
   `277..293` tail-pack repack, BUILDING4 low keeps the offscreen draw-span clip
   plus frame291 in-place shrink, BUILDING2 high keeps exact-flat offscreen
