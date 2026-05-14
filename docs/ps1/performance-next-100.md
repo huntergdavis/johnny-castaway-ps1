@@ -1044,6 +1044,13 @@ refill `18 -> 26`, and loop reads `58 -> 59`; due stayed `7`. Close combined
 same-order physical compaction for B2-high safe subsets. Any retry must split
 post-hot `89..104` from late `168..177` or be scheduler-owned.
 
+Latest rejected BUILDING2 high post-hot physical compaction: v713 split v709
+and repacked only `89..104`, trimming `19616` active bytes. Scene/loop/blocking
+stayed flat at `1602/1351/54`, but target fell `1311 -> 1310`, overrun
+regressed `40 -> 41`, refill worsened `18 -> 24`, and reads worsened `58 ->
+59`. Close post-hot physical compaction; only the late-only `168..177` split
+remains unresolved, and it is same-speed work-reduction at best.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
