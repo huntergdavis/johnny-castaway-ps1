@@ -204,11 +204,11 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2736%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7310%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T03:37:27` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-frame133-offscreen-v716`, `walkstuf1-low-tail194-210compact-v705`, `building2-high-frame89-offscreen-v703`, `building2-high-frame90-offscreen-v702`, `building2-high-frame91-offscreen-v701`, `building2-high-frame92-offscreen-v700`, `building2-high-tail94-104-offscreen-v698`, `walkstuf1-low-frame63-offscreen-v696`, `walkstuf1-low-frame58-offscreen-v695`, `walkstuf1-low-frame59-offscreen-v694`, `walkstuf1-low-frame62-offscreen-v693`, `walkstuf1-low-frame60-offscreen-v692`, `walkstuf1-low-frame61-offscreen-v691`, `walkstuf1-low-frame140-offscreen-v690`, `walkstuf1-low-frame3-offscreen-v689`, `walkstuf1-low-postmid106-112-offscreen-v688`, `walkstuf1-low-frame1-offscreen-v687`, `walkstuf1-low-midright-af-offscreen-v686`, `walkstuf1-low-midright-ae-offscreen-v685`, `walkstuf1-low-midright-ad-offscreen-v684`, `walkstuf1-low-postleft-singletons-v680`, `walkstuf1-low-left2e-offscreen-v678`, `walkstuf1-low-left2b-offscreen-v675`, `walkstuf1-low-postleft-offscreen-v674`, `walkstuf1-low-preleft2-offscreen-v673`, `walkstuf1-low-midright-b-offscreen-v672`, `walkstuf1-low-pretail-offscreen-v669`, `walkstuf1-low-left0-offscreen-v668`, `walkstuf1-low-left-offscreen-v666`, `walkstuf1-low-mid-offscreen-v665`, `building2-high-late-offscreen-v664`, `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-14T03:47:48` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-frame132-offscreen-v717`, `walkstuf1-low-frame133-offscreen-v716`, `walkstuf1-low-tail194-210compact-v705`, `building2-high-frame89-offscreen-v703`, `building2-high-frame90-offscreen-v702`, `building2-high-frame91-offscreen-v701`, `building2-high-frame92-offscreen-v700`, `building2-high-tail94-104-offscreen-v698`, `walkstuf1-low-frame63-offscreen-v696`, `walkstuf1-low-frame58-offscreen-v695`, `walkstuf1-low-frame59-offscreen-v694`, `walkstuf1-low-frame62-offscreen-v693`, `walkstuf1-low-frame60-offscreen-v692`, `walkstuf1-low-frame61-offscreen-v691`, `walkstuf1-low-frame140-offscreen-v690`, `walkstuf1-low-frame3-offscreen-v689`, `walkstuf1-low-postmid106-112-offscreen-v688`, `walkstuf1-low-frame1-offscreen-v687`, `walkstuf1-low-midright-af-offscreen-v686`, `walkstuf1-low-midright-ae-offscreen-v685`, `walkstuf1-low-midright-ad-offscreen-v684`, `walkstuf1-low-postleft-singletons-v680`, `walkstuf1-low-left2e-offscreen-v678`, `walkstuf1-low-left2b-offscreen-v675`, `walkstuf1-low-postleft-offscreen-v674`, `walkstuf1-low-preleft2-offscreen-v673`, `walkstuf1-low-midright-b-offscreen-v672`, `walkstuf1-low-pretail-offscreen-v669`, `walkstuf1-low-left0-offscreen-v668`, `walkstuf1-low-left-offscreen-v666`, `walkstuf1-low-mid-offscreen-v665`, `building2-high-late-offscreen-v664`, `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Latest promoted W1 work-volume note: `walkstuf1-high-tailcompact-v657`
+Current W1 work-volume track: `walkstuf1-high-tailcompact-v657`
 physically compacts the already-clipped `walkstuf1-high-late-offscreen-v654`
 payloads. High is exact-flat at `1764`, `1476/1434`, blocking/refill `81/23`,
 and due `16`, while active payload drops `918345 -> 882007`, CD sectors
@@ -270,7 +270,9 @@ late-tail entries `194..210`, preserving the exact-flat `1478/1431` timing
 while active payload drops `916139 -> 879801` and loop reads/read time improve
 `62/281 -> 60/273`. `walkstuf1-low-frame133-offscreen-v716` clips one more
 mid singleton exact-flat, removing `2937` pixels and dropping rows/spans/pixels
-to `16268/116724/647686`.
+to `16268/116724/647686`. `walkstuf1-low-frame132-offscreen-v717` clips the
+adjacent singleton exact-flat, removing another `2131` pixels and dropping
+rows/spans/pixels to `16267/116582/645555`.
 
 Latest rejected W1 note: `walkstuf1-low-midright-ac-offscreen-v683` isolated
 frame `86` from the old `85..92` mid-right miss. It removed only `319` pixels
@@ -323,7 +325,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-frame133-offscreen-v716`,
+  refreshed rows use `walkstuf1-low-frame132-offscreen-v717`,
+  `walkstuf1-low-frame133-offscreen-v716`,
   `walkstuf1-low-tail194-210compact-v705`,
   `walkstuf1-low-frame63-offscreen-v696`,
   `walkstuf1-low-frame58-offscreen-v695`,
@@ -2190,15 +2193,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T03:37:27</td>
-      <td>walkstuf1-low-frame133-offscreen-v716</td>
+      <td>2026-05-14T03:47:48</td>
+      <td>walkstuf1-low-frame132-offscreen-v717</td>
       <td>+3.3%</td>
       <td class="spd-yellow">96.8%</td>
       <td>1478/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed frame 133 offscreen draw-span clip on top of v705 preserves file size, pack LBA/sectors, PS-EXE bucket, scene/loop/target 1770/1478/1431, overrun 47, blocking/refill 64/20, reads/read time 60/273, and due 11 while trimming 2937 draw pixels, 188 spans, and 4 runtime frame rows; v705 still provides the late-tail active-payload cut 916139 -&gt; 879801 and loop reads/read VBlanks 62/281 -&gt; 60/273</td>
+      <td>same-speed frame 132 offscreen draw-span clip on top of v716 preserves file size, pack LBA/sectors, PS-EXE bucket, scene/loop/target 1770/1478/1431, overrun 47, blocking/refill 64/20, reads/read time 60/273, and due 11 while trimming 2131 draw pixels, 142 spans, and 1 runtime frame row; v716 still provides the prior frame 133 work cut and v705 still provides the late-tail active-payload cut 916139 -&gt; 879801 plus loop reads/read VBlanks 62/281 -&gt; 60/273</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
