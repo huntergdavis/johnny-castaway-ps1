@@ -70,8 +70,8 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664
-BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140 offscreen work-volume clips:
+BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61 offscreen work-volume clips:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -157,6 +157,11 @@ v689 clips frame `3`, stays exact-flat while removing `93` pixels and `45`
 spans, and drops runtime rows/spans/pixels to `16663/120738/676450`.
 v690 clips frame `140`, stays exact-flat while removing `50` pixels and `28`
 spans, and drops runtime rows/spans/pixels to `16663/120710/676400`.
+v691 clips frame `61`, stays exact-flat while removing `4495` pixels, `684`
+spans, and `79` rows, and drops runtime rows/spans/pixels to
+`16584/120026/671905`. This proves at least one frame in the previously risky
+`58..63` left2 remainder can promote as a singleton; continue binary there
+instead of retrying broad `58..64` direct clipping.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
