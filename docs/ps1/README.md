@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.8-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2744% public over target / 99.7301% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2736% public over target / 99.7310% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,9 +23,10 @@ background, waves, holiday overlay, and SFX playback.
 stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
-latest mainline promotes the VISITOR3 high tail-pack repack after the VISITOR5
-high/low and BUILDING2 low retained-read wins. The public battle card is now
-`+0.2744%` over target / `99.7301%` target speed across all 126
+latest mainline promotes the BUILDING4 low offscreen draw-span clip after the
+VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
+retained-read wins. The public battle card is now `+0.2736%` over target /
+`99.7310%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -51,8 +52,9 @@ CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
-`218..229` slack8 row, and the VISITOR3 high `277..293` tail-pack repack; the
-raw signed optimization matrix is `-0.4927%` / `100.5125%`.
+`218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, and the
+BUILDING4 low offscreen draw-span clip; the raw signed optimization matrix is
+`-0.4936%` / `100.5133%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny

@@ -21,15 +21,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2744%` over
-target / `99.7301%` target speed; the raw signed optimization matrix is
-`-0.4927%` / `100.5125%`.
-The newest accepted VISITOR3 high tail-pack promotion reuses the proven compact
-low-tail cleanup payloads, fits frames `141/140/142/143/144` plus sound events
-inside the existing `277..293` setup segment, and improves high to `1063/1040`,
-overrun `23`, blocking/read time `35`, reads/due `6/6`. VISITOR5 high/low both
-remain green on the matching `30..46` retained-read shape. The VISITOR3
-low frame132/frame137 setup-prime relocation keeps the
+allocation. The public headless battle card is `+0.2736%` over
+target / `99.7310%` target speed; the raw signed optimization matrix is
+`-0.4936%` / `100.5133%`.
+The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
+without changing pack size/LBA or the PS-EXE bucket, improving low to
+`2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun
+`34`. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
+VISITOR5 high/low both remain green on the matching `30..46` retained-read
+shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-14" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2744%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7301%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4927%</code> / <code class="language-plaintext highlighter-rouge">100.5125%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2736%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7310%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4936%</code> / <code class="language-plaintext highlighter-rouge">100.5133%</code>.</p>
 
 <p>The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the <code class="language-plaintext highlighter-rouge">427..443</code> CD-work baseline. Some candidates were
@@ -572,7 +572,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-13T18:41:57</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-13T21:03:27</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -750,7 +750,7 @@ rows are historical only.</p>
     <tr>
       <td><code>building4</code></td>
       <td>+1.0% / 99.0% (2844/2816); due 1; blk 37</td>
-      <td>+1.4% / 98.6% (2855/2815); due 1; blk 46</td>
+      <td>+1.3% / 98.7% (2853/2816); due 1; blk 40</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -1077,7 +1077,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2744% over target / 99.7301% target speed, with several
+public average is now +0.2736% over target / 99.7310% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

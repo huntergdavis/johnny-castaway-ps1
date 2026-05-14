@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-14" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2104 words
+          ~8 min read · 2109 words
         </p>
 
       <hr class="rule" />
@@ -128,15 +128,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2744%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7301%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4927%</code> / <code class="language-plaintext highlighter-rouge">100.5125%</code>.
-The newest accepted VISITOR3 high tail-pack promotion reuses the proven compact
-low-tail cleanup payloads, fits frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
-inside the existing <code class="language-plaintext highlighter-rouge">277..293</code> setup segment, and improves high to <code class="language-plaintext highlighter-rouge">1063/1040</code>,
-overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/read time <code class="language-plaintext highlighter-rouge">35</code>, reads/due <code class="language-plaintext highlighter-rouge">6/6</code>. VISITOR5 high/low both
-remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape. The VISITOR3
-low frame132/frame137 setup-prime relocation keeps the
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2736%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7310%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4936%</code> / <code class="language-plaintext highlighter-rouge">100.5133%</code>.
+The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
+without changing pack size/LBA or the PS-EXE bucket, improving low to
+<code class="language-plaintext highlighter-rouge">2853/2816</code>, overrun <code class="language-plaintext highlighter-rouge">37</code>, blocking/read time <code class="language-plaintext highlighter-rouge">40</code>/<code class="language-plaintext highlighter-rouge">215</code>, and prefetch overrun
+<code class="language-plaintext highlighter-rouge">34</code>. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
+VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
+shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
 <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1062/1040</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>,
 blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due <code class="language-plaintext highlighter-rouge">7/7</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1434</code>

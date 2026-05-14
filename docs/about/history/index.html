@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="History — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, and the v0.8.8-ps1 VISITOR5 high performance release." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-13" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, and the v0.8.8-ps1 VISITOR5 high performance release." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.8; built 2026-05-14" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3530 words
+          ~14 min read · 3548 words
         </p>
 
       <hr class="rule" />
@@ -504,11 +504,12 @@ VISITOR3 high’s frame137 sector-203 setup relocation, VISITOR5 high’s
 <code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR5 low’s matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
 group, VISITOR3 low’s frame132 setup-prime
 relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, BUILDING2
-low’s previous-frame D4 deltas, BUILDING2 low’s <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row, and
-VISITOR3 high’s <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack. The public battle card is
-<code class="language-plaintext highlighter-rouge">+0.2744%</code> over target / <code class="language-plaintext highlighter-rouge">99.7301%</code> target speed; raw signed rollup is
-<code class="language-plaintext highlighter-rouge">-0.4927%</code> / <code class="language-plaintext highlighter-rouge">100.5125%</code>. VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1063/1040</code> with
-<code class="language-plaintext highlighter-rouge">blocking_vb=35</code>;
+low’s previous-frame D4 deltas, BUILDING2 low’s <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row,
+VISITOR3 high’s <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, and BUILDING4 low’s offscreen
+draw-span clipping. The public battle card is <code class="language-plaintext highlighter-rouge">+0.2736%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.7310%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4936%</code> / <code class="language-plaintext highlighter-rouge">100.5133%</code>.
+VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1063/1040</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=35</code>; BUILDING4 low is
+<code class="language-plaintext highlighter-rouge">2853/2816</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=40</code>;
 WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
 and BUILDING4 low remain the under-99 tactical queue.</li>
   <li>Performance-baseline release: <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> — promoted the
@@ -521,8 +522,9 @@ retained-read promotion. Public rollup is <code class="language-plaintext highli
 <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4805%</code> /
 <code class="language-plaintext highlighter-rouge">100.5006%</code>. Current mainline also promotes VISITOR5 low with the matching
 <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape and BUILDING2 low with <code class="language-plaintext highlighter-rouge">218..229</code> slack8,
-then VISITOR3 high with the <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, moving the live
-battle card to <code class="language-plaintext highlighter-rouge">+0.2744%</code> over target / <code class="language-plaintext highlighter-rouge">99.7301%</code> target speed.</li>
+then VISITOR3 high with the <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack and BUILDING4 low
+with offscreen draw-span clipping, moving the live battle card to <code class="language-plaintext highlighter-rouge">+0.2736%</code>
+over target / <code class="language-plaintext highlighter-rouge">99.7310%</code> target speed.</li>
   <li>Latest stability release: <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> — deterministic BOOTMODE
 scene selection, expected-scene gates in the headless perf harness,
 Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail

@@ -66,14 +66,28 @@ VISITOR5 high `30..46` retained-read promotion, the v501 VISITOR3 high
 frame137 sector-203 setup relocation, the v510 VISITOR3 low frame137
 setup-prime gap relocation, the v526 VISITOR5 low `30..46` retained-read
 promotion, the v626 BUILDING2 low `218..229` slack-8 retained-read promotion,
-and the v629 VISITOR3 high `277..293` tail-pack repack:
-`+0.2744%` public average over target / `99.7301%` public target speed across
+the v629 VISITOR3 high `277..293` tail-pack repack, and the v652 BUILDING4 low
+offscreen draw-span clipping pack pass:
+`+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4927%` / `100.5125%`. Since the compact full-matrix baseline was about
+`-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.13` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
 rows remaining and no orange/red rows.
+
+Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
+of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
+entry offset/size, the `1714154` byte pack footprint, LBA `9118`, and the
+`217088` byte PS-EXE bucket. It changes `30` frames, removes `65111`
+offscreen PAL4 draw pixels, drops `11871` spans and `471` draw rows, and
+reduces logical draw bytes by `61047`. The same-commit gate improves scene
+`3131 -> 3128`, active loop/target `2856/2816 -> 2853/2816`, overrun
+`40 -> 37`, blocking `44 -> 40`, prefetch overrun `37 -> 34`, and loop-read
+VBlanks `223 -> 215`; loop reads and due misses remain `30` and `1`. This
+adds about `0.0008` public over-target points removed and `0.0009`
+target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
+VBlanks of remaining gap.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
@@ -1135,9 +1149,9 @@ retained-read tables.
 | 23 | JOHNNY1 high/low | Closed by v642 for pack-only suppression and v643 for function-scoped clean-span O2: the pack has no redundant same-frame cleanup or duplicate/no-op payloads, and O2 on `grRestoreCleanBgSpanFromRects()` is exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`. | Reopen only after reclaiming code headroom for a smaller black-clear opcode/helper, generating code-neutral dirty-upload metadata, or proving a new restore primitive changes work counters while keeping the `217088` byte PS-EXE bucket. |
 | 24 | JOHNNY1 high/low | Code-neutral dirty-upload coalescing for black-background rows: precompute the row mask in pack metadata and reuse existing upload path. Avoid global narrow-upload code that previously blew the EXE bucket and avoid pure compiler toggles that leave timing flat. | Require no PS-EXE bucket change, no `grDrawBackground` growth, and a measurable restore/upload work drop before timing. |
 | 25 | JOHNNY1 high/low | Closed by v642 for exact no-op aliasing: no duplicate payload groups or repeated offset runs exist in the current `JOHNNY1.FG2` pack. | Use runtime black-clear/code-headroom or generated dirty-upload work instead of pack-side no-op aliasing. |
-| 26 | BUILDING4 low | Fresh classify BUILDING4 low as render-vs-CD before optimizing: its scalar rows are rejected/not-current-window-fit, so the active bottleneck may be cleanup/upload rather than retained reads. | Capture a same-commit baseline with read plan, upload bytes, restore bytes, and compositor counters. |
+| 26 | BUILDING4 low | Closed by v652 for the first classifier pass: same-commit offscreen draw-span clipping is a real pack-only win, but it only moves low from `2856/2816` to `2853/2816`. Remaining debt is still mixed CD/upload work, not a plain retained-read row. | Continue from the v652 baseline; require fixed LBA/EXE bucket and a work-counter drop before timing. |
 | 27 | BUILDING4 low | Scene-specific static-mask precomposition for the large island/tree/background area, leaving only moving foreground rows dirty. BUILDING4 low remains near target with high restore/upload pressure. | Offline mask validator first; gate only if visual status stays green and upload/restore bytes drop. |
-| 28 | BUILDING4 low | Test a pack-authored cleanup-skip for offscreen or fully occluded rows, not runtime clipping. Prior generic upload/clip paths added too much code; pack metadata can keep it cold. | Host analyzer must produce exact occlusion proof per frame before PS1. |
+| 28 | BUILDING4 low | Extend v652 into a smaller occlusion/static-mask pass, not broader clipping. The accepted offscreen draw clip proved pack-authored work reduction can pay here, while W1 proved broad clipping can destabilize CD phase. | Host analyzer must prove exact static ownership and preserve entry offsets/file size before PS1. |
 | 29 | Cross-scene | Add a hot-symbol drift budget to the perf harness and reject source probes that grow or shift `foregroundPilotPlay` unless a work metric already improved. Many v548-v570 misses were pure code-shape noise. | Implement as a gate option and run it against one known exact-flat stale row to prove it fails early. |
 | 30 | Cross-scene | Auto-generate fresh same-commit baselines for any row whose candidate root predates the latest accepted promotion. This prevents stale `saved=1` rows from wasting runs after pack/data-shape changes. | Extend the matrix script to mark stale-root rows as "refresh-required" instead of scheduler-owned. |
 | 31 | Cross-scene | Add binary sweep automation for threshold experiments: try both sides, keep only the better, and log both when neither clears strict gates. This matches the headless methodology and avoids manual scalar bias. | Use BUILDING2 low slack8/slack9 as the first automated regression test. |
@@ -1171,7 +1185,7 @@ host proof before any emulator time.
 | 49 | JOHNNY1 | Reclaim cold code bytes first, then retry a minimal black-clear primitive with the PS-EXE bucket pinned. | Build must stay `217088` and high/low must both improve or stay flat. |
 | 50 | JOHNNY1 | Emit a pack-side black-clean row mask for frame `2` and reuse existing dirty upload with no new broad narrow-upload path. | Host mask must prove all cleared pixels are black/background-owned. |
 | 51 | JOHNNY1 | Try a data-only split of frame `2` cleanup into one cheap black clear plus normal residual payload, with an existing opcode if possible. | Reject if it needs a new hot decoder branch before code headroom exists. |
-| 52 | BUILDING4 low | Run a fresh same-commit render/CD classifier before touching code: compare restore bytes, upload bytes, read blocking, and due misses. | If CD is not dominant, skip read rows and target static-mask work. |
+| 52 | BUILDING4 low | Closed by v652 for the first same-commit classifier: offscreen draw-span clipping lowered both draw work and visible CD cost, but BUILDING4 low is still below green. | Next pass should extend the static/occlusion proof, not retry scalar retained reads. |
 | 53 | BUILDING4 low | Build a static island/tree/background ownership mask and precompose only rows that never overlap animated sprites. | Visual diff must cover low tide and wave frames before PS1 timing. |
 | 54 | Cross-scene | Add a "phase-trap" tag in the candidate CSV when saved reads pair with tight internal gaps and prior scalar misses. | Candidate matrix should stop ranking those rows above pack/data-shape work. |
 | 55 | Cross-scene | Add hot-symbol drift and `foregroundPilotPlay` growth gates to focused runs by default. | Known exact-flat source probes should fail before a full broad canary. |

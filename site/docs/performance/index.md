@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2744%`
-exact public over target / `99.7301%` exact public target speed); the raw
-signed optimization matrix is `-0.4927%` / `100.5125%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2736%`
+exact public over target / `99.7310%` exact public target speed); the raw
+signed optimization matrix is `-0.4936%` / `100.5133%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -442,7 +442,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-13T18:41:57`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-13T21:03:27`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -620,7 +620,7 @@ rows are historical only.
     <tr>
       <td><code>building4</code></td>
       <td>+1.0% / 99.0% (2844/2816); due 1; blk 37</td>
-      <td>+1.4% / 98.6% (2855/2815); due 1; blk 46</td>
+      <td>+1.3% / 98.7% (2853/2816); due 1; blk 40</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -945,7 +945,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2744% over target / 99.7301% target speed, with several
+  public average is now +0.2736% over target / 99.7310% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

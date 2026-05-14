@@ -3,9 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-13 (`main` after `v0.8.7-ps1`; all 63 scenes remain
+**Last updated:** 2026-05-13 (`main` after `v0.8.8-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2852%` over target / `99.7198%` target speed).
+battle card is `+0.2736%` over target / `99.7310%` target speed).
 
 ## Overall
 
@@ -249,9 +249,12 @@ VISITOR3 high now adds the v629 tail-pack repack, keeping the v501 D4/setup
 baseline while fitting frames `141/140/142/143/144` plus sound events into the
 existing `277..293` setup segment. It improves to `1063/1040`, overrun `23`,
 blocking/read time `35`, and reads/due `6/6`.
-The public battle card is now `+0.2744%` over target / `99.7301%` target speed
-while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4927%` / `100.5125%`.
+BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
+improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
+prefetch overrun `34` while preserving fixed pack footprints and the `217088`
+byte PS-EXE bucket. The public battle card is now `+0.2736%` over target /
+`99.7310%` target speed; the raw signed optimization rollup is `-0.4936%` /
+`100.5133%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.13`
 public over-target points and added about `12.63` public target-speed points.
@@ -299,13 +302,14 @@ high/low are now
 `1476/1434` and `1478/1431`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
-restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
-low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
+restore-minus-current cleanup, with low-tide offscreen draw-span clipping on
+top: high is `2844/2816` with `blocking_vb=37`, and low is `2853/2816` with
+`blocking_vb=40`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
-matrix; the next true outliers are residual WALKSTUF1 work,
-BUILDING2 high residual work, VISITOR3 high/low, BUILDING2 low, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
-BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
+matrix; the next true outliers are residual WALKSTUF1 work, BUILDING2 high
+residual work, VISITOR3 high/low, BUILDING2 low, JOHNNY1 residual
+read/data-shape work, BUILDING4 low, and selective upload-ready bands.
 VISITOR3 local C
 read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
 repoints are now exhausted; the next VISITOR3 attempt should extend the
@@ -337,7 +341,7 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
-- Current `main` after `v0.8.7-ps1` — promotes the BUILDING2 high `206..230`
+- Current `main` after `v0.8.8-ps1` — promotes the BUILDING2 high `206..230`
   and `226..242` read groups plus 24-sector grouped-read capacity, the
   BUILDING6 scene-local slack4 guard, WALKSTUF1 high
   `344..360`, `422..434`, and shared dual-tail `443..455` / `444..456`,
@@ -347,14 +351,15 @@ Milestone releases:
   residency plus frame137 co-residency, plus WALKSTUF1 low `78..91` retained
   post-prime boundary ownership and shared `427..443` CD-work reduction, and
   VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
-  `218..229` slack-8 retained-read ownership, and the VISITOR3 high
-  `277..293` tail-pack repack. The public battle card is
-  `+0.2744%` / `99.7301%`;
+  `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
+  tail-pack repack, and BUILDING4 low offscreen draw-span clipping. The public
+  battle card is `+0.2736%` / `99.7310%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62`, VISITOR3 high is `1063/1040` with blocking/read time `35`,
-  VISITOR3 low is `1062/1040` with blocking/read time `42`, and VISITOR5
-  high/low are now green at `1101/1096` and `1102/1097`.
+  VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
+  `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are
+  now green at `1101/1096` and `1102/1097`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene
   gates for headless perf runs, Suzy backdrop cleanup hardening, and heapless
