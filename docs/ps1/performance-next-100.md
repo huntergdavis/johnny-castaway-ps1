@@ -1035,6 +1035,15 @@ B2-high speed work needs generated deadline ownership, sector-boundary byte
 removal, or precomposed upload/restore work that does not shorten visual work
 into a worse CD phase.
 
+Latest rejected BUILDING2 high safe-subset physical compaction: v709 repacked
+the accepted offscreen-clip subsets `89..104` and `168..177`, preserving file
+size/LBA/PS-EXE bucket while reducing active payload `674798 -> 651508`
+(`23290` bytes). The focused gate regressed scene/loop `1602/1351 ->
+1609/1358`, target `1311 -> 1309`, overrun `40 -> 49`, blocking `54 -> 60`,
+refill `18 -> 26`, and loop reads `58 -> 59`; due stayed `7`. Close combined
+same-order physical compaction for B2-high safe subsets. Any retry must split
+post-hot `89..104` from late `168..177` or be scheduler-owned.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
