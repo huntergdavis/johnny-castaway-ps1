@@ -1775,23 +1775,11 @@ int main(int argc, char **argv)
 
     graphicsInit();
     ps1PrintfProbe("graphics-init", NULL);
-    /* Pin the FG2 streaming buffers (frame buffer, prefetch frame buffer,
-     * stream scratch) at boot, AFTER graphicsInit has placed the ~600 KB
-     * bgTile allocation. The earlier all-at-once pre-allocation attempt
-     * (~700 KB worth of FG2 + walk-clean + clean-rect together) blew
-     * through the boot-heap budget; this trimmed version pins only the
-     * FG2 streaming family which is the biggest per-scene churn source.
-     * walk-clean and clean-rect buffers remain lazy for now — they reach
-     * peak size within a handful of scenes and stop growing.
-     *
-     * Sizes chosen conservatively (192 KB frame/prefetch, 64 KB scratch)
-     * so the per-scene `if (maxDataSize > gFgFrameBufferSize)` realloc
-     * branch in foregroundPilotRuntimeStart is skipped for every normal
-     * scene. A scene whose maxDataSize exceeds 192 KB still falls through
-     * to the existing dynamic realloc path (it'll fragment, but it's the
-     * old behavior — no regression). */
-    fgPrePrimeStreamBuffers(192UL * 1024UL, 64UL * 1024UL);
-    ps1PrintfProbe("fg-streams-pinned", NULL);
+    /* Keep FG2 stream buffers lazy. A boot-time 192 KB frame pin plus
+     * 64 KB scratch pin starves large clean-rect scenes like WALKSTUF1 low
+     * after the static CD sector pool is reserved. The runtime can still
+     * grow and retain these buffers per scene, and can drop prefetch when
+     * clean-background allocation needs the heap. */
     int bootNightValid = hostBootForcedNightValid;
     int bootHolidayValid = hostBootForcedHolidayValid;
     int bootNight = hostForcedNight;
