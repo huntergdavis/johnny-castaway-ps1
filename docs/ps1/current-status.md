@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-14 (`main` after `v0.8.8-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2736%` over target / `99.7310%` target speed).
+battle card is `+0.2732%` over target / `99.7314%` target speed).
 
 ## Overall
 
@@ -268,9 +268,9 @@ pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
 bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen clusters,
 also exact-flat, dropping runtime frame rows/spans/pixels from
 `17298/135025/785455 -> 16272/116912/650623`. The public battle card is now
-`+0.2736%` over target /
-`99.7310%` target speed; the raw signed optimization rollup is `-0.4936%` /
-`100.5133%`.
+`+0.2732%` over target /
+`99.7314%` target speed; the raw signed optimization rollup is `-0.4940%` /
+`100.5137%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.13`
 public over-target points and added about `12.63` public target-speed points.
@@ -316,7 +316,7 @@ VISITOR3 high is now
 `1344/1318`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1476/1434` and `1478/1431`, WALKSTUF3 high/low are `2310/2290` and
-`2310/2295`, JOHNNY1 high/low are both `1974/1945`, and the FISHING1 high control sits at the public cap
+`2310/2295`, JOHNNY1 high/low are both `1973/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup, with low-tide offscreen draw-span clipping on
 top: high is `2844/2816` with `blocking_vb=37`, and low is `2853/2816` with
@@ -372,7 +372,7 @@ Milestone releases:
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions. The public
-  battle card is `+0.2736%` / `99.7310%`;
+  battle card is `+0.2732%` / `99.7314%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
   work-volume row at `1344/1318` after removing `120179` offscreen draw pixels
   and `1537` frame rows, BUILDING2 high now drops runtime rows/spans/pixels

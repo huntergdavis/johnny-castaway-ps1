@@ -389,8 +389,8 @@ component-completeness phases:
   low's previous-frame D4 deltas, BUILDING2 low's `218..229` slack-8 row,
   VISITOR3 high's `277..293` tail-pack repack, BUILDING4 low's offscreen
   draw-span clipping, and WALKSTUF1 high/low late-tail work-volume clips. The
-  public battle card is `+0.2736%` over target /
-  `99.7310%` target speed; raw signed rollup is `-0.4936%` / `100.5133%`.
+  public battle card is `+0.2732%` over target /
+  `99.7314%` target speed; raw signed rollup is `-0.4940%` / `100.5137%`.
   VISITOR3 high measures `1063/1040` with `blocking_vb=35`; BUILDING4 low is
   `2853/2816` with `blocking_vb=40`;
   WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
@@ -407,8 +407,8 @@ component-completeness phases:
   `30..46` retained-read shape and BUILDING2 low with `218..229` slack8,
   then VISITOR3 high with the `277..293` tail-pack repack, BUILDING4 low with
   offscreen draw-span clipping, and WALKSTUF1 high/low with same-speed late-tail
-  work-volume clips, moving the live battle card to `+0.2736%`
-  over target / `99.7310%` target speed.
+  work-volume clips plus the JOHNNY1 low refresh, moving the live battle card
+  to `+0.2732%` over target / `99.7314%` target speed.
 - Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
   scene selection, expected-scene gates in the headless perf harness,
   Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail

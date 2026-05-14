@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2736%` over
-target / `99.7310%` target speed; the raw signed optimization matrix is
-`-0.4936%` / `100.5133%`.
+allocation. The public headless battle card is `+0.2732%` over
+target / `99.7314%` target speed; the raw signed optimization matrix is
+`-0.4940%` / `100.5137%`.
 The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun

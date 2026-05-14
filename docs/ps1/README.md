@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.8-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2736% public over target / 99.7310% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2732% public over target / 99.7314% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -28,8 +28,8 @@ BUILDING2 high/low offscreen draw-span work-volume clips, the WALKSTUF1 high/low
 late-tail work-volume clips, and the WALKSTUF1 high late-tail physical
 compaction after the VISITOR3 high tail-pack repack and the VISITOR5 high/low
 and BUILDING2 low retained-read wins. The
-public battle card is now `+0.2736%` over target /
-`99.7310%` target speed across all 126
+public battle card is now `+0.2732%` over target /
+`99.7314%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -57,8 +57,8 @@ frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap reloca
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip, and the BUILDING2 high/low offscreen
-draw-span work-volume clips; the raw signed optimization matrix is
-`-0.4936%` / `100.5133%`.
+draw-span work-volume clips plus the JOHNNY1 low refresh; the raw signed
+optimization matrix is `-0.4940%` / `100.5137%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
