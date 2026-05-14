@@ -502,6 +502,13 @@ signal, cutting reads `64 -> 61`, but still regressing active loop/target to
 read-table queue mostly as cleanup; the larger WALKSTUF1 low gain needs a
 generated frame-deadline owner or a data/upload reduction before the CD
 clusters rather than more hand-authored thresholds.
+The 2026-05-14 v728/v729 follow-up tested the current lower-risk tail hints
+after the W1-low singleton pass was exhausted. `{371,387,0}` cut reads
+`60 -> 58` but regressed scene/loop `1770/1478 -> 1772/1480`, blocking/refill
+`64/20 -> 67/23`; the adjacent `{387,399,0}` split cut reads `60 -> 59` but
+still regressed to `1771/1479`, blocking/refill `66/22`. Close `371..399` for
+direct retained rows; this confirms the remaining W1-low CD work requires
+generated deadline ownership or pack/upload reduction before timing.
 
 Latest rejected WALKSTUF1 low post-prepare refill sweep: v609-v612 tested
 whether low tide could keep the accepted visual prepare-before-window policy
