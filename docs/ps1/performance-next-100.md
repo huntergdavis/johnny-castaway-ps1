@@ -141,6 +141,10 @@ regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
 `20 -> 28`, loop reads `62 -> 63`, and due misses `11 -> 15`. Treat
 `62..65` as a direct-clip phase cliff; any remaining `58..65` retry should be
 one/two-frame or use a non-shrinking data-shape/hole-fill approach.
+The v677 `64..65` bisection also failed, despite only removing `6795` pixels,
+`1054` spans, and `15` rows, with the same `1782/1490`, blocking `97`, refill
+`28`, reads `63`, and due `15` profile. Test frame `65` alone before closing
+the direct adjacent boundary.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`

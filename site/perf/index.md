@@ -236,13 +236,13 @@ clips frames `27..28`, still exact-flat, and drops rows/spans/pixels to
 `58..74` failure was not contiguous, and drops rows/spans/pixels to
 `16667/122562/683390`.
 
-Latest rejected W1 note: `walkstuf1-low-left2c-offscreen-v676` split the
-remaining early-left2 band and tested frames `62..65` after `66..74` proved
-safe. It removed `15288` pixels, `2277` spans, and `103` rows, but reproduced
-the old phase cliff: scene/loop `1770/1478 -> 1782/1490`, blocking
+Latest rejected W1 note: `walkstuf1-low-left2d-offscreen-v677` bisected the
+early-left2 cliff toward the proven-safe `66..74` boundary by testing only
+`64..65`. It removed `6795` pixels, `1054` spans, and `15` rows, but still
+reproduced the full cliff: scene/loop `1770/1478 -> 1782/1490`, blocking
 `64 -> 97`, refill `20 -> 28`, reads `62 -> 63`, and due misses `11 -> 15`.
-Treat `62..65` as closed for direct clipping; any retry in `58..65` needs a
-one/two-frame split or non-shrinking data-shape/hole-fill approach.
+Treat `64..65` as closed for direct clipping; test frame `65` alone before
+closing the adjacent boundary entirely.
 
 Latest promoted BUILDING2 note: `building2-high-late-offscreen-v664` narrows the
 failed broad high-tide offscreen clip to late frames `168..177`, staying
