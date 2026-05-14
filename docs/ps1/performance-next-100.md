@@ -319,6 +319,11 @@ without `JCPERF2`, and the due-load-only/no-stage variant was killed before
 metrics. Restore source and `VISITOR3.FG2`; do not retry frame133 chained D4
 without first designing explicit staged/prepared ownership for previous-frame
 delta payloads.
+The 2026-05-14 source-only v727 follow-up confirms the broad hook is unsafe:
+decoding every staged previous-frame D4 before `fgRuntimeSetStagedFrame()`
+reached the scene rect marker but timed out without `JCPERF2` even with the
+accepted current pack and no frame133 payload change. Future retries must be
+frame-specific and generated-owned, not a global staged-D4 behavior change.
 
 Latest rejected VISITOR3 high terminal read-group attempt: v487 added a
 high-only grouped append for sectors `228..252`, targeting the current
