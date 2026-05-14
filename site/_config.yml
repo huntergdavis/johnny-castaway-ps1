@@ -41,8 +41,7 @@ release:
   # Compute on each release tag via:
   #   curl -sL <repo>/releases/download/<tag>/jcreborn.bin | sha256sum
   #   curl -sL <repo>/releases/download/<tag>/jcreborn.cue | sha256sum
-  # Future improvement: scripts/release.sh writes a sidecar `.sha256`
-  # file beside the .bin/.cue and this block reads from it.
+  # scripts/release.sh rewrites these from the release artifacts.
   sha256_bin: "bcd222f6a04a52eb214e1296f73cb78fc2f3e52a452c7ff1733c930f62e93832"
   sha256_cue: "602fc8c63373be283bf514e25b8088cd090c987e0e626ee480c3f0f9dd5ffbc3"
 

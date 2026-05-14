@@ -102,11 +102,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state after v0.8.8-ps1</p>
+      <p class="eyebrow">Component-level state after v0.8.9-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2218 words
+          ~8 min read · 2249 words
         </p>
 
       <hr class="rule" />
@@ -120,10 +120,11 @@ under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
-<code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> is the current release: every row in the live per-scene
+<code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed and
 timing-bearing, deterministic BOOTMODE scene selection is logged and gated,
-and VISITOR5 high/low now share green <code class="language-plaintext highlighter-rouge">30..46</code> retained-read baselines. The
+VISITOR5 high/low now share green <code class="language-plaintext highlighter-rouge">30..46</code> retained-read baselines, and the
+latest WALKSTUF1 low in-place payload reductions are promoted. The
 chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
@@ -361,10 +362,13 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> promotes the VISITOR5 high
-<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group and current mainline reuses that shape for
-VISITOR5 low; both rows are now green on top of the v0.8.7 stability
-hardening. <code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is the deterministic BOOTMODE
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> promotes the current mainline
+optimization set: VISITOR5 low reuses the green <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape,
+BUILDING2 low carries the <code class="language-plaintext highlighter-rouge">218..229</code> slack8 row plus v739 draw-tail trim,
+and WALKSTUF1 low carries no-shift frame <code class="language-plaintext highlighter-rouge">51</code>/<code class="language-plaintext highlighter-rouge">49</code>/<code class="language-plaintext highlighter-rouge">47</code>/<code class="language-plaintext highlighter-rouge">61</code>/<code class="language-plaintext highlighter-rouge">62</code>/<code class="language-plaintext highlighter-rouge">58</code>/<code class="language-plaintext highlighter-rouge">45</code>/<code class="language-plaintext highlighter-rouge">37</code>/<code class="language-plaintext highlighter-rouge">35</code>
+in-place payload reductions. <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> promotes the VISITOR5 high
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read group on top of the v0.8.7 stability hardening.
+<code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> is the deterministic BOOTMODE
 scene selection and Scene Explorer preview stability point release on top of
 the v0.8.6 performance follow-through: direct-scene boots are logged and
 gated, Suzy backdrop cleanup restores scene state, and Scene Explorer

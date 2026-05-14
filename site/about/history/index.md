@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.8-ps1
+eyebrow: 2025-10 to v0.8.9-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, and the v0.8.8-ps1 VISITOR5 high performance release.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, the v0.8.8-ps1 VISITOR5 high performance release, and the v0.8.9-ps1 WALKSTUF1 low payload-reduction release.
 ---
 
 <details class="page-toc" markdown="1">
@@ -401,22 +401,24 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
-- Latest performance release: **`v0.8.8-ps1`** — VISITOR5 high `30..46`
+- Latest performance release: **`v0.8.9-ps1`** — VISITOR5 low `30..46`
+  retained-read promotion, BUILDING2 low `218..229` slack8 plus v739 draw-tail
+  trim, VISITOR3 high `277..293` tail-pack repack, BUILDING4 low offscreen
+  draw-span clipping plus frame291 in-place shrink, WALKSTUF1 high/low
+  same-speed work-volume clips, and WALKSTUF1 low frame
+  `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35` in-place payload reductions.
+  Public rollup is `+0.2708%` over target / `99.7337%` target speed; raw
+  signed rollup is `-0.4963%` / `100.5160%`.
+- Previous performance release: **`v0.8.8-ps1`** — VISITOR5 high `30..46`
   retained-read promotion. Public rollup is `+0.2867%` over target /
   `99.7183%` target speed; raw signed rollup is `-0.4805%` /
-  `100.5006%`. Current mainline also promotes VISITOR5 low with the matching
-  `30..46` retained-read shape and BUILDING2 low with `218..229` slack8 plus
-  v739 draw-tail trimming,
-  then VISITOR3 high with the `277..293` tail-pack repack, BUILDING4 low with
-  offscreen draw-span clipping, and WALKSTUF1 high/low with same-speed late-tail
-  work-volume clips plus the JOHNNY1 low refresh, moving the live battle card
-  to `+0.2708%` over target / `99.7337%` target speed.
+  `100.5006%`.
 - Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
   scene selection, expected-scene gates in the headless perf harness,
   Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail
   streaming. Public rollup remains `+0.3156%` over target /
   `99.6902%` target speed.
-- Previous performance release: **`v0.8.6-ps1`** — WALKSTUF1 low
+- Earlier performance release: **`v0.8.6-ps1`** — WALKSTUF1 low
   gap6-prefix + slack-guard promotion, WALKSTUF1 high window-prefetch /
   slack4 guard, and VISITOR3 high/low setup-segment resident copies for
   frames `131` / `128`. Public rollup `+0.3157%` over target /

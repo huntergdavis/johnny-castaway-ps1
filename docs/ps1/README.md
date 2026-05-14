@@ -12,15 +12,15 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.8-ps1` |
+| Release | `v0.8.9-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2708% public over target / 99.7337% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.8-ps1` is the current performance point release after the `v0.8.7-ps1`
-stability hardening, with additional post-release mainline optimization wins.
+`v0.8.9-ps1` is the current performance point release after the `v0.8.8-ps1`
+VISITOR5 high promotion, folding in the latest mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
@@ -77,12 +77,14 @@ groups, physical compaction, and frame55/frame138/frame51/frame49 clips are same
 so they do not count as VBlank speed wins.
 
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
-on top of the shared tail groups, v331 staged-prepare scheduler fallback, and
-the v653/v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 isolated offscreen work-volume clips. Low improves to
-`1478/1431` at `96.82%` target speed with overrun `47`, blocking `64`, hidden
-refill `20`, loop reads `62`, loop-read time `281`, and due misses `11`; the
-latest v696 clip keeps those timing/CD metrics flat while dropping runtime frame
-rows/spans/pixels from `16302/117490/654606 -> 16272/116912/650623`.
+on top of the shared tail groups, v331 staged-prepare scheduler fallback,
+v705 late-tail physical compaction, isolated offscreen work-volume clips
+through v726, and the v747/v749/v750/v751/v753/v755/v756/v757/v759 no-shift
+in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
+and `35`. Low remains `1478/1431` at `96.82%` target speed with overrun `47`,
+blocking/refill `64/20`, loop reads/read time `60/273`, and due misses `11`,
+while active payload drops `879801 -> 844668` without moving pack offsets,
+LBA/sectors, or the PS-EXE bucket.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24
@@ -343,6 +345,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.9.md](release-notes-0.8.9.md) — WALKSTUF1 low in-place payload reduction release notes
 - [release-notes-0.8.8.md](release-notes-0.8.8.md) — VISITOR5 high retained-read promotion release notes
 - [release-notes-0.8.7.md](release-notes-0.8.7.md) — deterministic boot selection and Scene Explorer preview stability release notes
 - [release-notes-0.8.6.md](release-notes-0.8.6.md) — WALKSTUF1 / VISITOR3 setup-segment compaction release notes

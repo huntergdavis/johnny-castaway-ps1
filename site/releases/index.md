@@ -22,6 +22,33 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.9-ps1` — WALKSTUF1 low in-place payload reductions
+<time datetime="2026-05-14"><em>2026-05-14</em></time>
+
+A performance point release after `v0.8.8-ps1`. It promotes the current
+mainline optimization set through `walkstuf1-low-frame35-inplace-v759`, while
+keeping all deterministic boot, Scene Explorer, and Suzy backdrop stability
+fixes from the prior point releases.
+
+- **VISITOR5 low joins high in green.** The low-tide row now uses the matching
+  `30..46` retained-read shape, improving `1104/1092 -> 1102/1097`.
+- **BUILDING2 low improves again.** The `218..229` slack-8 row plus v739
+  draw-tail trim now measure `1339/1317`, overrun `22`, blocking/read time
+  `53`/`150`, reads `37`, and due misses `12`.
+- **WALKSTUF1 low has the newest in-place payload baseline.** Frames `51`,
+  `49`, `47`, `61`, `62`, `58`, `45`, `37`, and `35` shrink without moving
+  offsets; timing stays exact-flat at `1478/1431`, while active payload drops
+  `879801 -> 844668`.
+- **Battle card improves from v0.8.8.** Public rollup is now `+0.2708%` over
+  target / `99.7337%` target speed; raw signed rollup is `-0.4963%` /
+  `100.5160%`; bands are `117` green and `9` yellow.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.9/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.9-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.8-ps1` — VISITOR5 high retained-read promotion
 <time datetime="2026-05-13"><em>2026-05-13</em></time>
 

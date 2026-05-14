@@ -133,6 +133,12 @@ cp "$PROJECT_DIR/jcreborn.bin" "$RELEASE_DIR/"
 cp "$PROJECT_DIR/jcreborn.cue" "$RELEASE_DIR/"
 echo "Copied jcreborn.bin and jcreborn.cue to release/"
 
+SHA256_BIN=$(sha256sum "$RELEASE_DIR/jcreborn.bin" | awk '{print $1}')
+SHA256_CUE=$(sha256sum "$RELEASE_DIR/jcreborn.cue" | awk '{print $1}')
+RELEASE_DATE=$(date +%F)
+echo "jcreborn.bin sha256: $SHA256_BIN"
+echo "jcreborn.cue sha256: $SHA256_CUE"
+
 # Step 3: Update VERSION file
 echo ""
 echo -e "${YELLOW}=== Step 3: Updating VERSION file ===${NC}"
@@ -142,18 +148,24 @@ echo "Updated VERSION to $NEW_VERSION"
 # Step 4: Update website release metadata and rebuild the static site.
 echo ""
 echo -e "${YELLOW}=== Step 4: Updating website release metadata ===${NC}"
-python3 - "$SITE_CONFIG" "$NEW_VERSION" "$TAG_NAME" <<'PY'
+python3 - "$SITE_CONFIG" "$NEW_VERSION" "$TAG_NAME" "$RELEASE_DATE" "$SHA256_BIN" "$SHA256_CUE" <<'PY'
 from pathlib import Path
 import sys
 
 config_path = Path(sys.argv[1])
 version = sys.argv[2]
 tag = sys.argv[3]
+release_date = sys.argv[4]
+sha256_bin = sys.argv[5]
+sha256_cue = sys.argv[6]
 
 lines = config_path.read_text().splitlines(keepends=True)
 in_release = False
 changed_version = False
 changed_tag = False
+changed_release_date = False
+changed_sha256_bin = False
+changed_sha256_cue = False
 
 for idx, line in enumerate(lines):
     if line.startswith("release:"):
@@ -171,9 +183,26 @@ for idx, line in enumerate(lines):
     elif line.startswith("  tag:"):
         lines[idx] = f'  tag: "{tag}"{newline}'
         changed_tag = True
+    elif line.startswith("  release_date:"):
+        lines[idx] = f'  release_date: "{release_date}"{newline}'
+        changed_release_date = True
+    elif line.startswith("  sha256_bin:"):
+        lines[idx] = f'  sha256_bin: "{sha256_bin}"{newline}'
+        changed_sha256_bin = True
+    elif line.startswith("  sha256_cue:"):
+        lines[idx] = f'  sha256_cue: "{sha256_cue}"{newline}'
+        changed_sha256_cue = True
 
-if not changed_version or not changed_tag:
-    raise SystemExit("site/_config.yml release.version or release.tag was not found")
+if not (
+    changed_version
+    and changed_tag
+    and changed_release_date
+    and changed_sha256_bin
+    and changed_sha256_cue
+):
+    raise SystemExit(
+        "site/_config.yml release.version/tag/date/sha256 fields were not found"
+    )
 
 config_path.write_text("".join(lines))
 PY
