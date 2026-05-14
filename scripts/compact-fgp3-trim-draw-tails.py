@@ -157,6 +157,7 @@ def convert(
     output_path: Path,
     pad_to_input_size: bool,
     copy_unparseable: bool,
+    selected_frames: set[int] | None,
 ) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
@@ -221,16 +222,20 @@ def convert(
             raise SystemExit(f"entry {index} payload extends beyond pack: {input_path}")
         old_payload = data[old_offset:old_offset + old_size]
         old_payload_bytes += old_size
-        try:
-            new_payload, entry_trimmed_pixels = trim_payload(old_payload)
-        except ValueError as exc:
-            if not copy_unparseable:
-                raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+        if selected_frames is not None and index not in selected_frames:
             new_payload = old_payload
             entry_trimmed_pixels = 0
-            copied_unparseable_entries += 1
-            if len(copied_unparseable_samples) < 8:
-                copied_unparseable_samples.append(f"{index}:{exc}")
+        else:
+            try:
+                new_payload, entry_trimmed_pixels = trim_payload(old_payload)
+            except ValueError as exc:
+                if not copy_unparseable:
+                    raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+                new_payload = old_payload
+                entry_trimmed_pixels = 0
+                copied_unparseable_entries += 1
+                if len(copied_unparseable_samples) < 8:
+                    copied_unparseable_samples.append(f"{index}:{exc}")
         entry_trimmed_bytes = old_size - len(new_payload)
         if entry_trimmed_bytes:
             trimmed_entries += 1
@@ -304,24 +309,57 @@ def main() -> None:
         action="store_true",
         help="copy entries that do not match the compact draw-row parser instead of aborting",
     )
+    parser.add_argument(
+        "--frames",
+        help="Only trim selected entry indices. Comma-separated values may include inclusive ranges like 194:210.",
+    )
     args = parser.parse_args()
 
     if args.in_place == bool(args.output_fgp3):
         raise SystemExit("pass either --in-place or an output path")
+    selected_frames: set[int] | None = None
+    if args.frames:
+        selected_frames = set()
+        for part in args.frames.split(","):
+            item = part.strip()
+            if not item:
+                continue
+            if ":" in item:
+                start_text, end_text = item.split(":", 1)
+                start = int(start_text)
+                end = int(end_text)
+                if end < start:
+                    raise SystemExit(f"invalid frame range: {item}")
+                selected_frames.update(range(start, end + 1))
+            else:
+                selected_frames.add(int(item))
+
     if args.in_place:
         with tempfile.NamedTemporaryFile(
             prefix=f"{args.input_fgp3.name}.", dir=args.input_fgp3.parent, delete=False
         ) as tmp:
             temp_path = Path(tmp.name)
         try:
-            convert(args.input_fgp3, temp_path, args.pad_to_input_size, args.copy_unparseable)
+            convert(
+                args.input_fgp3,
+                temp_path,
+                args.pad_to_input_size,
+                args.copy_unparseable,
+                selected_frames,
+            )
             shutil.move(temp_path, args.input_fgp3)
         finally:
             if temp_path.exists():
                 temp_path.unlink()
     else:
         assert args.output_fgp3 is not None
-        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size, args.copy_unparseable)
+        convert(
+            args.input_fgp3,
+            args.output_fgp3,
+            args.pad_to_input_size,
+            args.copy_unparseable,
+            selected_frames,
+        )
 
 
 if __name__ == "__main__":
