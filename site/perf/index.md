@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2708%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7337%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T15:56:43` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame1-inplace-v798`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T16:06:17` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame88-inplace-v800`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 work-volume track: `walkstuf1-high-frame49-offscreen-v734`
@@ -369,6 +369,8 @@ timing exact-flat while active payload drops again to `799694`.
 timing exact-flat while active payload drops again to `799129`.
 `walkstuf1-low-frame1-inplace-v798` extends it with frame `1`, keeping timing
 exact-flat while active payload drops again to `798712`.
+`walkstuf1-low-frame88-inplace-v800` extends it with frame `88`, keeping timing
+exact-flat while active payload drops again to `798435`.
 `walkstuf1-low-cd-fastpoll-v760` restores the post-release current baseline to
 `1478/1431`, blocking/refill `64/20`, loop reads/read time `60/272`, and due
 `11` while preserving the CD long-soak timeout fallback.
@@ -424,7 +426,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-frame1-inplace-v798`,
+  refreshed rows use `walkstuf1-low-frame88-inplace-v800`,
+  `walkstuf1-low-frame1-inplace-v798`,
   `walkstuf1-low-frame135-inplace-v797`,
   `walkstuf1-low-frame130-inplace-v795`,
   `walkstuf1-low-frame77-inplace-v794`,
@@ -2346,15 +2349,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T15:56:43</td>
-      <td>walkstuf1-low-frame1-inplace-v798</td>
+      <td>2026-05-14T16:06:17</td>
+      <td>walkstuf1-low-frame88-inplace-v800</td>
       <td>+3.3%</td>
       <td class="spd-yellow">96.8%</td>
       <td>1478/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed frame1 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v797 while cutting active payload 799129-&gt;798712; frame1 shrinks 4195-&gt;3778, entry sectors 3-&gt;2, scene/loop/target stay 1770/1478/1431, overrun 47, blocking/refill 64/20, read VBlanks 272, due 11</td>
+      <td>same-speed frame88 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v798 while cutting active payload 798712-&gt;798435; frame88 shrinks 4347-&gt;4070, entry sectors 3-&gt;2, scene/loop/target stay 1770/1478/1431, overrun 47, blocking/refill 64/20, read VBlanks 272, due 11</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
