@@ -22,7 +22,7 @@ v0.8.9-ps1 is a performance point release after v0.8.8-ps1. It keeps the VISITOR
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.9.md` |
 | Lines | 54 |
-| Approx. words | 362 |
+| Approx. words | 364 |
 | Code fences | 0 |
 
 ## Outline
