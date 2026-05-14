@@ -3083,22 +3083,6 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             uint8 cleanMemoryRelief = 0;
             uint16 packFlags;
             uint16 i;
-            /* Free the 148 KB walk-clean snapshot before any per-scene
-             * malloc. After ~46 scenes a long soak run accumulated heap
-             * fragmentation around it and johnny1's pack-header /
-             * frame-buffer allocs failed (BSOD at frame=46). The reactive
-             * walk-clean-release inside the clean-rect-save retry was too
-             * late — failure happened upstream in fgLoadMetadataPrefix /
-             * gFgFrameBuffer malloc. Releasing it here gives the new
-             * scene's big allocs contiguous heap; the snapshot is
-             * recaptured for free at walkPilotCaptureCleanWalkAreaIfStale
-             * before the next walk render. */
-            if (walkPilotCleanBufferAllocated()) {
-                printf("JCMEM proactive walk-clean-release scene=%s walkKB=%lu\n",
-                       sceneName,
-                       walkPilotCleanBufferBytes() / 1024UL);
-                walkPilotReleaseCleanWalkArea();
-            }
             /* Trigger closed-caption lookup only when captions are active.
              * Normal playback keeps captions off, so avoid scene-name checks
              * and ADS caption lookup on the default path. */
@@ -3633,7 +3617,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetCleanBgBlackMode(0);
     if (blackBackdrop || sceneSpecificBackdrop)
         grFreeCleanBgRects();
+    printf("JCSU A1 pre-rel-strm scene=%s\n", sceneName);
     fgReleaseStreamBuffers();
+    printf("JCSU A2 post-rel-strm scene=%s\n", sceneName);
 
     if (sceneSpecificBackdrop)
         fgBackdropRelease(0);
@@ -3643,7 +3629,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * this moment the heap is freshest and the ~93 KB PSB stream has room. */
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
+        printf("JCSU A3 pre-bg-preload scene=%s\n", sceneName);
         fgBackdropPreloadBackgrndBmp();
+        printf("JCSU A4 post-bg-preload scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -3654,6 +3642,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetSaveCleanOnScreenLoad(0);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
+    printf("JCSU A5 pre-screen-load scene=%s\n", sceneName);
     if (blackBackdrop) {
         grInitEmptyBackground();
         grFreeCleanBgTiles();
@@ -3670,6 +3659,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
     }
+    printf("JCSU A6 post-screen-load scene=%s\n", sceneName);
     grSetSaveCleanOnScreenLoad(1);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_SCREEN,
@@ -3681,7 +3671,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
+        printf("JCSU A7 pre-wave-backdrop scene=%s\n", sceneName);
         fgBackdropEnableWaveBackdrop();
+        printf("JCSU A8 post-wave-backdrop scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
