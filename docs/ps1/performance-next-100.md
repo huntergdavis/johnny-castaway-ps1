@@ -70,8 +70,8 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664
-BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge offscreen work-volume clips:
+BUILDING2 high late-only offscreen work-volume clip, and the v665/v666/v668/v669/v672/v673/v674
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left offscreen work-volume clips:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -130,7 +130,9 @@ binary probe is `93..101`. v672 promotes that upper split exact-flat, removing
 `1264` pixels and `385` spans and dropping runtime rows/spans/pixels to
 `16678/126676/702461`. v673 clips frames `27..28`, stays exact-flat, removes
 `1668` pixels and `122` spans, and drops runtime rows/spans/pixels to
-`16678/126554/700793`.
+`16678/126554/700793`. v674 clips the separate `75..77` post-left slice, stays
+exact-flat, removes `1879` pixels and `628` spans, and drops runtime rows/spans/pixels
+to `16678/125926/698914`.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
