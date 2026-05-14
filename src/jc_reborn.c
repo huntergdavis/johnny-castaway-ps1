@@ -1927,8 +1927,18 @@ int main(int argc, char **argv)
          * fire because control never returns from memcpy. Until we
          * identify the corruption root cause, just skip the scene at
          * pick time — JCSKIP keeps the screensaver going. */
-        if (loopScene != NULL && strcmp(loopScene, "walkstuf3") == 0) {
-            printf("JCSKIP scene=walkstuf3 reason=blacklisted-copyOut-deadlock\n");
+        /* Defensive blacklist: scenes observed to deterministically hang
+         * deep in long soaks. walkstuf3 deadlocks inside grCleanRectCopyOut
+         * memcpy (heap-state-dependent corruption). johnny1 stalls inside
+         * the runtime loop's per-frame load after ~25 frames when picked
+         * after a few prior scenes — same hang class as the original
+         * activity9 issue (ps1_streamRead returns cleanly, caller blocks
+         * in downstream code). Skip these at pick time so the screensaver
+         * keeps cycling. */
+        if (loopScene != NULL &&
+            (strcmp(loopScene, "walkstuf3") == 0 ||
+             strcmp(loopScene, "johnny1") == 0)) {
+            printf("JCSKIP scene=%s reason=blacklisted-deadlock\n", loopScene);
             continue;
         }
         fgLoopApplyVariant(loopScene);

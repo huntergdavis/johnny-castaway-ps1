@@ -3420,7 +3420,7 @@ static int gFgGraceEventCount = 0;
 static int gFgEmergencyBlackClean = 0;
 static void fgGraceEventTripCheck(void)
 {
-    enum { FG_GRACE_EVENT_TRIP_THRESHOLD = 8 };
+    enum { FG_GRACE_EVENT_TRIP_THRESHOLD = 3 };
     if (gFgEmergencyBlackClean)
         return;
     gFgGraceEventCount++;
