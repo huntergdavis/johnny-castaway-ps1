@@ -70,8 +70,8 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703
-BUILDING2 high offscreen work-volume clips, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen work-volume clips, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
+BUILDING2 high offscreen work-volume clips, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133 offscreen work-volume clips, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -205,9 +205,13 @@ compacting only entries `194..210` preserves file size/LBA/sectors, the
 PS-EXE bucket, scene/loop/target `1770/1478/1431`, overrun `47`,
 blocking/refill `64/20`, and due misses `11`, while active payload drops
 `916139 -> 879801` and loop reads/read VBlanks improve `62/281 -> 60/273`.
-Keep this as a same-speed CD-work baseline, not a public VBlank speed win. The
-remaining W1-low compaction risk is specifically early/mid payload displacement,
-not late-tail physical compaction.
+v716 then clips frame `133` as a singleton, stays exact-flat, removes `2937`
+pixels, `188` spans, and `4` rows, and drops runtime rows/spans/pixels to
+`16268/116724/647686`. Keep these as same-speed CD/work baselines, not public
+VBlank speed wins. The remaining W1-low compaction risk is specifically
+early/mid payload displacement, not late-tail physical compaction; direct
+offscreen work should continue only as singleton/subset gates that preserve
+reads, blocking, refill, and due misses.
 The v706 early-left subset compaction confirms that risk: compacting only
 entries `43..57` trims active payload `879801 -> 846946`, but regresses
 scene/loop `1770/1478 -> 1778/1486`, target `1431 -> 1430`, overrun
