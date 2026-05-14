@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.8-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2732% public over target / 99.7314% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2708% public over target / 99.7337% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -24,12 +24,12 @@ stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
-BUILDING2 high/low offscreen draw-span work-volume clips, the WALKSTUF1 high/low
-late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49 offscreen clips, and the WALKSTUF1 high late-tail physical
+BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
+draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49 offscreen clips, and the WALKSTUF1 high late-tail physical
 compaction after the VISITOR3 high tail-pack repack and the VISITOR5 high/low
 and BUILDING2 low retained-read wins. The
-public battle card is now `+0.2732%` over target /
-`99.7314%` target speed across all 126
+public battle card is now `+0.2708%` over target /
+`99.7337%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -55,10 +55,10 @@ CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
-`218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, the
+`218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip, the BUILDING2 high/low offscreen
 draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49 offscreen clips, plus the JOHNNY1 low refresh; the raw signed
-optimization matrix is `-0.4940%` / `100.5137%`.
+optimization matrix is `-0.4963%` / `100.5160%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
@@ -99,12 +99,12 @@ reads/due `58/7`, while dropping runtime frame rows/spans/pixels from
 `18144/110717/468636 -> 18030/105645/446246`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
-row, then clips offscreen low-tide draw spans in-place. It is a same-speed
-work-volume baseline at `1344/1318`, overrun `26`, blocking/refill `61/0`,
-loop reads/read time `50/218`, and due misses `14`, while removing `120179`
-offscreen draw pixels, `25136` spans, and `1537` frame rows. Pack size, LBA,
-sectors, and the `217088` byte PS-EXE bucket stay fixed, so this lowers low
-work pressure without counting as a VBlank speed win.
+row and v660 offscreen low-tide draw-span clip, then trims dead draw-tail
+payload inside the existing pack footprint. It improves to `1339/1317`,
+overrun `22`, blocking/refill `53/0`, loop reads/read time `37/150`, and due
+misses `12` while trimming active payload `660236 -> 538534` across `41`
+entries. Pack size, LBA, sectors, and the `217088` byte PS-EXE bucket stay
+fixed, so this now counts as a speed-bearing BUILDING2 low baseline.
 
 The latest VISITOR3 high baseline keeps the resident-copy and D4 data-shape
 work, preloads the 768-byte frame `132` and 503-byte frame `137` D4 payloads

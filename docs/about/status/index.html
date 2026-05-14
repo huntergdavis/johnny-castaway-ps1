@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2160 words
+          ~8 min read · 2188 words
         </p>
 
       <hr class="rule" />
@@ -128,11 +128,13 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2732%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7314%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4940%</code> / <code class="language-plaintext highlighter-rouge">100.5137%</code>.
-The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>.
+The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
+<code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due
+<code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 <code class="language-plaintext highlighter-rouge">2853/2816</code>, overrun <code class="language-plaintext highlighter-rouge">37</code>, blocking/read time <code class="language-plaintext highlighter-rouge">40</code>/<code class="language-plaintext highlighter-rouge">215</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">34</code>. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
 clips: high v654 clips frames <code class="language-plaintext highlighter-rouge">194..210</code> and keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>,
@@ -147,8 +149,9 @@ blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due
 and <code class="language-plaintext highlighter-rouge">1478/1431</code>; the latest WALKSTUF1 scalar and post-prepare scheduler
 closures kept that timing unchanged and moved the next attempt toward
 generated ownership or pack-side work. BUILDING2 low now adds the accepted
-<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row, improving to <code class="language-plaintext highlighter-rouge">1344/1318</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">61/0</code>, and reads/due <code class="language-plaintext highlighter-rouge">50/14</code>. BUILDING2 high currently measures
+<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, improving to
+<code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/0</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,
+and due <code class="language-plaintext highlighter-rouge">12</code>. BUILDING2 high currently measures
 <code class="language-plaintext highlighter-rouge">1351/1311</code>, overrun <code class="language-plaintext highlighter-rouge">40</code>, blocking <code class="language-plaintext highlighter-rouge">54</code>, hidden refill <code class="language-plaintext highlighter-rouge">18</code>, and due misses
 <code class="language-plaintext highlighter-rouge">7</code>; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>.

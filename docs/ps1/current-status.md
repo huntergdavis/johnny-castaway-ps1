@@ -5,7 +5,7 @@
 
 **Last updated:** 2026-05-14 (`main` after `v0.8.8-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2732%` over target / `99.7314%` target speed).
+battle card is `+0.2708%` over target / `99.7337%` target speed).
 
 ## Overall
 
@@ -248,9 +248,10 @@ the v701 frame `91` clip, the v702 frame `90` clip, and the v703 frame `89`
 clip, all keeping timing/CD
 exact-flat while dropping runtime frame rows/spans/pixels from
 `18144/110717/468636 -> 18030/105645/446246`.
-BUILDING2 low now adds the v626 slack-8 `218..229` row ahead of the accepted
-low groups, improving to `1344/1318`, overrun `26`, blocking/refill `61/0`,
-and reads/due `50/14`.
+BUILDING2 low now adds the v626 slack-8 `218..229` row, v660 offscreen
+draw-span clip, and v739 draw-tail trim ahead of the accepted low groups,
+improving to `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read
+time `37/150`, and due `12`.
 VISITOR3 high now adds the v629 tail-pack repack, keeping the v501 D4/setup
 baseline while fitting frames `141/140/142/143/144` plus sound events into the
 existing `277..293` setup segment. It improves to `1063/1040`, overrun `23`,
@@ -270,9 +271,9 @@ also exact-flat, dropping runtime frame rows/spans/pixels from
 `17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138/frame51/frame49 follow-up is
 also exact-flat and drops high runtime rows/spans/pixels
 `17296/134136/776856 -> 17052/132773/755038`. The public battle card is now
-`+0.2732%` over target /
-`99.7314%` target speed; the raw signed optimization rollup is `-0.4940%` /
-`100.5137%`.
+`+0.2708%` over target /
+`99.7337%` target speed; the raw signed optimization rollup is `-0.4963%` /
+`100.5160%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.13`
 public over-target points and added about `12.63` public target-speed points.
@@ -315,7 +316,7 @@ v629 high tail-pack repack.
 VISITOR3 high is now
 `1063/1040` with `blocking_vb=35`; low is
 `1062/1040` with `blocking_vb=42`. BUILDING2 high/low are `1351/1311` and
-`1344/1318`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
+`1339/1317`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1476/1434` and `1478/1431`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both `1973/1945`, and the FISHING1 high control sits at the public cap
@@ -369,15 +370,14 @@ Milestone releases:
   residency plus frame137 co-residency, plus WALKSTUF1 low `78..91` retained
   post-prime boundary ownership and shared `427..443` CD-work reduction, and
   VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
-  `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
-  tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
+  `218..229` slack-8 retained-read ownership plus v739 draw-tail trimming, the
+  VISITOR3 high `277..293` tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49 and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions. The public
-  battle card is `+0.2732%` / `99.7314%`;
-  BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
-  work-volume row at `1344/1318` after removing `120179` offscreen draw pixels
-  and `1537` frame rows, BUILDING2 high now drops runtime rows/spans/pixels
+  battle card is `+0.2708%` / `99.7337%`;
+  BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
+  `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
   `17052/132773/755038`, WALKSTUF1 low is `1478/1431` with loop

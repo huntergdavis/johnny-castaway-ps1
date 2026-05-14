@@ -41,13 +41,13 @@ follow-on VISITOR3, WALKSTUF1, BUILDING2, BUILDING6, and VISITOR5 rows through
 the VISITOR5 high `30..46` retained-read win. Current mainline then brings
 VISITOR5 low over the same `30..46` retained-read line, closes the latest
 WALKSTUF1 scalar/scheduler rows as inert or phase-negative, promotes
-the BUILDING2 low `218..229` slack-8 row, repacks the VISITOR3 high tail
+the BUILDING2 low `218..229` slack-8 row and v739 draw-tail trim, repacks the VISITOR3 high tail
 inside the existing `277..293` setup segment, and clips BUILDING4 low
 offscreen draw spans directly in the pack. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average is
-**+0.2732% over target / 99.7314% target speed**, with roughly **17.13
+**+0.2708% over target / 99.7337% target speed**, with roughly **17.13
 percentage points** of over-target gap closed and about **12.63 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

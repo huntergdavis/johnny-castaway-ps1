@@ -106,7 +106,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3565 words
+          ~14 min read · 3573 words
         </p>
 
       <hr class="rule" />
@@ -504,11 +504,12 @@ VISITOR3 high’s frame137 sector-203 setup relocation, VISITOR5 high’s
 <code class="language-plaintext highlighter-rouge">30..46</code> retained-read group, VISITOR5 low’s matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
 group, VISITOR3 low’s frame132 setup-prime
 relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, BUILDING2
-low’s previous-frame D4 deltas, BUILDING2 low’s <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row,
+low’s previous-frame D4 deltas, BUILDING2 low’s <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row and
+v739 draw-tail trim,
 VISITOR3 high’s <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, BUILDING4 low’s offscreen
 draw-span clipping, and WALKSTUF1 high/low late-tail work-volume clips. The
-public battle card is <code class="language-plaintext highlighter-rouge">+0.2732%</code> over target /
-<code class="language-plaintext highlighter-rouge">99.7314%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4940%</code> / <code class="language-plaintext highlighter-rouge">100.5137%</code>.
+public battle card is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>.
 VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1063/1040</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=35</code>; BUILDING4 low is
 <code class="language-plaintext highlighter-rouge">2853/2816</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=40</code>;
 WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
@@ -522,11 +523,12 @@ arc from <code class="language-plaintext highlighter-rouge">+17.4%</code> over t
 retained-read promotion. Public rollup is <code class="language-plaintext highlighter-rouge">+0.2867%</code> over target /
 <code class="language-plaintext highlighter-rouge">99.7183%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4805%</code> /
 <code class="language-plaintext highlighter-rouge">100.5006%</code>. Current mainline also promotes VISITOR5 low with the matching
-<code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape and BUILDING2 low with <code class="language-plaintext highlighter-rouge">218..229</code> slack8,
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape and BUILDING2 low with <code class="language-plaintext highlighter-rouge">218..229</code> slack8 plus
+v739 draw-tail trimming,
 then VISITOR3 high with the <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, BUILDING4 low with
 offscreen draw-span clipping, and WALKSTUF1 high/low with same-speed late-tail
 work-volume clips plus the JOHNNY1 low refresh, moving the live battle card
-to <code class="language-plaintext highlighter-rouge">+0.2732%</code> over target / <code class="language-plaintext highlighter-rouge">99.7314%</code> target speed.</li>
+to <code class="language-plaintext highlighter-rouge">+0.2708%</code> over target / <code class="language-plaintext highlighter-rouge">99.7337%</code> target speed.</li>
   <li>Latest stability release: <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> — deterministic BOOTMODE
 scene selection, expected-scene gates in the headless perf harness,
 Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail

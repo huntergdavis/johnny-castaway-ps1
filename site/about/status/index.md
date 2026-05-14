@@ -21,11 +21,13 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2732%` over
-target / `99.7314%` target speed; the raw signed optimization matrix is
-`-0.4940%` / `100.5137%`.
-The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
+allocation. The public headless battle card is `+0.2708%` over
+target / `99.7337%` target speed; the raw signed optimization matrix is
+`-0.4963%` / `100.5160%`.
+The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
+`1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
+`12`. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun
 `34`. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
 clips: high v654 clips frames `194..210` and keeps `1476/1434`,
@@ -40,8 +42,9 @@ blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
 and `1478/1431`; the latest WALKSTUF1 scalar and post-prepare scheduler
 closures kept that timing unchanged and moved the next attempt toward
 generated ownership or pack-side work. BUILDING2 low now adds the accepted
-`218..229` slack-8 retained-read row, improving to `1344/1318`, overrun `26`,
-blocking/refill `61/0`, and reads/due `50/14`. BUILDING2 high currently measures
+`218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
+`1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,
+and due `12`. BUILDING2 high currently measures
 `1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, and due misses
 `7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`.

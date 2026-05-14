@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-14:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2732%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7314%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T06:05:17` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-frame49-offscreen-v734`, `walkstuf1-high-frame51-offscreen-v733`, `walkstuf1-high-frame138-offscreen-v732`, `walkstuf1-high-frame55-offscreen-v731`, `under99-current-refresh-v730`, `walkstuf1-low-tail194-210compact-v705`, `building2-high-frame89-offscreen-v703`, `building2-high-frame90-offscreen-v702`, `building2-high-frame91-offscreen-v701`, `building2-high-frame92-offscreen-v700`, `building2-high-tail94-104-offscreen-v698`, `walkstuf1-low-frame63-offscreen-v696`, `walkstuf1-low-frame58-offscreen-v695`, `walkstuf1-low-frame59-offscreen-v694`, `walkstuf1-low-frame62-offscreen-v693`, `walkstuf1-low-frame60-offscreen-v692`, `walkstuf1-low-frame61-offscreen-v691`, `walkstuf1-low-frame140-offscreen-v690`, `walkstuf1-low-frame3-offscreen-v689`, `walkstuf1-low-postmid106-112-offscreen-v688`, `walkstuf1-low-frame1-offscreen-v687`, `walkstuf1-low-midright-af-offscreen-v686`, `walkstuf1-low-midright-ae-offscreen-v685`, `walkstuf1-low-midright-ad-offscreen-v684`, `walkstuf1-low-postleft-singletons-v680`, `walkstuf1-low-left2e-offscreen-v678`, `walkstuf1-low-left2b-offscreen-v675`, `walkstuf1-low-postleft-offscreen-v674`, `walkstuf1-low-preleft2-offscreen-v673`, `walkstuf1-low-midright-b-offscreen-v672`, `walkstuf1-low-pretail-offscreen-v669`, `walkstuf1-low-left0-offscreen-v668`, `walkstuf1-low-left-offscreen-v666`, `walkstuf1-low-mid-offscreen-v665`, `building2-high-late-offscreen-v664`, `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2708%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7337%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-14T06:34:33` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-low-trimtails-v739`, `walkstuf1-high-frame49-offscreen-v734`, `walkstuf1-high-frame51-offscreen-v733`, `walkstuf1-high-frame138-offscreen-v732`, `walkstuf1-high-frame55-offscreen-v731`, `under99-current-refresh-v730`, `walkstuf1-low-tail194-210compact-v705`, `building2-high-frame89-offscreen-v703`, `building2-high-frame90-offscreen-v702`, `building2-high-frame91-offscreen-v701`, `building2-high-frame92-offscreen-v700`, `building2-high-tail94-104-offscreen-v698`, `walkstuf1-low-frame63-offscreen-v696`, `walkstuf1-low-frame58-offscreen-v695`, `walkstuf1-low-frame59-offscreen-v694`, `walkstuf1-low-frame62-offscreen-v693`, `walkstuf1-low-frame60-offscreen-v692`, `walkstuf1-low-frame61-offscreen-v691`, `walkstuf1-low-frame140-offscreen-v690`, `walkstuf1-low-frame3-offscreen-v689`, `walkstuf1-low-postmid106-112-offscreen-v688`, `walkstuf1-low-frame1-offscreen-v687`, `walkstuf1-low-midright-af-offscreen-v686`, `walkstuf1-low-midright-ae-offscreen-v685`, `walkstuf1-low-midright-ad-offscreen-v684`, `walkstuf1-low-postleft-singletons-v680`, `walkstuf1-low-left2e-offscreen-v678`, `walkstuf1-low-left2b-offscreen-v675`, `walkstuf1-low-postleft-offscreen-v674`, `walkstuf1-low-preleft2-offscreen-v673`, `walkstuf1-low-midright-b-offscreen-v672`, `walkstuf1-low-pretail-offscreen-v669`, `walkstuf1-low-left0-offscreen-v668`, `walkstuf1-low-left-offscreen-v666`, `walkstuf1-low-mid-offscreen-v665`, `building2-high-late-offscreen-v664`, `building2-low-offscreen-drawclip-v660`, `walkstuf1-high-tailcompact-v657`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -182,12 +182,12 @@ exact-flat at `1602`, active loop/target `1351/1311`, overrun `40`,
 blocking/refill `54/18`, and reads/due `58/7`, while runtime frame
 rows/spans/pixels drop `18144/110717/468636 -> 18030/105645/446246` with
 fixed pack LBA/sectors and PS-EXE bucket.
-`building2-low-offscreen-drawclip-v660` clips low-tide offscreen draw spans
-in-place after the v626 `218..229` slack8 retained-read row. Timing/CD stays
-exact-flat at `1614`, active loop/target `1344/1318`, overrun `26`,
-blocking/refill `61/0`, reads/due `50/14`, while the runtime frame-row counter
-drops `17912 -> 16375`; host transform totals remove `120179` offscreen draw
-pixels and `25136` spans with fixed pack LBA/sectors and PS-EXE bucket.
+`building2-low-trimtails-v739` trims dead low-tide draw-tail payload after the
+v626 `218..229` slack8 row and v660 offscreen draw-span clip. It improves
+BUILDING2 low to scene/loop/target `1603/1339/1317`, overrun `22`,
+blocking/refill `53/0`, reads/read time `37/150`, and due `12` while
+preserving the `1303332` byte pack footprint, pack LBA/sectors, and PS-EXE
+bucket. Active payload drops `660236 -> 538534` across `41` entries.
 
 Latest rejected WALKSTUF1 note: `walkstuf1-low-window-resweep-v620` retested
 explicit low-tide stream windows after the shared `427..443` row. Current
@@ -214,15 +214,14 @@ which aliases duplicate high frames `121` and `123` to frame `120`, compacts
 the resident setup-prime tail, and copies frame `131` fully into paid
 setup-prime coverage without changing the `1555450` byte pack footprint.
 
-Latest promoted BUILDING2 low note: `building2-low-rg218-229-slack8-v626`
-adds a low-tide-only slack-8 retained-read row over `218..229` before the
-accepted `238..250`, `318..330`, and `365..381` groups while keeping the
-frame71/frame77 previous-frame D4 delta baseline. The focused gate improves
-scene/loop `1619/1349 -> 1614/1344`, target `1320 -> 1318`, overrun
-`29 -> 26`, blocking `70 -> 61`, prefetch overrun stays `0`, loop reads
-`52 -> 50`, loop-read VBlanks `221 -> 218`, and due misses `15 -> 14`.
-VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low controls stayed
-exact-flat.
+Latest promoted BUILDING2 low note: `building2-low-trimtails-v739` keeps the
+v626 low-tide `218..229` slack-8 retained-read row and v660 draw-span work
+clip, then trims active draw-tail payload `660236 -> 538534` without moving the
+pack footprint, LBA/sectors, or PS-EXE bucket. The focused gate improves from
+`1614/1344/1318` to `1603/1339/1317`, overrun `26 -> 22`, blocking `61 -> 53`,
+loop reads/read time `50/218 -> 37/150`, and due misses `14 -> 12` with refill
+still `0`. BUILDING2 high, WALKSTUF1 low/high, and VISITOR3 low/high controls
+stayed exact-flat.
 
 Latest promoted WALKSTUF1 note: high is `walkstuf1-high-current-v458-refresh`;
 low is `walkstuf1-low-rg78-91-v474`. The shared table keeps the accepted
@@ -268,6 +267,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `johnny1-compact-fgp3-v173`,
 `walkstuf3-low-compact-fgp3-v171`,
 `activity9-high-compact-fgp3-v167`,
+`building2-low-trimtails-v739`,
 `building2-low-rg218-229-slack8-v626`,
 `building2-low-delta-v454`,
 `building6-compact-fgp3-v165`,

@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2732%`
-exact public over target / `99.7314%` exact public target speed); the raw
-signed optimization matrix is `-0.4940%` / `100.5137%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2708%`
+exact public over target / `99.7337%` exact public target speed); the raw
+signed optimization matrix is `-0.4963%` / `100.5160%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -332,13 +332,15 @@ The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
 inside the existing `277..293` setup segment. It improves high to `1063/1040`,
 overrun `23`, blocking/read time `35`, and reads/due `6/6`, while pack
-bytes/LBA/sectors and the PS-EXE bucket stay fixed. The earlier BUILDING2 low
-`218..229` slack-8 row remains promoted at `1344/1318`.
+bytes/LBA/sectors and the PS-EXE bucket stay fixed. BUILDING2 low now keeps the
+earlier `218..229` slack-8 row and adds v739 draw-tail trimming, improving to
+`1339/1317`.
 
 ## Scene Battle Card
 
-As of 2026-05-13, all 126 scene/tide variants have current headless
+As of 2026-05-14, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building2-low-trimtails-v739`,
 `visitor3-high-tail-pack-v629`,
 `visitor5-high-rg30-46-v496`,
 `visitor3-low-frame137-primegap-v510`,
@@ -455,6 +457,7 @@ rows now use `visitor3-high-tail-pack-v629`,
 `visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
 `walkstuf1-high-current-v458-refresh`,
+`building2-low-trimtails-v739`,
 `building2-low-rg218-229-slack8-v626`,
 `building2-low-delta-v454`,
 `visitor5-low-compact-rg23-47-v451`,
@@ -945,7 +948,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2732% over target / 99.7314% target speed, with several
+  public average is now +0.2708% over target / 99.7337% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
