@@ -933,8 +933,11 @@ Next plausible wins, in priority order:
    repeatedly shifted cadence instead of safely removing work. The latest
    BUILDING4 low v387 pass closes the local `178..202` append group and
    `40/48 KiB` stream-window growth: reads fell, but visible blocking and loop
-   overrun rose sharply, so that row now needs generated deadline ownership or
-   pack-side byte reduction rather than larger raw fresh fills.
+   overrun rose sharply. The newer v746 in-place frame291 shrink proves
+   no-shift payload reduction is safe, cutting active payload `855284 -> 849109`
+   while staying exact-flat, so that row now needs sector-changing no-shift
+   byte reduction, generated deadline ownership, or selective preprocessing
+   rather than larger raw fresh fills.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the

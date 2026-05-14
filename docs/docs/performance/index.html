@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4494 words
+          ~18 min read · 4518 words
         </p>
 
       <hr class="rule" />
@@ -1063,8 +1063,11 @@ where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
 BUILDING4 low v387 pass closes the local <code class="language-plaintext highlighter-rouge">178..202</code> append group and
 <code class="language-plaintext highlighter-rouge">40/48 KiB</code> stream-window growth: reads fell, but visible blocking and loop
-overrun rose sharply, so that row now needs generated deadline ownership or
-pack-side byte reduction rather than larger raw fresh fills.</li>
+overrun rose sharply. The newer v746 in-place frame291 shrink proves
+no-shift payload reduction is safe, cutting active payload <code class="language-plaintext highlighter-rouge">855284 -&gt; 849109</code>
+while staying exact-flat, so that row now needs sector-changing no-shift
+byte reduction, generated deadline ownership, or selective preprocessing
+rather than larger raw fresh fills.</li>
 </ol>
 
 <p>The author considers the current build comfortable for the validated scenes,

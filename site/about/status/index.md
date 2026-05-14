@@ -29,7 +29,8 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
 `12`. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun
-`34`. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
+`34`; v746 now shrinks frame `291` in-place, preserving offsets while reducing
+active payload `855284 -> 849109` with exact-flat timing. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
 clips: high v654 clips frames `194..210` and keeps `1476/1434`,
 blocking/refill `81/23`, reads/due `65/16`; low v653 clips frames `202..210`
 and keeps `1478/1431`, blocking/refill `64/20`, reads/due `62/11`. Both drop

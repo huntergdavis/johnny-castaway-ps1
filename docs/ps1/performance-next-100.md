@@ -67,14 +67,15 @@ frame137 sector-203 setup relocation, the v510 VISITOR3 low frame137
 setup-prime gap relocation, the v526 VISITOR5 low `30..46` retained-read
 promotion, the v626 BUILDING2 low `218..229` slack-8 retained-read promotion,
 the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
-offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
+offscreen draw-span clipping pack pass, the v746 BUILDING4 low frame291
+in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703
 BUILDING2 high offscreen work-volume clips, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
 WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
-`+0.2736%` public average over target / `99.7310%` public target speed across
+`+0.2708%` public average over target / `99.7337%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
+`-0.4963%` / `100.5160%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.13` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
@@ -92,6 +93,15 @@ VBlanks `223 -> 215`; loop reads and due misses remain `30` and `1`. This
 adds about `0.0008` public over-target points removed and `0.0009`
 target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
 VBlanks of remaining gap.
+
+Latest promoted BUILDING4 low work-volume baseline: v746 keeps the v652 timing
+profile exact-flat but shrinks frame `291` in-place instead of physically
+moving downstream entries. Active payload drops `855284 -> 849109` and the
+selected entry shrinks `8585 -> 2410`; scene/loop/target remain
+`3128/2853/2816`, blocking/refill remain `40/34`, loop reads/read VBlanks stay
+`30/215`, and due misses stay `1`. Treat this as a safe no-shift payload lane,
+not a speed win; next BUILDING4 low attempts should target sector-changing
+no-shift shrinks or generated deadline/static-upload ownership.
 
 Latest rejected BUILDING4 high mirror pass: v715 applied the same
 preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted

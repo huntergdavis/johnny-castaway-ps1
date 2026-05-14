@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2188 words
+          ~8 min read · 2206 words
         </p>
 
       <hr class="rule" />
@@ -136,7 +136,8 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due
 <code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 <code class="language-plaintext highlighter-rouge">2853/2816</code>, overrun <code class="language-plaintext highlighter-rouge">37</code>, blocking/read time <code class="language-plaintext highlighter-rouge">40</code>/<code class="language-plaintext highlighter-rouge">215</code>, and prefetch overrun
-<code class="language-plaintext highlighter-rouge">34</code>. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
+<code class="language-plaintext highlighter-rouge">34</code>; v746 now shrinks frame <code class="language-plaintext highlighter-rouge">291</code> in-place, preserving offsets while reducing
+active payload <code class="language-plaintext highlighter-rouge">855284 -&gt; 849109</code> with exact-flat timing. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
 clips: high v654 clips frames <code class="language-plaintext highlighter-rouge">194..210</code> and keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, reads/due <code class="language-plaintext highlighter-rouge">65/16</code>; low v653 clips frames <code class="language-plaintext highlighter-rouge">202..210</code>
 and keeps <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, reads/due <code class="language-plaintext highlighter-rouge">62/11</code>. Both drop
