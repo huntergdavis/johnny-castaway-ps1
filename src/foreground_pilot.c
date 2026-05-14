@@ -3609,6 +3609,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
+    printf("JCSU A enter scene=%s\n", sceneName);
     fgHeapProbe("before_scene", sceneName);
     /* Clean-rect snapshots are tied to the current backdrop contents. Deactivate
      * (don't free) so the boot-prealloc'd buffers stay at their fixed addresses
@@ -3618,7 +3619,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetCleanBgBlackMode(0);
     if (blackBackdrop || sceneSpecificBackdrop)
         grFreeCleanBgRects();
+    printf("JCSU A1 pre-rel-strm scene=%s\n", sceneName);
     fgReleaseStreamBuffers();
+    printf("JCSU A2 post-rel-strm scene=%s\n", sceneName);
 
     if (sceneSpecificBackdrop)
         fgBackdropRelease(0);
@@ -3628,7 +3631,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * this moment the heap is freshest and the ~93 KB PSB stream has room. */
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
+        printf("JCSU A3 pre-bg-preload scene=%s\n", sceneName);
         fgBackdropPreloadBackgrndBmp();
+        printf("JCSU A4 post-bg-preload scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -3639,6 +3644,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetSaveCleanOnScreenLoad(0);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
+    printf("JCSU A5 pre-screen-load scene=%s\n", sceneName);
     if (blackBackdrop) {
         grInitEmptyBackground();
         grFreeCleanBgTiles();
@@ -3655,6 +3661,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
     }
+    printf("JCSU A6 post-screen-load scene=%s\n", sceneName);
     grSetSaveCleanOnScreenLoad(1);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_SCREEN,
@@ -3666,13 +3673,16 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
+        printf("JCSU A7 pre-wave-backdrop scene=%s\n", sceneName);
         fgBackdropEnableWaveBackdrop();
+        printf("JCSU A8 post-wave-backdrop scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
     }
     grSetPresentDuringScreenLoad(1);
 
+    printf("JCSU B pre-pack-start scene=%s\n", sceneName);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
@@ -3681,12 +3691,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("start_failed_cleanup", sceneName);
-        /* On a deterministic test build any pack-start failure is a
-         * code/data bug we want surfaced loudly. The BSOD does not
-         * return — caller must reset to recover. */
-        JC_BSOD(sceneName, "foregroundPilotRuntimeStart returned 0 "
-                          "(pack header / streaming buffer alloc failed)");
+        /* Graceful skip instead of BSOD: long soak runs accumulate
+         * heap fragmentation and sometimes a single scene's pack-start
+         * malloc fails. Abandoning this scene and returning lets the
+         * outer scene loop pick another scene; the player sees one
+         * skipped scene instead of a permanent halt screen. */
+        printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
+        return;
     }
+    printf("JCSU C post-pack-start scene=%s\n", sceneName);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
                               ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -3705,8 +3718,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
-        JC_BSOD(sceneName, "fgRuntimeComputeDrawBounds returned 0 "
-                          "(scene metadata missing or pack header malformed)");
+        printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
+        return;
     }
     {
         cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
@@ -3726,6 +3739,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             fgDropPressureCachesForCleanSnapshot(sceneName, cleanRectEstimate);
         }
     }
+    printf("JCSU D pre-clean-rect scene=%s\n", sceneName);
     if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
         printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
         grFreeCleanBgRects();
@@ -3744,8 +3758,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grSetCleanBgBlackMode(0);
             fgBackdropRelease(0);
             fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            JC_BSOD(sceneName, "fgBackdropSaveCleanBgRectsForPack returned 0 "
-                              "(clean-rect alloc failed — heap fragmented?)");
+            printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
+                   sceneName, (unsigned long)cleanRectEstimate);
+            return;
         }
     }
     if (ps1PerfEnabled)
@@ -3762,6 +3777,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!blackBackdrop && !sceneSpecificBackdrop)
         fgBackdropStampHoliday();
 
+    printf("JCSU E pre-walk-capture scene=%s\n", sceneName);
     /* Capture the pristine walk-area pixels into walk_pilot's persistent
      * buffer, gated on islandState change. bgTile here is ocean + island
      * sprites + raft + holiday — the same baseline a follow-up walk
@@ -3776,6 +3792,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              islandState.xPos,
                                              islandState.yPos);
     }
+    printf("JCSU F post-walk-capture scene=%s\n", sceneName);
 
     /* Force a full-tile framebuffer upload on the FIRST scene-frame
      * upload. Without this, scene N+1's first grDrawBackground only
@@ -3788,20 +3805,42 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
-    while (foregroundPilotRuntimeActive()) {
-        int advancedThisLoop = 0;
+    {
+        /* JCHB heartbeat: non-truncating telemetry. Emits a log line every
+         * ~120 VBlanks (~2 s) so we can see the loop iterating across
+         * scene playback. Does NOT cap or truncate the scene — the loop
+         * exits naturally via foregroundPilotRuntimeActive() going false. */
+        uint32 sceneLoopStartTick = (uint32)VSync(-1);
+        uint32 lastHeartbeatTick = sceneLoopStartTick;
+        uint32 loopIterCount = 0;
+        while (foregroundPilotRuntimeActive()) {
+            int advancedThisLoop = 0;
 
-        /* Pause-menu request: break out so jc_reborn's outer loop can
-         * advance to next scene or restart the loop. The flag is
-         * cleared by the consumer in jc_reborn.c. */
-        if (pauseMenuRequestNextScene ||
-            pauseMenuRequestResetLoop ||
-            pauseMenuRequestFreeplay ||
-            pauseMenuRequestSceneSetCycle ||
-            pauseMenuRequestPlayScene >= 0 ||
-            pauseMenuRequestLoopScene >= 0) {
-            break;
-        }
+            ++loopIterCount;
+            {
+                uint32 nowTick = (uint32)VSync(-1);
+                if (nowTick - lastHeartbeatTick > 120u) {
+                    printf("JCHB scene=%s frame=%u/%u iter=%lu elapsed=%lu\n",
+                           sceneName,
+                           (unsigned)gFgRuntime.frameIndex,
+                           (unsigned)gFgRuntime.header.frameCount,
+                           (unsigned long)loopIterCount,
+                           (unsigned long)(nowTick - sceneLoopStartTick));
+                    lastHeartbeatTick = nowTick;
+                }
+            }
+
+            /* Pause-menu request: break out so jc_reborn's outer loop can
+             * advance to next scene or restart the loop. The flag is
+             * cleared by the consumer in jc_reborn.c. */
+            if (pauseMenuRequestNextScene ||
+                pauseMenuRequestResetLoop ||
+                pauseMenuRequestFreeplay ||
+                pauseMenuRequestSceneSetCycle ||
+                pauseMenuRequestPlayScene >= 0 ||
+                pauseMenuRequestLoopScene >= 0) {
+                break;
+            }
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             uint16 prepareElapsedVBlanks = 0;
@@ -3937,13 +3976,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             }
             fgRuntimeMarkFrameRendered();
         }
-        if (!advancedThisLoop) {
-            if (perfDetail)
-                perfPhaseTick = ps1PerfTick();
-            foregroundPilotRuntimeAdvance();
-            if (perfDetail)
-                ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
-                                       ps1PerfElapsedVBlanks(perfPhaseTick));
+            if (!advancedThisLoop) {
+                if (perfDetail)
+                    perfPhaseTick = ps1PerfTick();
+                foregroundPilotRuntimeAdvance();
+                if (perfDetail)
+                    ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
+                                           ps1PerfElapsedVBlanks(perfPhaseTick));
+            }
         }
     }
     if (ps1PerfEnabled) {

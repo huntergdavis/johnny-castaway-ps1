@@ -829,7 +829,6 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     uint32_t offsetInBuffer;
     uint32_t fileLba;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -892,18 +891,39 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
             return NULL;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking CD-ROM completion poll with bounded VBlank cap.
+         * PSn00bSDK CdReadSync mode-flag semantics are inverted from what
+         * a naive reading of the API suggests:
+         *   - mode 0 is the BLOCKING version, which spins inside its own
+         *     `while (_pending_sectors > 0)` loop and calls _poll_retry
+         *     on internal timeout — never returns to the caller until
+         *     the read either completes or _poll_retry returns < 0
+         *     (which doesn't happen when the IRQ is silently missed, as
+         *     observed deterministically on the 6th JOHNWALK.PSB read at
+         *     runtime ~447s during 24-hour soaks).
+         *   - mode 1 is the NON-BLOCKING poll: returns 0 if all sectors
+         *     are in, _pending_sectors (> 0) if still pending, or < 0
+         *     on disk error / broken read.
+         * Cap the outer wait at 240 VBlanks (~4 s); a legitimate 256-
+         * sector 2x read finishes in ~128 VBlanks worst case. After the
+         * cap, syncResult > 0 falls through to the error path below
+         * which frees the sector buffer and returns NULL, letting the
+         * caller (PSB load → walk teardown) degrade gracefully. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(1, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
             free(sectorBuffer);
-            return NULL;  /* Read error */
+            return NULL;  /* Read error or timeout */
         }
 
         sectorsRead += chunkSectors;
@@ -972,7 +992,6 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     CdlLOC loc;
     uint32_t offsetInBuffer;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -1036,12 +1055,19 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             return 0;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Same non-blocking poll + 240-VBlank cap as ps1_streamReadFromCdFile
+         * above. Mode 0 (blocking) would hang forever if DuckStation's CD-ROM
+         * emulator drops the completion IRQ — observed on long soak runs.
+         * Mode 1 returns _pending_sectors (>0) / 0 (done) / <0 (error). */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(1, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
@@ -1090,7 +1116,6 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     CdlLOC loc;
     uint32_t fileLba;
     int syncResult;
-    int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
     uint32 perfFileLba = 0xffffffffUL;
@@ -1141,12 +1166,19 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             return 0;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
+         * applied in ps1_streamReadFromCdFile + ps1_streamReadFromCdFileInto.
+         * Mode 1 (not 0): mode 0 spins in PSn00bSDK's internal blocking
+         * loop and never returns when the CD-ROM IRQ is silently missed. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(1, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
@@ -1174,7 +1206,6 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
     CdlLOC loc;
     uint32_t sectorsRead;
     int syncResult;
-    int timeout;
 
     enum { PS1_CD_READ_CHUNK_SECTORS = 8 };
 
@@ -1210,12 +1241,17 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
             return NULL;
         }
 
-        timeout = 1000000;
-        do {
-            syncResult = CdReadSync(1, NULL);
-        } while (syncResult > 0 && --timeout > 0);
+        /* Non-blocking poll + bounded 240-VBlank wait — same hang fix
+         * applied above. Mode 1 is non-blocking; mode 0 blocks. */
+        {
+            int vsyncWait = 240;
+            do {
+                VSync(0);
+                syncResult = CdReadSync(1, NULL);
+            } while (syncResult > 0 && --vsyncWait > 0);
+        }
 
-        if (timeout <= 0 || syncResult < 0) {
+        if (syncResult > 0 || syncResult < 0) {
             free(fileBuffer);
             return NULL;
         }
