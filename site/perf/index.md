@@ -236,12 +236,13 @@ clips frames `27..28`, still exact-flat, and drops rows/spans/pixels to
 `58..74` failure was not contiguous, and drops rows/spans/pixels to
 `16667/122562/683390`.
 
-Latest rejected W1 note: `walkstuf1-low-window-resweep-v620` retested explicit
-low-tide stream windows after the shared `427..443` row. Current `40 KiB`
-remains best; `36`, `38`, `42`, `44`, and `48 KiB` all cut reads to `22..31`
-but regressed loop to `1521..1533`, overrun to `85..97`, blocking to
-`96..109`, and refill to `41..55`. W1 low now needs generated deadlines or
-data/upload reduction, not more read-count-only window retuning.
+Latest rejected W1 note: `walkstuf1-low-left2c-offscreen-v676` split the
+remaining early-left2 band and tested frames `62..65` after `66..74` proved
+safe. It removed `15288` pixels, `2277` spans, and `103` rows, but reproduced
+the old phase cliff: scene/loop `1770/1478 -> 1782/1490`, blocking
+`64 -> 97`, refill `20 -> 28`, reads `62 -> 63`, and due misses `11 -> 15`.
+Treat `62..65` as closed for direct clipping; any retry in `58..65` needs a
+one/two-frame split or non-shrinking data-shape/hole-fill approach.
 
 Latest promoted BUILDING2 note: `building2-high-late-offscreen-v664` narrows the
 failed broad high-tide offscreen clip to late frames `168..177`, staying

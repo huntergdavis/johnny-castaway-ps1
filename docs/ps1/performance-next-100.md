@@ -135,6 +135,12 @@ exact-flat, removes `1879` pixels and `628` spans, and drops runtime rows/spans/
 to `16678/125926/698914`. v675 clips `66..74`, proving the old `58..74` failure
 was not contiguous, and stays exact-flat while removing `15524` pixels, `3364`
 spans, `11` rows, and dropping runtime rows/spans/pixels to `16667/122562/683390`.
+The v676 `62..65` split is rejected even though it is smaller than the old
+`58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
+regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
+`20 -> 28`, loop reads `62 -> 63`, and due misses `11 -> 15`. Treat
+`62..65` as a direct-clip phase cliff; any remaining `58..65` retry should be
+one/two-frame or use a non-shrinking data-shape/hole-fill approach.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
