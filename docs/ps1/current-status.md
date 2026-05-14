@@ -244,9 +244,10 @@ capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `1351/1313` artifact no longer reproduces after later layout changes. It also
 carries the v664 late-only offscreen work-volume clip for frames `168..177`,
 the v698 post-hot tail clip for frames `94..104`, the v700 frame `92` clip,
-the v701 frame `91` clip, and the v702 frame `90` clip, all keeping timing/CD
+the v701 frame `91` clip, the v702 frame `90` clip, and the v703 frame `89`
+clip, all keeping timing/CD
 exact-flat while dropping runtime frame rows/spans/pixels from
-`18144/110717/468636 -> 18049/106656/450462`.
+`18144/110717/468636 -> 18030/105645/446246`.
 BUILDING2 low now adds the v626 slack-8 `218..229` row ahead of the accepted
 low groups, improving to `1344/1318`, overrun `26`, blocking/refill `61/0`,
 and reads/due `50/14`.
@@ -375,7 +376,7 @@ Milestone releases:
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
   work-volume row at `1344/1318` after removing `120179` offscreen draw pixels
   and `1537` frame rows, BUILDING2 high now drops runtime rows/spans/pixels
-  `18144/110717/468636 -> 18049/106656/450462`, WALKSTUF1 high is
+  `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62` and rows/spans/pixels `16504/119364/667474`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
