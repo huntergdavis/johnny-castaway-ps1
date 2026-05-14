@@ -81,15 +81,15 @@ removed about `17.13` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
 rows remaining and no orange/red rows.
 
-Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757
+Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757/v759
 keep the v726 timing profile exact-flat but shrink frames `51`, `49`, `47`,
-`61`, `62`, `58`, `45`, and `37` in-place, preserving every payload offset and
-the `1535263` byte pack footprint. Active payload drops `879801 -> 847643`;
-entries `51`, `49`, `47`, `61`, `62`, `58`, `45`, and `37` shrink
+`61`, `62`, `58`, `45`, `37`, and `35` in-place, preserving every payload offset and
+the `1535263` byte pack footprint. Active payload drops `879801 -> 844668`;
+entries `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, and `35` shrink
 `5588 -> 770`, `5269 -> 770`, `7399 -> 3158`, `4590 -> 552`, `4599 -> 743`,
-`3942 -> 296`, `5276 -> 1657`, and `6677 -> 3236`, and their sector coverage
+`3942 -> 296`, `5276 -> 1657`, `6677 -> 3236`, and `6538 -> 3563`, and their sector coverage
 drops `4 -> 1`, `3 -> 1`, `5 -> 3`, `3 -> 1`, `4 -> 2`, `3 -> 1`, `3 -> 1`,
-and `4 -> 2`.
+`4 -> 2`, and `4 -> 2`.
 Scene/loop/target remain `1770/1478/1431`, blocking/refill remain `64/20`,
 loop reads/read VBlanks stay `60/273`, and due misses stay `11`. Treat this as
 a safe no-shift payload lane, not a speed win;
