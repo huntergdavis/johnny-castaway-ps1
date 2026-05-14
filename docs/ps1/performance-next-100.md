@@ -307,6 +307,16 @@ future W1 low work needs generated frame-deadline ownership or pack/upload
 work reduction before scheduling, not a second speculative window after
 prepare.
 
+Latest rejected WALKSTUF1 low two-phase boundary retry: v630-v632 kept the
+accepted `78..91` row and added a separate `91..98` grouped append with
+slack gates `6`, `5`, and `4`. All feasible thresholds were exact-flat at
+scene `1770`, `1478/1431`, overrun `47`, blocking/refill `64/20`, reads
+`62`, loop-read time `281`, due misses `11`, and `group_hits=0`; slack `3`
+cannot fire because W1 low rejects window prefetch at `<=3` slack. Close
+two-phase `91..98` scalar ownership for this baseline. The next W1-low work
+should target generated deadline ownership for the `285..321` cluster or a
+custom pack representation that reduces bytes/spans before scheduling.
+
 Latest rejected WALKSTUF1 compact-origin rebase: v616 dry-ran the VISITOR3
 origin-rebase compactor over both accepted W1 packs (`WALK1LOW.FG2` and
 `WALKSTUF1.FG2`) for frames `0..215`. Both packs returned `total_saved=0`,
@@ -1089,7 +1099,7 @@ retained-read tables.
 | 8 | WALKSTUF1 low | Build a generated prepare-before-window plan for the late `285..321` cluster with an explicit cooldown after the accepted `78..91` row. Plain late rows either no-op or steal visible cadence. | Metadata-only low-tide probe, fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Scene-local frame dictionary for repeated cleanup-row headers/spans across frames `146..158`. Full-frame duplicate scans failed, but repeated row metadata may still be compressible without changing visual work. | Host byte report must show at least one sector saved inside the hot cluster and no new hot decode branch. |
-| 11 | WALKSTUF1 low | Two-phase extension of accepted `78..91`: keep `78..91` as-is and add a generated `91..98` row only on frames with long slack, instead of replacing it with `78..98`. The replacement was a phase disaster. | Gate must preserve v474 low `1478/1431` or improve it; any `blocking_vb > 64` rejects. |
+| 11 | WALKSTUF1 low | Closed by v630-v632: two-phase `91..98` after accepted `78..91` is inert at slack `6/5/4`, and slack `3` is unreachable under the W1-low guard. | Do not retry as a scalar row unless generated deadline ownership can prove nonzero hits before timing. |
 | 12 | WALKSTUF1 low | Pack-order "same-order, no tail displacement" compaction with generated read retargeting. v523 moved bytes earlier but did not retarget deadlines, so the phase shift became negative. | Run planner first; only gate if predicted read starts stay forward and accepted early ramp remains resident. |
 | 13 | WALKSTUF1 high | Add high-tide generated prepare-before-window ownership for the `298..322` suffix family. Low has a prepare fallback; high scalar rows are exhausted and need the same ownership class without hand branches. | High-only metadata probe, zero source-code growth in `foregroundPilotPlay`, require `blocking_vb < 81`. |
 | 14 | WALKSTUF1 high | Split the late suffix into "safe setup tail" and "visible suffix" groups with per-read ownership. Exact-flat `306..322` and negative `298..310` suggest the useful boundary is not the sector range itself. | Planner must show at least one saved read and no visible due takeover before PS1. |
