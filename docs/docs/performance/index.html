@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4562 words
+          ~18 min read · 4574 words
         </p>
 
       <hr class="rule" />
@@ -1063,7 +1063,7 @@ where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
 WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759 pass keeps the row exact-flat while
 shrinking frames <code class="language-plaintext highlighter-rouge">51</code>, <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">61</code>, <code class="language-plaintext highlighter-rouge">62</code>, <code class="language-plaintext highlighter-rouge">58</code>, <code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">37</code>, and <code class="language-plaintext highlighter-rouge">35</code> in-place (<code class="language-plaintext highlighter-rouge">879801 -&gt; 844668</code>
-active payload), so W1-low now has a safe
+active payload), and v760 restores the bounded CD fast-poll runtime to <code class="language-plaintext highlighter-rouge">60/272</code> read time, so W1-low now has a safe
 no-shift payload lane but still needs a sector/read timing conversion. The
 BUILDING4 low v387 pass closes the local <code class="language-plaintext highlighter-rouge">178..202</code> append group and
 <code class="language-plaintext highlighter-rouge">40/48 KiB</code> stream-window growth: reads fell, but visible blocking and loop

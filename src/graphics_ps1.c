@@ -3252,13 +3252,8 @@ static void grCleanRectCopyOut(struct TGrCleanRect *r)
 {
     int sy;
     if (r->pixels == NULL || r->width == 0 || r->height == 0) return;
-    printf("JCRECT2 J copyOut-start h=%u tile0=%p tile1=%p tile3=%p tile4=%p\n",
-           (unsigned)r->height, (void*)bgTile0, (void*)bgTile1,
-           (void*)bgTile3, (void*)bgTile4);
     for (sy = 0; sy < (int)r->height; sy++) {
         int destY = r->y + sy;
-        if ((sy & 31) == 0)
-            printf("JCRECT2 K sy=%d destY=%d\n", sy, destY);
         if (destY < 0 || destY >= 480) continue;
         {
             PS1Surface *tileLeft, *tileRight;
@@ -3602,12 +3597,9 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     uint32 requiredBytes[GR_MAX_CLEAN_RECTS];
     int allocatedThisCall[GR_MAX_CLEAN_RECTS];
 
-    printf("JCRECT2 A enter n=%d\n", n);
     grDeactivateCleanBgRects();
-    printf("JCRECT2 B post-deact\n");
     gGrCleanBgBlackMode = 0;
     grFreeCleanBgTiles();  /* mutually exclusive: rect-mode replaces tile-mode */
-    printf("JCRECT2 C post-freeTiles\n");
 
     if (xArr == NULL || yArr == NULL || wArr == NULL || hArr == NULL || n <= 0)
         return 0;
@@ -3625,9 +3617,6 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
         if (requiredBytes[i] == 0)
             goto fail;
-        printf("JCRECT2 D[%d] pre-alloc bytes=%lu cap=%lu\n",
-               i, (unsigned long)requiredBytes[i],
-               (unsigned long)gGrCleanRects[i].capacityBytes);
         if (gGrCleanRects[i].capacityBytes < requiredBytes[i]) {
             if (gGrCleanRects[i].pixels != NULL) {
                 free(gGrCleanRects[i].pixels);
@@ -3635,15 +3624,11 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
                 gGrCleanRects[i].capacityBytes = 0;
             }
             gGrCleanRects[i].pixels = (uint16 *)malloc(requiredBytes[i]);
-            if (gGrCleanRects[i].pixels == NULL) {
-                printf("JCRECT2 E[%d] malloc-null bytes=%lu\n",
-                       i, (unsigned long)requiredBytes[i]);
+            if (gGrCleanRects[i].pixels == NULL)
                 goto fail;
-            }
             gGrCleanRects[i].capacityBytes = requiredBytes[i];
             allocatedThisCall[i] = 1;
         }
-        printf("JCRECT2 F[%d] post-alloc ok\n", i);
     }
 
     for (i = 0; i < n; i++) {
@@ -3651,13 +3636,8 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         gGrCleanRects[i].y = yArr[i];
         gGrCleanRects[i].width = wArr[i];
         gGrCleanRects[i].height = hArr[i];
-        printf("JCRECT2 H[%d] pre-copyOut x=%d y=%d w=%u h=%u\n",
-               i, (int)xArr[i], (int)yArr[i],
-               (unsigned)wArr[i], (unsigned)hArr[i]);
         grCleanRectCopyOut(&gGrCleanRects[i]);
-        printf("JCRECT2 I[%d] post-copyOut\n", i);
     }
-    printf("JCRECT2 G copyOut-done\n");
     gGrCleanRectCount = n;
 
     /* Force a full first-frame upload. FG2 restores clean rects after setup,

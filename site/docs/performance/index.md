@@ -933,7 +933,7 @@ Next plausible wins, in priority order:
    repeatedly shifted cadence instead of safely removing work. The latest
    WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759 pass keeps the row exact-flat while
    shrinking frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, and `35` in-place (`879801 -> 844668`
-   active payload), so W1-low now has a safe
+   active payload), and v760 restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low now has a safe
    no-shift payload lane but still needs a sector/read timing conversion. The
    BUILDING4 low v387 pass closes the local `178..202` append group and
    `40/48 KiB` stream-window growth: reads fell, but visible blocking and loop

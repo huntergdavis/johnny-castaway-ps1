@@ -79,10 +79,11 @@ so they do not count as VBlank speed wins.
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
 on top of the shared tail groups, v331 staged-prepare scheduler fallback,
 v705 late-tail physical compaction, isolated offscreen work-volume clips
-through v726, and the v747/v749/v750/v751/v753/v755/v756/v757/v759 no-shift
+through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759 no-shift
 in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
-and `35`. Low remains `1478/1431` at `96.82%` target speed with overrun `47`,
-blocking/refill `64/20`, loop reads/read time `60/273`, and due misses `11`,
+and `35`, and the v760 bounded CD fast-poll restoration. Low remains
+`1478/1431` at `96.82%` target speed with overrun `47`,
+blocking/refill `64/20`, loop reads/read time `60/272`, and due misses `11`,
 while active payload drops `879801 -> 844668` without moving pack offsets,
 LBA/sectors, or the PS-EXE bucket.
 

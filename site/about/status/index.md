@@ -34,8 +34,9 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 active payload `855284 -> 849109` with exact-flat timing. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
 clips: high v654 clips frames `194..210` and keeps `1476/1434`,
 blocking/refill `81/23`, reads/due `65/16`; low v653 clips frames `202..210`
-and keeps `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, with v747/v749/v750/v751/v753/v755/v756/v757/v759
-also shrinking low frames `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35` in-place to `844668` active payload. Both drop
+and keeps `1478/1431`, blocking/refill `64/20`, with v705 plus v760 bringing
+loop reads/read time to `60/272` and due misses to `11`, and v747/v749/v750/v751/v753/v755/v756/v757/v759
+also shrinking low frames `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35` in-place to `844668` active payload after the release merge. Both drop
 draw pixels/spans/rows without changing timing/CD counters. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
 VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the

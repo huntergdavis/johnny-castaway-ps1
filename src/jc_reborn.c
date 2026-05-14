@@ -1953,9 +1953,7 @@ int main(int argc, char **argv)
             !fgLoopSequenceJustReset &&
             fgLoopWalkBackdropMatchesCurrent() &&
             !(storyScene && (storyScene->flags & FIRST))) {
-            printf("JCSW A pre-walk scene=%s\n", loopScene);
             fgLoopWalkToScene(storyScene);
-            printf("JCSW B post-walk scene=%s\n", loopScene);
         } else {
             /* New sequence/backdrop or FIRST/full-wipe scene: don't walk, but
              * still clear cached walk pixels before the FG2 scene owns the
@@ -1966,15 +1964,11 @@ int main(int argc, char **argv)
         if (!pauseMenuRequestNextScene &&
             !pauseMenuRequestFreeplay &&
             !pauseMenuRequestResetLoop) {
-            printf("JCSW C pre-teardown scene=%s\n", loopScene);
             fgWalkRenderTeardown();
-            printf("JCSW D pre-setScene scene=%s\n", loopScene);
             foregroundPilotSetScene(loopScene);
-            printf("JCSW E pre-play scene=%s\n", loopScene);
             ps1PerfBeginScene(loopScene);
             ps1PrintfProbe("scene-start", loopScene);
             foregroundPilotPlay();
-            printf("JCSW F post-play scene=%s\n", loopScene);
             ps1PerfEndScene(loopScene);
             ps1PrintfProbe("scene-end", loopScene);
             playedScene = 1;

@@ -3609,7 +3609,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
-    printf("JCSU A enter scene=%s\n", sceneName);
     fgHeapProbe("before_scene", sceneName);
     /* Clean-rect snapshots are tied to the current backdrop contents. Deactivate
      * (don't free) so the boot-prealloc'd buffers stay at their fixed addresses
@@ -3619,9 +3618,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetCleanBgBlackMode(0);
     if (blackBackdrop || sceneSpecificBackdrop)
         grFreeCleanBgRects();
-    printf("JCSU A1 pre-rel-strm scene=%s\n", sceneName);
     fgReleaseStreamBuffers();
-    printf("JCSU A2 post-rel-strm scene=%s\n", sceneName);
 
     if (sceneSpecificBackdrop)
         fgBackdropRelease(0);
@@ -3631,9 +3628,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * this moment the heap is freshest and the ~93 KB PSB stream has room. */
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
-        printf("JCSU A3 pre-bg-preload scene=%s\n", sceneName);
         fgBackdropPreloadBackgrndBmp();
-        printf("JCSU A4 post-bg-preload scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -3644,7 +3639,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grSetSaveCleanOnScreenLoad(0);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
-    printf("JCSU A5 pre-screen-load scene=%s\n", sceneName);
     if (blackBackdrop) {
         grInitEmptyBackground();
         grFreeCleanBgTiles();
@@ -3661,7 +3655,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
     }
-    printf("JCSU A6 post-screen-load scene=%s\n", sceneName);
     grSetSaveCleanOnScreenLoad(1);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_SCREEN,
@@ -3673,16 +3666,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
-        printf("JCSU A7 pre-wave-backdrop scene=%s\n", sceneName);
         fgBackdropEnableWaveBackdrop();
-        printf("JCSU A8 post-wave-backdrop scene=%s\n", sceneName);
         if (ps1PerfEnabled)
             ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
                                   ps1PerfElapsedVBlanks(perfPhaseTick));
     }
     grSetPresentDuringScreenLoad(1);
 
-    printf("JCSU B pre-pack-start scene=%s\n", sceneName);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
@@ -3699,7 +3689,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
         return;
     }
-    printf("JCSU C post-pack-start scene=%s\n", sceneName);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
                               ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -3739,7 +3728,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             fgDropPressureCachesForCleanSnapshot(sceneName, cleanRectEstimate);
         }
     }
-    printf("JCSU D pre-clean-rect scene=%s\n", sceneName);
     if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
         printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
         grFreeCleanBgRects();
@@ -3777,7 +3765,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!blackBackdrop && !sceneSpecificBackdrop)
         fgBackdropStampHoliday();
 
-    printf("JCSU E pre-walk-capture scene=%s\n", sceneName);
     /* Capture the pristine walk-area pixels into walk_pilot's persistent
      * buffer, gated on islandState change. bgTile here is ocean + island
      * sprites + raft + holiday — the same baseline a follow-up walk
@@ -3792,8 +3779,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              islandState.xPos,
                                              islandState.yPos);
     }
-    printf("JCSU F post-walk-capture scene=%s\n", sceneName);
-
     /* Force a full-tile framebuffer upload on the FIRST scene-frame
      * upload. Without this, scene N+1's first grDrawBackground only
      * uploads its dirty-row union, so any framebuffer pixels left from
