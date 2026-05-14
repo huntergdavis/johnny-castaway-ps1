@@ -105,12 +105,13 @@ and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
 Latest promoted WALKSTUF1 work-volume note:
-`walkstuf1-high-late-offscreen-v654` and
-`walkstuf1-low-late-offscreen-v653` clip only late-tail frames after broad and
-frame-0-only low clipping proved phase-negative. High stays exact-flat at
-`1764`, active loop/target `1476/1434`, blocking/refill `81/23`, reads/due
-`65/16`, while draw pixels drop `824527 -> 776856`, spans
-`139288 -> 134136`, and rows `17611 -> 17296`. Low stays exact-flat at
+`walkstuf1-high-tailcompact-v657` physically compacts the already-clipped
+`walkstuf1-high-late-offscreen-v654` payloads. High stays exact-flat at
+`1764`, active loop/target `1476/1434`, blocking/refill `81/23`, and due
+`16`, while active payload drops `918345 -> 882007`, CD sectors
+`605 -> 586`, and loop reads/read time `65/282 -> 63/275`.
+`walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broad and
+frame-0-only low clipping proved phase-negative. Low stays exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while draw
 pixels drop `824527 -> 785455`, spans `139288 -> 135025`, rows
 `17611 -> 17298`, dirty rows `27900 -> 27821`, and upload bytes

@@ -67,8 +67,9 @@ frame137 sector-203 setup relocation, the v510 VISITOR3 low frame137
 setup-prime gap relocation, the v526 VISITOR5 low `30..46` retained-read
 promotion, the v626 BUILDING2 low `218..229` slack-8 retained-read promotion,
 the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
-offscreen draw-span clipping pack pass, and the v653/v654 WALKSTUF1 high/low
-late-tail work-volume clips:
+offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
+late-tail work-volume clips, and the v657 WALKSTUF1 high late-tail physical
+compaction:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -97,7 +98,11 @@ offset/size, the `1535263` byte pack footprints, fixed LBAs (`25633` low,
 wins. High v654 stays exact-flat at scene `1764`, active loop/target
 `1476/1434`, overrun `42`, blocking/refill `81/23`, reads/due `65/16`, while
 draw pixels drop `824527 -> 776856`, spans `139288 -> 134136`, and draw rows
-`17611 -> 17296`. Low v653 stays exact-flat at scene `1770`,
+`17611 -> 17296`. v657 then physically compacts the already-clipped high
+late-tail payloads while preserving the file byte count, LBA/sectors, and
+PS-EXE bucket; timing stays exact-flat, active payload drops
+`918345 -> 882007`, CD sectors `605 -> 586`, loop reads/read VBlanks
+`65/282 -> 63/275`, and due misses stay `16`. Low v653 stays exact-flat at scene `1770`,
 `1478/1431`, overrun `47`, blocking/refill `64/20`, loop reads/read VBlanks
 `62/281`, and due `11`, while draw pixels drop `824527 -> 785455`, spans
 `139288 -> 135025`, draw rows `17611 -> 17298`, dirty rows `27900 -> 27821`,
@@ -278,7 +283,9 @@ read groups, and low tide adds the first post-prime boundary extension
 follow-ups keep all high timing metrics flat and lower loop reads `67 -> 65`
 plus loop-read time `292 -> 284`. The v458 current-control refresh records the
 current accepted high row at `1476/1434`, overrun `42`, blocking `81`, hidden
-refill `23`, loop reads `65`, loop-read time `282`, and due misses `16`. The
+refill `23`, loop reads `65`, loop-read time `282`, and due misses `16`; v657
+keeps those timing counters flat while physically compacting the clipped
+late-tail payloads, reducing loop reads/read time to `63/275`. The
 v474 low boundary fix extends the failed `78..90` row to `78..91` so it owns
 the overlapping sector-89 follow-up read; low improves scene `1776 -> 1770`,
 active loop/target `1484/1431 -> 1478/1431`, overrun `53 -> 47`, blocking

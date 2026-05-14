@@ -23,9 +23,10 @@ background, waves, holiday overlay, and SFX playback.
 stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
-latest mainline promotes the BUILDING4 low offscreen draw-span clip and the
-WALKSTUF1 high/low late-tail work-volume clips after the VISITOR3 high tail-pack
-repack and the VISITOR5 high/low and BUILDING2 low retained-read wins. The
+latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
+WALKSTUF1 high/low late-tail work-volume clips, and the WALKSTUF1 high
+late-tail physical compaction after the VISITOR3 high tail-pack repack and the
+VISITOR5 high/low and BUILDING2 low retained-read wins. The
 public battle card is now `+0.2736%` over target /
 `99.7310%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
@@ -62,18 +63,19 @@ and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
 
 The latest WALKSTUF1 high baseline extends the shared retained read groups to
-`201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`.
-Against the v316 high baseline it keeps scene and loop flat at `1768` /
-`1480`, moves target `1429 -> 1432`, overrun `51 -> 48`, blocking
-`85 -> 83`, loop reads `69 -> 65`, and loop-read time `301 -> 284`; due
-misses stay `16`, hidden refill stays `26`, and low plus selected controls stay
-flat. The `422..434`, `443..455`, and `444..456` groups are same-speed CD-work
+`201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`,
+then physically compacts the already-clipped late-tail payloads. It is still a
+same-speed row at `1764`, active loop/target `1476/1434`, overrun `42`, and
+blocking/refill `81/23`, but active payload drops `918345 -> 882007`, CD
+sectors `605 -> 586`, and loop reads/read time `65/282 -> 63/275`; due misses
+stay `16`, pack LBA/sectors stay `24883/750`, and the PS-EXE bucket stays
+`217088`. The tail groups and physical compaction are same-speed CD-work
 reductions, so they do not count as VBlank speed wins.
 
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
 on top of the shared tail groups and v331 staged-prepare scheduler fallback.
 Low improves to `1478/1431` at `96.82%` target speed with overrun `47`,
-blocking `64`, hidden refill `20`, loop reads `64`, loop-read time `286`, and
+blocking `64`, hidden refill `20`, loop reads `62`, loop-read time `281`, and
 due misses `11`.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
