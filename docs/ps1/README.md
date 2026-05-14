@@ -79,12 +79,12 @@ so they do not count as VBlank speed wins.
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
 on top of the shared tail groups, v331 staged-prepare scheduler fallback,
 v705 late-tail physical compaction, isolated offscreen work-volume clips
-through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767 no-shift
+through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769 no-shift
 in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
-`35`, `43`, `41`, `57`, and `33`, and the v760 bounded CD fast-poll restoration. Low remains
+`35`, `43`, `41`, `57`, `33`, and `67`, and the v760 bounded CD fast-poll restoration. Low remains
 `1478/1431` at `96.82%` target speed with overrun `47`,
 blocking/refill `64/20`, loop reads/read time `60/272`, and due misses `11`,
-while active payload drops `879801 -> 832375` without moving pack offsets,
+while active payload drops `879801 -> 829912` without moving pack offsets,
 LBA/sectors, or the PS-EXE bucket.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,

@@ -36,9 +36,9 @@ fixes from the prior point releases.
   draw-tail trim now measure `1339/1317`, overrun `22`, blocking/read time
   `53`/`150`, reads `37`, and due misses `12`.
 - **WALKSTUF1 low has the newest in-place payload baseline.** Frames `51`,
-  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, and `33` shrink without moving
+  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, and `67` shrink without moving
   offsets; timing stays exact-flat at `1478/1431`, while active payload drops
-  `879801 -> 832375`.
+  `879801 -> 829912`.
 - **Battle card improves from v0.8.8.** Public rollup is now `+0.2708%` over
   target / `99.7337%` target speed; raw signed rollup is `-0.4963%` /
   `100.5160%`; bands are `117` green and `9` yellow.
