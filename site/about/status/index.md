@@ -27,7 +27,10 @@ target / `99.7310%` target speed; the raw signed optimization matrix is
 The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun
-`34`. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
+`34`. The newest WALKSTUF1 low baseline is a same-speed v653 late-tail
+work-volume clip for frames `202..210`, dropping draw pixels/spans/rows and
+`50560` upload bytes while keeping `1478/1431`, blocking/refill `64/20`, and
+due `11`. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
 VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and

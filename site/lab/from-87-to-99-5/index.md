@@ -43,7 +43,9 @@ VISITOR5 low over the same `30..46` retained-read line, closes the latest
 WALKSTUF1 scalar/scheduler rows as inert or phase-negative, promotes
 the BUILDING2 low `218..229` slack-8 row, repacks the VISITOR3 high tail
 inside the existing `277..293` setup segment, and clips BUILDING4 low
-offscreen draw spans directly in the pack. The current
+offscreen draw spans directly in the pack. WALKSTUF1 low also gets a
+same-speed late-tail work-volume clip for frames `202..210`, reducing
+draw/upload work without changing the rollup. The current
 public-capped average is
 **+0.2736% over target / 99.7310% target speed**, with roughly **17.13
 percentage points** of over-target gap closed and about **12.63 target-speed

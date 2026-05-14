@@ -442,7 +442,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-13T21:03:27`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-13T21:19:36`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
