@@ -1051,6 +1051,14 @@ regressed `40 -> 41`, refill worsened `18 -> 24`, and reads worsened `58 ->
 59`. Close post-hot physical compaction; only the late-only `168..177` split
 remains unresolved, and it is same-speed work-reduction at best.
 
+Latest rejected BUILDING2 high late physical compaction: v714 split v709 the
+other way and repacked only `168..177`, trimming `3674` active bytes. It
+regressed scene/loop `1602/1351 -> 1617/1366`, target `1311 -> 1305`, overrun
+`40 -> 61`, blocking `54 -> 67`, and refill `18 -> 30` while reads/due stayed
+`58/7`. This closes same-order physical compaction of B2-high accepted
+offscreen-clip subsets; remaining B2-high speed needs scheduler-owned metadata,
+no-shift encoding, or a different upload/restore representation.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
