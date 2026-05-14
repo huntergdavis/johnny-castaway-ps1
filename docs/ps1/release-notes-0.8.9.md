@@ -7,7 +7,7 @@
 `v0.8.9-ps1` is a performance point release after `v0.8.8-ps1`. It keeps the
 VISITOR5 high retained-read promotion from v0.8.8, the deterministic
 BOOTMODE/Scene Explorer stability fixes from v0.8.7, and promotes the current
-mainline performance work through `walkstuf1-low-frame75-inplace-v790`.
+mainline performance work through `walkstuf1-low-frame76-inplace-v791`.
 
 ## Headline
 
@@ -18,11 +18,11 @@ mainline performance work through `walkstuf1-low-frame75-inplace-v790`.
   slack-8 row and v739 draw-tail trim improve it to `1339/1317`, overrun `22`,
   blocking/read time `53`/`150`, reads `37`, and due misses `12`.
 - **WALKSTUF1 low carries the newest no-shift pack baseline.** Frames `51`,
-  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`, `145`, and `75` now shrink in-place while
+  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, and `76` now shrink in-place while
   preserving pack size, LBA/sectors, and the PS-EXE bucket. Timing stays
   exact-flat at `1478/1431`, overrun `47`, blocking/refill `64/20`, reads/read
   time `60/272`, and due misses `11`, while active payload drops
-  `879801 -> 801903`.
+  `879801 -> 801103`.
 - **Other current mainline wins are included.** VISITOR3 high keeps its
   `277..293` tail-pack repack, BUILDING4 low keeps the offscreen draw-span clip
   plus frame291 in-place shrink, BUILDING2 high keeps exact-flat offscreen
@@ -43,10 +43,10 @@ mainline performance work through `walkstuf1-low-frame75-inplace-v790`.
 ## Verification
 
 - Latest focused gate:
-  `scratch/ps1-perf-iterate/walkstuf1-low-frame75-inplace-v790-workreduction/20260514-145524-1590690/summary.json`.
+  `scratch/ps1-perf-iterate/walkstuf1-low-frame76-inplace-v791-workreduction/20260514-150237-1630977/summary.json`.
 - Latest matrix row:
-  `docs/ps1/performance-scene-matrix.csv` at `2026-05-14T14:55:24` with stats
-  version `walkstuf1-low-frame75-inplace-v790`.
+  `docs/ps1/performance-scene-matrix.csv` at `2026-05-14T15:02:37` with stats
+  version `walkstuf1-low-frame76-inplace-v791`.
 - `./scripts/build-ps1.sh` passed before merging `origin/main`.
 - `origin/main` was merged, then `./scripts/build-ps1.sh` passed again after
   the upstream PS1 runtime changes.
