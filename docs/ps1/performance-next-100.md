@@ -197,6 +197,13 @@ blocking/refill `64/20`, and due misses `11`, while active payload drops
 Keep this as a same-speed CD-work baseline, not a public VBlank speed win. The
 remaining W1-low compaction risk is specifically early/mid payload displacement,
 not late-tail physical compaction.
+The v706 early-left subset compaction confirms that risk: compacting only
+entries `43..57` trims active payload `879801 -> 846946`, but regresses
+scene/loop `1770/1478 -> 1778/1486`, target `1431 -> 1430`, overrun
+`47 -> 56`, blocking `64 -> 72`, refill `20 -> 25`, and loop reads
+`60 -> 61`. Close early-left physical displacement under the current scheduler;
+future byte removal there needs generated deadline ownership or a no-shift
+encoding.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
