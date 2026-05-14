@@ -182,6 +182,13 @@ v696 clips frame `63`, stays exact-flat while removing `3983` pixels, `578`
 spans, and `30` rows, and drops runtime rows/spans/pixels to
 `16272/116912/650623`. The safe singleton island now includes `58..63`;
 frame `64` remains the direct-clip boundary trigger.
+The v697 padded full-pack draw-tail compaction retry is rejected even after the
+v696 singleton island: it drops active payload `916139 -> 773574` and loop reads
+`62 -> 56`, but regresses scene/loop `1770/1478 -> 1776/1484`, target
+`1431 -> 1428`, overrun `47 -> 56`, blocking `64 -> 73`, and refill
+`20 -> 29`. Do not retry whole-pack W1-low physical compaction as a single
+pass; any compaction retry needs a smaller phase-preserving subset or scheduler
+ownership for the new read cadence.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
