@@ -45,7 +45,7 @@ the BUILDING2 low `218..229` slack-8 row and v739 draw-tail trim, repacks the VI
 inside the existing `277..293` setup segment, and clips BUILDING4 low
 offscreen draw spans directly in the pack, then shrinks BUILDING4 low frame
 `291` in-place as a same-speed work-volume baseline. WALKSTUF1 low gets the
-same no-shift treatment for frame `51`, cutting active payload while staying
+same no-shift treatment for frames `51` and `49`, cutting active payload while staying
 exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
