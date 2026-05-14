@@ -1916,31 +1916,6 @@ int main(int argc, char **argv)
 
         const char *loopScene = fgLoopNextScene(explicitScene,
                                                 pauseMenuSceneSet);
-        /* Defensive blacklist: walkstuf3's clean-rect copyOut deadlocks
-         * inside grCleanRectCopyOut's memcpy at rect 1 row 65-74 when
-         * picked after ~115 prior scenes. JCRECT2 H/I/J/K probes
-         * confirmed both rect mallocs (97 KB + 74 KB) succeed and rect 0
-         * copyOut completes; rect 1 starts (sy=0,32,64 print) then the
-         * CPU stalls inside one of the row memcpys — probably a bgTile
-         * pointer corruption from accumulated heap fragmentation that
-         * isn't caught by the NULL check. The 90 s wall-clock cap can't
-         * fire because control never returns from memcpy. Until we
-         * identify the corruption root cause, just skip the scene at
-         * pick time — JCSKIP keeps the screensaver going. */
-        /* Defensive blacklist: scenes observed to deterministically hang
-         * deep in long soaks. walkstuf3 deadlocks inside grCleanRectCopyOut
-         * memcpy (heap-state-dependent corruption). johnny1 stalls inside
-         * the runtime loop's per-frame load after ~25 frames when picked
-         * after a few prior scenes — same hang class as the original
-         * activity9 issue (ps1_streamRead returns cleanly, caller blocks
-         * in downstream code). Skip these at pick time so the screensaver
-         * keeps cycling. */
-        if (loopScene != NULL &&
-            (strcmp(loopScene, "walkstuf3") == 0 ||
-             strcmp(loopScene, "johnny1") == 0)) {
-            printf("JCSKIP scene=%s reason=blacklisted-deadlock\n", loopScene);
-            continue;
-        }
         fgLoopApplyVariant(loopScene);
 
         /* Walk subsystem: walk Johnny from his last spot/heading to
