@@ -871,6 +871,18 @@ merging for BUILDING2 high; future pack work must reduce bytes/spans without
 adding draw pixels or must move sector boundaries without changing decode
 work.
 
+Latest rejected BUILDING2 high offscreen draw-span clipping: v655 tested the
+BUILDING4-style zero-runtime clip on `BUILDING2.FG2` after a host scan found
+`132298` offscreen pixels, `27787` spans, `1769` draw rows, and `134358`
+logical draw bytes outside the viewport. The broad clip and the hot
+`72..92` split both preserved pack size/LBA and the `217088` byte PS-EXE
+bucket, but both reproduced the same phase regression: scene `1602 -> 1605`,
+active loop/target `1351/1311 -> 1354/1309`, overrun `40 -> 45`, blocking
+`54 -> 57`, and refill `18 -> 21`; reads/due stayed `58/7`. Close B2-high
+offscreen clipping as a speed lane. Unlike BUILDING4 low, this row needs
+generated deadline ownership, sector-boundary byte removal, or precomposed
+upload/restore work that does not shorten visual work into a worse CD phase.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
