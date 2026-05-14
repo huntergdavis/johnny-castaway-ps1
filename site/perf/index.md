@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2708%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7337%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T16:23:19` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-frame34-inplace-v804`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T16:28:10` |
+| Stats version | mixed across rows; latest refreshed row is `building4-low-frame31-inplace-v805`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 work-volume track: `walkstuf1-high-frame49-offscreen-v734`
@@ -430,7 +430,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-frame34-inplace-v804`,
+  refreshed rows use `building4-low-frame31-inplace-v805`,
+  `building4-low-frame34-inplace-v804`,
   `walkstuf1-low-frame3-inplace-v802`,
   `walkstuf1-low-frame90-inplace-v801`,
   `walkstuf1-low-frame88-inplace-v800`,
@@ -1040,15 +1041,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T16:23:19</td>
-      <td>building4-low-frame34-inplace-v804</td>
+      <td>2026-05-14T16:28:10</td>
+      <td>building4-low-frame31-inplace-v805</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2853/2816</td>
       <td>40</td>
       <td>34</td>
       <td>1</td>
-      <td>same-speed frame34 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v746 while cutting active payload 849109-&gt;843993; frame34 shrinks 8455-&gt;3339, entry sectors 5-&gt;2, scene/loop/target stay 3128/2853/2816, overrun 37, blocking/refill 40/34, read VBlanks 215, due 1</td>
+      <td>same-speed frame31 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v804 while cutting active payload 843993-&gt;838929; frame31 shrinks 6672-&gt;1608, entry sectors 4-&gt;1, scene/loop/target stay 3128/2853/2816, overrun 37, blocking/refill 40/34, read VBlanks 215, due 1</td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>
