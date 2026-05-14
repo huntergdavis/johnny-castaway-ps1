@@ -93,6 +93,17 @@ adds about `0.0008` public over-target points removed and `0.0009`
 target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
 VBlanks of remaining gap.
 
+Latest rejected BUILDING4 high mirror pass: v715 applied the same
+preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted
+for low tide. The transform is structurally safe and trims the same host-side
+work volume (`30` frames, `65111` pixels, `11871` spans, `471` draw rows, and
+`61047` logical draw bytes), but the fresh current-code baseline measured
+`2847/2815`, worse than the published stale matrix row `2844/2816`. The matched
+gate only improved target-relative overrun `32 -> 31` with loop/blocking/refill
+flat, so the pack was restored and rebuilt. Treat BUILDING4 high as needing a
+fresh row refresh plus scheduler/static-upload work before another high-tide
+pack-only promotion.
+
 Latest promoted WALKSTUF1 work baselines: v653/v654 narrow the rejected
 offscreen clipping lane to late-tail frames only, preserving every entry
 offset/size, the `1535263` byte pack footprints, fixed LBAs (`25633` low,
@@ -3684,6 +3695,7 @@ pre-v0.8.0 row.
 | BUILDING2 high duplicate-payload cache | Do not promote as a local runtime cache. The v515-v521 sweep proved the repeated-payload reads are real (`loop_reads 58 -> 56`), but fixed-bucket forms regressed to `1351/1308`, overrun `43`, blocking `58`, and refill `19`. The only loop win required oversized PS-EXE/CD phase (`217088 -> 219136`, `BUIL2.FG2` LBA `6181 -> 6182`) and still regressed blocking `54 -> 56`. Retry BUILDING2 high through generated deadline ownership or pack-side visual-work reduction, not another hot-loop duplicate cache. |
 | BUILDING6 v146 upload/motion refresh | Do not spend emulator time on raw BUILDING6 upload append. Same-footprint slack is still `1` byte and safe-pixel coverage is still `0`; the actionable path is generated zero-shift/motion residual format work or scheduler ownership, not another scalar source probe. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
+| BUILDING4 high offscreen draw-span clip | Do not promote as a direct mirror of the v652 low-tide win. The v715 fresh current-code gate was safe but only improved overrun `32 -> 31` by raising target `2815 -> 2816`; loop/blocking/refill stayed `2847/37/33`, and the result is still worse than the published `2844/2816` matrix row. Retry only after a row refresh or with scheduler/static-upload work that beats the documented baseline. |
 | BUILDING4 low append group `178..202` and larger fresh-fill windows | Do not promote or retry as a local hand table or scalar window growth. The v387 append-group probe stayed exact-flat against the fresh current baseline because the cluster is fresh-fill/window-owned, not append-owned. The `40 KiB` and `48 KiB` window variants proved the transaction signal is real but phase-negative: reads fell to `23`/`18`, while loop and blocking regressed to `2881/68` and `2897/85`. Future BUILDING4 low work needs generated deadline ownership, pack-side byte/cleanup reduction, or selective preprocessing. |
 | BUILDING4 high read group `821..837` | Do not promote or retry as a standalone hand-coded group. A fresh current-code read-plan marked it low-visible-risk, but the corrected source probe under BUILDING4 high's `24 KiB` window plus `32 KiB` retained group capacity stayed exact-flat (`2985/2774`, `blocking_vb=285`, `prefetch_overrun_vb=51`, `loop_reads=93`, `due_misses=40`) and only grew/shifted code. BUILDING4 needs scheduler-owned append timing or generated ownership metadata, not more one-off range tables. |
 | BUILDING4 high read group `57..69` | Do not promote or retry as a standalone hand-coded group. Append-start fireability was true, but BUILDING4 high stayed exact-flat while hot-code growth/phase made FISHING1, WALKSTUF1, and ACTIVITY9 canaries fail. Fireability is necessary but not sufficient; require scheduler-owned append timing or generated metadata before more BUILDING4 hand tables. |
