@@ -26,7 +26,7 @@ The current release line is **`{{ site.release.tag }}`** with
 <time datetime="2026-05-14"><em>2026-05-14</em></time>
 
 A performance point release after `v0.8.8-ps1`. It promotes the current
-mainline optimization set through `walkstuf1-low-frame71-inplace-v780`, while
+mainline optimization set through `walkstuf1-low-frame72-inplace-v781`, while
 keeping all deterministic boot, Scene Explorer, and Suzy backdrop stability
 fixes from the prior point releases.
 
@@ -36,9 +36,9 @@ fixes from the prior point releases.
   draw-tail trim now measure `1339/1317`, overrun `22`, blocking/read time
   `53`/`150`, reads `37`, and due misses `12`.
 - **WALKSTUF1 low has the newest in-place payload baseline.** Frames `51`,
-  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, and `71` shrink without moving
+  `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, and `72` shrink without moving
   offsets; timing stays exact-flat at `1478/1431`, while active payload drops
-  `879801 -> 812253`.
+  `879801 -> 810990`.
 - **Battle card improves from v0.8.8.** Public rollup is now `+0.2708%` over
   target / `99.7337%` target speed; raw signed rollup is `-0.4963%` /
   `100.5160%`; bands are `117` green and `9` yellow.
