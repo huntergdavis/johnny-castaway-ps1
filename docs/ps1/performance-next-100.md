@@ -95,8 +95,8 @@ loop reads/read VBlanks are now `60/272`, and due misses stay `11` after v760
 restored bounded CD fast-polling from the true post-release slow baseline
 `1813/1513/1417`, blocking/refill `149/52`. Treat the v747..v759 payload work
 as a safe no-shift payload lane, not a speed win;
-continue with adjacent no-shift sector-changing candidates before returning to
-generated deadline ownership.
+frame65 is closed under the v761 retest, so continue with earlier isolated
+frame43/frame41-style no-shift probes or generated deadline ownership.
 
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
