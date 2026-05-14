@@ -252,11 +252,14 @@ blocking/read time `35`, and reads/due `6/6`.
 BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
 improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
 prefetch overrun `34` while preserving fixed pack footprints and the `217088`
-byte PS-EXE bucket. WALKSTUF1 low now also carries the v653 late-tail
-work-volume clip for frames `202..210`; it is exact-flat at `1478/1431` with
-blocking/refill `64/20`, loop reads/read VBlanks `62/281`, and due `11`, but
-drops `39072` draw pixels, `4263` spans, `313` draw rows, `79` dirty rows, and
-`50560` upload bytes. The public battle card is now `+0.2736%` over target /
+byte PS-EXE bucket. WALKSTUF1 high/low now also carry late-tail work-volume
+clips. High v654 clips frames `194..210` and stays exact-flat at `1476/1434`
+with blocking/refill `81/23`, reads/due `65/16`, while dropping `47671` draw
+pixels, `5152` spans, and `315` draw rows. Low v653 clips frames `202..210`
+and stays exact-flat at `1478/1431` with blocking/refill `64/20`,
+loop reads/read VBlanks `62/281`, and due `11`, while dropping `39072` draw
+pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
+bytes. The public battle card is now `+0.2736%` over target /
 `99.7310%` target speed; the raw signed optimization rollup is `-0.4936%` /
 `100.5133%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
@@ -357,9 +360,9 @@ Milestone releases:
   VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
   `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
   tail-pack repack, BUILDING4 low offscreen draw-span clipping, and WALKSTUF1
-  low late-tail offscreen work reduction. The public
+  high/low late-tail offscreen work reductions. The public
   battle card is `+0.2736%` / `99.7310%`;
-  BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
+  BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high is
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62`, VISITOR3 high is `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is

@@ -67,8 +67,8 @@ frame137 sector-203 setup relocation, the v510 VISITOR3 low frame137
 setup-prime gap relocation, the v526 VISITOR5 low `30..46` retained-read
 promotion, the v626 BUILDING2 low `218..229` slack-8 retained-read promotion,
 the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
-offscreen draw-span clipping pack pass, and the v653 WALKSTUF1 low late-tail
-work-volume clip:
+offscreen draw-span clipping pack pass, and the v653/v654 WALKSTUF1 high/low
+late-tail work-volume clips:
 `+0.2736%` public average over target / `99.7310%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4936%` / `100.5133%`. Since the compact full-matrix baseline was about
@@ -90,16 +90,18 @@ adds about `0.0008` public over-target points removed and `0.0009`
 target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
 VBlanks of remaining gap.
 
-Latest promoted WALKSTUF1 low work baseline: v653 narrows the rejected
-offscreen clipping lane to late-tail frames `202..210`, preserving every
-`WALK1LOW.FG2` entry offset/size, the `1535263` byte pack footprint, LBA
-`25633`, and the `217088` byte PS-EXE bucket. It is not a VBlank speed win:
-scene/loop/target stay `1770` and `1478/1431`, overrun stays `47`,
-blocking/refill stay `64/20`, loop reads/read VBlanks stay `62/281`, and due
-misses stay `11`. It is still the new W1 low visual-work baseline because draw
-pixels drop `824527 -> 785455`, spans `139288 -> 135025`, draw rows
-`17611 -> 17298`, dirty rows `27900 -> 27821`, upload rects `667 -> 666`, and
-upload bytes `17856000 -> 17805440`.
+Latest promoted WALKSTUF1 work baselines: v653/v654 narrow the rejected
+offscreen clipping lane to late-tail frames only, preserving every entry
+offset/size, the `1535263` byte pack footprints, fixed LBAs (`25633` low,
+`24883` high), and the `217088` byte PS-EXE bucket. They are not VBlank speed
+wins. High v654 stays exact-flat at scene `1764`, active loop/target
+`1476/1434`, overrun `42`, blocking/refill `81/23`, reads/due `65/16`, while
+draw pixels drop `824527 -> 776856`, spans `139288 -> 134136`, and draw rows
+`17611 -> 17296`. Low v653 stays exact-flat at scene `1770`,
+`1478/1431`, overrun `47`, blocking/refill `64/20`, loop reads/read VBlanks
+`62/281`, and due `11`, while draw pixels drop `824527 -> 785455`, spans
+`139288 -> 135025`, draw rows `17611 -> 17298`, dirty rows `27900 -> 27821`,
+upload rects `667 -> 666`, and upload bytes `17856000 -> 17805440`.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`

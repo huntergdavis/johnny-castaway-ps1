@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2139 words
+          ~8 min read · 2150 words
         </p>
 
       <hr class="rule" />
@@ -134,10 +134,11 @@ target / <code class="language-plaintext highlighter-rouge">99.7310%</code> targ
 The newest accepted BUILDING4 low pack promotion clips offscreen PAL4 draw spans
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">2853/2816</code>, overrun <code class="language-plaintext highlighter-rouge">37</code>, blocking/read time <code class="language-plaintext highlighter-rouge">40</code>/<code class="language-plaintext highlighter-rouge">215</code>, and prefetch overrun
-<code class="language-plaintext highlighter-rouge">34</code>. The newest WALKSTUF1 low baseline is a same-speed v653 late-tail
-work-volume clip for frames <code class="language-plaintext highlighter-rouge">202..210</code>, dropping draw pixels/spans/rows and
-<code class="language-plaintext highlighter-rouge">50560</code> upload bytes while keeping <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, and
-due <code class="language-plaintext highlighter-rouge">11</code>. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
+<code class="language-plaintext highlighter-rouge">34</code>. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
+clips: high v654 clips frames <code class="language-plaintext highlighter-rouge">194..210</code> and keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, reads/due <code class="language-plaintext highlighter-rouge">65/16</code>; low v653 clips frames <code class="language-plaintext highlighter-rouge">202..210</code>
+and keeps <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, reads/due <code class="language-plaintext highlighter-rouge">62/11</code>. Both drop
+draw pixels/spans/rows without changing timing/CD counters. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
 VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and

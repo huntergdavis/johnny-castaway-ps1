@@ -106,7 +106,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3562 words
+          ~14 min read · 3560 words
         </p>
 
       <hr class="rule" />
@@ -506,7 +506,7 @@ group, VISITOR3 low’s frame132 setup-prime
 relocation, WALKSTUF1 low’s <code class="language-plaintext highlighter-rouge">78..91</code> retained-read boundary, BUILDING2
 low’s previous-frame D4 deltas, BUILDING2 low’s <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row,
 VISITOR3 high’s <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, BUILDING4 low’s offscreen
-draw-span clipping, and WALKSTUF1 low’s v653 late-tail work-volume clip. The
+draw-span clipping, and WALKSTUF1 high/low late-tail work-volume clips. The
 public battle card is <code class="language-plaintext highlighter-rouge">+0.2736%</code> over target /
 <code class="language-plaintext highlighter-rouge">99.7310%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4936%</code> / <code class="language-plaintext highlighter-rouge">100.5133%</code>.
 VISITOR3 high measures <code class="language-plaintext highlighter-rouge">1063/1040</code> with <code class="language-plaintext highlighter-rouge">blocking_vb=35</code>; BUILDING4 low is
@@ -524,8 +524,8 @@ retained-read promotion. Public rollup is <code class="language-plaintext highli
 <code class="language-plaintext highlighter-rouge">100.5006%</code>. Current mainline also promotes VISITOR5 low with the matching
 <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape and BUILDING2 low with <code class="language-plaintext highlighter-rouge">218..229</code> slack8,
 then VISITOR3 high with the <code class="language-plaintext highlighter-rouge">277..293</code> tail-pack repack, BUILDING4 low with
-offscreen draw-span clipping, and WALKSTUF1 low with the same-speed late-tail
-work-volume clip, moving the live battle card to <code class="language-plaintext highlighter-rouge">+0.2736%</code>
+offscreen draw-span clipping, and WALKSTUF1 high/low with same-speed late-tail
+work-volume clips, moving the live battle card to <code class="language-plaintext highlighter-rouge">+0.2736%</code>
 over target / <code class="language-plaintext highlighter-rouge">99.7310%</code> target speed.</li>
   <li>Latest stability release: <strong><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code></strong> — deterministic BOOTMODE
 scene selection, expected-scene gates in the headless perf harness,

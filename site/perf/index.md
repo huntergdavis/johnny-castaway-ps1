@@ -204,16 +204,18 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2736%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7310%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T21:19:36` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-13T21:31:34` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-late-offscreen-v654`, `walkstuf1-low-late-offscreen-v653`, `building4-low-offscreen-drawclip-v652`, `visitor3-high-tail-pack-v629`, `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Latest promoted W1 work-volume note: `walkstuf1-low-late-offscreen-v653`
-clips only low-tide frames `202..210` after broader clipping proved
-phase-negative. It is exact-flat at scene `1770`, active loop/target
-`1478/1431`, blocking/refill `64/20`, loop reads/read VBlanks `62/281`, and
-due `11`, while dropping `39072` draw pixels, `4263` spans, `313` draw rows,
-`79` dirty rows, and `50560` upload bytes.
+Latest promoted W1 work-volume note: `walkstuf1-high-late-offscreen-v654`
+and `walkstuf1-low-late-offscreen-v653` clip only late-tail frames after
+broader low clipping proved phase-negative. High is exact-flat at `1764`,
+`1476/1434`, blocking/refill `81/23`, reads/due `65/16`, while dropping
+`47671` draw pixels, `5152` spans, and `315` draw rows. Low is exact-flat at
+`1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
+dropping `39072` draw pixels, `4263` spans, `313` draw rows, `79` dirty rows,
+and `50560` upload bytes.
 
 Latest rejected W1 note: `walkstuf1-low-window-resweep-v620` retested explicit
 low-tide stream windows after the shared `427..443` row. Current `40 KiB`
@@ -2080,15 +2082,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-12T23:36:40</td>
-      <td>walkstuf1-high-current-v458-refresh</td>
+      <td>2026-05-13T21:31:34</td>
+      <td>walkstuf1-high-late-offscreen-v654</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>current-control refresh after the v457 stale-baseline check; restored source/pack baseline measures scene 1764 and active loop/target 1476/1434 with blocking 81, refill 23, reads/due 65/16</td>
+      <td>same-speed late-tail offscreen draw-span clipping for frames 194..210 removes 47671 draw pixels, 5152 spans, 315 draw rows, and 36334 logical draw bytes while preserving scene/loop/blocking/refill/read counters, pack LBA/sectors, and PS-EXE bucket</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>

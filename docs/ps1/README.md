@@ -24,7 +24,7 @@ stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip and the
-WALKSTUF1 low v653 late-tail work-volume clip after the VISITOR3 high tail-pack
+WALKSTUF1 high/low late-tail work-volume clips after the VISITOR3 high tail-pack
 repack and the VISITOR5 high/low and BUILDING2 low retained-read wins. The
 public battle card is now `+0.2736%` over target /
 `99.7310%` target speed across all 126
