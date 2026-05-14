@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-v0.8.9-ps1 is a performance point release after v0.8.8-ps1. It keeps the VISITOR5 high retained-read promotion from v0.8.8, the deterministic BOOTMODE/Scene Explorer stability fixes from v0.8.7, and promotes the current mainline performance work through walkstuf1-low-frame6-inplace-v779.
+v0.8.9-ps1 is a performance point release after v0.8.8-ps1. It keeps the VISITOR5 high retained-read promotion from v0.8.8, the deterministic BOOTMODE/Scene Explorer stability fixes from v0.8.7, and promotes the current mainline performance work through walkstuf1-low-frame71-inplace-v780.
 
 ## File facts
 
@@ -22,7 +22,7 @@ v0.8.9-ps1 is a performance point release after v0.8.8-ps1. It keeps the VISITOR
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.9.md` |
 | Lines | 54 |
-| Approx. words | 376 |
+| Approx. words | 377 |
 | Code fences | 0 |
 
 ## Outline
