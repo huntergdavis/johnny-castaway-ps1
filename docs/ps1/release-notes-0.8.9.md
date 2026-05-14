@@ -38,7 +38,7 @@ mainline performance work through `walkstuf1-low-frame76-inplace-v791`.
   baseline.
 - **Bands:** `117` green, `9` yellow, `0` orange, `0` red.
 - **Under-99 focus set:** WALKSTUF1 low, BUILDING2 high, WALKSTUF1 high,
-  VISITOR3 high/low, BUILDING2 low, and JOHNNY1 high/low.
+  VISITOR3 high/low, BUILDING2 low, JOHNNY1 high/low, and BUILDING4 low.
 
 ## Verification
 

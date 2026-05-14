@@ -120,6 +120,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v0810-ps1--walkstuf1-low-no-shift-payload-follow-through" id="markdown-toc-v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code> — WALKSTUF1 low no-shift payload follow-through</a></li>
       <li><a href="#v089-ps1--walkstuf1-low-in-place-payload-reductions" id="markdown-toc-v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> — WALKSTUF1 low in-place payload reductions</a></li>
       <li><a href="#v088-ps1--visitor5-high-retained-read-promotion" id="markdown-toc-v088-ps1--visitor5-high-retained-read-promotion"><code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> — VISITOR5 high retained-read promotion</a></li>
       <li><a href="#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability" id="markdown-toc-v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability"><code class="language-plaintext highlighter-rouge">v0.8.7-ps1</code> — Deterministic BOOTMODE scene selection + Scene Explorer preview stability</a></li>
@@ -149,25 +150,44 @@
 
 <h2 id="latest">Latest</h2>
 
-<h3 id="v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> — WALKSTUF1 low in-place payload reductions</h3>
+<h3 id="v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code> — WALKSTUF1 low no-shift payload follow-through</h3>
 <p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>
 
-<p>A performance point release after <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code>. It promotes the current
-mainline optimization set through <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame76-inplace-v791</code>, while
-keeping all deterministic boot, Scene Explorer, and Suzy backdrop stability
-fixes from the prior point releases.</p>
+<p>A performance point release after <code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code>. It promotes the current
+mainline no-shift payload baseline through
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-frame76-inplace-v791</code>, while keeping all deterministic boot,
+Scene Explorer, Suzy backdrop, and prior performance wins.</p>
 
 <ul>
-  <li><strong>VISITOR5 low joins high in green.</strong> The low-tide row now uses the matching
-<code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape, improving <code class="language-plaintext highlighter-rouge">1104/1092 -&gt; 1102/1097</code>.</li>
-  <li><strong>BUILDING2 low improves again.</strong> The <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row plus v739
-draw-tail trim now measure <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due misses <code class="language-plaintext highlighter-rouge">12</code>.</li>
   <li><strong>WALKSTUF1 low has the newest in-place payload baseline.</strong> Frames <code class="language-plaintext highlighter-rouge">51</code>,
 <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">61</code>, <code class="language-plaintext highlighter-rouge">62</code>, <code class="language-plaintext highlighter-rouge">58</code>, <code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">37</code>, <code class="language-plaintext highlighter-rouge">35</code>, <code class="language-plaintext highlighter-rouge">43</code>, <code class="language-plaintext highlighter-rouge">41</code>, <code class="language-plaintext highlighter-rouge">57</code>, <code class="language-plaintext highlighter-rouge">33</code>, <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">68</code>, <code class="language-plaintext highlighter-rouge">69</code>, <code class="language-plaintext highlighter-rouge">32</code>, <code class="language-plaintext highlighter-rouge">133</code>, <code class="language-plaintext highlighter-rouge">5</code>, <code class="language-plaintext highlighter-rouge">141</code>, <code class="language-plaintext highlighter-rouge">70</code>, <code class="language-plaintext highlighter-rouge">30</code>, <code class="language-plaintext highlighter-rouge">6</code>, <code class="language-plaintext highlighter-rouge">71</code>, <code class="language-plaintext highlighter-rouge">72</code>, <code class="language-plaintext highlighter-rouge">142</code>, <code class="language-plaintext highlighter-rouge">73</code>, <code class="language-plaintext highlighter-rouge">131</code>, <code class="language-plaintext highlighter-rouge">74</code>, <code class="language-plaintext highlighter-rouge">19</code>, <code class="language-plaintext highlighter-rouge">28</code>, <code class="language-plaintext highlighter-rouge">138</code>, <code class="language-plaintext highlighter-rouge">145</code>, <code class="language-plaintext highlighter-rouge">75</code>, and <code class="language-plaintext highlighter-rouge">76</code> shrink without moving
 offsets; timing stays exact-flat at <code class="language-plaintext highlighter-rouge">1478/1431</code>, while active payload drops
 <code class="language-plaintext highlighter-rouge">879801 -&gt; 801103</code>.</li>
-  <li><strong>Battle card improves from v0.8.8.</strong> Public rollup is now <code class="language-plaintext highlighter-rouge">+0.2708%</code> over
+  <li><strong>Battle card remains stable.</strong> Public rollup is now <code class="language-plaintext highlighter-rouge">+0.2708%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4963%</code> /
+<code class="language-plaintext highlighter-rouge">100.5160%</code>; bands are <code class="language-plaintext highlighter-rouge">117</code> green and <code class="language-plaintext highlighter-rouge">9</code> yellow.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.10/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.10-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> — WALKSTUF1 low in-place payload reductions</h3>
+<p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>
+
+<p>A performance point release after <code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code>. It moved VISITOR5 low into
+green, kept the BUILDING2 low and VISITOR3 high wins, and opened the W1-low
+in-place payload lane that v0.8.10 continues.</p>
+
+<ul>
+  <li><strong>VISITOR5 low joins high in green.</strong> The low-tide row uses the matching
+<code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape, improving <code class="language-plaintext highlighter-rouge">1104/1092 -&gt; 1102/1097</code>.</li>
+  <li><strong>BUILDING2 low improves again.</strong> The <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 row plus v739
+draw-tail trim measure <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time
+<code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due misses <code class="language-plaintext highlighter-rouge">12</code>.</li>
+  <li><strong>Battle card improves from v0.8.8.</strong> Public rollup is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over
 target / <code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4963%</code> /
 <code class="language-plaintext highlighter-rouge">100.5160%</code>; bands are <code class="language-plaintext highlighter-rouge">117</code> green and <code class="language-plaintext highlighter-rouge">9</code> yellow.</li>
 </ul>
