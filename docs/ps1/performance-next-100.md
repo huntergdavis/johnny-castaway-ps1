@@ -69,7 +69,7 @@ promotion, the v626 BUILDING2 low `218..229` slack-8 retained-read promotion,
 the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
-compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701
+compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702
 BUILDING2 high offscreen work-volume clips, and the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696
 WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen work-volume clips:
 `+0.2736%` public average over target / `99.7310%` public target speed across
@@ -668,11 +668,11 @@ due misses stay `7`. BUILDING2 low, WALKSTUF1 high/low, and VISITOR3 low
 canaries stayed flat. The v664 late-only work-volume follow-up clips high
 frames `168..177` after broad/hot offscreen clipping proved phase-negative;
 v698 then extends the safe same-speed subset to frames `94..104`, and v700
-adds the adjacent boundary singleton frame `92`; v701 adds adjacent frame
-`91` from the same safe side. All stay
+adds the adjacent boundary singleton frame `92`; v701 and v702 add adjacent
+frames `91` and `90` from the same safe side. All stay
 exact-flat at scene/loop/target `1602/1351/1311`, overrun `40`,
 blocking/refill `54/18`, and reads/due `58/7`, and drop runtime frame
-rows/spans/pixels `18144/110717/468636 -> 18069/107577/454211`. Use v701 as
+rows/spans/pixels `18144/110717/468636 -> 18049/106656/450462`. Use v702 as
 the current same-speed BUILDING2 high work baseline for future comparisons.
 
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
@@ -999,7 +999,7 @@ logical draw bytes outside the viewport. The broad clip and the hot
 bucket, but both reproduced the same phase regression: scene `1602 -> 1605`,
 active loop/target `1351/1311 -> 1354/1309`, overrun `40 -> 45`, blocking
 `54 -> 57`, and refill `18 -> 21`; reads/due stayed `58/7`. Close B2-high
-offscreen clipping as a broad speed lane. The later v664/v698/v700/v701 subsets are safe
+offscreen clipping as a broad speed lane. The later v664/v698/v700/v701/v702 subsets are safe
 only as same-speed work-volume cleanup, while v699 closes the untried early
 `67,69..71` subset after it reproduced the same phase regression. Remaining
 B2-high speed work needs generated deadline ownership, sector-boundary byte
@@ -1277,8 +1277,8 @@ retained-read tables.
 | 2 | BUILDING2 low | Closed in v622 as a simple split: `218..224 + 224..230` kept refill at zero but regressed scene/loop/overrun/blocking and saved only one read. Do not retry as scalar subgroups. | Next retry of this cluster must be pack-side byte reduction, upload/restore work reduction, or generated deadline ownership that preserves the raw `218..230` visible-blocking win without the refill VBlank. |
 | 3 | BUILDING2 low | v660 adds the safe pack-side work-volume follow-up after v626: offscreen draw-span clipping stays exact-flat at `1344/1318`, overrun `26`, blocking/refill `61/0`, reads/due `50/14`, while removing `120179` offscreen draw pixels, `25136` spans, and `1537` frame rows. | Keep v660 as the same-speed low work baseline. The remaining path to green still needs generated ownership around the current `218..229` scheduler shape, upload/restore work reduction, or a sector-boundary byte change that preserves `prefetch_overrun_vb=0`. |
 | 4 | BUILDING2 low | Narrowed by v645: the downstream `250..262` row is still unsafe after the v626 `218..229` promotion, regressing to `1649/1358`, overrun `41`, blocking `64`, and refill `4` despite reads `50 -> 48`. Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. Do not retry `250..262` as an adjacent scalar follow-up on the v626 baseline. |
-| 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. v640 shows an eight-VBlank hand-table guard still fires and regresses refill/blocking; v701 is now only a same-speed late/post-hot/frame92/frame91 work-volume baseline. | Gate high tide through metadata/planner ownership, not new C branches; enforce `blocking_vb <= 54`, `refill <= 18`, and reject if it matches the raw/slack table phase. |
-| 6 | BUILDING2 high | Closed by v701 as safe subsets only: frames `168..177`, `94..104`, `92`, and `91` offscreen clipping remove `14425` pixels, `3140` spans, and `75` frame rows while staying exact-flat, but broad/hot v655 and early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
+| 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. v640 shows an eight-VBlank hand-table guard still fires and regresses refill/blocking; v702 is now only a same-speed late/post-hot/frame92/frame91/frame90 work-volume baseline. | Gate high tide through metadata/planner ownership, not new C branches; enforce `blocking_vb <= 54`, `refill <= 18`, and reject if it matches the raw/slack table phase. |
+| 6 | BUILDING2 high | Closed by v702 as safe subsets only: frames `168..177`, `94..104`, `92`, `91`, and `90` offscreen clipping remove `18174` pixels, `4061` spans, and `95` frame rows while staying exact-flat, but broad/hot v655 and early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
 | 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. The trim failures show the tail is paying for timing, not just bytes. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
 | 8 | WALKSTUF1 low | Narrowed by v644: simply giving sector `297` CD-window priority before visual prepare is worse than the raw due-path row, regressing low to `1799/1489`, blocking `94`, refill `25`, and due `16`. The late `285..321` cluster still needs generated ownership, but it must prefetch earlier without evicting prepared visual work. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |

@@ -44,7 +44,7 @@ generated ownership or pack-side work. BUILDING2 low now adds the accepted
 blocking/refill `61/0`, and reads/due `50/14`. BUILDING2 high currently measures
 `1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, and due misses
 `7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
-`18069/107577/454211`.
+`18049/106656/450462`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
