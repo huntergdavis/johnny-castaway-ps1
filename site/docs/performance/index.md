@@ -931,8 +931,8 @@ Next plausible wins, in priority order:
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
    where hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work. The latest
-   WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770 pass keeps the row exact-flat while
-   shrinking frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, and `68` in-place (`879801 -> 827726`
+   WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771 pass keeps the row exact-flat while
+   shrinking frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, and `69` in-place (`879801 -> 825696`
    active payload), and v760 restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low now has a safe
    no-shift payload lane but still needs a sector/read timing conversion. The
    BUILDING4 low v387 pass closes the local `178..202` append group and
