@@ -210,6 +210,11 @@ but regresses scene/loop `1770/1478 -> 1784/1492`, target `1431 -> 1425`,
 overrun `47 -> 67`, blocking `64 -> 92`, refill `20 -> 29`, and due misses
 `11 -> 14`. Close broad left-side physical compaction without generated
 ownership.
+The v708 small mid-pack split also fails: entries `133..140` trim only
+`3239` bytes and improve loop `1478 -> 1477`, but target drops
+`1431 -> 1428`, overrun regresses `47 -> 49`, blocking jumps `64 -> 79`,
+and due misses `11 -> 14`. Non-tail same-order physical compaction should now
+be considered closed unless a generated planner owns the new deadlines.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
