@@ -24,7 +24,7 @@ stability hardening, with additional post-release mainline optimization wins.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
-BUILDING2 low offscreen draw-span work-volume clip, the WALKSTUF1 high/low
+BUILDING2 high/low offscreen draw-span work-volume clips, the WALKSTUF1 high/low
 late-tail work-volume clips, and the WALKSTUF1 high late-tail physical
 compaction after the VISITOR3 high tail-pack repack and the VISITOR5 high/low
 and BUILDING2 low retained-read wins. The
@@ -56,8 +56,8 @@ frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row, the VISITOR3 high `277..293` tail-pack repack, the
-BUILDING4 low offscreen draw-span clip, and the BUILDING2 low offscreen
-draw-span work-volume clip; the raw signed optimization matrix is
+BUILDING4 low offscreen draw-span clip, and the BUILDING2 high/low offscreen
+draw-span work-volume clips; the raw signed optimization matrix is
 `-0.4936%` / `100.5133%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
@@ -89,10 +89,11 @@ sectors. The v441 pass improves the current high row from scene `1603` to
 `55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read time
 `262 -> 257`; due misses stay `7`, pack LBA stays fixed, and BUILDING2 low,
 WALKSTUF1 high/low, and VISITOR3 low canaries stay flat. The v664 follow-up
-clips only late offscreen draw spans for frames `168..177`, staying exact-flat
-at `1351/1311`, overrun `40`, blocking/refill `54/18`, and reads/due `58/7`,
-while dropping runtime frame rows/spans/pixels from
-`18144/110717/468636 -> 18099/110110/464261`.
+clips late offscreen draw spans for frames `168..177`; v698 extends the safe
+same-speed subset to frames `94..104`. Both stay exact-flat at `1351/1311`,
+overrun `40`, blocking/refill `54/18`, and reads/due `58/7`, while dropping
+runtime frame rows/spans/pixels from
+`18144/110717/468636 -> 18092/108958/459413`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row, then clips offscreen low-tide draw spans in-place. It is a same-speed

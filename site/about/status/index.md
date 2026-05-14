@@ -42,8 +42,9 @@ closures kept that timing unchanged and moved the next attempt toward
 generated ownership or pack-side work. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row, improving to `1344/1318`, overrun `26`,
 blocking/refill `61/0`, and reads/due `50/14`. BUILDING2 high currently measures
-`1351/1311`, overrun
-`40`, blocking `54`, hidden refill `18`, and due misses `7`.
+`1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, and due misses
+`7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`18092/108958/459413`.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

@@ -242,9 +242,10 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes. It also
-carries the v664 late-only offscreen work-volume clip for frames `168..177`,
-which keeps timing/CD exact-flat while dropping runtime frame
-rows/spans/pixels from `18144/110717/468636 -> 18099/110110/464261`.
+carries the v664 late-only offscreen work-volume clip for frames `168..177`
+plus the v698 post-hot tail clip for frames `94..104`, both keeping timing/CD
+exact-flat while dropping runtime frame rows/spans/pixels from
+`18144/110717/468636 -> 18092/108958/459413`.
 BUILDING2 low now adds the v626 slack-8 `218..229` row ahead of the accepted
 low groups, improving to `1344/1318`, overrun `26`, blocking/refill `61/0`,
 and reads/due `50/14`.
@@ -366,14 +367,14 @@ Milestone releases:
   VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
   `218..229` slack-8 retained-read ownership, the VISITOR3 high `277..293`
   tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
-  offscreen draw-span work-volume clipping, BUILDING2 high late-only offscreen
+  offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions. The public
   battle card is `+0.2736%` / `99.7310%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low is a same-speed
   work-volume row at `1344/1318` after removing `120179` offscreen draw pixels
-  and `1537` frame rows, BUILDING2 high now drops late runtime rows/spans/pixels
-  `18144/110717/468636 -> 18099/110110/464261`, WALKSTUF1 high is
+  and `1537` frame rows, BUILDING2 high now drops runtime rows/spans/pixels
+  `18144/110717/468636 -> 18092/108958/459413`, WALKSTUF1 high is
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62` and rows/spans/pixels `16504/119364/667474`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
