@@ -21,8 +21,8 @@ validated, all 126 high/low rows are timing-bearing, and the public headless bat
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 690 |
-| Approx. words | 7427 |
+| Lines | 694 |
+| Approx. words | 7466 |
 | Code fences | 1 |
 
 ## Outline

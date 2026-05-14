@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2786%`
-exact public over target / `99.7262%` exact public target speed); the raw
-signed optimization matrix is `-0.4886%` / `100.5086%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2767%`
+exact public over target / `99.7279%` exact public target speed); the raw
+signed optimization matrix is `-0.4904%` / `100.5103%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -328,11 +328,11 @@ regressed loop, blocking, refill, and due misses. That closes the cheap
 prepare-then-refill branch and leaves generated frame-deadline ownership or
 pack/upload work reduction as the next low-side path.
 
-The latest BUILDING2 low pack-side attempt compacted D4-created interior holes
-before the `218..230` near-miss cluster. Removing those holes shifted payloads
-earlier but regressed loop timing and CD/refill pressure, so broad physical
-gap removal is closed; any BUILDING2 low retry needs a targeted byte reduction
-or generated deadline owner around the cluster.
+The latest BUILDING2 low promotion narrows the one-refill `218..230` near-miss
+to a slack-8 `218..229` row. It improves low to `1344/1318`, overrun `26`,
+blocking/refill `61/0`, and reads/due `50/14`, while VISITOR3 high/low,
+BUILDING2 high, and WALKSTUF1 high/low controls stayed flat. Earlier broad
+D4-hole physical compaction is closed as phase-negative.
 
 ## Scene Battle Card
 
@@ -343,6 +343,7 @@ perf measurements. The latest updated rows are stamped
 `visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
 `walkstuf1-high-current-v458-refresh`,
+`building2-low-rg218-229-slack8-v626`,
 `building2-low-delta-v454`,
 `visitor5-low-compact-rg23-47-v451`,
 `walkstuf1-high-shared-dual-tail-v428`,
@@ -440,7 +441,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-13T10:10:23`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-13T17:42:44`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -453,6 +454,7 @@ rows now use `visitor3-high-frame137-sector203-v501`,
 `visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
 `walkstuf1-high-current-v458-refresh`,
+`building2-low-rg218-229-slack8-v626`,
 `building2-low-delta-v454`,
 `visitor5-low-compact-rg23-47-v451`,
 `walkstuf1-high-shared-dual-tail-v428`,
@@ -942,7 +944,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2786% over target / 99.7262% target speed, with several
+  public average is now +0.2767% over target / 99.7279% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

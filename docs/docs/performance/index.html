@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~17 min read · 4476 words
+          ~17 min read · 4474 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2786%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7262%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4886%</code> / <code class="language-plaintext highlighter-rouge">100.5086%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2767%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7279%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4904%</code> / <code class="language-plaintext highlighter-rouge">100.5103%</code>.</p>
 
 <p>The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the <code class="language-plaintext highlighter-rouge">427..443</code> CD-work baseline. Some candidates were
@@ -458,11 +458,11 @@ regressed loop, blocking, refill, and due misses. That closes the cheap
 prepare-then-refill branch and leaves generated frame-deadline ownership or
 pack/upload work reduction as the next low-side path.</p>
 
-<p>The latest BUILDING2 low pack-side attempt compacted D4-created interior holes
-before the <code class="language-plaintext highlighter-rouge">218..230</code> near-miss cluster. Removing those holes shifted payloads
-earlier but regressed loop timing and CD/refill pressure, so broad physical
-gap removal is closed; any BUILDING2 low retry needs a targeted byte reduction
-or generated deadline owner around the cluster.</p>
+<p>The latest BUILDING2 low promotion narrows the one-refill <code class="language-plaintext highlighter-rouge">218..230</code> near-miss
+to a slack-8 <code class="language-plaintext highlighter-rouge">218..229</code> row. It improves low to <code class="language-plaintext highlighter-rouge">1344/1318</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">61/0</code>, and reads/due <code class="language-plaintext highlighter-rouge">50/14</code>, while VISITOR3 high/low,
+BUILDING2 high, and WALKSTUF1 high/low controls stayed flat. Earlier broad
+D4-hole physical compaction is closed as phase-negative.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -473,6 +473,7 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg78-91-v474</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-current-v458-refresh</code>,
+<code class="language-plaintext highlighter-rouge">building2-low-rg218-229-slack8-v626</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-low-compact-rg23-47-v451</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-shared-dual-tail-v428</code>,
@@ -570,7 +571,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
 matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
-window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-13T10:10:23</code>; per-row freshness and stats version are shown on
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-13T17:42:44</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -583,6 +584,7 @@ rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-fr
 <code class="language-plaintext highlighter-rouge">visitor3-low-frame137-primegap-v510</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg78-91-v474</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-current-v458-refresh</code>,
+<code class="language-plaintext highlighter-rouge">building2-low-rg218-229-slack8-v626</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-delta-v454</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-low-compact-rg23-47-v451</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-shared-dual-tail-v428</code>,
@@ -1074,7 +1076,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2786% over target / 99.7262% target speed, with several
+public average is now +0.2767% over target / 99.7279% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

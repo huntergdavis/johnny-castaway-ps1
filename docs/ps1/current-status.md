@@ -241,12 +241,15 @@ The BUILDING2 high current-control row keeps the accepted `60..72`,
 capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 `54`, hidden refill `18`, loop reads `58`, and due misses `7`; the older v379
 `1351/1313` artifact no longer reproduces after later layout changes.
-The public battle card is now `+0.2786%` over target / `99.7262%` target speed
+BUILDING2 low now adds the v626 slack-8 `218..229` row ahead of the accepted
+low groups, improving to `1344/1318`, overrun `26`, blocking/refill `61/0`,
+and reads/due `50/14`.
+The public battle card is now `+0.2767%` over target / `99.7279%` target speed
 while preserving fixed pack footprints and the `217088` byte PS-EXE bucket; the
-raw signed optimization rollup is `-0.4886%` / `100.5086%`.
+raw signed optimization rollup is `-0.4904%` / `100.5103%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.11`
-public over-target points and added about `12.62` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.12`
+public over-target points and added about `12.63` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -337,8 +340,9 @@ Milestone releases:
   relocation, and VISITOR3 high frame132/137 D4 plus one-sector frame132 setup
   residency plus frame137 co-residency, plus WALKSTUF1 low `78..91` retained
   post-prime boundary ownership and shared `427..443` CD-work reduction, and
-  VISITOR5 high/low `30..46` retained-read ownership. The public battle card is
-  `+0.2786%` / `99.7262%`;
+  VISITOR5 high/low `30..46` retained-read ownership, and BUILDING2 low
+  `218..229` slack-8 retained-read ownership. The public battle card is
+  `+0.2767%` / `99.7279%`;
   BUILDING2 high currently measures `1351/1311`, WALKSTUF1 high stays
   `1476/1434` with loop reads `65`, WALKSTUF1 low is `1478/1431` with loop
   reads `62`, VISITOR3 high is `1065/1039` with blocking/read time `41`,

@@ -385,10 +385,11 @@ component-completeness phases:
   VISITOR3 high's frame137 sector-203 setup relocation, VISITOR5 high's
   `30..46` retained-read group, VISITOR5 low's matching `30..46` retained-read
   group, VISITOR3 low's frame132 setup-prime
-  relocation, WALKSTUF1 low's `78..91` retained-read boundary, and BUILDING2
-  low's previous-frame D4 deltas. The public battle card is `+0.2786%` over
-  target / `99.7262%` target speed; raw signed rollup is `-0.4886%` /
-  `100.5086%`. VISITOR5 low measures `1102/1097` with `blocking_vb=5`;
+  relocation, WALKSTUF1 low's `78..91` retained-read boundary, BUILDING2
+  low's previous-frame D4 deltas, and BUILDING2 low's `218..229` slack-8 row.
+  The public battle card is `+0.2767%` over target /
+  `99.7279%` target speed; raw signed rollup is `-0.4904%` /
+  `100.5103%`. VISITOR5 low measures `1102/1097` with `blocking_vb=5`;
   WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1 low/high,
   and BUILDING4 low remain the under-99 tactical queue.
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
@@ -400,8 +401,9 @@ component-completeness phases:
   retained-read promotion. Public rollup is `+0.2867%` over target /
   `99.7183%` target speed; raw signed rollup is `-0.4805%` /
   `100.5006%`. Current mainline also promotes VISITOR5 low with the matching
-  `30..46` retained-read shape, moving the live battle card to
-  `+0.2786%` over target / `99.7262%` target speed.
+  `30..46` retained-read shape and BUILDING2 low with `218..229` slack8,
+  moving the live battle card to `+0.2767%` over target / `99.7279%` target
+  speed.
 - Latest stability release: **`v0.8.7-ps1`** — deterministic BOOTMODE
   scene selection, expected-scene gates in the headless perf harness,
   Suzy backdrop cleanup hardening, and heapless Scene Explorer thumbnail

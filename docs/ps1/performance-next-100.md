@@ -63,12 +63,13 @@ v470 VISITOR3 low frame132 previous-frame D4 CD-pressure promotion, the
 v474 WALKSTUF1 low `78..91` first post-prime boundary read-group promotion,
 the v477 VISITOR3 low frame132 setup-prime gap relocation, the v496
 VISITOR5 high `30..46` retained-read promotion, the v501 VISITOR3 high
-frame137 sector-203 setup relocation, and the v510 VISITOR3 low frame137
-setup-prime gap relocation, and the v526 VISITOR5 low `30..46` retained-read
+frame137 sector-203 setup relocation, the v510 VISITOR3 low frame137
+setup-prime gap relocation, the v526 VISITOR5 low `30..46` retained-read
+promotion, and the v626 BUILDING2 low `218..229` slack-8 retained-read
 promotion:
-`+0.2786%` public average over target / `99.7262%` public target speed across
+`+0.2767%` public average over target / `99.7279%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4886%` / `100.5086%`. Since the compact full-matrix baseline was about
+`-0.4904%` / `100.5103%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.12` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
@@ -336,6 +337,15 @@ blocking/refill `64/20`, reads `62`, due `11`. Explicit `36`, `38`, `42`,
 the next attempt must reduce visual/upload work or use generated deadlines
 that avoid visible/refill ownership.
 
+Latest promoted BUILDING2 low scalar salvage: v626 narrows the one-refill
+`218..230` near-miss to `218..229` with a slack-8 guard. It keeps hidden
+refill at `0` while preserving the useful visible win: scene/loop
+`1619/1349 -> 1614/1344`, target `1320 -> 1318`, overrun `29 -> 26`,
+blocking `70 -> 61`, loop reads `52 -> 50`, loop-read time `221 -> 218`,
+and due misses `15 -> 14`. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1
+high/low controls stayed exact-flat; pack LBA/sectors and the `217088` byte
+PS-EXE bucket stayed fixed. Treat this as the current BUILDING2 low baseline.
+
 Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
 the two interior gaps left by tiny D4 frames before the `218..230` near-miss
 cluster, first together and then independently. Removing both gaps shifted
@@ -495,14 +505,15 @@ canaries stayed flat. Use this as the current baseline for future BUILDING2
 high comparisons.
 
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
-and `365..381`, then store frames `71` and `77` as previous-frame D4 deltas
-against frames `70` and `76`. The v454 focused row keeps scene/loop flat at
-`1619/1349`, improves target `1319 -> 1320`, overrun `30 -> 29`, blocking
-`80 -> 70`, prefetch overrun `1 -> 0`, loop reads `53 -> 52`, loop-read time
-`227 -> 221`, and due misses `17 -> 15`; pack LBA/sectors and the `217088`
-byte PS-EXE bucket stay fixed. BUILDING2 high, FISHING1 high, WALKSTUF1 high,
-and broad completed canaries stayed flat. Use this as the current baseline
-for future BUILDING2 low comparisons.
+and `365..381`, keep the v454 frame `71` / `77` previous-frame D4 deltas, and
+add the v626 slack-8 `218..229` retained read ahead of them. The current
+focused row improves scene/loop `1619/1349 -> 1614/1344`, target
+`1320 -> 1318`, overrun `29 -> 26`, blocking `70 -> 61`, prefetch overrun
+stays `0`, loop reads `52 -> 50`, loop-read time `221 -> 218`, and due
+misses `15 -> 14`; pack LBA/sectors and the `217088` byte PS-EXE bucket stay
+fixed. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low controls
+stayed flat. Use this as the current baseline for future BUILDING2 low
+comparisons.
 
 Latest rejected BUILDING2 low D4-hole repack: v479 reran the pack compactor
 after teaching the restore-minus-current tool to skip existing D4 payloads.
@@ -1065,9 +1076,9 @@ retained-read tables.
 
 | # | Target | Idea | First gate |
 | --- | --- | --- | --- |
-| 1 | BUILDING2 low | Turn the `218..230` near miss into a generated owned row: fire only after the hidden refill owner has already paid the cluster's first sector, then group the remaining sectors. The scalar row was one refill VBlank from promotion; v624 proved adding the downstream `250..262` scalar row cuts blocking but worsens loop/refill, so ownership must be explicit rather than another table combination. | Rebuild a fresh baseline, emit metadata only for low tide, and require raw `1614/1344`-style timing with `prefetch_overrun_vb=0`. |
+| 1 | BUILDING2 low | Closed by v626 as a narrowed scalar row: `218..229` with slack8 keeps hidden refill at zero and promotes the useful near-miss win. Do not retry the wider `218..230` hand row unless the pack/source shape changes again. | New baseline is `1614/1344`, target `1318`, overrun `26`, blocking/refill `61/0`, reads/due `50/14`. |
 | 2 | BUILDING2 low | Closed in v622 as a simple split: `218..224 + 224..230` kept refill at zero but regressed scene/loop/overrun/blocking and saved only one read. Do not retry as scalar subgroups. | Next retry of this cluster must be pack-side byte reduction, upload/restore work reduction, or generated deadline ownership that preserves the raw `218..230` visible-blocking win without the refill VBlank. |
-| 3 | BUILDING2 low | Pack-shave the payload immediately before the `218..230` cluster by at least one sector without adding D4 decode. A one-sector reduction should absorb the exact `0 -> 1` refill debt seen in v564/v566. | Host search for same-frame row/header coalescing that preserves offsets and file size, then gate only if pack LBA and PS-EXE bucket stay fixed. |
+| 3 | BUILDING2 low | After v626, only continue this cluster if a pack/source change can improve beyond `218..229` without changing refill. The old one-refill `218..230` motivation is superseded; remaining work should target upload/restore bytes or generated ownership around the new v626 baseline. | Host search for same-frame row/header coalescing that preserves offsets and file size, then gate only if pack LBA, PS-EXE bucket, and `prefetch_overrun_vb=0` stay fixed. |
 | 4 | BUILDING2 low | Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. The current matrix ranks ranges that are real payload clusters but not safe append starts. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. |
 | 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. The standalone row saved reads but raised refill/blocking. | Gate high tide with both rows active through metadata, not new C branches, and enforce `blocking_vb <= 54`, `refill <= 18`. |
 | 6 | BUILDING2 high | Replace micro D4 frame91 with a no-decode sector-boundary shrink: row-header canonicalization, duplicate span aliasing, or local palette-run packing that decodes through the existing path. D4 proved the sector boundary mattered but CPU/cadence cost dominated. | Require the frame91 payload end to move back one sector while `foregroundPilotPlay` size and hot symbol addresses remain unchanged. |

@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2786%` over
-target / `99.7262%` target speed; the raw signed optimization matrix is
-`-0.4886%` / `100.5086%`.
+allocation. The public headless battle card is `+0.2767%` over
+target / `99.7279%` target speed; the raw signed optimization matrix is
+`-0.4904%` / `100.5103%`.
 The newest accepted VISITOR5 low retained-read promotion mirrors the high-side
 `30..46` shape, improving low to `1102/1097`, overrun `5`, blocking/refill
 `5`, reads/due `18/0`, and green status. VISITOR5 high's matching row measures
@@ -34,9 +34,9 @@ fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
 and `1478/1431`; the latest WALKSTUF1 scalar and post-prepare scheduler
 closures kept that timing unchanged and moved the next attempt toward
-generated ownership or pack-side work. BUILDING2 low physical gap compaction
-also closed as phase-negative, leaving targeted byte reduction or generated
-deadline ownership for that near-miss. BUILDING2 high currently measures
+generated ownership or pack-side work. BUILDING2 low now adds the accepted
+`218..229` slack-8 retained-read row, improving to `1344/1318`, overrun `26`,
+blocking/refill `61/0`, and reads/due `50/14`. BUILDING2 high currently measures
 `1351/1311`, overrun
 `40`, blocking `54`, hidden refill `18`, and due misses `7`.
 The live ledger is at
