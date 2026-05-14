@@ -832,6 +832,17 @@ the current append state. Remaining BUILDING2 high work needs generated
 deadline/append-start ownership or pack-side byte/work reduction, not another
 plain retained table.
 
+Latest rejected BUILDING2 high preserve-offset draw-gap merge: v635 used the
+same known-foreground draw-gap merger tested on W1, but on `BUILDING2.FG2`.
+The conservative gap1 transform changed `231` frames, saved `54093` payload
+bytes, merged `29058` gaps, and cut spans `104351 -> 75293`, all with fixed
+pack size/LBA and no source code. Timing regressed anyway: scene `1602 ->
+1607`, active loop/target `1351/1311 -> 1356/1312`, overrun `40 -> 44`,
+blocking `54 -> 57`, and refill `18 -> 22`. Close preserve-offset draw-gap
+merging for BUILDING2 high; future pack work must reduce bytes/spans without
+adding draw pixels or must move sector boundaries without changing decode
+work.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
@@ -1104,7 +1115,7 @@ retained-read tables.
 | 3 | BUILDING2 low | After v626, only continue this cluster if a pack/source change can improve beyond `218..229` without changing refill. The old one-refill `218..230` motivation is superseded; remaining work should target upload/restore bytes or generated ownership around the new v626 baseline. | Host search for same-frame row/header coalescing that preserves offsets and file size, then gate only if pack LBA, PS-EXE bucket, and `prefetch_overrun_vb=0` stay fixed. |
 | 4 | BUILDING2 low | Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. The current matrix ranks ranges that are real payload clusters but not safe append starts. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. |
 | 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. The standalone row saved reads but raised refill/blocking. | Gate high tide with both rows active through metadata, not new C branches, and enforce `blocking_vb <= 54`, `refill <= 18`. |
-| 6 | BUILDING2 high | Replace micro D4 frame91 with a no-decode sector-boundary shrink: row-header canonicalization, duplicate span aliasing, or local palette-run packing that decodes through the existing path. D4 proved the sector boundary mattered but CPU/cadence cost dominated. | Require the frame91 payload end to move back one sector while `foregroundPilotPlay` size and hot symbol addresses remain unchanged. |
+| 6 | BUILDING2 high | Replace micro D4 frame91 with a no-decode sector-boundary shrink that does not add draw pixels. Preserve-offset draw-gap merging is closed because byte savings regressed visible/refill cadence. | Require the frame91 payload end to move back one sector while `foregroundPilotPlay` size, hot symbol addresses, and drawn pixel counts remain unchanged. |
 | 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. The trim failures show the tail is paying for timing, not just bytes. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
 | 8 | WALKSTUF1 low | Build a generated prepare-before-window plan for the late `285..321` cluster using observed append starts, not raw sector rows. Plain late rows either no-op (`297..321`) or steal visible cadence. | Metadata-only low-tide probe must report nonzero ownership hits before timing; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
