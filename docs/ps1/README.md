@@ -86,7 +86,11 @@ sectors. The v441 pass improves the current high row from scene `1603` to
 `1602`, active loop `1352/1311 -> 1351/1311`, overrun `41 -> 40`, blocking
 `55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read time
 `262 -> 257`; due misses stay `7`, pack LBA stays fixed, and BUILDING2 low,
-WALKSTUF1 high/low, and VISITOR3 low canaries stay flat.
+WALKSTUF1 high/low, and VISITOR3 low canaries stay flat. The v664 follow-up
+clips only late offscreen draw spans for frames `168..177`, staying exact-flat
+at `1351/1311`, overrun `40`, blocking/refill `54/18`, and reads/due `58/7`,
+while dropping runtime frame rows/spans/pixels from
+`18144/110717/468636 -> 18099/110110/464261`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row, then clips offscreen low-tide draw spans in-place. It is a same-speed
