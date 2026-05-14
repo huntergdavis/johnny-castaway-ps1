@@ -21,8 +21,8 @@ Date: 2026-05-14
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 3668 |
-| Approx. words | 62197 |
+| Lines | 3672 |
+| Approx. words | 62240 |
 | Code fences | 0 |
 
 ## Outline
