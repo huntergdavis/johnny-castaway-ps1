@@ -989,13 +989,14 @@ right direction. Close scalar prepare-threshold tuning; WALKSTUF1 low still
 needs generated deadline ownership or pack/data-shape work, not a different
 single slack constant.
 
-Latest rejected runtime policy-cache probe: v448 cached the hot scene-policy
-checks for WALKSTUF1, VISITOR3, BUILDING2, MARY3, and BUILDING6 into a runtime
-flag byte instead of repeated `strcmp` calls. WALKSTUF1 low stayed exact-flat
-at `1776`, `1484/1431`, blocking `72`, hidden refill `22`, reads/due `66/12`;
-WALKSTUF1 high manually matched the accepted `1768`, `1480/1432`, blocking
-`83`, hidden refill `26`, reads/due `65/16`. Close this as non-promotable
-runtime-shape cleanup: it shifts hot symbols but does not move VBlank counters.
+Latest rejected runtime policy-cache probe: v625 retested cached scene-policy
+flags plus cached window minimum slack on the current v598 WALKSTUF1 low
+baseline. The PS-EXE bucket stayed `217088`, but the row stayed flat at scene
+`1770`, active loop/target `1478/1431`, overrun `47`, blocking `64`, reads/due
+`62/11`, while hidden refill/prefetch overrun regressed `20 -> 21` and
+`foregroundPilotPlay` grew by `80` bytes. This supersedes the earlier v448/v473
+policy-cache misses: close standalone runtime policy caching unless it is part
+of generated scheduler metadata with a hot-symbol budget.
 
 Latest rejected VISITOR3 low window-slack sweep: v449/v450 lowered the
 low-tide dual-segment window-refill guard from the accepted `4` VBlanks to `3`
