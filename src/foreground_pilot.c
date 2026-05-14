@@ -3411,27 +3411,6 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
  * walk loop (incl. hold frames). */
 static int gFgComposeSuppressed = 0;
 
-/* Emergency-black-clean trip: counts graceful events (JCSKIP and JCTMOUT)
- * during the session. When the count exceeds the threshold the clean-rect
- * code path is suspected of accumulated heap-state corruption and the
- * runtime switches to forced black-clean for every subsequent scene,
- * which skips the deadlock-prone grCleanRectCopyOut entirely. */
-static int gFgGraceEventCount = 0;
-static int gFgEmergencyBlackClean = 0;
-static void fgGraceEventTripCheck(void)
-{
-    enum { FG_GRACE_EVENT_TRIP_THRESHOLD = 3 };
-    if (gFgEmergencyBlackClean)
-        return;
-    gFgGraceEventCount++;
-    if (gFgGraceEventCount >= FG_GRACE_EVENT_TRIP_THRESHOLD) {
-        gFgEmergencyBlackClean = 1;
-        printf("JCEMER black-clean tripped after %d grace events; "
-               "clean-rect copyOut disabled for rest of session\n",
-               gFgGraceEventCount);
-    }
-}
-
 void foregroundPilotSuppressCompose(int suppressed)
 {
     gFgComposeSuppressed = suppressed ? 1 : 0;
@@ -3715,7 +3694,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * malloc fails. Abandoning this scene and returning lets the
          * outer scene loop pick another scene; the player sees one
          * skipped scene instead of a permanent halt screen. */
-        fgGraceEventTripCheck();
         printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
         return;
     }
@@ -3738,7 +3716,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
-        fgGraceEventTripCheck();
         printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
         return;
     }
@@ -3761,21 +3738,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         }
     }
     printf("JCSU D pre-clean-rect scene=%s\n", sceneName);
-    /* Emergency-black-clean trip: after a few JCSKIP/JCTMOUT events the
-     * heap is fragmented enough that grCleanRectCopyOut's per-row memcpy
-     * has been observed to deadlock against accumulated pixel-pointer
-     * corruption (walkstuf3 frame=116 rect 1 sy=65-74, activity10
-     * frame=276 rect 4 sy=33-62 — same pattern, different scene). The
-     * 90 s outer cap can't break out because the CPU spins inside the
-     * memcpy itself. Once we've burned through enough graceful events,
-     * stop trusting the clean-rect path and force black-clean mode for
-     * the rest of the session. Visual cost: walks don't blend with the
-     * baked-in island; the screensaver keeps running indefinitely. */
-    if (gFgEmergencyBlackClean) {
-        printf("JCMEM emergency-black-clean scene=%s skip-clean-rects\n", sceneName);
-        grFreeCleanBgRects();
-        grSetCleanBgBlackMode(1);
-    } else if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
+    if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
         printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
@@ -3793,7 +3756,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grSetCleanBgBlackMode(0);
             fgBackdropRelease(0);
             fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            fgGraceEventTripCheck();
             printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
                    sceneName, (unsigned long)cleanRectEstimate);
             return;
@@ -3841,20 +3803,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
-    /* Per-scene wall-clock cap. Some scenes (observed: activity9 at the
-     * 13th deterministic pick of a long soak, runtime ~443 s) silently
-     * hang inside this runtime loop after the normal Nth frame — the CD
-     * load completes, walks succeed, but the scene's natural end never
-     * fires. Cap at 5400 VBlanks (90 s) so the screensaver isn't stuck
-     * forever; legitimate scenes are 10-60 s, so 90 s is comfortably
-     * past the longest natural duration. The cap fires a JCTMOUT
-     * telemetry line and breaks the loop, falling through to the normal
-     * teardown path — the outer scene loop then picks another scene. */
     {
+        /* JCHB heartbeat: non-truncating telemetry. Emits a log line every
+         * ~120 VBlanks (~2 s) so we can see the loop iterating across
+         * scene playback. Does NOT cap or truncate the scene — the loop
+         * exits naturally via foregroundPilotRuntimeActive() going false. */
         uint32 sceneLoopStartTick = (uint32)VSync(-1);
         uint32 lastHeartbeatTick = sceneLoopStartTick;
         uint32 loopIterCount = 0;
-        const uint32 SCENE_LOOP_MAX_VBLANKS = 5400u;
         while (foregroundPilotRuntimeActive()) {
             int advancedThisLoop = 0;
 
@@ -3870,16 +3826,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                            (unsigned long)(nowTick - sceneLoopStartTick));
                     lastHeartbeatTick = nowTick;
                 }
-            }
-
-            if (((uint32)VSync(-1) - sceneLoopStartTick) > SCENE_LOOP_MAX_VBLANKS) {
-                fgGraceEventTripCheck();
-                printf("JCTMOUT scene=%s frame=%u/%u vblanks=%lu force-end\n",
-                       sceneName,
-                       (unsigned)gFgRuntime.frameIndex,
-                       (unsigned)gFgRuntime.header.frameCount,
-                       (unsigned long)((uint32)VSync(-1) - sceneLoopStartTick));
-                break;
             }
 
             /* Pause-menu request: break out so jc_reborn's outer loop can
