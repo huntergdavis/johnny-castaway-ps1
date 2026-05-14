@@ -122,7 +122,9 @@ contiguous.
 v668 adds the separate pre-left cluster `30..41`, stays exact-flat, and drops
 runtime rows/spans/pixels to `16680/127950/712324`. v669 clips the separate
 pre-tail cluster `194..201`, stays exact-flat, and drops runtime rows/spans/pixels
-to `16678/127061/703725`.
+to `16678/127061/703725`. The broad v670 mid-right `85..101` clip is rejected:
+it removed `2966` pixels and `980` spans but regressed blocking `64 -> 65`; split
+that region before retrying.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
