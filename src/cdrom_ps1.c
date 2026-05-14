@@ -25,6 +25,41 @@
 
 /* PS1 CD-ROM sector size */
 #define CD_SECTOR_SIZE 2048
+
+/* Pinned CD sector pool. Every ps1_streamRead* call used to allocate
+ * (numSectors * 2048) for its sectorBuffer and free it on completion —
+ * that malloc/free churn was the single biggest source of heap
+ * fragmentation in long soaks, since the buffer size varies per read.
+ * Pre-reserve a single contiguous 256 KB block at file scope (BSS, no
+ * runtime alloc) and hand it out unconditionally to any read that fits.
+ * Larger reads (only seen on boot-time BMP/SCR full-file loads, where
+ * the heap is still pristine) fall back to malloc cleanly.
+ *
+ * CD reads are not nested in this codebase — the main thread is the only
+ * caller, and CdRead/CdReadSync block the main thread until completion —
+ * so a single in-use flag suffices to detect the rare nested-call bug. */
+#define PS1_CD_SECTOR_POOL_BYTES (256u * 1024u)
+static uint8_t gPs1CdSectorPool[PS1_CD_SECTOR_POOL_BYTES] __attribute__((aligned(4)));
+static int gPs1CdSectorPoolInUse = 0;
+
+static uint8_t *ps1AcquireSectorBuffer(uint32_t requestedBytes)
+{
+    if (requestedBytes <= PS1_CD_SECTOR_POOL_BYTES && !gPs1CdSectorPoolInUse) {
+        gPs1CdSectorPoolInUse = 1;
+        return gPs1CdSectorPool;
+    }
+    return (uint8_t *)malloc(requestedBytes);
+}
+
+static void ps1ReleaseSectorBuffer(uint8_t *buf)
+{
+    if (buf == gPs1CdSectorPool) {
+        gPs1CdSectorPoolInUse = 0;
+    } else if (buf != NULL) {
+        free(buf);
+    }
+}
+
 #define PS1_PACK_MAGIC 0x4B415053u
 #define PS1_PACK_VERSION 1u
 #define PS1_PACK_NAME_BYTES 16
@@ -878,10 +913,11 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
-    /* Allocate buffer for the sectors we need */
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
+    /* Allocate buffer for the sectors we need (pinned pool when ≤256 KB,
+     * malloc fallback for boot-time multi-MB resource loads). */
+    sectorBuffer = ps1AcquireSectorBuffer(bufferSize);
     if (!sectorBuffer) {
-        return NULL;  /* Malloc failed */
+        return NULL;  /* Pool busy AND malloc fallback failed */
     }
 
     /* Read in smaller sector chunks. Large single-shot reads on packed BMPs
@@ -901,7 +937,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1ReleaseSectorBuffer(sectorBuffer);
             return NULL;
         }
 
@@ -912,7 +948,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1ReleaseSectorBuffer(sectorBuffer);
             return NULL;
         }
 
@@ -923,7 +959,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1ReleaseSectorBuffer(sectorBuffer);
             return NULL;  /* Read error or timeout */
         }
 
@@ -933,7 +969,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     /* Allocate exact-size output buffer and copy the data we need */
     result = (uint8_t*)malloc(size);
     if (!result) {
-        free(sectorBuffer);
+        ps1ReleaseSectorBuffer(sectorBuffer);
         return NULL;
     }
 
@@ -945,7 +981,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
                                   1, perfFileLba, offset, 0);
-    free(sectorBuffer);
+    ps1ReleaseSectorBuffer(sectorBuffer);
     return result;
 }
 
@@ -969,12 +1005,12 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
 
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
+    sectorBuffer = ps1AcquireSectorBuffer(bufferSize);
     if (!sectorBuffer)
         return 0;
 
     result = ps1_streamReadFromCdFileIntoBuffered(cdfile, offset, size, dstBuffer, sectorBuffer, bufferSize);
-    free(sectorBuffer);
+    ps1ReleaseSectorBuffer(sectorBuffer);
     return result;
 }
 

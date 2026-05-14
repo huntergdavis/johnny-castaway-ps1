@@ -1395,6 +1395,25 @@ int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
         }
     }
 
+    /* Pin the prefetch buffer alongside the frame buffer. The per-scene
+     * grow-and-realloc dance at foregroundPilotRuntimeStart's prefetch
+     * branch (free+malloc when maxDataSize > current) is a key heap-
+     * fragmentation source; pre-allocating at boot at the same size as
+     * the frame buffer means the branch never fires for any scene whose
+     * maxDataSize <= frameMaxBytes (which is almost all of them). */
+    if (frameMaxBytes > 0 && gFgPrefetchFrameBuffer == NULL) {
+        gFgPrefetchFrameBuffer = (uint8 *)malloc((size_t)frameMaxBytes);
+        if (gFgPrefetchFrameBuffer == NULL) {
+            printf("JCSTREAM prefetchBuffer prealloc failed (need %lu)\n",
+                   frameMaxBytes);
+            /* Non-fatal — prefetch is an optional optimization, not a
+             * correctness requirement. The runtime tolerates a NULL
+             * prefetch slot (drops prefetch under pressure anyway). */
+        } else {
+            gFgPrefetchFrameBufferSize = (uint32)frameMaxBytes;
+        }
+    }
+
     if (scratchMaxBytes > 0 && gFgStreamScratch == NULL) {
         gFgStreamScratch = (uint8 *)malloc((size_t)scratchMaxBytes);
         if (gFgStreamScratch == NULL) {
