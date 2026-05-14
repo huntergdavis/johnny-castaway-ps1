@@ -3411,6 +3411,27 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
  * walk loop (incl. hold frames). */
 static int gFgComposeSuppressed = 0;
 
+/* Emergency-black-clean trip: counts graceful events (JCSKIP and JCTMOUT)
+ * during the session. When the count exceeds the threshold the clean-rect
+ * code path is suspected of accumulated heap-state corruption and the
+ * runtime switches to forced black-clean for every subsequent scene,
+ * which skips the deadlock-prone grCleanRectCopyOut entirely. */
+static int gFgGraceEventCount = 0;
+static int gFgEmergencyBlackClean = 0;
+static void fgGraceEventTripCheck(void)
+{
+    enum { FG_GRACE_EVENT_TRIP_THRESHOLD = 8 };
+    if (gFgEmergencyBlackClean)
+        return;
+    gFgGraceEventCount++;
+    if (gFgGraceEventCount >= FG_GRACE_EVENT_TRIP_THRESHOLD) {
+        gFgEmergencyBlackClean = 1;
+        printf("JCEMER black-clean tripped after %d grace events; "
+               "clean-rect copyOut disabled for rest of session\n",
+               gFgGraceEventCount);
+    }
+}
+
 void foregroundPilotSuppressCompose(int suppressed)
 {
     gFgComposeSuppressed = suppressed ? 1 : 0;
@@ -3694,6 +3715,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * malloc fails. Abandoning this scene and returning lets the
          * outer scene loop pick another scene; the player sees one
          * skipped scene instead of a permanent halt screen. */
+        fgGraceEventTripCheck();
         printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
         return;
     }
@@ -3716,6 +3738,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
+        fgGraceEventTripCheck();
         printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
         return;
     }
@@ -3738,7 +3761,21 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         }
     }
     printf("JCSU D pre-clean-rect scene=%s\n", sceneName);
-    if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
+    /* Emergency-black-clean trip: after a few JCSKIP/JCTMOUT events the
+     * heap is fragmented enough that grCleanRectCopyOut's per-row memcpy
+     * has been observed to deadlock against accumulated pixel-pointer
+     * corruption (walkstuf3 frame=116 rect 1 sy=65-74, activity10
+     * frame=276 rect 4 sy=33-62 — same pattern, different scene). The
+     * 90 s outer cap can't break out because the CPU spins inside the
+     * memcpy itself. Once we've burned through enough graceful events,
+     * stop trusting the clean-rect path and force black-clean mode for
+     * the rest of the session. Visual cost: walks don't blend with the
+     * baked-in island; the screensaver keeps running indefinitely. */
+    if (gFgEmergencyBlackClean) {
+        printf("JCMEM emergency-black-clean scene=%s skip-clean-rects\n", sceneName);
+        grFreeCleanBgRects();
+        grSetCleanBgBlackMode(1);
+    } else if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
         printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
@@ -3756,6 +3793,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grSetCleanBgBlackMode(0);
             fgBackdropRelease(0);
             fgHeapProbe("clean_rect_failed_cleanup", sceneName);
+            fgGraceEventTripCheck();
             printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
                    sceneName, (unsigned long)cleanRectEstimate);
             return;
@@ -3835,6 +3873,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             }
 
             if (((uint32)VSync(-1) - sceneLoopStartTick) > SCENE_LOOP_MAX_VBLANKS) {
+                fgGraceEventTripCheck();
                 printf("JCTMOUT scene=%s frame=%u/%u vblanks=%lu force-end\n",
                        sceneName,
                        (unsigned)gFgRuntime.frameIndex,
