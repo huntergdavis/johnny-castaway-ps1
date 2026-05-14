@@ -204,6 +204,12 @@ scene/loop `1770/1478 -> 1778/1486`, target `1431 -> 1430`, overrun
 `60 -> 61`. Close early-left physical displacement under the current scheduler;
 future byte removal there needs generated deadline ownership or a no-shift
 encoding.
+The v707 later-left split confirms the same branch is not just an early-left
+problem: compacting entries `66..77` trims active payload `879801 -> 861691`,
+but regresses scene/loop `1770/1478 -> 1784/1492`, target `1431 -> 1425`,
+overrun `47 -> 67`, blocking `64 -> 92`, refill `20 -> 29`, and due misses
+`11 -> 14`. Close broad left-side physical compaction without generated
+ownership.
 The v676 `62..65` split is rejected even though it is smaller than the old
 `58..74` miss: it removed `15288` pixels, `2277` spans, and `103` rows, but
 regressed scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
