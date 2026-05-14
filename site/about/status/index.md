@@ -35,8 +35,8 @@ active payload `855284 -> 849109` with exact-flat timing. The newest WALKSTUF1 b
 clips: high v654 clips frames `194..210` and keeps `1476/1434`,
 blocking/refill `81/23`, reads/due `65/16`; low v653 clips frames `202..210`
 and keeps `1478/1431`, blocking/refill `64/20`, with v705 plus v760 bringing
-    loop reads/read time to `60/272` and due misses to `11`, and v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781
-    also shrinking low frames `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35`/`43`/`41`/`57`/`33`/`67`/`68`/`69`/`32`/`133`/`5`/`141`/`70`/`30`/`6`/`71`/`72` in-place to `810990` active payload after the release merge. Both drop
+    loop reads/read time to `60/272` and due misses to `11`, and v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782
+    also shrinking low frames `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35`/`43`/`41`/`57`/`33`/`67`/`68`/`69`/`32`/`133`/`5`/`141`/`70`/`30`/`6`/`71`/`72`/`142` in-place to `809745` active payload after the release merge. Both drop
 draw pixels/spans/rows without changing timing/CD counters. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
 VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
