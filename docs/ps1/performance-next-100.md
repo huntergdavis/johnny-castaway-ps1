@@ -114,6 +114,11 @@ and CD stay exact-flat, and runtime frame rows/spans/pixels drop
 `17298/135025/785455 -> 17292/134774/780557`. v666 extends the isolated safe
 subset to the left offscreen cluster `43..57`, still exact-flat, and drops
 runtime rows/spans/pixels again to `16838/130637/737371`.
+The adjacent v667 `58..74` attempt is rejected: it removed another `48096`
+host pixels and `8216` spans, but regressed scene/loop `1770/1478 ->
+1782/1490`, blocking `64 -> 97`, refill `20 -> 28`, loop reads `62 -> 63`,
+and due misses `11 -> 15`. Do not treat the safe W1 low offscreen region as
+contiguous.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
