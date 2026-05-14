@@ -373,12 +373,11 @@ drops rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-postleft-singletons-v680</code> clips frames <code class="language-plaintext highlighter-rouge">79</code>, <code class="language-plaintext highlighter-rouge">81</code>, and <code class="language-plaintext highlighter-rouge">83</code>,
 still exact-flat, and drops rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16663/121495/678413</code>.</p>
 
-<p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-midright-ab-offscreen-v682</code> split the
-old <code class="language-plaintext highlighter-rouge">85..92</code> mid-right miss down to <code class="language-plaintext highlighter-rouge">85..86</code>. It removed <code class="language-plaintext highlighter-rouge">707</code> pixels and
-<code class="language-plaintext highlighter-rouge">234</code> spans, kept scene/loop flat at <code class="language-plaintext highlighter-rouge">1770/1478</code>, improved overrun
-<code class="language-plaintext highlighter-rouge">47 -&gt; 46</code>, but regressed blocking <code class="language-plaintext highlighter-rouge">64 -&gt; 65</code>. Direct clipping is proven safe
-at <code class="language-plaintext highlighter-rouge">65+</code> except the mid-right <code class="language-plaintext highlighter-rouge">85..92</code> cadence cliff; isolate <code class="language-plaintext highlighter-rouge">86</code> or <code class="language-plaintext highlighter-rouge">85</code>
-before closing the lower pair.</p>
+<p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-midright-ac-offscreen-v683</code> isolated
+frame <code class="language-plaintext highlighter-rouge">86</code> from the old <code class="language-plaintext highlighter-rouge">85..92</code> mid-right miss. It removed only <code class="language-plaintext highlighter-rouge">319</code> pixels
+and <code class="language-plaintext highlighter-rouge">105</code> spans, kept scene/loop flat at <code class="language-plaintext highlighter-rouge">1770/1478</code>, improved overrun
+<code class="language-plaintext highlighter-rouge">47 -&gt; 46</code>, but regressed blocking <code class="language-plaintext highlighter-rouge">64 -&gt; 65</code>. Close frame <code class="language-plaintext highlighter-rouge">86</code> for direct
+clipping; move to <code class="language-plaintext highlighter-rouge">87..88</code> or smaller non-risk candidates.</p>
 
 <p>Latest promoted BUILDING2 note: <code class="language-plaintext highlighter-rouge">building2-high-late-offscreen-v664</code> narrows the
 failed broad high-tide offscreen clip to late frames <code class="language-plaintext highlighter-rouge">168..177</code>, staying

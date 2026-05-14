@@ -162,6 +162,9 @@ scene/loop flat, improves overrun `47 -> 46`, but regresses blocking `64 -> 65`.
 Split `85..88` again before closing those individual frames.
 The v682 `85..86` pair repeats the same profile after removing `707` pixels
 and `234` spans; isolate `86` or `85` before closing the lower mid-right pair.
+The v683 frame `86` single-frame probe still regresses blocking `64 -> 65`
+after only `319` pixels and `105` spans, so close frame `86` for direct
+clipping and move to `87..88` or smaller non-risk candidates.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
