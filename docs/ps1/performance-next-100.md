@@ -72,7 +72,7 @@ in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763 WALKSTUF1 low frame51/frame49/frame47/frame61/frame62/frame58/frame45/frame37/frame35/frame43/frame41 in-place work-volume shrinks, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766 WALKSTUF1 low frame51/frame49/frame47/frame61/frame62/frame58/frame45/frame37/frame35/frame43/frame41/frame57 in-place work-volume shrinks, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
 `+0.2708%` public average over target / `99.7337%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4963%` / `100.5160%`. Since the compact full-matrix baseline was about
@@ -81,23 +81,23 @@ removed about `17.13` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
 rows remaining and no orange/red rows.
 
-Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763
+Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766
 keep the v726 timing profile exact-flat but shrink frames `51`, `49`, `47`,
-`61`, `62`, `58`, `45`, `37`, `35`, `43`, and `41` in-place, preserving every payload offset and
-the `1535263` byte pack footprint. Active payload drops `879801 -> 838090`;
-entries `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, and `41` shrink
+`61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, and `57` in-place, preserving every payload offset and
+the `1535263` byte pack footprint. Active payload drops `879801 -> 835001`;
+entries `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, and `57` shrink
 `5588 -> 770`, `5269 -> 770`, `7399 -> 3158`, `4590 -> 552`, `4599 -> 743`,
 `3942 -> 296`, `5276 -> 1657`, `6677 -> 3236`, `6538 -> 3563`, `5555 -> 2211`,
-and `5526 -> 2292`; their sector coverage
+`5526 -> 2292`, and `3409 -> 320`; their sector coverage
 drops `4 -> 1`, `3 -> 1`, `5 -> 3`, `3 -> 1`, `4 -> 2`, `3 -> 1`, `3 -> 1`,
-`4 -> 2`, `4 -> 2`, `3 -> 2`, and `3 -> 2`.
+`4 -> 2`, `4 -> 2`, `3 -> 2`, `3 -> 2`, and `2 -> 1`.
 Scene/loop/target remain `1770/1478/1431`, blocking/refill remain `64/20`,
 loop reads/read VBlanks are now `60/272`, and due misses stay `11` after v760
 restored bounded CD fast-polling from the true post-release slow baseline
 `1813/1513/1417`, blocking/refill `149/52`. Treat the v747..v763 payload work
 as a safe no-shift payload lane, not a speed win;
 frame65 is closed under the v761 retest, so continue with earlier isolated
-frame39/56/57-style no-shift probes or generated deadline ownership.
+frame33/66/67-style no-shift probes or generated deadline ownership.
 
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
