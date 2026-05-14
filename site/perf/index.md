@@ -240,13 +240,12 @@ drops rows/spans/pixels to `16663/122035/679951`.
 `walkstuf1-low-postleft-singletons-v680` clips frames `79`, `81`, and `83`,
 still exact-flat, and drops rows/spans/pixels to `16663/121495/678413`.
 
-Latest rejected W1 note: `walkstuf1-low-left2f-offscreen-v679` confirmed the
-early-left2 boundary by testing frame `64` alone on top of accepted frame `65`.
-It removed `3356` pixels, `527` spans, and `11` rows, but still reproduced the
-full cliff: scene/loop `1770/1478 -> 1782/1490`, blocking `64 -> 97`, refill
-`20 -> 28`, reads `62 -> 63`, and due misses `11 -> 15`. Direct clipping is
-now proven safe at `65+` and unsafe at `64`; remaining `58..63` needs a
-non-shrinking/hole-fill or scheduler-safe approach.
+Latest rejected W1 note: `walkstuf1-low-midright-aa-offscreen-v681` split the
+old `85..92` mid-right miss and tested `85..88`. It removed `1133` pixels and
+`388` spans, kept scene/loop flat at `1770/1478`, improved overrun
+`47 -> 46`, but regressed blocking `64 -> 65`. Direct clipping is proven safe
+at `65+` except the mid-right `85..92` cadence cliff; split `85..88` again
+before closing those individual frames.
 
 Latest promoted BUILDING2 note: `building2-high-late-offscreen-v664` narrows the
 failed broad high-tide offscreen clip to late frames `168..177`, staying

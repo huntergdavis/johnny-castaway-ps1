@@ -156,6 +156,10 @@ The v679 frame `64` single-frame confirmation also failed with the same
 after removing only `3356` pixels, `527` spans, and `11` rows. Treat `64` as
 closed for direct clipping; remaining `58..63` needs non-shrinking/hole-fill or
 scheduler-safe treatment before another attempt.
+The v681 `85..88` mid-right split also reproduces the smaller blocking cliff
+from the old `85..92` bundle: it removes `1133` pixels and `388` spans, keeps
+scene/loop flat, improves overrun `47 -> 46`, but regresses blocking `64 -> 65`.
+Split `85..88` again before closing those individual frames.
 
 Latest promoted VISITOR5 low speed baseline: reuse the accepted high-tide
 `30..46` retained-read group shape for low tide instead of the older `23..47`
