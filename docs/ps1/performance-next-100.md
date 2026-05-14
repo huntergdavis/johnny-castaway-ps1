@@ -1143,6 +1143,42 @@ retained-read tables.
 | 31 | Cross-scene | Add binary sweep automation for threshold experiments: try both sides, keep only the better, and log both when neither clears strict gates. This matches the headless methodology and avoids manual scalar bias. | Use BUILDING2 low slack8/slack9 as the first automated regression test. |
 | 32 | Cross-scene | Scene-end heap arena reset for foreground scratch allocations, preserving background audio. This is not a speed win, but it protects long-run validation once more pack-side sidecars are added. | Add instrumentation first: prove no live foreground pointer crosses major-scene teardown before enabling reset. |
 
+Post-v645 non-scalar idea batch after the latest scalar/deadline misses:
+the main lesson is that the remaining yellow rows are phase traps. Rows that
+save reads at the deadline usually increase visible blocking, hidden refill,
+or target cadence. New work should either remove payload/restore/upload work
+before the scheduler sees it or generate explicit earlier ownership with a
+host proof before any emulator time.
+
+| # | Target | Idea | First gate |
+| --- | --- | --- | --- |
+| 33 | WALKSTUF1 low | Build an offline frame-deadline planner that emits the exact earliest safe CD slot for each late-cluster read, then replay it against the CD log without changing C first. | Planner must prove a sector `297..321` read starts before the current prepare slot and does not overlap prepared-frame ownership. |
+| 34 | WALKSTUF1 low | Try semantic row-template compression for frames `146..158`, grouping near-duplicate rows by x-shift and short literal edge patches instead of exact row dictionaries. | Host pixel replay must be exact and save at least one sector before a decoder is considered. |
+| 35 | WALKSTUF1 low | Generate a no-runtime payload reorder that preserves the accepted early ramp and moves only frames whose new sector is still forward from the previous read head. | Reject if any moved frame creates a backward seek or changes setup-prime coverage. |
+| 36 | WALKSTUF1 low | Split late-cluster frames into tiny header/metadata entries plus bulk row data already resident in a setup-owned sidecar. | Host pack proof must show no hot decode branch and no PS-EXE growth. |
+| 37 | WALKSTUF1 high | Port the low-tide planner from idea 33 but target the high `295..319` suffix and accepted high read-group split points. | Planner-only proof first; reject if predicted blocking stays above `81`. |
+| 38 | WALKSTUF1 high | Try no-decode row-span canonicalization on the `84..108` and `238..262` high clusters, but forbid adding draw pixels. | Host transform must reduce spans/bytes while preserving exact pixels and D4 gates. |
+| 39 | BUILDING2 high | Search for duplicate payload groups that can be physically copied forward into playback order without aliases or backward seeks. | Host CD-head replay must show fewer reverse seeks before PS1 timing. |
+| 40 | BUILDING2 high | Build a frame-local row coalescer for frames `101..109` that removes headers without drawing extra pixels, unlike gap1. | Gate only if it saves a sector and keeps cleanup/draw pixel counts unchanged. |
+| 41 | BUILDING2 high | Generate deadline ownership for `202..226`, but only from a pre-scene metadata blob so `foregroundPilotPlay` does not grow. | Metadata hit count must be nonzero in logs and blocking must stay `<=54`. |
+| 42 | BUILDING2 high | Try selective precomposed upload bands for static building/island rows on the hot `101..109` frames. | Offline mask must prove background ownership; PS1 gate requires restore/upload byte drop. |
+| 43 | BUILDING2 low | Target the v626 row with pack-side byte reduction immediately before sector `229`, not another adjacent read row. | Host proof must keep refill predicted at zero and avoid shifting the D4 holes. |
+| 44 | BUILDING2 low | Generate a refill-budget owner for the old `218..230` one-refill near-miss, reserving one earlier hidden slot explicitly. | Reject if prefetch overrun is nonzero in a dry-run log probe. |
+| 45 | VISITOR3 high | Design a one-scene sprite-span delta against a setup-owned terminal base for frames `133..136`, avoiding chained previous-frame D4. | Host pixel replay exact; command count must be below the failed D4 frames. |
+| 46 | VISITOR3 high | Pack terminal frames into an existing paid setup segment using micro-header savings, not broad relocation. | Host proof must keep sectors `203` and `277..293` resident without evictions. |
+| 47 | VISITOR3 low | Search for two-stage custom compression where setup-prime holds a small dictionary and due frames hold only row references. | Must fit the remaining `10588` byte paid gap and require no per-pixel runtime loop. |
+| 48 | VISITOR3 both | Add a host cost model that prices CD saved, decode commands, upload bytes, and hot-code drift before any PS1 run. | Model must reject known misses v637/v641/v644. |
+| 49 | JOHNNY1 | Reclaim cold code bytes first, then retry a minimal black-clear primitive with the PS-EXE bucket pinned. | Build must stay `217088` and high/low must both improve or stay flat. |
+| 50 | JOHNNY1 | Emit a pack-side black-clean row mask for frame `2` and reuse existing dirty upload with no new broad narrow-upload path. | Host mask must prove all cleared pixels are black/background-owned. |
+| 51 | JOHNNY1 | Try a data-only split of frame `2` cleanup into one cheap black clear plus normal residual payload, with an existing opcode if possible. | Reject if it needs a new hot decoder branch before code headroom exists. |
+| 52 | BUILDING4 low | Run a fresh same-commit render/CD classifier before touching code: compare restore bytes, upload bytes, read blocking, and due misses. | If CD is not dominant, skip read rows and target static-mask work. |
+| 53 | BUILDING4 low | Build a static island/tree/background ownership mask and precompose only rows that never overlap animated sprites. | Visual diff must cover low tide and wave frames before PS1 timing. |
+| 54 | Cross-scene | Add a "phase-trap" tag in the candidate CSV when saved reads pair with tight internal gaps and prior scalar misses. | Candidate matrix should stop ranking those rows above pack/data-shape work. |
+| 55 | Cross-scene | Add hot-symbol drift and `foregroundPilotPlay` growth gates to focused runs by default. | Known exact-flat source probes should fail before a full broad canary. |
+| 56 | Cross-scene | Generate same-commit baselines automatically after each accepted promotion for all remaining yellows. | Avoid optimizing against stale v570 candidate rows after v626/v629-style phase changes. |
+| 57 | Cross-scene | Add a scratch arena reset probe at major scene teardown with foreground pointers poisoned in debug builds. | Long-run validation must prove no live foreground allocation crosses scenes. |
+| 58 | Cross-scene | Record per-read owner reason in perf logs: due path, staged prefetch, window append, setup segment, or generated owner. | New generated lanes must prove ownership changed before PS1 timing can promote. |
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
