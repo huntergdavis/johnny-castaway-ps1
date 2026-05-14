@@ -149,14 +149,15 @@ The latest log-only WALKSTUF1 scan closed compact-origin rebasing for both W1
 packs with `0` saved bytes / `0` rewritten frames, so the next W1 pack-side
 lane is row-level canonicalization, generated ownership, or upload/restore
 work reduction rather than a whole-payload rebase.
-The current VISITOR3 baseline is high `1065/1039`
+The current VISITOR3 baseline is high `1063/1040`
 and low `1062/1040` after the frame129/frame132/frame137-delta promotions,
-the high frame132/frame137 sector-203 setup relocation, and low
-frame132/frame137 setup-prime relocations; both paths
+the high frame132/frame137 sector-203 setup relocation, the high tail-pack
+repack into the existing `277..293` setup segment, and low
+frame137 setup-prime relocation; both paths
 keep fixed pack layout with deliberate setup/data-shape tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`97.2%` / `96.8%`), VISITOR3 high/low
-(`97.6%` / `97.9%`), BUILDING2 high/low (`97.0%` / `97.8%`),
+(`97.8%` / `97.9%`), BUILDING2 high/low (`97.0%` / `98.1%`),
 JOHNNY1 high/low, and BUILDING4 low. VISITOR5 high/low are both green after
 the matching `30..46` retained-read promotions. JOHNNY6 high/low moved into
 green after the compact-FGP3 metadata plus
@@ -201,10 +202,10 @@ Current battle-card rollup as of <time datetime="2026-05-13">2026-05-13</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2767%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7279%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-13T17:42:44` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor3-high-frame137-sector203-v501`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.3%` (`0.2744%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7301%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-13T18:41:57` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-high-tail-pack-v629`, `building2-low-rg218-229-slack8-v626`, `walkstuf1-shared-rg427-443-v598`, `visitor5-low-rg30-46-v526`, `visitor3-low-frame137-primegap-v510`, `visitor5-high-rg30-46-v496`, `walkstuf1-high-current-v458-refresh`, `building2-low-delta-v454`, `building2-high-rg206-230-cap24-v441`, `building6-window-slack4-v364`, `johnny6-compact-fgp3-v354`, `visitor3-low-tail-pack-only-v338`, `walkstuf1-high-rg213-229-slack4-v316`, `activity9-low-compact-fgp3-v174`, `johnny1-compact-fgp3-v173`, `walkstuf3-low-compact-fgp3-v171`, `activity9-high-compact-fgp3-v167`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `building1-compact-fgp3-noautoprime-v157`, `missing-scenes-current-v001`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Latest rejected W1 note: `walkstuf1-low-window-resweep-v620` retested explicit
@@ -255,8 +256,8 @@ and this page.
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed rows use `walkstuf1-low-rg78-91-v474`,
+  `visitor3-high-tail-pack-v629`,
   `visitor3-low-frame137-primegap-v510`,
-  `visitor3-high-frame137-sector203-v501`,
   `walkstuf1-high-current-v458-refresh`,
   `building2-low-rg218-229-slack8-v626`,
   `building2-low-delta-v454`,
@@ -1932,15 +1933,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-13T08:30:37</td>
-      <td>visitor3-high-frame137-sector203-v501</td>
-      <td>+2.5%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1065/1039</td>
-      <td>41</td>
+      <td>2026-05-13T18:41:57</td>
+      <td>visitor3-high-tail-pack-v629</td>
+      <td>+2.2%</td>
+      <td class="spd-yellow">97.8%</td>
+      <td>1063/1040</td>
+      <td>35</td>
       <td>0</td>
-      <td>7</td>
-      <td>frames 132 and 137 D4 previous-frame deltas co-resident in the one-sector high setup segment at sector 203; pack-only frame137 relocation improves loop/read pressure without hidden refill</td>
+      <td>6</td>
+      <td>pack-only VISITOR3 high tail repack reuses the proven low compact frame143/frame144 cleanup payloads and fits frames 141/140/142/143/144 plus sound events inside the existing sector 277..293 setup segment; frame141 moves from sector 275 into setup residency, keeping pack bytes/LBA/sectors and PS-EXE bucket fixed while improving overrun 26 -> 23, blocking 41 -> 35, and reads/due 7/7 -> 6/6</td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>

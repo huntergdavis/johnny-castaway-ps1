@@ -39,11 +39,12 @@ setup-segment resident copies, `v0.8.7-ps1` hardens deterministic scene
 booting plus Scene Explorer preview streaming, and `v0.8.8-ps1` promotes the
 follow-on VISITOR3, WALKSTUF1, BUILDING2, BUILDING6, and VISITOR5 rows through
 the VISITOR5 high `30..46` retained-read win. Current mainline then brings
-VISITOR5 low over the same `30..46` retained-read line and closes the latest
-WALKSTUF1 scalar/scheduler rows as inert or phase-negative while promoting
-the BUILDING2 low `218..229` slack-8 row. The current
+VISITOR5 low over the same `30..46` retained-read line, closes the latest
+WALKSTUF1 scalar/scheduler rows as inert or phase-negative, promotes
+the BUILDING2 low `218..229` slack-8 row, and repacks the VISITOR3 high tail
+inside the existing `277..293` setup segment. The current
 public-capped average is
-**+0.2767% over target / 99.7279% target speed**, with roughly **17.12
+**+0.2744% over target / 99.7301% target speed**, with roughly **17.13
 percentage points** of over-target gap closed and about **12.63 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

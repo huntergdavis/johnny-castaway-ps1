@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2767%`
-exact public over target / `99.7279%` exact public target speed); the raw
-signed optimization matrix is `-0.4904%` / `100.5103%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2744%`
+exact public over target / `99.7301%` exact public target speed); the raw
+signed optimization matrix is `-0.4927%` / `100.5125%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -328,17 +328,18 @@ regressed loop, blocking, refill, and due misses. That closes the cheap
 prepare-then-refill branch and leaves generated frame-deadline ownership or
 pack/upload work reduction as the next low-side path.
 
-The latest BUILDING2 low promotion narrows the one-refill `218..230` near-miss
-to a slack-8 `218..229` row. It improves low to `1344/1318`, overrun `26`,
-blocking/refill `61/0`, and reads/due `50/14`, while VISITOR3 high/low,
-BUILDING2 high, and WALKSTUF1 high/low controls stayed flat. Earlier broad
-D4-hole physical compaction is closed as phase-negative.
+The latest VISITOR3 high promotion reuses the proven low compact frame143/144
+cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
+inside the existing `277..293` setup segment. It improves high to `1063/1040`,
+overrun `23`, blocking/read time `35`, and reads/due `6/6`, while pack
+bytes/LBA/sectors and the PS-EXE bucket stay fixed. The earlier BUILDING2 low
+`218..229` slack-8 row remains promoted at `1344/1318`.
 
 ## Scene Battle Card
 
 As of 2026-05-13, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-high-frame137-sector203-v501`,
+`visitor3-high-tail-pack-v629`,
 `visitor5-high-rg30-46-v496`,
 `visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
@@ -441,7 +442,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-13T17:42:44`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-13T18:41:57`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -449,7 +450,7 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-high-frame137-sector203-v501`,
+rows now use `visitor3-high-tail-pack-v629`,
 `visitor5-high-rg30-46-v496`,
 `visitor3-low-frame137-primegap-v510`,
 `walkstuf1-low-rg78-91-v474`,
@@ -828,7 +829,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+2.5% / 97.6% (1065/1039); due 7; blk 41</td>
+      <td>+2.2% / 97.8% (1063/1040); due 6; blk 35</td>
       <td>+2.1% / 97.9% (1062/1040); due 7; blk 42</td>
     </tr>
     <tr>
@@ -944,7 +945,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2767% over target / 99.7279% target speed, with several
+  public average is now +0.2744% over target / 99.7301% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

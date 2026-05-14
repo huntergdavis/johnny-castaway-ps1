@@ -15,16 +15,17 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.8-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2852% public over target / 99.7198% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2744% public over target / 99.7301% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
 `v0.8.8-ps1` is the current performance point release after the `v0.8.7-ps1`
-stability hardening. It keeps all 63 scenes visually/audibly validated,
-preserves deterministic BOOTMODE scene selection and heapless Scene Explorer
-preview loading, and promotes the VISITOR5 high-tide `30..46` retained-read
-group. The public battle card is now
-`+0.2852%` over target / `99.7198%` target speed across all 126
+stability hardening, with additional post-release mainline optimization wins.
+It keeps all 63 scenes visually/audibly validated, preserves deterministic
+BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
+latest mainline promotes the VISITOR3 high tail-pack repack after the VISITOR5
+high/low and BUILDING2 low retained-read wins. The public battle card is now
+`+0.2744%` over target / `99.7301%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -49,9 +50,10 @@ CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
 `444..456` dual-tail reduction, plus VISITOR3 low frame129/frame132 and high
 frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
-and the VISITOR5 high `30..46` retained-read group; the raw signed
-optimization matrix is `-0.4820%`.
-That is about `17.11` public over-target points removed and `12.62` public
+the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
+`218..229` slack8 row, and the VISITOR3 high `277..293` tail-pack repack; the
+raw signed optimization matrix is `-0.4927%` / `100.5125%`.
+That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
@@ -80,15 +82,17 @@ sectors. The v441 pass improves the current high row from scene `1603` to
 WALKSTUF1 high/low, and VISITOR3 low canaries stay flat.
 
 The latest VISITOR3 high baseline keeps the resident-copy and D4 data-shape
-work, then preloads the 768-byte frame `132` and 503-byte frame `137` D4
-payloads through the same one-sector high setup segment at sector `203`. It
-keeps the `1555450` byte pack footprint, `22611/760` LBA/sectors, and
-`217088` byte PS-EXE bucket fixed while moving high `1071/1040 -> 1065/1039`:
-overrun `31 -> 26`, blocking `50 -> 41`, loop reads `9 -> 7`, loop-read time
-`50 -> 41`, and due misses `9 -> 7`; hidden refill stays `0`. The latest low row keeps the v452 frame128/frame129 resident-slot
+work, preloads the 768-byte frame `132` and 503-byte frame `137` D4 payloads
+through the same one-sector setup segment at sector `203`, then reuses the
+proven low-tail compact cleanup payloads and repacks frames
+`141/140/142/143/144` plus sound events inside the existing `277..293` setup
+segment. It keeps the `1555450` byte pack footprint, `22611/760` LBA/sectors,
+and `217088` byte PS-EXE bucket fixed while moving high `1065/1039 -> 1063/1040`:
+overrun `26 -> 23`, blocking/read time `41 -> 35`, loop reads `7 -> 6`, and
+due misses `7 -> 6`; hidden refill stays `0`. The latest low row keeps the v452 frame128/frame129 resident-slot
 swap plus frame129 D4 delta and v470 frame132 D4 delta, then relocates frame
-`132` into an unused setup-prime gap at sector `99`: `1065/1041`, overrun
-`24`, blocking `45`, loop reads/due `8/8`, hidden refill `0`.
+`137` into an unused setup-prime gap at sector `99`: `1062/1040`, overrun
+`22`, blocking `42`, loop reads/due `7/7`, hidden refill `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

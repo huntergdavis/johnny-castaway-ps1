@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2092 words
+          ~8 min read · 2104 words
         </p>
 
       <hr class="rule" />
@@ -128,13 +128,14 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2767%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7279%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4904%</code> / <code class="language-plaintext highlighter-rouge">100.5103%</code>.
-The newest accepted VISITOR5 low retained-read promotion mirrors the high-side
-<code class="language-plaintext highlighter-rouge">30..46</code> shape, improving low to <code class="language-plaintext highlighter-rouge">1102/1097</code>, overrun <code class="language-plaintext highlighter-rouge">5</code>, blocking/refill
-<code class="language-plaintext highlighter-rouge">5</code>, reads/due <code class="language-plaintext highlighter-rouge">18/0</code>, and green status. VISITOR5 high’s matching row measures
-<code class="language-plaintext highlighter-rouge">1101/1096</code>, overrun <code class="language-plaintext highlighter-rouge">5</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, reads/due <code class="language-plaintext highlighter-rouge">18/0</code>. The VISITOR3
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2744%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7301%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4927%</code> / <code class="language-plaintext highlighter-rouge">100.5125%</code>.
+The newest accepted VISITOR3 high tail-pack promotion reuses the proven compact
+low-tail cleanup payloads, fits frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
+inside the existing <code class="language-plaintext highlighter-rouge">277..293</code> setup segment, and improves high to <code class="language-plaintext highlighter-rouge">1063/1040</code>,
+overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/read time <code class="language-plaintext highlighter-rouge">35</code>, reads/due <code class="language-plaintext highlighter-rouge">6/6</code>. VISITOR5 high/low both
+remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape. The VISITOR3
 low frame132/frame137 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
 <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1062/1040</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>,
