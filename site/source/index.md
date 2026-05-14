@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 346 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 347 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -63,6 +63,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.0/' | relative_url }}">v0.8.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.1/' | relative_url }}">v0.8.1-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.10/' | relative_url }}">v0.8.10-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.10.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.11/' | relative_url }}">v0.8.11-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.11.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }}">v0.8.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.2.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }}">v0.8.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.3.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }}">v0.8.4-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.4.md</code></p></li>

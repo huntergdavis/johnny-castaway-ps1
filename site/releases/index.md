@@ -22,6 +22,31 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.11-ps1` — Lazy stream-buffer release-regression fix
+<time datetime="2026-05-14"><em>2026-05-14</em></time>
+
+A corrective point release after `v0.8.10-ps1`. It keeps the W1-low v791
+payload baseline, but rolls back the post-release heap-fragmentation experiment
+that pinned too much memory before large clean-rect scenes could allocate their
+snapshots.
+
+- **WALKSTUF1 low renders and measures correctly again.** The bad merge pinned
+  a `256 KB` CD sector pool plus boot-time FG stream buffers and caused the
+  post-release W1-low check to skip after `JCSKIP clean-rect-alloc-failed`.
+- **Lazy stream allocation is restored.** CD sector staging is back to per-read
+  allocation, FG frame/scratch buffers stay lazy at boot, and W1-low returns
+  exact-flat to v791: `1770/1478/1431`, blocking/refill `64/20`, read time
+  `60/272`, due `11`.
+- **Battle card remains stable.** Public rollup is `+0.2708%` over target /
+  `99.7337%` target speed; raw signed rollup is `-0.4963%` / `100.5160%`;
+  bands are `117` green and `9` yellow.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.11/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.11-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.10-ps1` — WALKSTUF1 low no-shift payload follow-through
 <time datetime="2026-05-14"><em>2026-05-14</em></time>
 

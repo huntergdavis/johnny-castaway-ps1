@@ -120,6 +120,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v0811-ps1--lazy-stream-buffer-release-regression-fix" id="markdown-toc-v0811-ps1--lazy-stream-buffer-release-regression-fix"><code class="language-plaintext highlighter-rouge">v0.8.11-ps1</code> — Lazy stream-buffer release-regression fix</a></li>
       <li><a href="#v0810-ps1--walkstuf1-low-no-shift-payload-follow-through" id="markdown-toc-v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code> — WALKSTUF1 low no-shift payload follow-through</a></li>
       <li><a href="#v089-ps1--walkstuf1-low-in-place-payload-reductions" id="markdown-toc-v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> — WALKSTUF1 low in-place payload reductions</a></li>
       <li><a href="#v088-ps1--visitor5-high-retained-read-promotion" id="markdown-toc-v088-ps1--visitor5-high-retained-read-promotion"><code class="language-plaintext highlighter-rouge">v0.8.8-ps1</code> — VISITOR5 high retained-read promotion</a></li>
@@ -149,6 +150,33 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v0811-ps1--lazy-stream-buffer-release-regression-fix"><code class="language-plaintext highlighter-rouge">v0.8.11-ps1</code> — Lazy stream-buffer release-regression fix</h3>
+<p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>
+
+<p>A corrective point release after <code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code>. It keeps the W1-low v791
+payload baseline, but rolls back the post-release heap-fragmentation experiment
+that pinned too much memory before large clean-rect scenes could allocate their
+snapshots.</p>
+
+<ul>
+  <li><strong>WALKSTUF1 low renders and measures correctly again.</strong> The bad merge pinned
+a <code class="language-plaintext highlighter-rouge">256 KB</code> CD sector pool plus boot-time FG stream buffers and caused the
+post-release W1-low check to skip after <code class="language-plaintext highlighter-rouge">JCSKIP clean-rect-alloc-failed</code>.</li>
+  <li><strong>Lazy stream allocation is restored.</strong> CD sector staging is back to per-read
+allocation, FG frame/scratch buffers stay lazy at boot, and W1-low returns
+exact-flat to v791: <code class="language-plaintext highlighter-rouge">1770/1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, read time
+<code class="language-plaintext highlighter-rouge">60/272</code>, due <code class="language-plaintext highlighter-rouge">11</code>.</li>
+  <li><strong>Battle card remains stable.</strong> Public rollup is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; raw signed rollup is <code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>;
+bands are <code class="language-plaintext highlighter-rouge">117</code> green and <code class="language-plaintext highlighter-rouge">9</code> yellow.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.11/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.11-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10-ps1</code> — WALKSTUF1 low no-shift payload follow-through</h3>
 <p><time datetime="2026-05-14"><em>2026-05-14</em></time></p>
