@@ -1539,7 +1539,7 @@ Post-v373 candidate deck after scalar read-table exhaustion:
 | 18 | Render data | Precompose only fully opaque sprite interior rows, leaving edges on current residual compositor. | Reduces upload/compose work without needing cleanup/background ownership at boundaries. |
 | 19 | Render data | Add per-frame dirty-rect coalescing metadata generated offline for JOHNNY1 and VISITOR5. | Their CD reads are already low; render/upload work may be the remaining fixed overhead. |
 | 20 | Runtime shape | Split `fgRuntimeTryStageNextFrame()` into cold scene-policy setup and a smaller hot path. | Many exact-flat probes only shift hot code; shrinking the hot path may expose real wins. |
-| 21 | Runtime shape | Move scene-name policy checks into cached bit flags at runtime start. | Avoids adding more `fgSceneEquals()` branches for generated policies. |
+| 21 | Runtime shape | Closed by v886 as a broad hot-path source rewrite: caching scene-name policy checks grew `foregroundPilotPlay` and regressed W1-low cadence. | Reopen only as cold setup metadata or no-code pack policy that proves no hot-symbol growth before timing. |
 | 22 | Runtime shape | Replace table/count setup branches with a generated scene policy enum. | Keeps new generated ownership from growing the branch cascade. |
 | 23 | Validation | Done in v407: `--require-improvement` now fails if the baseline file has no matching case label. | Prevents false PASS like the v368/v385 label-mismatch cases while preserving exploratory warning-only comparisons. |
 | 24 | Validation | Add group-hit/read-delta expectations for read-group probes. | Exact-flat groups should fail immediately as "did not fire" instead of consuming full analysis. |
@@ -1554,6 +1554,15 @@ the refreshed read-candidate matrix now has `0` standalone, `0` guarded, and
 enough that the next wins should come from generated ownership, pack-side byte
 shape, and code-neutral scene-specific compression rather than more hand-coded
 retained-read tables.
+
+Latest rejected runtime-shape probe: v886 cached scene family/policy bits at
+runtime start and replaced hot `gFgRuntime.sceneName` comparisons with byte
+checks. The focused W1-low gate regressed from `1769/1477/1432`, overrun `45`,
+blocking/refill `65/20`, reads/due `58/11` to `1776/1484/1429`, overrun `55`,
+blocking/refill `77/25`, reads/due `59/12`, while `foregroundPilotPlay` grew
+by `252` bytes. Close broad cached-scene-kind rewrites for now; generated
+ownership needs no-code pack metadata, cold setup-only policy tables, or a
+strict hot-symbol budget.
 
 | # | Target | Idea | First gate |
 | --- | --- | --- | --- |
