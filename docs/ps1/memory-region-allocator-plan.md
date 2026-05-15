@@ -9,6 +9,41 @@ re-review of v4). See:
 - [adding-new-scenes-memory.md](./adding-new-scenes-memory.md) — future-maintainer guide
 - [mem-region-decision-tree.md](./mem-region-decision-tree.md) — which region for a new allocation
 
+## What changed in v8
+
+Resolves all 3 material + 5 hygiene items from red-team v6. Last
+clean-up pass; v8 expected to converge to zero findings.
+
+- **`ps1IsMainContext()` bit-pattern verification + ISR unit test**
+  added as Phase 1 sub-task. Test fires the helper from inside a
+  synthetic VBlank ISR (using PsyQ's `EnterCriticalSection`/
+  `ExitCriticalSection` to enter/exit) and asserts the helper returns
+  0 there, 1 from main flow. (P20)
+- **`mem_region_extern.h` uses incomplete-enum forward declaration**
+  for `MemRegion`. C99/C11 permits this for function declarations.
+  `mem_region_extern.h` has `enum MemRegion;` (no body); callers that
+  need the enum constants `#include "mem_region.h"` directly. (A26)
+- **`fgLoopGetLastScene` adds a `pickInProgress` flag** to the
+  two-slot state. State machine: idle → picking → playing → idle.
+  Phase 1 step 19 spells out all four state transitions. (A27)
+- **`__builtin_unreachable()` dropped from both `memHalt` branches**
+  — both `ps1Bsod` and `while(1)` are non-returning; the annotation
+  is redundant in both places. (P21)
+- **`nm`-based fallback for `-Wglobal-constructors` removed** — MIPS
+  toolchains emit constructors as `.init_array` not as named symbols;
+  the grep would never find them. PsnoobSDK GCC 12+ is the floor;
+  no fallback needed. (P22)
+- **Python script CI fixtures:** Phase 1 includes `scripts/test-mem-region-rationale/`
+  with 5 fixture files (valid, missing-comment, far-comment, wrapping-
+  macro, multi-line) and a `make test-mem-rationale` target. (S17)
+- **"No conditional region" clarified** in the decision tree:
+  prohibition is on *runtime* conditional region choice (`condition ?
+  BOOT : TRANSIENT`); build-time `#ifdef PS1_BUILD` branches that
+  yield distinct textual call sites per platform are fine — each
+  branch gets its own RATIONALE comment. (M17)
+- **Pin-count delta sum cost noted** in perf table (~600 cycles per
+  scene transition, debug-only). (A28)
+
 ## What changed in v7
 
 Resolves all 2 blockers + 7 material + 3 hygiene items from red-team v5:
@@ -602,11 +637,9 @@ between `JC_BSOD` and `fatalError` at every site:
 __attribute__((noreturn))
 void memHalt(const char *scene, const char *reason) {
     if (graphicsIsInitialized()) {
+        /* ps1Bsod is noreturn; GCC infers unreachable past it. */
         ps1Bsod(scene, reason, __builtin_return_address(0)
                                 ? "(caller)" : "(unknown)", 0);
-        __builtin_unreachable();        /* P16 — only kept here; the
-                                         * while(1) branch below doesn't
-                                         * need it (P19). */
     } else {
         /* Pre-graphics: use ps1DebugError (renders minimal text panel,
          * safe before graphicsInit completes) — depends on ps1DebugInit
@@ -866,12 +899,29 @@ does it for them.
     `MEM_DEV_BUILD=0` and ran the 63-scene rotation cleanly" — required
     for any PR touching scene data (S10).
 19. **Implement `fgLoopGetLastScene()`** in `src/jc_reborn.c`: returns
-    the **target** scene if a pick is in progress (between
-    `fgLoopNextScene` and the end of `foregroundPilotPlay`), else
-    the **last successfully played** scene (A18, A22). Two-slot
-    internal state: `static const char *lastTarget` (set in
-    `fgLoopNextScene`), `static const char *lastPlayed` (set after
-    successful play). Used by `memHalt` for diagnostic continuity.
+    the **target** scene if a pick is in progress, else the **last
+    successfully played** scene (A18, A22, A27). Three-state
+    machine + three statics:
+
+    ```c
+    static int pickInProgress = 0;
+    static const char *lastTarget = NULL;
+    static const char *lastPlayed = NULL;
+
+    const char *fgLoopGetLastScene(void) {
+        return pickInProgress ? lastTarget : lastPlayed;
+    }
+    ```
+
+    State transitions (Phase 1 wires these into the existing main
+    loop):
+    - **In `fgLoopNextScene`** (or the caller, immediately after the
+      pick returns): `lastTarget = chosenSlug; pickInProgress = 1;`
+    - **After `foregroundPilotPlay` returns successfully** (in the
+      main loop body): `lastPlayed = lastTarget; pickInProgress = 0;`
+    - **At boot:** both NULL; `fgLoopGetLastScene()` returns NULL;
+      `memHalt` writes `"(boot)"` when the scene argument is NULL.
+
     Verified by grep that the function does not currently exist
     before Phase 1.
 19a. **Change `fgLoopApplyVariant` signature** (PR14):
@@ -879,10 +929,19 @@ does it for them.
     effective scene name (variant slug if a variant fires, original
     slug otherwise). Caller passes the returned name into
     `memCachePreEvictForNextScene`.
-19b. **Implement `ps1IsMainContext()`** (P17): inline COP0 read in
-    `mem_region.c` using `mfc0 $13` (CAUSE) and `mfc0 $12` (SR).
+19b. **Implement `ps1IsMainContext()`** (P17, P20): inline COP0 read
+    in `mem_region.c` using `mfc0 $13` (CAUSE) and `mfc0 $12` (SR).
     Returns 1 if no active exception and interrupts enabled. Bit
-    patterns per PSX programmer's manual.
+    patterns per PSX programmer's manual; v8 verifies them with a
+    Phase 1 unit test:
+    - Test 1: call from main flow; assert returns 1.
+    - Test 2: bracket with `EnterCriticalSection()` /
+      `ExitCriticalSection()` (PsyQ primitives) and call inside the
+      critical section; assert returns 0 (since EXL or IEc has
+      changed).
+    - Test 3: hook a synthetic VBlank callback that calls the helper
+      and stores the result in a debug global; main flow checks
+      after one frame; assert 0.
 20. `MEM_REGION_RATIONALE: <one-liner>` comment required on every
     `memAlloc` call site. CI uses
     `scripts/check-mem-region-rationale.py` (~30 LOC) — handles
@@ -899,13 +958,42 @@ does it for them.
     lands in the same PR. Mirrors these steps as TODO items (M12).
 25. **New file `src/mem_region_extern.h`** holds forward declarations
     consumed by `ps1_debug.c`. Single source of truth for cross-module
-    symbol signatures (A23). `mem_region.c` includes it for its own
-    definitions to match.
+    symbol signatures (A23, A26). Uses an **incomplete enum forward
+    declaration** to avoid pulling in `mem_region.h`:
+
+    ```c
+    /* mem_region_extern.h */
+    #include <stddef.h>
+    enum MemRegion;                            /* incomplete type — OK for fn decls */
+    extern size_t memRegionUsed(enum MemRegion region);
+    extern size_t memRegionPeak(enum MemRegion region);
+    extern size_t memSafeRead(enum MemRegion region);  /* clamped variant */
+    extern int    sceneAllocBalanceGet(void);
+    ```
+
+    `ps1_debug.c` includes only this header and uses the symbols
+    behind opaque `enum MemRegion` parameters; the actual enum
+    constants are passed by callers via integer literals if
+    `ps1_debug.c` ever needs them (it doesn't today). `mem_region.h`
+    includes `mem_region_extern.h` for its own definitions, so the
+    signatures stay in sync by linker check.
 26. **Pin-count delta logging** in debug builds: at every scene
-    transition, if `(currentPinCount - prevPinCount) != 0` after the
-    expected unpin path, emit `JCMEM pin-delta scene=X delta=N`.
-    Catches `pinResource`/`unpinResource` mismatches before they
-    cause pre-evict to misreport (A25). Compiled out in release.
+    transition, sum all `pinCount` fields across resources (~200
+    entries, ~600 cycles; A28). If the sum hasn't returned to the
+    expected post-scene value, emit
+    `JCMEM pin-delta scene=X delta=N`. Catches
+    `pinResource`/`unpinResource` mismatches before they cause
+    pre-evict to misreport (A25). Compiled out in release.
+27. **Python-script CI fixtures (S17):** `scripts/test-mem-region-rationale/`
+    contains five fixture files (valid, missing-comment, far-comment,
+    wrapping-macro, multi-line) and a `make test-mem-rationale`
+    target that runs the Python script against each and asserts the
+    expected pass/fail result.
+28. **Toolchain note (P22):** the `-Werror=global-constructors` flag
+    is required; no fallback is documented. PsnoobSDK GCC 12+ is the
+    floor (verified P18). If a future toolchain doesn't support the
+    flag, that's a build-time error to fix at that time, not a plan-
+    time concern.
 
 **Estimated effort:** ~3 weeks focused work. Roughly 800-1000 LOC of
 allocator + ~200 LOC of generator + 39 call-site touches + audit + the
@@ -1000,6 +1088,7 @@ provably correct).
 | `memFree(CACHE)`                 | ~30 cycles                  | Free-list push + class lookup                      |
 | `memSceneReset` release          | ~5 cycles                   | Bump pointer reset + telemetry conditional        |
 | `memSceneReset` debug-poison     | ~15 ms                      | 250 KB 0xCD fill at PSX write-bandwidth (~16 MB/s); debug-only (PR8) |
+| Pin-count delta sum (debug only) | ~600 cycles per transition  | Sum of ~200 pinCount fields per scene; debug-only (A28) |
 | Boot: `memVerify*` (4 funcs)     | ~1 ms total                 | All compile-time data + 63 CRC-32 verifies         |
 | Boot: BSS clear of 1.2 MB buffer | ~75 ms                      | PsyQ `_start` zeroes BSS                           |
 | **Boot delta total**             | **~75 ms**                  | Bounded; CD-seek-free                              |

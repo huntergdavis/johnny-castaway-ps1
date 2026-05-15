@@ -104,10 +104,17 @@ after adding the variant. See
   textually a `memAlloc(REGION, size, tag)` call so the rationale
   comment + CI gate work. Wrapping macros hide call sites from review
   and trip the Python rationale gate.
-- **No conditional region choice.** A given allocation site must
-  always go to the same region. If you find yourself writing
-  `memAlloc(condition ? BOOT : TRANSIENT, ...)`, the design is wrong
-  — split into two sites or rethink the lifetime.
+- **No *runtime* conditional region choice.** A given source-level
+  allocation site must always go to the same region at runtime. If
+  you find yourself writing
+  `memAlloc(someCondition ? BOOT : TRANSIENT, ...)`, the design is
+  wrong — split into two sites or rethink the lifetime.
+
+  *Build-time* `#ifdef PS1_BUILD` / `#ifndef PS1_BUILD` branches that
+  produce **distinct textual call sites per platform** are fine — each
+  branch is reviewed independently and gets its own
+  `MEM_REGION_RATIONALE` comment. The prohibition is on runtime
+  branching, not platform conditionals (M17).
 
 ## Process notes (M16)
 
