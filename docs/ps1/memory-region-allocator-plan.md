@@ -1,71 +1,92 @@
 # Memory region allocator — implementation plan
 
-**Status:** v2 — incorporates red-team feedback. See companion document at
+**Status:** v3 — incorporates the "deterministic platform, no failure paths"
+directive. See companion documents at
 [memory-region-allocator-red-team.md](./memory-region-allocator-red-team.md)
-for the prior critique that drove these revisions, and
+(v1 critique) and
 [memory-region-allocator-red-team-v2.md](./memory-region-allocator-red-team-v2.md)
-for the principal-engineer review of this v2.
+(principal-engineer multi-reviewer critique of this v3).
 
-## What changed from v1
+## What changed in v3
 
-Three 🔴 showstoppers, six 🟠 risks, and seven 🟡 hygiene items from the v1
-red-team are folded into the plan below. The biggest structural changes:
+v2 still treated `JCSKIP` and "graceful fallback" paths as legitimate. They
+are not. The PSX is a deterministic platform: identical inputs produce
+identical state, including memory state. If an allocation fails, that's a
+specific bug to fix (budget too small, or call site in the wrong region), not
+a runtime condition to paper over with a scene skip. v3 makes "allocations
+cannot fail" the load-bearing invariant. Every site that currently silently
+skips, returns NULL, drops a buffer to make room, or falls back to a degraded
+path is enumerated in the removal manifest below and deleted in Phase 2.
 
-- **Budgets were sized backwards.** v1 had SCENE = 700 KB; the corrected number
-  is ~250 KB. The 568 KB MARY peak is *resource bytes*, which live in RES.
-- **Total memory ceiling is 1.2 MB, not 1.8 MB.** Verified against the actual
-  linker map (`build-ps1/jcreborn.map`): `_end = 0x800ad4fc`, so exe + BSS =
-  629 KB, leaving ~1.26 MB usable above `_end` and below the stack.
-- **Frame buffers are pre-sized at boot** via a pack-header scan so they can
-  live in PERM. The pressure-drop fallback (which v1 would have broken) is
-  no longer required.
-- **Allocation order inside SCENE is now explicit:** clean-rect first. The
-  bump pointer can't reclaim space, so the largest variable-sized SCENE
-  allocation must get first dibs.
-- **No "default-to-PERM" during migration.** Every call site gets an
-  explicit region tag in Phase 1.
+The allocator's job changes accordingly: not "satisfy most requests and let
+callers handle failures," but "satisfy every request that the game data
+implies, provably at compile/boot time."
+
+## Core invariant
+
+> Every `memAlloc(...)` call in jc_reborn returns a valid pointer. The
+> allocator never returns NULL. If a region cannot satisfy a request, the
+> program calls `fatalError` immediately — that is the *only* failure path.
+>
+> `fatalError` triggering means we have a real bug: a misclassified call
+> site, an under-sized region budget, or game data the allocator was not
+> verified against. The plan eliminates all three at boot time.
+
+This invariant is what makes "delete all the skip code" possible. Every
+defensive NULL check and graceful-fallback path in the codebase exists
+because `malloc` could return NULL. With deterministic regions sized to
+proven-worst-case fit at boot, those paths become unreachable, and
+unreachable paths get deleted.
 
 ## Context
 
 The PS1 build runs in 2 MB of main RAM and currently uses libc `malloc`/`free`
 through a single wrapper, `safe_malloc` (`src/utils.c:123`). Across 39 call
-sites (34 `safe_malloc` + 5 raw `malloc`) the heap takes per-scene churn:
-per-scene buffers (`gFgSetupSegmentBuffer`, clean-rect snapshots, entry
-tables, sound-event arrays) are allocated and freed on every scene
-transition, while a 600 KB LRU resource cache (`src/resource.c`) holds
-variable-size BMP/TTM/SCR/ADS bytes that come and go as scenes touch them.
+sites the heap takes per-scene churn: per-scene buffers
+(`gFgSetupSegmentBuffer`, clean-rect snapshots, entry tables, sound-event
+arrays) are allocated and freed on every scene transition, while a 600 KB
+LRU resource cache (`src/resource.c`) holds variable-size BMP/TTM/SCR/ADS
+bytes that come and go as scenes touch them.
 
 That churn fragments the heap. The v0.8.10-ps1 release shipped a "heap
 fragmentation experiment" (256 KB CD sector pool + boot-time stream buffers)
 that immediately broke large clean-rect scenes — `JCSKIP clean-rect-alloc-failed`
-fired because the pinned blocks left no contiguous space for the snapshot. The
-v0.8.11-ps1 release rolled it back. Current bandaids — "grow-only" frame buffers
-(`src/foreground_pilot.c:1267-1287`), a resident 149 KB walk buffer
-(`src/walk_pilot.c:50-67`), pressure-drop caches that free optional buffers
-mid-play (`fgDropOptionalPrefetchBuffersForCleanSnapshot()` called from at
-least four sites), and the resource LRU itself — partly hide the problem but
-don't fix the underlying allocator behavior. The heap probe at
-`src/foreground_pilot.c:1424` already exists to report largest-free-block.
+fired because the pinned blocks left no contiguous space for the snapshot.
+The v0.8.11-ps1 release rolled it back. Current bandaids — "grow-only" frame
+buffers (`src/foreground_pilot.c:1267-1287`), a resident 149 KB walk buffer
+(`src/walk_pilot.c:50-67`), pressure-drop helpers that free buffers mid-play,
+NULL-return paths in resource lookup, silent scene skips in ads.c, and a
+surface-pool fall-back to non-pooled allocation — partly hide fragmentation
+but never close the hole. Multiple `JCSKIP` paths in `foreground_pilot.c`
+silently abandon scenes when allocation fails.
 
-This plan introduces a deterministic three-region allocator that owns one
-static buffer for the lifetime of the process. PERM grows at boot and never
-shrinks. RES holds the existing LRU cache inside its own bounded sub-allocator
-so eviction stays in-place. SCENE is a bump allocator that wipes wholesale on
-every scene transition. Marking SCENE allocations is free; resetting is a
-single pointer write plus a development-only zero-pin assert.
+This plan replaces the heap with a deterministic three-region allocator
+backed by one static buffer. PERM grows at boot and never shrinks. RES holds
+the existing LRU cache inside a bounded sub-allocator. SCENE is a bump
+allocator wiped wholesale on every scene transition. Region sizes are proven
+sufficient at boot via a pack-header scan against
+`docs/ps1/research/generated/scene_analysis_output_2026-03-21.json`. With
+allocations guaranteed to succeed, every skip/fallback/NULL-return site
+becomes dead code and is removed in Phase 2.
 
 ## Goals / non-goals
 
-**Goals.** Eliminate the class of "scene N+1 can't allocate because the heap
-fragmented during scenes 1..N" bugs. Keep the existing LRU hit-rate so common
-resources stay resident across scene transitions. Add zero measurable per-alloc
-overhead on the hot path. Match the existing JCPERF/JCSKIP telemetry style.
-Keep the PC build functional with the same API.
+**Goals.**
 
-**Non-goals.** Not a generic malloc replacement — call sites must declare their
-region. Not a defragmenting allocator — RES uses segregated free-lists, not
-compaction. Not a behavior change for scene rendering or LRU eviction policy —
-the cache hits and misses the same resources as today.
+- Allocations cannot fail. Eliminate the entire class of "scene N+1 can't
+  allocate" bugs along with every code path that handles such failures.
+- Keep the existing LRU hit-rate so common resources stay resident across
+  scene transitions.
+- Add zero measurable per-alloc overhead on the hot path.
+- Reduce code size by deleting all bandaid + skip code (~23 call sites,
+  several hundred lines of fallback logic).
+- Make region budgets compile-time-verifiable against actual scene data.
+
+**Non-goals.** Not a generic malloc replacement — call sites must declare
+their region. Not a defragmenting allocator — RES uses segregated free-lists,
+not compaction. Not a behavior change for scene rendering or LRU eviction
+policy — the cache hits and misses the same resources as today, just inside
+a region instead of on the libc heap.
 
 ## Memory budget — verified from artifacts
 
@@ -74,14 +95,14 @@ the cache hits and misses the same resources as today.
 | Region                   | Address range            | Size      |
 |--------------------------|--------------------------|-----------|
 | Exe + BSS (current)      | 0x80010000 .. 0x800ad4fc | 629 KB    |
-| Region buffer (proposed) | 0x800ad500 .. ~0x801daf00 | ~1.20 MB  |
+| Region buffer (proposed) | 0x800ad500 .. ~0x801daf00 | ~1.20 MB |
 | Free margin              | -                        | ~150 KB   |
 | Stack reserve            | top of RAM, growing down | 64 KB     |
 | **Total**                | 0x80010000 .. 0x801FFFF0 | 1.92 MB   |
 
-The region buffer goes in BSS (`static uint8 g_memRegionBuf[MEM_REGION_TOTAL];`).
-A `_Static_assert` at compile time gates `MEM_REGION_TOTAL <= 1.2 MB` so any
-budget bump must be justified against the linker map.
+The region buffer goes in BSS: `static uint8 g_memRegionBuf[MEM_REGION_TOTAL]`.
+A `_Static_assert(MEM_REGION_TOTAL <= 1200 * 1024)` at compile time gates
+budget changes against the linker map.
 
 ### Region splits (verified against `scene_analysis_output_2026-03-21.json`)
 
@@ -94,314 +115,313 @@ PS1 region buffer (1.2 MB)
 |   gFgStreamScratch (pre-sized)               |
 |   gFgStreamWindowBuffer (pre-sized)          |
 |   gWalkCleanBuf (149 KB)                     |
-|   grBackgroundSfc backing (300 KB if loaded) |
-|   surface pool (graphics.c:1280, 4 slots)    |
+|   grBackgroundSfc backing (300 KB)           |
+|   surface pool (graphics.c:1280)             |
 |   resource struct arrays                     |
 |   audio mixer state                          |
-|   sentinel: pointer frozen after boot        |
+|   FROZEN after memFreezePerm()               |
 +----------------------------------------------+ permTop
 | RES region (segregated free-list, ~600 KB)   |
 |   resource->uncompressedData blobs (BMP/TTM/ |
 |   SCR/ADS), evicted by existing LRU policy   |
-|   max single resource: MARY BMP-indexed      |
-|   (406 KB); typical scene working set 350-   |
-|   570 KB                                     |
+|   peak demand: MARY.ADS tag1 at 568 KB       |
 +----------------------------------------------+ sceneBottom (fixed)
 | SCENE region (bump down, ~250 KB)            |
-|   alloc order, top to bottom (largest first):|
-|     1. clean-rect snapshot (up to 181 KB)    |
-|     2. setupSegmentBuffer (~32 KB)           |
+|   alloc order, FIRST to LAST:                |
+|     1. clean-rect snapshot (≤ 181 KB)        |
+|     2. setupSegmentBuffer (≤ 32 KB)          |
 |     3. entry table, sound events (~10 KB)    |
 |     4. scratch                               |
-|   reset on every fgRuntimeReset() call       |
+|   reset at fgRuntimeReset()                  |
 +----------------------------------------------+ bufferEnd
 ```
 
-**Why 350/600/250.** MARY.ADS tag1 peaks at 568,578 bytes of resource working
-set per `scene_analysis_output_2026-03-21.json` — that fits in RES = 600 KB.
-FISHING-class clean-rect is 181 KB and lives in SCENE. PERM holds everything
-that's allocated once: 149 KB walk buf + pre-sized frame buffers (worst-case
-~120 KB after boot scan) + grBackgroundSfc (300 KB if SCR backdrop is loaded
-— only one scr loaded at a time so this is a slot, not a stack) + assorted
-structs ≈ 350 KB headroom.
+### Proof-of-fit (the part that makes "no failure" tenable)
 
-**Why a pack-header scan.** v1 wanted to put `gFgFrameBuffer` etc. in PERM
-but they grow over the first scenes — a bump allocator can't grow PERM
-mid-game. The fix is to learn the max-sized scene at boot. FG2 pack headers
-are tiny (~32 bytes each, 63 packs ≈ 2 KB of header reads). Scan once at
-`memInit()`, pick the max payload across all packs, allocate that in PERM.
-After this, the pressure-drop fallback in
-`fgDropOptionalPrefetchBuffersForCleanSnapshot()` is no longer needed and
-can be removed.
+- **PERM.** Fully enumerated at boot. The pack-header scan
+  (`fgScanPackHeadersForMaxSizes()`) walks all 63 FG2 packs and records the
+  max payload size for each of the four grow-only buffers. PERM allocations
+  also include fixed-size assets (`gWalkCleanBuf`, `grBackgroundSfc`, font
+  tables, surface pool, struct arrays). The total is deterministic at the
+  end of boot. `memFreezePerm()` snapshots the used count; any later PERM
+  alloc is `fatalError`.
+
+- **SCENE.** A SCENE peak per scene is computed offline from
+  `scene_analysis_output_2026-03-21.json` plus the clean-rect estimator
+  (`fgBackdropCleanRectEstimateForPack`). At boot, `memVerifyScenesFitInScene()`
+  re-runs the estimator against every pack and `fatalError`s if any scene's
+  worst-case SCENE footprint exceeds the SCENE budget. Worst case observed
+  today: 181 KB clean-rect + 32 KB setup + ~30 KB other ≈ 243 KB, fits the
+  250 KB budget with 7 KB margin.
+
+- **RES.** The hard constraint is the *pinned* working set — the resources
+  that can't be evicted because an active TTM thread is using them. The
+  scene_analysis JSON reports `max_concurrent_threads` (peak = 20 for
+  ACTIVITY scenes). Each thread pins at most one TTM + at most one BMP at
+  a time. `memVerifyResPinnedFits()` at boot computes
+  `pinnedSet = sum of (largest TTM + largest BMP per concurrent thread)`
+  across all 63 scenes and `fatalError`s if it exceeds the RES budget.
+  Unpinned working set can always be evicted in-place by the LRU.
+
+If any of these boot-time checks `fatalError`, that is the *only* moment
+when a budget mismatch is allowed to be discovered. Once boot succeeds,
+every allocation that the game can possibly request is provably backed by
+sufficient region space.
 
 ## API design
 
 New file: `src/mem_region.h` + `src/mem_region.c`. Single header drives both
-PS1 and PC. The hybrid build:
+PS1 and PC.
 
-- **PS1 (`#ifdef PS1_BUILD`):** real region allocator over one static buffer.
-- **PC:** API-identical implementation. Same compile-time budgets enforced
-  identically — `memAlloc(REGION, n)` returns NULL when the region's logical
-  budget is exhausted, even though backing `malloc` would have succeeded.
-  This way PC tests catch over-budget bugs that would otherwise only show
-  up on PS1 hardware. Set `JC_MEM_SIMULATE_PS1_BUDGET=0` to relax during
-  unrelated PC debugging.
+- **PS1 (`#ifdef PS1_BUILD`):** real region allocator over the static buffer.
+- **PC:** API-identical implementation; same compile-time budgets enforced.
+  Out-of-budget calls `fatalError` identically. PC retains libc heap for
+  external dependencies like SDL.
 
 ```c
 typedef enum {
-    MEM_REGION_PERM,    /* grow-only at boot, never freed */
+    MEM_REGION_PERM,    /* bump up; freezes after boot */
     MEM_REGION_RES,     /* LRU cache; eviction allowed */
-    MEM_REGION_SCENE,   /* bump+wipe between scenes */
+    MEM_REGION_SCENE,   /* bump down; wipes between scenes */
 } MemRegion;
 
-/* All allocations are aligned to MEM_REGION_ALIGN (8 bytes — covers
- * uint64/double/pointer alignment on MIPS R3000A even though the CPU
- * doesn't have a hardware double). Sizes are rounded up before bump. */
+/* All allocations are aligned to MEM_REGION_ALIGN (8 bytes). Returns a
+ * valid pointer or fatalErrors — never returns NULL. */
 #define MEM_REGION_ALIGN 8
-
 void *memAlloc(MemRegion region, size_t size, const char *tag);
-            /* tag is a const-string call-site identifier (e.g.,
-             *  "fgEntryTable") used in JCMEM telemetry. NULL allowed. */
-void  memFree (MemRegion region, void *ptr);
-            /* PERM:  fatalError in debug, no-op in release */
-            /* RES:   real free (used by LRU evictor) */
-            /* SCENE: decrements sceneAllocBalance; no real free */
 
+/* Free is a no-op in PERM (debug build asserts post-freeze), a real
+ * release in RES (used only by the LRU evictor — game code never frees
+ * RES directly; it touches/unpins resources and the evictor handles
+ * actual release), and a balance-decrement in SCENE. */
+void memFree(MemRegion region, void *ptr);
+
+/* Wipes SCENE region, logs peak, asserts sceneAllocBalance == 0 in debug. */
 void memSceneReset(const char *sceneName);
-            /* Wipes SCENE region, logs peak, asserts
-             * sceneAllocBalance == 0 in debug builds. */
 
-/* Diagnostics — zero overhead on hot path */
+/* Diagnostics */
 size_t memRegionUsed(MemRegion);
 size_t memRegionPeak(MemRegion);
-void   memLogTelemetry(void);
-            /* Emits one JCMEM line; gated behind FG_HEAP_PROBE_LOGS. */
+void   memLogTelemetry(void);  /* gated behind FG_HEAP_PROBE_LOGS */
 
-/* Boot. memAlloc before this calls fatalError. */
+/* Boot. memAlloc before this is fatalError. */
 void memInit(void);
+void memFreezePerm(void);
 ```
 
-### Boot order (encoded as comments + an init-stage counter)
+### Boot sequence
 
-```
-main() {
-    memInit();                            /* stage 1: regions ready */
-    fgScanPackHeadersForMaxSizes();       /* stage 2: learn max payloads */
-    /* PERM allocations: frame buffers @ max from scan, walk buf,
-     * surface pool, audio mixer, resource catalog parse, font load. */
-    /* After all PERM is done, the implementation calls memFreezePerm()
-     * which records permTop. Any PERM alloc after this is a fatalError. */
-    memFreezePerm();
-    /* Now scenes can run. */
+```c
+int main(...) {
+    memInit();                             /* regions ready */
+    fgScanPackHeadersForMaxSizes();        /* learn payload maxima */
+    memVerifyScenesFitInScene();           /* per-scene SCENE proof */
+    memVerifyResPinnedFits();              /* per-scene RES pin proof */
+    /* PERM allocations: pre-sized buffers, fixed assets, catalog parse */
+    audioInit();
+    resourceCatalogParse();
+    fontInit();
+    surfacePoolInit();
+    walkPilotInit();
+    memFreezePerm();                       /* PERM is now read-only */
     runMainSceneLoop();
 }
 ```
 
-Calling `memAlloc(MEM_REGION_PERM, ...)` after `memFreezePerm()` is a
-`fatalError`. Catches "I tried to allocate something permanent during a
-scene" bugs at the first call site instead of by silent overflow.
+Any of the three verify functions calling `fatalError` at boot means the
+plan needs a budget adjustment before the build ships — not a runtime
+behaviour change.
 
-### Telemetry shape (gated)
+### `sceneAllocBalance`
+
+Renamed from v1's "pin-count" (avoided collision with LRU `pinCount`).
+Increments on `memAlloc(SCENE, ...)`, decrements on `memFree(SCENE, ...)`,
+asserted == 0 by `memSceneReset` in debug builds. Compiled out in release.
+
+### Telemetry
 
 ```
 JCMEM perm=512K/512K res=423K/600K scene_peak=234K (MARY.ADS) wipe=187K balance=0
 ```
 
-Gated behind the existing `FG_HEAP_PROBE_LOGS` build flag so log volume
-stays opt-in. Emitted at scene-end (technically at the next `fgRuntimeReset`
-which runs at the start of scene N+1; see "semantics" note below). Also
-emitted on pause-menu show.
+Gated behind `FG_HEAP_PROBE_LOGS`. Emitted at the next `fgRuntimeReset()`
+(which is at the start of scene N+1's setup, not end of N — see semantics
+note below).
 
-### `sceneAllocBalance` (renamed from "pin-count" in v1)
+## Bandaid + skip-code removal manifest
 
-Renamed to avoid collision with the LRU's `pinCount` field on resources.
-Same semantics: increments on `memAlloc(SCENE, ...)`, decrements on
-`memFree(SCENE, ...)`. `memSceneReset` asserts the balance is 0 in debug
-builds before wiping. Compiled out in release builds.
+Phase 2 deletes every site below. The removal is verified by a grep gate
+in CI: `grep -rE "JCSKIP|Caller handles gracefully|skip scene silently|skip scene gracefully|Graceful skip|Pool exhausted - fall back|failed silently|allocation failure" src/` must return zero hits after Phase 2.
 
-### Failure contract for RES
+| # | File:line                                   | Pattern                                | Removal                                                    |
+|---|---------------------------------------------|----------------------------------------|------------------------------------------------------------|
+| 1 | `foreground_pilot.c:3787`                   | `JCSKIP pack-start-failed`             | Delete; replace cleanup-and-return with fatalError         |
+| 2 | `foreground_pilot.c:3808`                   | `JCSKIP draw-bounds-failed`            | Delete; fatalError                                         |
+| 3 | `foreground_pilot.c:3847`                   | `JCSKIP clean-rect-alloc-failed`       | Delete; fatalError. Clean-rect is SCENE-reserved.          |
+| 4 | `foreground_pilot.c:3782-3786`              | "Graceful skip instead of BSOD" block  | Delete entirely                                            |
+| 5 | `foreground_pilot.c:fgDropOptionalPrefetchBuffersForCleanSnapshot` | Drop optional buffers mid-play | Delete function and 4 callers                              |
+| 6 | `foreground_pilot.c:fgDropPressureCachesForCleanSnapshot`          | Higher-level pressure drop      | Delete                                                     |
+| 7 | `foreground_pilot.c:fgBackdropSaveCleanBgRectsWithPressureFallback`| Retry-after-pressure wrapper    | Replace with plain `fgBackdropSaveCleanBgRects` (no retry) |
+| 8 | `foreground_pilot.c:1471,1482`              | JCSTREAM prealloc-failed printfs       | Delete; pre-allocation can't fail under the new allocator  |
+| 9 | `foreground_pilot.c:fgPrePrimeStreamBuffers`| Lazy/eager prealloc paths              | Delete; replaced by deterministic boot-time PERM allocs    |
+| 10| `resource.c:700-704` (`findAdsResource`)    | `return NULL` on PS1; PC fatalErrors   | Unify: fatalError on both platforms                        |
+| 11| `resource.c:715-722` (`findBmpResource`)    | Same NULL-return pattern               | fatalError on both                                         |
+| 12| `resource.c:732-737` (`findScrResource`)    | Same                                   | fatalError on both                                         |
+| 13| `resource.c:747-752` (`findTtmResource`)    | Same                                   | fatalError on both                                         |
+| 14| `ads.c:1696`                                | `if (adsResource == NULL) return;`     | Delete (findAdsResource fatalErrors now)                   |
+| 15| `ads.c:1708`                                | `ps1_loadAdsData failed silent return` | fatalError on load failure                                 |
+| 16| `ads.c:1753+`                               | "skip this scene gracefully" TTM block | fatalError on TTM load failure                             |
+| 17| `walk_pilot.c:108-117`                      | walkClean buf malloc-fail silent skip  | Delete; buf is PERM-allocated at boot, can't fail          |
+| 18| `walk_pilot.c:165-176`                      | walkPilotInit alloc-fail soft return   | fatalError                                                 |
+| 19| `walk_pilot.c:255-260`                      | JOHNWALK silent-bail-out               | fatalError if `walkPilotEnsureBmp` fails                   |
+| 20| `graphics.c:1370-1395`                      | "Pool exhausted - fall back"           | Pool sized correctly; fatalError if exhausted             |
+| 21| `cdrom_ps1.c:644,885,2354`                  | malloc-failed NULL returns + prints    | fatalError on PS1; routes through memAlloc                 |
+| 22| `ps1_perf.c:1032 (and 6 callers)`           | `ps1PerfMarkAllocFail` + counters      | Delete — no allocation failures exist to mark              |
+| 23| `ps1_perf.c:1058,1064`                      | `ps1PerfMarkFallback` family           | Delete *if* the graphics fallbacks they count also vanish (Phase 3 audit confirms) |
 
-`memAlloc(RES, n)` proceeds as:
+**Not removed** — these are intentional design choices, not failure handlers:
 
-1. Try segregated free-list (size class match).
-2. If empty, call LRU evictor with required bytes.
-3. Retry once.
-4. If still failing, return NULL. **No further fallbacks.**
-
-Callers handle NULL the same way they currently handle `malloc()` returning
-NULL (which is "occasionally"): some propagate up to JCSKIP, some
-`fatalError`. The allocator does not silently degrade or spin.
+- `story.c:493,644` — dead-scene picks and intro-skip-on-override are gameplay logic.
+- `ps1_captions.c:597` — empty-caption skip is "this scene has no caption," not a failure.
+- `scene_picker.c:347` "screensaver should never go dark" — *policy* choice when Original mode has no FINAL-flagged pick in the current pool. Sierra-faithful; not failure handling. Worth a comment refresh.
+- `ps1_features.c:60 ps1SkipToNextScene` — user pressing the skip button.
+- `pause_menu.c:1830` — Circle = "I changed my mind", user input.
+- Sierra-faithful walk-aware filtering in `scene_picker.c:432,453,462`.
+- `foreground_pilot.c:3830` `JCMEM black-clean ... skip-clean-rects` — *positive* code path: black backdrop with temporal residual genuinely doesn't need clean-rects. Keep behaviour; rename print so it doesn't read as a failure ("JCMEM black-backdrop-mode").
 
 ## Implementation phases
 
-Three phases, each independently shippable and testable.
+### Phase 1 — Allocator infrastructure + full migration
 
-### Phase 1 — Infrastructure, full migration of all 39 call sites
-
-1. Add `src/mem_region.{c,h}` with the API above.
-2. **PC implementation:** forward each region's allocs to `malloc` with
-   bookkeeping. Same compile-time budgets enforced; over-budget returns NULL.
-3. **PS1 implementation:** one static buffer; PERM/SCENE bump allocators
-   (8-byte aligned); RES segregated free-list with size classes 64 B, 256 B,
-   1 KB, 4 KB, 16 KB, 64 KB, and a sorted list for >64 KB. Eviction integrates
-   with `src/resource.c`'s LRU. ~400 LOC.
-4. Add `fgScanPackHeadersForMaxSizes()` — reads all 63 FG2 pack headers at
-   boot, records the max payload sizes for frame/prefetch/scratch/window
-   buffers. Allocates them in PERM at the learned max.
-5. Hook `memSceneReset()` into `fgRuntimeReset()` at
+1. `src/mem_region.{c,h}` with the API above. ~400 LOC.
+2. PC implementation: forward each region to `malloc` with same compile-time
+   budgets and identical fatalError semantics.
+3. PS1 implementation: bump allocators (8-byte aligned) for PERM/SCENE;
+   segregated free-list for RES (size classes 64 B, 256 B, 1 KB, 4 KB,
+   16 KB, 64 KB, plus a >64 KB list).
+4. Boot integration: `memInit`, `fgScanPackHeadersForMaxSizes`,
+   `memVerifyScenesFitInScene`, `memVerifyResPinnedFits`, `memFreezePerm`.
+5. Migrate all 39 `safe_malloc`/`malloc` call sites to `memAlloc(REGION, ...)`
+   with explicit region tags. No default region.
+6. Hook `memSceneReset()` into `fgRuntimeReset()` at
    `src/foreground_pilot.c:1470`.
-6. **Migrate all 39 call sites in this phase.** No default — every
-   `safe_malloc` / `malloc` call gets an explicit region tag. Per-call-site
-   migration map is the union of the Phase 2/Phase 3 tables below plus the
-   miscellaneous sites surveyed in the codebase audit.
-7. Remove `fgDropOptionalPrefetchBuffersForCleanSnapshot()` and its callers
-   — no longer needed once frame buffers are pre-sized at boot max.
-8. Reorder `foregroundPilotRuntimeStart` so clean-rect allocates first in
-   SCENE setup (currently it allocates mid-setup, after several KB of other
-   SCENE state).
-9. Add telemetry line.
+7. Reorder `foregroundPilotRuntimeStart` so clean-rect allocates first in
+   SCENE (currently mid-setup).
+8. Adopt the poison-malloc pattern from `src/scene_picker.c:62-78` inside
+   `mem_region.c` so libc allocs can't sneak back in.
 
-**Validation:** game runs identically to today, byte-for-byte rendering
-match across the 63-scene rotation. PC + PS1 builds green. PC `valgrind`
-shows no new leaks (region buffer is one giant block, all SCENE bytes
-freed at process exit). JCMEM peaks match per-scene data from
-`scene_analysis_output_2026-03-21.json`.
+**Validation:** game renders byte-for-byte identically across the 63-scene
+rotation. PC + PS1 builds green. All three boot-time `memVerify*` checks
+pass.
 
-### Phase 2 — Remove fragmentation bandaids
+### Phase 2 — Delete bandaid + skip code
 
-With the allocator in place, the bandaid code added to fight fragmentation
-becomes dead weight. Phase 2 deletes it cleanly:
+Delete every row from the removal manifest above (23 sites). Verify with
+the grep gate.
 
-- `fgDropPressureCachesForCleanSnapshot` (all callers) — clean-rect now
-  allocates first in SCENE, so the drop path is unreachable.
-- The "grow-only" exception in `fgReleaseStreamBuffers` — buffers are
-  pre-sized in PERM, never freed.
-- `fgPrePrimeStreamBuffers` and its lazy/eager logic — replaced by the
-  boot-time pack-header scan.
-- The retry/fallback logic in `fgBackdropSaveCleanBgRectsWithPressureFallback`
-  — clean-rect either fits in SCENE or it doesn't; on NULL return, the
-  existing JCSKIP path handles it.
-
-**Validation:** the band counts from `docs/ps1/release-notes-0.8.11.md`
-(117 green / 9 yellow / 0 orange / 0 red) must not regress. Long-run soak
-test (20+ iterations of the 63-scene rotation) shows zero
-`JCSKIP clean-rect-alloc-failed` instances.
+**Validation:** soak test 20+ iterations of the 63-scene rotation. Zero
+`fatalError` calls (which would indicate a misclassified region or a
+hidden allocation path). Visual diff against Phase 1 baseline matches.
 
 ### Phase 3 — Audit remaining allocation surfaces
 
-| Call site                                            | Region | Notes |
-|------------------------------------------------------|--------|-------|
-| `graphics.c:1884` `safe_malloc(640*480)` for grBackgroundSfc | PERM | 300 KB one-shot; allocate during init |
-| `graphics.c:1808` scrResource->uncompressedData       | RES    | LRU-managed |
-| `graphics.c:1935` bmpResource->uncompressedData       | RES    | LRU-managed |
-| `graphics.c:1835,1963` per-conversion `width*height`  | SCENE  | temporary during BMP→surface conversion |
-| `pause_menu.c` allocations (TBD)                      | PERM   | audit — menu state is long-lived |
-| `ads.c` per-ADS uncompressedData                      | RES    | first-play decompress, LRU-managed |
+Sites that weren't in the original 39 because they're indirect or in
+less-traveled code:
 
-**Note:** ADS data enters RES at first-play time, not at boot. `parseAdsResource`
-sets `uncompressedData = NULL` at parse (`resource.c:241`); the actual
-decompression happens lazily in `ads.c`. The RES sub-allocator handles
-this just fine; it just means the RES high-water mark grows over the first
-few scenes' playtime rather than being known at boot.
+| Call site                                     | Region | Notes                                          |
+|-----------------------------------------------|--------|------------------------------------------------|
+| `graphics.c:1808` `scrResource->uncompressedData` | RES | LRU-managed; lazy at first use                 |
+| `graphics.c:1884` `safe_malloc(640*480)` for grBackgroundSfc | PERM | 300 KB one-shot at graphics init |
+| `graphics.c:1935` `bmpResource->uncompressedData` | RES | LRU-managed                                    |
+| `graphics.c:1835,1963` per-conversion BMP→surface | SCENE | Conversion scratch                             |
+| `ads.c` per-ADS uncompressedData              | RES    | first-play decompress, LRU-managed             |
+| `pause_menu.c` (TBD)                          | PERM   | Audit; menu state is long-lived                |
+| `ps1_captions.c` (TBD)                        | PERM/SCENE | Audit                                      |
 
-**Note (removed from v1):** `ads.c:1134 ttmLayer` is **not** a malloc.
-It's a pool handout via `grNewLayer()` (`graphics.c:1280`, see "pooled
-allocation" comment). The pool slots are PERM-resident; individual
-handouts are pool ops. No migration work needed here.
+**Validation:** the grep gate stays clean. `git grep "free(" src/` shows only
+calls inside `mem_region.c` and the LRU evictor (which calls `memFree(RES, ...)`).
 
-**Validation:** all 39 call sites accounted for. The pin-poison pattern from
-`src/scene_picker.c:62-78` is added to `src/mem_region.c` to prevent direct
-`malloc`/`free` from sneaking back in.
+## RES sub-allocator details
 
-## RES region sub-allocator details
-
-The middle region is the only one with allocator complexity. Approach:
-
-- **Segregated free-lists by size class** (64 B, 256 B, 1 KB, 4 KB, 16 KB,
-  64 KB, plus a sorted list for >64 KB). Round-up-to-class on alloc, exact
-  return to class on free. ~150 LOC.
-- **Why not TLSF:** TLSF is the right answer if we expected truly arbitrary
-  size distributions. The actual resource sizes cluster — TTM bytecode in
-  low KB, BMP frame data 20-100 KB, SCR backgrounds ~300 KB. Six size
-  classes cover the distribution without TLSF's bitmap machinery.
-- **First-fit within class** keeps the per-alloc cost at ~10 cycles.
-- **Eviction integration:** failure contract above.
+- Segregated free-lists at 64 B, 256 B, 1 KB, 4 KB, 16 KB, 64 KB, plus a
+  sorted list for >64 KB. Round-up-to-class on alloc; exact-class return on
+  free. ~150 LOC.
+- First-fit within class.
+- On alloc failure (class empty or oversize list can't satisfy):
+  1. Call LRU evictor with `requiredBytes`.
+  2. Retry once.
+  3. If still failing, `fatalError("RES exhausted, scene=%s req=%lu")`.
+  4. The boot-time `memVerifyResPinnedFits` is supposed to prove (3) is
+     unreachable. If it fires anyway, that's the bug to fix.
 
 ## Critical files
 
-- **New:** `src/mem_region.h`, `src/mem_region.c`
+- **New:** `src/mem_region.h`, `src/mem_region.c`,
+  `src/mem_region_verify.c` (boot-time scene-fit checks).
 - **Modified, hot path:**
-  - `src/utils.c:123` — `safe_malloc` becomes a thin wrapper around
-    `memAlloc(MEM_REGION_PERM, ...)` for the resource-catalog-parse path
-    only (which is the major remaining caller). Other call sites use
-    `memAlloc(...)` directly with explicit region tags.
-  - `src/foreground_pilot.c:1470` — `fgRuntimeReset()` calls `memSceneReset()`.
-  - `src/foreground_pilot.c:1267-1287` — grow-only comment block can be
-    deleted; buffers are pre-sized.
-  - `src/foreground_pilot.c:1383+` — `fgDropOptionalPrefetchBuffersForCleanSnapshot`
-    deleted along with its 4 callers.
-  - `src/foreground_pilot.c:3776` — clean-rect allocation reordered to first
-    in SCENE setup.
-  - `src/resource.c:760-954` — LRU still owns eviction *policy*; calls
-    `memFree(RES, ...)` instead of `free()`.
-  - `src/pause_menu.c:602` — JCMEM line added next to existing heap probe.
-  - `src/graphics.c:1884` — grBackgroundSfc backing migrated to PERM.
+  - `src/utils.c:123` — `safe_malloc` thin-wraps `memAlloc(MEM_REGION_PERM)`
+    for the catalog-parse path only. Other call sites use `memAlloc` directly
+    with explicit region tags.
+  - `src/foreground_pilot.c:1470` — `fgRuntimeReset` calls `memSceneReset`.
+  - `src/foreground_pilot.c:1267-1287` — grow-only comment block deleted;
+    buffers are PERM-sized at boot.
+  - `src/foreground_pilot.c` — removal manifest items 1-9, 23 (printfs and
+    fallback helpers).
+  - `src/foreground_pilot.c:3776` — clean-rect alloc reordered to first.
+  - `src/resource.c:760-954` — LRU calls `memFree(RES, ...)`. Items 10-13
+    (NULL-return guards) deleted.
+  - `src/ads.c:1685+` — items 14-16 deleted.
+  - `src/walk_pilot.c` — items 17-19 deleted.
+  - `src/graphics.c:1370,1884` — items 20 + grBackgroundSfc migration.
+  - `src/cdrom_ps1.c` — item 21.
+  - `src/ps1_perf.c` — items 22-23.
+  - `src/pause_menu.c:602` — JCMEM line added.
 - **Read-only references during design:**
-  - `src/scene_picker.c:62-78` — exemplar of the "poison malloc" pattern;
-    `src/mem_region.c` will use the same pattern internally so libc allocs
-    can't sneak in.
+  - `src/scene_picker.c:62-78` — poison-malloc pattern.
   - `docs/ps1/release-notes-0.8.11.md` — prior fragmentation incident.
   - `docs/ps1/archaeology/memory-constraints.md` — budget context.
-  - `build-ps1/jcreborn.map` — source of truth for usable-RAM math.
+  - `build-ps1/jcreborn.map` — usable-RAM math.
   - `docs/ps1/research/generated/scene_analysis_output_2026-03-21.json` —
-    source of truth for per-scene resource peaks.
+    per-scene resource peaks.
 
 ## Verification
 
 Pre-implementation gates (must close before Phase 1 lands):
 
-- [ ] Rebuild PS1 binary, re-read `_end` from the fresh map. Confirm exe+BSS
-      is still ~629 KB after any unrelated drift.
-- [ ] Manually verify `scene_analysis_output_2026-03-21.json` `peak_memory_bytes`
-      includes both BMP and SCR data — i.e., it really is the full RES footprint
-      for a scene, not just the BMP slice.
-- [ ] Spot-check `graphics.c:1884` lifecycle: confirm `grBackgroundSfc` is
-      allocated exactly once at init and never reallocated, otherwise it
-      can't be PERM.
+- [ ] Rebuild PS1 binary, re-read `_end` from a fresh map. Confirm exe+BSS
+      is ~629 KB after any unrelated drift.
+- [ ] Confirm `scene_analysis_output_2026-03-21.json` `peak_memory_bytes`
+      really is the full RES footprint (BMP + TTM + SCR), not just BMP.
+- [ ] Confirm `grBackgroundSfc` (graphics.c:1884) is genuinely one-shot;
+      grep for re-allocation paths.
 
-End-to-end checks, in order:
+End-to-end gates (must close before merge):
 
-1. **Build green on both platforms.** `./scripts/build-ps1.sh` and the PC
-   build each compile and link with phase 1 in place. `_Static_assert` for
-   total buffer size compiles.
-2. **Long-run rotation:** play all 63 scenes in a loop for 20+ iterations
-   on PS1 hardware. Existing JCSKIP/JCPERF telemetry should show no
-   regressions in band counts (currently 117 green / 9 yellow / 0 orange / 0
-   red per `docs/ps1/release-notes-0.8.11.md`).
-3. **Heap probe stability:** the largest-free-block reading from
-   `fgProbeLargestAlloc()` at scene-start should be a constant across the
-   rotation (within ~16-byte free-list granularity), not trending down.
-4. **JCMEM peaks line up:** scene peaks reported by JCMEM should match
-   `scene_analysis_output_2026-03-21.json` per-scene resource peaks (within
-   the alignment-rounding margin).
-5. **`sceneAllocBalance` never positive at reset** in debug builds across
-   the full rotation. If it fires, a call site was misclassified.
-6. **No `JCSKIP clean-rect-alloc-failed`** anywhere across the long-running
-   test. This is the specific regression v0.8.10 introduced and v0.8.11
-   reverted; this plan must not reintroduce it.
-7. **PC build:** runs cleanly under valgrind (memcheck), no new leaks from
-   the wrapper layer. The single static region buffer shows as one
-   "still reachable" block at exit — acceptable.
-8. **`memFreezePerm` not triggered post-boot:** no PERM allocations during
-   scene playback. If this fires, a long-lived allocation slipped into
-   what should be SCENE.
+1. **Build green on both platforms.** Compile, `_Static_assert` for total
+   buffer size passes.
+2. **Boot proofs pass.** `memVerifyScenesFitInScene` and
+   `memVerifyResPinnedFits` succeed for all 63 packs on PS1 and PC.
+3. **Long-run rotation:** 20+ iterations of the 63-scene rotation on PS1
+   hardware. Existing band counts (117 green / 9 yellow / 0 orange / 0 red
+   per `docs/ps1/release-notes-0.8.11.md`) do not regress.
+4. **Heap probe stability:** `fgProbeLargestAlloc()` at scene-start is
+   constant across the rotation. (With one static buffer, this is
+   essentially tautological — kept as a sanity check.)
+5. **Removal grep gates:** the regex from the manifest above returns zero
+   hits in `src/`.
+6. **No `fatalError` triggers** across the soak test. If one fires, the
+   bug is in the plan, not the code.
+7. **`sceneAllocBalance` never positive at reset** in debug builds.
+8. **`memFreezePerm` not triggered post-boot.**
+9. **PC valgrind clean** (one static buffer "still reachable" at exit
+   is acceptable).
 
 ### Semantics gotcha (kept visible)
 
-`fgRuntimeReset()` runs at the *start* of the next scene's setup, not at the
-end of the current scene. So the JCMEM "wipe=NNN" reading for scene N
-appears in the log at the start of scene N+1's output. Not a bug; just a
-docs-and-grep gotcha worth knowing about. `fgRuntimeReset()` is also called
-in the JCSKIP failure cleanup path at `foreground_pilot.c:3777`, which
-means partial allocations from a failed scene-start get cleaned up by the
-next reset attempt. That outcome is correct.
+`fgRuntimeReset()` runs at the *start* of the next scene's setup, not at
+the end of the current scene. So the JCMEM "wipe=NNN" reading for scene N
+appears at the start of scene N+1's log. Not a bug; a grep gotcha worth
+knowing about. `fgRuntimeReset()` also used to run on the JCSKIP failure
+cleanup path (`foreground_pilot.c:3777`) — once JCSKIP is removed, that
+cleanup path is removed with it. The next scene's `fgRuntimeReset` is the
+only reset.
