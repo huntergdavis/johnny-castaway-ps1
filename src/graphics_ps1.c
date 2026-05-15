@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "graphics_ps1.h"
 #include "ads.h"
+#include "mem_region.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 #include "resource.h"
@@ -3490,7 +3491,9 @@ static void grResetCleanBgRects(int releasePixels)
     int i;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (releasePixels && gGrCleanRects[i].pixels) {
-            free(gGrCleanRects[i].pixels);
+            /* TRANSIENT — bytes reclaimed by memSceneReset; just clear
+             * the dangling pointer + capacity to avoid stale state. */
+            memFree(MEM_REGION_TRANSIENT, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
         }
@@ -3521,40 +3524,17 @@ void grSetCleanBgBlackMode(int enabled)
 
 void grPreallocCleanBgRects(const uint32 *capBytes, int n)
 {
-    int i;
-    if (capBytes == NULL || n <= 0)
-        return;
-    if (n > GR_MAX_CLEAN_RECTS)
-        n = GR_MAX_CLEAN_RECTS;
-
-    for (i = 0; i < n; i++) {
-        uint32 want = capBytes[i];
-        if (want == 0) continue;
-        /* Skip if already at-or-above the requested capacity. Idempotent
-         * — safe to call multiple times during boot. */
-        if (gGrCleanRects[i].capacityBytes >= want)
-            continue;
-        if (gGrCleanRects[i].pixels != NULL) {
-            free(gGrCleanRects[i].pixels);
-            gGrCleanRects[i].pixels = NULL;
-            gGrCleanRects[i].capacityBytes = 0;
-        }
-        gGrCleanRects[i].pixels = (uint16 *)malloc((size_t)want);
-        if (gGrCleanRects[i].pixels == NULL) {
-            /* Pre-alloc failure at boot is itself a fatal-class problem,
-             * but ps1Bsod isn't safe to call before graphicsInit completes
-             * the GPU bring-up. The caller (boot path) checks heap state
-             * after this returns and decides how to surface failure. */
-            extern int printf(const char *, ...);
-            printf("JCRECT prealloc[%d] failed (need %lu bytes)\n",
-                   i, (unsigned long)want);
-            continue;
-        }
-        gGrCleanRects[i].capacityBytes = want;
-        /* Leave x/y/width/height = 0 and gGrCleanRectCount = 0 — the
-         * buffer is dormant until the first per-scene grSaveCleanBgRects
-         * activates it. */
-    }
+    /* Pre-allocation is unnecessary under the new memory-region allocator.
+     * Clean-rect snapshots now live in TRANSIENT, which is wiped between
+     * scenes — every grSaveCleanBgRects call allocates fresh from a
+     * deterministic region. There's no fragmentation to pre-empt and no
+     * benefit to reserving capacity in advance.
+     *
+     * Kept as a public symbol so existing boot code that calls this
+     * compiles. The boot caller could be deleted in Phase 2 of the
+     * mem-region rollout. */
+    (void)capBytes;
+    (void)n;
 }
 
 int grCleanBgRectsCount(void)
@@ -3632,22 +3612,23 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     /* Atomic allocation phase: all requested rect buffers must exist before
      * any rect becomes active. Otherwise a partial clean-restore set can both
      * leak and leave stale pixels from a prior foreground frame. */
+    /* MEM_REGION_RATIONALE: per-scene clean-rect snapshots; the
+     * largest TRANSIENT allocation (up to ~181 KB for FISHING1 etc.).
+     * Allocated FIRST in scene setup (per plan v9 reordering rule) so
+     * the full TRANSIENT region is available for it. Reclaimed
+     * wholesale at the next memSceneReset. The old "reuse if capacity
+     * is enough" path is gone — bump+wipe semantics make per-scene
+     * fresh allocation the only option, but it's free of fragmentation
+     * cost so the win is net positive. */
     for (i = 0; i < n; i++) {
         requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
         if (requiredBytes[i] == 0)
             goto fail;
-        if (gGrCleanRects[i].capacityBytes < requiredBytes[i]) {
-            if (gGrCleanRects[i].pixels != NULL) {
-                free(gGrCleanRects[i].pixels);
-                gGrCleanRects[i].pixels = NULL;
-                gGrCleanRects[i].capacityBytes = 0;
-            }
-            gGrCleanRects[i].pixels = (uint16 *)malloc(requiredBytes[i]);
-            if (gGrCleanRects[i].pixels == NULL)
-                goto fail;
-            gGrCleanRects[i].capacityBytes = requiredBytes[i];
-            allocatedThisCall[i] = 1;
-        }
+        gGrCleanRects[i].pixels = (uint16 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                     requiredBytes[i],
+                                                     "grCleanRectPixels");
+        gGrCleanRects[i].capacityBytes = requiredBytes[i];
+        allocatedThisCall[i] = 1;
     }
 
     for (i = 0; i < n; i++) {
@@ -3668,7 +3649,10 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
 fail:
     for (i = 0; i < n; i++) {
         if (allocatedThisCall[i] && gGrCleanRects[i].pixels != NULL) {
-            free(gGrCleanRects[i].pixels);
+            /* TRANSIENT bytes get reclaimed by next memSceneReset;
+             * just clear the dangling pointer and capacity to avoid
+             * stale-state confusion. */
+            memFree(MEM_REGION_TRANSIENT, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
         }
