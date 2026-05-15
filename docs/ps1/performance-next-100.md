@@ -81,6 +81,19 @@ removed about `17.13` public over-target points and added about `12.63`
 public target-speed points. Green rows are now `117 / 126`, with `9` yellow
 rows remaining and no orange/red rows.
 
+Latest promoted WALKSTUF1 high preserve-offset payload baseline:
+`walkstuf1-high-frame51-inplace-v839` shrinks entry `51` / source frame `61`
+inside `WALKSTUF1.FG2` without moving any payload offsets. Entry `51` drops
+`5588 -> 770` bytes and active payload drops `882007 -> 877189`; file size
+stays `1535263`, pack LBA/sectors stay `24883/750`, and the PS-EXE bucket
+stays `217088`. The strict speed gate correctly found no timing improvement,
+but the no-regression work gate passed exact-flat at scene `1764`,
+loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, loop
+reads/read VBlanks `63/276`, and due misses `16`. Treat v839 as a safe
+same-speed payload-work baseline, not a VBlank speed win; future W1-high
+preserve-offset trims need the same exact-flat gate, while green conversion
+still needs generated deadline/read ownership or upload/restore work.
+
 Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791
 keep the v726 timing profile exact-flat but shrink frames `51`, `49`, `47`,
 `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, and `76` in-place, preserving every payload offset and

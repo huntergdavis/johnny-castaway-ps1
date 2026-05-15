@@ -10,6 +10,7 @@ stay fixed for perf probes.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import struct
 import tempfile
@@ -158,6 +159,8 @@ def convert(
     pad_to_input_size: bool,
     copy_unparseable: bool,
     selected_frames: set[int] | None,
+    preserve_offsets: bool,
+    summary_path: Path | None,
 ) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
@@ -195,6 +198,113 @@ def convert(
         struct.unpack_from(ENTRY, data, table_offset + index * ENTRY_SIZE)
         for index in range(frame_count)
     ]
+
+    if preserve_offsets:
+        out = bytearray(data)
+        old_payload_bytes = 0
+        new_payload_bytes = 0
+        trimmed_entries = 0
+        trimmed_pixels = 0
+        trimmed_bytes = 0
+        copied_unparseable_entries = 0
+        copied_unparseable_samples: list[str] = []
+        changed_entries: list[dict[str, int]] = []
+
+        for index, entry in enumerate(old_entries):
+            source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
+            if old_size == 0 or width == 0 or height == 0:
+                continue
+            if old_offset + old_size > len(data):
+                raise SystemExit(f"entry {index} payload extends beyond pack: {input_path}")
+            old_payload = data[old_offset:old_offset + old_size]
+            old_payload_bytes += old_size
+            if selected_frames is not None and index not in selected_frames:
+                new_payload = old_payload
+                entry_trimmed_pixels = 0
+            else:
+                try:
+                    new_payload, entry_trimmed_pixels = trim_payload(old_payload)
+                except ValueError as exc:
+                    if not copy_unparseable:
+                        raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+                    new_payload = old_payload
+                    entry_trimmed_pixels = 0
+                    copied_unparseable_entries += 1
+                    if len(copied_unparseable_samples) < 8:
+                        copied_unparseable_samples.append(f"{index}:{exc}")
+            entry_trimmed_bytes = old_size - len(new_payload)
+            new_payload_bytes += len(new_payload)
+            if entry_trimmed_bytes:
+                old_sector_start = old_offset // 2048
+                old_sector_end = (old_offset + old_size + 2047) // 2048
+                new_sector_end = (old_offset + len(new_payload) + 2047) // 2048
+                trimmed_entries += 1
+                trimmed_pixels += entry_trimmed_pixels
+                trimmed_bytes += entry_trimmed_bytes
+                changed_entries.append(
+                    {
+                        "index": index,
+                        "source_frame": source_frame,
+                        "old_offset": old_offset,
+                        "old_size": old_size,
+                        "new_size": len(new_payload),
+                        "trimmed_bytes": entry_trimmed_bytes,
+                        "trimmed_pixels": entry_trimmed_pixels,
+                        "old_sector_count": old_sector_end - old_sector_start,
+                        "new_sector_count": new_sector_end - old_sector_start,
+                    }
+                )
+                out[old_offset:old_offset + len(new_payload)] = new_payload
+                out[old_offset + len(new_payload):old_offset + old_size] = b"\0" * entry_trimmed_bytes
+                struct.pack_into(
+                    ENTRY,
+                    out,
+                    table_offset + index * ENTRY_SIZE,
+                    source_frame,
+                    x,
+                    y,
+                    width,
+                    height,
+                    hold_vblanks,
+                    old_offset,
+                    len(new_payload),
+                )
+
+        output_path.write_bytes(out)
+        print(
+            f"{input_path} -> {output_path}: {len(data)} -> {len(out)} bytes, "
+            f"active_payload {old_payload_bytes} -> {new_payload_bytes}, "
+            f"trimmed_entries={trimmed_entries}, trimmed_pixels={trimmed_pixels}, "
+            f"trimmed_bytes={trimmed_bytes}, "
+            f"copied_unparseable_entries={copied_unparseable_entries}, "
+            f"preserve_offsets=1"
+        )
+        if copied_unparseable_samples:
+            print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
+        if summary_path is not None:
+            summary_path.write_text(
+                json.dumps(
+                    {
+                        "input": str(input_path),
+                        "output": str(output_path),
+                        "preserve_offsets": True,
+                        "old_bytes": len(data),
+                        "new_bytes": len(out),
+                        "old_active_payload": old_payload_bytes,
+                        "new_active_payload": new_payload_bytes,
+                        "trimmed_entries": trimmed_entries,
+                        "trimmed_pixels": trimmed_pixels,
+                        "trimmed_bytes": trimmed_bytes,
+                        "copied_unparseable_entries": copied_unparseable_entries,
+                        "copied_unparseable_samples": copied_unparseable_samples,
+                        "changed_entries": changed_entries,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+        return
 
     sound_events = b""
     if sound_events_offset and sound_event_count:
@@ -294,6 +404,28 @@ def convert(
     )
     if copied_unparseable_samples:
         print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
+    if summary_path is not None:
+        summary_path.write_text(
+            json.dumps(
+                {
+                    "input": str(input_path),
+                    "output": str(output_path),
+                    "preserve_offsets": False,
+                    "old_bytes": len(data),
+                    "new_bytes": len(out),
+                    "old_active_payload": old_payload_bytes,
+                    "new_active_payload": len(payload_out),
+                    "trimmed_entries": trimmed_entries,
+                    "trimmed_pixels": trimmed_pixels,
+                    "trimmed_bytes": trimmed_bytes,
+                    "copied_unparseable_entries": copied_unparseable_entries,
+                    "copied_unparseable_samples": copied_unparseable_samples,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
 
 
 def main() -> None:
@@ -313,6 +445,12 @@ def main() -> None:
         "--frames",
         help="Only trim selected entry indices. Comma-separated values may include inclusive ranges like 194:210.",
     )
+    parser.add_argument(
+        "--preserve-offsets",
+        action="store_true",
+        help="Rewrite selected entries in place, update only their sizes, and zero the old tails.",
+    )
+    parser.add_argument("--summary", type=Path, help="Write a JSON transform summary.")
     args = parser.parse_args()
 
     if args.in_place == bool(args.output_fgp3):
@@ -346,6 +484,8 @@ def main() -> None:
                 args.pad_to_input_size,
                 args.copy_unparseable,
                 selected_frames,
+                args.preserve_offsets,
+                args.summary,
             )
             shutil.move(temp_path, args.input_fgp3)
         finally:
@@ -359,6 +499,8 @@ def main() -> None:
             args.pad_to_input_size,
             args.copy_unparseable,
             selected_frames,
+            args.preserve_offsets,
+            args.summary,
         )
 
 

@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-14:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T20:33:54` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-frame139-offscreen-v837`, `walkstuf1-high-frame135-offscreen-v836`, `walkstuf1-high-frame136-offscreen-v835`, `walkstuf1-high-frame57-offscreen-v834`, `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-14T20:51:34` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame139-offscreen-v837`, `walkstuf1-high-frame135-offscreen-v836`, `walkstuf1-high-frame136-offscreen-v835`, `walkstuf1-high-frame57-offscreen-v834`, `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -111,14 +111,15 @@ and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
 Latest promoted WALKSTUF1 work-volume note:
-`walkstuf1-high-frame139-offscreen-v837` clips the high frame `139` offscreen
-spans on top of the v836/v835/v834/v833/v832/v831/v830/v734/v733/v732/v731 frame135/frame136/frame57/frame56/frame43/frame45/frame47/frame49/frame51/frame138/frame55 clips.
+`walkstuf1-high-frame51-inplace-v839` shrinks high entry `51` / source frame
+`61` in place after the v837 offscreen span lane, preserving all payload
+offsets while cutting that entry `5588 -> 770` bytes.
 High stays exact-flat at `1764`, active loop/target `1476/1434`,
 blocking/refill `81/23`, loop reads/read time `63/276`, and due `16`, while
-runtime rows/spans/pixels drop
-`16859/130017/731230 -> 16859/129919/731016`; v657 still provides the active
-payload drop `918345 -> 882007`, CD sectors `605 -> 586`, and loop reads/read
-time `65/282 -> 63/275`.
+runtime rows/spans/pixels stay at the v837 row
+`16859/129919/731016`; active payload now drops
+`918345 -> 877189`, CD sectors `605 -> 586`, and loop reads/read
+time `65/282 -> 63/276`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broad and
 frame-0-only low clipping proved phase-negative. Low stays exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while draw
