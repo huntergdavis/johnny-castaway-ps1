@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-14
+Date: 2026-05-15
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -70,9 +70,9 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v746 BUILDING4 low frame291
 in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
-compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703
+compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863 WALKSTUF1 low frame51/frame49/frame47/frame61/frame62/frame58/frame45/frame37/frame35/frame43/frame41/frame57/frame33/frame67/frame68/frame69/frame32/frame133/frame5/frame141/frame70/frame30/frame6/frame71/frame72/frame142/frame73/frame131/frame74/frame19/frame28/frame138/frame145/frame75/frame76/frame77/frame130/frame135/frame1/frame88/frame90/frame3/frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101 in-place work-volume shrinks, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v876 WALKSTUF1 low in-place work-volume shrinks through frame107, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
 `+0.2697%` public average over target / `99.7347%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4975%` / `100.5171%`. Since the compact full-matrix baseline was about
@@ -897,11 +897,13 @@ canaries stayed flat. The v664 late-only work-volume follow-up clips high
 frames `168..177` after broad/hot offscreen clipping proved phase-negative;
 v698 then extends the safe same-speed subset to frames `94..104`, and v700
 adds the adjacent boundary singleton frame `92`; v701/v702/v703 add adjacent
-frames `91`, `90`, and `89` from the same safe side. All stay
-exact-flat at scene/loop/target `1602/1351/1311`, overrun `40`,
-blocking/refill `54/18`, and reads/due `58/7`, and drop runtime frame
-rows/spans/pixels `18144/110717/468636 -> 18030/105645/446246`. Use v703 as
-the current same-speed BUILDING2 high work baseline for future comparisons.
+frames `91`, `90`, and `89` from the same safe side. v877 then trims entry
+`172` / source frame `231` in place with preserved offsets, shrinking `1831 ->
+851` bytes and active payload `674798 -> 673818`. All stay exact-flat at
+scene/loop/target `1602/1351/1311`, overrun `40`, blocking/refill `54/18`,
+reads/read time `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
+`18144/110717/468636 -> 18030/105645/446246`. Use v877 as the current
+same-speed BUILDING2 high work baseline for future comparisons.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work.
@@ -1268,7 +1270,9 @@ v739, preserving file size/LBA/source while reducing active payload `674798 ->
 `1602/1351/1311 -> 1609/1358/1309`, overrun `40 -> 49`, blocking `54 -> 60`,
 refill `18 -> 26`, and loop reads `58 -> 59`. Close B2-high full tail trimming
 under the v703 baseline; the removed high-tide bytes are cadence padding, not
-free payload.
+free payload. The later v877 single-entry preserve-offset/fixed-sector trim is
+accepted only because it preserves the established read/refill phase and stays
+exact-flat.
 
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
@@ -1543,9 +1547,9 @@ retained-read tables.
 | 3a | BUILDING2 low | Superseded by v739 after a clean baseline retry: the same active-payload trim `660236 -> 538534` now passes focused and canary gates, improving low to `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`, and due `12`. The old v710 structural failure is retained in the experiment log as a dirty-path/allocator warning, not the current baseline truth. | Keep v739 as the speed-bearing B2-low pack baseline. Future low work should build on this pack and avoid broad scheduler-slot stealing; remaining path to green likely needs generated ownership or upload/restore elimination. |
 | 3b | BUILDING2 low | v711 narrows compaction to the largest hot cluster `80..86`, trimming `41614` bytes and reducing blocking `61 -> 59`, but it regresses scene/loop `1614/1344 -> 1617/1349` and overrun `26 -> 31`. | Do not retry this hot cluster as same-order displacement. Any B2-low compaction must preserve loop timing, not just visible blocking. |
 | 4 | BUILDING2 low | Narrowed by v645: the downstream `250..262` row is still unsafe after the v626 `218..229` promotion, regressing to `1649/1358`, overrun `41`, blocking `64`, and refill `4` despite reads `50 -> 48`. Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. Do not retry `250..262` as an adjacent scalar follow-up on the v626 baseline. |
-| 5 | BUILDING2 high | Closed for current scalar/setup forms: preserve the accepted `206..230` overread and do not retry the separate `185..197` cluster as a hand table or reusable setup segment. v640 showed the eight-VBlank hand-table guard still fired and regressed refill/blocking; v851 moved `185..197` into setup-owned residency and still regressed active loop `1351 -> 1357`, overrun `40 -> 48`, blocking `54 -> 63`, refill `18 -> 26`, and due `7 -> 8` despite reads `58 -> 55`. v838 also closes the late `{319,335}` hand row after it saved one read but regressed loop/blocking. v703 remains only a same-speed late/post-hot/frame92/frame91/frame90/frame89 work-volume baseline. | Only reopen B2-high `185..197` with generated planner metadata that proves earlier non-visible ownership, fixed hot code, `blocking_vb <= 54`, `refill <= 18`, and no due-miss increase before a PS1 gate. |
+| 5 | BUILDING2 high | Closed for current scalar/setup forms: preserve the accepted `206..230` overread and do not retry the separate `185..197` cluster as a hand table or reusable setup segment. v640 showed the eight-VBlank hand-table guard still fired and regressed refill/blocking; v851 moved `185..197` into setup-owned residency and still regressed active loop `1351 -> 1357`, overrun `40 -> 48`, blocking `54 -> 63`, refill `18 -> 26`, and due `7 -> 8` despite reads `58 -> 55`. v838 also closes the late `{319,335}` hand row after it saved one read but regressed loop/blocking. v877 remains only a same-speed late/post-hot/frame92/frame91/frame90/frame89/frame172 work-volume baseline. | Only reopen B2-high `185..197` with generated planner metadata that proves earlier non-visible ownership, fixed hot code, `blocking_vb <= 54`, `refill <= 18`, and no due-miss increase before a PS1 gate. |
 | 6 | BUILDING2 high | Closed by v704 as safe subsets only: frames `168..177`, `94..104`, and `89..92` offscreen clipping remove `22390` pixels, `5072` spans, and `114` frame rows while staying exact-flat; frame `88` is a host no-op, and broad/hot v655 plus early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
-| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. v829 confirms even whole-pack draw-tail trimming removes cadence padding and regresses high tide, so byte removal alone is not safe here. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
+| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. v829 confirms whole-pack draw-tail trimming removes cadence padding and regresses high tide; v877 proves only no-shift fixed-sector single-entry trims are currently safe, and still only as same-speed work reduction. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
 | 8 | WALKSTUF1 low | Narrowed by v644 and v828: simply giving the late `285..321` cluster direct CD-window ownership is phase-negative. The latest `{297,309}` probe saved one read but regressed low to `1776/1484`, overrun `54`, blocking/refill `74/26`, with due still `11`. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Closed by v638: exact cleanup-row and draw-metadata dictionaries across frames `146..158` grow the hot cluster before runtime overhead. | Reopen only for semantic/near-duplicate row-template compression or generated ownership; exact row dictionaries are not a sector-saving lane on this baseline. |

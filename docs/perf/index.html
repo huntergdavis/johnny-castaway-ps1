@@ -276,7 +276,7 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
 
 <h2 id="rollup">Rollup</h2>
 
-<p>Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:</p>
+<p>Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:</p>
 
 <table>
   <thead>
@@ -328,11 +328,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T01:39:26</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T01:58:12</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame107-inplace-v876</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -348,7 +348,14 @@ bytes. Low repeats scene/loop/target at <code class="language-plaintext highligh
 overrun stays <code class="language-plaintext highlighter-rouge">45</code>, loop read time stays <code class="language-plaintext highlighter-rouge">259</code>, blocking/refill are <code class="language-plaintext highlighter-rouge">65/20</code>,
 due stays <code class="language-plaintext highlighter-rouge">11</code>, and runtime rows/spans/pixels stay at
 <code class="language-plaintext highlighter-rouge">16257/114798/633876</code>. The no-shift lane now provides the active payload drop
-<code class="language-plaintext highlighter-rouge">879801 -&gt; 790322</code>.
+<code class="language-plaintext highlighter-rouge">879801 -&gt; 790322</code>.</p>
+
+<p>Current B2-high payload track: <code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code> trims
+entry <code class="language-plaintext highlighter-rouge">172</code> / source frame <code class="language-plaintext highlighter-rouge">231</code> in place on top of the v703 frame89 work-volume
+baseline, preserving offsets, pack LBA/sectors, and the PS-EXE bucket while
+cutting active payload <code class="language-plaintext highlighter-rouge">674798 -&gt; 673818</code>. Timing/CD stay exact-flat at
+<code class="language-plaintext highlighter-rouge">1602</code>, loop/target <code class="language-plaintext highlighter-rouge">1351/1311</code>, overrun <code class="language-plaintext highlighter-rouge">40</code>, blocking/refill <code class="language-plaintext highlighter-rouge">54/18</code>,
+reads/read time <code class="language-plaintext highlighter-rouge">58/257</code>, and due <code class="language-plaintext highlighter-rouge">7</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-late-offscreen-v653</code> clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 <code class="language-plaintext highlighter-rouge">1770</code>, <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, reads/due <code class="language-plaintext highlighter-rouge">62/11</code>, while
@@ -573,11 +580,12 @@ and <code class="language-plaintext highlighter-rouge">105</code> spans, kept sc
 <code class="language-plaintext highlighter-rouge">47 -&gt; 46</code>, but regressed blocking <code class="language-plaintext highlighter-rouge">64 -&gt; 65</code>. Close frame <code class="language-plaintext highlighter-rouge">86</code> for direct
 clipping; move to <code class="language-plaintext highlighter-rouge">87..88</code> or smaller non-risk candidates.</p>
 
-<p>Latest promoted BUILDING2 note: <code class="language-plaintext highlighter-rouge">building2-high-frame89-offscreen-v703</code>
-adds frame <code class="language-plaintext highlighter-rouge">89</code> on top of the safe high-tide offscreen clips for frames <code class="language-plaintext highlighter-rouge">90</code>,
-<code class="language-plaintext highlighter-rouge">91</code>, <code class="language-plaintext highlighter-rouge">92</code>, <code class="language-plaintext highlighter-rouge">94..104</code>, and <code class="language-plaintext highlighter-rouge">168..177</code>, staying exact-flat at <code class="language-plaintext highlighter-rouge">1602</code>, <code class="language-plaintext highlighter-rouge">1351/1311</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">54/18</code>, and reads/due <code class="language-plaintext highlighter-rouge">58/7</code> while dropping runtime frame
-rows/spans/pixels <code class="language-plaintext highlighter-rouge">18144/110717/468636 -&gt; 18030/105645/446246</code>.
+<p>Latest promoted BUILDING2 note: <code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code>
+trims entry <code class="language-plaintext highlighter-rouge">172</code> / source frame <code class="language-plaintext highlighter-rouge">231</code> after the v703 high-tide offscreen clip
+stack for frames <code class="language-plaintext highlighter-rouge">89..92</code>, <code class="language-plaintext highlighter-rouge">94..104</code>, and <code class="language-plaintext highlighter-rouge">168..177</code>, staying exact-flat at
+<code class="language-plaintext highlighter-rouge">1602</code>, <code class="language-plaintext highlighter-rouge">1351/1311</code>, blocking/refill <code class="language-plaintext highlighter-rouge">54/18</code>, reads/read time <code class="language-plaintext highlighter-rouge">58/257</code>, and due
+<code class="language-plaintext highlighter-rouge">7</code>. Runtime frame rows/spans/pixels remain at the v703
+<code class="language-plaintext highlighter-rouge">18030/105645/446246</code> row while active payload drops <code class="language-plaintext highlighter-rouge">674798 -&gt; 673818</code>.
 <code class="language-plaintext highlighter-rouge">building2-low-trimtails-v739</code> keeps the v626 slack-8 <code class="language-plaintext highlighter-rouge">218..229</code> retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to <code class="language-plaintext highlighter-rouge">1603/1339/1317</code>,
@@ -619,7 +627,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame107-inplace-v876</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-frame107-inplace-v876</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame109-inplace-v875</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame108-inplace-v874</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame140-inplace-v873</code>,
@@ -733,6 +742,7 @@ refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-left0-offscreen-v668</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-left-offscreen-v666</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-mid-offscreen-v665</code>,
+<code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame89-offscreen-v703</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame90-offscreen-v702</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame91-offscreen-v701</code>,
@@ -1208,15 +1218,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-14T02:27:39</td>
-      <td>building2-high-frame89-offscreen-v703</td>
+      <td>2026-05-15T01:58:12</td>
+      <td>building2-high-frame172-inplace-v877</td>
       <td>+3.0%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1351/1311</td>
       <td>54</td>
       <td>18</td>
       <td>7</td>
-      <td>same-speed BUILDING2 high offscreen draw-span clipping adds frame 89 on top of the v702 frame 90, v701 frame 91, v700 frame 92, v698 safe 94..104, and v664 late 168..177 clips; removes another 4216 offscreen draw pixels, 1011 spans, and 19 draw/frame rows, and drops runtime frame rows/spans/pixels 18049/106656/450462 -&gt; 18030/105645/446246 while preserving scene/loop/target 1602/1351/1311, overrun 40, blocking/refill 54/18, reads/due 58/7, pack LBA/sectors, and PS-EXE bucket</td>
+      <td>same-speed preserve-offset BUILDING2 high frame172 payload shrink on top of v703; entry 172/source frame 231 shrinks 1831 -&gt; 851 bytes, active payload 674798 -&gt; 673818, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1602/1351/1311, overrun 40, blocking/refill 54/18, reads/read time 58/257, and due 7</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
