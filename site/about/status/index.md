@@ -51,8 +51,8 @@ generated ownership or pack-side work. BUILDING2 low now adds the accepted
 and due `12`. BUILDING2 high currently measures
 `1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, and due misses
 `7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
-`18030/105645/446246`, and the v877/v879 preserve-offset frame172/frame171
-trims reduce active payload `674798 -> 672863` without moving pack layout.
+`18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
+trims reduce active payload `674798 -> 672026` without moving pack layout.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
