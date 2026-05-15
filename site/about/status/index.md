@@ -22,29 +22,29 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2708%` over
-target / `99.7337%` target speed; the raw signed optimization matrix is
-`-0.4963%` / `100.5160%`.
+allocation. The public headless battle card is `+0.2702%` over
+target / `99.7342%` target speed; the raw signed optimization matrix is
+`-0.4969%` / `100.5165%`.
 The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
 `12`. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and prefetch overrun
 `34`; v746 now shrinks frame `291` in-place, preserving offsets while reducing
-active payload `855284 -> 849109` with exact-flat timing. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
-clips: high v654 clips frames `194..210` and keeps `1476/1434`,
-blocking/refill `81/23`, reads/due `65/16`; low v653 clips frames `202..210`
-and keeps `1478/1431`, blocking/refill `64/20`, with v705 plus v760 bringing
-    loop reads/read time to `60/272` and due misses to `11`, and v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791
-    also shrinking low frames `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35`/`43`/`41`/`57`/`33`/`67`/`68`/`69`/`32`/`133`/`5`/`141`/`70`/`30`/`6`/`71`/`72`/`142`/`73`/`131`/`74`/`19`/`28`/`138`/`145`/`75`/`76` in-place to `801103` active payload after the release merge. Both drop
-draw pixels/spans/rows without changing timing/CD counters. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
+active payload `855284 -> 849109` with exact-flat timing. The newest WALKSTUF1
+baselines combine same-speed work-volume clips with the low-tide v817
+retained-read promotion: high keeps `1476/1434`, blocking/refill `81/23`,
+reads/due `63/16`; low now measures `1477/1431`, blocking/refill/due
+`64/20/11`, with loop reads/read time down to `58/266` after adding the
+low-tide `394..410` retained read group. Both paths keep pack LBA/sectors and
+the PS-EXE bucket fixed while reducing draw or CD pressure. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
 VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
-and `1478/1431`; the latest WALKSTUF1 scalar and post-prepare scheduler
-closures kept that timing unchanged and moved the next attempt toward
+and `1477/1431`; the latest WALKSTUF1 low retained-read promotion saved two
+active-loop reads without moving layout, while high remains pointed at
 generated ownership or pack-side work. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
 `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,

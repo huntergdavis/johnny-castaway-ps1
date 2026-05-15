@@ -532,6 +532,18 @@ static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
     {444, 456, 0}
 };
 
+static const struct TFgPilotReadGroup kWalkstuf1LowReadGroups12[] = {
+    {78, 91, 0},
+    {201, 213, 0},
+    {213, 229, 0},
+    {344, 360, 0},
+    {394, 410, 0},
+    {422, 434, 0},
+    {427, 443, 0},
+    {443, 455, 0},
+    {444, 456, 0}
+};
+
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -3204,10 +3216,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                     sizeof(kBuilding2HighReadGroups12[0]));
                     }
                 } else if (fgSceneEquals(sceneName, "walkstuf1")) {
-                    streamReadGroups = kWalkstuf1HighReadGroups12;
-                    streamReadGroupCount =
-                        (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
-                                sizeof(kWalkstuf1HighReadGroups12[0]));
+                    if (islandState.lowTide) {
+                        streamReadGroups = kWalkstuf1LowReadGroups12;
+                        streamReadGroupCount =
+                            (uint8)(sizeof(kWalkstuf1LowReadGroups12) /
+                                    sizeof(kWalkstuf1LowReadGroups12[0]));
+                    } else {
+                        streamReadGroups = kWalkstuf1HighReadGroups12;
+                        streamReadGroupCount =
+                            (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
+                                    sizeof(kWalkstuf1HighReadGroups12[0]));
+                    }
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual &&
                            fgSceneEquals(sceneName, "visitor5")) {

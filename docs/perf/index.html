@@ -242,7 +242,7 @@ repack into the existing <code class="language-plaintext highlighter-rouge">277.
 frame137 setup-prime relocation; both paths
 keep fixed pack layout with deliberate setup/data-shape tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
-high/low (<code class="language-plaintext highlighter-rouge">97.2%</code> / <code class="language-plaintext highlighter-rouge">96.8%</code>), VISITOR3 high/low
+high/low (<code class="language-plaintext highlighter-rouge">97.2%</code> / <code class="language-plaintext highlighter-rouge">96.9%</code>), VISITOR3 high/low
 (<code class="language-plaintext highlighter-rouge">97.8%</code> / <code class="language-plaintext highlighter-rouge">97.9%</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">97.0%</code> / <code class="language-plaintext highlighter-rouge">98.1%</code>),
 JOHNNY1 high/low, and BUILDING4 low. VISITOR5 high/low are both green after
 the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read promotions. JOHNNY6 high/low moved into
@@ -320,19 +320,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2708%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2702%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7337%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7342%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T17:17:36</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T17:25:46</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">building4-low-frame39-inplace-v816</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg394-410-v817</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -510,7 +510,10 @@ exact-flat while active payload drops again to <code class="language-plaintext h
 exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">798079</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-cd-fastpoll-v760</code> restores the post-release current baseline to
 <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">60/272</code>, and due
-<code class="language-plaintext highlighter-rouge">11</code> while preserving the CD long-soak timeout fallback.</p>
+<code class="language-plaintext highlighter-rouge">11</code> while preserving the CD long-soak timeout fallback.
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-rg394-410-v817</code> adds the low-tide <code class="language-plaintext highlighter-rouge">394..410</code> retained read
+group, improving the post-release row to <code class="language-plaintext highlighter-rouge">1769/1477/1431</code>, overrun <code class="language-plaintext highlighter-rouge">46</code>,
+loop reads/read time <code class="language-plaintext highlighter-rouge">58/266</code>, while blocking/refill/due stay <code class="language-plaintext highlighter-rouge">64/20/11</code>.</p>
 
 <p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-midright-ac-offscreen-v683</code> isolated
 frame <code class="language-plaintext highlighter-rouge">86</code> from the old <code class="language-plaintext highlighter-rouge">85..92</code> mid-right miss. It removed only <code class="language-plaintext highlighter-rouge">319</code> pixels
@@ -564,7 +567,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">building4-low-frame39-inplace-v816</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg394-410-v817</code>,
+<code class="language-plaintext highlighter-rouge">building4-low-frame39-inplace-v816</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame287-inplace-v815</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame288-inplace-v814</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame37-inplace-v813</code>,
@@ -2500,15 +2504,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T16:14:19</td>
-      <td>walkstuf1-low-frame3-inplace-v802</td>
-      <td>+3.3%</td>
-      <td class="spd-yellow">96.8%</td>
-      <td>1478/1431</td>
+      <td>2026-05-14T17:25:46</td>
+      <td>walkstuf1-low-rg394-410-v817</td>
+      <td>+3.2%</td>
+      <td class="spd-yellow">96.9%</td>
+      <td>1477/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed frame3 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v801 while cutting active payload 798232-&gt;798079; frame3 shrinks 4225-&gt;4072, entry sectors 3-&gt;2, scene/loop/target stay 1770/1478/1431, overrun 47, blocking/refill 64/20, read VBlanks 272, due 11</td>
+      <td>low-tide-only retained read group 394..410 promotes the read-plan scheduler-owned candidate; scene/loop/target improve 1770/1478/1431 -&gt; 1769/1477/1431, overrun 47 -&gt; 46, loop reads/read VBlanks 60/272 -&gt; 58/266, while blocking/refill/due stay 64/20/11 and pack LBA/sectors plus PS-EXE bucket remain fixed</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

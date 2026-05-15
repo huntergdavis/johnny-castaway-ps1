@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4600 words
+          ~18 min read · 4595 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2708%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7337%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2702%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7342%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4969%</code> / <code class="language-plaintext highlighter-rouge">100.5165%</code>.</p>
 
 <p>The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the <code class="language-plaintext highlighter-rouge">427..443</code> CD-work baseline. Some candidates were
@@ -452,11 +452,11 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.</p>
 
-<p>The latest WALKSTUF1 low scheduler sweep tested post-prepare window refill
-thresholds. Conservative slack did not fire; lower thresholds fired but
-regressed loop, blocking, refill, and due misses. That closes the cheap
-prepare-then-refill branch and leaves generated frame-deadline ownership or
-pack/upload work reduction as the next low-side path.</p>
+<p>The latest WALKSTUF1 low promotion adds the low-tide-only <code class="language-plaintext highlighter-rouge">394..410</code> retained
+read group after the post-prepare window-refill sweep closed. It improves low
+to <code class="language-plaintext highlighter-rouge">1477/1431</code>, overrun <code class="language-plaintext highlighter-rouge">46</code>, and loop reads/read time <code class="language-plaintext highlighter-rouge">58/266</code>, while
+blocking/refill/due stay <code class="language-plaintext highlighter-rouge">64/20/11</code> and pack layout plus PS-EXE size remain
+fixed.</p>
 
 <p>The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
@@ -987,8 +987,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+3.4% / 96.8% (1480/1432); due 16; blk 83</td>
-      <td>+3.7% / 96.4% (1484/1431); due 12; blk 72</td>
+      <td>+2.9% / 97.2% (1476/1434); due 16; blk 81</td>
+      <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -1087,7 +1087,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2708% over target / 99.7337% target speed, with several
+public average is now +0.2702% over target / 99.7342% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

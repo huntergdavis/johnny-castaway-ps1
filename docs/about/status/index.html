@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2266 words
+          ~9 min read · 2254 words
         </p>
 
       <hr class="rule" />
@@ -129,29 +129,29 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2708%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7337%</code> target speed; the raw signed optimization matrix is
-<code class="language-plaintext highlighter-rouge">-0.4963%</code> / <code class="language-plaintext highlighter-rouge">100.5160%</code>.
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2702%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7342%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.4969%</code> / <code class="language-plaintext highlighter-rouge">100.5165%</code>.
 The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due
 <code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at
 <code class="language-plaintext highlighter-rouge">2853/2816</code>, overrun <code class="language-plaintext highlighter-rouge">37</code>, blocking/read time <code class="language-plaintext highlighter-rouge">40</code>/<code class="language-plaintext highlighter-rouge">215</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">34</code>; v746 now shrinks frame <code class="language-plaintext highlighter-rouge">291</code> in-place, preserving offsets while reducing
-active payload <code class="language-plaintext highlighter-rouge">855284 -&gt; 849109</code> with exact-flat timing. The newest WALKSTUF1 baselines are same-speed late-tail work-volume
-clips: high v654 clips frames <code class="language-plaintext highlighter-rouge">194..210</code> and keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, reads/due <code class="language-plaintext highlighter-rouge">65/16</code>; low v653 clips frames <code class="language-plaintext highlighter-rouge">202..210</code>
-and keeps <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, with v705 plus v760 bringing
-    loop reads/read time to <code class="language-plaintext highlighter-rouge">60/272</code> and due misses to <code class="language-plaintext highlighter-rouge">11</code>, and v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791
-    also shrinking low frames <code class="language-plaintext highlighter-rouge">51</code>/<code class="language-plaintext highlighter-rouge">49</code>/<code class="language-plaintext highlighter-rouge">47</code>/<code class="language-plaintext highlighter-rouge">61</code>/<code class="language-plaintext highlighter-rouge">62</code>/<code class="language-plaintext highlighter-rouge">58</code>/<code class="language-plaintext highlighter-rouge">45</code>/<code class="language-plaintext highlighter-rouge">37</code>/<code class="language-plaintext highlighter-rouge">35</code>/<code class="language-plaintext highlighter-rouge">43</code>/<code class="language-plaintext highlighter-rouge">41</code>/<code class="language-plaintext highlighter-rouge">57</code>/<code class="language-plaintext highlighter-rouge">33</code>/<code class="language-plaintext highlighter-rouge">67</code>/<code class="language-plaintext highlighter-rouge">68</code>/<code class="language-plaintext highlighter-rouge">69</code>/<code class="language-plaintext highlighter-rouge">32</code>/<code class="language-plaintext highlighter-rouge">133</code>/<code class="language-plaintext highlighter-rouge">5</code>/<code class="language-plaintext highlighter-rouge">141</code>/<code class="language-plaintext highlighter-rouge">70</code>/<code class="language-plaintext highlighter-rouge">30</code>/<code class="language-plaintext highlighter-rouge">6</code>/<code class="language-plaintext highlighter-rouge">71</code>/<code class="language-plaintext highlighter-rouge">72</code>/<code class="language-plaintext highlighter-rouge">142</code>/<code class="language-plaintext highlighter-rouge">73</code>/<code class="language-plaintext highlighter-rouge">131</code>/<code class="language-plaintext highlighter-rouge">74</code>/<code class="language-plaintext highlighter-rouge">19</code>/<code class="language-plaintext highlighter-rouge">28</code>/<code class="language-plaintext highlighter-rouge">138</code>/<code class="language-plaintext highlighter-rouge">145</code>/<code class="language-plaintext highlighter-rouge">75</code>/<code class="language-plaintext highlighter-rouge">76</code> in-place to <code class="language-plaintext highlighter-rouge">801103</code> active payload after the release merge. Both drop
-draw pixels/spans/rows without changing timing/CD counters. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
+active payload <code class="language-plaintext highlighter-rouge">855284 -&gt; 849109</code> with exact-flat timing. The newest WALKSTUF1
+baselines combine same-speed work-volume clips with the low-tide v817
+retained-read promotion: high keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>, blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>,
+reads/due <code class="language-plaintext highlighter-rouge">63/16</code>; low now measures <code class="language-plaintext highlighter-rouge">1477/1431</code>, blocking/refill/due
+<code class="language-plaintext highlighter-rouge">64/20/11</code>, with loop reads/read time down to <code class="language-plaintext highlighter-rouge">58/266</code> after adding the
+low-tide <code class="language-plaintext highlighter-rouge">394..410</code> retained read group. Both paths keep pack LBA/sectors and
+the PS-EXE bucket fixed while reducing draw or CD pressure. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
 VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
 <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1062/1040</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>,
 blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due <code class="language-plaintext highlighter-rouge">7/7</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1434</code>
-and <code class="language-plaintext highlighter-rouge">1478/1431</code>; the latest WALKSTUF1 scalar and post-prepare scheduler
-closures kept that timing unchanged and moved the next attempt toward
+and <code class="language-plaintext highlighter-rouge">1477/1431</code>; the latest WALKSTUF1 low retained-read promotion saved two
+active-loop reads without moving layout, while high remains pointed at
 generated ownership or pack-side work. BUILDING2 low now adds the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, improving to
 <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/0</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,

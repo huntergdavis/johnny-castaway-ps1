@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2708%`
-exact public over target / `99.7337%` exact public target speed); the raw
-signed optimization matrix is `-0.4963%` / `100.5160%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2702%`
+exact public over target / `99.7342%` exact public target speed); the raw
+signed optimization matrix is `-0.4969%` / `100.5165%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -322,11 +322,11 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.
 
-The latest WALKSTUF1 low scheduler sweep tested post-prepare window refill
-thresholds. Conservative slack did not fire; lower thresholds fired but
-regressed loop, blocking, refill, and due misses. That closes the cheap
-prepare-then-refill branch and leaves generated frame-deadline ownership or
-pack/upload work reduction as the next low-side path.
+The latest WALKSTUF1 low promotion adds the low-tide-only `394..410` retained
+read group after the post-prepare window-refill sweep closed. It improves low
+to `1477/1431`, overrun `46`, and loop reads/read time `58/266`, while
+blocking/refill/due stay `64/20/11` and pack layout plus PS-EXE size remain
+fixed.
 
 The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
@@ -857,8 +857,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+3.4% / 96.8% (1480/1432); due 16; blk 83</td>
-      <td>+3.7% / 96.4% (1484/1431); due 12; blk 72</td>
+      <td>+2.9% / 97.2% (1476/1434); due 16; blk 81</td>
+      <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -955,7 +955,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2708% over target / 99.7337% target speed, with several
+  public average is now +0.2702% over target / 99.7342% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
