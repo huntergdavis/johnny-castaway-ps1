@@ -198,6 +198,17 @@ cadence negative: baseline `1769/1477/1432`, overrun `45`, blocking/refill
 future W1-low green conversion needs generated read/deadline ownership or
 selective upload/static work, not a larger raw resident window.
 
+Latest rejected WALKSTUF1 low targeted read-group probe:
+`walkstuf1-low-rg279-311-v900` added the largest refreshed modeled cluster as a
+local `{279,311,0}` table row after scalar window growth closed. It reduced
+loop reads `58 -> 51` and due misses `11 -> 10`, but the row did not produce a
+group hit and shifted scheduling/layout negative: scene/loop/target regressed
+`1769/1477/1432 -> 1784/1492/1431`, overrun `45 -> 61`,
+blocking/refill `65/20 -> 77/31`, and loop-read VBlanks stayed effectively
+flat `259 -> 255`. Close this region as a hand-authored local table insertion;
+W1-low needs generated deadline/refill ownership or non-CD static work before
+retrying large mid-tail read clusters.
+
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
 entry offset/size, the `1714154` byte pack footprint, LBA `9118`, and the
