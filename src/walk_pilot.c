@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "mytypes.h"
 #include "mem_region.h"
+#include "ps1_debug.h"
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "foreground_pilot.h"
@@ -248,11 +249,12 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
         return 0;
 
     if (!walkPilotEnsureBmp()) {
-        /* JOHNWALK.BMP/PSB load failed silently (likely malloc under
-         * heap pressure). Bail out and let the next scene take over —
-         * visual cost is one ugly teleport instead of an infinite
-         * hang in walkAnimate with no sprite data. */
-        return 0;
+        /* Plan v9 manifest item #19. Under the deterministic allocator,
+         * walkPilotEnsureBmp can only fail on a data bug (missing or
+         * malformed JOHNWALK.PSB/BMP); halt loudly so the issue is
+         * caught at the symptom site rather than masquerading as a
+         * teleport. */
+        JC_BSOD("walk", "walkPilotEnsureBmp failed (missing JOHNWALK asset)");
     }
     walkRenderResetCache();
 
