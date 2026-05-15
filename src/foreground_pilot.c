@@ -3797,18 +3797,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
-        fgRuntimeReset();
-        fgReleaseStreamBuffers();
-        grDeactivateCleanBgRects();
-        fgBackdropRelease(0);
-        fgHeapProbe("start_failed_cleanup", sceneName);
-        /* Graceful skip instead of BSOD: long soak runs accumulate
-         * heap fragmentation and sometimes a single scene's pack-start
-         * malloc fails. Abandoning this scene and returning lets the
-         * outer scene loop pick another scene; the player sees one
-         * skipped scene instead of a permanent halt screen. */
-        printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
-        return;
+        /* Phase 2 of mem-region rollout deletes the JCSKIP/graceful-
+         * skip pattern: under the deterministic allocator, allocations
+         * cannot fail, so this branch should be unreachable in a
+         * well-formed build. If it does fire, the failure is a real
+         * bug (likely a non-allocator I/O issue — CD read or pack
+         * format problem) and halting via JC_BSOD surfaces it for
+         * triage instead of papering over it. See plan v9 manifest
+         * item #1. */
+        JC_BSOD(sceneName, "pack-start failed (non-recoverable I/O or data bug)");
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
@@ -3823,13 +3820,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         perfPhaseTick = ps1PerfTick();
     if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
                                     &fgBoundsW, &fgBoundsH)) {
-        fgRuntimeReset();
-        fgReleaseStreamBuffers();
-        grDeactivateCleanBgRects();
-        fgBackdropRelease(0);
-        fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
-        printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
-        return;
+        /* Phase 2 manifest item #2: drawBounds is computed from pack
+         * data; failure here means the pack file is malformed or
+         * mis-versioned. Halt loudly. */
+        JC_BSOD(sceneName, "drawBounds failed (pack data invalid)");
     }
     {
         cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
@@ -3861,15 +3855,11 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                                             fgBoundsH,
                                                             cleanRectEstimate,
                                                             &deferWalkCleanRecapture)) {
-            fgRuntimeReset();
-            fgReleaseStreamBuffers();
-            grFreeCleanBgRects();
-            grSetCleanBgBlackMode(0);
-            fgBackdropRelease(0);
-            fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
-                   sceneName, (unsigned long)cleanRectEstimate);
-            return;
+            /* Phase 2 manifest item #3: clean-rect alloc is now first
+             * in TRANSIENT setup order (plan v9 PR11/PR12). The full
+             * 250 KB TRANSIENT region is available; if allocation
+             * still fails, the budget is wrong — halt for tuning. */
+            JC_BSOD(sceneName, "clean-rect alloc failed (TRANSIENT budget shortfall)");
         }
     }
     if (ps1PerfEnabled)
