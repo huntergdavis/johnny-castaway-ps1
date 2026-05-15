@@ -111,12 +111,12 @@ and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
 Latest promoted WALKSTUF1 work-volume note:
-`walkstuf1-high-frame47-offscreen-v830` clips the high frame `47` offscreen
-spans on top of the v734/v733/v732/v731 frame49/frame51/frame138/frame55 clips.
+`walkstuf1-high-frame45-offscreen-v831` clips the high frame `45` offscreen
+spans on top of the v830/v734/v733/v732/v731 frame47/frame49/frame51/frame138/frame55 clips.
 High stays exact-flat at `1764`, active loop/target `1476/1434`,
 blocking/refill `81/23`, loop reads/read time `63/276`, and due `16`, while
 runtime rows/spans/pixels drop
-`17052/132773/755038 -> 17039/132173/749787`; v657 still provides the active
+`17039/132173/749787 -> 17011/131649/745213`; v657 still provides the active
 payload drop `918345 -> 882007`, CD sectors `605 -> 586`, and loop reads/read
 time `65/282 -> 63/275`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broad and
