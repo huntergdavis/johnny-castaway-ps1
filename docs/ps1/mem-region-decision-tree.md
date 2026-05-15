@@ -77,6 +77,24 @@ Lifetime: a few instructions. → use a **stack buffer**, not the
 allocator. Allocator is for things larger than one stack frame or
 that outlive one function.
 
+## Holiday variants
+
+If your allocation's lifetime is the same as the base scene it belongs
+to, **use the same region as the base scene** — no variant-specific
+handling needed. The allocator doesn't know or care about variants;
+the analyzer that generates `pack_header_metrics.h` enumerates every
+variant pack and sizes the regions to cover them all.
+
+If the allocation is **variant-specific** (e.g., a holiday-only sprite
+that's only loaded when the variant is active), treat it like any
+other resource blob — **CACHE** with `pinResource`/`unpinResource`
+during the variant's playback. It evicts when the variant isn't in use.
+
+If the variant changes *peak memory demands* (more concurrent threads,
+bigger BMPs, larger clean-rect), regenerate `pack_header_metrics.h`
+after adding the variant. See
+[adding-new-scenes-memory.md](./adding-new-scenes-memory.md).
+
 ## When none of these fit
 
 You probably need a different design, not a new region. Likely causes:

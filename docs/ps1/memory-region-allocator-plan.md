@@ -9,6 +9,55 @@ re-review of v4). See:
 - [adding-new-scenes-memory.md](./adding-new-scenes-memory.md) — future-maintainer guide
 - [mem-region-decision-tree.md](./mem-region-decision-tree.md) — which region for a new allocation
 
+## What changed in v6
+
+Resolves all 3 blockers + 11 material + 4 hygiene items from red-team v4:
+
+- **`MEM_REQUIRE(cond)` macro** ships in release (not C's `assert()`,
+  which compiles out under NDEBUG). All ISR-safety and invariant
+  checks use it. (P13)
+- **`ps1DebugInit()` runs first** in the boot sequence, before
+  `memInit()`. Already true in `src/jc_reborn.c:1688`; plan's
+  pseudocode now reflects reality so the dependency is explicit. (A17)
+- **`fgLoopGetLastScene()` is a new Phase 1 deliverable** — does not
+  exist today. Returns the slug of the most recently played scene for
+  diagnostic continuity through scene-pick. Confirmed via grep. (A18)
+- **MIPS COP0 read latency corrected** in perf table (8-12 cycles, not
+  3). Bump/CACHE alloc costs revised accordingly. (P14)
+- **CRC-32 lookup table** lives in `.rodata` (compile-time const data
+  in exe load, not BSS); pushes `_end` up by ~1 KB but doesn't eat
+  region budget. (P15)
+- **Phase 2 ships as TWO PRs**, not one bundled PR: infrastructure
+  (P2.0 + memHalt + ps1Bsod replace) lands first, cleanup PR
+  (P2.1-2.8) lands after the infrastructure is green. Avoids
+  per-commit CI breaking on intermediate states. (S11)
+- **Decision tree enforcement** via mandatory `MEM_REGION_RATIONALE:`
+  comment on each `memAlloc` call site, grep'd by CI. (S12)
+- **Phase 1 implementation checklist** lands as
+  `docs/ps1/mem-region-phase-1-checklist.md` — 18 ticked TODOs with
+  per-step completion criteria. (M12)
+- **Decision tree mentions holiday variants** explicitly. (M13)
+- **Pre-evict moves out of `fgLoopNextScene`** to caller site at
+  `jc_reborn.c:~1956`, runs *after* `fgLoopApplyVariant` so the
+  effective scene name is used. (PR11, PR12)
+- **CRC pack-hash verification gated by `JC_VERIFY_PACK_HASHES`** —
+  on in dev/QA builds, off in release. Release skips the 9-second
+  boot cost and trusts offline metrics. (PR13)
+- **ps1_debug.c uses forward declarations** for region-state externs,
+  not `#include "mem_region.h"` — eliminates circular-include risk. (A19)
+- **`memSafeRead` scope documented** — defends against data
+  corruption, not instruction corruption (which is out of scope). (A20)
+- **`__builtin_unreachable()` after each memHalt branch** for compiler
+  hygiene. (P16)
+- **Tag-mechanics spelled out:** `git tag pre-mem-region-bandaid-removal`
+  applied to the Phase-1 merge commit before the cleanup PR opens. (S13)
+- **CI count match** — assert
+  `grep -c "MEM_REGION_" mem-region-decision-tree.md ==
+  grep -c "MEM_REGION_" src/mem_region.h`. (M14)
+- **Pre-Phase-1 printf-non-allocating gate dropped** — the project-
+  level malloc poison makes this a link-time check rather than a
+  manual audit; redundant. (A21)
+
 ## What changed in v5
 
 Resolves all 7 🔴 blockers, 12 🟠 material risks, and 5 🟡 hygiene items
@@ -181,11 +230,20 @@ must never run from:
 
 Enforcement:
 
-- Each function asserts `ps1IsMainContext()` **unconditionally** (release
-  builds too). The helper inspects PSX SR/cause registers — ~3 cycles
-  per call, well under the 10-cycle budget. Debug-only asserts don't ship,
-  and a future ISR-context regression would race silently in production
-  without this guard.
+- Each function calls **`MEM_REQUIRE(ps1IsMainContext())`** — a
+  hand-rolled macro defined in `mem_region.h` that ships in release
+  builds (does NOT use C's `<assert.h>`, which compiles out under
+  NDEBUG). Definition:
+
+  ```c
+  #define MEM_REQUIRE(cond) do {                                  \
+      if (!(cond)) memHalt("(mem_require)", "invariant: " #cond); \
+  } while (0)
+  ```
+
+  The helper inspects PSX SR/cause registers via `mfc0` — ~8-12 cycles
+  including the COP0 load-delay stall. A future ISR-context regression
+  trips this in production, not just in debug.
 - The audit gate (Phase 1 verification) traces from every known ISR
   registration point and confirms no path reaches `memAlloc`. (Belt +
   braces against the runtime assert.)
@@ -396,12 +454,18 @@ invariant.
 
 ```c
 int main(...) {
+    ps1DebugInit();                             /* FIRST — already at src/jc_reborn.c:1688
+                                                   today; explicit dependency of memHalt's
+                                                   pre-graphics path so it MUST precede
+                                                   memInit (A17). */
     memInit();                                  /* regions ready */
     /* pack_header_metrics.h is compile-time data — no CD reads here */
     memVerifyBootBudget();
     memVerifyAllScenesFitTransient();
     memVerifyAllScenesPinnedFitCache();
-    memVerifyPackHashes();                      /* runtime CD verify */
+#ifdef JC_VERIFY_PACK_HASHES
+    memVerifyPackHashes();                      /* ~9 sec CD work; dev/QA only (PR13) */
+#endif
     /* BOOT allocations follow */
     audioInit();
     resourceCatalogParse();
@@ -414,8 +478,9 @@ int main(...) {
 }
 ```
 
-If any verify fires, the halt happens before graphics is up, so the
-`fatalError` TTY-print + `while(1)` path runs (see "Failure UX" below).
+If any verify fires, `memHalt` runs ps1DebugError (rendered text panel,
+not a black freeze) and halts. Graphics-up failures route through
+JC_BSOD as described below.
 
 ### `sceneAllocBalance`
 
@@ -478,16 +543,14 @@ void memHalt(const char *scene, const char *reason) {
     if (graphicsIsInitialized()) {
         ps1Bsod(scene, reason, __builtin_return_address(0)
                                 ? "(caller)" : "(unknown)", 0);
-        /* Note: __FILE__/__LINE__ in JC_BSOD's macro form capture the
-         * macro expansion point. memHalt is called from many sites;
-         * to preserve per-site grep-ability, we emit JCBSOD caller=<addr>
-         * detail line instead. */
+        __builtin_unreachable();        /* P16 — compiler hygiene */
     } else {
         /* Pre-graphics: use ps1DebugError (renders minimal text panel,
-         * safe before graphicsInit completes) instead of plain
-         * fatalError so the user sees a screen, not a black freeze. */
+         * safe before graphicsInit completes) — depends on ps1DebugInit
+         * having run first; boot sequence ensures it (A17). */
         ps1DebugError("%s: %s", scene ? scene : "(boot)", reason);
         while (1) { /* halt forever */ }
+        __builtin_unreachable();
     }
 }
 ```
@@ -550,9 +613,18 @@ regions, the latter is folded into `memBootUsed`.
 
 **Defensive value clamping (PR9):** `ps1Bsod` reads each region state
 through clamp helpers (`memSafeRead(region)` clamps to `[0,
-MEM_REGION_TOTAL]`). If a bug corrupts the bump pointer or balance
-counter, the dump renders bounded values instead of dereferencing
-garbage and crashing the halt screen.
+MEM_REGION_TOTAL]`). If a *data* corruption hits the bump pointer or
+balance counter, the dump renders bounded values instead of garbage.
+The clamp does NOT cover *instruction* corruption (a stray write into
+the code section means random execution is already happening; that
+case is out of scope) (A20).
+
+**Build-layering (A19):** `src/ps1_debug.c` accesses region state via
+forward declarations (`extern size_t memRegionUsed(MemRegion);` at the
+top of the BSOD detail block), NOT by `#include "mem_region.h"`.
+Avoids a circular-include trap: `mem_region.c` calls `formatReason`
+declared in `ps1_debug.h`, and `ps1_debug.h` must not pull in
+`mem_region.h` transitively or includes loop.
 
 ### Synthetic-failure test bootmodes (renamed: S9)
 
@@ -696,8 +768,9 @@ does it for them.
    side) with `volatile` static buffer + 1-entry depth counter
    guarding against the impossible-but-cheap-to-defend re-entry case
    (M10, A16).
-8. `ps1IsMainContext()` assert is **unconditional** in `memAlloc` and
-   `memFree`, not debug-only (~3 cycles per call; P1-bis).
+8. `MEM_REQUIRE(ps1IsMainContext())` (hand-rolled macro, not C's
+   `assert()`) in `memAlloc` and `memFree`, unconditional in release
+   builds (~8-12 cycles per call from COP0 read; P1-bis, P13).
 9. **Replace** (not extend) the heap-probe block in `src/ps1_debug.c:245+`:
    drop `fgProbeLargestAlloc`/`prefetchBufBytes` lines, add
    `memBootUsed/Peak`, `memCacheUsed/Peak`, `memTransientUsed/Peak`,
@@ -730,6 +803,23 @@ does it for them.
 18. PR template gets a new checkbox: "I built locally with
     `MEM_DEV_BUILD=0` and ran the 63-scene rotation cleanly" — required
     for any PR touching scene data (S10).
+19. **Implement `fgLoopGetLastScene()`** in `src/jc_reborn.c`: returns
+    the slug of the most recently played scene (cached on each
+    successful scene-pick). Used by `memHalt` call sites between
+    scenes for diagnostic continuity (A18). Verified by grep that the
+    function does not currently exist before Phase 1.
+20. `MEM_REGION_RATIONALE: <one-liner>` comment required on every
+    `memAlloc` call site. CI grep gate:
+    `grep -B1 "memAlloc(" src/ | grep -c MEM_REGION_RATIONALE` must
+    equal `grep -c "memAlloc(" src/` (S12).
+21. CI count-match gate: `MEM_REGION_*` enum count in `mem_region.h`
+    must equal occurrences in `mem-region-decision-tree.md` (M14).
+22. Build flag `JC_VERIFY_PACK_HASHES` defaults off in release config,
+    on in dev/QA. CI verifies release setting (PR13).
+23. `-Wglobal-constructors -Werror=global-constructors` lands as a
+    PS1-build flag (A13 from v3, re-confirmed in v6).
+24. Phase 1 implementation checklist: `docs/ps1/mem-region-phase-1-checklist.md`
+    lands in the same PR. Mirrors these steps as TODO items (M12).
 
 **Estimated effort:** ~3 weeks focused work. Roughly 800-1000 LOC of
 allocator + ~200 LOC of generator + 39 call-site touches + audit + the
@@ -739,36 +829,45 @@ decision tree doc.
 63-scene rotation. Both builds green. All four boot-time `memVerify*`
 checks pass.
 
-### Phase 2 — Delete bandaid + skip code (1 bundled PR, 8 atomic commits, ~1 week)
+### Phase 2 — Delete bandaid + skip code (TWO PRs, ~1 week total)
 
-The 23-site removal manifest ships as **one PR with 8 atomic commits**.
-Each commit covers one file and is individually revertable via
-`git revert <sha>`. PR-level revert is also one command. v4's
-"8 separate PRs" framing was wrong — the commits are sequential (the
-`resource.c` JC_BSOD callers depend on the `memHalt` plumbing landed
-by the foreground_pilot commit), so they can't ship independently.
-Bundling preserves per-commit revertability while keeping the
-dependency order obvious in `git log`.
+v5's "single bundled PR with 8 atomic commits" framing breaks under
+per-commit CI: intermediate commits leave the codebase in a state
+where bandaid code is half-deleted (S11). v6 splits into two PRs:
 
-Commit order (P2.0 first, others can follow in any order after it):
+**Phase 2a — Infrastructure PR (~2 days)**
 
-- P2.0 — `ps1_debug.c` heap-probe block REPLACEMENT (see "Failure UX")
-  + `memHalt` implementation lands here. Everything else depends on
-  this commit.
-- P2.1 — `foreground_pilot.c` (items 1-9)
-- P2.2 — `resource.c` (items 10-13)
-- P2.3 — `ads.c` (items 14-16)
-- P2.4 — `walk_pilot.c` (items 17-19)
-- P2.5 — `graphics.c` (item 20)
-- P2.6 — `cdrom_ps1.c` (item 21)
-- P2.7 — `ps1_perf.c` (items 22-23)
-- P2.8 — comment refresh for the "intentional skip" sites + test-harness
-  migration (any soak-run grep for `JCBSOD-FATAL` now means "a soak
-  run failed," not "the synthetic test ran" — harnesses updated in
-  this commit; S8).
+One commit: `ps1_debug.c` heap-probe block REPLACEMENT (see "Failure UX")
++ `memHalt` implementation. Includes test-harness migration for the
+new `JCBSOD-FATAL` sentinel semantic (S8). Sits as a no-op for the
+bandaid call sites — they still compile and run identically — but
+makes the new `memHalt` primitive available for the cleanup PR.
 
-The pre-Phase-2 commit is tagged `pre-mem-region-bandaid-removal` so
-rolling back the whole bundle is one flag.
+After 2a merges to main, **tag the merge commit**:
+```sh
+git tag pre-mem-region-bandaid-removal <merge-sha>
+git push origin pre-mem-region-bandaid-removal
+```
+
+That tag is the rollback target for Phase 2b (S13).
+
+**Phase 2b — Cleanup PR (~3-4 days)**
+
+One PR, 8 atomic commits (each per-file, individually revertable):
+
+- P2b.1 — `foreground_pilot.c` (items 1-9)
+- P2b.2 — `resource.c` (items 10-13)
+- P2b.3 — `ads.c` (items 14-16)
+- P2b.4 — `walk_pilot.c` (items 17-19)
+- P2b.5 — `graphics.c` (item 20)
+- P2b.6 — `cdrom_ps1.c` (item 21)
+- P2b.7 — `ps1_perf.c` (items 22-23)
+- P2b.8 — comment refresh for the "intentional skip" sites
+
+Each commit is internally consistent — it deletes the bandaid AND
+points the formerly-NULL-returning path at `memHalt`. CI is green
+at every commit. Per-commit revert works without leaving an
+inconsistent state.
 
 **Validation:** soak test 20+ iterations. Zero `fatalError` and zero
 `JC_BSOD` triggers across the run. Per-scene frame-byte diff vs.
@@ -807,9 +906,9 @@ provably correct).
 
 | Operation                        | Cost (PS1)                  | Notes                                              |
 |----------------------------------|-----------------------------|----------------------------------------------------|
-| `memAlloc(BOOT/TRANSIENT, n)`    | ~13 cycles                  | ps1IsMainContext assert (~3) + bump (~5) + balance + bound check |
-| `memAlloc(CACHE, n)` hit        | ~28 cycles                  | ISR check + free-list head pop + class lookup      |
-| `memAlloc(CACHE, n)` miss + evict| ~3-5 ms (warm) / never (hot)| **Eviction is pre-emptive in fgLoopNextScene, not at memSceneReset.** Hot path during scene play is hit-only. |
+| `memAlloc(BOOT/TRANSIENT, n)`    | ~18-22 cycles               | MEM_REQUIRE COP0 read (~8-12) + bump (~5) + balance + bound check (P14) |
+| `memAlloc(CACHE, n)` hit        | ~33-37 cycles               | MEM_REQUIRE + free-list head pop + class lookup    |
+| `memAlloc(CACHE, n)` miss + evict| ~3-5 ms (warm) / never (hot)| **Eviction is pre-emptive in jc_reborn.c after `fgLoopApplyVariant`, not in `fgLoopNextScene` (preserves scene_picker's zero-heap invariant).** Hot path during scene play is hit-only. |
 | `memFree(BOOT)`                  | 0 cycles release            | No-op                                              |
 | `memFree(TRANSIENT)`             | ~5 cycles release           | Balance decrement                                  |
 | `memFree(CACHE)`                 | ~30 cycles                  | Free-list push + class lookup                      |
@@ -824,29 +923,34 @@ is a 3-7× win on BOOT/TRANSIENT and roughly break-even on CACHE.
 ISR-safety assert is unconditional in release (Pat P1-bis) and
 included in those numbers.
 
-### Pre-emptive CACHE eviction — moved to scene picker (resolves PR7)
+### Pre-emptive CACHE eviction — caller-site after variant resolution (resolves PR7, PR11, PR12)
 
-v4 said eviction would happen at `memSceneReset`. That's wrong: by then
-the next scene's first allocations are imminent, and the LRU scan would
-block the first frame. v5 moves pre-emptive eviction into
-**`fgLoopNextScene`** (`src/jc_reborn.c:~1909`) — runs immediately
-after the next scene is picked, *before* `fgLoopWalkToScene`. The walk
-animation already takes ~1-2 seconds; LRU eviction (~3-5 ms for a
-~200-entry scan) fits inside that window with room to spare.
+v4 said eviction at `memSceneReset` (too late — blocks first frame).
+v5 moved it into `fgLoopNextScene` (still wrong — that's inside the
+scene_picker which is explicitly engineered for net-zero heap pressure
+per `src/scene_picker.c:4-6`; the picker stays pure).
+
+v6 puts pre-emptive eviction in the caller, **after**
+`fgLoopApplyVariant`, so the effective scene name (post-variant) is
+used and the picker stays pure:
 
 ```c
 const char *loopScene = fgLoopNextScene(...);
-memCachePreEvictForNextScene(loopScene);   /* NEW: ~3-5 ms */
-fgLoopWalkToScene(storyScene);              /* unchanged */
+fgLoopApplyVariant(loopScene);               /* unchanged — may swap in variant */
+memCachePreEvictForNextScene(loopScene);     /* NEW — ~3-5 ms, in jc_reborn.c not picker */
+fgLoopWalkToScene(storyScene);                /* unchanged; ~1-2 sec mask */
 /* ... */
-fgRuntimeReset();  /* memSceneReset called here — TRANSIENT only */
+fgRuntimeReset();                              /* TRANSIENT only */
 ```
 
 `memCachePreEvictForNextScene(name)` consults
 `pack_header_metrics.h[name].cachePinnedWorstCase`, subtracts current
 CACHE used, and evicts unpinned resources until the delta fits. If
-nothing's unpinned and the delta still doesn't fit, that's an
-unreachable case (the boot proof asserts otherwise) — runs `memHalt`.
+nothing's unpinned and the delta still doesn't fit — `memHalt` (the
+boot proof asserts unreachability of this branch).
+
+The scene_picker's poison-malloc comment stays intact; the picker
+mutates no global state.
 
 ## Documentation deliverables
 
@@ -880,10 +984,10 @@ Pre-implementation gates (must close before Phase 1):
       `memVerifyAllScenesPinnedFitCache` computes. Equality required;
       drift is a verifier bug that must be fixed before the no-fail
       invariant is trustworthy.
-- [ ] **PSX printf is non-allocating: (P10)** read PsnoobSDK's printf
-      implementation, confirm it uses a fixed internal buffer
-      (not malloc). Document the finding in `mem_region.c` as a
-      non-regression invariant.
+- [ ] ~~**PSX printf is non-allocating: (P10)**~~ Dropped (A21):
+      project-level malloc poison makes this a link-time check rather
+      than a manual audit. If PsnoobSDK printf ever calls `malloc`,
+      the link breaks. Manual confirmation no longer needed.
 - [ ] **No static initializers: (A13)** add `-Wglobal-constructors
       -Werror=global-constructors` to the PS1 build; clean baseline.
 
