@@ -22,9 +22,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2702%` over
-target / `99.7342%` target speed; the raw signed optimization matrix is
-`-0.4969%` / `100.5165%`.
+allocation. The public headless battle card is `+0.2697%` over
+target / `99.7347%` target speed; the raw signed optimization matrix is
+`-0.4975%` / `100.5171%`.
 The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
