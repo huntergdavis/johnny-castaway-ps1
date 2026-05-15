@@ -944,9 +944,15 @@ static int fgParseEntryTable(const uint8 *data, const struct TFgPilotHeader *hea
         return 0;
 
     memset(out, 0, sizeof(*out));
-    out->entries = (struct TFgPilotEntry *)malloc((size_t)header->frameCount * sizeof(struct TFgPilotEntry));
-    if (out->entries == NULL)
-        return 0;
+    /* MEM_REGION_RATIONALE: per-scene frame metadata table. Allocated
+     * once per scene at pack-start, freed wholesale by memSceneReset
+     * at the next fgRuntimeReset. INIT_FULL_WRITE — every entry is
+     * populated by the loop below. */
+    out->entries = (struct TFgPilotEntry *)memAlloc(
+        MEM_REGION_TRANSIENT,
+        (size_t)header->frameCount * sizeof(struct TFgPilotEntry),
+        "fgPilotEntryTable");
+    /* memAlloc never returns NULL (halts on exhaustion). */
 
     out->count = header->frameCount;
     for (uint16 i = 0; i < header->frameCount; i++) {
@@ -970,7 +976,10 @@ static void fgFreeEntryTable(struct TFgPilotEntryTable *table)
     if (table == NULL)
         return;
     if (table->entries != NULL) {
-        free(table->entries);
+        /* TRANSIENT region — bytes are reclaimed by memSceneReset at
+         * the top of fgRuntimeReset; this just decrements the balance
+         * counter and clears the dangling pointer. */
+        memFree(MEM_REGION_TRANSIENT, table->entries);
         table->entries = NULL;
     }
     table->count = 0;
