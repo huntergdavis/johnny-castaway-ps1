@@ -204,19 +204,17 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T21:33:56` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame43-inplace-v844`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T21:43:52` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame53-inplace-v846`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Current W1 work-volume track: `walkstuf1-high-frame43-inplace-v844`
-shrinks high entry `43` / source frame `53` in place after the
-v839/v841/v842/v843 frame51/frame49/frame47/frame45 shrinks, preserving all
-payload offsets while cutting that entry `5555 -> 2211` bytes. High is
-exact-flat at `1764`, `1476/1434`,
-blocking/refill `81/23`, loop reads/read time `63/276`, and due `16`, while
-runtime rows/spans/pixels stay at `16859/129919/731016`; v657/v839/v841/v842/v843/v844 now provide the active
-payload drop `918345 -> 861486`, CD sectors `605 -> 586`, and loop
-reads/read time `65/282 -> 63/276`.
+Current W1 work-volume track: `walkstuf1-low-frame53-inplace-v846`
+shrinks low entry `53` / source frame `63` in place after the v817 retained
+read row, preserving all payload offsets while cutting that entry
+`3893 -> 2463` bytes. Low is exact-flat at `1769`, `1477/1431`,
+blocking/refill `64/20`, loop reads/read time `58/266`, and due `11`, while
+runtime rows/spans/pixels stay at `16257/114798/633876`; the no-shift lane now
+provides the active payload drop `879801 -> 796649`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -376,6 +374,9 @@ exact-flat while active payload drops again to `798435`.
 exact-flat while active payload drops again to `798232`.
 `walkstuf1-low-frame3-inplace-v802` extends it with frame `3`, keeping timing
 exact-flat while active payload drops again to `798079`.
+`walkstuf1-low-frame53-inplace-v846` extends it with frame `53` after the
+v817 retained-read row, keeping timing exact-flat while active payload drops
+again to `796649`.
 `walkstuf1-low-cd-fastpoll-v760` restores the post-release current baseline to
 `1478/1431`, blocking/refill `64/20`, loop reads/read time `60/272`, and due
 `11` while preserving the CD long-soak timeout fallback.
@@ -434,7 +435,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-rg394-410-v817`,
+  refreshed rows use `walkstuf1-low-frame53-inplace-v846`,
+  `walkstuf1-low-rg394-410-v817`,
   `building4-low-frame286-inplace-v827`,
   `building4-low-frame39-inplace-v816`,
   `building4-low-frame287-inplace-v815`,
@@ -2384,15 +2386,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T17:25:46</td>
-      <td>walkstuf1-low-rg394-410-v817</td>
+      <td>2026-05-14T21:43:52</td>
+      <td>walkstuf1-low-frame53-inplace-v846</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>1477/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>low-tide-only retained read group 394..410 promotes the read-plan scheduler-owned candidate; scene/loop/target improve 1770/1478/1431 -&gt; 1769/1477/1431, overrun 47 -&gt; 46, loop reads/read VBlanks 60/272 -&gt; 58/266, while blocking/refill/due stay 64/20/11 and pack LBA/sectors plus PS-EXE bucket remain fixed</td>
+      <td>same-speed preserve-offset frame53 payload shrink on top of v817; entry 53/source frame 63 shrinks 3893 -&gt; 2463 bytes, active payload 798079 -&gt; 796649, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1431, overrun 46, blocking/refill 64/20, reads/read time 58/266, and due 11.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

@@ -264,9 +264,10 @@ clips, high v837 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/f
 `1476/1434` with blocking/refill `81/23`, reads/due `63/16`, while dropping
 runtime rows/spans/pixels to `16859/129919/731016` and active payload to
 `861486`. Low v817 adds the
-`394..410` retained read group after the v653/v705/v802 work-volume chain and
+`394..410` retained read group after the v653/v705/v802/v846 work-volume chain and
 improves to `1477/1431` with blocking/refill `64/20`,
-loop reads/read VBlanks `58/266`, and due `11`, while still carrying the
+loop reads/read VBlanks `58/266`, and due `11`, while v846 trims frame `53`
+in place and drops active payload to `796649` without moving offsets, still carrying the
 late-tail draw reduction that dropped `39072` draw
 pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
 bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen clusters,
@@ -380,14 +381,16 @@ Milestone releases:
   VISITOR3 high `277..293` tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
-  work reductions plus the WALKSTUF1 low `394..410` retained-read promotion.
+  work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
+  and frame53 no-shift payload shrink.
   The public battle card is `+0.2702%` / `99.7342%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
   `16859/129919/731016` plus active payload `861486`, WALKSTUF1 low is `1477/1431` with loop
-  reads `58` and rows/spans/pixels `16257/114798/633876`, VISITOR3 high is
+  reads `58`, rows/spans/pixels `16257/114798/633876`, and active payload
+  `796649`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
   `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are

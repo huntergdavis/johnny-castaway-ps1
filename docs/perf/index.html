@@ -328,11 +328,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T21:33:56</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T21:43:52</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame43-inplace-v844</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame53-inplace-v846</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -341,15 +341,13 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
   </tbody>
 </table>
 
-<p>Current W1 work-volume track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame43-inplace-v844</code>
-shrinks high entry <code class="language-plaintext highlighter-rouge">43</code> / source frame <code class="language-plaintext highlighter-rouge">53</code> in place after the
-v839/v841/v842/v843 frame51/frame49/frame47/frame45 shrinks, preserving all
-payload offsets while cutting that entry <code class="language-plaintext highlighter-rouge">5555 -&gt; 2211</code> bytes. High is
-exact-flat at <code class="language-plaintext highlighter-rouge">1764</code>, <code class="language-plaintext highlighter-rouge">1476/1434</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">63/276</code>, and due <code class="language-plaintext highlighter-rouge">16</code>, while
-runtime rows/spans/pixels stay at <code class="language-plaintext highlighter-rouge">16859/129919/731016</code>; v657/v839/v841/v842/v843/v844 now provide the active
-payload drop <code class="language-plaintext highlighter-rouge">918345 -&gt; 861486</code>, CD sectors <code class="language-plaintext highlighter-rouge">605 -&gt; 586</code>, and loop
-reads/read time <code class="language-plaintext highlighter-rouge">65/282 -&gt; 63/276</code>.
+<p>Current W1 work-volume track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame53-inplace-v846</code>
+shrinks low entry <code class="language-plaintext highlighter-rouge">53</code> / source frame <code class="language-plaintext highlighter-rouge">63</code> in place after the v817 retained
+read row, preserving all payload offsets while cutting that entry
+<code class="language-plaintext highlighter-rouge">3893 -&gt; 2463</code> bytes. Low is exact-flat at <code class="language-plaintext highlighter-rouge">1769</code>, <code class="language-plaintext highlighter-rouge">1477/1431</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">58/266</code>, and due <code class="language-plaintext highlighter-rouge">11</code>, while
+runtime rows/spans/pixels stay at <code class="language-plaintext highlighter-rouge">16257/114798/633876</code>; the no-shift lane now
+provides the active payload drop <code class="language-plaintext highlighter-rouge">879801 -&gt; 796649</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-late-offscreen-v653</code> clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 <code class="language-plaintext highlighter-rouge">1770</code>, <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, reads/due <code class="language-plaintext highlighter-rouge">62/11</code>, while
@@ -509,6 +507,9 @@ exact-flat while active payload drops again to <code class="language-plaintext h
 exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">798232</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame3-inplace-v802</code> extends it with frame <code class="language-plaintext highlighter-rouge">3</code>, keeping timing
 exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">798079</code>.
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-frame53-inplace-v846</code> extends it with frame <code class="language-plaintext highlighter-rouge">53</code> after the
+v817 retained-read row, keeping timing exact-flat while active payload drops
+again to <code class="language-plaintext highlighter-rouge">796649</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-cd-fastpoll-v760</code> restores the post-release current baseline to
 <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">60/272</code>, and due
 <code class="language-plaintext highlighter-rouge">11</code> while preserving the CD long-soak timeout fallback.
@@ -568,7 +569,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg394-410-v817</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame53-inplace-v846</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-rg394-410-v817</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame286-inplace-v827</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame39-inplace-v816</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame287-inplace-v815</code>,
@@ -2519,15 +2521,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T17:25:46</td>
-      <td>walkstuf1-low-rg394-410-v817</td>
+      <td>2026-05-14T21:43:52</td>
+      <td>walkstuf1-low-frame53-inplace-v846</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>1477/1431</td>
       <td>64</td>
       <td>20</td>
       <td>11</td>
-      <td>low-tide-only retained read group 394..410 promotes the read-plan scheduler-owned candidate; scene/loop/target improve 1770/1478/1431 -&gt; 1769/1477/1431, overrun 47 -&gt; 46, loop reads/read VBlanks 60/272 -&gt; 58/266, while blocking/refill/due stay 64/20/11 and pack LBA/sectors plus PS-EXE bucket remain fixed</td>
+      <td>same-speed preserve-offset frame53 payload shrink on top of v817; entry 53/source frame 63 shrinks 3893 -&gt; 2463 bytes, active payload 798079 -&gt; 796649, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1431, overrun 46, blocking/refill 64/20, reads/read time 58/266, and due 11.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
