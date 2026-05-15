@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2517%` over
-target / `99.7525%` target speed; the raw signed optimization matrix is
-about `-0.5154%` / `100.5348%`.
+allocation. The public headless battle card is `+0.2481%` over
+target / `99.7560%` target speed; the raw signed optimization matrix is
+about `-0.5190%` / `100.5383%`.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
@@ -53,7 +53,7 @@ moving layout. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
 `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,
 and due `12`. BUILDING2 high currently measures
-`1351/1311`, overrun `40`, blocking `54`, hidden refill `18`, and due misses
+`1349/1315`, overrun `34`, blocking `48`, hidden refill `12`, and due misses
 `7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload `674798 -> 672026` without moving pack layout.

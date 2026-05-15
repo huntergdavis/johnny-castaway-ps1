@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-15:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2517%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7525%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T12:58:26` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building4-low-local-lz-entry270-v971`, `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2481%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7560%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T13:24:37` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,6 +94,15 @@ sentinel inside entries `1` and `50` in both JOHNNY1 packs, preserving the
 PS-EXE bucket while cutting active payload `316608 -> 112093`. Both tides move
 to `1948/1945`, overrun `3`, blocking/refill `5`, read time `37`, due `0`, and
 target speed `99.85%`.
+
+Latest promoted BUILDING2 high setup-segment note:
+`building2-high-setupseg86-242-v979` primes relative sectors `86..242`
+during setup. Against the fresh current control it improves active loop/target
+`1356/1312 -> 1349/1315`, overrun `44 -> 34`, blocking/refill `58/21 -> 48/12`,
+reads/read time `58/259 -> 25/117`, while due stays `7`. Setup cost rises
+scene `1607 -> 1659` and setup bytes `282260 -> 601748`, which is accepted
+under the material setup-regression gate with pack LBA/sectors and PS-EXE
+bucket fixed.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`
@@ -140,7 +149,7 @@ after a fresh current-control capture. Low stays scene/loop flat at
 `78 -> 72`, loop reads/read time `61/279 -> 58/267`, and due `11 -> 10`,
 while runtime rows/spans/pixels stay at the v726 row `16257/114798/633876`.
 
-Latest promoted BUILDING2 high payload note:
+Latest promoted BUILDING2 high payload-work note:
 `building2-high-frame100-inplace-v926` trims entry `100` / source frame `129`
 after v877/v879/v880/v887/v888/v889/v890/v891/v892 trimmed entries `172` / source frame `231`,
 `171` / source frame `228`, `96` / source frame `119`, `170` / source frame
@@ -220,8 +229,9 @@ Latest promoted BUILDING2 work-volume note:
 after v877/v879/v880/v887/v888/v889/v890/v891/v892/v896/v914 trimmed entries `172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, `169`, and `173`, and v703 added frame `89` on
 top of v702/v701/v700 frames `90`, `91`, and `92`, v698 safe `94..104`, and
 v664 late `168..177`.
-Timing/CD stays exact-flat at `1602`, active loop/target `1351/1311`, overrun
-`40`, blocking/refill `54/18`, reads/read time `58/257`, and due `7`. Runtime
+The payload-work baseline stays exact-flat at `1602`, active loop/target
+`1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
+and due `7`; the later v979 setup segment is the current B2-high speed row. Runtime
 frame rows/spans/pixels remain at the v703 `18030/105645/446246` row, while
 active payload drops `674798 -> 669408` with fixed pack LBA/sectors and
 PS-EXE bucket.

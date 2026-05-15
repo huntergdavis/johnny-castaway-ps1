@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2517% over target / 99.7525% target speed).
+validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2481% over target / 99.7560% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 770 |
-| Approx. words | 8514 |
+| Lines | 773 |
+| Approx. words | 8562 |
 | Code fences | 1 |
 
 ## Outline

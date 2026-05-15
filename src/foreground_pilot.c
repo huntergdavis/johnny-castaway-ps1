@@ -199,6 +199,8 @@ enum {
 #define FG_CD_SECTOR_SIZE 2048UL
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
+#define FG_BUILDING2_HIGH_SETUP_SEGMENT_START (86UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES (156UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
@@ -2507,6 +2509,24 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         segmentBuffer = gFgSetupSegmentBuffer;
         if (segment2Bytes > 0)
             segment2Buffer = gFgSetupSegmentBuffer + segmentBytes;
+        gFgRuntime.setupSegmentReusable = 1;
+    } else if (!islandState.lowTide && fgSceneEquals(sceneName, "building2")) {
+        segmentStart = FG_BUILDING2_HIGH_SETUP_SEGMENT_START;
+        segmentBytes = FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES;
+        if (gFgSetupSegmentBuffer == NULL ||
+            gFgSetupSegmentBufferSize < segmentBytes) {
+            if (gFgSetupSegmentBuffer != NULL)
+                free(gFgSetupSegmentBuffer);
+            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES);
+            if (gFgSetupSegmentBuffer == NULL) {
+                gFgSetupSegmentBufferSize = 0;
+                if (ps1PerfEnabled)
+                    ps1PerfMarkAllocFail(FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES);
+                return 0;
+            }
+            gFgSetupSegmentBufferSize = segmentBytes;
+        }
+        segmentBuffer = gFgSetupSegmentBuffer;
         gFgRuntime.setupSegmentReusable = 1;
     } else if (!fgSceneEquals(sceneName, "fishing3")) {
         return 1;

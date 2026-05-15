@@ -203,10 +203,10 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2517%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7525%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T12:58:26` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-local-lz-entry270-v971`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2481%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7560%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T13:24:37` |
+| Stats version | mixed across rows; latest refreshed row is `building2-high-setupseg86-242-v979`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -224,12 +224,13 @@ overrun `53 -> 50`, blocking `78 -> 72`, loop reads/read time
 `16257/114798/633876`. The no-shift lane still provides the active payload drop
 `879801 -> 790208`.
 
-Current B2-high payload track: `building2-high-frame100-inplace-v926` trims
-entry `100` / source frame `129` after v877/v879/v880/v887/v888/v889/v890/v891/v892/v896/v914 trimmed entries
-`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, `169`, and `173`, preserving offsets, pack LBA/sectors, and the PS-EXE bucket while cutting
-active payload `674798 -> 669408`. Timing/CD stay exact-flat at `1602`,
-loop/target `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
-`58/257`, and due `7`.
+Current B2-high speed track: `building2-high-setupseg86-242-v979` primes
+relative sectors `86..242` during setup. Against the fresh current control it
+improves active loop/target `1356/1312 -> 1349/1315`, overrun `44 -> 34`,
+blocking/refill `58/21 -> 48/12`, reads/read time `58/259 -> 25/117`, and keeps
+due flat at `7`. Setup cost rises scene `1607 -> 1659` and setup bytes
+`282260 -> 601748`, accepted under the material gate with pack LBA/sectors and
+the PS-EXE bucket fixed.
 
 Current BUILDING4-low payload track: `building4-low-local-lz-entry270-v971`
 adds entry `270` / source frame `410` on top of the entry `30` and `33`
@@ -473,13 +474,12 @@ and `105` spans, kept scene/loop flat at `1770/1478`, improved overrun
 `47 -> 46`, but regressed blocking `64 -> 65`. Close frame `86` for direct
 clipping; move to `87..88` or smaller non-risk candidates.
 
-Latest promoted BUILDING2 note: `building2-high-frame100-inplace-v926`
-trims entry `100` / source frame `129` after v877/v879/v880/v887/v888/v889/v890/v891/v892/v896/v914 trimmed entries
-`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, `169`, and `173` and the v703 high-tide offscreen clip stack for frames `89..92`,
-`94..104`, and `168..177`, staying exact-flat at `1602`, `1351/1311`,
-blocking/refill `54/18`, reads/read time `58/257`, and due `7`. Runtime frame
-rows/spans/pixels remain at the v703 `18030/105645/446246` row while active
-payload drops `674798 -> 669408`.
+Latest promoted BUILDING2 note: `building2-high-setupseg86-242-v979`
+adds a high-tide setup segment for relative sectors `86..242`, shifting a
+large tight CD cluster out of the active loop while staying below the clean
+snapshot prefetch-pressure cliff. Active loop/target improves
+`1356/1312 -> 1349/1315`, overrun `44 -> 34`, blocking/refill
+`58/21 -> 48/12`, reads/read time `58/259 -> 25/117`, and due stays `7`.
 `building2-low-trimtails-v739` keeps the v626 slack-8 `218..229` retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to `1603/1339/1317`,
@@ -520,7 +520,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-local-lz-entry270-v971`,
+  refreshed rows use `building2-high-setupseg86-242-v979`,
+  `building4-low-local-lz-entry270-v971`,
   `walkstuf1-low-rg209-225-v935`,
   `johnny1-local-lz-v932`,
   `walkstuf1-high-frame139-inplace-v927`,
@@ -1157,15 +1158,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-15T08:33:59</td>
-      <td>building2-high-frame100-inplace-v926</td>
-      <td>+3.0%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1351/1311</td>
-      <td>54</td>
-      <td>18</td>
+      <td>2026-05-15T13:24:37</td>
+      <td>building2-high-setupseg86-242-v979</td>
+      <td>+2.6%</td>
+      <td class="spd-yellow">97.5%</td>
+      <td>1349/1315</td>
+      <td>48</td>
+      <td>12</td>
       <td>7</td>
-      <td>same-speed frame100 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v914 while cutting active payload 669488-&gt;669408; entry100/source129 shrinks 8701-&gt;8621, entry sectors 5-&gt;5, scene/loop/target stay 1602/1351/1311, overrun 40, blocking/refill 54/18, read VBlanks 257, due 7</td>
+      <td>scene-local setup segment primes relative sectors 86..242 for BUILDING2 high; against fresh current control it improves active loop/target 1356/1312-&gt;1349/1315, overrun 44-&gt;34, blocking/refill 58/21-&gt;48/12, reads/read time 58/259-&gt;25/117, with due flat at 7; setup cost rises scene 1607-&gt;1659 and setup bytes 282260-&gt;601748 within the 4% material gate; pack footprint, pack LBA/sectors, and PS-EXE bucket stay fixed</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
