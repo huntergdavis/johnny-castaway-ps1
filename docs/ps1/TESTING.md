@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-14:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T19:15:08` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-14T19:24:41` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -111,12 +111,12 @@ and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
 Latest promoted WALKSTUF1 work-volume note:
-`walkstuf1-high-frame43-offscreen-v832` clips the high frame `43` offscreen
-spans on top of the v831/v830/v734/v733/v732/v731 frame45/frame47/frame49/frame51/frame138/frame55 clips.
+`walkstuf1-high-frame56-offscreen-v833` clips the high frame `56` offscreen
+spans on top of the v832/v831/v830/v734/v733/v732/v731 frame43/frame45/frame47/frame49/frame51/frame138/frame55 clips.
 High stays exact-flat at `1764`, active loop/target `1476/1434`,
 blocking/refill `81/23`, loop reads/read time `63/276`, and due `16`, while
 runtime rows/spans/pixels drop
-`17011/131649/745213 -> 16985/131136/741064`; v657 still provides the active
+`16985/131136/741064 -> 16924/130648/737458`; v657 still provides the active
 payload drop `918345 -> 882007`, CD sectors `605 -> 586`, and loop reads/read
 time `65/282 -> 63/275`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broad and
