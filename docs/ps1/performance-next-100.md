@@ -126,6 +126,17 @@ Treat the v747..v849 payload work as a safe no-shift payload lane, not a
 speed win; remaining W1-low speed conversion likely needs generated
 deadline/read ownership or a pack/data-shape change.
 
+Latest rejected WALKSTUF1 low sector-boundary payload probe:
+`walkstuf1-low-frame96-inplace-v850` tested entry `96` / source frame `176`
+after v849, shrinking `4649 -> 4491` bytes and active payload
+`794755 -> 794597` while changing modeled sector coverage `4 -> 3`.
+That late-cluster sector-boundary trim was phase-negative: scene/loop/target
+regressed `1769/1477/1431 -> 1775/1483/1431`, overrun `46 -> 52`, and
+blocking/refill `64/20 -> 71/25`, while reads/due stayed `58/11`. The pack
+was restored and rebuilt. Close frame96 on the v849 baseline; remaining
+W1-low no-shift trims should be non-sector exact-flat work-volume checks, not
+speed candidates, unless generated deadline/read ownership changes first.
+
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
 entry offset/size, the `1714154` byte pack footprint, LBA `9118`, and the
