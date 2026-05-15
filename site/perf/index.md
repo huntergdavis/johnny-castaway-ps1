@@ -204,17 +204,17 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T21:14:39` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame47-inplace-v842`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T21:27:26` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame45-inplace-v843`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Current W1 work-volume track: `walkstuf1-high-frame47-inplace-v842`
-shrinks high entry `47` / source frame `57` in place after the v839/v841
-frame51/frame49 shrinks, preserving all payload offsets while cutting that entry
-`7399 -> 3158` bytes. High is exact-flat at `1764`, `1476/1434`,
+Current W1 work-volume track: `walkstuf1-high-frame45-inplace-v843`
+shrinks high entry `45` / source frame `55` in place after the v839/v841/v842
+frame51/frame49/frame47 shrinks, preserving all payload offsets while cutting
+that entry `5276 -> 1657` bytes. High is exact-flat at `1764`, `1476/1434`,
 blocking/refill `81/23`, loop reads/read time `63/276`, and due `16`, while
-runtime rows/spans/pixels stay at `16859/129919/731016`; v657/v839/v841/v842 now provide the active
-payload drop `918345 -> 868449`, CD sectors `605 -> 586`, and loop
+runtime rows/spans/pixels stay at `16859/129919/731016`; v657/v839/v841/v842/v843 now provide the active
+payload drop `918345 -> 864830`, CD sectors `605 -> 586`, and loop
 reads/read time `65/282 -> 63/276`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
@@ -531,6 +531,7 @@ and this page.
   `building2-high-late-offscreen-v664`,
   `building2-low-trimtails-v739`,
   `building2-low-offscreen-drawclip-v660`,
+  `walkstuf1-high-frame45-inplace-v843`,
   `walkstuf1-high-frame47-inplace-v842`,
   `walkstuf1-high-frame49-inplace-v841`,
   `walkstuf1-high-frame51-inplace-v839`,
@@ -2367,15 +2368,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-14T21:14:39</td>
-      <td>walkstuf1-high-frame47-inplace-v842</td>
+      <td>2026-05-14T21:27:26</td>
+      <td>walkstuf1-high-frame45-inplace-v843</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>same-speed preserve-offset frame47 payload shrink on top of v841; entry 47/source frame 57 shrinks 7399 -&gt; 3158 bytes, active payload 872690 -&gt; 868449, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
+      <td>same-speed preserve-offset frame45 payload shrink on top of v842; entry 45/source frame 55 shrinks 5276 -&gt; 1657 bytes, active payload 868449 -&gt; 864830, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
