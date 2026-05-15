@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2708%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7337%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T17:12:53` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-frame287-inplace-v815`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T17:17:36` |
+| Stats version | mixed across rows; latest refreshed row is `building4-low-frame39-inplace-v816`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 work-volume track: `walkstuf1-high-frame49-offscreen-v734`
@@ -430,7 +430,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-frame287-inplace-v815`,
+  refreshed rows use `building4-low-frame39-inplace-v816`,
+  `building4-low-frame287-inplace-v815`,
   `building4-low-frame288-inplace-v814`,
   `building4-low-frame37-inplace-v813`,
   `building4-low-frame36-inplace-v811`,
@@ -1048,8 +1049,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T17:12:53</td>
-      <td>building4-low-frame287-inplace-v815</td>
+      <td>2026-05-14T17:17:36</td>
+      <td>building4-low-frame39-inplace-v816</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2853/2816</td>
