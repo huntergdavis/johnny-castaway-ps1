@@ -751,6 +751,15 @@ left due at `11`. Close hand-authored W1-low tight-cluster read groups on the
 v817 baseline; the next W1-low attempt needs generated deadline ownership or
 pack/upload work reduction with a host proof before changing source.
 
+Latest rejected WALKSTUF1 low v847 `410..422` retest: v848 rechecked the
+direct low-only `{410,422}` row after the v846/v847 preserve-offset payload
+shrinks made v847 the new runtime baseline. It again saved one loop read and
+one read VBlank (`58/266 -> 57/265`) but regressed scene/loop/overrun
+`1769/1477/46 -> 1770/1478/47`, with target, blocking/refill, and due unchanged
+at `1431`, `64/20`, and `11`. Keep `410..422` closed under the v847 baseline
+too; remaining low retained windows need generated ownership or a different
+pack/data shape, not another scalar table retry.
+
 Latest rejected WALKSTUF1 low setup-prime prefix-hole fill: v509 moved frame
 `78` / source `137` and frame `80` / source `141` into the already-covered
 `296`-byte prefix hole before `data_offset=4392`, using `247` bytes while
