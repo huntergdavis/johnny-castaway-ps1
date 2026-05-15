@@ -84,20 +84,21 @@ rows remaining and no orange/red rows.
 Latest promoted WALKSTUF1 high preserve-offset payload baseline:
 `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame49-inplace-v841`,
 `walkstuf1-high-frame47-inplace-v842`, `walkstuf1-high-frame45-inplace-v843`,
-`walkstuf1-high-frame43-inplace-v844`, and
-`walkstuf1-high-frame138-inplace-v882`, and `walkstuf1-high-frame135-inplace-v884` shrink entries `51` / source frame
+`walkstuf1-high-frame43-inplace-v844`,
+`walkstuf1-high-frame138-inplace-v882`, `walkstuf1-high-frame135-inplace-v884`, and `walkstuf1-high-frame139-inplace-v927` shrink entries `51` / source frame
 `61`, `49` / source frame `59`, `47` / source frame `57`, `45` / source frame
-`55`, `43` / source frame `53`, `138` / source frame `246`, and `135` / source frame `243` inside
+`55`, `43` / source frame `53`, `138` / source frame `246`, `135` / source frame `243`, and `139` / source frame `247` inside
 `WALKSTUF1.FG2` without moving any
 payload offsets. Entry `51` drops `5588 -> 770` bytes, entry `49` drops
 `5269 -> 770` bytes, entry `47` drops `7399 -> 3158` bytes, entry `45` drops
 `5276 -> 1657` bytes, entry `43` drops `5555 -> 2211` bytes, entry `138` drops
-`4716 -> 3804` bytes, entry `135` drops `4415 -> 3850` bytes, and active payload drops `882007 -> 860009`; file size
+`4716 -> 3804` bytes, entry `135` drops `4415 -> 3850` bytes, entry `139` drops
+`4011 -> 3668` bytes, and active payload drops `882007 -> 859666`; file size
 stays `1535263`, pack LBA/sectors stay `24883/750`, and the PS-EXE bucket
 stays `217088`. The strict speed gates correctly found no timing
 improvement, while the no-regression work gates passed exact-flat at scene
 `1764`, loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`,
-loop reads/read VBlanks `63/276`, and due misses `16`. Treat v839/v841/v842/v843/v844/v882/v884 as
+loop reads/read VBlanks `63/276`, and due misses `16`. Treat v839/v841/v842/v843/v844/v882/v884/v927 as
 safe same-speed payload-work baselines, not VBlank speed wins; future W1-high
 preserve-offset trims need the same exact-flat gate, while green conversion
 still needs generated deadline/read ownership or upload/restore work.
@@ -110,10 +111,9 @@ regressed scene/loop/target `1764/1476/1434 -> 1780/1492/1422`, overrun
 `42 -> 70`, blocking `81 -> 113`, refill `23 -> 27`, and due misses
 `16 -> 18`, with loop reads still `63`. The pack was restored and rebuilt.
 Close frame55 for now; size-only tail removals are not automatically
-cadence-neutral once they alter frame deadlines/read ownership.
-The v885 frame139/source247 follow-up is also closed on the current v884
-baseline: it preserved sector coverage `3 -> 3` and only cut active payload
-`860009 -> 859666`, but both strict attempts exited `137` before `JCPERF2`.
+cadence-neutral once they alter frame deadlines/read ownership. The later
+v927 frame139/source247 rerun resolved the earlier v885 structural uncertainty
+and promotes as the current same-speed high payload baseline.
 Do not retry remaining W1-high preserve-offset payload trims without a full
 correctness summary.
 
@@ -795,9 +795,9 @@ active loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, reads
 `63`, and due `16`; runtime rows/spans/pixels now drop `17296/134136/776856 ->
 16859/129919/731016`. This is not a speed win, but it is the current
 WALKSTUF1 high work-volume baseline before generated deadline/upload work. v882
-then shrinks the already-clipped frame `138` payload in place, and v884 follows
-with frame `135`, keeping this row exact-flat while reducing active payload to
-`860009`.
+then shrinks the already-clipped frame `138` payload in place, v884 follows
+with frame `135`, and v927 follows with frame `139`, keeping this row exact-flat
+while reducing active payload to `859666`.
 
 Latest rejected WALKSTUF1 high scalar-closure batch: v599-v608 tested the
 remaining high-ranked shared retained-read rows after the v598 baseline. The

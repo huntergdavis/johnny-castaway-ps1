@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T08:33:59` |
-| Stats version | mixed across rows; latest refreshed row is `building2-high-frame100-inplace-v926`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T08:46:42` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame139-inplace-v927`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 payload/speed track: `walkstuf1-low-frame106-inplace-v910`
@@ -500,7 +500,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building2-high-frame100-inplace-v926`,
+  refreshed rows use `walkstuf1-high-frame139-inplace-v927`,
+  `building2-high-frame100-inplace-v926`,
   `building4-low-frame40-inplace-v924`,
   `building2-high-frame173-inplace-v914`,
   `building4-low-frame283-inplace-v913`,
@@ -664,6 +665,7 @@ and this page.
   `building2-high-late-offscreen-v664`,
   `building2-low-trimtails-v739`,
   `building2-low-offscreen-drawclip-v660`,
+  `walkstuf1-high-frame139-inplace-v927`,
   `walkstuf1-high-frame135-inplace-v884`,
   `walkstuf1-high-frame138-inplace-v882`,
   `walkstuf1-high-frame43-inplace-v844`,
@@ -2504,15 +2506,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-15T02:50:30</td>
-      <td>walkstuf1-high-frame135-inplace-v884</td>
+      <td>2026-05-15T08:46:42</td>
+      <td>walkstuf1-high-frame139-inplace-v927</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>same-speed preserve-offset frame135 payload shrink on top of v882; entry 135/source frame 243 shrinks 4415 -&gt; 3850 bytes, active payload 860574 -&gt; 860009, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
+      <td>same-speed fixed-sector frame139 payload shrink on top of v884; entry 139/source frame 247 shrinks 4011 -&gt; 3668 bytes, active payload 860009 -&gt; 859666, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16.</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>

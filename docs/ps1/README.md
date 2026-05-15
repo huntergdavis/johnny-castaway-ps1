@@ -61,7 +61,7 @@ frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap reloca
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
+draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
 optimization matrix is `-0.4975%` / `100.5171%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
@@ -71,13 +71,13 @@ Castaway scene route, only an asset/reference naming source.
 The latest WALKSTUF1 high baseline extends the shared retained read groups to
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`,
 then physically compacts the already-clipped late-tail payloads, clips the
-offscreen frame `55`, frame `138`, frame `51`, frame `49`, frame `47`, frame `45`, frame `43`, frame `56`, frame `57`, frame `136`, frame `135`, and frame `139` draw streams, and shrinks frames `51`, `49`, `47`, `45`, `43`, `138`, and `135` in place with preserved offsets. It is still a same-speed row at `1764`,
+offscreen frame `55`, frame `138`, frame `51`, frame `49`, frame `47`, frame `45`, frame `43`, frame `56`, frame `57`, frame `136`, frame `135`, and frame `139` draw streams, and shrinks frames `51`, `49`, `47`, `45`, `43`, `138`, `135`, and `139` in place with preserved offsets. It is still a same-speed row at `1764`,
 active loop/target `1476/1434`, overrun `42`, and blocking/refill `81/23`, but
-active payload drops `918345 -> 860009`, CD sectors `605 -> 586`, loop
+active payload drops `918345 -> 859666`, CD sectors `605 -> 586`, loop
 reads/read time `65/282 -> 63/276`, and runtime rows/spans/pixels
 `17296/134136/776856 -> 16859/129919/731016`; due misses stay `16`, pack
 LBA/sectors stay `24883/750`, and the PS-EXE bucket stays `217088`. The tail
-groups, physical compaction, frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 clips, and frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place shrinks are same-speed work reductions,
+groups, physical compaction, frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 clips, and frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place shrinks are same-speed work reductions,
 so they do not count as VBlank speed wins.
 
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group

@@ -16,7 +16,7 @@ accepted performance baseline.
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `mary1` | `high` | 50.14 | 0.77% | 78.75% | 274.07% | 84 | candidate; rect/frame 2.33 |
-| 2 | `walkstuf1` | `high` | 45.19 | 2.93% | 45.7% | 721.7% | 104 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
+| 2 | `walkstuf1` | `high` | 45.19 | 2.93% | 45.7% | 722.03% | 104 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
 | 3 | `building2` | `high` | 44.91 | 3.05% | 67.28% | 594.62% | 72 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
 | 4 | `building4` | `low` | 42.73 | 1.31% | 65.48% | 508.7% | 74 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
 | 5 | `walkstuf1` | `low` | 41.93 | 3.14% | 45.96% | 789.57% | 85 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
