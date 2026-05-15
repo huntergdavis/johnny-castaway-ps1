@@ -70,7 +70,7 @@ the v629 VISITOR3 high `277..293` tail-pack repack, the v652 BUILDING4 low
 offscreen draw-span clipping pack pass, the v746 BUILDING4 low frame291
 in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
-compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877/v879/v880/v887/v888/v889/v890/v891
+compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877/v879/v880/v887/v888/v889/v890/v891/v892/v896
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
 WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v876 WALKSTUF1 low in-place work-volume shrinks through frame107, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
 `+0.2697%` public average over target / `99.7347%` public target speed across
@@ -184,6 +184,19 @@ restored and rebuilt. Close frame96 and frame39 on their tested baselines;
 remaining W1-low no-shift trims should be fixed-sector exact-flat work-volume
 checks, not speed candidates, unless generated deadline/read ownership changes
 first.
+
+Latest rejected WALKSTUF1 low scalar window-size probe:
+`walkstuf1-low-window-scan-v897` / `v897b` tried prefetch windows `20 KB`,
+`24 KB`, `28 KB`, `32 KB`, `48 KB`, and `64 KB` against the v876 baseline.
+Every larger-than-default window reduced some loop reads but moved visible
+cadence negative: baseline `1769/1477/1432`, overrun `45`, blocking/refill
+`65/20`, reads/read time `58/259`, due `11`; the closest misses were
+`20 KB` and `24 KB` at `1783/1489/1431`, overrun `58`, with blocking/refill
+`78/29` and `64/28`. Wider windows regressed harder through `64 KB` at
+`1836/1542/1443`, overrun `99`, blocking/refill `100/73`, reads/read time
+`15/183`, due `2`. Close scalar W1-low window growth on the current baseline;
+future W1-low green conversion needs generated read/deadline ownership or
+selective upload/static work, not a larger raw resident window.
 
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
@@ -1579,7 +1592,7 @@ strict hot-symbol budget.
 | 4 | BUILDING2 low | Narrowed by v645: the downstream `250..262` row is still unsafe after the v626 `218..229` promotion, regressing to `1649/1358`, overrun `41`, blocking `64`, and refill `4` despite reads `50 -> 48`. Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. Do not retry `250..262` as an adjacent scalar follow-up on the v626 baseline. |
 | 5 | BUILDING2 high | Closed for current scalar/setup forms: preserve the accepted `206..230` overread and do not retry the separate `185..197` cluster as a hand table or reusable setup segment. v640 showed the eight-VBlank hand-table guard still fired and regressed refill/blocking; v851 moved `185..197` into setup-owned residency and still regressed active loop `1351 -> 1357`, overrun `40 -> 48`, blocking `54 -> 63`, refill `18 -> 26`, and due `7 -> 8` despite reads `58 -> 55`. v838 also closes the late `{319,335}` hand row after it saved one read but regressed loop/blocking. v892 remains only a same-speed late/post-hot/frame92/frame91/frame90/frame89/frame172/frame171/frame96/frame170/frame97/frame98/frame174/frame99/frame168 work-volume baseline; v883 closes frame173 fixed-sector trimming because it was killed twice before correctness. | Only reopen B2-high `185..197` with generated planner metadata that proves earlier non-visible ownership, fixed hot code, `blocking_vb <= 54`, `refill <= 18`, and no due-miss increase before a PS1 gate. |
 | 6 | BUILDING2 high | Closed by v704 as safe subsets only: frames `168..177`, `94..104`, and `89..92` offscreen clipping remove `22390` pixels, `5072` spans, and `114` frame rows while staying exact-flat; frame `88` is a host no-op, and broad/hot v655 plus early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
-| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. v829 confirms whole-pack draw-tail trimming removes cadence padding and regresses high tide; v877/v879/v880/v887/v888/v889/v890/v891/v892 prove only selected no-shift fixed-sector single-entry trims are currently safe, and still only as same-speed work reduction. v883 proves fixed-sector status alone is not enough: frame173 was killed before correctness. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
+| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. v829 confirms whole-pack draw-tail trimming removes cadence padding and regresses high tide; v877/v879/v880/v887/v888/v889/v890/v891/v892/v896 prove only selected no-shift fixed-sector single-entry trims are currently safe, and still only as same-speed work reduction. v883 proves fixed-sector status alone is not enough: frame173 was killed before correctness. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
 | 8 | WALKSTUF1 low | Narrowed by v644 and v828: simply giving the late `285..321` cluster direct CD-window ownership is phase-negative. The latest `{297,309}` probe saved one read but regressed low to `1776/1484`, overrun `54`, blocking/refill `74/26`, with due still `11`. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Closed by v638: exact cleanup-row and draw-metadata dictionaries across frames `146..158` grow the hot cluster before runtime overhead. | Reopen only for semantic/near-duplicate row-template compression or generated ownership; exact row dictionaries are not a sector-saving lane on this baseline. |
