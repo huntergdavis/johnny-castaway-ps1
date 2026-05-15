@@ -263,15 +263,15 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
     }
 
     case MEM_REGION_CACHE: {
+        /* cacheAllocInternal updates g_cacheUsed itself (per-block,
+         * including the 4-byte header). NULL return means the
+         * free-list missed and the bump's headroom was insufficient
+         * — caller halts. */
         void *p = cacheAllocInternal(alignedSize);
         if (p == NULL) {
-            /* The sub-allocator already tried LRU eviction; if it
-             * still returns NULL, the boot proof's pinned-set check
-             * has been violated at runtime — halt. */
             memHaltFmt("CACHE", "exhausted",
                        alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
         }
-        g_cacheUsed += alignedSize;
         if (g_cacheUsed > g_cachePeak) {
             g_cachePeak = g_cacheUsed;
         }
@@ -353,32 +353,57 @@ void memSceneReset(const char *sceneName)
 }
 
 /* ---------------------------------------------------------------------
- * CACHE sub-allocator (segregated free-list)
+ * CACHE sub-allocator — bump + first-fit free-list
  * ---------------------------------------------------------------------
  *
- * Size classes: 64, 256, 1K, 4K, 16K, 64K bytes; plus a sorted list
- * for >64K (the SCR backgrounds and large BMPs).
+ * Hybrid design:
+ *   - Allocation: try the free-list first (first-fit); fall back to
+ *     bumping the high-water mark forward.
+ *   - Free: prepend the block to the free-list. No coalescing in
+ *     this implementation — fragmentation is bounded by the
+ *     bump's high-water plus the free-list's outstanding blocks.
+ *   - The first 4 bytes of each block store its rounded size so
+ *     memFree knows how much to reclaim.
  *
- * Each block has a small in-place header storing its rounded size
- * (so cacheFreeInternal can find the right class) and a next pointer
- * for the free-list. Free blocks live entirely on their free-list;
- * allocated blocks live in the data area with the header preceding
- * the user pointer.
+ * Tradeoff vs segregated free-lists: simpler, slightly slower for
+ * mixed-size workloads, no internal class waste. For the CACHE
+ * pattern (a few hundred BMP/TTM/SCR blobs of varying sizes,
+ * allocate-load-pin-evict), first-fit is adequate.
  *
- * For the first cut, the implementation is intentionally minimal —
- * it uses a single dumb bump within CACHE that doesn't reclaim space.
- * That gets the API working and lets the rest of the system come
- * online; a full free-list will replace this in a follow-up commit
- * once the integration is verified.
- *
- * TODO(phase-1): replace bump with segregated free-list.
+ * Header layout: each block (allocated or free) is preceded by a
+ * 4-byte size field. The user pointer is +4 bytes from the block
+ * base. Sizes include the header.
  * ------------------------------------------------------------------- */
 
+#define CACHE_HEADER_BYTES 4
+
+typedef struct CacheFreeBlock {
+    struct CacheFreeBlock *next;  /* next free block, or NULL */
+    /* Block body comes after; size lives in the 4 bytes preceding
+     * this struct (i.e., (uint32 *)((char *)block - CACHE_HEADER_BYTES)). */
+} CacheFreeBlock;
+
 static unsigned char *g_cacheBumpTop;
+static CacheFreeBlock *g_cacheFreeList;
 
 static void cacheInit_(void)
 {
-    g_cacheBumpTop = g_cacheBase;
+    g_cacheBumpTop  = g_cacheBase;
+    g_cacheFreeList = NULL;
+}
+
+static unsigned int cacheReadSize_(unsigned char *blockBase)
+{
+    /* Block base is the header start; size is the 4-byte word at
+     * blockBase. User pointer is at blockBase + 4. */
+    unsigned int sz;
+    memcpy(&sz, blockBase, sizeof(unsigned int));
+    return sz;
+}
+
+static void cacheWriteSize_(unsigned char *blockBase, unsigned int sz)
+{
+    memcpy(blockBase, &sz, sizeof(unsigned int));
 }
 
 static void *cacheAllocInternal(size_t size)
@@ -387,30 +412,69 @@ static void *cacheAllocInternal(size_t size)
     if (g_cacheBumpTop == NULL) {
         cacheInit_();
     }
+    /* Total block size includes the 4-byte header. Round up to align. */
+    const size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
+                              & ~((size_t)MEM_REGION_ALIGN - 1);
+
+    /* Try free-list first (first-fit). */
+    CacheFreeBlock **prev = &g_cacheFreeList;
+    CacheFreeBlock *cur = g_cacheFreeList;
+    while (cur != NULL) {
+        unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
+        unsigned int  freeSize   = cacheReadSize_(blockBase);
+        if (freeSize >= blockSize) {
+            /* Remove from free-list. */
+            *prev = cur->next;
+            /* The free block's reported size may be larger than what
+             * we need; we honor the full block (no splitting in this
+             * implementation). g_cacheUsed adds back the full block. */
+            g_cacheUsed += freeSize;
+            return (void *)cur;
+        }
+        prev = &cur->next;
+        cur  = cur->next;
+    }
+
+    /* No free-list match; bump forward. */
     const size_t used = (size_t)(g_cacheBumpTop - g_cacheBase);
     const size_t remaining = MEM_CACHE_BUDGET - used;
-    if (size > remaining) {
-        /* TODO(phase-1): integrate LRU eviction here. For now we
-         * surface the failure to the caller, which halts. */
+    if (blockSize > remaining) {
+        /* CACHE exhausted. TODO(phase-1): integrate LRU eviction
+         * before returning NULL — caller halts in that case. */
         return NULL;
     }
-    void *p = g_cacheBumpTop;
-    g_cacheBumpTop += size;
-    return p;
+    unsigned char *blockBase = g_cacheBumpTop;
+    cacheWriteSize_(blockBase, (unsigned int)blockSize);
+    g_cacheBumpTop += blockSize;
+    g_cacheUsed += blockSize;
+    return (void *)(blockBase + CACHE_HEADER_BYTES);
 }
 
 static void cacheFreeInternal(void *ptr)
 {
-    /* TODO(phase-1): real free-list release. The bump-only stub
-     * accepts free as a no-op (memory is reclaimed in bulk when
-     * the entire build is restarted). */
-    (void)ptr;
+    if (ptr == NULL) return;
+    /* User pointer is +4 bytes from the block header. */
+    unsigned char *blockBase = (unsigned char *)ptr - CACHE_HEADER_BYTES;
+    /* Update g_cacheUsed by the block's size. */
+    unsigned int blockSize = cacheReadSize_(blockBase);
+    if (blockSize <= g_cacheUsed) {
+        g_cacheUsed -= blockSize;
+    } else {
+        g_cacheUsed = 0;  /* defensive on counter underflow */
+    }
+    /* Prepend to free-list. The block's body is reinterpreted as a
+     * CacheFreeBlock; first sizeof(void *) bytes hold `next`. */
+    CacheFreeBlock *fb = (CacheFreeBlock *)ptr;
+    fb->next = g_cacheFreeList;
+    g_cacheFreeList = fb;
 }
 
 static size_t cacheUsedInternal(void)
 {
-    if (g_cacheBumpTop == NULL) return 0;
-    return (size_t)(g_cacheBumpTop - g_cacheBase);
+    /* g_cacheUsed tracks the *live* (unfreed) bytes; that's the
+     * accurate value for diagnostics. The bump high-water can be
+     * higher because freed blocks haven't been compacted. */
+    return g_cacheUsed;
 }
 
 void memCachePreEvictForNextScene(const char *effectiveSceneName)
