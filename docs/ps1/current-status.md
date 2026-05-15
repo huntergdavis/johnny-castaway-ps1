@@ -272,7 +272,10 @@ bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687
 also exact-flat, dropping runtime frame rows/spans/pixels from
 `17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138/frame51/frame49 follow-up is
 also exact-flat and drops high runtime rows/spans/pixels
-`17296/134136/776856 -> 17052/132773/755038`. The public battle card is now
+`17296/134136/776856 -> 17052/132773/755038`. BUILDING4 low v827 now carries
+the same-speed no-shift payload lane through frame `286`, keeping
+`3128/2853/2816`, blocking/refill `40/34`, read VBlanks `215`, and due `1`
+while dropping active payload `855284 -> 810226`. The public battle card is now
 `+0.2702%` over target /
 `99.7342%` target speed; the raw signed optimization rollup is `-0.4969%` /
 `100.5165%`.

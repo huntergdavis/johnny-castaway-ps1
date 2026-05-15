@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-14:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T17:25:46` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-14T18:26:08` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /

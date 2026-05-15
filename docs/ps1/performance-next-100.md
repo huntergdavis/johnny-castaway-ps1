@@ -112,14 +112,15 @@ adds about `0.0008` public over-target points removed and `0.0009`
 target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
 VBlanks of remaining gap.
 
-Latest promoted BUILDING4 low work-volume baseline: v746 keeps the v652 timing
-profile exact-flat but shrinks frame `291` in-place instead of physically
-moving downstream entries. Active payload drops `855284 -> 849109` and the
-selected entry shrinks `8585 -> 2410`; scene/loop/target remain
+Latest promoted BUILDING4 low work-volume baseline: v746/v806/v807/v808/v811/
+v813/v814/v815/v816/v827 keep the v652 timing profile exact-flat while
+shrinking frames `291`, `34`, `31`, `290`, `32`, `35`, `36`, `37`, `288`,
+`287`, `39`, and `286` in-place instead of physically moving downstream
+entries. Active payload drops `855284 -> 810226`; scene/loop/target remain
 `3128/2853/2816`, blocking/refill remain `40/34`, loop reads/read VBlanks stay
 `30/215`, and due misses stay `1`. Treat this as a safe no-shift payload lane,
-not a speed win; next BUILDING4 low attempts should target sector-changing
-no-shift shrinks or generated deadline/static-upload ownership.
+not a speed win; green conversion now needs generated deadline/static-upload
+ownership rather than more ordinary no-shift tail trimming.
 
 Latest rejected BUILDING4 low frame40 no-shift trim: v825 tried the largest
 remaining open sector-changing trim after the v816 work baseline. Frame `40`
@@ -127,8 +128,8 @@ shrinks `8788 -> 7899` in place and models entry-sector coverage `5 -> 4`
 without moving payload offsets or changing file size, but the focused run was
 killed before `JCPERF2` after reaching frame `297/428`, so no correctness or
 speed metrics were promotable. Close frame40 with the other phase-sensitive B4
-low no-shift misses; only frame286 remains as a sector-changing trim probe, and
-actual green conversion should favor generated static/upload ownership.
+low no-shift misses; v827 later promoted frame286 exact-flat, so actual green
+conversion should now favor generated static/upload ownership.
 
 Latest rejected BUILDING4 high mirror pass: v715 applied the same
 preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted
