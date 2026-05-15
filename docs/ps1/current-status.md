@@ -246,10 +246,11 @@ capacity. On current HEAD it measures `1351/1311`, overrun `40`, blocking
 layout changes. It also carries the v664 late-only offscreen work-volume clip
 for frames `168..177`, the v698 post-hot tail clip for frames `94..104`, the
 v700 frame `92` clip, the v701 frame `91` clip, the v702 frame `90` clip, the
-v703 frame `89` clip, and the v877 preserve-offset entry `172` / source frame
-`231` payload trim. All keep timing/CD exact-flat while dropping runtime frame
-rows/spans/pixels from `18144/110717/468636 -> 18030/105645/446246` and active
-payload `674798 -> 673818`.
+v703 frame `89` clip, and the v877/v879 preserve-offset entry `172` / source
+frame `231` and entry `171` / source frame `228` payload trims. All keep
+timing/CD exact-flat while dropping runtime frame rows/spans/pixels from
+`18144/110717/468636 -> 18030/105645/446246` and active payload `674798 ->
+672863`.
 BUILDING2 low now adds the v626 slack-8 `218..229` row, v660 offscreen
 draw-span clip, and v739 draw-tail trim ahead of the accepted low groups,
 improving to `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read
@@ -384,11 +385,11 @@ Milestone releases:
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
-  plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, and BUILDING2 high frame172 no-shift payload shrinking.
+  plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, and BUILDING2 high frame172/frame171 no-shift payload shrinking.
   The public battle card is `+0.2697%` / `99.7347%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
-  `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 673818`, WALKSTUF1 high is
+  `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672863`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
   `16859/129919/731016` plus active payload `861486`, WALKSTUF1 low is `1477/1432` with loop
   reads `58`, rows/spans/pixels `16257/114798/633876`, and active payload

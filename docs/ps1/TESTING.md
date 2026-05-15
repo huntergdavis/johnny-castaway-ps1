@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-14:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T01:58:12` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building2-high-frame172-inplace-v877`, `walkstuf1-low-frame107-inplace-v876`, `walkstuf1-low-frame109-inplace-v875`, `walkstuf1-low-frame108-inplace-v874`, `walkstuf1-low-frame140-inplace-v873`, `walkstuf1-low-frame95-inplace-v872`, `walkstuf1-low-frame92-inplace-v871`, `walkstuf1-low-frame91-inplace-v870`, `walkstuf1-low-frame134-inplace-v869`, `walkstuf1-low-frame100-inplace-v868`, `walkstuf1-low-frame99-inplace-v867`, `walkstuf1-low-frame97-inplace-v866`, `walkstuf1-low-frame94-inplace-v865`, `walkstuf1-low-frame93-inplace-v864`, `walkstuf1-low-frame101-inplace-v863`, `walkstuf1-low-frame27-inplace-v862`, `walkstuf1-low-frame98-inplace-v861`, `walkstuf1-low-frame89-inplace-v860`, `walkstuf1-low-frame87-inplace-v859`, `walkstuf1-low-frame139-inplace-v855`, `walkstuf1-low-frame129-inplace-v853`, `walkstuf1-low-frame81-inplace-v852`, `walkstuf1-low-frame79-inplace-v849`, `walkstuf1-low-frame136-inplace-v847`, `walkstuf1-low-frame53-inplace-v846`, `walkstuf1-high-frame43-inplace-v844`, `walkstuf1-high-frame45-inplace-v843`, `walkstuf1-high-frame47-inplace-v842`, `walkstuf1-high-frame49-inplace-v841`, `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame139-offscreen-v837`, `walkstuf1-high-frame135-offscreen-v836`, `walkstuf1-high-frame136-offscreen-v835`, `walkstuf1-high-frame57-offscreen-v834`, `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-15T02:17:52` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building2-high-frame171-inplace-v879`, `building2-high-frame172-inplace-v877`, `walkstuf1-low-frame107-inplace-v876`, `walkstuf1-low-frame109-inplace-v875`, `walkstuf1-low-frame108-inplace-v874`, `walkstuf1-low-frame140-inplace-v873`, `walkstuf1-low-frame95-inplace-v872`, `walkstuf1-low-frame92-inplace-v871`, `walkstuf1-low-frame91-inplace-v870`, `walkstuf1-low-frame134-inplace-v869`, `walkstuf1-low-frame100-inplace-v868`, `walkstuf1-low-frame99-inplace-v867`, `walkstuf1-low-frame97-inplace-v866`, `walkstuf1-low-frame94-inplace-v865`, `walkstuf1-low-frame93-inplace-v864`, `walkstuf1-low-frame101-inplace-v863`, `walkstuf1-low-frame27-inplace-v862`, `walkstuf1-low-frame98-inplace-v861`, `walkstuf1-low-frame89-inplace-v860`, `walkstuf1-low-frame87-inplace-v859`, `walkstuf1-low-frame139-inplace-v855`, `walkstuf1-low-frame129-inplace-v853`, `walkstuf1-low-frame81-inplace-v852`, `walkstuf1-low-frame79-inplace-v849`, `walkstuf1-low-frame136-inplace-v847`, `walkstuf1-low-frame53-inplace-v846`, `walkstuf1-high-frame43-inplace-v844`, `walkstuf1-high-frame45-inplace-v843`, `walkstuf1-high-frame47-inplace-v842`, `walkstuf1-high-frame49-inplace-v841`, `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame139-offscreen-v837`, `walkstuf1-high-frame135-offscreen-v836`, `walkstuf1-high-frame136-offscreen-v835`, `walkstuf1-high-frame57-offscreen-v834`, `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -120,12 +120,13 @@ row `16257/114798/633876`; active payload now drops directly
 `790381 -> 790322`, and the no-shift lane drops `879801 -> 790322`.
 
 Latest promoted BUILDING2 high payload note:
-`building2-high-frame172-inplace-v877` trims entry `172` / source frame `231`
-in place after the v703 frame89 work-volume baseline, preserving all payload
-offsets, pack LBA/sectors, and the PS-EXE bucket. The entry shrinks `1831 ->
-851` bytes and active payload drops `674798 -> 673818`; timing/CD stay
-exact-flat at scene `1602`, loop/target `1351/1311`, overrun `40`,
-blocking/refill `54/18`, loop reads/read time `58/257`, and due `7`.
+`building2-high-frame171-inplace-v879` trims entry `171` / source frame `228`
+after v877 trimmed entry `172` / source frame `231`, preserving all payload
+offsets, pack LBA/sectors, and the PS-EXE bucket. Entries `172` and `171`
+shrink `1831 -> 851` and `1980 -> 1025` bytes, and active payload drops
+`674798 -> 672863`; timing/CD stay exact-flat at scene `1602`, loop/target
+`1351/1311`, overrun `40`, blocking/refill `54/18`, loop reads/read time
+`58/257`, and due `7`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broad and
 frame-0-only low clipping proved phase-negative. Low stays exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while draw
@@ -189,13 +190,14 @@ active payload drops `916139 -> 879801`; the current v760 runtime baseline keeps
 the row at `60/272` loop reads/read time after restoring bounded CD fast-polling.
 
 Latest promoted BUILDING2 work-volume note:
-`building2-high-frame172-inplace-v877` trims entry `172` / source frame `231`
-after v703 added frame `89` on top of v702/v701/v700 frames `90`, `91`, and
-`92`, v698 safe `94..104`, and v664 late `168..177`. Timing/CD stays exact-flat
-at `1602`, active loop/target `1351/1311`, overrun `40`, blocking/refill
-`54/18`, reads/read time `58/257`, and due `7`. Runtime frame rows/spans/pixels
-remain at the v703 `18030/105645/446246` row, while active payload drops
-`674798 -> 673818` with fixed pack LBA/sectors and PS-EXE bucket.
+`building2-high-frame171-inplace-v879` trims entry `171` / source frame `228`
+after v877 trimmed entry `172` and v703 added frame `89` on top of v702/v701/v700
+frames `90`, `91`, and `92`, v698 safe `94..104`, and v664 late `168..177`.
+Timing/CD stays exact-flat at `1602`, active loop/target `1351/1311`, overrun
+`40`, blocking/refill `54/18`, reads/read time `58/257`, and due `7`. Runtime
+frame rows/spans/pixels remain at the v703 `18030/105645/446246` row, while
+active payload drops `674798 -> 672863` with fixed pack LBA/sectors and
+PS-EXE bucket.
 `building2-low-trimtails-v739` trims dead low-tide draw-tail payload after the
 v626 `218..229` slack8 row and v660 offscreen draw-span clip. It improves
 BUILDING2 low to scene/loop/target `1603/1339/1317`, overrun `22`,
