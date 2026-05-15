@@ -204,18 +204,18 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T06:17:50` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame111-inplace-v909`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T06:25:38` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame106-inplace-v910`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Current W1 payload/speed track: `walkstuf1-low-frame111-inplace-v909`
-shrinks low entry `111` / source frame `219` in place after the v908 frame110
-trim, preserving all payload offsets while cutting that entry `4974 -> 4940`
+Current W1 payload/speed track: `walkstuf1-low-frame106-inplace-v910`
+shrinks low entry `106` / source frame `209` in place after the v909 frame111
+trim, preserving all payload offsets while cutting that entry `944 -> 919`
 bytes. Low repeats scene/loop/target at `1769/1477/1432`,
 overrun stays `45`, loop read time stays `259`, blocking/refill are `65/20`,
 due stays `11`, and runtime rows/spans/pixels stay at
 `16257/114798/633876`. The no-shift lane now provides the active payload drop
-`879801 -> 790233`.
+`879801 -> 790208`.
 
 Current B2-high payload track: `building2-high-frame169-inplace-v896` trims
 entry `169` / source frame `223` after v877/v879/v880/v887/v888/v889/v890/v891/v892 trimmed entries
@@ -435,6 +435,8 @@ exact-flat while active payload drops again to `790322`.
 exact-flat while active payload drops again to `790267`.
 `walkstuf1-low-frame111-inplace-v909` extends it with frame `111`, keeping timing
 exact-flat while active payload drops again to `790233`.
+`walkstuf1-low-frame106-inplace-v910` extends it with frame `106`, keeping timing
+exact-flat while active payload drops again to `790208`.
 `walkstuf1-low-cd-fastpoll-v760` restores the post-release current baseline to
 `1478/1431`, blocking/refill `64/20`, loop reads/read time `60/272`, and due
 `11` while preserving the CD long-soak timeout fallback.
@@ -511,6 +513,7 @@ and this page.
   `building2-high-frame96-inplace-v880`,
   `building2-high-frame171-inplace-v879`,
   `building2-high-frame172-inplace-v877`,
+  `walkstuf1-low-frame106-inplace-v910`,
   `walkstuf1-low-frame111-inplace-v909`,
   `walkstuf1-low-frame110-inplace-v908`,
   `walkstuf1-low-frame107-inplace-v876`,
@@ -2501,15 +2504,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T06:17:50</td>
-      <td>walkstuf1-low-frame111-inplace-v909</td>
+      <td>2026-05-15T06:25:38</td>
+      <td>walkstuf1-low-frame106-inplace-v910</td>
       <td>+3.1%</td>
       <td class="spd-yellow">96.9%</td>
       <td>1477/1432</td>
       <td>65</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed fixed-sector frame111 payload shrink on top of v908; entry 111/source frame 219 shrinks 4974 -&gt; 4940 bytes, active payload 790267 -&gt; 790233, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
+      <td>same-speed fixed-sector frame106 payload shrink on top of v909; entry 106/source frame 209 shrinks 944 -&gt; 919 bytes, active payload 790233 -&gt; 790208, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

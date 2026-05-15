@@ -328,11 +328,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T06:17:50</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T06:25:38</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame111-inplace-v909</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame106-inplace-v910</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -341,14 +341,14 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
   </tbody>
 </table>
 
-<p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame111-inplace-v909</code>
-shrinks low entry <code class="language-plaintext highlighter-rouge">111</code> / source frame <code class="language-plaintext highlighter-rouge">219</code> in place after the v908 frame110
-trim, preserving all payload offsets while cutting that entry <code class="language-plaintext highlighter-rouge">4974 -&gt; 4940</code>
+<p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame106-inplace-v910</code>
+shrinks low entry <code class="language-plaintext highlighter-rouge">106</code> / source frame <code class="language-plaintext highlighter-rouge">209</code> in place after the v909 frame111
+trim, preserving all payload offsets while cutting that entry <code class="language-plaintext highlighter-rouge">944 -&gt; 919</code>
 bytes. Low repeats scene/loop/target at <code class="language-plaintext highlighter-rouge">1769/1477/1432</code>,
 overrun stays <code class="language-plaintext highlighter-rouge">45</code>, loop read time stays <code class="language-plaintext highlighter-rouge">259</code>, blocking/refill are <code class="language-plaintext highlighter-rouge">65/20</code>,
 due stays <code class="language-plaintext highlighter-rouge">11</code>, and runtime rows/spans/pixels stay at
 <code class="language-plaintext highlighter-rouge">16257/114798/633876</code>. The no-shift lane now provides the active payload drop
-<code class="language-plaintext highlighter-rouge">879801 -&gt; 790233</code>.</p>
+<code class="language-plaintext highlighter-rouge">879801 -&gt; 790208</code>.</p>
 
 <p>Current B2-high payload track: <code class="language-plaintext highlighter-rouge">building2-high-frame169-inplace-v896</code> trims
 entry <code class="language-plaintext highlighter-rouge">169</code> / source frame <code class="language-plaintext highlighter-rouge">223</code> after v877/v879/v880/v887/v888/v889/v890/v891/v892 trimmed entries
@@ -568,6 +568,8 @@ exact-flat while active payload drops again to <code class="language-plaintext h
 exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">790267</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame111-inplace-v909</code> extends it with frame <code class="language-plaintext highlighter-rouge">111</code>, keeping timing
 exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">790233</code>.
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-frame106-inplace-v910</code> extends it with frame <code class="language-plaintext highlighter-rouge">106</code>, keeping timing
+exact-flat while active payload drops again to <code class="language-plaintext highlighter-rouge">790208</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-cd-fastpoll-v760</code> restores the post-release current baseline to
 <code class="language-plaintext highlighter-rouge">1478/1431</code>, blocking/refill <code class="language-plaintext highlighter-rouge">64/20</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">60/272</code>, and due
 <code class="language-plaintext highlighter-rouge">11</code> while preserving the CD long-soak timeout fallback.
@@ -645,6 +647,7 @@ refreshed rows use <code class="language-plaintext highlighter-rouge">building4-
 <code class="language-plaintext highlighter-rouge">building2-high-frame96-inplace-v880</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame171-inplace-v879</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame172-inplace-v877</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-frame106-inplace-v910</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame111-inplace-v909</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame110-inplace-v908</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame107-inplace-v876</code>,
@@ -2636,15 +2639,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T06:17:50</td>
-      <td>walkstuf1-low-frame111-inplace-v909</td>
+      <td>2026-05-15T06:25:38</td>
+      <td>walkstuf1-low-frame106-inplace-v910</td>
       <td>+3.1%</td>
       <td class="spd-yellow">96.9%</td>
       <td>1477/1432</td>
       <td>65</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed fixed-sector frame111 payload shrink on top of v908; entry 111/source frame 219 shrinks 4974 -&gt; 4940 bytes, active payload 790267 -&gt; 790233, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
+      <td>same-speed fixed-sector frame106 payload shrink on top of v909; entry 106/source frame 209 shrinks 944 -&gt; 919 bytes, active payload 790233 -&gt; 790208, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
