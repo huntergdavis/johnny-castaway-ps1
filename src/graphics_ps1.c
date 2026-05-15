@@ -652,13 +652,16 @@ void graphicsInit()
     ClearOTagR(ot[0], OT_LENGTH);
     ClearOTagR(ot[1], OT_LENGTH);
 
-    /* Allocate primitive buffers dynamically to reduce BSS size */
-    primitiveBuffer[0] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
-    primitiveBuffer[1] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
-    if (!primitiveBuffer[0] || !primitiveBuffer[1]) {
-        printf("ERROR: Failed to allocate primitive buffers\n");
-        while(1);
-    }
+    /* MEM_REGION_RATIONALE: GPU primitive ordering-table buffers,
+     * allocated once at graphicsInit and reused for the life of the
+     * program. INIT_NONE — ClearOTagR initializes the buffers below. */
+    primitiveBuffer[0] = (uint8*)memAlloc(MEM_REGION_BOOT,
+                                          PRIMITIVE_BUFFER_SIZE,
+                                          "gpuPrimitiveBuffer0");
+    primitiveBuffer[1] = (uint8*)memAlloc(MEM_REGION_BOOT,
+                                          PRIMITIVE_BUFFER_SIZE,
+                                          "gpuPrimitiveBuffer1");
+    /* memAlloc halts on exhaustion — no NULL check needed. */
 
     /* Initialize primitive buffers */
     nextPrimitive[0] = primitiveBuffer[0];

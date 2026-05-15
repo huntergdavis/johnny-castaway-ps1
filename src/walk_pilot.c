@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "mytypes.h"
+#include "mem_region.h"
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "foreground_pilot.h"
@@ -105,16 +106,13 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
         return;
 
     if (gWalkCleanBuf == NULL) {
-        gWalkCleanBuf = (uint16 *)malloc(
-            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
-        if (gWalkCleanBuf == NULL) {
-            /* Out of memory — leave invalid; walks will skip clean-area
-             * restore and fall back to whatever bgTile contains. Visual
-             * artifact (overpaint) but no crash. */
-            extern int printf(const char *, ...);
-            printf("JCWALK: walkClean buffer alloc failed\n");
-            return;
-        }
+        /* MEM_REGION_RATIONALE: walk-area pristine pixel buffer (~149 KB).
+         * Allocated lazily on first walk; persists for the lifetime of
+         * the program. INIT_NONE — grCaptureBgRect populates it below. */
+        gWalkCleanBuf = (uint16 *)memAlloc(MEM_REGION_BOOT,
+            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16),
+            "walkCleanBuf");
+        /* memAlloc halts on exhaustion — no NULL check needed. */
     }
 
     gWalkCleanX = (sint16)(xPos + WALK_CLEAN_REL_X);
@@ -135,10 +133,10 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
 
 void walkPilotReleaseCleanWalkArea(void)
 {
-    if (gWalkCleanBuf) {
-        free(gWalkCleanBuf);
-        gWalkCleanBuf = NULL;
-    }
+    /* BOOT region — buffer is permanent. Release path is intentionally
+     * a no-op for the bytes; only the validity flag clears so the next
+     * grCaptureBgRect re-populates the buffer cleanly. The pointer
+     * stays — buffer is reused. */
     gWalkCleanValid = 0;
 }
 
@@ -167,15 +165,13 @@ int walkPilotInit(void)
     int ok = 1;
 
     if (gWalkCleanBuf == NULL) {
-        gWalkCleanBuf = (uint16 *)malloc(
-            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
-        if (gWalkCleanBuf == NULL) {
-            extern int printf(const char *, ...);
-            printf("JCWALK: walkPilotInit clean-buf alloc failed (%u bytes)\n",
-                   (unsigned)((unsigned long)WALK_CLEAN_W *
-                              (unsigned long)WALK_CLEAN_H * sizeof(uint16)));
-            ok = 0;
-        }
+        /* MEM_REGION_RATIONALE: walk-area pristine pixel buffer (~149 KB).
+         * Allocated at walkPilotInit (early boot). INIT_NONE — populated
+         * by grCaptureBgRect on first scene. */
+        gWalkCleanBuf = (uint16 *)memAlloc(MEM_REGION_BOOT,
+            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16),
+            "walkCleanBuf");
+        /* memAlloc halts on exhaustion — no NULL check needed. */
         /* Mark invalid until the first scene's setup captures real
          * pristine pixels. walkPilotRestoreClean checks gWalkCleanValid
          * before copying, so an early-walk attempt is a safe no-op. */

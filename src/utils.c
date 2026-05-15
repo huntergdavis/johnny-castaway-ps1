@@ -120,14 +120,27 @@ void debugMsg(char *message, ... )
 }
 
 
+#ifdef PS1_BUILD
+#include "mem_region.h"
+#endif
+
 void *safe_malloc(size_t size)
 {
+#ifdef PS1_BUILD
+    /* PS1: route to BOOT region. All current safe_malloc call sites
+     * are catalog/struct allocations in parseResourceFiles (resource.c)
+     * — one-shot at boot, never freed. MEM_REGION_RATIONALE: legacy
+     * shim until call sites are individually migrated with explicit
+     * region tags. memAlloc never returns NULL (halts on exhaustion),
+     * so the original fatalError() path is unreachable but harmless. */
+    void *ptr = memAlloc(MEM_REGION_BOOT, size, "safe_malloc");
+    return ptr;
+#else
     void *ptr = malloc(size);
-
     if (ptr == NULL)
         fatalError("failed to malloc() %d bytes", size);
-
     return ptr;
+#endif
 }
 
 
