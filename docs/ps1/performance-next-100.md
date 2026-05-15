@@ -1164,6 +1164,15 @@ regressed scene/loop `1602/1351 -> 1617/1366`, target `1311 -> 1305`, overrun
 offscreen-clip subsets; remaining B2-high speed needs scheduler-owned metadata,
 no-shift encoding, or a different upload/restore representation.
 
+Latest rejected BUILDING2 high whole-pack draw-tail trim: v829 applied the
+same `compact-fgp3-trim-draw-tails.py` transform that promoted BUILDING2 low in
+v739, preserving file size/LBA/source while reducing active payload `674798 ->
+651506` across `26` entries. High tide regressed anyway: scene/loop/target
+`1602/1351/1311 -> 1609/1358/1309`, overrun `40 -> 49`, blocking `54 -> 60`,
+refill `18 -> 26`, and loop reads `58 -> 59`. Close B2-high full tail trimming
+under the v703 baseline; the removed high-tide bytes are cadence padding, not
+free payload.
+
 Latest rejected BUILDING2 high early-wide row: v500 inserted `{53,77}` before
 the accepted high rows to test whether starting before the failed `60..76`
 extension could use an earlier slack gap and save two modeled reads. The gate
@@ -1439,7 +1448,7 @@ retained-read tables.
 | 4 | BUILDING2 low | Narrowed by v645: the downstream `250..262` row is still unsafe after the v626 `218..229` promotion, regressing to `1649/1358`, overrun `41`, blocking `64`, and refill `4` despite reads `50 -> 48`. Generate an append-start table from observed CD log starts, not sector windows, and blacklist starts that previously caused hidden refill. | Add a planner report showing which start fired, then fail fast if `group_hits=0` or refill rises. Do not retry `250..262` as an adjacent scalar follow-up on the v626 baseline. |
 | 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. v640 shows an eight-VBlank hand-table guard still fires and regresses refill/blocking; v703 is now only a same-speed late/post-hot/frame92/frame91/frame90/frame89 work-volume baseline. | Gate high tide through metadata/planner ownership, not new C branches; enforce `blocking_vb <= 54`, `refill <= 18`, and reject if it matches the raw/slack table phase. |
 | 6 | BUILDING2 high | Closed by v704 as safe subsets only: frames `168..177`, `94..104`, and `89..92` offscreen clipping remove `22390` pixels, `5072` spans, and `114` frame rows while staying exact-flat; frame `88` is a host no-op, and broad/hot v655 plus early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
-| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. The trim failures show the tail is paying for timing, not just bytes. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
+| 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. v829 confirms even whole-pack draw-tail trimming removes cadence padding and regresses high tide, so byte removal alone is not safe here. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
 | 8 | WALKSTUF1 low | Narrowed by v644 and v828: simply giving the late `285..321` cluster direct CD-window ownership is phase-negative. The latest `{297,309}` probe saved one read but regressed low to `1776/1484`, overrun `54`, blocking/refill `74/26`, with due still `11`. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Closed by v638: exact cleanup-row and draw-metadata dictionaries across frames `146..158` grow the hot cluster before runtime overhead. | Reopen only for semantic/near-duplicate row-template compression or generated ownership; exact row dictionaries are not a sector-saving lane on this baseline. |
