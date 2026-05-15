@@ -203,6 +203,8 @@ enum {
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES (156UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (238UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES (150UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START (242UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES (146UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
@@ -2530,21 +2532,27 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         }
         segmentBuffer = gFgSetupSegmentBuffer;
         gFgRuntime.setupSegmentReusable = 1;
-    } else if (islandState.lowTide && fgSceneEquals(sceneName, "walkstuf1")) {
-        segmentStart = FG_WALKSTUF1_LOW_SETUP_SEGMENT_START;
-        segmentBytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES;
+    } else if (fgSceneEquals(sceneName, "walkstuf1")) {
+        if (islandState.lowTide) {
+            segmentStart = FG_WALKSTUF1_LOW_SETUP_SEGMENT_START;
+            segmentBytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES;
+        } else {
+            segmentStart = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START;
+            segmentBytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES;
+        }
+        allocationBytes = segmentBytes + segment2Bytes;
         if (gFgSetupSegmentBuffer == NULL ||
-            gFgSetupSegmentBufferSize < segmentBytes) {
+            gFgSetupSegmentBufferSize < allocationBytes) {
             if (gFgSetupSegmentBuffer != NULL)
                 free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES);
+            gFgSetupSegmentBuffer = (uint8 *)malloc(allocationBytes);
             if (gFgSetupSegmentBuffer == NULL) {
                 gFgSetupSegmentBufferSize = 0;
                 if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES);
+                    ps1PerfMarkAllocFail(allocationBytes);
                 return 0;
             }
-            gFgSetupSegmentBufferSize = segmentBytes;
+            gFgSetupSegmentBufferSize = allocationBytes;
         }
         segmentBuffer = gFgSetupSegmentBuffer;
         gFgRuntime.setupSegmentReusable = 1;

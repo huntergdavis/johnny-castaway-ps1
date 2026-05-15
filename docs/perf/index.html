@@ -321,19 +321,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2325%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2285%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7709%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7746%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T13:49:54</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T14:14:21</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-high-setupseg242-388-v998</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -349,13 +349,13 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code>
-primes the low-tide relative sector range <code class="language-plaintext highlighter-rouge">238..388</code> during setup after the
-v935 retained-read baseline. Low improves active loop/target
-<code class="language-plaintext highlighter-rouge">1481/1431 -&gt; 1469/1447</code>, overrun <code class="language-plaintext highlighter-rouge">50 -&gt; 22</code>, blocking/refill
-<code class="language-plaintext highlighter-rouge">72/27 -&gt; 34/12</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">58/267 -&gt; 28/145</code>, and due
-<code class="language-plaintext highlighter-rouge">10 -&gt; 4</code>. The setup trade is explicit: scene/setup cost rises
-<code class="language-plaintext highlighter-rouge">1773 -&gt; 1820</code> and setup bytes <code class="language-plaintext highlighter-rouge">421428 -&gt; 728628</code> inside the material gate.</p>
+<p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-setupseg242-388-v998</code> and
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code> use tide-local setup-resident sector
+ranges. High improves active loop/target <code class="language-plaintext highlighter-rouge">1481/1428 -&gt; 1476/1441</code>, overrun
+<code class="language-plaintext highlighter-rouge">53 -&gt; 35</code>, blocking/refill <code class="language-plaintext highlighter-rouge">88/24 -&gt; 49/17</code>, loop reads/read time
+<code class="language-plaintext highlighter-rouge">67/287 -&gt; 37/182</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 7</code>. Low improves active loop/target
+<code class="language-plaintext highlighter-rouge">1481/1431 -&gt; 1469/1447</code>, overrun <code class="language-plaintext highlighter-rouge">50 -&gt; 22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">72/27 -&gt; 34/12</code>,
+loop reads/read time <code class="language-plaintext highlighter-rouge">58/267 -&gt; 28/145</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 4</code>.</p>
 
 <p>Current B2-high speed track: <code class="language-plaintext highlighter-rouge">building2-high-setupseg86-242-v979</code> primes
 relative sectors <code class="language-plaintext highlighter-rouge">86..242</code> during setup. Against the fresh current control it
@@ -659,11 +659,11 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-high-setupseg242-388-v998</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-setupseg86-242-v979</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-local-lz-entry270-v971</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-high-frame139-inplace-v927</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame100-inplace-v926</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame40-inplace-v924</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame173-inplace-v914</code>,
@@ -2670,15 +2670,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-15T08:46:42</td>
-      <td>walkstuf1-high-frame139-inplace-v927</td>
-      <td>+2.9%</td>
-      <td class="spd-yellow">97.2%</td>
-      <td>1476/1434</td>
-      <td>81</td>
-      <td>23</td>
-      <td>16</td>
-      <td>same-speed fixed-sector frame139 payload shrink on top of v884; entry 139/source frame 247 shrinks 4011 -&gt; 3668 bytes, active payload 860009 -&gt; 859666, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16.</td>
+      <td>2026-05-15T14:14:21</td>
+      <td>walkstuf1-high-setupseg242-388-v998</td>
+      <td>+2.4%</td>
+      <td class="spd-yellow">97.6%</td>
+      <td>1476/1441</td>
+      <td>49</td>
+      <td>17</td>
+      <td>7</td>
+      <td>scene-local setup segment primes relative sectors 242..388 for WALKSTUF1 high; against v949 current control it improves active loop/target 1481/1428 -&gt; 1476/1441, overrun 53 -&gt; 35, blocking/refill 88/24 -&gt; 49/17, reads/read time 67/287 -&gt; 37/182, and due 15 -&gt; 7; setup cost rises scene 1770 -&gt; 1822 and setup bytes 413236 -&gt; 712244 inside the 4% material gate; 228..388 and split 252..388 + 228..252 crossed the structural cliff, while 252..388, 244..388, 240..388, and 241..388 were safe but slower or worse-speed boundaries.</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>

@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-15:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2325%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7709%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T13:49:54` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-setupseg238-388-v989`, `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2285%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7746%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T14:14:21` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-setupseg242-388-v998`, `walkstuf1-low-setupseg238-388-v989`, `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `johnny1-local-lz-v932`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -146,13 +146,17 @@ scene `1773 -> 1820` and setup bytes `421428 -> 728628`, accepted under the
 `238..422` cross the clean-pressure cliff and disable prefetch, while
 `238..396`, `232..388`, and two-segment variants were safe but slower.
 
-Latest promoted WALKSTUF1 payload/speed note:
-`walkstuf1-high-frame139-inplace-v927` shrinks high entry `139` / source frame
-`247` in place after the v884 frame135 trim, preserving all payload offsets
-while cutting that entry `4011 -> 3668` bytes. High repeats at scene `1764`,
-active loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, loop
-reads/read time `63/276`, and due `16`; active payload now drops
-`860009 -> 859666`, and the no-shift high lane drops `882007 -> 859666`.
+Latest promoted WALKSTUF1 high setup-segment note:
+`walkstuf1-high-setupseg242-388-v998` primes relative sectors `242..388`
+during setup. Against the v949 current control it improves active loop/target
+`1481/1428 -> 1476/1441`, overrun `53 -> 35`, blocking/refill `88/24 -> 49/17`,
+reads/read time `67/287 -> 37/182`, and due `15 -> 7`. Setup cost rises
+scene `1770 -> 1822` and setup bytes `413236 -> 712244`, accepted under the
+`4%` material setup-regression gate. Boundary probes found `228..388` and
+split `252..388 + 228..252` cross the structural cliff; `252..388`,
+`244..388`, `240..388`, and `241..388` were safe but slower or worse-speed.
+The earlier `walkstuf1-high-frame139-inplace-v927` remains the high payload
+baseline, shrinking entry `139` / source frame `247` in place.
 `walkstuf1-low-rg209-225-v935` adds the low-tide `209..225` retained-read row
 after a fresh current-control capture; the later v989 setup segment is now the
 current W1-low speed row. v935 stayed scene/loop flat at `1773/1481`, improved
@@ -287,14 +291,13 @@ loop reads/read time `50/218 -> 37/150`, and due misses `14 -> 12` with refill
 still `0`. BUILDING2 high, WALKSTUF1 low/high, and VISITOR3 low/high controls
 stayed exact-flat.
 
-Latest promoted WALKSTUF1 note: high is `walkstuf1-high-current-v458-refresh`;
-low is `walkstuf1-low-rg78-91-v474`. The shared table keeps the accepted
-`201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`
-rows, then extends the low-tide first post-prime boundary to `78..91`. High
-stays `1476/1434`, overrun `42`, blocking `81`, refill `23`, reads/due
-`65/16`; low improves to `1478/1431`, overrun `47`, blocking `64`, refill
-`20`, reads/due `64/11`. BUILDING2 high/low and VISITOR3 high/low controls
-passed flat against current HEAD.
+Latest promoted WALKSTUF1 note: high is `walkstuf1-high-setupseg242-388-v998`;
+low is `walkstuf1-low-setupseg238-388-v989`. High primes relative sectors
+`242..388` during setup and measures `1476/1441`, overrun `35`,
+blocking/refill `49/17`, reads/due `37/7`. Low primes relative sectors
+`238..388` and measures `1469/1447`, overrun `22`, blocking/refill `34/12`,
+reads/due `28/4`. The older shared retained-read table rows remain part of the
+history, but the current speed-bearing W1 baselines are setup-segment wins.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,

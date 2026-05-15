@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2325%` over
-target / `99.7709%` target speed; the raw signed optimization matrix is
-about `-0.5347%` / `100.5532%`.
+allocation. The public headless battle card is `+0.2285%` over
+target / `99.7746%` target speed; the raw signed optimization matrix is
+about `-0.5387%` / `100.5570%`.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
@@ -36,8 +36,9 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 `35`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
 baselines combine same-speed work-volume clips with setup-resident CD ownership:
-high keeps `1476/1434`, blocking/refill `81/23`, reads/due `63/16`; low now
-measures `1469/1447`, blocking/refill/due `34/12/4`, with loop reads/read time
+high now measures `1476/1441`, blocking/refill/due `49/17/7`, with loop
+reads/read time down to `37/182` after priming relative sectors `242..388`;
+low measures `1469/1447`, blocking/refill/due `34/12/4`, with loop reads/read time
 down to `28/145` after priming relative sectors `238..388` during setup. Both
 paths keep pack LBA/sectors and the PS-EXE bucket fixed while reducing draw or
 CD pressure. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
@@ -45,11 +46,10 @@ VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
-blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
-and `1469/1447`; the latest WALKSTUF1 low setup-segment promotion saves thirty
-active-loop reads without moving layout, while high now also has the v884
-frame135 in-place payload shrink, dropping active payload to `860009` without
-moving layout. BUILDING2 low now adds the accepted
+blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1441`
+and `1469/1447`; the latest setup-segment promotions save thirty active-loop
+reads on each tide without moving layout, while high keeps the v927 payload
+shrink and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
 `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,
 and due `12`. BUILDING2 high currently measures

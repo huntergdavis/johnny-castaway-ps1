@@ -311,16 +311,16 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2325%`
-exact public over target / `99.7709%` exact public target speed); the raw
-signed optimization matrix is about `-0.5347%` / `100.5532%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2285%`
+exact public over target / `99.7746%` exact public target speed); the raw
+signed optimization matrix is about `-0.5387%` / `100.5570%`.
 
-The latest WALKSTUF1 high scalar retained-read closure tested the remaining
-shared append rows after the `427..443` CD-work baseline. Some candidates were
-exact-flat, and the rows that saved reads paid the win back as visible-loop,
-target, or refill debt. The next high-side attempt should use generated
-deadline ownership, pack-side byte/phase reduction, or upload/restore work
-removal rather than another hand-authored scalar append.
+The latest WALKSTUF1 high baseline primes relative sectors `242..388` during
+setup. Against the v949 current control it improves active loop/target
+`1481/1428 -> 1476/1441`, overrun `53 -> 35`, blocking/refill `88/24 -> 49/17`,
+reads/read time `67/287 -> 37/182`, and due `15 -> 7`; setup rises
+`1770 -> 1822` and setup bytes `413236 -> 712244`, accepted under the 4%
+material setup-regression gate.
 
 The latest WALKSTUF1 low baseline primes relative sectors `238..388` during
 setup on top of the no-shift payload lane. Low now measures `1469/1447`,
@@ -858,7 +858,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.9% / 97.2% (1476/1434); due 16; blk 81</td>
+      <td>+2.4% / 97.6% (1476/1441); due 7; blk 49</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
@@ -957,7 +957,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2325% over target / 99.7709% target speed, with several
+  public average is now +0.2285% over target / 99.7746% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

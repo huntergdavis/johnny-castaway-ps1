@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2298 words
+          ~9 min read · 2304 words
         </p>
 
       <hr class="rule" />
@@ -128,9 +128,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2325%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7709%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.5347%</code> / <code class="language-plaintext highlighter-rouge">100.5532%</code>.
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2285%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7746%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.5387%</code> / <code class="language-plaintext highlighter-rouge">100.5570%</code>.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
 the <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while moving both tides to <code class="language-plaintext highlighter-rouge">1948/1945</code>,
@@ -143,8 +143,9 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">35</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
 baselines combine same-speed work-volume clips with setup-resident CD ownership:
-high keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>, blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, reads/due <code class="language-plaintext highlighter-rouge">63/16</code>; low now
-measures <code class="language-plaintext highlighter-rouge">1469/1447</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">34/12/4</code>, with loop reads/read time
+high now measures <code class="language-plaintext highlighter-rouge">1476/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">49/17/7</code>, with loop
+reads/read time down to <code class="language-plaintext highlighter-rouge">37/182</code> after priming relative sectors <code class="language-plaintext highlighter-rouge">242..388</code>;
+low measures <code class="language-plaintext highlighter-rouge">1469/1447</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">34/12/4</code>, with loop reads/read time
 down to <code class="language-plaintext highlighter-rouge">28/145</code> after priming relative sectors <code class="language-plaintext highlighter-rouge">238..388</code> during setup. Both
 paths keep pack LBA/sectors and the PS-EXE bucket fixed while reducing draw or
 CD pressure. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
@@ -152,11 +153,10 @@ VISITOR5 high/low both remain green on the matching <code class="language-plaint
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
 <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1062/1040</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>,
-blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due <code class="language-plaintext highlighter-rouge">7/7</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1434</code>
-and <code class="language-plaintext highlighter-rouge">1469/1447</code>; the latest WALKSTUF1 low setup-segment promotion saves thirty
-active-loop reads without moving layout, while high now also has the v884
-frame135 in-place payload shrink, dropping active payload to <code class="language-plaintext highlighter-rouge">860009</code> without
-moving layout. BUILDING2 low now adds the accepted
+blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due <code class="language-plaintext highlighter-rouge">7/7</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1476/1441</code>
+and <code class="language-plaintext highlighter-rouge">1469/1447</code>; the latest setup-segment promotions save thirty active-loop
+reads on each tide without moving layout, while high keeps the v927 payload
+shrink and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, improving to
 <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/0</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,
 and due <code class="language-plaintext highlighter-rouge">12</code>. BUILDING2 high currently measures
