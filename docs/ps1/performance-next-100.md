@@ -221,14 +221,17 @@ entries. Active payload drops `855284 -> 809364`; scene/loop/target remain
 not a speed win; green conversion now needs generated deadline/static-upload
 ownership rather than more ordinary no-shift tail trimming.
 
-Latest rejected BUILDING4 low frame40 no-shift trim: v825 tried the largest
-remaining open sector-changing trim after the v816 work baseline. Frame `40`
-shrinks `8788 -> 7899` in place and models entry-sector coverage `5 -> 4`
-without moving payload offsets or changing file size, but the focused run was
-killed before `JCPERF2` after reaching frame `297/428`, so no correctness or
-speed metrics were promotable. Close frame40 with the other phase-sensitive B4
-low no-shift misses; v827 later promoted frame286 exact-flat, so actual green
-conversion should now favor generated static/upload ownership.
+Latest rejected BUILDING4 low bulk no-shift trim: v899 applied every remaining
+mechanically trim-capable `BUIL4LOW.FG2` entry after v895 as one preserve-offset
+pack probe. It preserved the `1714154` byte footprint, LBA/sectors `9118/837`,
+and `217088` byte PS-EXE bucket while shrinking active payload
+`809364 -> 794233` across `18` entries, but valid timing regressed:
+scene/loop/target `3128/2853/2816 -> 3133/2858/2817`, overrun `37 -> 41`,
+blocking/refill `40/34 -> 46/31`, loop-read VBlanks `215 -> 219`, and due
+misses `1 -> 2`. Close bulk catch-up trimming for B4 low; the known-bad
+sector-collapse entries still steal phase even when batched with smaller tails.
+Green conversion should now favor generated static/upload ownership, or isolated
+fixed-sector checks only when they prove exact-flat.
 
 Latest rejected BUILDING4 high mirror pass: v715 applied the same
 preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted
