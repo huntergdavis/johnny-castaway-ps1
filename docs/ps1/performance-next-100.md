@@ -138,6 +138,19 @@ baseline; remaining W1-low no-shift trims must keep strict timing gates, and
 speed conversion still needs generated deadline/read ownership or a
 pack/data-shape change.
 
+Latest rejected WALKSTUF1 low near-empty payload probe:
+`walkstuf1-low-frame55-inplace-v856` tested the largest remaining
+preserve-offset shrink after v855. Entry `55` / source frame `65` shrank
+`4716 -> 2` bytes, active payload `793194 -> 788480`, and modeled sector
+coverage `4 -> 1`, but the focused gate regressed scene/loop/target
+`1769/1477/1431 -> 1775/1483/1430`, overrun `46 -> 53`,
+blocking/refill `64/20 -> 73/21`, and due `11 -> 12` while loop reads stayed
+`58`. The pack was restored and rebuilt. Close frame55 on the current W1-low
+baseline; combined with the W1-high frame55/frame56 misses, near-empty
+preserve-offset rows should not be retried without generated deadline/read
+ownership. Continue with non-empty/fixed-sector exact-flat probes only if they
+are cheap, otherwise pivot to generated ownership or another under-99 scene.
+
 Latest rejected WALKSTUF1 low sector-boundary payload probe:
 `walkstuf1-low-frame96-inplace-v850` tested entry `96` / source frame `176`
 after v849, shrinking `4649 -> 4491` bytes and active payload
