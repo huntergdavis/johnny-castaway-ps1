@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T06:54:58` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-frame283-inplace-v913`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T07:07:31` |
+| Stats version | mixed across rows; latest refreshed row is `building2-high-frame173-inplace-v914`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 payload/speed track: `walkstuf1-low-frame106-inplace-v910`
@@ -217,10 +217,10 @@ due stays `11`, and runtime rows/spans/pixels stay at
 `16257/114798/633876`. The no-shift lane now provides the active payload drop
 `879801 -> 790208`.
 
-Current B2-high payload track: `building2-high-frame169-inplace-v896` trims
-entry `169` / source frame `223` after v877/v879/v880/v887/v888/v889/v890/v891/v892 trimmed entries
-`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, and `168`, preserving offsets, pack LBA/sectors, and the PS-EXE bucket while cutting
-active payload `674798 -> 670119`. Timing/CD stay exact-flat at `1602`,
+Current B2-high payload track: `building2-high-frame173-inplace-v914` trims
+entry `173` / source frame `235` after v877/v879/v880/v887/v888/v889/v890/v891/v892/v896 trimmed entries
+`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, and `169`, preserving offsets, pack LBA/sectors, and the PS-EXE bucket while cutting
+active payload `674798 -> 669488`. Timing/CD stay exact-flat at `1602`,
 loop/target `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
 `58/257`, and due `7`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
@@ -453,13 +453,13 @@ and `105` spans, kept scene/loop flat at `1770/1478`, improved overrun
 `47 -> 46`, but regressed blocking `64 -> 65`. Close frame `86` for direct
 clipping; move to `87..88` or smaller non-risk candidates.
 
-Latest promoted BUILDING2 note: `building2-high-frame169-inplace-v896`
-trims entry `169` / source frame `223` after v877/v879/v880/v887/v888/v889/v890/v891/v892 trimmed entries
-`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, and `168` and the v703 high-tide offscreen clip stack for frames `89..92`,
+Latest promoted BUILDING2 note: `building2-high-frame173-inplace-v914`
+trims entry `173` / source frame `235` after v877/v879/v880/v887/v888/v889/v890/v891/v892/v896 trimmed entries
+`172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, and `169` and the v703 high-tide offscreen clip stack for frames `89..92`,
 `94..104`, and `168..177`, staying exact-flat at `1602`, `1351/1311`,
 blocking/refill `54/18`, reads/read time `58/257`, and due `7`. Runtime frame
 rows/spans/pixels remain at the v703 `18030/105645/446246` row while active
-payload drops `674798 -> 670119`.
+payload drops `674798 -> 669488`.
 `building2-low-trimtails-v739` keeps the v626 slack-8 `218..229` retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to `1603/1339/1317`,
@@ -500,12 +500,14 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-frame283-inplace-v913`,
+  refreshed rows use `building2-high-frame173-inplace-v914`,
+  `building4-low-frame283-inplace-v913`,
   `building4-low-frame284-inplace-v912`,
   `building4-low-frame293-inplace-v911`,
   `building4-low-frame41-inplace-v903`,
   `building4-low-frame426-inplace-v895`,
   `building4-low-frame292-inplace-v893`,
+  `building2-high-frame173-inplace-v914`,
   `building2-high-frame169-inplace-v896`,
   `building2-high-frame168-inplace-v892`,
   `building2-high-frame99-inplace-v891`,
@@ -638,6 +640,7 @@ and this page.
   `walkstuf1-low-left0-offscreen-v668`,
   `walkstuf1-low-left-offscreen-v666`,
   `walkstuf1-low-mid-offscreen-v665`,
+  `building2-high-frame173-inplace-v914`,
   `building2-high-frame169-inplace-v896`,
   `building2-high-frame168-inplace-v892`,
   `building2-high-frame99-inplace-v891`,
@@ -1124,15 +1127,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-15T04:33:38</td>
-      <td>building2-high-frame169-inplace-v896</td>
+      <td>2026-05-15T07:07:31</td>
+      <td>building2-high-frame173-inplace-v914</td>
       <td>+3.0%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1351/1311</td>
       <td>54</td>
       <td>18</td>
       <td>7</td>
-      <td>same-speed preserve-offset frame168 payload shrink on top of v891; entry 168/source frame 219 shrinks 1372 -&gt; 1266 bytes, active payload 670550 -&gt; 670444, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1602/1351/1311, overrun 40, blocking/refill 54/18, reads/read time 58/257, and due 7</td>
+      <td>same-speed frame173 in-place entry-size shrink resolves the earlier v883 pre-JCPERF2 uncertainty and preserves offsets/LBA/EXE bucket on top of v896 while cutting active payload 670119-&gt;669488; entry173/source235 shrinks 1765-&gt;1134, entry sectors 2-&gt;2, scene/loop/target stay 1602/1351/1311, overrun 40, blocking/refill 54/18, read VBlanks 257, due 7</td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
