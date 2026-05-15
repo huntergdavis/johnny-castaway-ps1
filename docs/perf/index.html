@@ -328,11 +328,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T20:51:34</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-14T21:06:22</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame51-inplace-v839</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame49-inplace-v841</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -341,13 +341,13 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
   </tbody>
 </table>
 
-<p>Current W1 work-volume track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame51-inplace-v839</code>
-shrinks high entry <code class="language-plaintext highlighter-rouge">51</code> / source frame <code class="language-plaintext highlighter-rouge">61</code> in place after the v837 offscreen
-span lane, preserving all payload offsets while cutting that entry
-<code class="language-plaintext highlighter-rouge">5588 -&gt; 770</code> bytes. High is exact-flat at <code class="language-plaintext highlighter-rouge">1764</code>, <code class="language-plaintext highlighter-rouge">1476/1434</code>,
+<p>Current W1 work-volume track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame49-inplace-v841</code>
+shrinks high entry <code class="language-plaintext highlighter-rouge">49</code> / source frame <code class="language-plaintext highlighter-rouge">59</code> in place after the v839 frame51
+shrink, preserving all payload offsets while cutting that entry
+<code class="language-plaintext highlighter-rouge">5269 -&gt; 770</code> bytes. High is exact-flat at <code class="language-plaintext highlighter-rouge">1764</code>, <code class="language-plaintext highlighter-rouge">1476/1434</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">63/276</code>, and due <code class="language-plaintext highlighter-rouge">16</code>, while
-runtime rows/spans/pixels stay at <code class="language-plaintext highlighter-rouge">16859/129919/731016</code>; v657/v839 now provide the active
-payload drop <code class="language-plaintext highlighter-rouge">918345 -&gt; 877189</code>, CD sectors <code class="language-plaintext highlighter-rouge">605 -&gt; 586</code>, and loop
+runtime rows/spans/pixels stay at <code class="language-plaintext highlighter-rouge">16859/129919/731016</code>; v657/v839/v841 now provide the active
+payload drop <code class="language-plaintext highlighter-rouge">918345 -&gt; 872690</code>, CD sectors <code class="language-plaintext highlighter-rouge">605 -&gt; 586</code>, and loop
 reads/read time <code class="language-plaintext highlighter-rouge">65/282 -&gt; 63/276</code>.
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-late-offscreen-v653</code> clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
@@ -665,6 +665,7 @@ refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-
 <code class="language-plaintext highlighter-rouge">building2-high-late-offscreen-v664</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-trimtails-v739</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-offscreen-drawclip-v660</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-frame49-inplace-v841</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame51-inplace-v839</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame139-offscreen-v837</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame135-offscreen-v836</code>,
@@ -2500,15 +2501,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-14T20:51:34</td>
-      <td>walkstuf1-high-frame51-inplace-v839</td>
+      <td>2026-05-14T21:06:22</td>
+      <td>walkstuf1-high-frame49-inplace-v841</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>same-speed preserve-offset frame51 payload shrink on top of v837; entry 51/source frame 61 shrinks 5588 -&gt; 770 bytes, active payload 882007 -&gt; 877189, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
+      <td>same-speed preserve-offset frame49 payload shrink on top of v839; entry 49/source frame 59 shrinks 5269 -&gt; 770 bytes, active payload 877189 -&gt; 872690, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
