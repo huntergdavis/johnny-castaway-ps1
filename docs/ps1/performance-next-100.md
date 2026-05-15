@@ -83,18 +83,19 @@ rows remaining and no orange/red rows.
 
 Latest promoted WALKSTUF1 high preserve-offset payload baseline:
 `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame49-inplace-v841`,
-`walkstuf1-high-frame47-inplace-v842`, and
-`walkstuf1-high-frame45-inplace-v843` shrink entries `51` / source frame `61`,
-`49` / source frame `59`, `47` / source frame `57`, and `45` / source frame
-`55` inside `WALKSTUF1.FG2` without moving any payload offsets. Entry `51`
-drops `5588 -> 770` bytes, entry `49` drops `5269 -> 770` bytes, entry `47`
-drops `7399 -> 3158` bytes, entry `45` drops `5276 -> 1657` bytes, and active
-payload drops `882007 -> 864830`; file size
+`walkstuf1-high-frame47-inplace-v842`, `walkstuf1-high-frame45-inplace-v843`,
+and `walkstuf1-high-frame43-inplace-v844` shrink entries `51` / source frame
+`61`, `49` / source frame `59`, `47` / source frame `57`, `45` / source frame
+`55`, and `43` / source frame `53` inside `WALKSTUF1.FG2` without moving any
+payload offsets. Entry `51` drops `5588 -> 770` bytes, entry `49` drops
+`5269 -> 770` bytes, entry `47` drops `7399 -> 3158` bytes, entry `45` drops
+`5276 -> 1657` bytes, entry `43` drops `5555 -> 2211` bytes, and active
+payload drops `882007 -> 861486`; file size
 stays `1535263`, pack LBA/sectors stay `24883/750`, and the PS-EXE bucket
 stays `217088`. The strict speed gates correctly found no timing
 improvement, while the no-regression work gates passed exact-flat at scene
 `1764`, loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`,
-loop reads/read VBlanks `63/276`, and due misses `16`. Treat v839/v841/v842/v843 as
+loop reads/read VBlanks `63/276`, and due misses `16`. Treat v839/v841/v842/v843/v844 as
 safe same-speed payload-work baselines, not VBlank speed wins; future W1-high
 preserve-offset trims need the same exact-flat gate, while green conversion
 still needs generated deadline/read ownership or upload/restore work.
