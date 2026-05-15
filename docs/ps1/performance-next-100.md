@@ -465,6 +465,17 @@ BUILDING2 high/low, and WALKSTUF1 high/low stayed exact-flat as canaries.
 Use this as the current VISITOR3 low baseline; future VISITOR3 work should
 prefer pack-only/setup-owned relocation before adding hot decoder code.
 
+Latest rejected VISITOR3 low terminal compaction: v824 tried to avoid the
+closed D4/decode path by moving existing terminal payloads byte-for-byte into
+the large gap after frame `129`, keeping `VIST3LOW.FG2` size, LBA/sectors,
+payload bytes, source code, and the PS-EXE bucket fixed. The binary split
+showed no promotable form: frame `130` alone regressed to `1395/1066`,
+`130,131` was exact-flat at `1391/1062/1040`, `130,131,133,134` regressed to
+`1394/1065/1041`, and the all-terminal move increased blocking `42 -> 46`
+plus reads `7 -> 8`. Close byte-for-byte terminal relocation after frame
+`129`; VISITOR3 low needs generated scheduler ownership, custom compression
+with timing proof, or newly paid residency rather than same-payload compaction.
+
 Latest rejected VISITOR3 low resident-frame attempt: v476 tried to combine a
 frame `128` D4 rewrite with moving frame `132` into a low setup segment. The
 focused low run showed the same speed shape later captured by v477, but the
@@ -1424,7 +1435,7 @@ retained-read tables.
 | 18 | VISITOR3 high | Custom one-scene compression for frames `133..135` that stores changed sprite spans against a setup-owned base, not chained previous-frame D4. This targets the remaining terminal bytes without the D4 command-count debt. | Encode one frame, run offline pixel validator, then require fixed pack footprint and `foregroundPilotPlay` code-size neutrality. |
 | 19 | VISITOR3 high | Move one more terminal payload into the existing sector-203 setup gap family by shrinking headers around frame133, not by broad setup-prime relocation. v488's broad relocation could not produce deterministic metrics. | Host packing proof must show no setup-prime eviction and no new source code before timing. |
 | 20 | VISITOR3 high | Generate a CD-deadline sidecar for terminal frames `135..137` that explicitly schedules prefetch during long non-visible gaps rather than relying on append grouping. Hand groups did not fire under current pack state. | Require planner-visible saved read and nonzero generated ownership hit count in logs. |
-| 21 | VISITOR3 low | Closed by v637: no remaining due frame produced a previous-frame D4 payload small enough for the `10588` paid setup-prime gap, and the best same-offset D4 probe regressed timing. | Reopen only for a different custom compression family, generated deadline ownership, or newly paid residency; do not retry ordinary previous-frame D4 for frames `130`, `131`, `133`, `134`, `135`, `136`, or `138`. |
+| 21 | VISITOR3 low | Closed by v637 and v824: no remaining due frame produced a previous-frame D4 payload small enough for the `10588` paid setup-prime gap, the best same-offset D4 probe regressed timing, and byte-for-byte terminal relocation after frame `129` was either exact-flat or phase-negative. | Reopen only for a different custom compression family, generated deadline ownership, or newly paid residency; do not retry ordinary previous-frame D4 for frames `130`, `131`, `133`, `134`, `135`, `136`, or `138`, and do not retry raw terminal compaction after frame `129`. |
 | 22 | VISITOR3 both | Generate a timeline cost model that estimates CD saved, decode cost, upload cost, and hot-code drift before a PS1 run. VISITOR3 has too many byte wins that are phase-negative unless ownership is right. | Reject candidates whose model predicts any hidden refill or PS-EXE bucket movement. |
 | 23 | JOHNNY1 high/low | Closed by v642 for pack-only suppression and v643 for function-scoped clean-span O2: the pack has no redundant same-frame cleanup or duplicate/no-op payloads, and O2 on `grRestoreCleanBgSpanFromRects()` is exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`. | Reopen only after reclaiming code headroom for a smaller black-clear opcode/helper, generating code-neutral dirty-upload metadata, or proving a new restore primitive changes work counters while keeping the `217088` byte PS-EXE bucket. |
 | 24 | JOHNNY1 high/low | Code-neutral dirty-upload coalescing for black-background rows: precompute the row mask in pack metadata and reuse existing upload path. Avoid global narrow-upload code that previously blew the EXE bucket and avoid pure compiler toggles that leave timing flat. | Require no PS-EXE bucket change, no `grDrawBackground` growth, and a measurable restore/upload work drop before timing. |
