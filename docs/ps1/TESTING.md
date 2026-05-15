@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-15:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2523%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7519%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T11:56:39` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building4-low-local-lz-entry30-v953`, `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-15T12:10:36` |
+| Stats version | mixed; newest optimized/code-headroom rows use `building4-low-local-lz-entry33-v954`, `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -96,14 +96,14 @@ to `1948/1945`, overrun `3`, blocking/refill `5`, read time `37`, due `0`, and
 target speed `99.85%`.
 
 Latest promoted BUILDING4 low payload note:
-`building4-low-local-lz-entry30-v953` compresses entry `30` / source frame `54`
-with the local-LZ sentinel (`4650 -> 679` bytes, modeled entry sectors `3 -> 1`)
+`building4-low-local-lz-entry33-v954` compresses entries `30` and `33`
+with local-LZ sentinels (`4650 -> 679` and `6656 -> 2761` bytes, modeled entry sectors `3 -> 1` and `4 -> 2`)
 while preserving pack footprint/LBA/sectors and the PS-EXE bucket; timing stays
 exact-flat to current control at `3129/2853/2815`, blocking/refill `42/36`,
 read time `223`, and due `1`. The prior `building4-low-frame425-inplace-v928`
 shrinks entry `425` / source frame `619` in place after the v924 frame40 trim,
 preserving all payload offsets while cutting that entry `661 -> 401` bytes; the
-combined low payload lane drops active payload `855284 -> 803292`.
+combined low payload lane drops active payload `855284 -> 799397`.
 
 Latest promoted WALKSTUF1 timing note: `walkstuf1-low-rg394-410-v817` adds a
 low-tide-only retained read group for sectors `394..410`, preserving the

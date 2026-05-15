@@ -205,8 +205,8 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2523%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7519%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T11:56:39` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-local-lz-entry30-v953`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T12:10:36` |
+| Stats version | mixed across rows; latest refreshed row is `building4-low-local-lz-entry33-v954`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -231,13 +231,14 @@ active payload `674798 -> 669408`. Timing/CD stay exact-flat at `1602`,
 loop/target `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
 `58/257`, and due `7`.
 
-Current BUILDING4-low payload track: `building4-low-local-lz-entry30-v953`
-compresses entry `30` / source frame `54` with the local-LZ sentinel
-(`4650 -> 679` bytes, modeled entry sectors `3 -> 1`) while preserving the
+Current BUILDING4-low payload track: `building4-low-local-lz-entry33-v954`
+compresses entries `30` / source frame `54` and `33` / source frame `59` with
+local-LZ sentinels (`4650 -> 679` and `6656 -> 2761` bytes, modeled entry
+sectors `3 -> 1` and `4 -> 2`) while preserving the
 fixed `1714154` byte pack footprint, pack LBA/sectors, and PS-EXE bucket.
 Timing stays exact-flat to the current control at scene/loop/target
 `3129/2853/2815`, overrun `38`, blocking/refill `42/36`, read time `223`,
-and due `1`; active payload drops `807263 -> 803292`.
+and due `1`; active payload drops `807263 -> 799397`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -519,7 +520,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-local-lz-entry30-v953`,
+  refreshed rows use `building4-low-local-lz-entry33-v954`,
   `walkstuf1-low-rg209-225-v935`,
   `johnny1-local-lz-v932`,
   `walkstuf1-high-frame139-inplace-v927`,
@@ -1226,15 +1227,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T11:56:39</td>
-      <td>building4-low-local-lz-entry30-v953</td>
+      <td>2026-05-15T12:10:36</td>
+      <td>building4-low-local-lz-entry33-v954</td>
       <td>+1.4%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2853/2815</td>
       <td>42</td>
       <td>36</td>
       <td>1</td>
-      <td>same-speed entry30/source54 local-LZ sentinel compresses 4650-&gt;679 bytes in-place, modeled entry sectors 3-&gt;1, and cuts active payload 807263-&gt;803292 while preserving pack footprint/LBA/sectors and PS-EXE bucket; timing stays exact-flat to current control at scene/loop/target 3129/2853/2815, overrun 38, blocking/refill 42/36, read VBlanks 223, due 1</td>
+      <td>same-speed entry30/source54 plus entry33/source59 local-LZ sentinels compress 4650-&gt;679 and 6656-&gt;2761 bytes in-place, modeled entry sectors 3-&gt;1 and 4-&gt;2, and cut active payload 807263-&gt;799397 while preserving pack footprint/LBA/sectors and PS-EXE bucket; timing stays exact-flat to current control at scene/loop/target 3129/2853/2815, overrun 38, blocking/refill 42/36, read VBlanks 223, due 1</td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>

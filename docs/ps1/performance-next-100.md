@@ -72,7 +72,7 @@ in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877/v879/v880/v887/v888/v889/v890/v891/v892/v896
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, the v705 WALKSTUF1 low late-tail subset physical compaction, plus the v932 JOHNNY1 local-LZ full-frame payload compression, v935 WALKSTUF1 low `209..225` retained-read row, and v953 BUILDING4 low entry30 local-LZ payload baseline:
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, the v705 WALKSTUF1 low late-tail subset physical compaction, plus the v932 JOHNNY1 local-LZ full-frame payload compression, v935 WALKSTUF1 low `209..225` retained-read row, and v954 BUILDING4 low entry30/entry33 local-LZ payload baseline:
 `+0.2523%` public average over target / `99.7519%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 about `-0.5148%` / `100.5342%`. Since the compact full-matrix baseline was about
@@ -231,9 +231,10 @@ Latest promoted BUILDING4 low work-volume baseline: v746/v806/v807/v808/v811/
 v813/v814/v815/v816/v827/v893/v895/v903/v911/v912/v913/v924/v928 keep the v652 timing profile exact-flat while
 shrinking frames `291`, `34`, `31`, `290`, `32`, `35`, `36`, `37`, `288`,
 `287`, `39`, `286`, `292`, `426`, `41`, `293`, `284`, `283`, `40`, and `425` in-place instead of physically moving downstream
-entries. v953 then compresses entry `30` / source frame `54` with local-LZ
-(`4650 -> 679` bytes, modeled sectors `3 -> 1`) and cuts active payload
-`807263 -> 803292` while staying exact-flat to current control at
+entries. v954 then compresses entries `30` / source frame `54` and `33` /
+source frame `59` with local-LZ (`4650 -> 679` and `6656 -> 2761` bytes,
+modeled sectors `3 -> 1` and `4 -> 2`) and cuts active payload
+`807263 -> 799397` while staying exact-flat to current control at
 `3129/2853/2815`, overrun `38`, blocking/refill `42/36`, read time `223`, and
 due misses `1`. Treat this as a safe payload-work lane, not a speed win; green
 conversion now needs generated deadline/static-upload ownership rather than

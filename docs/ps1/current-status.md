@@ -3,7 +3,7 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-15 (`main` after `building4-low-local-lz-entry30-v953`; all 63 scenes remain
+**Last updated:** 2026-05-15 (`main` after `building4-low-local-lz-entry33-v954`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
 battle card is `+0.2523%` over target / `99.7519%` target speed).
 
@@ -289,8 +289,8 @@ active payload `316608 -> 112093` bytes and moving both tides from
 `1973/1945` to `1948/1945`. WALKSTUF1 low now adds the `209..225`
 retained-read row, keeping scene/loop flat at `1773/1481` while improving
 target `1428 -> 1431`, blocking `78 -> 72`, reads/read time `61/279 -> 58/267`,
-and due `11 -> 10`. BUILDING4 low now carries the v953 local-LZ entry30
-payload baseline, cutting active payload `807263 -> 803292` while staying
+and due `11 -> 10`. BUILDING4 low now carries the v954 local-LZ entry30/entry33
+payload baseline, cutting active payload `807263 -> 799397` while staying
 exact-flat to current control at `3129/2853/2815`. The public battle card is
 now `+0.2523%` over target /
 `99.7519%` target speed; the raw signed optimization rollup is about

@@ -31,9 +31,9 @@ overrun `3`, blocking/refill `5`, and target speed `99.85%`.
 The accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
-`12`. BUILDING4 low now carries the v953 local-LZ entry30 payload baseline at
+`12`. BUILDING4 low now carries the v954 local-LZ entry30/entry33 payload baseline at
 `2853/2815`, overrun `38`, blocking/read time `42`/`223`, and prefetch overrun
-`36`, cutting active payload `807263 -> 803292` while staying exact-flat to the
+`36`, cutting active payload `807263 -> 799397` while staying exact-flat to the
 current control. The newest WALKSTUF1
 baselines combine same-speed work-volume clips with the low-tide v817
 retained-read promotion: high keeps `1476/1434`, blocking/refill `81/23`,
