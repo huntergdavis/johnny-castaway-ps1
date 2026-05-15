@@ -1110,9 +1110,11 @@ regressed to `1828`, `1539/1439`, overrun `100`, blocking `108`, hidden refill
 Latest rejected BUILDING2 high early group: v369 inserted `17..33` before the
 accepted high groups. It stayed exact-flat against v347 (`1603`,
 `1352/1311`, overrun `41`, blocking `55`, hidden refill `19`, reads `61`,
-due `7`) while only shifting hot-symbol addresses by `+32` bytes. Close this
-early scalar row; BUILDING2 high now needs generated ownership or data-shape
-work rather than more hand table rows.
+due `7`) while only shifting hot-symbol addresses by `+32` bytes. v881 retested
+the same row after the v880 payload baseline; it saved reads `58 -> 55` and
+blocking `54 -> 53`, but regressed scene/loop `1602/1351 -> 1607/1356` and
+overrun `40 -> 45`. Close this early scalar row; BUILDING2 high now needs
+generated ownership or data-shape work rather than more hand table rows.
 
 Latest rejected BUILDING2 high direct-stage ownership probe: v370 kept
 `17..33` and denied exact-min direct-stage only for BUILDING2 high sector
