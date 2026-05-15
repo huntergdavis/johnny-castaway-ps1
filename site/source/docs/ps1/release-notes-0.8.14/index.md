@@ -14,19 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-v0.8.14-ps1 is a performance point release collecting the JOHNNY1 local-LZ
-full-frame payload promotion. It keeps all 63 scenes validated, keeps all 126
-scene/tide rows routed and timing-bearing, and moves JOHNNY1 high/low from the
-yellow band into green without changing the fixed pack footprint or PS-EXE
-bucket.
+v0.8.14-ps1 is a performance point release collecting the JOHNNY1 local-LZ full-frame payload promotion. It keeps all 63 scenes validated, keeps all 126 scene/tide rows routed and timing-bearing, and moves JOHNNY1 high/low from the yellow band into green without changing the fixed pack footprint or PS-EXE bucket.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.14.md` |
-| Lines | 48 |
-| Approx. words | 274 |
+| Lines | 49 |
+| Approx. words | 303 |
 | Code fences | 0 |
 
 ## Outline

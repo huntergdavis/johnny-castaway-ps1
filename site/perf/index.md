@@ -1538,7 +1538,7 @@ and this page.
       <td>measured</td>
       <td>2026-05-15T10:16:41</td>
       <td>johnny1-local-lz-v932</td>
-      <td>+0.2%</td>
+      <td>+0.1%</td>
       <td class="spd-green">99.8%</td>
       <td>1948/1945</td>
       <td>5</td>
@@ -1552,7 +1552,7 @@ and this page.
       <td>measured</td>
       <td>2026-05-15T10:21:02</td>
       <td>johnny1-local-lz-v932</td>
-      <td>+0.2%</td>
+      <td>+0.1%</td>
       <td class="spd-green">99.8%</td>
       <td>1948/1945</td>
       <td>5</td>

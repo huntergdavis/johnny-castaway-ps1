@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance battle card — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.13; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.14; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -127,7 +127,7 @@
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
   "isAccessibleForFree": true,
   "dateModified": "2026-05-15",
-  "version": "v0.8.13-ps1",
+  "version": "v0.8.14-ps1",
   "isPartOf": {
     "@type": "WebSite",
     "name": "Johnny Castaway PS1",
@@ -197,8 +197,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">117 (92.9%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">9 (7.1%) ≥ 95%</span>
+  <span class="spd-key spd-green">119 (94.4%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">7 (5.6%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -243,8 +243,9 @@ frame137 setup-prime relocation; both paths
 keep fixed pack layout with deliberate setup/data-shape tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (<code class="language-plaintext highlighter-rouge">97.2%</code> / <code class="language-plaintext highlighter-rouge">96.9%</code>), VISITOR3 high/low
-(<code class="language-plaintext highlighter-rouge">97.8%</code> / <code class="language-plaintext highlighter-rouge">97.9%</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">97.0%</code> / <code class="language-plaintext highlighter-rouge">98.1%</code>),
-JOHNNY1 high/low, and BUILDING4 low. VISITOR5 high/low are both green after
+(<code class="language-plaintext highlighter-rouge">97.8%</code> / <code class="language-plaintext highlighter-rouge">97.9%</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">97.0%</code> / <code class="language-plaintext highlighter-rouge">98.4%</code>),
+and BUILDING4 low. JOHNNY1 high/low are both green after local-LZ full-frame
+payload compression. VISITOR5 high/low are both green after
 the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read promotions. JOHNNY6 high/low moved into
 green after the compact-FGP3 metadata plus
 restore-minus-current pass dropped both tides from <code class="language-plaintext highlighter-rouge">2832/2800</code> to
@@ -320,19 +321,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2697%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2492%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7347%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7548%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T08:57:32</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-15T10:21:02</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">building4-low-frame425-inplace-v928</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">mixed across rows; latest refreshed row is <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -340,6 +341,13 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
   </tbody>
 </table>
+
+<p>Current JOHNNY1 payload/speed track: <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code> compresses
+full-frame entries <code class="language-plaintext highlighter-rouge">1</code> and <code class="language-plaintext highlighter-rouge">50</code> inside both fixed-footprint JOHNNY1 packs,
+preserving pack LBA/sectors and the <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while cutting
+active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 112093</code>. Both tides are now green at <code class="language-plaintext highlighter-rouge">1948/1945</code>,
+overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
+<code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
 <p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame106-inplace-v910</code>
 shrinks low entry <code class="language-plaintext highlighter-rouge">106</code> / source frame <code class="language-plaintext highlighter-rouge">209</code> in place after the v909 frame111
@@ -634,7 +642,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">building4-low-frame425-inplace-v928</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
+<code class="language-plaintext highlighter-rouge">building4-low-frame425-inplace-v928</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame139-inplace-v927</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame100-inplace-v926</code>,
 <code class="language-plaintext highlighter-rouge">building4-low-frame40-inplace-v924</code>,
@@ -933,7 +942,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
 
 <table class="scene-perf-table">
   <caption class="visually-hidden">
-    Headless performance matrix at v0.8.13-ps1:
+    Headless performance matrix at v0.8.14-ps1:
     one row per scene/tide variant, with last run, stats version,
     over target percentage, target speed percentage, VBlanks taken,
     blocking VBlanks, prefetch hits, due-misses, and notes.
@@ -1662,29 +1671,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-high"><code>johnny1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-11T20:56:51</td>
-      <td>walkstuf1-high-rg213-229-slack4-v316</td>
-      <td>+1.4%</td>
-      <td class="spd-yellow">98.6%</td>
-      <td>1973/1945</td>
-      <td>25</td>
-      <td>25</td>
+      <td>2026-05-15T10:16:41</td>
+      <td>johnny1-local-lz-v932</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.8%</td>
+      <td>1948/1945</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
+      <td>local-LZ sentinel payload compression for full-frame entries 1 and 50; preserves 448370 byte pack footprint, pack LBA/sectors, and PS-EXE bucket while improving overrun 28 -&gt; 3, blocking/refill 25 -&gt; 5, loop read time 58 -&gt; 37, and target speed 98.56% -&gt; 99.85%</td>
     </tr>
     <tr id="perf-johnny1-low">
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-low"><code>johnny1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T05:13:31</td>
-      <td>under99-current-refresh-v730</td>
-      <td>+1.4%</td>
-      <td class="spd-yellow">98.6%</td>
-      <td>1973/1945</td>
-      <td>25</td>
-      <td>25</td>
+      <td>2026-05-15T10:21:02</td>
+      <td>johnny1-local-lz-v932</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.8%</td>
+      <td>1948/1945</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>fresh under-99 current refresh corrects stale low row to match high tide; no code or pack change</td>
+      <td>local-LZ sentinel payload compression for full-frame entries 1 and 50; preserves 448370 byte pack footprint, pack LBA/sectors, and PS-EXE bucket while improving overrun 28 -&gt; 3, blocking/refill 25 -&gt; 5, loop read time 58 -&gt; 37, and target speed 98.56% -&gt; 99.85%</td>
     </tr>
     <tr id="perf-johnny2-high">
       <td><a class="scene-perf-rowlink" href="#perf-johnny2-high"><code>johnny2</code></a></td>
@@ -2774,7 +2783,7 @@ from.</li>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../releases/">v0.8.13-ps1</a>)
+          (<a href="../releases/">v0.8.14-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

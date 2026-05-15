@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.13; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.14; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4584 words
+          ~18 min read · 4577 words
         </p>
 
       <hr class="rule" />
@@ -114,7 +114,7 @@
 
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page is the running summary of perf
-work on the PS1 port at v0.8.13-ps1: where the bottleneck is, what
+work on the PS1 port at v0.8.14-ps1: where the bottleneck is, what
 got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
 bottom. The retrospective on how the matrix moved from the compact baseline
@@ -130,7 +130,7 @@ to the current battle card —
   <li><a href="#what-was-measured" id="markdown-toc-what-was-measured">What was measured</a></li>
   <li><a href="#experiments-that-didnt-work" id="markdown-toc-experiments-that-didnt-work">Experiments that didn’t work</a></li>
   <li><a href="#experiments-that-did" id="markdown-toc-experiments-that-did">Experiments that did</a></li>
-  <li><a href="#where-it-sits-at-v0813-ps1" id="markdown-toc-where-it-sits-at-v0813-ps1">Where it sits at v0.8.13-ps1</a></li>
+  <li><a href="#where-it-sits-at-v0814-ps1" id="markdown-toc-where-it-sits-at-v0814-ps1">Where it sits at v0.8.14-ps1</a></li>
   <li><a href="#scene-battle-card" id="markdown-toc-scene-battle-card">Scene Battle Card</a></li>
   <li><a href="#non-goals" id="markdown-toc-non-goals">Non-goals</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
@@ -418,7 +418,7 @@ fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge
 <code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">358</code> VBlanks
 (<code class="language-plaintext highlighter-rouge">25.11%</code> loop reduction).</p>
 
-<h2 id="where-it-sits-at-v0813-ps1">Where it sits at v0.8.13-ps1</h2>
+<h2 id="where-it-sits-at-v0814-ps1">Where it sits at v0.8.14-ps1</h2>
 
 <p>The current accepted fishing1 high-tide run, captured in the perf log:</p>
 
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2697%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7347%</code> exact public target speed); the raw
-signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.4975%</code> / <code class="language-plaintext highlighter-rouge">100.5171%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2492%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7548%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.5179%</code> / <code class="language-plaintext highlighter-rouge">100.5371%</code>.</p>
 
 <p>The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the <code class="language-plaintext highlighter-rouge">427..443</code> CD-work baseline. Some candidates were
@@ -1059,8 +1059,7 @@ bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
 now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
 the bottom of the yellow band after compact-pack promotion. The remaining
 hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
-VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
-where hand-authored read groups and scalar window changes have
+and BUILDING4 low. Hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
 WALKSTUF1 low v747..v876 pass keeps the row exact-flat except for the v859
 one-VBlank target/overrun win while shrinking the no-shift frame list
@@ -1090,7 +1089,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2697% over target / 99.7347% target speed, with several
+public average is now +0.2492% over target / 99.7548% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired
@@ -1200,7 +1199,7 @@ TTY records into per-run summary JSON files.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.13-ps1</a>)
+          (<a href="../../releases/">v0.8.14-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
