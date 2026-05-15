@@ -691,18 +691,21 @@ void parseResourceFiles(char * filename)
 }
 
 
+/* Plan v9 removal manifest items #10-13: unified resource-not-found
+ * handling across PS1 and PC. The "PS1 returns NULL, caller handles
+ * gracefully" pattern was a workaround for boot-time crashes when
+ * fatalError tried to printf during the game loop. With the
+ * deterministic allocator + memHalt routing (JC_BSOD when graphics
+ * is up, ps1DebugError pre-graphics), both halt mechanisms are
+ * always safe to call. Missing-resource = data bug; surface it. */
+
 struct TAdsResource *findAdsResource(char *searchString)
 {
     int idx = hashLookup(adsHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return adsResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("ADS resource %s not found.", searchString);
-    return NULL;
-#endif
+    return NULL;  /* unreachable; satisfies compiler */
 }
 
 
@@ -711,15 +714,8 @@ struct TBmpResource *findBmpResource(char *searchString)
     int idx = hashLookup(bmpHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return bmpResources[idx];
-
-#ifdef PS1_BUILD
-    /* On PS1, return NULL to allow graceful handling of missing resources.
-     * No printf here - it crashes PS1 in the game loop. */
-    return NULL;
-#else
     fatalError("BMP resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
@@ -728,13 +724,8 @@ struct TScrResource *findScrResource(char *searchString)
     int idx = hashLookup(scrHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return scrResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("SCR resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
@@ -743,13 +734,8 @@ struct TTtmResource *findTtmResource(char *searchString)
     int idx = hashLookup(ttmHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return ttmResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("TTM resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
