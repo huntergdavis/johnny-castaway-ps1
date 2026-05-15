@@ -636,12 +636,14 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     strncpy(file->filename, filename, sizeof(file->filename) - 1);
     file->filename[sizeof(file->filename) - 1] = '\0';
 
-    /* Allocate buffer for entire file */
+    /* Allocate buffer for entire file. Plan v9 manifest item #21:
+     * NULL-return-on-malloc-fail is gone; under the deterministic
+     * allocator, malloc cannot fail. If a future migration routes
+     * this through memAlloc, the halt path is automatic. */
     file->bufferSize = file->cdfile.size;
     file->buffer = (uint8_t*)malloc(file->bufferSize);
-
     if (!file->buffer) {
-        return NULL;  /* Malloc failed */
+        JC_BSOD(filename, "cdrom open: file-buffer alloc failed");
     }
 
     /* Calculate sectors needed */
@@ -879,10 +881,11 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
-    /* Allocate buffer for the sectors we need */
+    /* Allocate buffer for the sectors we need.
+     * Plan v9 manifest item #21: NULL-return-on-fail → halt. */
     sectorBuffer = (uint8_t*)malloc(bufferSize);
     if (!sectorBuffer) {
-        return NULL;  /* Malloc failed */
+        JC_BSOD("cdrom", "sector-buffer alloc failed");
     }
 
     /* Read in smaller sector chunks. Large single-shot reads on packed BMPs
@@ -2351,8 +2354,8 @@ uint8 *ps1_uncompressRLE(PS1File *f, uint32 inSize, uint32 outSize)
 
     outData = malloc(outSize);
     if (!outData) {
-        printf("ps1_uncompressRLE: malloc failed for %lu bytes\n", (unsigned long)outSize);
-        return NULL;
+        /* Plan v9 manifest item #21: NULL-return-on-fail → halt. */
+        JC_BSOD("cdrom", "ps1_uncompressRLE: outData alloc failed");
     }
 
     while (outOffset < outSize && ps1_inOffset < inSize) {
