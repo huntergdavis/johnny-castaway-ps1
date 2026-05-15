@@ -204,16 +204,16 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2702%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7342%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-14T19:31:01` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame57-offscreen-v834`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-14T19:55:03` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-high-frame136-offscreen-v835`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Current W1 work-volume track: `walkstuf1-high-frame57-offscreen-v834`
-clips the high frame `57` offscreen spans on top of the v833/v832/v831/v830/v734/v733/v732/v731
-frame56/frame43/frame45/frame47/frame49/frame51/frame138/frame55 clips. High is exact-flat at `1764`,
+Current W1 work-volume track: `walkstuf1-high-frame136-offscreen-v835`
+clips the high frame `136` offscreen spans on top of the v834/v833/v832/v831/v830/v734/v733/v732/v731
+frame57/frame56/frame43/frame45/frame47/frame49/frame51/frame138/frame55 clips. High is exact-flat at `1764`,
 `1476/1434`, blocking/refill `81/23`, loop reads/read time `63/276`, and due
 `16`, while runtime rows/spans/pixels drop
-`16924/130648/737458 -> 16863/130147/733951`; v657 still provides the active
+`16863/130147/733951 -> 16861/130058/732101`; v657 still provides the active
 payload drop `918345 -> 882007`, CD sectors `605 -> 586`, and loop
 reads/read time `65/282 -> 63/275`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
@@ -531,6 +531,7 @@ and this page.
   `building2-high-late-offscreen-v664`,
   `building2-low-trimtails-v739`,
   `building2-low-offscreen-drawclip-v660`,
+  `walkstuf1-high-frame136-offscreen-v835`,
   `walkstuf1-high-frame57-offscreen-v834`,
   `walkstuf1-high-frame56-offscreen-v833`,
   `walkstuf1-high-frame43-offscreen-v832`,
@@ -2361,15 +2362,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-14T19:31:01</td>
-      <td>walkstuf1-high-frame57-offscreen-v834</td>
+      <td>2026-05-14T19:55:03</td>
+      <td>walkstuf1-high-frame136-offscreen-v835</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>same-speed frame57 offscreen draw-span clip on top of v833 preserves file size, pack LBA/sectors, PS-EXE bucket, scene/loop/target 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/due 63/16, and active payload 882007 while dropping runtime rows/spans/pixels 16924/130648/737458 -&gt; 16863/130147/733951; v833/v832/v831/v830/v734/v733/v732/v731 already clipped frames 56/43/45/47/49/51/138/55 and v657 still provides late-tail physical compaction and loop reads/read time 65/282 -&gt; 63/275, with current read time at 276 VBlanks</td>
+      <td>same-speed frame136 offscreen draw-span clip on top of v834 preserves file size, pack LBA/sectors, PS-EXE bucket, scene/loop/target 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/due 63/16, and active payload 882007 while dropping runtime rows/spans/pixels 16863/130147/733951 -&gt; 16861/130058/732101; v834/v833/v832/v831/v830/v734/v733/v732/v731 already clipped frames 57/56/43/45/47/49/51/138/55 and v657 still provides late-tail physical compaction and loop reads/read time 65/282 -&gt; 63/275, with current read time at 276 VBlanks</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
