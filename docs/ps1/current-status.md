@@ -3,7 +3,7 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-14 (`main` after `v0.8.8-ps1`; all 63 scenes remain
+**Last updated:** 2026-05-15 (`main` preparing `v0.8.13-ps1`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
 battle card is `+0.2697%` over target / `99.7347%` target speed).
 
@@ -151,13 +151,15 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.7-ps1` is the deterministic BOOTMODE scene
-selection and Scene Explorer preview stability release after the `v0.8.6-ps1`
-performance follow-through. All 63 scenes remain validated, all 126 high/low
+Latest point release: `v0.8.13-ps1` is the under-99 payload-work checkpoint
+after the `v0.8.12-ps1` WALKSTUF1 low payload release. All 63 scenes remain
+validated, all 126 high/low
 variants are routed and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured
 and green; `suzy3` is not a standalone scene route. The promoted
-`walkstuf1-compact-fgp3-v141` pass remains the release pack/data win, and the
-MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
+`walkstuf1-low-frame106-inplace-v910`, `building2-high-frame173-inplace-v914`,
+and `building4-low-frame283-inplace-v913` passes are the latest release
+payload-work baselines. Earlier pack/data wins remain in force: the MARY3
+guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 `2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
 `690/693 -> 53/51` while keeping hidden refill overrun at zero. The latest
 post-release BUILDING1 pass converts both packs to compact FGP3/v4 while
@@ -370,6 +372,12 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.13-ps1` — under-99 payload-work checkpoint. WALKSTUF1 low advances to
+  `walkstuf1-low-frame106-inplace-v910`, BUILDING2 high advances to
+  `building2-high-frame173-inplace-v914`, BUILDING4 low advances to
+  `building4-low-frame283-inplace-v913`, and recent JOHNNY1/B2-high/W1-low
+  misses are logged and closed. Public rollup is `+0.2697%` over target /
+  `99.7347%` target speed with `117` green and `9` yellow rows.
 - Current `main` after `v0.8.8-ps1` — promotes the BUILDING2 high `206..230`
   and `226..242` read groups plus 24-sector grouped-read capacity, the
   BUILDING6 scene-local slack4 guard, WALKSTUF1 high
@@ -730,6 +738,7 @@ baseline.
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.8.13.md](release-notes-0.8.13.md) — under-99 payload-work checkpoint release notes
 - [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes
 - [release-notes-0.8.4.md](release-notes-0.8.4.md) — custom Scene Explorer thumbnail release notes
 - [release-notes-0.5.0.md](release-notes-0.5.0.md) — freeplay/debug release notes

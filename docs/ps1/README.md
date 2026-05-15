@@ -12,15 +12,16 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.12-ps1` |
+| Release | `v0.8.13-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2697% public over target / 99.7347% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.12-ps1` is the current performance point release, with later mainline
-optimization wins tracked in the battle card and matrix.
+`v0.8.13-ps1` is the current performance point release, collecting the
+post-v0.8.12 under-99 payload-work checkpoint tracked in the battle card and
+matrix.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip plus the
@@ -354,6 +355,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.13.md](release-notes-0.8.13.md) — under-99 payload-work checkpoint release notes
 - [release-notes-0.8.9.md](release-notes-0.8.9.md) — WALKSTUF1 low in-place payload reduction release notes
 - [release-notes-0.8.8.md](release-notes-0.8.8.md) — VISITOR5 high retained-read promotion release notes
 - [release-notes-0.8.7.md](release-notes-0.8.7.md) — deterministic boot selection and Scene Explorer preview stability release notes
