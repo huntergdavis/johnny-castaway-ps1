@@ -919,7 +919,11 @@ in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 same-speed BUILDING2 high work baseline for future comparisons.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
-finds new removable work.
+finds new removable work. The later v894 preserve-offset entry-size retry for
+frame `90` (`8849 -> 4769`, sector coverage `5 -> 3`) also failed: it saved one
+loop read but regressed scene/loop/target `1602/1351/1311 -> 1605/1354/1310`,
+overrun `40 -> 44`, and refill `18 -> 20`, so do not retry post-hot
+sector-changing entry shrinks without generated deadline ownership.
 
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
 and `365..381`, keep the v454 frame `71` / `77` previous-frame D4 deltas, and
