@@ -94,6 +94,16 @@ same-speed payload-work baseline, not a VBlank speed win; future W1-high
 preserve-offset trims need the same exact-flat gate, while green conversion
 still needs generated deadline/read ownership or upload/restore work.
 
+Latest rejected WALKSTUF1 high preserve-offset payload probe:
+`walkstuf1-high-frame55-inplace-v840` tried the largest remaining same-lane
+entry after v839. The candidate shrank entry `55` / source frame `65`
+`4716 -> 2` bytes and active payload `877189 -> 872475`, but the focused gate
+regressed scene/loop/target `1764/1476/1434 -> 1780/1492/1422`, overrun
+`42 -> 70`, blocking `81 -> 113`, refill `23 -> 27`, and due misses
+`16 -> 18`, with loop reads still `63`. The pack was restored and rebuilt.
+Close frame55 for now; size-only tail removals are not automatically
+cadence-neutral once they alter frame deadlines/read ownership.
+
 Latest promoted WALKSTUF1 low work-volume baseline: v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791
 keep the v726 timing profile exact-flat but shrink frames `51`, `49`, `47`,
 `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, and `76` in-place, preserving every payload offset and
