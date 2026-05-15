@@ -24,7 +24,7 @@ optimization wins tracked in the battle card and matrix.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip plus the
-v911 frame293 fixed-sector payload shrink, the
+v912 frame284 fixed-sector payload shrink, the
 BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
 draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 preserve-offset payload shrinks, the WALKSTUF1 low `394..410`
 retained-read win, and the WALKSTUF1 high late-tail physical compaction after
