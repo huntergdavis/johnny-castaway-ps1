@@ -734,6 +734,18 @@ and due misses `15 -> 14`. VISITOR3 high/low, BUILDING2 high, and WALKSTUF1
 high/low controls stayed exact-flat; pack LBA/sectors and the `217088` byte
 PS-EXE bucket stayed fixed. Treat this as the current BUILDING2 low baseline.
 
+Latest rejected BUILDING2 low current-baseline scalar retries: v900 retested
+the wider `{218,230,8}` row after the v739 pack-speed baseline. It stayed
+timing-flat at `1603`, `1339/1317`, overrun `22`, and refill `0`, but regressed
+blocking `53 -> 54` and produced no key improvement, so `{218,229,8}` remains
+the accepted edge. v900b then tested refreshed planner row `{96,112,0}`; it
+saved reads `37 -> 34`, but regressed scene/loop/target `1603/1339/1317 ->
+1608/1344/1313`, overrun `22 -> 31`, blocking/refill `53/0 -> 57/2`, and only
+improved due `12 -> 11`. Close B2-low `218..230` and `96..112` as current
+hand-table retries; future low work must use generated refill/deadline
+ownership, upload/restore reduction, or pack-side byte changes that keep
+`prefetch_overrun_vb=0`.
+
 Latest rejected BUILDING2 low D4-hole physical compaction: v613-v615 removed
 the two interior gaps left by tiny D4 frames before the `218..230` near-miss
 cluster, first together and then independently. Removing both gaps shifted
