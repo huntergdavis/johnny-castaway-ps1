@@ -907,15 +907,15 @@ canaries stayed flat. The v664 late-only work-volume follow-up clips high
 frames `168..177` after broad/hot offscreen clipping proved phase-negative;
 v698 then extends the safe same-speed subset to frames `94..104`, and v700
 adds the adjacent boundary singleton frame `92`; v701/v702/v703 add adjacent
-frames `91`, `90`, and `89` from the same safe side. v877/v879/v880/v887/v888/v889/v890/v891/v892 then trim
+frames `91`, `90`, and `89` from the same safe side. v877/v879/v880/v887/v888/v889/v890/v891/v892/v896 then trim
 entries `172` / source frame `231`, `171` / source frame `228`, `96` /
-source frame `119`, `170` / source frame `226`, `97` / source frame `121`, `98` / source frame `123`, `174` / source frame `239`, `99` / source frame `126`, and `168` / source frame `219`
+source frame `119`, `170` / source frame `226`, `97` / source frame `121`, `98` / source frame `123`, `174` / source frame `239`, `99` / source frame `126`, `168` / source frame `219`, and `169` / source frame `223`
 in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 `8781 -> 7944`, `1683 -> 1186`, `8718 -> 8258`, `8876 -> 8637`, and
-`1625 -> 1460`, `8843 -> 8728`, and `1372 -> 1266` bytes while active payload drops `674798 -> 670444`. All stay exact-flat at scene/loop/target
+`1625 -> 1460`, `8843 -> 8728`, `1372 -> 1266`, and `1820 -> 1495` bytes while active payload drops `674798 -> 670119`. All stay exact-flat at scene/loop/target
 `1602/1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
 `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
-`18144/110717/468636 -> 18030/105645/446246`. Use v892 as the current
+`18144/110717/468636 -> 18030/105645/446246`. Use v896 as the current
 same-speed BUILDING2 high work baseline for future comparisons.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
