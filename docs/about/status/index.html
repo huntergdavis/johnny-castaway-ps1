@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2305 words
+          ~9 min read · 2301 words
         </p>
 
       <hr class="rule" />
@@ -128,9 +128,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2523%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7519%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.5148%</code> / <code class="language-plaintext highlighter-rouge">100.5342%</code>.
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2517%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7525%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.5154%</code> / <code class="language-plaintext highlighter-rouge">100.5348%</code>.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
 the <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while moving both tides to <code class="language-plaintext highlighter-rouge">1948/1945</code>,
@@ -138,10 +138,10 @@ overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/re
 The accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due
-<code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low now carries the v954 local-LZ entry30/entry33 payload baseline at
-<code class="language-plaintext highlighter-rouge">2853/2815</code>, overrun <code class="language-plaintext highlighter-rouge">38</code>, blocking/read time <code class="language-plaintext highlighter-rouge">42</code>/<code class="language-plaintext highlighter-rouge">223</code>, and prefetch overrun
-<code class="language-plaintext highlighter-rouge">36</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799397</code> while staying exact-flat to the
-current control. The newest WALKSTUF1
+<code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+<code class="language-plaintext highlighter-rouge">2851/2815</code>, overrun <code class="language-plaintext highlighter-rouge">36</code>, blocking/read time <code class="language-plaintext highlighter-rouge">42</code>/<code class="language-plaintext highlighter-rouge">223</code>, and prefetch overrun
+<code class="language-plaintext highlighter-rouge">35</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
+The newest WALKSTUF1
 baselines combine same-speed work-volume clips with the low-tide v817
 retained-read promotion: high keeps <code class="language-plaintext highlighter-rouge">1476/1434</code>, blocking/refill <code class="language-plaintext highlighter-rouge">81/23</code>,
 reads/due <code class="language-plaintext highlighter-rouge">63/16</code>; low now measures <code class="language-plaintext highlighter-rouge">1477/1431</code>, blocking/refill/due

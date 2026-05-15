@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2523%` over
-target / `99.7519%` target speed; the raw signed optimization matrix is
-about `-0.5148%` / `100.5342%`.
+allocation. The public headless battle card is `+0.2517%` over
+target / `99.7525%` target speed; the raw signed optimization matrix is
+about `-0.5154%` / `100.5348%`.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
@@ -31,10 +31,10 @@ overrun `3`, blocking/refill `5`, and target speed `99.85%`.
 The accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
-`12`. BUILDING4 low now carries the v954 local-LZ entry30/entry33 payload baseline at
-`2853/2815`, overrun `38`, blocking/read time `42`/`223`, and prefetch overrun
-`36`, cutting active payload `807263 -> 799397` while staying exact-flat to the
-current control. The newest WALKSTUF1
+`12`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+`2851/2815`, overrun `36`, blocking/read time `42`/`223`, and prefetch overrun
+`35`, cutting active payload `807263 -> 799277` while preserving pack layout.
+The newest WALKSTUF1
 baselines combine same-speed work-volume clips with the low-tide v817
 retained-read promotion: high keeps `1476/1434`, blocking/refill `81/23`,
 reads/due `63/16`; low now measures `1477/1431`, blocking/refill/due
