@@ -708,6 +708,25 @@ void graphicsInit()
     /* Initialize event system */
     eventsInit();
     GR_DIAG_PRINTF("GPU: Graphics initialization complete!\n");
+
+    /* Mark graphics ready — used by memHalt to decide between the
+     * full BSOD panel (ps1Bsod) and the minimal pre-graphics text
+     * panel (ps1DebugError). See plan v9 "Failure UX". */
+    extern void memSetGraphicsReady(int ready);
+    memSetGraphicsReady(1);
+}
+
+/* Mem-region allocator queries this to choose its halt path. Defined
+ * here so the flag lives next to graphicsInit; the allocator uses
+ * `extern int graphicsIsInitialized(void)` via mem_region.c. */
+static int gGraphicsReady = 0;
+
+int graphicsIsInitialized(void) {
+    return gGraphicsReady;
+}
+
+void memSetGraphicsReady(int ready) {
+    gGraphicsReady = ready ? 1 : 0;
 }
 
 /*

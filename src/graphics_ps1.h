@@ -155,6 +155,18 @@ extern int grGpuAlreadyInitialized;
 
 void graphicsInit();
 void graphicsEnd();
+
+/* Returns 1 once graphicsInit() has completed, 0 otherwise. The
+ * memory-region allocator's memHalt primitive uses this to decide
+ * between the full JC_BSOD UI (ps1Bsod, requires graphics) and the
+ * minimal pre-graphics text panel (ps1DebugError). See plan v9
+ * "Failure UX". */
+int graphicsIsInitialized(void);
+
+/* Sets the gGraphicsReady flag. graphicsInit() calls this with 1 at
+ * its tail; tests or shutdown paths may call with 0. */
+void memSetGraphicsReady(int ready);
+
 void grRefreshDisplay();
 void grToggleFullScreen();
 /* Force every bgTile row to be re-uploaded on the next grDrawBackground.
