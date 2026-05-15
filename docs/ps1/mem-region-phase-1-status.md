@@ -63,29 +63,58 @@ item links to its commit when landed.
       at end of `graphicsInit()`. Drives `memHalt`'s graphics-vs-
       pre-graphics dispatch.
 
-## NOT YET landed in this branch
+## Call-site migration progress (Step 12)
 
-### Call-site migration (Step 12 — the bulk of Phase 1)
+**2 of 39 sites migrated as proof of pattern. Build clean at each step.**
 
-- [ ] **39 call sites** moved to `memAlloc(REGION, n, tag)` with
-      explicit `INIT_ZEROED`/`INIT_FULL_WRITE`/`INIT_NONE` annotation.
-      Existing call sites still use `safe_malloc` / libc `malloc`.
-      The new allocator's TRANSIENT region exists but receives zero
-      allocations today — the `memSceneReset` wipe is therefore
-      a no-op until migration begins.
-- [ ] **Highest-impact migration targets** (per plan removal manifest):
-  - `gFgSetupSegmentBuffer` (foreground_pilot.c:1332) → TRANSIENT
-  - `gFgRuntime.entryTable` (foreground_pilot.c:947) → TRANSIENT
-  - `gFgRuntime.soundEvents` (foreground_pilot.c:1609) → TRANSIENT
-  - clean-rect snapshot allocations → TRANSIENT, reordered first
-  - `gFgFrameBuffer`, `gFgPrefetchFrameBuffer`, `gFgStreamScratch`,
-    `gFgStreamWindowBuffer` → BOOT (pre-sized via pack scan)
-  - `gWalkCleanBuf` → BOOT
-  - `grBackgroundSfc` backing → BOOT
-  - Resource cache uncompressedData → CACHE
-- [ ] **`MEM_REGION_RATIONALE: ...` comment** above every migrated
-      call site.
-- [ ] **`INIT_*` annotation** per call site.
+### Migrated
+
+- [x] `gFgRuntime.soundEvents` (foreground_pilot.c:1609) → TRANSIENT
+      (commit 1a9cfdca0). Per-scene sound-event table. NULL-return
+      failure path deleted (memAlloc halts on exhaustion).
+- [x] `gFgRuntime.entryTable.entries` (foreground_pilot.c:947) →
+      TRANSIENT (commit e06a1f8b3). Per-scene frame-metadata table.
+      Same pattern as soundEvents.
+
+### NOT YET landed in this branch
+
+**Per-scene TRANSIENT, simple alloc/free pattern** (low risk, follow the
+soundEvents/entryTable template):
+
+- [ ] `expanded` scratch in fgLoadMetadataPrefix (foreground_pilot.c:1034)
+- [ ] CD sector buffer (foreground_pilot.c:1245)
+
+**Per-scene TRANSIENT with reuse-on-capacity logic** (medium risk — the
+existing "buffer already big enough, skip realloc" pattern doesn't work
+under bump-only semantics; needs careful refactor + dangling-pointer
+clearing in fgRuntimeReset):
+
+- [ ] `gFgSetupSegmentBuffer` (foreground_pilot.c:1332)
+- [ ] Clean-rect snapshots (`gGrCleanRects[i].pixels`, graphics_ps1.c:3645;
+      ~6 slots, atomic-allocation semantics, up to ~181 KB)
+
+**BOOT region** (pre-sized at boot via pack-header scan):
+
+- [ ] `gFgFrameBuffer` (foreground_pilot.c:1470)
+- [ ] `gFgPrefetchFrameBuffer`
+- [ ] `gFgStreamScratch` (foreground_pilot.c:1481)
+- [ ] `gFgStreamWindowBuffer`
+- [ ] `gWalkCleanBuf` (walk_pilot.c:108)
+- [ ] `grBackgroundSfc` backing (graphics_ps1.c side)
+- [ ] Resource catalog struct arrays in resource.c parse functions
+
+**CACHE region** (LRU-managed resource cache; depends on real CACHE
+free-list landing first):
+
+- [ ] Resource `uncompressedData` blobs in resource.c parse paths
+- [ ] Per-ADS uncompressedData (ads.c lazy decompress)
+
+**Other**:
+
+- [ ] `MEM_REGION_RATIONALE: ...` comment above every NEW migrated call site
+- [ ] `INIT_*` annotation per call site
+- [ ] Audit other src/ files not yet inspected (pause_menu.c, ps1_captions.c,
+      memcard.c, walk_pilot.c, scene_freeplay.c)
 
 ### Phase 1 sub-steps still to do
 
