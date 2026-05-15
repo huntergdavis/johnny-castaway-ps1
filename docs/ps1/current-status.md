@@ -260,10 +260,10 @@ BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
 improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
 prefetch overrun `34` while preserving fixed pack footprints and the `217088`
 byte PS-EXE bucket. WALKSTUF1 high/low now also carry late-tail work-volume
-clips, high v837 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, and high v839/v841 shrink frame51/frame49 in place with preserved offsets. High stays exact-flat at
+clips, high v837 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, and high v839/v841/v842 shrink frame51/frame49/frame47 in place with preserved offsets. High stays exact-flat at
 `1476/1434` with blocking/refill `81/23`, reads/due `63/16`, while dropping
 runtime rows/spans/pixels to `16859/129919/731016` and active payload to
-`872690`. Low v817 adds the
+`868449`. Low v817 adds the
 `394..410` retained read group after the v653/v705/v802 work-volume chain and
 improves to `1477/1431` with blocking/refill `64/20`,
 loop reads/read VBlanks `58/266`, and due `11`, while still carrying the
@@ -379,14 +379,14 @@ Milestone releases:
   `218..229` slack-8 retained-read ownership plus v739 draw-tail trimming, the
   VISITOR3 high `277..293` tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
-  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
+  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion.
   The public battle card is `+0.2702%` / `99.7342%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
-  `16859/129919/731016` plus active payload `872690`, WALKSTUF1 low is `1477/1431` with loop
+  `16859/129919/731016` plus active payload `868449`, WALKSTUF1 low is `1477/1431` with loop
   reads `58` and rows/spans/pixels `16257/114798/633876`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
