@@ -454,10 +454,10 @@ removal rather than another hand-authored scalar append.</p>
 
 <p>The latest WALKSTUF1 low baseline carries the low-tide-only <code class="language-plaintext highlighter-rouge">394..410</code>
 retained-read group plus the v859 fixed-sector speed win, then extends the
-same no-shift payload lane through <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame99-inplace-v867</code>.
+same no-shift payload lane through <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame100-inplace-v868</code>.
 Low now measures <code class="language-plaintext highlighter-rouge">1477/1432</code>, overrun <code class="language-plaintext highlighter-rouge">45</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">65/20/11</code>,
 and loop reads/read time <code class="language-plaintext highlighter-rouge">58/259</code>, while active payload drops
-<code class="language-plaintext highlighter-rouge">879801 -&gt; 791431</code> without moving pack offsets, LBA/sectors, or PS-EXE size.</p>
+<code class="language-plaintext highlighter-rouge">879801 -&gt; 791265</code> without moving pack offsets, LBA/sectors, or PS-EXE size.</p>
 
 <p>The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
@@ -1062,9 +1062,9 @@ hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
 VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
 where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
-WALKSTUF1 low v747..v864 pass keeps the row exact-flat except for the v859
+WALKSTUF1 low v747..v868 pass keeps the row exact-flat except for the v859
 one-VBlank target/overrun win while shrinking the no-shift frame list
-through frame <code class="language-plaintext highlighter-rouge">99</code> in-place (<code class="language-plaintext highlighter-rouge">879801 -&gt; 791431</code> active payload), and v760
+through frame <code class="language-plaintext highlighter-rouge">100</code> in-place (<code class="language-plaintext highlighter-rouge">879801 -&gt; 791265</code> active payload), and v760
 restores the bounded CD fast-poll runtime to <code class="language-plaintext highlighter-rouge">60/272</code> read time, so W1-low
 now has a safe no-shift payload lane but still needs another sector/read
 timing conversion. The

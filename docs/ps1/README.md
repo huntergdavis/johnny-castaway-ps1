@@ -29,7 +29,7 @@ draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-h
 retained-read win, and the WALKSTUF1 high late-tail physical compaction after
 the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
 retained-read wins; the current low fixed-sector payload lane is now
-`walkstuf1-low-frame99-inplace-v867`. The
+`walkstuf1-low-frame100-inplace-v868`. The
 public battle card is now `+0.2697%` over target /
 `99.7347%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
@@ -59,7 +59,7 @@ frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap reloca
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
+draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
 optimization matrix is `-0.4975%` / `100.5171%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
@@ -81,15 +81,15 @@ so they do not count as VBlank speed wins.
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
 on top of the shared tail groups, v331 staged-prepare scheduler fallback,
 v705 late-tail physical compaction, isolated offscreen work-volume clips
-through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866/v867 no-shift
+through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866/v867/v868 no-shift
 in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
 `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`,
 `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`,
-`145`, `75`, `76`, `77`, `130`, `135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, and `99`, the
+`145`, `75`, `76`, `77`, `130`, `135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, `99`, and `100`, the
 v760 bounded CD fast-poll restoration, and the v817 low `394..410` retained
 read group. Low is now `1477/1432` at `96.95%` target speed with overrun `45`,
 blocking/refill `65/20`, loop reads/read time `58/259`, and due misses `11`,
-while active payload drops `879801 -> 791431` without moving pack offsets,
+while active payload drops `879801 -> 791265` without moving pack offsets,
 LBA/sectors, or the PS-EXE bucket.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
