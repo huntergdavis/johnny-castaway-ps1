@@ -1959,6 +1959,12 @@ int main(int argc, char **argv)
         const char *loopScene = fgLoopNextScene(explicitScene,
                                                 pauseMenuSceneSet);
         fgLoopApplyVariant(loopScene);
+        /* Pre-emptive CACHE eviction. Runs AFTER fgLoopApplyVariant so
+         * the lookup keys on the effective scene name (variant slug, if
+         * a variant fires). Runs BEFORE fgLoopWalkToScene so the
+         * ~3-5 ms LRU scan hides inside the walk animation's pause.
+         * See plan v9 "Pre-emptive CACHE eviction" section. */
+        memCachePreEvictForNextScene(loopScene);
 
         /* Walk subsystem: walk Johnny from his last spot/heading to
          * this scene's start before the FG2 pack plays. fgLoopWalkToScene
