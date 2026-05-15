@@ -3,9 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-15 (`main` after `walkstuf1-low-rg209-225-v935`; all 63 scenes remain
+**Last updated:** 2026-05-15 (`main` after `building4-low-local-lz-entry30-v953`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2520%` over target / `99.7522%` target speed).
+battle card is `+0.2523%` over target / `99.7519%` target speed).
 
 ## Overall
 
@@ -289,10 +289,12 @@ active payload `316608 -> 112093` bytes and moving both tides from
 `1973/1945` to `1948/1945`. WALKSTUF1 low now adds the `209..225`
 retained-read row, keeping scene/loop flat at `1773/1481` while improving
 target `1428 -> 1431`, blocking `78 -> 72`, reads/read time `61/279 -> 58/267`,
-and due `11 -> 10`. The public battle card is now
-`+0.2520%` over target /
-`99.7522%` target speed; the raw signed optimization rollup is about
-`-0.5152%` / `100.5345%`.
+and due `11 -> 10`. BUILDING4 low now carries the v953 local-LZ entry30
+payload baseline, cutting active payload `807263 -> 803292` while staying
+exact-flat to current control at `3129/2853/2815`. The public battle card is
+now `+0.2523%` over target /
+`99.7519%` target speed; the raw signed optimization rollup is about
+`-0.5148%` / `100.5342%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.15`
 public over-target points and added about `12.65` public target-speed points.
@@ -407,7 +409,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2520%` / `99.7522%` with `119` green and `7` yellow rows;
+  The public battle card is `+0.2523%` / `99.7519%` with `119` green and `7` yellow rows;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is

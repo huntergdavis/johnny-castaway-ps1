@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.14-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2520% public over target / 99.7522% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2523% public over target / 99.7519% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -33,8 +33,8 @@ retained-read win, and the WALKSTUF1 high late-tail physical compaction after
 the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
 retained-read wins; the current low retained-read lane is now
 `walkstuf1-low-rg209-225-v935`. The
-public battle card is now `+0.2520%` over target /
-`99.7522%` target speed across all 126
+public battle card is now `+0.2523%` over target /
+`99.7519%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -61,9 +61,9 @@ frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
-BUILDING4 low offscreen draw-span clip and frame425 in-place payload shrink, the JOHNNY1 local-LZ full-frame payload compression, the BUILDING2 high/low offscreen
+BUILDING4 low offscreen draw-span clip plus frame425 and entry30 local-LZ payload shrinks, the JOHNNY1 local-LZ full-frame payload compression, the BUILDING2 high/low offscreen
 draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, and the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks plus the W1-low `209..225` retained-read row; the raw signed
-optimization matrix is about `-0.5152%` / `100.5345%`.
+optimization matrix is about `-0.5148%` / `100.5342%`.
 That is about `17.15` public over-target points removed and `12.65` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny

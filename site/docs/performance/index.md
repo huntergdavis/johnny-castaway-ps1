@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.8% target speed** (`0.2520%`
-exact public over target / `99.7522%` exact public target speed); the raw
-signed optimization matrix is about `-0.5152%` / `100.5345%`.
+the public average is **+0.3% over target / 99.8% target speed** (`0.2523%`
+exact public over target / `99.7519%` exact public target speed); the raw
+signed optimization matrix is about `-0.5148%` / `100.5342%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -624,7 +624,7 @@ rows are historical only.
     <tr>
       <td><code>building4</code></td>
       <td>+1.0% / 99.0% (2844/2816); due 1; blk 37</td>
-      <td>+1.3% / 98.7% (2853/2816); due 1; blk 40</td>
+      <td>+1.4% / 98.7% (2853/2815); due 1; blk 42</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -957,7 +957,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2520% over target / 99.7522% target speed, with several
+  public average is now +0.2523% over target / 99.7519% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

@@ -203,10 +203,10 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2520%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7522%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T10:57:15` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-rg209-225-v935`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2523%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7519%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T11:56:39` |
+| Stats version | mixed across rows; latest refreshed row is `building4-low-local-lz-entry30-v953`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -230,6 +230,14 @@ entry `100` / source frame `129` after v877/v879/v880/v887/v888/v889/v890/v891/v
 active payload `674798 -> 669408`. Timing/CD stay exact-flat at `1602`,
 loop/target `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
 `58/257`, and due `7`.
+
+Current BUILDING4-low payload track: `building4-low-local-lz-entry30-v953`
+compresses entry `30` / source frame `54` with the local-LZ sentinel
+(`4650 -> 679` bytes, modeled entry sectors `3 -> 1`) while preserving the
+fixed `1714154` byte pack footprint, pack LBA/sectors, and PS-EXE bucket.
+Timing stays exact-flat to the current control at scene/loop/target
+`3129/2853/2815`, overrun `38`, blocking/refill `42/36`, read time `223`,
+and due `1`; active payload drops `807263 -> 803292`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -511,9 +519,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-rg209-225-v935`,
+  refreshed rows use `building4-low-local-lz-entry30-v953`,
+  `walkstuf1-low-rg209-225-v935`,
   `johnny1-local-lz-v932`,
-  `building4-low-frame425-inplace-v928`,
   `walkstuf1-high-frame139-inplace-v927`,
   `building2-high-frame100-inplace-v926`,
   `building4-low-frame40-inplace-v924`,
@@ -1218,15 +1226,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T08:57:32</td>
-      <td>building4-low-frame425-inplace-v928</td>
-      <td>+1.3%</td>
+      <td>2026-05-15T11:56:39</td>
+      <td>building4-low-local-lz-entry30-v953</td>
+      <td>+1.4%</td>
       <td class="spd-yellow">98.7%</td>
-      <td>2853/2816</td>
-      <td>40</td>
-      <td>34</td>
+      <td>2853/2815</td>
+      <td>42</td>
+      <td>36</td>
       <td>1</td>
-      <td>same-speed frame425 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v924 while cutting active payload 807523-&gt;807263; entry425/source619 shrinks 661-&gt;401, entry sectors 2-&gt;2, scene/loop/target stay 3128/2853/2816, overrun 37, blocking/refill 40/34, read VBlanks 215, due 1</td>
+      <td>same-speed entry30/source54 local-LZ sentinel compresses 4650-&gt;679 bytes in-place, modeled entry sectors 3-&gt;1, and cuts active payload 807263-&gt;803292 while preserving pack footprint/LBA/sectors and PS-EXE bucket; timing stays exact-flat to current control at scene/loop/target 3129/2853/2815, overrun 38, blocking/refill 42/36, read VBlanks 223, due 1</td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>
