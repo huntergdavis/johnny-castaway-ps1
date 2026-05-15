@@ -144,10 +144,36 @@ This downgrades fatalError to printf+skip during the offending scene.
 fails if `MEM_DEV_BUILD=1` is detected. Use it on your local dev branch
 only; flip it off before opening a PR.
 
+## Adding a new region (rare, but here's the pattern)
+
+If you genuinely need a new memory region — e.g., a separate VRAM-mirror
+region for the texture cache — there are three things to update:
+
+1. **`src/mem_region.h`:** add the new enum value (`MEM_REGION_*`), the
+   budget constant (`MEM_*_BUDGET`), and any boot-verify function
+   prototype (`memVerify*FitNewRegion`).
+2. **`src/mem_region.c`:** add the allocator logic (bump, free-list,
+   whatever fits the lifetime model). Update `memRegionUsed`/`Peak`
+   switches.
+3. **`src/ps1_debug.c`:** the BSOD detail-line block reads region state
+   via `memRegionUsed(MEM_REGION_*)` for each region. Add a line for
+   your new region.
+4. **`src/jc_reborn.c`:** add a `bsod-ui-test-mem-<newregion>` bootmode
+   entry following the pattern at line ~1020 (existing
+   `bsod-ui-test-mem-{boot,cache,transient}`). Calls
+   `memHalt("(bsod-ui-test)", "synthetic <newregion> halt")` directly
+   from the bootmode handler — synthesizes the halt UI without
+   exercising the allocator's failure path.
+5. **`docs/ps1/mem-region-decision-tree.md`:** add a branch for the
+   new region's lifetime model.
+
+The new region also needs `MEM_REGION_TOTAL` updated and a new
+`_Static_assert` line — the existing total must stay ≤ 1.2 MB after the
+addition or another region shrinks.
+
 ## When in doubt
 
 - The plan: [memory-region-allocator-plan.md](./memory-region-allocator-plan.md)
 - The decision tree: [mem-region-decision-tree.md](./mem-region-decision-tree.md)
-  (TBD — added in Phase 1 implementation)
 - The current scene catalog: `docs/ps1/research/generated/scene_analysis_current.json`
-- The reviewer panel critiques: [memory-region-allocator-red-team-v2.md](./memory-region-allocator-red-team-v2.md)
+- The reviewer panel critiques: [memory-region-allocator-red-team-v2.md](./memory-region-allocator-red-team-v2.md), [memory-region-allocator-red-team-v3.md](./memory-region-allocator-red-team-v3.md)

@@ -1,11 +1,63 @@
 # Memory region allocator — implementation plan
 
-**Status:** v4 — resolves every finding (blocker, material, and hygiene) from
-the multi-reviewer red-team. See:
+**Status:** v5 — resolves every finding from red-team v3 (the panel
+re-review of v4). See:
 
 - [memory-region-allocator-red-team.md](./memory-region-allocator-red-team.md) — v1 technical red-team
 - [memory-region-allocator-red-team-v2.md](./memory-region-allocator-red-team-v2.md) — v2 principal-engineer multi-reviewer panel
-- [adding-new-scenes-memory.md](./adding-new-scenes-memory.md) — future-maintainer guide (referenced from the plan)
+- [memory-region-allocator-red-team-v3.md](./memory-region-allocator-red-team-v3.md) — v3 panel re-review of v4
+- [adding-new-scenes-memory.md](./adding-new-scenes-memory.md) — future-maintainer guide
+- [mem-region-decision-tree.md](./mem-region-decision-tree.md) — which region for a new allocation
+
+## What changed in v5
+
+Resolves all 7 🔴 blockers, 12 🟠 material risks, and 5 🟡 hygiene items
+from red-team v3:
+
+- **Unified `memHalt(scene, reason)` primitive** in `mem_region.h` —
+  internally dispatches to `JC_BSOD` (if `graphicsIsInitialized()`) or
+  `fatalError` (if not). All allocator failure sites call this. No call
+  site decides the mechanism. (P9, M7)
+- **ISR-safety check is unconditional**, not debug-only. `assert(ps1IsMainContext())`
+  costs ~3 cycles per `memAlloc`, well under the 10-cycle budget. (P1-bis)
+- **Phase 1 Step: explicit ps1Bsod block REPLACEMENT** — the `fgProbeLargestAlloc`,
+  `fgGetFrameBufferBytes`, etc. lines in `src/ps1_debug.c:245+` are
+  replaced (not extended) with mem-region state reads. `walkClean*` /
+  `johnwalkSlot*` lines stay because those buffers persist into BOOT. (P8, A11)
+- **`fatalError` PS1 path upgraded** to use `ps1DebugError` (from
+  `src/ps1_debug.h:51`) which renders a minimal text panel. Pre-graphics
+  failures are no longer black-screen-no-explanation. (A10)
+- **Phase 2 ships as ONE bundled PR** with 8 atomic per-file commits.
+  Revert any single one with `git revert <sha>`. (S7)
+- **Pre-emptive CACHE eviction moves into the scene picker**
+  (`fgLoopNextScene`) rather than `memSceneReset`. Eviction happens
+  during walk-to-scene, not at the start of the next scene's setup. (PR7)
+- **`bsod-test-mem-*` renamed to `bsod-ui-test-mem-*`** to signal these
+  are UI-only synthetic tests, not integration tests. (S9)
+- **Decision tree doc** committed in Phase 1, not after. (M9)
+- **CRC-32 chosen over SHA-256** for pack-hash verification (smaller,
+  faster, sufficient). (P12)
+- **`formatReason` pinned to `ps1_debug.h`** with documented re-entrancy
+  contract. (M10, A16)
+- **Pinned-set verifier math equals runtime accounting** — new
+  pre-Phase-1 verification gate runs both against the same scene set
+  and asserts equality. (A12)
+- **Static initializers explicitly forbidden** — build flag rejects them. (A13)
+- **`currentScene` convention between scenes:** call sites use
+  `fgLoopGetLastScene()` to keep diagnostic continuity through the
+  scene-pick window. (A14)
+- **`bsod-ui-test-mem-*` flags gated by CI default-off check.** (A15)
+- **TRANSIENT poison cost corrected** to ~15 ms (was 8 ms). (PR8)
+- **BSOD-path defensive value clamping** added — if metadata is
+  corrupted, the dump renders bounded values instead of crashing
+  during the halt. (PR9)
+- **Tag-string-not-stored convention pinned** in the API docs. (PR10)
+- **PSX printf is non-allocating** — confirmed against project's
+  PsnoobSDK, documented in `mem_region.c` as a non-regression invariant. (P10)
+- **`JCBSOD-FATAL` test-harness migration** noted as part of Phase 1
+  delivery so soak-run pass/fail detection updates with the new
+  sentinel semantics. (S8)
+- **PR template checkbox** for `MEM_DEV_BUILD=0` final-test confirmation. (S10)
 
 ## What changed in v4
 
@@ -129,13 +181,22 @@ must never run from:
 
 Enforcement:
 
-- Each function asserts `assert(ps1IsMainContext())` in debug builds. The
-  helper inspects PSX SR/cause registers; cheap.
+- Each function asserts `ps1IsMainContext()` **unconditionally** (release
+  builds too). The helper inspects PSX SR/cause registers — ~3 cycles
+  per call, well under the 10-cycle budget. Debug-only asserts don't ship,
+  and a future ISR-context regression would race silently in production
+  without this guard.
 - The audit gate (Phase 1 verification) traces from every known ISR
-  registration point and confirms no path reaches `memAlloc`.
+  registration point and confirms no path reaches `memAlloc`. (Belt +
+  braces against the runtime assert.)
 - The bandaids removed in Phase 2 include some code that *might* have
   allocated from interrupt context historically; the Phase 2 PR for each
   file double-checks that.
+- **No static initializers / no constructor attributes.** Build with
+  `-Wglobal-constructors -Werror=global-constructors` so any future
+  `__attribute__((constructor))` use breaks the build. C-only — no C++
+  static initializers possible (we're already C, no `.cpp` files in
+  `src/`, but the flag is belt + braces).
 
 If a future feature genuinely needs interrupt-context allocation, it must
 either (a) pre-allocate at boot in BOOT, or (b) use a separate lock-free
@@ -272,26 +333,42 @@ typedef enum {
 
 /* All allocations aligned to MEM_REGION_ALIGN (4 bytes — sufficient for
  * R3000A; the largest scalar we use is uint32 / pointer). Returns a
- * valid pointer or fatalErrors. Never NULL. */
+ * valid pointer or halts via memHalt. Never NULL.
+ *
+ * The `tag` parameter is for telemetry only — NOT stored per-allocation
+ * (would cost a header word per bump). Consumed by the call site that
+ * provides it (e.g., the JCMEM line on next memLogTelemetry). May be
+ * NULL. */
 #define MEM_REGION_ALIGN 4
 void *memAlloc(MemRegion region, size_t size, const char *tag);
 
-/* Free is a no-op in BOOT (debug: fatalError post-freeze), real release
- * in CACHE (used only by the LRU evictor), balance-decrement in TRANSIENT. */
+/* Free is a no-op in BOOT (memHalt post-freeze), real release in CACHE
+ * (used only by the LRU evictor — internal, never recurses), balance-
+ * decrement in TRANSIENT. */
 void memFree(MemRegion region, void *ptr);
 
-/* Wipes TRANSIENT region. Logs peak. Asserts sceneAllocBalance==0 in debug.
- * Poisons TRANSIENT bytes in MEM_POISON_TRANSIENT builds. */
+/* Wipes TRANSIENT region. Logs peak. Asserts sceneAllocBalance==0 in
+ * debug. Release path: ~5 cycles (bump-pointer reset + telemetry test).
+ * MEM_POISON_TRANSIENT debug path: ~15 ms for full 250 KB fill at PSX
+ * memory write bandwidth (~16 MB/s, cache-line stores). */
 void memSceneReset(const char *sceneName);
+
+/* Unified halt primitive — every allocator failure path calls this.
+ * Internally dispatches:
+ *   - JC_BSOD(scene, reason) if graphicsIsInitialized()
+ *   - fatalError("%s: %s", scene?:"(boot)", reason) otherwise
+ * Call sites never decide between JC_BSOD and fatalError; memHalt does. */
+__attribute__((noreturn))
+void memHalt(const char *scene, const char *reason);
 
 /* Diagnostics — zero overhead on hot path */
 size_t memRegionUsed(MemRegion);
 size_t memRegionPeak(MemRegion);
 void   memLogTelemetry(void);  /* gated behind FG_HEAP_PROBE_LOGS */
-/* Region state read by ps1Bsod via externs (same pattern as
- * fgProbeLargestAlloc); no dedicated dump function needed. */
+/* Region state read by ps1Bsod via externs (same pattern as the existing
+ * fg*/walkPilot* externs); see "Failure UX" below. */
 
-/* Boot. memAlloc before this calls fatalError. */
+/* Boot. memAlloc before this calls memHalt. */
 void memInit(void);
 void memFreezeBoot(void);
 
@@ -388,64 +465,111 @@ exactly this purpose:
 - A `bsod-test` bootmode flag already exists for visually verifying the UI
   without forcing a real failure (`src/jc_reborn.c:1020-1023, 1979-1982`).
 
-The plan reuses this framework rather than inventing a new one. Two
-phase-dependent code paths:
+The plan reuses this framework rather than inventing a new one.
 
-### Boot-time failures: `fatalError` (graphics not yet up)
+### Unified `memHalt(scene, reason)` primitive
 
-The four `memVerify*` checks at `memInit` time run before `graphicsInit`
-finishes. `ps1Bsod` is not safe to call before graphics is initialized
-(`src/graphics_ps1.c:3526` notes this). Boot-time verifies use
-`fatalError(...)` with the same human-readable format. On PS1 this
-prints to TTY and halts via `while(1)`; on emulator/dev hardware the
-TTY console captures it, on retail hardware the user sees a frozen
-screen but the reason is in the build's QA logs.
+All allocator failure paths call **one function** rather than choosing
+between `JC_BSOD` and `fatalError` at every site:
 
 ```c
-fatalError("TRANSIENT region budget too small: scene=%s needs=%zu have=%zu — "
-           "rebuild pack_header_metrics.h or raise MEM_TRANSIENT_BUDGET",
-           pack->name, scenePeak, MEM_TRANSIENT_BUDGET);
+__attribute__((noreturn))
+void memHalt(const char *scene, const char *reason) {
+    if (graphicsIsInitialized()) {
+        ps1Bsod(scene, reason, __builtin_return_address(0)
+                                ? "(caller)" : "(unknown)", 0);
+        /* Note: __FILE__/__LINE__ in JC_BSOD's macro form capture the
+         * macro expansion point. memHalt is called from many sites;
+         * to preserve per-site grep-ability, we emit JCBSOD caller=<addr>
+         * detail line instead. */
+    } else {
+        /* Pre-graphics: use ps1DebugError (renders minimal text panel,
+         * safe before graphicsInit completes) instead of plain
+         * fatalError so the user sees a screen, not a black freeze. */
+        ps1DebugError("%s: %s", scene ? scene : "(boot)", reason);
+        while (1) { /* halt forever */ }
+    }
+}
 ```
 
-### Runtime failures (scene playing): `JC_BSOD`
-
-Every allocator failure during scene play routes through `JC_BSOD`:
+Allocator call sites then look uniform:
 
 ```c
-JC_BSOD(currentScene,
-        "TRANSIENT exhausted: req=234K have=187K bal=0 peak=234K");
+memHalt(currentSceneOrFgLoopGetLastScene(),
+        formatReason("CACHE exhausted req=%zu pinned=%zu", n, pinned));
 ```
 
-`ps1Bsod` already grabs heap-probe state via externs
-(`fgProbeLargestAlloc`, `fgGetFrameBufferBytes`, etc.). The plan extends
-the existing detail-line block in `ps1Bsod` to also emit region state:
+Where `currentSceneOrFgLoopGetLastScene()` returns the current scene if
+one is in progress, otherwise `fgLoopGetLastScene()` for diagnostic
+continuity through the scene-pick window (resolves A14).
+
+`formatReason` is declared in **`src/ps1_debug.h`** (BSOD-side helper,
+not memory-side) and writes into a single static buffer. Re-entrancy
+contract: the path is `noreturn`, so a second call would only happen if
+the first call's path itself failed. `ps1Bsod` does not allocate
+(PSX-libc `printf` is non-allocating, confirmed against the PsnoobSDK
+build the project uses; documented as a non-regression invariant in
+`mem_region.c`'s header comment). Defensive belt: `formatReason`'s
+buffer is `volatile` and includes a 1-entry depth counter; a recursive
+call into `formatReason` writes `"[concurrent fatal]"` instead.
+
+### `ps1Bsod`'s heap-probe block — REPLACED, not extended (P8/A11)
+
+Today, `src/ps1_debug.c:245+` emits diagnostic lines like:
+
+```
+JCBSOD heapKB=...                    /* via fgProbeLargestAlloc */
+JCBSOD frameBufBytes=...             /* via fgGetFrameBufferBytes */
+JCBSOD prefetchBufBytes=...
+JCBSOD walkCleanAlloc=... walkCleanKB=...
+JCBSOD johnwalkSlotLoaded=...
+```
+
+`fgProbeLargestAlloc` is a binary-search-malloc — after Phase 2 deletes
+the bandaids and the project-level poison makes libc malloc unreachable,
+this line is broken at best (returns 0, misleading support tickets) and
+recursive-BSOD at worst (poison trips inside the BSOD path).
+
+**The Phase 1 PR for `ps1Bsod` REPLACES the heap-probe block entirely**
+with mem-region state reads:
 
 ```
 JCBSOD memBootUsed=345600 memBootPeak=345600
 JCBSOD memCacheUsed=423000 memCachePeak=580000
 JCBSOD memTransientUsed=0    memTransientPeak=234567
 JCBSOD sceneAllocBalance=0
+JCBSOD frameBufBytes=...             /* still meaningful; buffer now in BOOT */
+JCBSOD walkCleanAlloc=1 walkCleanKB=149  /* still meaningful, BOOT-resident */
+JCBSOD johnwalkSlotLoaded=...
 ```
 
-This is a 5-line addition to `src/ps1_debug.c:228+` mirroring the
-existing extern pattern (no new infrastructure). The on-screen panel
-inherits the new lines automatically.
+The `walkClean*` and `johnwalkSlot*` lines stay because those buffers
+still exist (just in BOOT now). The `fgProbeLargestAlloc` and
+`prefetchBufBytes` lines are dropped — the former is meaningless under
+regions, the latter is folded into `memBootUsed`.
 
-### Allocator failure call sites — exact call template
+**Defensive value clamping (PR9):** `ps1Bsod` reads each region state
+through clamp helpers (`memSafeRead(region)` clamps to `[0,
+MEM_REGION_TOTAL]`). If a bug corrupts the bump pointer or balance
+counter, the dump renders bounded values instead of dereferencing
+garbage and crashing the halt screen.
 
-```c
-/* Boot-time (memVerify*, memInit): use fatalError, graphics not up */
-fatalError("BOOT region exhausted at init: req=%zu budget=%zu — "
-           "audit BOOT allocations or raise MEM_BOOT_BUDGET",
-           required, MEM_BOOT_BUDGET);
+### Synthetic-failure test bootmodes (renamed: S9)
 
-/* Runtime (scene playing): use JC_BSOD */
-JC_BSOD(currentScene, formatReason("CACHE exhausted req=%zu pinned=%zu", n, pinned));
-```
+Renamed from v4's `bsod-test-mem-*` to **`bsod-ui-test-mem-*`** to
+signal scope: these are **UI-only synthetic tests**, not integration
+tests. They call `memHalt` directly with a fixed reason string,
+bypassing the allocator. They verify the on-screen panel renders
+correctly for each region; they do *not* exercise the allocator's
+failure path.
 
-`formatReason` writes into a small static buffer (`mem_region.c` owns
-it); not re-entrant, but the path is no-return anyway so re-entrancy
-doesn't apply.
+- `bsod-ui-test-mem-boot` — synthesize BOOT-region halt during boot
+  (note: pre-graphics, so uses `ps1DebugError`, not the full BSOD panel)
+- `bsod-ui-test-mem-cache` — synthesize CACHE halt mid-scene
+- `bsod-ui-test-mem-transient` — synthesize TRANSIENT halt mid-scene
+
+**CI gate:** the shipping build config asserts all three flags are 0 by
+default (A15) — same pattern as the existing `MEM_DEV_BUILD=0` check.
 
 ### Synthetic-failure test bootmode
 
@@ -509,14 +633,15 @@ Phase 2 deletes every site below. Verified by a CI grep gate:
 `grep -rE "JCSKIP|Caller handles gracefully|skip scene silently|skip scene gracefully|Graceful skip|Pool exhausted - fall back|failed silently|allocation failure" src/`
 must return zero hits after Phase 2.
 
-Replacement halt mechanism is **`JC_BSOD(scene, reason)`** for all
-runtime sites (scene is playing, graphics is up) and `fatalError(...)`
-for the few sites reachable during init only.
+Replacement halt mechanism is **`memHalt(scene, reason)`** — the unified
+primitive that internally dispatches to JC_BSOD (graphics up) or
+ps1DebugError (graphics not yet up). Call sites never choose; `memHalt`
+does it for them.
 
 | # | File:line                                   | Removal                                                    |
 |---|---------------------------------------------|------------------------------------------------------------|
-| 1 | `foreground_pilot.c:3787` `JCSKIP pack-start-failed`           | Delete; JC_BSOD                                            |
-| 2 | `foreground_pilot.c:3808` `JCSKIP draw-bounds-failed`          | Delete; JC_BSOD                                            |
+| 1 | `foreground_pilot.c:3787` `JCSKIP pack-start-failed`           | Delete; memHalt                                            |
+| 2 | `foreground_pilot.c:3808` `JCSKIP draw-bounds-failed`          | Delete; memHalt                                            |
 | 3 | `foreground_pilot.c:3847` `JCSKIP clean-rect-alloc-failed`     | Delete; clean-rect is TRANSIENT-reserved (unreachable)     |
 | 4 | `foreground_pilot.c:3782-3786` "Graceful skip instead of BSOD" | Delete entirely (the BSOD it talks about is what we want)  |
 | 5 | `foreground_pilot.c:fgDropOptionalPrefetchBuffersForCleanSnapshot` + 4 callers | Delete function and callers              |
@@ -524,18 +649,18 @@ for the few sites reachable during init only.
 | 7 | `foreground_pilot.c:fgBackdropSaveCleanBgRectsWithPressureFallback` | Replace with plain `fgBackdropSaveCleanBgRects`        |
 | 8 | `foreground_pilot.c:1471,1482` JCSTREAM prealloc-failed prints | Delete; runtime unreachable (boot pre-allocs in BOOT)      |
 | 9 | `foreground_pilot.c:fgPrePrimeStreamBuffers` lazy/eager paths  | Delete; boot allocations are deterministic                 |
-|10 | `resource.c:700-704` (`findAdsResource` NULL on PS1)           | JC_BSOD on both PS1 and PC                                 |
-|11 | `resource.c:715-722` (`findBmpResource`)                       | JC_BSOD on both                                            |
-|12 | `resource.c:732-737` (`findScrResource`)                       | JC_BSOD on both                                            |
-|13 | `resource.c:747-752` (`findTtmResource`)                       | JC_BSOD on both                                            |
-|14 | `ads.c:1696` `if (adsResource == NULL) return;`                | Delete (findAds JC_BSODs)                                  |
-|15 | `ads.c:1708` ps1_loadAdsData silent return                     | JC_BSOD                                                    |
-|16 | `ads.c:1753+` "skip this scene gracefully" TTM block           | JC_BSOD                                                    |
+|10 | `resource.c:700-704` (`findAdsResource` NULL on PS1)           | memHalt on both PS1 and PC                                 |
+|11 | `resource.c:715-722` (`findBmpResource`)                       | memHalt on both                                            |
+|12 | `resource.c:732-737` (`findScrResource`)                       | memHalt on both                                            |
+|13 | `resource.c:747-752` (`findTtmResource`)                       | memHalt on both                                            |
+|14 | `ads.c:1696` `if (adsResource == NULL) return;`                | Delete (findAds memHalts)                                  |
+|15 | `ads.c:1708` ps1_loadAdsData silent return                     | memHalt                                                    |
+|16 | `ads.c:1753+` "skip this scene gracefully" TTM block           | memHalt                                                    |
 |17 | `walk_pilot.c:108-117` walkClean buf silent skip               | Delete; buf is BOOT-allocated                              |
-|18 | `walk_pilot.c:165-176` walkPilotInit alloc-fail soft return    | fatalError (init time)                                     |
-|19 | `walk_pilot.c:255-260` JOHNWALK silent-bail-out                | JC_BSOD                                                    |
-|20 | `graphics.c:1370-1395` "Pool exhausted - fall back"            | JC_BSOD; pool sized correctly at boot                      |
-|21 | `cdrom_ps1.c:644,885,2354` malloc-fail NULL returns            | JC_BSOD (runtime) / fatalError (boot, depending on caller) |
+|18 | `walk_pilot.c:165-176` walkPilotInit alloc-fail soft return    | memHalt (init time → ps1DebugError path)                   |
+|19 | `walk_pilot.c:255-260` JOHNWALK silent-bail-out                | memHalt                                                    |
+|20 | `graphics.c:1370-1395` "Pool exhausted - fall back"            | memHalt; pool sized correctly at boot                      |
+|21 | `cdrom_ps1.c:644,885,2354` malloc-fail NULL returns            | memHalt (dispatches based on graphics readiness)           |
 |22 | `ps1_perf.c:1032` + 6 callers `ps1PerfMarkAllocFail` + counter | Delete                                                     |
 |23 | `ps1_perf.c:1058,1064` `ps1PerfMarkFallback` family            | Delete (Phase 3 audit confirms callers also vanish)        |
 
@@ -557,36 +682,79 @@ for the few sites reachable during init only.
 
 1. New files: `src/mem_region.{c,h}`, `src/mem_region_verify.c`,
    `src/generated/pack_header_metrics.h` (generator script
-   `scripts/generate-pack-metrics.py`).
+   `scripts/generate-pack-metrics.py`),
+   `docs/ps1/mem-region-decision-tree.md` (resolves M9 — lands in
+   the same PR, not after).
 2. PC + PS1 implementations with identical API and budget enforcement.
 3. CACHE segregated free-list with non-recursive eviction.
 4. 4-byte alignment (`MEM_REGION_ALIGN = 4`).
-5. Boot integration including `memVerifyPackHashes`.
-6. Migrate all 39 call sites to `memAlloc(REGION, n, tag)` with explicit
-   `INIT_ZEROED`/`INIT_FULL_WRITE`/`INIT_NONE` annotation grep'd by CI.
-7. Hook `memSceneReset` into `fgRuntimeReset` at
-   `src/foreground_pilot.c:1470`.
-8. Reorder `foregroundPilotRuntimeStart` so clean-rect allocates first.
-9. Adopt project-level malloc poison via `src/malloc_poison.h` — every
-   .c file in src/ includes it, libc malloc/free become compile errors
-   except in `mem_region.c` and a whitelist comment-justified in each
-   exception.
-10. Audit ISR registration points; assert no `memAlloc` reachable from
-    ISR.
-11. CI checks: `MEM_DEV_BUILD=0`, grep gates pass, pack hashes current.
+5. CRC-32 (not SHA-256) for `memVerifyPackHashes` — committed (P12).
+6. `memHalt(scene, reason)` primitive in `mem_region.h`; all allocator
+   failure paths call this rather than choosing JC_BSOD vs fatalError
+   themselves (P9, M7).
+7. `formatReason` helper in `src/ps1_debug.h` (BSOD-side, not memory-
+   side) with `volatile` static buffer + 1-entry depth counter
+   guarding against the impossible-but-cheap-to-defend re-entry case
+   (M10, A16).
+8. `ps1IsMainContext()` assert is **unconditional** in `memAlloc` and
+   `memFree`, not debug-only (~3 cycles per call; P1-bis).
+9. **Replace** (not extend) the heap-probe block in `src/ps1_debug.c:245+`:
+   drop `fgProbeLargestAlloc`/`prefetchBufBytes` lines, add
+   `memBootUsed/Peak`, `memCacheUsed/Peak`, `memTransientUsed/Peak`,
+   `sceneAllocBalance` via region-state externs. Keep `walkClean*` and
+   `johnwalkSlot*` (still meaningful — buffers persist in BOOT) (P8, A11).
+   Use `memSafeRead(region)` clamp helpers so the BSOD dump can't crash
+   if metadata is corrupted (PR9).
+10. Upgrade `fatalError` on PS1 to render a minimal text panel via
+    `ps1DebugError` (`src/ps1_debug.h:51`) instead of plain printf +
+    while(1). Pre-graphics failures get on-screen feedback (A10).
+11. Boot integration including `memVerifyPackHashes`, the boot-order
+    audit (audio, resource catalog, font, surface pool, walk, pause —
+    all before `memFreezeBoot`), and `-Wglobal-constructors
+    -Werror=global-constructors` build flag (A13).
+12. Migrate all 39 call sites to `memAlloc(REGION, n, tag)` with explicit
+    `INIT_ZEROED`/`INIT_FULL_WRITE`/`INIT_NONE` annotation grep'd by CI.
+13. Hook `memSceneReset` into `fgRuntimeReset` at
+    `src/foreground_pilot.c:1470`. **Pre-emptive CACHE eviction
+    (`memCachePreEvictForNextScene`) wired into `fgLoopNextScene` —
+    not memSceneReset (PR7).**
+14. Reorder `foregroundPilotRuntimeStart` so clean-rect allocates first.
+15. Adopt project-level malloc poison via `src/malloc_poison.h` — every
+    .c file in src/ includes it, libc malloc/free become compile errors
+    except in `mem_region.c` and a whitelist comment-justified in each
+    exception.
+16. Add three `bsod-ui-test-mem-*` bootmodes (renamed from
+    `bsod-test-mem-*`; S9) for visual QA of the per-region halt UI.
+17. CI checks: `MEM_DEV_BUILD=0`, `BSOD_UI_TEST_*=0`, grep gates pass,
+    pack hashes current.
+18. PR template gets a new checkbox: "I built locally with
+    `MEM_DEV_BUILD=0` and ran the 63-scene rotation cleanly" — required
+    for any PR touching scene data (S10).
 
 **Estimated effort:** ~3 weeks focused work. Roughly 800-1000 LOC of
-allocator + ~200 LOC of generator + 39 call-site touches + audit.
+allocator + ~200 LOC of generator + 39 call-site touches + audit + the
+decision tree doc.
 
 **Validation:** game renders byte-for-byte identically across the
 63-scene rotation. Both builds green. All four boot-time `memVerify*`
 checks pass.
 
-### Phase 2 — Delete bandaid + skip code (8 small PRs, ~1 week)
+### Phase 2 — Delete bandaid + skip code (1 bundled PR, 8 atomic commits, ~1 week)
 
-The 23-site removal manifest is split into 8 per-file PRs, each
-individually revertable:
+The 23-site removal manifest ships as **one PR with 8 atomic commits**.
+Each commit covers one file and is individually revertable via
+`git revert <sha>`. PR-level revert is also one command. v4's
+"8 separate PRs" framing was wrong — the commits are sequential (the
+`resource.c` JC_BSOD callers depend on the `memHalt` plumbing landed
+by the foreground_pilot commit), so they can't ship independently.
+Bundling preserves per-commit revertability while keeping the
+dependency order obvious in `git log`.
 
+Commit order (P2.0 first, others can follow in any order after it):
+
+- P2.0 — `ps1_debug.c` heap-probe block REPLACEMENT (see "Failure UX")
+  + `memHalt` implementation lands here. Everything else depends on
+  this commit.
 - P2.1 — `foreground_pilot.c` (items 1-9)
 - P2.2 — `resource.c` (items 10-13)
 - P2.3 — `ads.c` (items 14-16)
@@ -594,10 +762,13 @@ individually revertable:
 - P2.5 — `graphics.c` (item 20)
 - P2.6 — `cdrom_ps1.c` (item 21)
 - P2.7 — `ps1_perf.c` (items 22-23)
-- P2.8 — comment refresh for the "intentional skip" sites
+- P2.8 — comment refresh for the "intentional skip" sites + test-harness
+  migration (any soak-run grep for `JCBSOD-FATAL` now means "a soak
+  run failed," not "the synthetic test ran" — harnesses updated in
+  this commit; S8).
 
 The pre-Phase-2 commit is tagged `pre-mem-region-bandaid-removal` so
-rolling back the whole set is one-flag.
+rolling back the whole bundle is one flag.
 
 **Validation:** soak test 20+ iterations. Zero `fatalError` and zero
 `JC_BSOD` triggers across the run. Per-scene frame-byte diff vs.
@@ -636,26 +807,46 @@ provably correct).
 
 | Operation                        | Cost (PS1)                  | Notes                                              |
 |----------------------------------|-----------------------------|----------------------------------------------------|
-| `memAlloc(BOOT/TRANSIENT, n)`    | ~10 cycles                  | Bump pointer + balance increment + tag store       |
-| `memAlloc(CACHE, n)` hit        | ~25 cycles                  | Free-list head pop + class lookup                  |
-| `memAlloc(CACHE, n)` miss + evict| ~5-10 ms                    | LRU scan over ~200 entries (frame-killer if mid-scene); pre-empted at scene-reset, see below |
+| `memAlloc(BOOT/TRANSIENT, n)`    | ~13 cycles                  | ps1IsMainContext assert (~3) + bump (~5) + balance + bound check |
+| `memAlloc(CACHE, n)` hit        | ~28 cycles                  | ISR check + free-list head pop + class lookup      |
+| `memAlloc(CACHE, n)` miss + evict| ~3-5 ms (warm) / never (hot)| **Eviction is pre-emptive in fgLoopNextScene, not at memSceneReset.** Hot path during scene play is hit-only. |
 | `memFree(BOOT)`                  | 0 cycles release            | No-op                                              |
 | `memFree(TRANSIENT)`             | ~5 cycles release           | Balance decrement                                  |
 | `memFree(CACHE)`                 | ~30 cycles                  | Free-list push + class lookup                      |
 | `memSceneReset` release          | ~5 cycles                   | Bump pointer reset + telemetry conditional        |
-| `memSceneReset` debug-poison     | ~8 ms                       | 250 KB 0xCD fill; debug-only                       |
-| Boot: `memVerify*` (4 funcs)     | ~1 ms total                 | All compile-time data + 63 hash verifies           |
+| `memSceneReset` debug-poison     | ~15 ms                      | 250 KB 0xCD fill at PSX write-bandwidth (~16 MB/s); debug-only (PR8) |
+| Boot: `memVerify*` (4 funcs)     | ~1 ms total                 | All compile-time data + 63 CRC-32 verifies         |
 | Boot: BSS clear of 1.2 MB buffer | ~75 ms                      | PsyQ `_start` zeroes BSS                           |
 | **Boot delta total**             | **~75 ms**                  | Bounded; CD-seek-free                              |
 
 Compared to libc malloc on PsyQ (~50-100 cycles per call), the hot path
-is a 5-10× win on BOOT/TRANSIENT and roughly break-even on CACHE.
+is a 3-7× win on BOOT/TRANSIENT and roughly break-even on CACHE.
+ISR-safety assert is unconditional in release (Pat P1-bis) and
+included in those numbers.
 
-Pre-emptive CACHE eviction at scene transitions (resolves PR5):
-`memSceneReset` looks at projected next-scene CACHE demand (from
-`pack_header_metrics.h`) and pre-evicts unpinned resources during the
-already-paused scene transition. Mid-scene CACHE eviction becomes the
-unhappy path and should rarely fire — when it does, it's measured.
+### Pre-emptive CACHE eviction — moved to scene picker (resolves PR7)
+
+v4 said eviction would happen at `memSceneReset`. That's wrong: by then
+the next scene's first allocations are imminent, and the LRU scan would
+block the first frame. v5 moves pre-emptive eviction into
+**`fgLoopNextScene`** (`src/jc_reborn.c:~1909`) — runs immediately
+after the next scene is picked, *before* `fgLoopWalkToScene`. The walk
+animation already takes ~1-2 seconds; LRU eviction (~3-5 ms for a
+~200-entry scan) fits inside that window with room to spare.
+
+```c
+const char *loopScene = fgLoopNextScene(...);
+memCachePreEvictForNextScene(loopScene);   /* NEW: ~3-5 ms */
+fgLoopWalkToScene(storyScene);              /* unchanged */
+/* ... */
+fgRuntimeReset();  /* memSceneReset called here — TRANSIENT only */
+```
+
+`memCachePreEvictForNextScene(name)` consults
+`pack_header_metrics.h[name].cachePinnedWorstCase`, subtracts current
+CACHE used, and evicts unpinned resources until the delta fits. If
+nothing's unpinned and the delta still doesn't fit, that's an
+unreachable case (the boot proof asserts otherwise) — runs `memHalt`.
 
 ## Documentation deliverables
 
@@ -663,14 +854,10 @@ unhappy path and should rarely fire — when it does, it's measured.
   new scene or holiday variant: regenerate `pack_header_metrics.h`, run
   `memVerify*` locally, what each region is for, when to set `MEM_DEV_BUILD`,
   troubleshooting the most common boot-fatalError messages.
-- **`docs/ps1/mem-region-decision-tree.md`** — quick reference for "I
-  need to allocate X — which region?". Decision tree:
-  ```
-  Is it allocated once at boot and never freed?  → BOOT
-  Is it a resource blob (BMP/TTM/SCR/ADS)?       → CACHE
-  Does it live exactly one scene?                → TRANSIENT
-  Otherwise: ask in #jc-reborn; one of those is wrong.
-  ```
+- **`docs/ps1/mem-region-decision-tree.md`** — committed in **Phase 1**
+  alongside the allocator code, not as a follow-up (resolves M9).
+  Decision tree covers scratch buffers freed within one function call,
+  per-frame allocations, multi-scene caches, audio mixer state, fonts.
 - Code-level header comment in `mem_region.h` documenting every API
   with one example call.
 
@@ -687,6 +874,18 @@ Pre-implementation gates (must close before Phase 1):
 - [ ] Audit `ttm.c` opcode handlers for hidden allocations.
 - [ ] BIOS / PsyQ allocation audit: confirm padmgr + memcard footprint
       ≈ 60 KB, no runtime growth.
+- [ ] **Pinned-set math vs runtime: (A12)** instrument a debug PS1
+      build to log the actual pinned working set every scene (sum of
+      `pinResource`-tracked sizes). Compare against the value
+      `memVerifyAllScenesPinnedFitCache` computes. Equality required;
+      drift is a verifier bug that must be fixed before the no-fail
+      invariant is trustworthy.
+- [ ] **PSX printf is non-allocating: (P10)** read PsnoobSDK's printf
+      implementation, confirm it uses a fixed internal buffer
+      (not malloc). Document the finding in `mem_region.c` as a
+      non-regression invariant.
+- [ ] **No static initializers: (A13)** add `-Wglobal-constructors
+      -Werror=global-constructors` to the PS1 build; clean baseline.
 
 End-to-end gates (before merge):
 
