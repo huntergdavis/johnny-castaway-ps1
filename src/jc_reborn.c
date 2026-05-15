@@ -68,6 +68,7 @@ int fclose(FILE *stream);
 #include "events_ps1.h"
 #include "sound_ps1.h"
 #include "memcard.h"
+#include "mem_region.h"
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
 #include "pause_menu.h"
@@ -373,17 +374,53 @@ const char *fgLoopGetAllSlug(int index)
  * delegate to the picker module which honours the user-selected
  * policy (Random / Sequential / Original). The picker also emits the
  * JCPICK telemetry line per pick. */
+/* Three-state machine for diagnostic continuity through the scene-
+ * pick window — see docs/ps1/memory-region-allocator-plan.md (A22,
+ * A27). memHalt call sites use fgLoopGetLastScene() to report the
+ * effective scene name; during pre-evict / scene setup / playback
+ * the "target" is meaningful even though no scene has fully played
+ * yet. */
+static int         gFgLoopPickInProgress = 0;
+static const char *gFgLoopLastTarget     = NULL;
+static const char *gFgLoopLastPlayed     = NULL;
+
+/* Public accessor — called from fgRuntimeReset (which feeds the
+ * scene name to memSceneReset for its JCMEM line) and from
+ * memHalt-emitting code paths. */
+const char *fgLoopGetLastScene(void) {
+    return gFgLoopPickInProgress ? gFgLoopLastTarget : gFgLoopLastPlayed;
+}
+
+/* Called from the main loop after foregroundPilotPlay returns
+ * successfully. */
+void fgLoopMarkScenePlayed(void) {
+    gFgLoopLastPlayed     = gFgLoopLastTarget;
+    gFgLoopPickInProgress = 0;
+}
+
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
+    const char *chosen;
 #ifdef PS1_BUILD
     extern const char *pickerNextScene(const char *explicitScene,
                                        int sceneSetIdx);
-    return pickerNextScene(explicitScene, sceneSetIdx);
+    chosen = pickerNextScene(explicitScene, sceneSetIdx);
 #else
     (void)sceneSetIdx;
-    return explicitScene;
+    chosen = explicitScene;
 #endif
+
+    /* Update the diagnostic continuity state. lastTarget records the
+     * scene we're about to attempt; pickInProgress flips on so
+     * fgLoopGetLastScene returns the target rather than the last-
+     * successfully-played one. fgLoopMarkScenePlayed flips it off
+     * after a successful play. */
+    if (chosen != NULL) {
+        gFgLoopLastTarget     = chosen;
+        gFgLoopPickInProgress = 1;
+    }
+    return chosen;
 }
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
@@ -1687,6 +1724,19 @@ int main(int argc, char **argv)
     /* FntLoad must happen before CdInit or it causes hangs */
     ps1DebugInit();
 
+    /* Initialize memory region allocator immediately after ps1DebugInit.
+     * memHalt's pre-graphics path uses ps1DebugError so ps1DebugInit
+     * must precede memInit. Per docs/ps1/memory-region-allocator-plan.md
+     * boot sequence. Boot-time verify gates run inside memInit; halt
+     * surfaces at boot if a pack would overrun. */
+    memInit();
+    memVerifyBootBudget();
+    memVerifyAllScenesFitTransient();
+    memVerifyAllScenesPinnedFitCache();
+#ifdef JC_VERIFY_PACK_HASHES
+    memVerifyPackHashes();
+#endif
+
     /* Initialize CD-ROM subsystem */
     if (cdromInit() < 0) {
         ps1DebugError("CD-ROM init failed!");
@@ -1964,6 +2014,10 @@ int main(int argc, char **argv)
             ps1PerfEndScene(loopScene);
             ps1PrintfProbe("scene-end", loopScene);
             playedScene = 1;
+            /* Diagnostic continuity: scene-N has just finished playing
+             * successfully. Flip the picker state machine so any
+             * memHalt during scene-N+1's setup reports N+1, not N. */
+            fgLoopMarkScenePlayed();
         }
 
         if (freeplayExitRequested()) {

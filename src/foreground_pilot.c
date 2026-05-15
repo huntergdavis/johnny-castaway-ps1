@@ -12,6 +12,7 @@
 #include "graphics_ps1.h"
 #include "cdrom_ps1.h"
 #include "island.h"
+#include "mem_region.h"
 #include "holidays.h"
 #include "pause_menu.h"
 #include "ps1_captions.h"
@@ -1538,6 +1539,14 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
 
 static void fgRuntimeReset(void)
 {
+    /* Wipe the TRANSIENT region — all per-scene allocations made via
+     * memAlloc(MEM_REGION_TRANSIENT, ...) become unreachable. The bump
+     * pointer rewinds in one word write. Cheap in release; ~15 ms in
+     * MEM_POISON_TRANSIENT debug builds (250 KB 0xCD fill).
+     * See docs/ps1/memory-region-allocator-plan.md "Boot lifecycle". */
+    extern const char *fgLoopGetLastScene(void);
+    memSceneReset(fgLoopGetLastScene());
+
     /* currentFrameData now points inside gFgFrameBuffer — don't free it
      * separately. The persistent buffers (gFgFrameBuffer / gFgStreamScratch)
      * survive the reset on purpose; only per-scene state is cleared. */
