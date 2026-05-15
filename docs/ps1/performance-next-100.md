@@ -179,8 +179,13 @@ entry `39` / source frame `49` shrank `7835 -> 4724` bytes, active payload
 `793194 -> 790083`, and sector coverage `4 -> 3`, but regressed
 scene/loop/target `1769/1477/1431 -> 1783/1491/1427`, overrun `46 -> 64`,
 blocking/refill `64/20 -> 79/30`, and loop reads `58 -> 64`; due improved
-`11 -> 10`, but the visible timing regression dominated. Both packs were
-restored and rebuilt. Close frame96 and frame39 on their tested baselines;
+`11 -> 10`, but the visible timing regression dominated. The v916
+`walkstuf1-low-frame132-inplace-v916` follow-up tested a later one-sector
+shrink, entry `132` / source frame `240` (`4402 -> 2967`, sector coverage
+`4 -> 3`), and kept scene/loop/target flat at `1769/1477/1432` but regressed
+blocking/refill `65/20 -> 66/21` with no key improvement. All packs were
+restored and rebuilt. Close frame96, frame39, and frame132 on their tested
+baselines;
 remaining W1-low no-shift trims should be fixed-sector exact-flat work-volume
 checks, not speed candidates, unless generated deadline/read ownership changes
 first.
