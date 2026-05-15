@@ -923,10 +923,13 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
  */
 PS1Surface *grNewEmptyBackground()
 {
-    PS1Surface *sfc = (PS1Surface*)malloc(sizeof(PS1Surface));
-    if (sfc == NULL) {
-        fatalError("Failed to allocate PS1Surface");
-    }
+    /* MEM_REGION_RATIONALE: graphics-side PS1Surface descriptor for the
+     * background. Allocated at scene/init time, kept resident.
+     * INIT_FULL_WRITE — every field assigned below. */
+    PS1Surface *sfc = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
+                                            sizeof(PS1Surface),
+                                            "grBackgroundSurface");
+    /* memAlloc halts on exhaustion. */
 
     sfc->width = SCREEN_WIDTH;
     sfc->height = SCREEN_HEIGHT;
@@ -1148,10 +1151,16 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
         if (fr->width == 0 || fr->height == 0 ||
             fr->width > 640 || fr->height > 480) break;
 
-        /* Use malloc (not safe_malloc) so OOM falls back to BMP path
-         * instead of halting the PS1 via fatalError. */
-        surface = (PS1Surface*)malloc(sizeof(PS1Surface));
-        if (!surface) break;
+        /* MEM_REGION_RATIONALE: PSB-loaded sprite frame descriptor.
+         * Allocated during resource loading at scene-init (or earlier
+         * for resident sprites like JOHNWALK). INIT_FULL_WRITE.
+         * The old "fall back to BMP path on OOM" pattern is replaced
+         * by memAlloc-halts-on-exhaustion: the BSOD will identify
+         * which sprite couldn't fit so the budget can be raised
+         * deterministically. */
+        surface = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
+                                        sizeof(PS1Surface),
+                                        "psbSpriteFrame");
 
         surface->width = fr->width;
         surface->height = fr->height;
@@ -1273,12 +1282,13 @@ void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
             uint16 height = bmpResource->heights[frameIdx];
             uint32 indexedSize = ((uint32)width * (uint32)height + 1) / 2;
 
-            /* Allocate PS1Surface */
-            PS1Surface *surface = (PS1Surface*)malloc(sizeof(PS1Surface));
-            if (!surface) {
-                gStatLastBmpStatus = 6;  /* allocation failure / partial install */
-                break;
-            }
+            /* MEM_REGION_RATIONALE: BMP-frame surface descriptor.
+             * Resident for the life of the resource cache entry.
+             * INIT_FULL_WRITE — all fields assigned below.
+             * memAlloc halts on exhaustion; no NULL check needed. */
+            PS1Surface *surface = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
+                                                        sizeof(PS1Surface),
+                                                        "bmpFrameSurface");
 
             surface->width = width;
             surface->height = height;
@@ -1359,9 +1369,15 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         LoadImage(&dstRect, (uint32*)sprite->pixels);
         /* No DrawSync here - let main loop handle sync */
     } else {
-        /* Need to copy clipped region to temp buffer */
-        uint16 *tempBuf = (uint16*)malloc(blitW * blitH * 2);
-        if (!tempBuf) return;
+        /* MEM_REGION_RATIONALE: per-blit clipped-region temp buffer.
+         * Lives ~one frame; freed inline. TRANSIENT region: the bytes
+         * persist until the next memSceneReset, but typical blit sizes
+         * are <16 KB so cumulative TRANSIENT consumption is small even
+         * with many blits per frame. INIT_FULL_WRITE — populated by
+         * the memcpy loop below. */
+        uint16 *tempBuf = (uint16*)memAlloc(MEM_REGION_TRANSIENT,
+                                            blitW * blitH * 2,
+                                            "grBlitTempBuf");
         uint16 *src = sprite->pixels;
         uint16 *dst = tempBuf;
 
@@ -1373,9 +1389,9 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         RECT dstRect;
         setRECT(&dstRect, screenX, screenY, blitW, blitH);
         LoadImage(&dstRect, (uint32*)tempBuf);
-        DrawSync(0);  /* Must sync before freeing buffer - LoadImage is async! */
+        DrawSync(0);  /* Must sync before "releasing" buffer - LoadImage is async! */
 
-        free(tempBuf);
+        memFree(MEM_REGION_TRANSIENT, tempBuf);
     }
 }
 
