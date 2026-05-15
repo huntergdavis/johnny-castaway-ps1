@@ -25,7 +25,7 @@ matrix.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip plus the
-v924 frame40 fixed-sector payload shrink, the
+v928 frame425 fixed-sector payload shrink, the
 BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
 draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 preserve-offset payload shrinks, the WALKSTUF1 low `394..410`
 retained-read win, and the WALKSTUF1 high late-tail physical compaction after
@@ -60,7 +60,7 @@ frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
-BUILDING4 low offscreen draw-span clip, the BUILDING2 high/low offscreen
+BUILDING4 low offscreen draw-span clip and frame425 in-place payload shrink, the BUILDING2 high/low offscreen
 draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
 optimization matrix is `-0.4975%` / `100.5171%`.
 That is about `17.13` public over-target points removed and `12.63` public
