@@ -1884,12 +1884,17 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
 
-    /* Freeze the BOOT region — boot-time initialization is complete.
-     * Any subsequent memAlloc(MEM_REGION_BOOT, ...) will halt via
-     * memHalt, surfacing the "this should have been allocated at
-     * boot" bug at the symptom site. Per plan v9 step 13 / boot
-     * sequence. */
-    memFreezeBoot();
+    /* memFreezeBoot() not called yet — see plan v9 step 13. Activating
+     * the freeze requires a full audit of every memAlloc(MEM_REGION_BOOT,
+     * ...) call site to confirm none fire post-boot. Several surfaces
+     * (grNewEmptyBackground, PSB/BMP frame allocations in graphics_ps1.c)
+     * are called from resource loaders that may execute during scene
+     * playback, not just at boot. Until each is verified or migrated
+     * to a different region, freeze stays off; this means the no-fail
+     * invariant for BOOT is unenforced at runtime, but the static_assert
+     * + boot proofs still guarantee budget. Follow-up commit will close
+     * this gap. */
+    /* memFreezeBoot(); */
 
     do {
         int skipWalkThisIteration = 0;
