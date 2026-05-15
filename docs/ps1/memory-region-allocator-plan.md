@@ -27,16 +27,20 @@ Every concern raised in v2's panel review is folded in. Highlights:
   loudly.
 - **Phase 2 ships as 8 per-file PRs**, not one big change, each individually
   revertable. The pre-Phase-2 commit is tagged for one-flag rollback.
-- **`MEM_DEV_BUILD` flag** downgrades fatalError to printf+continue during
+- **`MEM_DEV_BUILD` flag** downgrades fatal halts to printf+continue during
   iteration; CI explicitly rejects builds with the flag on.
 - **CACHE eviction is non-recursive**: evictor returns "freed N bytes,"
   allocator retries. No `memFree` from inside `memAlloc`.
 - **Per-type fixed pools vs. three regions**: explicit architectural
   decision section. Regions chosen because the constraint axis in jc_reborn
   is *lifetime*, not type.
-- **fatalError UX** on retail PS1: human-readable halt screen with enough
-  context for a support ticket (scene name, region, bytes required,
-  bytes available, build SHA).
+- **Failure UX routes through the existing `JC_BSOD` framework**
+  (`src/ps1_debug.h`) — the Win-3.1 blue screen with grep-friendly TTY
+  sentinels (`JCBSOD-FATAL`, `JCBSOD <k>=<v>`, `JCBSOD-HALT`) and an
+  on-screen diagnostic panel. Boot-time verifies (which run before
+  graphics is up) use `fatalError`; everything during scene play uses
+  `JC_BSOD`. Three new `bsod-test-mem-*` bootmodes verify each region's
+  BSOD path visually.
 - **Performance budget**: actual numbers, not adjectives. Boot impact,
   scene-transition cost, per-alloc cost all quantified with estimates.
 
@@ -44,13 +48,14 @@ Every concern raised in v2's panel review is folded in. Highlights:
 
 > Every `memAlloc(...)` call in jc_reborn returns a valid pointer. The
 > allocator never returns NULL. If a region cannot satisfy a request, the
-> program calls `fatalError` immediately — that is the *only* failure
-> path. Allocation failures at runtime are bugs to fix in the plan, not
-> conditions to handle in code.
+> program halts immediately via `fatalError` (boot-time, pre-graphics) or
+> `JC_BSOD` (runtime, scene playing) — that is the *only* failure path.
+> Allocation failures are bugs to fix in the plan, not conditions to
+> handle in code.
 
 Once the build's boot proof passes (see "Boot proof" below), every
 allocation that game data implies is provably backed by sufficient region
-space. The job of the plan is to make `fatalError` unreachable in the
+space. The job of the plan is to make the halt paths unreachable in the
 shipping configuration.
 
 ## Context
@@ -283,9 +288,10 @@ void memSceneReset(const char *sceneName);
 size_t memRegionUsed(MemRegion);
 size_t memRegionPeak(MemRegion);
 void   memLogTelemetry(void);  /* gated behind FG_HEAP_PROBE_LOGS */
-void   memDumpStateForFatalError(void);  /* unconditional dump on halt */
+/* Region state read by ps1Bsod via externs (same pattern as
+ * fgProbeLargestAlloc); no dedicated dump function needed. */
 
-/* Boot. memAlloc before this is fatalError. */
+/* Boot. memAlloc before this calls fatalError. */
 void memInit(void);
 void memFreezeBoot(void);
 
@@ -331,8 +337,8 @@ int main(...) {
 }
 ```
 
-If any verify fires, the halt screen shows full context (see
-"fatalError UX" below).
+If any verify fires, the halt happens before graphics is up, so the
+`fatalError` TTY-print + `while(1)` path runs (see "Failure UX" below).
 
 ### `sceneAllocBalance`
 
@@ -352,7 +358,7 @@ memAlloc(CACHE, n, tag):
         p = freelist_alloc(n)
         if p != NULL:
             return p
-    fatalError("CACHE_EXHAUSTED scene=%s req=%zu pinned=%zu", currentScene, n, lruPinnedBytes())
+    JC_BSOD(currentScene, formatReason("CACHE exhausted req=%zu pinned=%zu", n, lruPinnedBytes()))
 ```
 
 `lruEvictUnpinned` walks the LRU list, removes the chosen victim,
@@ -362,28 +368,97 @@ bytes. No re-entrancy.
 `memVerifyAllScenesPinnedFitCache()` at boot guarantees the
 `fatalError` branch is unreachable in the shipping configuration.
 
-## fatalError UX on PS1 retail (resolves S2)
+## Failure UX — routes through the existing `JC_BSOD` framework (resolves S2)
 
-PS1 has no field telemetry. The halt screen *is* the bug report.
-fatalError messages must include:
+The codebase already has a Windows-3.1-flavoured blue-screen mechanism for
+exactly this purpose:
+
+- `src/ps1_debug.h` declares `JC_BSOD(scene, reason)` (captures
+  `__FILE__`/`__LINE__` automatically) backed by
+  `ps1Bsod(scene, reason, file, line)`.
+- The implementation at `src/ps1_debug.c:228` already emits grep-friendly
+  TTY sentinels (`JCBSOD-FATAL`, `JCBSOD <k>=<v>` detail lines,
+  `JCBSOD-HALT`) and renders a full-screen blue panel with white BIOS-font
+  text including scene name, reason, file:line, heap probe, frame-buffer
+  state, walk-buffer state. Halts forever.
+- The header comment is explicit: *"NEVER fires in production; while we're
+  testing a deterministic build any failure here is a code or data bug we
+  want surfaced immediately rather than papered over."* That is exactly
+  this plan's invariant.
+- A `bsod-test` bootmode flag already exists for visually verifying the UI
+  without forcing a real failure (`src/jc_reborn.c:1020-1023, 1979-1982`).
+
+The plan reuses this framework rather than inventing a new one. Two
+phase-dependent code paths:
+
+### Boot-time failures: `fatalError` (graphics not yet up)
+
+The four `memVerify*` checks at `memInit` time run before `graphicsInit`
+finishes. `ps1Bsod` is not safe to call before graphics is initialized
+(`src/graphics_ps1.c:3526` notes this). Boot-time verifies use
+`fatalError(...)` with the same human-readable format. On PS1 this
+prints to TTY and halts via `while(1)`; on emulator/dev hardware the
+TTY console captures it, on retail hardware the user sees a frozen
+screen but the reason is in the build's QA logs.
+
+```c
+fatalError("TRANSIENT region budget too small: scene=%s needs=%zu have=%zu — "
+           "rebuild pack_header_metrics.h or raise MEM_TRANSIENT_BUDGET",
+           pack->name, scenePeak, MEM_TRANSIENT_BUDGET);
+```
+
+### Runtime failures (scene playing): `JC_BSOD`
+
+Every allocator failure during scene play routes through `JC_BSOD`:
+
+```c
+JC_BSOD(currentScene,
+        "TRANSIENT exhausted: req=234K have=187K bal=0 peak=234K");
+```
+
+`ps1Bsod` already grabs heap-probe state via externs
+(`fgProbeLargestAlloc`, `fgGetFrameBufferBytes`, etc.). The plan extends
+the existing detail-line block in `ps1Bsod` to also emit region state:
 
 ```
-JC_FATAL v0.8.X-mem
-region=TRANSIENT
-scene=MARY.ADS tag1
-required=234567 bytes
-available=187392 bytes
-balance=0
-peak_used=234567
-build=<git-short-sha>
-Report this screen to the support thread.
+JCBSOD memBootUsed=345600 memBootPeak=345600
+JCBSOD memCacheUsed=423000 memCachePeak=580000
+JCBSOD memTransientUsed=0    memTransientPeak=234567
+JCBSOD sceneAllocBalance=0
 ```
 
-The format is stable so users can transcribe or photograph it. Numbers
-are decimal (easier to copy than hex). Build SHA pinpoints which release
-to investigate. `memDumpStateForFatalError` runs unconditionally inside
-`fatalError`'s output path so the dump arrives even without
-`FG_HEAP_PROBE_LOGS`.
+This is a 5-line addition to `src/ps1_debug.c:228+` mirroring the
+existing extern pattern (no new infrastructure). The on-screen panel
+inherits the new lines automatically.
+
+### Allocator failure call sites — exact call template
+
+```c
+/* Boot-time (memVerify*, memInit): use fatalError, graphics not up */
+fatalError("BOOT region exhausted at init: req=%zu budget=%zu — "
+           "audit BOOT allocations or raise MEM_BOOT_BUDGET",
+           required, MEM_BOOT_BUDGET);
+
+/* Runtime (scene playing): use JC_BSOD */
+JC_BSOD(currentScene, formatReason("CACHE exhausted req=%zu pinned=%zu", n, pinned));
+```
+
+`formatReason` writes into a small static buffer (`mem_region.c` owns
+it); not re-entrant, but the path is no-return anyway so re-entrancy
+doesn't apply.
+
+### Synthetic-failure test bootmode
+
+The existing `bsod-test` bootmode synthesizes one fatal after the first
+scene. The plan adds three sibling bootmodes for visually verifying each
+region's BSOD path:
+
+- `bsod-test-mem-boot` — synthesize BOOT exhaustion during init
+- `bsod-test-mem-cache` — synthesize CACHE exhaustion mid-scene
+- `bsod-test-mem-transient` — synthesize TRANSIENT exhaustion mid-scene
+
+Each fires a known `JC_BSOD` with a synthetic reason string so the
+on-screen panel can be photographed and approved during QA.
 
 ## Pause-during-scene state (resolves A4)
 
@@ -434,29 +509,33 @@ Phase 2 deletes every site below. Verified by a CI grep gate:
 `grep -rE "JCSKIP|Caller handles gracefully|skip scene silently|skip scene gracefully|Graceful skip|Pool exhausted - fall back|failed silently|allocation failure" src/`
 must return zero hits after Phase 2.
 
+Replacement halt mechanism is **`JC_BSOD(scene, reason)`** for all
+runtime sites (scene is playing, graphics is up) and `fatalError(...)`
+for the few sites reachable during init only.
+
 | # | File:line                                   | Removal                                                    |
 |---|---------------------------------------------|------------------------------------------------------------|
-| 1 | `foreground_pilot.c:3787` `JCSKIP pack-start-failed`           | Delete; fatalError                                         |
-| 2 | `foreground_pilot.c:3808` `JCSKIP draw-bounds-failed`          | Delete; fatalError                                         |
-| 3 | `foreground_pilot.c:3847` `JCSKIP clean-rect-alloc-failed`     | Delete; clean-rect is TRANSIENT-reserved                   |
-| 4 | `foreground_pilot.c:3782-3786` "Graceful skip instead of BSOD" | Delete entirely                                            |
+| 1 | `foreground_pilot.c:3787` `JCSKIP pack-start-failed`           | Delete; JC_BSOD                                            |
+| 2 | `foreground_pilot.c:3808` `JCSKIP draw-bounds-failed`          | Delete; JC_BSOD                                            |
+| 3 | `foreground_pilot.c:3847` `JCSKIP clean-rect-alloc-failed`     | Delete; clean-rect is TRANSIENT-reserved (unreachable)     |
+| 4 | `foreground_pilot.c:3782-3786` "Graceful skip instead of BSOD" | Delete entirely (the BSOD it talks about is what we want)  |
 | 5 | `foreground_pilot.c:fgDropOptionalPrefetchBuffersForCleanSnapshot` + 4 callers | Delete function and callers              |
 | 6 | `foreground_pilot.c:fgDropPressureCachesForCleanSnapshot`      | Delete                                                     |
 | 7 | `foreground_pilot.c:fgBackdropSaveCleanBgRectsWithPressureFallback` | Replace with plain `fgBackdropSaveCleanBgRects`        |
-| 8 | `foreground_pilot.c:1471,1482` JCSTREAM prealloc-failed prints | Delete; can't fail under new allocator                     |
+| 8 | `foreground_pilot.c:1471,1482` JCSTREAM prealloc-failed prints | Delete; runtime unreachable (boot pre-allocs in BOOT)      |
 | 9 | `foreground_pilot.c:fgPrePrimeStreamBuffers` lazy/eager paths  | Delete; boot allocations are deterministic                 |
-|10 | `resource.c:700-704` (`findAdsResource` NULL on PS1)           | fatalError on both platforms                               |
-|11 | `resource.c:715-722` (`findBmpResource`)                       | fatalError on both                                         |
-|12 | `resource.c:732-737` (`findScrResource`)                       | fatalError on both                                         |
-|13 | `resource.c:747-752` (`findTtmResource`)                       | fatalError on both                                         |
-|14 | `ads.c:1696` `if (adsResource == NULL) return;`                | Delete (findAds now fatalErrors)                           |
-|15 | `ads.c:1708` ps1_loadAdsData silent return                     | fatalError                                                 |
-|16 | `ads.c:1753+` "skip this scene gracefully" TTM block           | fatalError                                                 |
+|10 | `resource.c:700-704` (`findAdsResource` NULL on PS1)           | JC_BSOD on both PS1 and PC                                 |
+|11 | `resource.c:715-722` (`findBmpResource`)                       | JC_BSOD on both                                            |
+|12 | `resource.c:732-737` (`findScrResource`)                       | JC_BSOD on both                                            |
+|13 | `resource.c:747-752` (`findTtmResource`)                       | JC_BSOD on both                                            |
+|14 | `ads.c:1696` `if (adsResource == NULL) return;`                | Delete (findAds JC_BSODs)                                  |
+|15 | `ads.c:1708` ps1_loadAdsData silent return                     | JC_BSOD                                                    |
+|16 | `ads.c:1753+` "skip this scene gracefully" TTM block           | JC_BSOD                                                    |
 |17 | `walk_pilot.c:108-117` walkClean buf silent skip               | Delete; buf is BOOT-allocated                              |
-|18 | `walk_pilot.c:165-176` walkPilotInit alloc-fail soft return    | fatalError                                                 |
-|19 | `walk_pilot.c:255-260` JOHNWALK silent-bail-out                | fatalError                                                 |
-|20 | `graphics.c:1370-1395` "Pool exhausted - fall back"            | fatalError; pool sized correctly at boot                   |
-|21 | `cdrom_ps1.c:644,885,2354` malloc-fail NULL returns            | fatalError                                                 |
+|18 | `walk_pilot.c:165-176` walkPilotInit alloc-fail soft return    | fatalError (init time)                                     |
+|19 | `walk_pilot.c:255-260` JOHNWALK silent-bail-out                | JC_BSOD                                                    |
+|20 | `graphics.c:1370-1395` "Pool exhausted - fall back"            | JC_BSOD; pool sized correctly at boot                      |
+|21 | `cdrom_ps1.c:644,885,2354` malloc-fail NULL returns            | JC_BSOD (runtime) / fatalError (boot, depending on caller) |
 |22 | `ps1_perf.c:1032` + 6 callers `ps1PerfMarkAllocFail` + counter | Delete                                                     |
 |23 | `ps1_perf.c:1058,1064` `ps1PerfMarkFallback` family            | Delete (Phase 3 audit confirms callers also vanish)        |
 
@@ -520,8 +599,9 @@ individually revertable:
 The pre-Phase-2 commit is tagged `pre-mem-region-bandaid-removal` so
 rolling back the whole set is one-flag.
 
-**Validation:** soak test 20+ iterations. Zero `fatalError` triggers.
-Per-scene frame-byte diff vs. captured baseline matches.
+**Validation:** soak test 20+ iterations. Zero `fatalError` and zero
+`JC_BSOD` triggers across the run. Per-scene frame-byte diff vs.
+captured baseline matches.
 
 ### Phase 3 — Audit remaining allocation surfaces (~1 week)
 
@@ -619,7 +699,8 @@ End-to-end gates (before merge):
    across the rotation (essentially tautological — kept as sanity).
 5. Removal grep gate: zero hits.
 6. Full-src/ audit gate: zero hits outside whitelisted files.
-7. Zero `fatalError` triggers across soak.
+7. Zero `fatalError` and zero `JC_BSOD` triggers across soak. Tail of
+   PS1 TTY log contains no `JCBSOD-FATAL` sentinel.
 8. `sceneAllocBalance` never positive at reset (debug).
 9. `memFreezeBoot` not triggered post-boot.
 10. PC valgrind clean (one static region buffer "still reachable" OK).
