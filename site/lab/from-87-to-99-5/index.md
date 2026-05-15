@@ -50,7 +50,7 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average is
-**+0.2492% over target / 99.7548% target speed**, with roughly **17.15
+**+0.2520% over target / 99.7522% target speed**, with roughly **17.15
 percentage points** of over-target gap closed and about **12.65 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the

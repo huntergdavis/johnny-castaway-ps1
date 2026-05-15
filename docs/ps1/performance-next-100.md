@@ -72,10 +72,10 @@ in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877/v879/v880/v887/v888/v889/v890/v891/v892/v896
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, the v705 WALKSTUF1 low late-tail subset physical compaction, plus the v932 JOHNNY1 local-LZ full-frame payload compression:
-`+0.2492%` public average over target / `99.7548%` public target speed across
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, the v705 WALKSTUF1 low late-tail subset physical compaction, plus the v932 JOHNNY1 local-LZ full-frame payload compression and v935 WALKSTUF1 low `209..225` retained-read row:
+`+0.2520%` public average over target / `99.7522%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.5179%` / `100.5371%`. Since the compact full-matrix baseline was about
+about `-0.5152%` / `100.5345%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65`
 public target-speed points. Green rows are now `119 / 126`, with `7` yellow

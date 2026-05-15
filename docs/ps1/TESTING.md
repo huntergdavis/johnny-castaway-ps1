@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-15:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2492%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7548%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T10:21:02` |
-| Stats version | mixed; newest optimized/code-headroom rows use `johnny1-local-lz-v932`, `building4-low-frame425-inplace-v928`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2520%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7522%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T10:57:15` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `building4-low-frame425-inplace-v928`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -133,13 +133,11 @@ while cutting that entry `4011 -> 3668` bytes. High repeats at scene `1764`,
 active loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, loop
 reads/read time `63/276`, and due `16`; active payload now drops
 `860009 -> 859666`, and the no-shift high lane drops `882007 -> 859666`.
-`walkstuf1-low-frame106-inplace-v910` shrinks low entry `106` / source frame
-`209` in place after the v909 frame111 trim, preserving all payload offsets
-while cutting that entry `944 -> 919` bytes. Low repeats at scene `1769`,
-active loop `1477`, target `1432`, blocking/refill `65/20`, loop reads/read
-time `58/259`, and due `11`, while runtime rows/spans/pixels stay at the v726
-row `16257/114798/633876`; active payload now drops directly
-`790233 -> 790208`, and the no-shift lane drops `879801 -> 790208`.
+`walkstuf1-low-rg209-225-v935` adds the low-tide `209..225` retained-read row
+after a fresh current-control capture. Low stays scene/loop flat at
+`1773/1481`, improves target `1428 -> 1431`, overrun `53 -> 50`, blocking
+`78 -> 72`, loop reads/read time `61/279 -> 58/267`, and due `11 -> 10`,
+while runtime rows/spans/pixels stay at the v726 row `16257/114798/633876`.
 
 Latest promoted BUILDING2 high payload note:
 `building2-high-frame100-inplace-v926` trims entry `100` / source frame `129`

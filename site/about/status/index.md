@@ -21,9 +21,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2492%` over
-target / `99.7548%` target speed; the raw signed optimization matrix is
-`-0.5179%` / `100.5371%`.
+allocation. The public headless battle card is `+0.2520%` over
+target / `99.7522%` target speed; the raw signed optimization matrix is
+about `-0.5152%` / `100.5345%`.
 The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,

@@ -539,6 +539,7 @@ static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
 static const struct TFgPilotReadGroup kWalkstuf1LowReadGroups12[] = {
     {78, 91, 0},
     {201, 213, 0},
+    {209, 225, 0},
     {213, 229, 0},
     {344, 360, 0},
     {394, 410, 0},

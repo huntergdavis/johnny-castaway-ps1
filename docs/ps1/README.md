@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.14-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2492% public over target / 99.7548% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2520% public over target / 99.7522% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -31,10 +31,10 @@ BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
 draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 preserve-offset payload shrinks, the WALKSTUF1 low `394..410`
 retained-read win, and the WALKSTUF1 high late-tail physical compaction after
 the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
-retained-read wins; the current low fixed-sector payload lane is now
-`walkstuf1-low-frame106-inplace-v910`. The
-public battle card is now `+0.2492%` over target /
-`99.7548%` target speed across all 126
+retained-read wins; the current low retained-read lane is now
+`walkstuf1-low-rg209-225-v935`. The
+public battle card is now `+0.2520%` over target /
+`99.7522%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -62,8 +62,8 @@ frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap reloca
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip and frame425 in-place payload shrink, the JOHNNY1 local-LZ full-frame payload compression, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, and the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks; the raw signed
-optimization matrix is `-0.5179%` / `100.5371%`.
+draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, and the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks plus the W1-low `209..225` retained-read row; the raw signed
+optimization matrix is about `-0.5152%` / `100.5345%`.
 That is about `17.15` public over-target points removed and `12.65` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
@@ -96,11 +96,11 @@ in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
 `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`,
 `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`,
 `145`, `75`, `76`, `77`, `130`, `135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, `99`, `100`, `134`, `91`, `92`, `95`, `140`, `108`, `109`, `107`, `110`, `111`, and `106`, the
-v760 bounded CD fast-poll restoration, and the v817 low `394..410` retained
-read group. Low is now `1477/1432` at `96.95%` target speed with overrun `45`,
-blocking/refill `65/20`, loop reads/read time `58/259`, and due misses `11`,
-while active payload drops `879801 -> 790208` without moving pack offsets,
-LBA/sectors, or the PS-EXE bucket.
+v760 bounded CD fast-poll restoration, the v817 low `394..410` retained
+read group, and the v935 low `209..225` retained-read row. Low is now
+`1481/1431` at `96.62%` target speed with overrun `50`,
+blocking/refill `72/27`, loop reads/read time `58/267`, and due misses `10`,
+while active payload remains `790208` without moving pack offsets or sectors.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24
