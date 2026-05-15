@@ -167,6 +167,9 @@ enum {
 #define FG_DELTA_PAYLOAD_SENTINEL 0xfffeu
 #define FG_DELTA_PAYLOAD_MAGIC0 0x44u /* 'D' */
 #define FG_DELTA_PAYLOAD_MAGIC1 0x34u /* '4' */
+#define FG_LOCAL_LZ_PAYLOAD_SENTINEL 0xfffdu
+#define FG_LOCAL_LZ_PAYLOAD_MAGIC0 0x4cu /* 'L' */
+#define FG_LOCAL_LZ_PAYLOAD_MAGIC1 0x34u /* '4' */
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
 #define FG_ACTIVITY9_HIGH_WINDOW_BYTES (32UL * 1024UL)
 #define FG_ACTIVITY9_LOW_WINDOW_BYTES (20UL * 1024UL)
@@ -225,6 +228,7 @@ enum {
 #define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (256UL * 1024UL)
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
+#define FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES (112UL * 1024UL)
 #define fgEntryHasPayload(entry) \
     (((entry) != NULL && \
       (entry)->dataSize > 0 && \
@@ -792,6 +796,71 @@ fgDecodeFrameDelta(uint8 *data,
     }
 
     if (writeOffset != (uint32)expandedSize)
+        return 0;
+    entry->dataSize = expandedSize;
+    return 1;
+}
+
+static int __attribute__((optimize("Os")))
+fgDecodeLocalLzPayload(uint8 *data,
+                       struct TFgPilotEntry *entry)
+{
+    uint8 *stream;
+    uint32 expandedSize;
+    uint32 readOffset;
+    uint32 writeOffset;
+
+    if (entry->dataSize < 8u ||
+        fgReadU16(data) != FG_LOCAL_LZ_PAYLOAD_SENTINEL ||
+        data[2] != FG_LOCAL_LZ_PAYLOAD_MAGIC0 ||
+        data[3] != FG_LOCAL_LZ_PAYLOAD_MAGIC1) {
+        return 1;
+    }
+
+    expandedSize = fgReadU32(data + 4);
+    if (entry->dataSize > gFgRuntime.streamScratchSize ||
+        expandedSize > gFgRuntime.frameBufferSize)
+        return 0;
+
+    memcpy(gFgRuntime.streamScratch, data, entry->dataSize);
+    stream = gFgRuntime.streamScratch;
+    readOffset = 8u;
+    writeOffset = 0;
+
+    while (readOffset < entry->dataSize && writeOffset < expandedSize) {
+        uint8 opcode;
+        uint16 length;
+
+        if (readOffset >= entry->dataSize)
+            return 0;
+        opcode = stream[readOffset++];
+        if (opcode == 0) {
+            uint32 baseOffset;
+            if (readOffset + 6u > entry->dataSize)
+                return 0;
+            baseOffset = fgReadU32(stream + readOffset);
+            length = fgReadU16(stream + readOffset + 4u);
+            readOffset += 6u;
+            if (baseOffset + (uint32)length > writeOffset ||
+                writeOffset + (uint32)length > expandedSize)
+                return 0;
+            memcpy(data + writeOffset, data + baseOffset, length);
+            writeOffset += length;
+        } else {
+            if (readOffset + 2u > entry->dataSize)
+                return 0;
+            length = fgReadU16(stream + readOffset);
+            readOffset += 2u;
+            if (readOffset + (uint32)length > entry->dataSize ||
+                writeOffset + (uint32)length > expandedSize)
+                return 0;
+            memcpy(data + writeOffset, stream + readOffset, length);
+            readOffset += length;
+            writeOffset += length;
+        }
+    }
+
+    if (writeOffset != expandedSize)
         return 0;
     entry->dataSize = expandedSize;
     return 1;
@@ -2831,6 +2900,11 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                 ps1PerfMarkTripwire();
             return 0;
         }
+        if (!fgDecodeLocalLzPayload(loadBuffer, &loadedEntry)) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
+            return 0;
+        }
 
         if (useAlternateLoadBuffer) {
             uint8 *oldFrameBuffer = gFgRuntime.frameBuffer;
@@ -3138,6 +3212,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             for (i = 0; i < gFgRuntime.entryTable.count; i++) {
                 if (gFgRuntime.entryTable.entries[i].dataSize > maxDataSize)
                     maxDataSize = gFgRuntime.entryTable.entries[i].dataSize;
+            }
+            if (fgSceneEquals(sceneName, "johnny1") &&
+                maxDataSize < 65536UL &&
+                maxDataSize < FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES) {
+                maxDataSize = FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES;
             }
             cleanSnapshotEstimate = fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
             cleanMemoryRelief = (uint8)fgSceneNeedsCleanMemoryRelief(

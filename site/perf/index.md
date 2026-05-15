@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">117 (92.9%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">9 (7.1%) ≥ 95%</span>
+  <span class="spd-key spd-green">119 (94.4%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">7 (5.6%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -157,8 +157,9 @@ frame137 setup-prime relocation; both paths
 keep fixed pack layout with deliberate setup/data-shape tradeoffs.
 The orange band is now empty; the yellow band (95-99%) holds WALKSTUF1
 high/low (`97.2%` / `96.9%`), VISITOR3 high/low
-(`97.8%` / `97.9%`), BUILDING2 high/low (`97.0%` / `98.1%`),
-JOHNNY1 high/low, and BUILDING4 low. VISITOR5 high/low are both green after
+(`97.8%` / `97.9%`), BUILDING2 high/low (`97.0%` / `98.4%`),
+and BUILDING4 low. JOHNNY1 high/low are both green after local-LZ full-frame
+payload compression. VISITOR5 high/low are both green after
 the matching `30..46` retained-read promotions. JOHNNY6 high/low moved into
 green after the compact-FGP3 metadata plus
 restore-minus-current pass dropped both tides from `2832/2800` to
@@ -202,11 +203,18 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T08:57:32` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-frame425-inplace-v928`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2492%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7548%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T10:21:02` |
+| Stats version | mixed across rows; latest refreshed row is `johnny1-local-lz-v932`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
+
+Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
+full-frame entries `1` and `50` inside both fixed-footprint JOHNNY1 packs,
+preserving pack LBA/sectors and the `217088` byte PS-EXE bucket while cutting
+active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
+overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
+`99.85%`.
 
 Current W1 payload/speed track: `walkstuf1-low-frame106-inplace-v910`
 shrinks low entry `106` / source frame `209` in place after the v909 frame111
@@ -500,7 +508,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-frame425-inplace-v928`,
+  refreshed rows use `johnny1-local-lz-v932`,
+  `building4-low-frame425-inplace-v928`,
   `walkstuf1-high-frame139-inplace-v927`,
   `building2-high-frame100-inplace-v926`,
   `building4-low-frame40-inplace-v924`,
@@ -1527,29 +1536,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-high"><code>johnny1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-11T20:56:51</td>
-      <td>walkstuf1-high-rg213-229-slack4-v316</td>
-      <td>+1.4%</td>
-      <td class="spd-yellow">98.6%</td>
-      <td>1973/1945</td>
-      <td>25</td>
-      <td>25</td>
+      <td>2026-05-15T10:16:41</td>
+      <td>johnny1-local-lz-v932</td>
+      <td>+0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>1948/1945</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>current layout control under WALKSTUF1 promotion; no target-side delta from candidate</td>
+      <td>local-LZ sentinel payload compression for full-frame entries 1 and 50; preserves 448370 byte pack footprint, pack LBA/sectors, and PS-EXE bucket while improving overrun 28 -&gt; 3, blocking/refill 25 -&gt; 5, loop read time 58 -&gt; 37, and target speed 98.56% -&gt; 99.85%</td>
     </tr>
     <tr id="perf-johnny1-low">
       <td><a class="scene-perf-rowlink" href="#perf-johnny1-low"><code>johnny1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-14T05:13:31</td>
-      <td>under99-current-refresh-v730</td>
-      <td>+1.4%</td>
-      <td class="spd-yellow">98.6%</td>
-      <td>1973/1945</td>
-      <td>25</td>
-      <td>25</td>
+      <td>2026-05-15T10:21:02</td>
+      <td>johnny1-local-lz-v932</td>
+      <td>+0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>1948/1945</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>fresh under-99 current refresh corrects stale low row to match high tide; no code or pack change</td>
+      <td>local-LZ sentinel payload compression for full-frame entries 1 and 50; preserves 448370 byte pack footprint, pack LBA/sectors, and PS-EXE bucket while improving overrun 28 -&gt; 3, blocking/refill 25 -&gt; 5, loop read time 58 -&gt; 37, and target speed 98.56% -&gt; 99.85%</td>
     </tr>
     <tr id="perf-johnny2-high">
       <td><a class="scene-perf-rowlink" href="#perf-johnny2-high"><code>johnny2</code></a></td>

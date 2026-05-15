@@ -3,9 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-15 (`main` preparing `v0.8.13-ps1`; all 63 scenes remain
+**Last updated:** 2026-05-15 (`main` after `johnny1-local-lz-v932`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2697%` over target / `99.7347%` target speed).
+battle card is `+0.2492%` over target / `99.7548%` target speed).
 
 ## Overall
 
@@ -151,14 +151,15 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.13-ps1` is the under-99 payload-work checkpoint
-after the `v0.8.12-ps1` WALKSTUF1 low payload release. All 63 scenes remain
+Latest point release: `v0.8.14-ps1` is the JOHNNY1 local-LZ green promotion
+after the `v0.8.13-ps1` under-99 payload-work checkpoint. All 63 scenes remain
 validated, all 126 high/low
 variants are routed and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured
 and green; `suzy3` is not a standalone scene route. The promoted
 `walkstuf1-low-frame106-inplace-v910`, `building2-high-frame173-inplace-v914`,
-and `building4-low-frame283-inplace-v913` passes are the latest release
-payload-work baselines. Earlier pack/data wins remain in force: the MARY3
+`building4-low-frame283-inplace-v913`, and `johnny1-local-lz-v932` passes are
+the latest release payload-work baselines. Earlier pack/data wins remain in
+force: the MARY3
 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 `2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
 `690/693 -> 53/51` while keeping hidden refill overrun at zero. The latest
@@ -282,13 +283,16 @@ also exact-flat and drops high runtime rows/spans/pixels
 `17296/134136/776856 -> 16859/129919/731016`. BUILDING4 low v827 now carries
 the same-speed no-shift payload lane through frame `286`, keeping
 `3128/2853/2816`, blocking/refill `40/34`, read VBlanks `215`, and due `1`
-while dropping active payload `855284 -> 810226`. The public battle card is now
-`+0.2697%` over target /
-`99.7347%` target speed; the raw signed optimization rollup is `-0.4975%` /
-`100.5171%`.
+while dropping active payload `855284 -> 810226`. The JOHNNY1 local-LZ payload
+swing now compresses entries `1` and `50` in both high/low packs, cutting
+active payload `316608 -> 112093` bytes and moving both tides from
+`1973/1945` to `1948/1945`. The public battle card is now
+`+0.2492%` over target /
+`99.7548%` target speed; the raw signed optimization rollup is `-0.5179%` /
+`100.5371%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.13`
-public over-target points and added about `12.63` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.15`
+public over-target points and added about `12.65` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -331,7 +335,7 @@ VISITOR3 high is now
 `1339/1317`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1476/1434` and `1477/1432`, WALKSTUF3 high/low are `2310/2290` and
-`2310/2295`, JOHNNY1 high/low are both `1973/1945`, and the FISHING1 high control sits at the public cap
+`2310/2295`, JOHNNY1 high/low are both green at `1948/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup, with low-tide offscreen draw-span clipping on
 top: high is `2844/2816` with `blocking_vb=37`, and low is `2853/2816` with
@@ -339,8 +343,8 @@ top: high is `2844/2816` with `blocking_vb=37`, and low is `2853/2816` with
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
 matrix; the next true outliers are residual WALKSTUF1 work, BUILDING2 high
-residual work, VISITOR3 high/low, BUILDING2 low, JOHNNY1 residual
-read/data-shape work, BUILDING4 low, and selective upload-ready bands.
+residual work, VISITOR3 high/low, BUILDING2 low, BUILDING4 low, and selective
+upload-ready bands.
 VISITOR3 local C
 read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
 repoints are now exhausted; the next VISITOR3 attempt should extend the
@@ -372,6 +376,12 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.14-ps1` — JOHNNY1 local-LZ green promotion. Both JOHNNY1 tides compress
+  full-frame entries `1` and `50` inside the existing `448370` byte high/low
+  packs, preserve pack LBA/sectors and the `217088` byte PS-EXE bucket, and move
+  both rows to `1948/1945`, overrun `3`, blocking/refill `5`, and target speed
+  `99.85%`. Public rollup is `+0.2492%` over target / `99.7548%` target speed
+  with `119` green and `7` yellow rows.
 - `v0.8.13-ps1` — under-99 payload-work checkpoint. WALKSTUF1 low advances to
   `walkstuf1-low-frame106-inplace-v910`, BUILDING2 high advances to
   `building2-high-frame173-inplace-v914`, BUILDING4 low advances to
@@ -393,8 +403,8 @@ Milestone releases:
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
-  plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, and BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking.
-  The public battle card is `+0.2697%` / `99.7347%`;
+  plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, and the JOHNNY1 local-LZ full-frame payload compression.
+  The public battle card is `+0.2492%` / `99.7548%` with `119` green and `7` yellow rows;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
@@ -403,7 +413,8 @@ Milestone releases:
   reads `58`, rows/spans/pixels `16257/114798/633876`, and active payload
   `790322`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
-  VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
+  VISITOR3 low is `1062/1040` with blocking/read time `42`, JOHNNY1 high/low are
+  green at `1948/1945`, BUILDING4 low is
   `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are
   now green at `1101/1096` and `1102/1097`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
@@ -738,6 +749,7 @@ baseline.
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.8.14.md](release-notes-0.8.14.md) — JOHNNY1 local-LZ green promotion release notes
 - [release-notes-0.8.13.md](release-notes-0.8.13.md) — under-99 payload-work checkpoint release notes
 - [release-notes-0.8.5.md](release-notes-0.8.5.md) — full 126-row headless performance matrix release notes
 - [release-notes-0.8.4.md](release-notes-0.8.4.md) — custom Scene Explorer thumbnail release notes

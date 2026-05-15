@@ -50,8 +50,8 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average is
-**+0.2697% over target / 99.7347% target speed**, with roughly **17.13
-percentage points** of over-target gap closed and about **12.63 target-speed
+**+0.2492% over target / 99.7548% target speed**, with roughly **17.15
+percentage points** of over-target gap closed and about **12.65 target-speed
 points** added. The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -143,9 +143,9 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no orange or red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `117` rows are green and `9`
+[battle card]({{ '/perf/' | relative_url }}): `119` rows are green and `7`
 remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
-VISITOR3 high/low, BUILDING2 high/low, JOHNNY1 high/low, and BUILDING4 low.
+VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 low.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some

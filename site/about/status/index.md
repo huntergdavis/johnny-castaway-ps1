@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state after v0.8.9-ps1
+eyebrow: Component-level state after v0.8.14-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,19 +13,22 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.8.9-ps1` is the current release: every row in the live per-scene
-ledger is signed off, all 126 high/low scene variants are routed and
-timing-bearing, deterministic BOOTMODE scene selection is logged and gated,
-VISITOR5 high/low now share green `30..46` retained-read baselines, and the
-latest WALKSTUF1 low in-place payload reductions are promoted. The
+The current release line keeps every row in the live per-scene ledger signed
+off, all 126 high/low scene variants routed and timing-bearing, deterministic
+BOOTMODE scene selection logged and gated, and the latest JOHNNY1 high/low
+local-LZ full-frame payload compression promoted into green. The
 chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2697%` over
-target / `99.7347%` target speed; the raw signed optimization matrix is
-`-0.4975%` / `100.5171%`.
-The newest accepted BUILDING2 low pack promotion trims dead draw-tail payload
+allocation. The public headless battle card is `+0.2492%` over
+target / `99.7548%` target speed; the raw signed optimization matrix is
+`-0.5179%` / `100.5371%`.
+The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
+and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
+the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
+overrun `3`, blocking/refill `5`, and target speed `99.85%`.
+The accepted BUILDING2 low pack promotion trims dead draw-tail payload
 without changing pack size/LBA or the PS-EXE bucket, improving low to
 `1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
 `12`. BUILDING4 low remains on the accepted offscreen PAL4 draw-span clip at

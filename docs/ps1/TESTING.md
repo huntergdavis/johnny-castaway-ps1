@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-14:
+Current battle-card rollup as of 2026-05-15:
 
 | Metric | Value |
 |---|---:|
@@ -76,16 +76,24 @@ Current battle-card rollup as of 2026-05-14:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T08:57:32` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building4-low-frame425-inplace-v928`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, `building4-low-frame284-inplace-v912`, `building4-low-frame293-inplace-v911`, `walkstuf1-low-frame106-inplace-v910`, `walkstuf1-low-frame111-inplace-v909`, `walkstuf1-low-frame110-inplace-v908`, `building4-low-frame41-inplace-v903`, `building2-high-frame169-inplace-v896`, `building4-low-frame426-inplace-v895`, `building4-low-frame292-inplace-v893`, `building2-high-frame168-inplace-v892`, `building2-high-frame99-inplace-v891`, `building2-high-frame174-inplace-v890`, `building2-high-frame98-inplace-v889`, `building2-high-frame97-inplace-v888`, `building2-high-frame170-inplace-v887`, `walkstuf1-high-frame135-inplace-v884`, `walkstuf1-high-frame138-inplace-v882`, `building2-high-frame96-inplace-v880`, `building2-high-frame171-inplace-v879`, `building2-high-frame172-inplace-v877`, `walkstuf1-low-frame107-inplace-v876`, `walkstuf1-low-frame109-inplace-v875`, `walkstuf1-low-frame108-inplace-v874`, `walkstuf1-low-frame140-inplace-v873`, `walkstuf1-low-frame95-inplace-v872`, `walkstuf1-low-frame92-inplace-v871`, `walkstuf1-low-frame91-inplace-v870`, `walkstuf1-low-frame134-inplace-v869`, `walkstuf1-low-frame100-inplace-v868`, `walkstuf1-low-frame99-inplace-v867`, `walkstuf1-low-frame97-inplace-v866`, `walkstuf1-low-frame94-inplace-v865`, `walkstuf1-low-frame93-inplace-v864`, `walkstuf1-low-frame101-inplace-v863`, `walkstuf1-low-frame27-inplace-v862`, `walkstuf1-low-frame98-inplace-v861`, `walkstuf1-low-frame89-inplace-v860`, `walkstuf1-low-frame87-inplace-v859`, `walkstuf1-low-frame139-inplace-v855`, `walkstuf1-low-frame129-inplace-v853`, `walkstuf1-low-frame81-inplace-v852`, `walkstuf1-low-frame79-inplace-v849`, `walkstuf1-low-frame136-inplace-v847`, `walkstuf1-low-frame53-inplace-v846`, `walkstuf1-high-frame43-inplace-v844`, `walkstuf1-high-frame45-inplace-v843`, `walkstuf1-high-frame47-inplace-v842`, `walkstuf1-high-frame49-inplace-v841`, `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame139-offscreen-v837`, `walkstuf1-high-frame135-offscreen-v836`, `walkstuf1-high-frame136-offscreen-v835`, `walkstuf1-high-frame57-offscreen-v834`, `walkstuf1-high-frame56-offscreen-v833`, `walkstuf1-high-frame43-offscreen-v832`, `building4-low-frame286-inplace-v827`, `walkstuf1-low-rg394-410-v817`, `building4-low-frame39-inplace-v816`, `building4-low-frame287-inplace-v815`, `building4-low-frame288-inplace-v814`, `building4-low-frame37-inplace-v813`, `building4-low-frame36-inplace-v811`, `building4-low-frame35-inplace-v808`, `building4-low-frame32-inplace-v807`, `building4-low-frame290-inplace-v806`, `building4-low-frame31-inplace-v805`, `building4-low-frame34-inplace-v804`, `walkstuf1-low-frame3-inplace-v802`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2492%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7548%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T10:21:02` |
+| Stats version | mixed; newest optimized/code-headroom rows use `johnny1-local-lz-v932`, `building4-low-frame425-inplace-v928`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
 `100.0%` target speed so the website never presents playback faster than
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
+
+Latest promoted JOHNNY1 local-LZ payload note:
+`johnny1-local-lz-v932` stores a scene-local copy/literal stream behind a
+sentinel inside entries `1` and `50` in both JOHNNY1 packs, preserving the
+`448370` byte high/low pack footprints, pack LBA/sectors, and `217088` byte
+PS-EXE bucket while cutting active payload `316608 -> 112093`. Both tides move
+to `1948/1945`, overrun `3`, blocking/refill `5`, read time `37`, due `0`, and
+target speed `99.85%`.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-frame425-inplace-v928` shrinks entry `425` / source frame `619`

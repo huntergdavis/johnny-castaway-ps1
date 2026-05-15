@@ -22,6 +22,49 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.14-ps1` — JOHNNY1 local-LZ green promotion
+<time datetime="2026-05-15"><em>2026-05-15</em></time>
+
+A performance point release after `v0.8.13-ps1`. It promotes the JOHNNY1
+local-LZ full-frame payload swing and moves both JOHNNY1 tides into the green
+band without changing pack footprint or the PS-EXE bucket.
+
+- **JOHNNY1 high/low advance to v932.** Entries `1` and `50` in both fixed
+  `448370` byte packs now use a scene-local local-LZ sentinel stream.
+- **Both tides are green.** JOHNNY1 high/low move from `1973/1945` to
+  `1948/1945`, overrun `28 -> 3`, blocking/refill `25 -> 5`, read time
+  `58 -> 37`, and target speed `98.56% -> 99.85%`.
+- **Battle card improves.** Public rollup is `+0.2492%` over target /
+  `99.7548%` target speed; raw signed rollup is `-0.5179%` / `100.5371%`;
+  bands are `119` green and `7` yellow.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.14/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.14-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.8.13-ps1` — under-99 payload-work checkpoint
+<time datetime="2026-05-15"><em>2026-05-15</em></time>
+
+A performance point release after `v0.8.12-ps1`. It banks same-speed payload
+work on WALKSTUF1 low, BUILDING2 high, and BUILDING4 low while logging several
+closed misses for the next optimization path.
+
+- **WALKSTUF1 low advances to v910.** The no-shift lane reaches frame `106`
+  and cuts active payload to `790208` bytes while holding `1477/1432`.
+- **BUILDING2 high and BUILDING4 low bank payload reductions.** B2 high
+  reaches `building2-high-frame173-inplace-v914`; B4 low reaches
+  `building4-low-frame283-inplace-v913`.
+- **Battle card stays stable.** Public rollup is `+0.2697%` over target /
+  `99.7347%` target speed; bands are `117` green and `9` yellow.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.13/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.13-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.12-ps1` — WALKSTUF1 low frame77/frame130 payload trims
 <time datetime="2026-05-14"><em>2026-05-14</em></time>
 

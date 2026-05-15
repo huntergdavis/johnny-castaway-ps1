@@ -72,13 +72,13 @@ in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703/v877/v879/v880/v887/v888/v889/v890/v891/v892/v896
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
-`+0.2697%` public average over target / `99.7347%` public target speed across
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747..v910 WALKSTUF1 low in-place work-volume shrinks through frame106, the v760 bounded CD fast-poll recovery, the v705 WALKSTUF1 low late-tail subset physical compaction, plus the v932 JOHNNY1 local-LZ full-frame payload compression:
+`+0.2492%` public average over target / `99.7548%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.4975%` / `100.5171%`. Since the compact full-matrix baseline was about
+`-0.5179%` / `100.5371%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.13` public over-target points and added about `12.63`
-public target-speed points. Green rows are now `117 / 126`, with `9` yellow
+removed about `17.15` public over-target points and added about `12.65`
+public target-speed points. Green rows are now `119 / 126`, with `7` yellow
 rows remaining and no orange/red rows.
 
 Latest promoted WALKSTUF1 high preserve-offset payload baseline:
@@ -440,9 +440,9 @@ promoted v526 gate improves scene `1363 -> 1361`, active loop/target
 reads `19 -> 18`, and due misses stay `0`; pack LBA/sectors stay
 `24394/173`, and the PS-EXE bucket stays `217088`. VISITOR5 high, VISITOR3
 high/low, BUILDING2 high/low, and WALKSTUF1 high/low canaries stayed
-exact-flat. This moves VISITOR5 low into green and leaves the under-99 focus
-set at WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, JOHNNY1
-low/high, and BUILDING4 low.
+exact-flat. This moves VISITOR5 low into green; after the later JOHNNY1 v932
+promotion, the under-99 focus set is WALKSTUF1 low/high, BUILDING2 high/low,
+VISITOR3 high/low, and BUILDING4 low.
 
 Latest promoted VISITOR3 high speed baseline: keep the v299 resident
 frame-131 placement, the v291 frame-140/tail setup-segment placement, store
@@ -1651,9 +1651,9 @@ strict hot-symbol budget.
 | 20 | VISITOR3 high | Generate a CD-deadline sidecar for terminal frames `135..137` that explicitly schedules prefetch during long non-visible gaps rather than relying on append grouping. Hand groups did not fire under current pack state. | Require planner-visible saved read and nonzero generated ownership hit count in logs. |
 | 21 | VISITOR3 low | Closed by v637 and v824: no remaining due frame produced a previous-frame D4 payload small enough for the `10588` paid setup-prime gap, the best same-offset D4 probe regressed timing, and byte-for-byte terminal relocation after frame `129` was either exact-flat or phase-negative. | Reopen only for a different custom compression family, generated deadline ownership, or newly paid residency; do not retry ordinary previous-frame D4 for frames `130`, `131`, `133`, `134`, `135`, `136`, or `138`, and do not retry raw terminal compaction after frame `129`. |
 | 22 | VISITOR3 both | Generate a timeline cost model that estimates CD saved, decode cost, upload cost, and hot-code drift before a PS1 run. VISITOR3 has too many byte wins that are phase-negative unless ownership is right. | Reject candidates whose model predicts any hidden refill or PS-EXE bucket movement. |
-| 23 | JOHNNY1 high/low | Closed by v642, v643, and v915 for current local forms: the pack has no redundant same-frame cleanup or duplicate/no-op payloads, O2 on `grRestoreCleanBgSpanFromRects()` is exact-flat, and both code-neutral per-span black TILE clear variants reduce upload bytes (`5631360 -> 5225600`) but leave high tide exact-flat at `2069`, `1973/1945`, overrun `28`, blocking/refill `25`. | Do not retry per-span black GPU clears or clean-span compiler toggles. Reopen only with generated/coalesced cleanup metadata, a pack opcode that reduces CPU restore work, or another data-shape change that proves a key timing win while keeping the `217088` byte PS-EXE bucket. |
-| 24 | JOHNNY1 high/low | Code-neutral dirty-upload coalescing for black-background rows remains possible only if it coalesces work before runtime per-span command emission. v915 proves per-span direct clears are a work-counter win but not a speed win. | Require no PS-EXE bucket change, no `grDrawBackground` growth, and a key speed improvement, not just upload-byte reduction, before promotion. |
-| 25 | JOHNNY1 high/low | Closed by v642 for exact no-op aliasing: no duplicate payload groups or repeated offset runs exist in the current `JOHNNY1.FG2` pack. | Use runtime black-clear/code-headroom or generated dirty-upload work instead of pack-side no-op aliasing. |
+| 23 | JOHNNY1 high/low | Closed by v932 for the current under-99 target: local-LZ sentinel payloads compress full-frame entries `1` and `50` in both fixed-footprint packs, cutting active payload `316608 -> 112093` and moving both tides to green at `1948/1945`, overrun `3`, blocking/refill `5`, and read time `37`. | Keep v932 as the baseline. Do not retry per-span black GPU clears, clean-span compiler toggles, or same-frame/no-op aliasing for speed on this target. |
+| 24 | JOHNNY1 high/low | Residual black-backdrop upload/coalescing work is no longer an under-99 blocker after v932. The prior v915 signal still reduces upload bytes but was not a speed win. | Reopen only as broader headroom/footprint cleanup, not ahead of the seven remaining yellow rows. |
+| 25 | JOHNNY1 high/low | Exact no-op aliasing and cleanup adjacency scans remain closed: the current pack has no duplicate payload groups, repeated offset runs, or exact-adjacent cleanup spans to remove. | Future JOHNNY1 work should be whole-disc footprint or code-headroom work, not a priority speed lane. |
 | 26 | BUILDING4 low | Closed by v652 for the first classifier pass: same-commit offscreen draw-span clipping is a real pack-only win, but it only moves low from `2856/2816` to `2853/2816`. Remaining debt is still mixed CD/upload work, not a plain retained-read row. | Continue from the v652 baseline; require fixed LBA/EXE bucket and a work-counter drop before timing. |
 | 27 | BUILDING4 low | Scene-specific static-mask precomposition for the large island/tree/background area, leaving only moving foreground rows dirty. BUILDING4 low remains near target with high restore/upload pressure. | Offline mask validator first; gate only if visual status stays green and upload/restore bytes drop. |
 | 28 | BUILDING4 low | Extend v652 into a smaller occlusion/static-mask pass, not broader clipping. The accepted offscreen draw clip proved pack-authored work reduction can pay here, while W1 proved broad clipping can destabilize CD phase. | Host analyzer must prove exact static ownership and preserve entry offsets/file size before PS1. |
@@ -1687,9 +1687,9 @@ host proof before any emulator time.
 | 46 | VISITOR3 high | Pack terminal frames into an existing paid setup segment using micro-header savings, not broad relocation. | Host proof must keep sectors `203` and `277..293` resident without evictions. |
 | 47 | VISITOR3 low | Search for two-stage custom compression where setup-prime holds a small dictionary and due frames hold only row references. | Must fit the remaining `10588` byte paid gap and require no per-pixel runtime loop. |
 | 48 | VISITOR3 both | Add a host cost model that prices CD saved, decode commands, upload bytes, and hot-code drift before any PS1 run. | Model must reject known misses v637/v641/v644. |
-| 49 | JOHNNY1 | Reclaim cold code bytes first, then retry a minimal black-clear primitive with the PS-EXE bucket pinned. | Build must stay `217088` and high/low must both improve or stay flat. |
-| 50 | JOHNNY1 | Emit a pack-side black-clean row mask for frame `2` and reuse existing dirty upload with no new broad narrow-upload path. | Host mask must prove all cleared pixels are black/background-owned. |
-| 51 | JOHNNY1 | Try a data-only split of frame `2` cleanup into one cheap black clear plus normal residual payload, with an existing opcode if possible. | Reject if it needs a new hot decoder branch before code headroom exists. |
+| 49 | JOHNNY1 | Done by v932 for the 99% goal: compress the full-frame payloads instead of chasing black-clear code. | Keep as accepted local-LZ baseline; revisit black-clear only for future headroom cleanup. |
+| 50 | JOHNNY1 | Superseded by v932. A pack-side black-clean row mask is no longer needed to get JOHNNY1 green. | Do not spend the next yellow-row cycle here. |
+| 51 | JOHNNY1 | Superseded by v932. The data-only split idea is lower priority than W1/B2/VISITOR3/B4 remaining yellows. | Reopen only if future footprint goals require an even smaller JOHNNY1 pack. |
 | 52 | BUILDING4 low | Closed by v652 for the first same-commit classifier: offscreen draw-span clipping lowered both draw work and visible CD cost, but BUILDING4 low is still below green. | Next pass should extend the static/occlusion proof, not retry scalar retained reads. |
 | 53 | BUILDING4 low | Build a static island/tree/background ownership mask and precompose only rows that never overlap animated sprites. | Visual diff must cover low tide and wave frames before PS1 timing. |
 | 54 | Cross-scene | Add a "phase-trap" tag in the candidate CSV when saved reads pair with tight internal gaps and prior scalar misses. | Candidate matrix should stop ranking those rows above pack/data-shape work. |
@@ -1907,17 +1907,14 @@ improves `scene_vb 2333 -> 2323`, `loop_vb 2085 -> 2075`, `target_vb 2058 ->
 PS-EXE bucket stays `215040`. VISITOR3, BUILDING2, BUILDING4, ACTIVITY9 high,
 and FISHING1 broad canaries stayed on their accepted profiles.
 
-Latest promoted JOHNNY1 compact-FGP3/v4 baseline: convert both black-backdrop
-packs to padded compact FGP3/v4 restore-minus-current data while preserving the
-`448370` byte CD footprints. The compaction chain trims active payload
-`446058 -> 316608`, modeled restore bytes `591816 -> 408872`, cleanup spans
-`17583 -> 484`, and cleanup pixels `295908 -> 204436`. Both tides improve
-`scene_vb 2074 -> 2070`, `loop_vb 1977 -> 1974`, `target_vb 1943 -> 1945`,
-`overrun_vb 34 -> 29`, `blocking_vb 31 -> 26`, `prefetch_overrun_vb 31 -> 26`,
-`loop_reads 16 -> 7`, and `loop_read_vb 95 -> 56`. Pack LBAs stay
-`13982/14201`, sectors stay `219`, and the PS-EXE bucket stays `215040`.
-VISITOR3, BUILDING2, BUILDING4, ACTIVITY9 low, and FISHING1 broad canaries
-stayed exact-flat.
+Latest promoted JOHNNY1 baseline: keep the compact-FGP3/v4 restore-minus-current
+packs and add v932 scene-local local-LZ sentinel payloads for full-frame entries
+`1` and `50` while preserving the `448370` byte CD footprints, pack offsets,
+high/low LBA/sectors `13983/219` and `14202/219`, and the `217088` byte PS-EXE
+bucket. The compact chain had already trimmed active payload `446058 -> 316608`;
+v932 cuts the active payload again to `112093`. Both tides now pass at scene
+`2024`, loop/target `1948/1945`, overrun `3`, blocking/refill `5`, read time
+`37`, due `0`, and target speed `99.846%`, moving JOHNNY1 high/low into green.
 
 Latest JOHNNY1 current-fit read-table decision: do not promote or retry
 hand-authored `131..147`, `145..161`, or `138..154` retained read groups.
@@ -2032,8 +2029,7 @@ the PS-EXE bucket stays `215040`. Low tide was verified exact-flat when its
 original FGP2 pack was restored. Broad VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, and FISHING1 canaries stayed on their accepted profiles. The next
 top rows are WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 low/high,
-VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low, and the
-remaining under-99 rows.
+BUILDING4 low, and the remaining under-99 rows.
 
 Latest promoted VISITOR5 low compact FGP3/read-ownership baseline: convert
 `VIST5LOW.FG2` to the same padded compact FGP3/v4 restore-minus-current pack
@@ -2048,8 +2044,8 @@ high/low, WALKSTUF1 high/low, VISITOR3 low, and FISHING1 high canaries stayed
 on their accepted profiles. At v451 the public rollup was `+0.3111%` over
 target / `99.6949%` target speed, raw signed rollup was `-0.4559%` /
 `100.4772%`; v452 supersedes that rollup with the VISITOR3 low frame129 delta
-above. The next top rows are WALKSTUF1 low/high, BUILDING2 high, VISITOR3
-high/low, BUILDING2 low, VISITOR5 high, JOHNNY1 high/low, BUILDING4 low, and
+above. After later VISITOR5 and JOHNNY1 promotions, the next top rows are
+WALKSTUF1 low/high, BUILDING2 high/low, VISITOR3 high/low, BUILDING4 low, and
 the remaining under-99 tail.
 
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
@@ -2468,9 +2464,8 @@ and PAL4 draw payloads while shrinking active payload `1552446 -> 1265930`.
 High improves `loop_vb 1450 -> 1406`, `overrun_vb 435 -> 387`,
 `blocking_vb 355 -> 296`, and `prefetch_overrun_vb 14 -> 7`; low improves
 `1452 -> 1405`, `440 -> 390`, `361 -> 301`, and `19 -> 8`. The largest
-remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, BUILDING4,
-VISITOR5 low, JOHNNY1 residual rows, and generated selective preprocessing, not
-FISHING1.
+remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, BUILDING4, and
+generated selective preprocessing, not FISHING1 or JOHNNY1.
 
 Latest promoted compact-residual baseline: convert every current FGP3/v3
 compact PAL4 residual pack to FGP3/v4 compact draw metadata while preserving
@@ -3118,8 +3113,7 @@ pass originally pointed at WALKSTUF1 low/high, VISITOR3 low/high, BUILDING4
 high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1,
 BUILDING6, ACTIVITY9 high, JOHNNY6, and BUILDING6 slack4 passes, the current
 top generated graphics/scheduler targets are WALKSTUF1 low/high, BUILDING2
-high/low, VISITOR3 low/high, JOHNNY1 residual read/data-shape work, and
-BUILDING4 low.
+high/low, VISITOR3 low/high, and BUILDING4 low.
 Do not retry whole-payload direct16; use selective/compressed bands or
 setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired

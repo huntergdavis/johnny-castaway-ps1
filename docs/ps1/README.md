@@ -12,19 +12,20 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.13-ps1` |
+| Release | `v0.8.14-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2697% public over target / 99.7347% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2492% public over target / 99.7548% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.13-ps1` is the current performance point release, collecting the
-post-v0.8.12 under-99 payload-work checkpoint tracked in the battle card and
-matrix.
+`v0.8.14-ps1` is the current performance point release, collecting the
+JOHNNY1 local-LZ green promotion on top of the post-v0.8.12 under-99
+payload-work checkpoint tracked in the battle card and matrix.
 It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
-latest mainline promotes the BUILDING4 low offscreen draw-span clip plus the
+latest mainline promotes the JOHNNY1 local-LZ full-frame payload compression,
+the BUILDING4 low offscreen draw-span clip plus the
 v928 frame425 fixed-sector payload shrink, the
 BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
 draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 preserve-offset payload shrinks, the WALKSTUF1 low `394..410`
@@ -32,8 +33,8 @@ retained-read win, and the WALKSTUF1 high late-tail physical compaction after
 the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
 retained-read wins; the current low fixed-sector payload lane is now
 `walkstuf1-low-frame106-inplace-v910`. The
-public battle card is now `+0.2697%` over target /
-`99.7347%` target speed across all 126
+public battle card is now `+0.2492%` over target /
+`99.7548%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
@@ -60,13 +61,20 @@ frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
 frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
-BUILDING4 low offscreen draw-span clip and frame425 in-place payload shrink, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks, plus the JOHNNY1 low refresh; the raw signed
-optimization matrix is `-0.4975%` / `100.5171%`.
-That is about `17.13` public over-target points removed and `12.63` public
+BUILDING4 low offscreen draw-span clip and frame425 in-place payload shrink, the JOHNNY1 local-LZ full-frame payload compression, the BUILDING2 high/low offscreen
+draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, and the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks; the raw signed
+optimization matrix is `-0.5179%` / `100.5371%`.
+That is about `17.15` public over-target points removed and `12.65` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
 and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
 Castaway scene route, only an asset/reference naming source.
+
+The latest JOHNNY1 baseline, `johnny1-local-lz-v932`, stores a scene-local
+copy/literal stream behind a sentinel inside the existing FGP3/v4 payloads.
+Both high and low compress entries `1` and `50`, cutting active payload
+`316608 -> 112093` bytes and moving both rows from `1973/1945` to `1948/1945`
+with overrun `28 -> 3`, blocking/refill `25 -> 5`, loop read time `58 -> 37`,
+and target speed `98.56% -> 99.85%`.
 
 The latest WALKSTUF1 high baseline extends the shared retained read groups to
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`,
@@ -356,6 +364,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.14.md](release-notes-0.8.14.md) — JOHNNY1 local-LZ green promotion release notes
 - [release-notes-0.8.13.md](release-notes-0.8.13.md) — under-99 payload-work checkpoint release notes
 - [release-notes-0.8.9.md](release-notes-0.8.9.md) — WALKSTUF1 low in-place payload reduction release notes
 - [release-notes-0.8.8.md](release-notes-0.8.8.md) — VISITOR5 high retained-read promotion release notes
