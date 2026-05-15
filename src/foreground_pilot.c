@@ -1359,7 +1359,10 @@ static void fgReleaseStreamBuffers(void)
      * still cycle it because it's low-cost and makes the failure path
      * easier to read. */
     if (gFgSetupSegmentBuffer != NULL) {
-        free(gFgSetupSegmentBuffer);
+        /* TRANSIENT region — memFree just decrements the balance counter;
+         * the actual bytes were reclaimed by memSceneReset at the top of
+         * fgRuntimeReset. Clear the pointer to avoid dangling. */
+        memFree(MEM_REGION_TRANSIENT, gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
         gFgSetupSegmentBufferSize = 0;
     }
@@ -1422,7 +1425,7 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
         gFgStreamWindowBufferSize = 0;
     }
     if (gFgSetupSegmentBuffer != NULL) {
-        free(gFgSetupSegmentBuffer);
+        memFree(MEM_REGION_TRANSIENT, gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
         gFgSetupSegmentBufferSize = 0;
     }
@@ -1555,6 +1558,15 @@ static void fgRuntimeReset(void)
      * See docs/ps1/memory-region-allocator-plan.md "Boot lifecycle". */
     extern const char *fgLoopGetLastScene(void);
     memSceneReset(fgLoopGetLastScene());
+
+    /* Clear file-static TRANSIENT pointers so the next scene sees a
+     * clean slate. memSceneReset reclaimed the underlying bytes, but
+     * these globals still hold the (now-dangling) pointers from the
+     * previous scene's allocation. Setting them to NULL ensures the
+     * "is this allocated yet?" checks in setup paths take the alloc
+     * branch on the new scene. */
+    gFgSetupSegmentBuffer     = NULL;
+    gFgSetupSegmentBufferSize = 0;
 
     /* currentFrameData now points inside gFgFrameBuffer — don't free it
      * separately. The persistent buffers (gFgFrameBuffer / gFgStreamScratch)
@@ -2514,19 +2526,14 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment2Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES;
         }
         allocationBytes = segmentBytes + segment2Bytes;
-        if (gFgSetupSegmentBuffer == NULL ||
-            gFgSetupSegmentBufferSize < allocationBytes) {
-            if (gFgSetupSegmentBuffer != NULL)
-                free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(allocationBytes);
-            if (gFgSetupSegmentBuffer == NULL) {
-                gFgSetupSegmentBufferSize = 0;
-                if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(allocationBytes);
-                return 0;
-            }
-            gFgSetupSegmentBufferSize = allocationBytes;
-        }
+        /* MEM_REGION_RATIONALE: per-scene segment-decode scratch.
+         * Reclaimed wholesale by memSceneReset. The old "if big
+         * enough, reuse" logic is unnecessary under TRANSIENT
+         * semantics — every scene gets a fresh buffer. */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                  allocationBytes,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = allocationBytes;
         segmentBuffer = gFgSetupSegmentBuffer;
         if (segment2Bytes > 0)
             segment2Buffer = gFgSetupSegmentBuffer + segmentBytes;
@@ -2536,19 +2543,11 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     } else if (islandState.lowTide) {
         segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
         segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
-        if (gFgSetupSegmentBuffer == NULL ||
-            gFgSetupSegmentBufferSize < segmentBytes) {
-            if (gFgSetupSegmentBuffer != NULL)
-                free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
-            if (gFgSetupSegmentBuffer == NULL) {
-                gFgSetupSegmentBufferSize = 0;
-                if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
-                return 0;
-            }
-            gFgSetupSegmentBufferSize = segmentBytes;
-        }
+        /* MEM_REGION_RATIONALE: per-scene segment-decode scratch (fishing3 low). */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                  FG_FISHING3_LOW_SETUP_SEGMENT_BYTES,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = segmentBytes;
         segmentBuffer = gFgSetupSegmentBuffer;
     } else {
         segmentStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
