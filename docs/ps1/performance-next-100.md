@@ -706,6 +706,15 @@ and restore-minus-current grew active payload). The focused gate saved one read
 generated deadline ownership or a custom data/upload representation, not a
 low-only hand table.
 
+Latest rejected WALKSTUF1 low v817 tight-cluster follow-up: v828 tried the
+next high-upside direct table row `{297,309}` after v817 and the closed
+`410..422`, `190..202`, `273..285`, and `285..297` probes. It saved one loop
+read (`58 -> 57`) but regressed scene/loop/target `1769/1477/1431 ->
+1776/1484/1430`, overrun `46 -> 54`, blocking/refill `64/20 -> 74/26`, and
+left due at `11`. Close hand-authored W1-low tight-cluster read groups on the
+v817 baseline; the next W1-low attempt needs generated deadline ownership or
+pack/upload work reduction with a host proof before changing source.
+
 Latest rejected WALKSTUF1 low setup-prime prefix-hole fill: v509 moved frame
 `78` / source `137` and frame `80` / source `141` into the already-covered
 `296`-byte prefix hole before `data_offset=4392`, using `247` bytes while
@@ -1431,7 +1440,7 @@ retained-read tables.
 | 5 | BUILDING2 high | Preserve the accepted `206..230` overread but add generated ownership for the separate `185..197` cluster only when it cannot steal the accepted row's cadence. v640 shows an eight-VBlank hand-table guard still fires and regresses refill/blocking; v703 is now only a same-speed late/post-hot/frame92/frame91/frame90/frame89 work-volume baseline. | Gate high tide through metadata/planner ownership, not new C branches; enforce `blocking_vb <= 54`, `refill <= 18`, and reject if it matches the raw/slack table phase. |
 | 6 | BUILDING2 high | Closed by v704 as safe subsets only: frames `168..177`, `94..104`, and `89..92` offscreen clipping remove `22390` pixels, `5072` spans, and `114` frame rows while staying exact-flat; frame `88` is a host no-op, and broad/hot v655 plus early `67,69..71` v699 clipping regressed phase. | Do not retry broad/hot/early offscreen clipping for speed. Reopen only for generated scheduler-coupled clipping or upload/restore data that proves fewer rows/spans without changing CD/refill cadence. |
 | 7 | BUILDING2 high | Generate "accepted-row tail ownership" metadata for `206..230` so shorter rows can be simulated without replacing cadence-critical overread. The trim failures show the tail is paying for timing, not just bytes. | Planner must report same due-read order as accepted plus fewer visible blocking VBlanks before a PS1 gate. |
-| 8 | WALKSTUF1 low | Narrowed by v644: simply giving sector `297` CD-window priority before visual prepare is worse than the raw due-path row, regressing low to `1799/1489`, blocking `94`, refill `25`, and due `16`. The late `285..321` cluster still needs generated ownership, but it must prefetch earlier without evicting prepared visual work. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
+| 8 | WALKSTUF1 low | Narrowed by v644 and v828: simply giving the late `285..321` cluster direct CD-window ownership is phase-negative. The latest `{297,309}` probe saved one read but regressed low to `1776/1484`, overrun `54`, blocking/refill `74/26`, with due still `11`. | Next probe must be metadata/planner-first and should not touch `foregroundPilotPlay` unless it proves an earlier non-visible slot; fail if due misses rise above `11` or blocking rises above `64`. |
 | 9 | WALKSTUF1 low | Create a resident mini-pack for one late cluster using no-decode aliasing, not frame28 D4 holes. The D4 hole created bytes but added startup/hot decode debt; a true alias must move bytes without extra runtime work. | Host validator must prove zero new D4 gates and fixed setup-prime startup residency before PS1 timing. |
 | 10 | WALKSTUF1 low | Closed by v638: exact cleanup-row and draw-metadata dictionaries across frames `146..158` grow the hot cluster before runtime overhead. | Reopen only for semantic/near-duplicate row-template compression or generated ownership; exact row dictionaries are not a sector-saving lane on this baseline. |
 | 11 | WALKSTUF1 low | Closed by v630-v632: two-phase `91..98` after accepted `78..91` is inert at slack `6/5/4`, and slack `3` is unreachable under the W1-low guard. | Do not retry as a scalar row unless generated deadline ownership can prove nonzero hits before timing. |
