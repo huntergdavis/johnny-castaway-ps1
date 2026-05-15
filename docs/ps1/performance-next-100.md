@@ -126,6 +126,18 @@ Treat the v747..v853 payload work as a safe no-shift payload lane, not a
 speed win; remaining W1-low speed conversion likely needs generated
 deadline/read ownership or a pack/data-shape change.
 
+Latest rejected WALKSTUF1 low no-sector payload probe:
+`walkstuf1-low-frame85-inplace-v854` tested entry `85` / source frame `148`
+after v853, shrinking `4854 -> 4351` bytes and active payload
+`793537 -> 793034` while keeping modeled sector coverage `3 -> 3`.
+The fixed-sector trim was still phase-negative: scene/loop/target regressed
+`1769/1477/1431 -> 1773/1481/1428`, overrun `46 -> 53`,
+blocking/refill `64/20 -> 86/28`, loop reads `58 -> 61`, and due
+`11 -> 13`. The pack was restored and rebuilt. Close frame85 on the v853
+baseline; remaining W1-low no-shift trims must keep strict timing gates, and
+speed conversion still needs generated deadline/read ownership or a
+pack/data-shape change.
+
 Latest rejected WALKSTUF1 low sector-boundary payload probe:
 `walkstuf1-low-frame96-inplace-v850` tested entry `96` / source frame `176`
 after v849, shrinking `4649 -> 4491` bytes and active payload
