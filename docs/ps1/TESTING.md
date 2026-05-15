@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-15:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2481%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7560%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T13:24:37` |
-| Stats version | mixed; newest optimized/code-headroom rows use `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `walkstuf1-low-rg209-225-v935`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2325%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7709%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T13:49:54` |
+| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-low-setupseg238-388-v989`, `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `johnny1-local-lz-v932`, `walkstuf1-high-frame139-inplace-v927`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -136,6 +136,16 @@ accepted `30..46` retained-read shape on low tide. Low improves from
 and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
+Latest promoted WALKSTUF1 low setup-segment note:
+`walkstuf1-low-setupseg238-388-v989` primes relative sectors `238..388`
+during setup. Against v935 it improves active loop/target
+`1481/1431 -> 1469/1447`, overrun `50 -> 22`, blocking/refill `72/27 -> 34/12`,
+reads/read time `58/267 -> 28/145`, and due `10 -> 4`. Setup cost rises
+scene `1773 -> 1820` and setup bytes `421428 -> 728628`, accepted under the
+`4%` material setup-regression gate. Boundary probes found `238..404` and
+`238..422` cross the clean-pressure cliff and disable prefetch, while
+`238..396`, `232..388`, and two-segment variants were safe but slower.
+
 Latest promoted WALKSTUF1 payload/speed note:
 `walkstuf1-high-frame139-inplace-v927` shrinks high entry `139` / source frame
 `247` in place after the v884 frame135 trim, preserving all payload offsets
@@ -144,10 +154,11 @@ active loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, loop
 reads/read time `63/276`, and due `16`; active payload now drops
 `860009 -> 859666`, and the no-shift high lane drops `882007 -> 859666`.
 `walkstuf1-low-rg209-225-v935` adds the low-tide `209..225` retained-read row
-after a fresh current-control capture. Low stays scene/loop flat at
-`1773/1481`, improves target `1428 -> 1431`, overrun `53 -> 50`, blocking
-`78 -> 72`, loop reads/read time `61/279 -> 58/267`, and due `11 -> 10`,
-while runtime rows/spans/pixels stay at the v726 row `16257/114798/633876`.
+after a fresh current-control capture; the later v989 setup segment is now the
+current W1-low speed row. v935 stayed scene/loop flat at `1773/1481`, improved
+target `1428 -> 1431`, overrun `53 -> 50`, blocking `78 -> 72`, loop
+reads/read time `61/279 -> 58/267`, and due `11 -> 10`, while runtime
+rows/spans/pixels stayed at the v726 row `16257/114798/633876`.
 
 Latest promoted BUILDING2 high payload-work note:
 `building2-high-frame100-inplace-v926` trims entry `100` / source frame `129`

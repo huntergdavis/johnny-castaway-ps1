@@ -3,9 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-15 (`main` after `building2-high-setupseg86-242-v979`; all 63 scenes remain
+**Last updated:** 2026-05-15 (`main` after `walkstuf1-low-setupseg238-388-v989`; all 63 scenes remain
 validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2481%` over target / `99.7560%` target speed).
+battle card is `+0.2325%` over target / `99.7709%` target speed).
 
 ## Overall
 
@@ -286,21 +286,22 @@ the same-speed no-shift payload lane through frame `286`, keeping
 while dropping active payload `855284 -> 810226`. The JOHNNY1 local-LZ payload
 swing now compresses entries `1` and `50` in both high/low packs, cutting
 active payload `316608 -> 112093` bytes and moving both tides from
-`1973/1945` to `1948/1945`. WALKSTUF1 low now adds the `209..225`
-retained-read row, keeping scene/loop flat at `1773/1481` while improving
-target `1428 -> 1431`, blocking `78 -> 72`, reads/read time `61/279 -> 58/267`,
-and due `11 -> 10`. BUILDING4 low now carries the v971 local-LZ entry270
+`1973/1945` to `1948/1945`. WALKSTUF1 low now primes relative sectors
+`238..388` during setup, improving active loop/target `1481/1431 -> 1469/1447`,
+overrun `50 -> 22`, blocking/refill `72/27 -> 34/12`, reads/read time
+`58/267 -> 28/145`, and due `10 -> 4`; setup rises `1773 -> 1820`, accepted
+under the `4%` material setup-regression gate. BUILDING4 low now carries the v971 local-LZ entry270
 follow-up on top of entry30/entry33, cutting active payload
 `807263 -> 799277` and improving to `2851/2815`, overrun `36`, and
 blocking/refill `42/35`. BUILDING2 high now primes relative sectors `86..242`
 during setup, improving active loop/target `1356/1312 -> 1349/1315`,
 overrun `44 -> 34`, blocking/refill `58/21 -> 48/12`, and reads/read time
 `58/259 -> 25/117` with due flat at `7`. The public battle card is now
-`+0.2481%` over target / `99.7560%` target speed; the raw signed optimization
-rollup is about `-0.5190%` / `100.5383%`.
+`+0.2325%` over target / `99.7709%` target speed; the raw signed optimization
+rollup is about `-0.5347%` / `100.5532%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.15`
-public over-target points and added about `12.66` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.17`
+public over-target points and added about `12.67` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -412,13 +413,13 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2481%` / `99.7560%` with `119` green and `7` yellow rows;
+  The public battle card is `+0.2325%` / `99.7709%` with `119` green and `7` yellow rows;
   BUILDING2 high currently measures `1349/1315`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
-  `16859/129919/731016` plus active payload `860009`, WALKSTUF1 low is `1477/1432` with loop
-  reads `58`, rows/spans/pixels `16257/114798/633876`, and active payload
+  `16859/129919/731016` plus active payload `860009`, WALKSTUF1 low is `1469/1447` with loop
+  reads `28`, rows/spans/pixels `16257/114798/633876`, and active payload
   `790322`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, JOHNNY1 high/low are

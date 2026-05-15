@@ -203,10 +203,10 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2481%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7560%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T13:24:37` |
-| Stats version | mixed across rows; latest refreshed row is `building2-high-setupseg86-242-v979`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2325%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7709%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-15T13:49:54` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-setupseg238-388-v989`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -216,13 +216,13 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Current W1 payload/speed track: `walkstuf1-low-rg209-225-v935`
-adds the low-tide `209..225` retained-read row after the v934 fresh control.
-Low stays scene/loop flat at `1773/1481`, improves target `1428 -> 1431`,
-overrun `53 -> 50`, blocking `78 -> 72`, loop reads/read time
-`61/279 -> 58/267`, and due `11 -> 10`. Runtime rows/spans/pixels stay at
-`16257/114798/633876`. The no-shift lane still provides the active payload drop
-`879801 -> 790208`.
+Current W1 payload/speed track: `walkstuf1-low-setupseg238-388-v989`
+primes the low-tide relative sector range `238..388` during setup after the
+v935 retained-read baseline. Low improves active loop/target
+`1481/1431 -> 1469/1447`, overrun `50 -> 22`, blocking/refill
+`72/27 -> 34/12`, loop reads/read time `58/267 -> 28/145`, and due
+`10 -> 4`. The setup trade is explicit: scene/setup cost rises
+`1773 -> 1820` and setup bytes `421428 -> 728628` inside the material gate.
 
 Current B2-high speed track: `building2-high-setupseg86-242-v979` primes
 relative sectors `86..242` during setup. Against the fresh current control it
@@ -467,6 +467,11 @@ v860/v861/v862/v863 frame89/frame98/frame27/frame101 trims keep those metrics ex
 and adds the low-tide `209..225` retained-read row, keeping scene/loop flat at
 `1773/1481` while improving target `1428 -> 1431`, overrun `53 -> 50`,
 blocking `78 -> 72`, reads/read time `61/279 -> 58/267`, and due `11 -> 10`.
+`walkstuf1-low-setupseg238-388-v989` then moves the dense low-tide late sector
+range into setup residency, improving active loop/target to `1469/1447`,
+overrun `22`, blocking/refill/due `34/12/4`, and loop reads/read time
+`28/145`; larger `238..404` and `238..422` probes crossed the clean-pressure
+cliff and disabled prefetch.
 
 Latest rejected W1 note: `walkstuf1-low-midright-ac-offscreen-v683` isolated
 frame `86` from the old `85..92` mid-right miss. It removed only `319` pixels
@@ -520,9 +525,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building2-high-setupseg86-242-v979`,
+  refreshed rows use `walkstuf1-low-setupseg238-388-v989`,
+  `building2-high-setupseg86-242-v979`,
   `building4-low-local-lz-entry270-v971`,
-  `walkstuf1-low-rg209-225-v935`,
   `johnny1-local-lz-v932`,
   `walkstuf1-high-frame139-inplace-v927`,
   `building2-high-frame100-inplace-v926`,
@@ -2544,15 +2549,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T10:57:15</td>
-      <td>walkstuf1-low-rg209-225-v935</td>
-      <td>+3.5%</td>
-      <td class="spd-yellow">96.6%</td>
-      <td>1481/1431</td>
-      <td>72</td>
-      <td>27</td>
-      <td>10</td>
-      <td>low-tide 209..225 retained-read row against fresh current control; scene/loop stay flat at 1773/1481, target improves 1428 -&gt; 1431, overrun 53 -&gt; 50, blocking 78 -&gt; 72, reads/read time 61/279 -&gt; 58/267, and due 11 -&gt; 10 with fixed pack LBA/sectors and PS-EXE bucket.</td>
+      <td>2026-05-15T13:49:54</td>
+      <td>walkstuf1-low-setupseg238-388-v989</td>
+      <td>+1.5%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>1469/1447</td>
+      <td>34</td>
+      <td>12</td>
+      <td>4</td>
+      <td>scene-local setup segment primes relative sectors 238..388 for WALKSTUF1 low; against v935 it improves active loop/target 1481/1431 -&gt; 1469/1447, overrun 50 -&gt; 22, blocking/refill 72/27 -&gt; 34/12, reads/read time 58/267 -&gt; 28/145, and due 10 -&gt; 4; setup cost rises scene 1773 -&gt; 1820 and setup bytes 421428 -&gt; 728628 inside the 4% material gate; 238..404 and 238..422 cross the clean-pressure cliff and disable prefetch, while 238..396, 232..388, and two-segment variants were safe but slower.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>

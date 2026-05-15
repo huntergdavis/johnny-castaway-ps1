@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2481%`
-exact public over target / `99.7560%` exact public target speed); the raw
-signed optimization matrix is about `-0.5190%` / `100.5383%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2325%`
+exact public over target / `99.7709%` exact public target speed); the raw
+signed optimization matrix is about `-0.5347%` / `100.5532%`.
 
 The latest WALKSTUF1 high scalar retained-read closure tested the remaining
 shared append rows after the `427..443` CD-work baseline. Some candidates were
@@ -322,12 +322,12 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.
 
-The latest WALKSTUF1 low baseline carries the low-tide-only `394..410`
-retained-read group plus the v859 fixed-sector speed win, then extends the
-same no-shift payload lane through `walkstuf1-low-frame107-inplace-v876`.
-Low now measures `1477/1432`, overrun `45`, blocking/refill/due `65/20/11`,
-and loop reads/read time `58/259`, while active payload drops
-`879801 -> 790322` without moving pack offsets, LBA/sectors, or PS-EXE size.
+The latest WALKSTUF1 low baseline primes relative sectors `238..388` during
+setup on top of the no-shift payload lane. Low now measures `1469/1447`,
+overrun `22`, blocking/refill/due `34/12/4`, and loop reads/read time
+`28/145`; setup rises `1773 -> 1820` and setup bytes `421428 -> 728628`,
+accepted under the 4% material setup-regression gate while pack offsets,
+LBA/sectors, and PS-EXE size stay fixed.
 
 The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
@@ -957,7 +957,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2481% over target / 99.7560% target speed, with several
+  public average is now +0.2325% over target / 99.7709% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
