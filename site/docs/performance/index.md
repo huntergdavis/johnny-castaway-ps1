@@ -324,10 +324,10 @@ removal rather than another hand-authored scalar append.
 
 The latest WALKSTUF1 low baseline carries the low-tide-only `394..410`
 retained-read group plus the v859 fixed-sector speed win, then extends the
-same no-shift payload lane through `walkstuf1-low-frame97-inplace-v866`.
+same no-shift payload lane through `walkstuf1-low-frame99-inplace-v867`.
 Low now measures `1477/1432`, overrun `45`, blocking/refill/due `65/20/11`,
 and loop reads/read time `58/259`, while active payload drops
-`879801 -> 791597` without moving pack offsets, LBA/sectors, or PS-EXE size.
+`879801 -> 791431` without moving pack offsets, LBA/sectors, or PS-EXE size.
 
 The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
@@ -934,7 +934,7 @@ Next plausible wins, in priority order:
    repeatedly shifted cadence instead of safely removing work. The latest
    WALKSTUF1 low v747..v864 pass keeps the row exact-flat except for the v859
    one-VBlank target/overrun win while shrinking the no-shift frame list
-   through frame `97` in-place (`879801 -> 791597` active payload), and v760
+   through frame `99` in-place (`879801 -> 791431` active payload), and v760
    restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low
    now has a safe no-shift payload lane but still needs another sector/read
    timing conversion. The

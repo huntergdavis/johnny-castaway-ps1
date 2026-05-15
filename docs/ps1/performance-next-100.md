@@ -111,21 +111,21 @@ Close frame55 for now; size-only tail removals are not automatically
 cadence-neutral once they alter frame deadlines/read ownership.
 
 Latest promoted WALKSTUF1 low payload/speed baseline:
-v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866
+v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866/v867
 kept the current timing profile exact-flat through v855, then v859 converts a
-fixed-sector shrink into a small speed win and v860/v861/v862/v863/v864/v865/v866 stay exact-flat while shrinking frames `51`, `49`,
+fixed-sector shrink into a small speed win and v860/v861/v862/v863/v864/v865/v866/v867 stay exact-flat while shrinking frames `51`, `49`,
 `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`,
 `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`,
 `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, `76`, `77`, `130`,
-`135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, and `97` in-place, preserving every payload
+`135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, and `99` in-place, preserving every payload
 offset and the `1535263` byte pack footprint. Active payload drops
-`879801 -> 791597`; the latest v866 frame `97` / source frame `179` entry
-shrinks `4825 -> 4658` bytes and sector coverage stays `3 -> 3`.
+`879801 -> 791431`; the latest v867 frame `99` / source frame `186` entry
+shrinks `4766 -> 4600` bytes and sector coverage stays `4 -> 4`.
 Scene/loop remain `1769/1477`, target improves `1431 -> 1432`, overrun
 improves `46 -> 45`, blocking/refill move `64/20 -> 65/20`, loop reads stay
 `58`, loop read VBlanks improve `266 -> 259`, and due misses stay `11`.
 Treat v859 as the first speed-bearing fixed-sector payload win after the
-v747..v855 same-speed lane and v866 as the current same-speed payload baseline; remaining W1-low speed conversion likely needs
+v747..v855 same-speed lane and v867 as the current same-speed payload baseline; remaining W1-low speed conversion likely needs
 more fixed-sector exact-flat/speed probes, generated deadline/read ownership,
 or a pack/data-shape change.
 
