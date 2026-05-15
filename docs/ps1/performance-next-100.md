@@ -111,6 +111,11 @@ regressed scene/loop/target `1764/1476/1434 -> 1780/1492/1422`, overrun
 `16 -> 18`, with loop reads still `63`. The pack was restored and rebuilt.
 Close frame55 for now; size-only tail removals are not automatically
 cadence-neutral once they alter frame deadlines/read ownership.
+The v885 frame139/source247 follow-up is also closed on the current v884
+baseline: it preserved sector coverage `3 -> 3` and only cut active payload
+`860009 -> 859666`, but both strict attempts exited `137` before `JCPERF2`.
+Do not retry remaining W1-high preserve-offset payload trims without a full
+correctness summary.
 
 Latest promoted WALKSTUF1 low payload/speed baseline:
 v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866/v867/v868/v869/v870/v871/v872/v873/v874/v875/v876
