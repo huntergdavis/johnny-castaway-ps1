@@ -103,12 +103,13 @@ sectors. The v441 pass improves the current high row from scene `1603` to
 WALKSTUF1 high/low, and VISITOR3 low canaries stay flat. The v664 follow-up
 clips late offscreen draw spans for frames `168..177`, v698 extends the safe
 same-speed subset to frames `94..104`, v700/v701/v702/v703 add boundary frames
-`92`, `91`, `90`, and `89`, and v877/v879/v880 trim entries `172` / source
-frame `231`, `171` / source frame `228`, and `96` / source frame `119` in place
-with preserved offsets. All stay exact-flat at `1351/1311`, overrun `40`,
-blocking/refill `54/18`, reads/read time `58/257`, and due `7`, while dropping
-runtime frame rows/spans/pixels from `18144/110717/468636 -> 18030/105645/446246`
-and active payload `674798 -> 672026`.
+`92`, `91`, `90`, and `89`, and v877/v879/v880/v887/v888/v889/v890/v891/v892/v896/v914/v926
+trim entries `172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, `169`,
+`173`, and `100` in place with preserved offsets. All stay exact-flat at
+`1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
+and due `7`, while dropping runtime frame rows/spans/pixels from
+`18144/110717/468636 -> 18030/105645/446246` and active payload
+`674798 -> 669408`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row and v660 offscreen low-tide draw-span clip, then trims dead draw-tail
