@@ -1576,7 +1576,11 @@ static void fgRuntimeReset(void)
     gFgRuntime.packCdFileValid = 0;
     fgFreeEntryTable(&gFgRuntime.entryTable);
     if (gFgRuntime.soundEvents != NULL) {
-        free(gFgRuntime.soundEvents);
+        /* TRANSIENT region — memFree decrements the balance counter; the
+         * actual bytes get reclaimed by the memSceneReset call above. The
+         * dangling pointer in gFgRuntime.soundEvents is cleared just below
+         * by the memset(0). */
+        memFree(MEM_REGION_TRANSIENT, gFgRuntime.soundEvents);
         gFgRuntime.soundEvents = NULL;
     }
     memset(&gFgRuntime, 0, sizeof(gFgRuntime));
@@ -1606,19 +1610,21 @@ static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *head
     if (!data)
         return 0;
 
-    *outEvents = (struct TFgPilotSoundEvent *)malloc(
-        (size_t)header->soundEventCount * sizeof(struct TFgPilotSoundEvent));
-    if (*outEvents == NULL) {
-        free(data);
-        return 0;
-    }
+    /* MEM_REGION_RATIONALE: per-scene sound-event table. Freed wholesale
+     * by memSceneReset at the next fgRuntimeReset. INIT_FULL_WRITE — the
+     * loop below populates every entry. */
+    *outEvents = (struct TFgPilotSoundEvent *)memAlloc(
+        MEM_REGION_TRANSIENT,
+        (size_t)header->soundEventCount * sizeof(struct TFgPilotSoundEvent),
+        "fgPilotSoundEvents");
+    /* memAlloc never returns NULL — halts on exhaustion. No NULL check needed. */
 
     for (i = 0; i < header->soundEventCount; i++) {
         (*outEvents)[i].sourceFrame = fgReadU16(data + ((uint32)i * 4u));
         (*outEvents)[i].sampleId    = fgReadU16(data + ((uint32)i * 4u) + 2u);
     }
     *outCount = header->soundEventCount;
-    free(data);
+    free(data);  /* `data` is from ps1_streamRead — still libc until that path migrates */
     return 1;
 }
 
