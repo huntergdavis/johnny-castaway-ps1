@@ -199,10 +199,10 @@ target-speed points, leaving BUILDING4 low yellow at `98.70%` with `37`
 VBlanks of remaining gap.
 
 Latest promoted BUILDING4 low work-volume baseline: v746/v806/v807/v808/v811/
-v813/v814/v815/v816/v827 keep the v652 timing profile exact-flat while
+v813/v814/v815/v816/v827/v893 keep the v652 timing profile exact-flat while
 shrinking frames `291`, `34`, `31`, `290`, `32`, `35`, `36`, `37`, `288`,
-`287`, `39`, and `286` in-place instead of physically moving downstream
-entries. Active payload drops `855284 -> 810226`; scene/loop/target remain
+`287`, `39`, `286`, and `292` in-place instead of physically moving downstream
+entries. Active payload drops `855284 -> 809792`; scene/loop/target remain
 `3128/2853/2816`, blocking/refill remain `40/34`, loop reads/read VBlanks stay
 `30/215`, and due misses stay `1`. Treat this as a safe no-shift payload lane,
 not a speed win; green conversion now needs generated deadline/static-upload
