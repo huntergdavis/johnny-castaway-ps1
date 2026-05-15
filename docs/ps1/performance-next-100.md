@@ -657,13 +657,13 @@ target-speed win. The closed tail rows are `303..319`, `155..171`, `91..107`,
 `405..421`, and `378..394`; `405..421` remains the best near-miss because it
 lowered scene/loop by one but cost one blocking/refill VBlank.
 
-Latest promoted WALKSTUF1 high work-volume baseline: v731/v732/v733/v734/v830/v831/v832/v833
+Latest promoted WALKSTUF1 high work-volume baseline: v731/v732/v733/v734/v830/v831/v832/v833/v834
 continue the safe singleton offscreen lane after the v654 late-tail clip,
-adding frames `55`, `138`, `51`, `49`, `47`, `45`, `43`, and `56` while preserving file size,
+adding frames `55`, `138`, `51`, `49`, `47`, `45`, `43`, `56`, and `57` while preserving file size,
 pack LBA/sectors, and the PS-EXE bucket. Timing/CD stay at scene `1764`,
 active loop/target `1476/1434`, overrun `42`, blocking/refill `81/23`, reads
 `63`, and due `16`; runtime rows/spans/pixels now drop `17296/134136/776856 ->
-16924/130648/737458`. This is not a speed win, but it is the current
+16863/130147/733951`. This is not a speed win, but it is the current
 WALKSTUF1 high work-volume baseline before generated deadline/upload work.
 
 Latest rejected WALKSTUF1 high scalar-closure batch: v599-v608 tested the
