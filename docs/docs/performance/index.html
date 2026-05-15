@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.12; built 2026-05-14" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.12; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4595 words
+          ~18 min read · 4584 words
         </p>
 
       <hr class="rule" />
@@ -452,11 +452,12 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.</p>
 
-<p>The latest WALKSTUF1 low promotion adds the low-tide-only <code class="language-plaintext highlighter-rouge">394..410</code> retained
-read group after the post-prepare window-refill sweep closed. It improves low
-to <code class="language-plaintext highlighter-rouge">1477/1431</code>, overrun <code class="language-plaintext highlighter-rouge">46</code>, and loop reads/read time <code class="language-plaintext highlighter-rouge">58/266</code>, while
-blocking/refill/due stay <code class="language-plaintext highlighter-rouge">64/20/11</code> and pack layout plus PS-EXE size remain
-fixed.</p>
+<p>The latest WALKSTUF1 low baseline carries the low-tide-only <code class="language-plaintext highlighter-rouge">394..410</code>
+retained-read group plus the v859 fixed-sector speed win, then extends the
+same no-shift payload lane through <code class="language-plaintext highlighter-rouge">walkstuf1-low-frame93-inplace-v864</code>.
+Low now measures <code class="language-plaintext highlighter-rouge">1477/1432</code>, overrun <code class="language-plaintext highlighter-rouge">45</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">65/20/11</code>,
+and loop reads/read time <code class="language-plaintext highlighter-rouge">58/259</code>, while active payload drops
+<code class="language-plaintext highlighter-rouge">879801 -&gt; 791931</code> without moving pack offsets, LBA/sectors, or PS-EXE size.</p>
 
 <p>The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
@@ -1061,10 +1062,12 @@ hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
 VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
 where hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
-WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791 pass keeps the row exact-flat while
-shrinking frames <code class="language-plaintext highlighter-rouge">51</code>, <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">61</code>, <code class="language-plaintext highlighter-rouge">62</code>, <code class="language-plaintext highlighter-rouge">58</code>, <code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">37</code>, <code class="language-plaintext highlighter-rouge">35</code>, <code class="language-plaintext highlighter-rouge">43</code>, <code class="language-plaintext highlighter-rouge">41</code>, <code class="language-plaintext highlighter-rouge">57</code>, <code class="language-plaintext highlighter-rouge">33</code>, <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">68</code>, <code class="language-plaintext highlighter-rouge">69</code>, <code class="language-plaintext highlighter-rouge">32</code>, <code class="language-plaintext highlighter-rouge">133</code>, <code class="language-plaintext highlighter-rouge">5</code>, <code class="language-plaintext highlighter-rouge">141</code>, <code class="language-plaintext highlighter-rouge">70</code>, <code class="language-plaintext highlighter-rouge">30</code>, <code class="language-plaintext highlighter-rouge">6</code>, <code class="language-plaintext highlighter-rouge">71</code>, <code class="language-plaintext highlighter-rouge">72</code>, <code class="language-plaintext highlighter-rouge">142</code>, <code class="language-plaintext highlighter-rouge">73</code>, <code class="language-plaintext highlighter-rouge">131</code>, <code class="language-plaintext highlighter-rouge">74</code>, <code class="language-plaintext highlighter-rouge">19</code>, <code class="language-plaintext highlighter-rouge">28</code>, <code class="language-plaintext highlighter-rouge">138</code>, <code class="language-plaintext highlighter-rouge">145</code>, <code class="language-plaintext highlighter-rouge">75</code>, and <code class="language-plaintext highlighter-rouge">76</code> in-place (<code class="language-plaintext highlighter-rouge">879801 -&gt; 801103</code>
-active payload), and v760 restores the bounded CD fast-poll runtime to <code class="language-plaintext highlighter-rouge">60/272</code> read time, so W1-low now has a safe
-no-shift payload lane but still needs a sector/read timing conversion. The
+WALKSTUF1 low v747..v864 pass keeps the row exact-flat except for the v859
+one-VBlank target/overrun win while shrinking the no-shift frame list
+through frame <code class="language-plaintext highlighter-rouge">93</code> in-place (<code class="language-plaintext highlighter-rouge">879801 -&gt; 791931</code> active payload), and v760
+restores the bounded CD fast-poll runtime to <code class="language-plaintext highlighter-rouge">60/272</code> read time, so W1-low
+now has a safe no-shift payload lane but still needs another sector/read
+timing conversion. The
 BUILDING4 low v387 pass closes the local <code class="language-plaintext highlighter-rouge">178..202</code> append group and
 <code class="language-plaintext highlighter-rouge">40/48 KiB</code> stream-window growth: reads fell, but visible blocking and loop
 overrun rose sharply. The newer v746 in-place frame291 shrink proves

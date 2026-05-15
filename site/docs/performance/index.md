@@ -322,11 +322,12 @@ target, or refill debt. The next high-side attempt should use generated
 deadline ownership, pack-side byte/phase reduction, or upload/restore work
 removal rather than another hand-authored scalar append.
 
-The latest WALKSTUF1 low promotion adds the low-tide-only `394..410` retained
-read group after the post-prepare window-refill sweep closed. It improves low
-to `1477/1431`, overrun `46`, and loop reads/read time `58/266`, while
-blocking/refill/due stay `64/20/11` and pack layout plus PS-EXE size remain
-fixed.
+The latest WALKSTUF1 low baseline carries the low-tide-only `394..410`
+retained-read group plus the v859 fixed-sector speed win, then extends the
+same no-shift payload lane through `walkstuf1-low-frame93-inplace-v864`.
+Low now measures `1477/1432`, overrun `45`, blocking/refill/due `65/20/11`,
+and loop reads/read time `58/259`, while active payload drops
+`879801 -> 791931` without moving pack offsets, LBA/sectors, or PS-EXE size.
 
 The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
@@ -931,10 +932,12 @@ Next plausible wins, in priority order:
    VISITOR5 low/high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6 high/low,
    where hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work. The latest
-   WALKSTUF1 low v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791 pass keeps the row exact-flat while
-   shrinking frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, and `76` in-place (`879801 -> 801103`
-   active payload), and v760 restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low now has a safe
-   no-shift payload lane but still needs a sector/read timing conversion. The
+   WALKSTUF1 low v747..v864 pass keeps the row exact-flat except for the v859
+   one-VBlank target/overrun win while shrinking the no-shift frame list
+   through frame `93` in-place (`879801 -> 791931` active payload), and v760
+   restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low
+   now has a safe no-shift payload lane but still needs another sector/read
+   timing conversion. The
    BUILDING4 low v387 pass closes the local `178..202` append group and
    `40/48 KiB` stream-window growth: reads fell, but visible blocking and loop
    overrun rose sharply. The newer v746 in-place frame291 shrink proves
