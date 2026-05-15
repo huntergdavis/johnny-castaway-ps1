@@ -44,8 +44,8 @@ fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
 blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1434`
 and `1477/1431`; the latest WALKSTUF1 low retained-read promotion saved two
-active-loop reads without moving layout, while high now also has the v882
-frame138 in-place payload shrink, dropping active payload to `860574` without
+active-loop reads without moving layout, while high now also has the v884
+frame135 in-place payload shrink, dropping active payload to `860009` without
 moving layout. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
 `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,

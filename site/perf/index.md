@@ -622,6 +622,7 @@ and this page.
   `building2-high-late-offscreen-v664`,
   `building2-low-trimtails-v739`,
   `building2-low-offscreen-drawclip-v660`,
+  `walkstuf1-high-frame135-inplace-v884`,
   `walkstuf1-high-frame138-inplace-v882`,
   `walkstuf1-high-frame43-inplace-v844`,
   `walkstuf1-high-frame45-inplace-v843`,
@@ -2461,15 +2462,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-15T02:38:19</td>
-      <td>walkstuf1-high-frame138-inplace-v882</td>
+      <td>2026-05-15T02:50:30</td>
+      <td>walkstuf1-high-frame135-inplace-v884</td>
       <td>+2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1476/1434</td>
       <td>81</td>
       <td>23</td>
       <td>16</td>
-      <td>same-speed preserve-offset frame138 payload shrink on top of v844; entry 138/source frame 246 shrinks 4716 -&gt; 3804 bytes, active payload 861486 -&gt; 860574, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
+      <td>same-speed preserve-offset frame135 payload shrink on top of v882; entry 135/source frame 243 shrinks 4415 -&gt; 3850 bytes, active payload 860574 -&gt; 860009, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1764/1476/1434, overrun 42, blocking/refill 81/23, reads/read time 63/276, and due 16</td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
