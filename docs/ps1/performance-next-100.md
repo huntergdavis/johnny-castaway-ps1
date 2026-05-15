@@ -72,7 +72,7 @@ in-place work-volume shrink, the v653/v654 WALKSTUF1 high/low
 late-tail work-volume clips, the v657 WALKSTUF1 high late-tail physical
 compaction, the v660 BUILDING2 low offscreen work-volume clip, the v664/v698/v700/v701/v702/v703
 BUILDING2 high offscreen work-volume clips, the v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696/v716/v717/v718/v719/v720/v721/v722/v723/v724/v725/v726
-WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861 WALKSTUF1 low frame51/frame49/frame47/frame61/frame62/frame58/frame45/frame37/frame35/frame43/frame41/frame57/frame33/frame67/frame68/frame69/frame32/frame133/frame5/frame141/frame70/frame30/frame6/frame71/frame72/frame142/frame73/frame131/frame74/frame19/frame28/frame138/frame145/frame75/frame76/frame77/frame130/frame135/frame1/frame88/frame90/frame3/frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98 in-place work-volume shrinks, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
+WALKSTUF1 low isolated mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63/frame133/frame132/frame5/frame141/frame131/frame19/frame6/frame142/frame130/frame145/frame129 offscreen work-volume clips, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862 WALKSTUF1 low frame51/frame49/frame47/frame61/frame62/frame58/frame45/frame37/frame35/frame43/frame41/frame57/frame33/frame67/frame68/frame69/frame32/frame133/frame5/frame141/frame70/frame30/frame6/frame71/frame72/frame142/frame73/frame131/frame74/frame19/frame28/frame138/frame145/frame75/frame76/frame77/frame130/frame135/frame1/frame88/frame90/frame3/frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27 in-place work-volume shrinks, the v760 bounded CD fast-poll recovery, plus the v705 WALKSTUF1 low late-tail subset physical compaction:
 `+0.2697%` public average over target / `99.7347%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
 `-0.4975%` / `100.5171%`. Since the compact full-matrix baseline was about
@@ -111,21 +111,21 @@ Close frame55 for now; size-only tail removals are not automatically
 cadence-neutral once they alter frame deadlines/read ownership.
 
 Latest promoted WALKSTUF1 low payload/speed baseline:
-v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861
+v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862
 kept the current timing profile exact-flat through v855, then v859 converts a
-fixed-sector shrink into a small speed win and v860/v861 stay exact-flat while shrinking frames `51`, `49`,
+fixed-sector shrink into a small speed win and v860/v861/v862 stay exact-flat while shrinking frames `51`, `49`,
 `47`, `61`, `62`, `58`, `45`, `37`, `35`, `43`, `41`, `57`, `33`, `67`,
 `68`, `69`, `32`, `133`, `5`, `141`, `70`, `30`, `6`, `71`, `72`, `142`,
 `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, `76`, `77`, `130`,
-`135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, and `98` in-place, preserving every payload
+`135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, and `27` in-place, preserving every payload
 offset and the `1535263` byte pack footprint. Active payload drops
-`879801 -> 792451`; the latest v861 frame `98` / source frame `183` entry
-shrinks `4985 -> 4779` bytes and sector coverage stays `3 -> 3`.
+`879801 -> 792266`; the latest v862 frame `27` / source frame `34` entry
+shrinks `7015 -> 6830` bytes and sector coverage stays `4 -> 4`.
 Scene/loop remain `1769/1477`, target improves `1431 -> 1432`, overrun
 improves `46 -> 45`, blocking/refill move `64/20 -> 65/20`, loop reads stay
 `58`, loop read VBlanks improve `266 -> 259`, and due misses stay `11`.
 Treat v859 as the first speed-bearing fixed-sector payload win after the
-v747..v855 same-speed lane and v861 as the current same-speed payload baseline; remaining W1-low speed conversion likely needs
+v747..v855 same-speed lane and v862 as the current same-speed payload baseline; remaining W1-low speed conversion likely needs
 more fixed-sector exact-flat/speed probes, generated deadline/read ownership,
 or a pack/data-shape change.
 
