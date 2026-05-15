@@ -25,7 +25,7 @@ It keeps all 63 scenes visually/audibly validated, preserves deterministic
 BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
 latest mainline promotes the BUILDING4 low offscreen draw-span clip, the
 BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
-draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 offscreen clips, the WALKSTUF1 low `394..410`
+draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the WALKSTUF1 low `394..410`
 retained-read win, and the WALKSTUF1 high late-tail physical compaction after
 the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
 retained-read wins. The
@@ -58,7 +58,7 @@ frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap reloca
 the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
 `218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
 BUILDING4 low offscreen draw-span clip, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 offscreen clips, plus the JOHNNY1 low refresh; the raw signed
+draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, plus the JOHNNY1 low refresh; the raw signed
 optimization matrix is `-0.4969%` / `100.5165%`.
 That is about `17.13` public over-target points removed and `12.63` public
 target-speed points added since the compact full-matrix baseline. MARY1/2/3
@@ -68,13 +68,13 @@ Castaway scene route, only an asset/reference naming source.
 The latest WALKSTUF1 high baseline extends the shared retained read groups to
 `201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`,
 then physically compacts the already-clipped late-tail payloads and clips the
-offscreen frame `55`, frame `138`, frame `51`, frame `49`, frame `47`, frame `45`, frame `43`, frame `56`, frame `57`, frame `136`, and frame `135` draw streams. It is still a same-speed row at `1764`,
+offscreen frame `55`, frame `138`, frame `51`, frame `49`, frame `47`, frame `45`, frame `43`, frame `56`, frame `57`, frame `136`, frame `135`, and frame `139` draw streams. It is still a same-speed row at `1764`,
 active loop/target `1476/1434`, overrun `42`, and blocking/refill `81/23`, but
 active payload drops `918345 -> 882007`, CD sectors `605 -> 586`, loop
 reads/read time `65/282 -> 63/276`, and runtime rows/spans/pixels
-`17296/134136/776856 -> 16859/130017/731230`; due misses stay `16`, pack
+`17296/134136/776856 -> 16859/129919/731016`; due misses stay `16`, pack
 LBA/sectors stay `24883/750`, and the PS-EXE bucket stays `217088`. The tail
-groups, physical compaction, and frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 clips are same-speed work reductions,
+groups, physical compaction, and frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 clips are same-speed work reductions,
 so they do not count as VBlank speed wins.
 
 The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group

@@ -260,9 +260,9 @@ BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
 improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
 prefetch overrun `34` while preserving fixed pack footprints and the `217088`
 byte PS-EXE bucket. WALKSTUF1 high/low now also carry late-tail work-volume
-clips, and high v836 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 offscreen clips. High stays exact-flat at
+clips, and high v837 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips. High stays exact-flat at
 `1476/1434` with blocking/refill `81/23`, reads/due `63/16`, while dropping
-runtime rows/spans/pixels to `16859/130017/731230`. Low v817 adds the
+runtime rows/spans/pixels to `16859/129919/731016`. Low v817 adds the
 `394..410` retained read group after the v653/v705/v802 work-volume chain and
 improves to `1477/1431` with blocking/refill `64/20`,
 loop reads/read VBlanks `58/266`, and due `11`, while still carrying the
@@ -270,9 +270,9 @@ late-tail draw reduction that dropped `39072` draw
 pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
 bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen clusters,
 also exact-flat, dropping runtime frame rows/spans/pixels from
-`17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 follow-up is
+`17298/135025/785455 -> 16272/116912/650623`. The W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 follow-up is
 also exact-flat and drops high runtime rows/spans/pixels
-`17296/134136/776856 -> 16859/130017/731230`. BUILDING4 low v827 now carries
+`17296/134136/776856 -> 16859/129919/731016`. BUILDING4 low v827 now carries
 the same-speed no-shift payload lane through frame `286`, keeping
 `3128/2853/2816`, blocking/refill `40/34`, read VBlanks `215`, and due `1`
 while dropping active payload `855284 -> 810226`. The public battle card is now
@@ -378,14 +378,14 @@ Milestone releases:
   `218..229` slack-8 retained-read ownership plus v739 draw-tail trimming, the
   VISITOR3 high `277..293` tail-pack repack, BUILDING4 low offscreen draw-span clipping, BUILDING2 low
   offscreen draw-span work-volume clipping, BUILDING2 high late/post-hot offscreen
-  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135 and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
+  work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion.
   The public battle card is `+0.2702%` / `99.7342%`;
   BUILDING2 high currently measures `1351/1311`, BUILDING2 low now measures
   `1339/1317` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246`, WALKSTUF1 high is
   `1476/1434` with loop reads `63` and rows/spans/pixels
-  `16859/130017/731230`, WALKSTUF1 low is `1477/1431` with loop
+  `16859/129919/731016`, WALKSTUF1 low is `1477/1431` with loop
   reads `58` and rows/spans/pixels `16257/114798/633876`, VISITOR3 high is
   `1063/1040` with blocking/read time `35`,
   VISITOR3 low is `1062/1040` with blocking/read time `42`, BUILDING4 low is
