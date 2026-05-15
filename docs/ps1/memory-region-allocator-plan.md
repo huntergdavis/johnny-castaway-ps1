@@ -379,6 +379,17 @@ A `_Static_assert(MEM_REGION_TOTAL <= 1228800)` (1.2 MB) gates the BSS
 buffer size against the linker map; any change to BSS that pushes `_end`
 also breaks this assert.
 
+**BSS-budget accounting note (A29):** the 1.2 MB region buffer is *new*
+BSS, but it consolidates allocations that currently live on the heap
+(walk clean buffer ~149 KB, frame buffers up to ~150 KB, prefetch
+buffer, stream scratch, stream window, surface pool, resource catalog
+structs, audio mixer state, etc.). Those bytes were always part of
+the runtime working set; they're now *visible to the linker* instead
+of allocated at runtime. Net delta-to-program-RAM is small (the new
+region's headroom over the current peak heap usage); the BSS jump
+overstates the actual memory growth. Don't try to reclaim "BSS budget"
+by shrinking the region — that's the same as evicting from RAM.
+
 ### Region splits (verified against `scene_analysis_output_2026-03-21.json`)
 
 ```
