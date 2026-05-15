@@ -9,6 +9,67 @@ re-review of v4). See:
 - [adding-new-scenes-memory.md](./adding-new-scenes-memory.md) — future-maintainer guide
 - [mem-region-decision-tree.md](./mem-region-decision-tree.md) — which region for a new allocation
 
+## What changed in v7
+
+Resolves all 2 blockers + 7 material + 3 hygiene items from red-team v5:
+
+- **`fgLoopGetLastScene` returns target scene during pick/setup**,
+  not just the last played one. Two-slot state: `lastTarget` (updated
+  at pick time, before pre-evict can fire) and `lastPlayed` (updated
+  after successful play). `fgLoopGetLastScene()` returns the target
+  if a pick is in progress, else the played slug. BSOD now blames the
+  scene that was *being* set up, not the previous one. (A22)
+- **`fgLoopApplyVariant` returns the effective scene name** —
+  signature changes from `void fgLoopApplyVariant(const char *)` to
+  `const char *fgLoopApplyVariant(const char *)`. Caller passes the
+  returned name to `memCachePreEvictForNextScene` so the metrics
+  lookup keys on the variant pack, not the base. (PR14)
+- **`ps1IsMainContext()` implementation specified** — `mem_region.c`
+  defines it inline using PSX COP0 reads:
+  ```c
+  static inline int ps1IsMainContext(void) {
+      uint32 cause, sr;
+      __asm__("mfc0 %0, $13" : "=r"(cause));  /* CAUSE */
+      __asm__("mfc0 %0, $12" : "=r"(sr));     /* SR */
+      /* No active exception (ExcCode == 0) AND interrupts enabled
+       * (SR.IEc == 1). True if neither holds when we're not in an
+       * ISR / exception handler. */
+      return ((cause & 0x7C) == 0) && (sr & 0x1);
+  }
+  ```
+  Bit patterns verified against the PSX programmer's manual. (P17)
+- **PsyQ toolchain compatibility for `-Wglobal-constructors`**
+  verified — PsnoobSDK's GCC 12+ supports it. Fallback if a future
+  toolchain doesn't: `nm jcreborn.elf | grep -E "_init|__init"`
+  returns no entries in CI. (P18)
+- **`MEM_REGION_RATIONALE` enforcement uses a Python script**, not
+  bash grep. Handles macros, multi-line `memAlloc` calls, same-line
+  comments, and macro wrappers (forbidden — see below). Script:
+  `scripts/check-mem-region-rationale.py`, ~30 LOC. (S14)
+- **Pre-Phase-1 gates re-categorized:** items requiring Phase 1
+  artifacts moved to "Phase 1 milestones" section (pinned-set
+  math match, `-Werror=global-constructors` clean build). (S15)
+- **Holiday-variant decision tree split** into three lifetime cases
+  (resource blob → CACHE, per-scene scratch → TRANSIENT, long-lived
+  state → BOOT with a "design-smell" caveat). (M15)
+- **`MEM_REQUIRE` on `memFree` documented** — kept for symmetry;
+  the ~10-cycle overhead on a no-op `memFree(TRANSIENT)` is
+  negligible; documented in the perf table footnote. (PR15)
+- **`src/mem_region_extern.h` is the single source of truth for
+  forward decls** consumed by both `mem_region.c` (definition side)
+  and `ps1_debug.c` (caller side). Eliminates drift. (A23)
+- **Macros wrapping `memAlloc` are prohibited** — documented in the
+  decision tree and enforced by the Python script (any macro whose
+  expansion contains `memAlloc(` fails CI). (A24)
+- **`__builtin_unreachable()` after `while(1)` dropped** — GCC infers
+  non-returning, the annotation was redundant. (P19)
+- **Writing-burden of `MEM_REGION_RATIONALE` documented** in the
+  decision tree and contributing guide. (M16)
+- **Pin-count delta logging** at scene transitions in debug builds —
+  if `pinResource` and `unpinResource` calls don't balance between
+  scenes, a debug-only `JCMEM pin-delta scene=X delta=N` line surfaces
+  the leak before pre-evict has a chance to misreport it. (A25)
+
 ## What changed in v6
 
 Resolves all 3 blockers + 11 material + 4 hygiene items from red-team v4:
@@ -543,14 +604,15 @@ void memHalt(const char *scene, const char *reason) {
     if (graphicsIsInitialized()) {
         ps1Bsod(scene, reason, __builtin_return_address(0)
                                 ? "(caller)" : "(unknown)", 0);
-        __builtin_unreachable();        /* P16 — compiler hygiene */
+        __builtin_unreachable();        /* P16 — only kept here; the
+                                         * while(1) branch below doesn't
+                                         * need it (P19). */
     } else {
         /* Pre-graphics: use ps1DebugError (renders minimal text panel,
          * safe before graphicsInit completes) — depends on ps1DebugInit
          * having run first; boot sequence ensures it (A17). */
         ps1DebugError("%s: %s", scene ? scene : "(boot)", reason);
-        while (1) { /* halt forever */ }
-        __builtin_unreachable();
+        while (1) { /* halt forever — GCC infers non-returning */ }
     }
 }
 ```
@@ -804,14 +866,29 @@ does it for them.
     `MEM_DEV_BUILD=0` and ran the 63-scene rotation cleanly" — required
     for any PR touching scene data (S10).
 19. **Implement `fgLoopGetLastScene()`** in `src/jc_reborn.c`: returns
-    the slug of the most recently played scene (cached on each
-    successful scene-pick). Used by `memHalt` call sites between
-    scenes for diagnostic continuity (A18). Verified by grep that the
-    function does not currently exist before Phase 1.
+    the **target** scene if a pick is in progress (between
+    `fgLoopNextScene` and the end of `foregroundPilotPlay`), else
+    the **last successfully played** scene (A18, A22). Two-slot
+    internal state: `static const char *lastTarget` (set in
+    `fgLoopNextScene`), `static const char *lastPlayed` (set after
+    successful play). Used by `memHalt` for diagnostic continuity.
+    Verified by grep that the function does not currently exist
+    before Phase 1.
+19a. **Change `fgLoopApplyVariant` signature** (PR14):
+    `const char *fgLoopApplyVariant(const char *scene)` returning the
+    effective scene name (variant slug if a variant fires, original
+    slug otherwise). Caller passes the returned name into
+    `memCachePreEvictForNextScene`.
+19b. **Implement `ps1IsMainContext()`** (P17): inline COP0 read in
+    `mem_region.c` using `mfc0 $13` (CAUSE) and `mfc0 $12` (SR).
+    Returns 1 if no active exception and interrupts enabled. Bit
+    patterns per PSX programmer's manual.
 20. `MEM_REGION_RATIONALE: <one-liner>` comment required on every
-    `memAlloc` call site. CI grep gate:
-    `grep -B1 "memAlloc(" src/ | grep -c MEM_REGION_RATIONALE` must
-    equal `grep -c "memAlloc(" src/` (S12).
+    `memAlloc` call site. CI uses
+    `scripts/check-mem-region-rationale.py` (~30 LOC) — handles
+    multi-line `memAlloc` calls, same-line comments, and detects
+    macros whose body contains `memAlloc(` (such macros are
+    prohibited; see A24). (S12, S14, A24)
 21. CI count-match gate: `MEM_REGION_*` enum count in `mem_region.h`
     must equal occurrences in `mem-region-decision-tree.md` (M14).
 22. Build flag `JC_VERIFY_PACK_HASHES` defaults off in release config,
@@ -820,6 +897,15 @@ does it for them.
     PS1-build flag (A13 from v3, re-confirmed in v6).
 24. Phase 1 implementation checklist: `docs/ps1/mem-region-phase-1-checklist.md`
     lands in the same PR. Mirrors these steps as TODO items (M12).
+25. **New file `src/mem_region_extern.h`** holds forward declarations
+    consumed by `ps1_debug.c`. Single source of truth for cross-module
+    symbol signatures (A23). `mem_region.c` includes it for its own
+    definitions to match.
+26. **Pin-count delta logging** in debug builds: at every scene
+    transition, if `(currentPinCount - prevPinCount) != 0` after the
+    expected unpin path, emit `JCMEM pin-delta scene=X delta=N`.
+    Catches `pinResource`/`unpinResource` mismatches before they
+    cause pre-evict to misreport (A25). Compiled out in release.
 
 **Estimated effort:** ~3 weeks focused work. Roughly 800-1000 LOC of
 allocator + ~200 LOC of generator + 39 call-site touches + audit + the
@@ -920,8 +1006,11 @@ provably correct).
 
 Compared to libc malloc on PsyQ (~50-100 cycles per call), the hot path
 is a 3-7× win on BOOT/TRANSIENT and roughly break-even on CACHE.
-ISR-safety assert is unconditional in release (Pat P1-bis) and
-included in those numbers.
+`MEM_REQUIRE(ps1IsMainContext())` is unconditional in release (Pat
+P1-bis) on both `memAlloc` and `memFree` for API symmetry (PR15);
+the ~10-cycle overhead on a no-op `memFree(TRANSIENT)` is negligible
+in steady state (40 frees × scene × 10 cycles ≈ 400 cycles = 12 µs).
+Above numbers include the check.
 
 ### Pre-emptive CACHE eviction — caller-site after variant resolution (resolves PR7, PR11, PR12)
 
@@ -935,12 +1024,14 @@ v6 puts pre-emptive eviction in the caller, **after**
 used and the picker stays pure:
 
 ```c
-const char *loopScene = fgLoopNextScene(...);
-fgLoopApplyVariant(loopScene);               /* unchanged — may swap in variant */
-memCachePreEvictForNextScene(loopScene);     /* NEW — ~3-5 ms, in jc_reborn.c not picker */
-fgLoopWalkToScene(storyScene);                /* unchanged; ~1-2 sec mask */
+const char *loopScene    = fgLoopNextScene(...);
+const char *effectiveScene = fgLoopApplyVariant(loopScene);   /* signature change (PR14):
+                                                                 returns the effective
+                                                                 (variant or base) name */
+memCachePreEvictForNextScene(effectiveScene);                  /* keys metrics by variant */
+fgLoopWalkToScene(storyScene);                                  /* ~1-2 sec mask */
 /* ... */
-fgRuntimeReset();                              /* TRANSIENT only */
+fgRuntimeReset();                                               /* TRANSIENT only */
 ```
 
 `memCachePreEvictForNextScene(name)` consults
@@ -978,18 +1069,28 @@ Pre-implementation gates (must close before Phase 1):
 - [ ] Audit `ttm.c` opcode handlers for hidden allocations.
 - [ ] BIOS / PsyQ allocation audit: confirm padmgr + memcard footprint
       ≈ 60 KB, no runtime growth.
-- [ ] **Pinned-set math vs runtime: (A12)** instrument a debug PS1
-      build to log the actual pinned working set every scene (sum of
-      `pinResource`-tracked sizes). Compare against the value
-      `memVerifyAllScenesPinnedFitCache` computes. Equality required;
-      drift is a verifier bug that must be fixed before the no-fail
-      invariant is trustworthy.
+- [ ] ~~**Pinned-set math vs runtime: (A12)**~~ Moved to **Phase 1
+      milestones** below (S15): this gate requires the verifier
+      *and* the runtime instrumentation, both of which are Phase 1
+      work. Cannot be closed pre-Phase-1.
 - [ ] ~~**PSX printf is non-allocating: (P10)**~~ Dropped (A21):
       project-level malloc poison makes this a link-time check rather
       than a manual audit. If PsnoobSDK printf ever calls `malloc`,
       the link breaks. Manual confirmation no longer needed.
 - [ ] **No static initializers: (A13)** add `-Wglobal-constructors
       -Werror=global-constructors` to the PS1 build; clean baseline.
+      Toolchain compatibility verified (PsnoobSDK GCC 12+ supports
+      the flag; P18). Fallback if a future toolchain doesn't:
+      `nm jcreborn.elf | grep -E "_init|__init"` returns no entries
+      in CI.
+
+**Phase 1 milestones** (close *during* Phase 1, not before):
+
+- [ ] **Pinned-set math vs runtime (A12, moved from pre-gates):**
+      instrumented debug build's runtime pinned-size logging equals
+      the verifier's computed value across all 63 scenes + variants.
+- [ ] **`-Werror=global-constructors` baseline clean:** Phase 1's
+      first compile against the flag.
 
 End-to-end gates (before merge):
 

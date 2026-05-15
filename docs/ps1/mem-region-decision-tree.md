@@ -79,21 +79,49 @@ that outlive one function.
 
 ## Holiday variants
 
-If your allocation's lifetime is the same as the base scene it belongs
-to, **use the same region as the base scene** — no variant-specific
-handling needed. The allocator doesn't know or care about variants;
-the analyzer that generates `pack_header_metrics.h` enumerates every
-variant pack and sizes the regions to cover them all.
+Variant-specific allocations follow the same lifetime rules as base-
+scene allocations. Three cases (M15):
 
-If the allocation is **variant-specific** (e.g., a holiday-only sprite
-that's only loaded when the variant is active), treat it like any
-other resource blob — **CACHE** with `pinResource`/`unpinResource`
-during the variant's playback. It evicts when the variant isn't in use.
+- **Variant-specific resource blob** (e.g., a holiday-only BMP/TTM/SCR/ADS):
+  → **CACHE** with `pinResource`/`unpinResource` while the variant is
+  active. Evicts when not in use.
+- **Variant-specific per-scene scratch** (e.g., a holiday's per-frame
+  decode buffer): → **TRANSIENT**. Same as base-scene scratch; wiped at
+  `fgRuntimeReset`.
+- **Variant-specific long-lived state** (rare, design-smell): → **BOOT**
+  *only* if it genuinely lives the program's whole runtime, not just
+  while the variant is active. Usually means the resource should have
+  been CACHE'd instead — challenge the design before writing the alloc.
 
 If the variant changes *peak memory demands* (more concurrent threads,
 bigger BMPs, larger clean-rect), regenerate `pack_header_metrics.h`
 after adding the variant. See
 [adding-new-scenes-memory.md](./adding-new-scenes-memory.md).
+
+## Prohibitions
+
+- **No macros that expand to `memAlloc(...)`.** Each call site must be
+  textually a `memAlloc(REGION, size, tag)` call so the rationale
+  comment + CI gate work. Wrapping macros hide call sites from review
+  and trip the Python rationale gate.
+- **No conditional region choice.** A given allocation site must
+  always go to the same region. If you find yourself writing
+  `memAlloc(condition ? BOOT : TRANSIENT, ...)`, the design is wrong
+  — split into two sites or rethink the lifetime.
+
+## Process notes (M16)
+
+Adding a new `memAlloc` site requires:
+
+1. Pick the region from the tree above.
+2. Write a one-line `MEM_REGION_RATIONALE: ...` comment immediately
+   above the call (within 3 lines), explaining the lifetime choice.
+3. Annotate the call site with `INIT_ZEROED`, `INIT_FULL_WRITE`, or
+   `INIT_NONE` per the plan's allocation contract.
+
+This is ~2-3 minutes of work per site and is enforced by CI. Worth it
+— the alternative is a maintenance fog where five years from now no
+one remembers why your buffer is in BOOT instead of TRANSIENT.
 
 ## When none of these fit
 
