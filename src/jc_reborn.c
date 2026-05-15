@@ -1058,6 +1058,22 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             /* Force a synthetic BSOD after the first scene plays so we
              * can sanity-check the fatal-error UI. */
             ps1BootBsodAfterFirstScene = 1;
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-boot")) {
+            /* Plan v9 step 16: synthesize a BOOT-region memHalt to
+             * QA-verify the boot-time (pre-graphics) ps1DebugError
+             * panel. Fires immediately at boot. */
+            extern __attribute__((noreturn))
+                void memHalt(const char *, const char *);
+            memHalt("(bsod-ui-test)", "synthetic BOOT region halt");
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-cache")) {
+            /* Synthesize a CACHE-region halt mid-scene. Fires once
+             * graphics is up, routing through JC_BSOD. */
+            ps1BootBsodAfterFirstScene = 1;
+            /* Reuse the same after-first-scene trigger; the JC_BSOD
+             * message identifies the synthetic CACHE case. */
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-transient")) {
+            /* Synthesize a TRANSIENT-region halt. Same trigger pattern. */
+            ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
         } else if (!strcmp(tokens[i], "prefetch-off") || !strcmp(tokens[i], "no-prefetch")) {
