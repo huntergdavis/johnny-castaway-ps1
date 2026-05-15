@@ -204,18 +204,18 @@ Current battle-card rollup as of <time datetime="2026-05-14">2026-05-14</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T01:22:28` |
-| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame108-inplace-v874`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T01:30:59` |
+| Stats version | mixed across rows; latest refreshed row is `walkstuf1-low-frame109-inplace-v875`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
-Current W1 payload/speed track: `walkstuf1-low-frame108-inplace-v874`
-shrinks low entry `108` / source frame `216` in place after the v873 frame140
-trim, preserving all payload offsets while cutting that entry `4271 -> 4187`
+Current W1 payload/speed track: `walkstuf1-low-frame109-inplace-v875`
+shrinks low entry `109` / source frame `217` in place after the v874 frame108
+trim, preserving all payload offsets while cutting that entry `4365 -> 4292`
 bytes. Low repeats scene/loop/target at `1769/1477/1432`,
 overrun stays `45`, loop read time stays `259`, blocking/refill are `65/20`,
 due stays `11`, and runtime rows/spans/pixels stay at
 `16257/114798/633876`. The no-shift lane now provides the active payload drop
-`879801 -> 790454`.
+`879801 -> 790381`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -420,6 +420,8 @@ exact-flat while active payload drops again to `790629`.
 exact-flat while active payload drops again to `790538`.
 `walkstuf1-low-frame108-inplace-v874` extends it with frame `108`, keeping timing
 exact-flat while active payload drops again to `790454`.
+`walkstuf1-low-frame109-inplace-v875` extends it with frame `109`, keeping timing
+exact-flat while active payload drops again to `790381`.
 `walkstuf1-low-cd-fastpoll-v760` restores the post-release current baseline to
 `1478/1431`, blocking/refill `64/20`, loop reads/read time `60/272`, and due
 `11` while preserving the CD long-soak timeout fallback.
@@ -481,7 +483,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-low-frame108-inplace-v874`,
+  refreshed rows use `walkstuf1-low-frame109-inplace-v875`,
+  `walkstuf1-low-frame108-inplace-v874`,
   `walkstuf1-low-frame140-inplace-v873`,
   `walkstuf1-low-frame95-inplace-v872`,
   `walkstuf1-low-frame92-inplace-v871`,
@@ -2453,15 +2456,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T01:22:28</td>
-      <td>walkstuf1-low-frame108-inplace-v874</td>
+      <td>2026-05-15T01:30:59</td>
+      <td>walkstuf1-low-frame109-inplace-v875</td>
       <td>+3.1%</td>
       <td class="spd-yellow">96.9%</td>
       <td>1477/1432</td>
       <td>65</td>
       <td>20</td>
       <td>11</td>
-      <td>same-speed fixed-sector frame108 payload shrink on top of v873; entry 108/source frame 216 shrinks 4271 -&gt; 4187 bytes, active payload 790538 -&gt; 790454, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
+      <td>same-speed fixed-sector frame109 payload shrink on top of v874; entry 109/source frame 217 shrinks 4365 -&gt; 4292 bytes, active payload 790454 -&gt; 790381, file size/LBA/sectors/PS-EXE bucket stay fixed, scene/loop/target remain 1769/1477/1432, overrun 45, blocking/refill 65/20, reads/read time 58/259, and due 11.</td>
     </tr>
     <tr id="perf-walkstuf2-high">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf2-high"><code>walkstuf2</code></a></td>
