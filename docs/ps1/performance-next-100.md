@@ -157,16 +157,23 @@ generated deadline/read ownership. Continue with fixed-sector/non-empty
 exact-flat probes only if they are cheap, otherwise pivot to generated
 ownership or another under-99 scene.
 
-Latest rejected WALKSTUF1 low sector-boundary payload probe:
+Latest rejected WALKSTUF1 low sector-boundary payload probes:
 `walkstuf1-low-frame96-inplace-v850` tested entry `96` / source frame `176`
 after v849, shrinking `4649 -> 4491` bytes and active payload
 `794755 -> 794597` while changing modeled sector coverage `4 -> 3`.
 That late-cluster sector-boundary trim was phase-negative: scene/loop/target
 regressed `1769/1477/1431 -> 1775/1483/1431`, overrun `46 -> 52`, and
-blocking/refill `64/20 -> 71/25`, while reads/due stayed `58/11`. The pack
-was restored and rebuilt. Close frame96 on the v849 baseline; remaining
-W1-low no-shift trims should be non-sector exact-flat work-volume checks, not
-speed candidates, unless generated deadline/read ownership changes first.
+blocking/refill `64/20 -> 71/25`, while reads/due stayed `58/11`. After v855,
+`walkstuf1-low-frame39-inplace-v858` tested a larger early one-sector shrink:
+entry `39` / source frame `49` shrank `7835 -> 4724` bytes, active payload
+`793194 -> 790083`, and sector coverage `4 -> 3`, but regressed
+scene/loop/target `1769/1477/1431 -> 1783/1491/1427`, overrun `46 -> 64`,
+blocking/refill `64/20 -> 79/30`, and loop reads `58 -> 64`; due improved
+`11 -> 10`, but the visible timing regression dominated. Both packs were
+restored and rebuilt. Close frame96 and frame39 on their tested baselines;
+remaining W1-low no-shift trims should be fixed-sector exact-flat work-volume
+checks, not speed candidates, unless generated deadline/read ownership changes
+first.
 
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
