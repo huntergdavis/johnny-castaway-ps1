@@ -121,6 +121,15 @@ selected entry shrinks `8585 -> 2410`; scene/loop/target remain
 not a speed win; next BUILDING4 low attempts should target sector-changing
 no-shift shrinks or generated deadline/static-upload ownership.
 
+Latest rejected BUILDING4 low frame40 no-shift trim: v825 tried the largest
+remaining open sector-changing trim after the v816 work baseline. Frame `40`
+shrinks `8788 -> 7899` in place and models entry-sector coverage `5 -> 4`
+without moving payload offsets or changing file size, but the focused run was
+killed before `JCPERF2` after reaching frame `297/428`, so no correctness or
+speed metrics were promotable. Close frame40 with the other phase-sensitive B4
+low no-shift misses; only frame286 remains as a sector-changing trim probe, and
+actual green conversion should favor generated static/upload ownership.
+
 Latest rejected BUILDING4 high mirror pass: v715 applied the same
 preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted
 for low tide. The transform is structurally safe and trims the same host-side
