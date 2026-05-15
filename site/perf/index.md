@@ -204,8 +204,8 @@ Current battle-card rollup as of <time datetime="2026-05-15">2026-05-15</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2697%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7347%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T04:11:21` |
-| Stats version | mixed across rows; latest refreshed row is `building4-low-frame292-inplace-v893`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | `2026-05-15T04:25:14` |
+| Stats version | mixed across rows; latest refreshed row is `building4-low-frame426-inplace-v895`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=5` |
 
 Current W1 payload/speed track: `walkstuf1-low-frame107-inplace-v876`
@@ -494,7 +494,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building4-low-frame292-inplace-v893`,
+  refreshed rows use `building4-low-frame426-inplace-v895`,
+  `building4-low-frame292-inplace-v893`,
   `building2-high-frame168-inplace-v892`,
   `building2-high-frame99-inplace-v891`,
   `building2-high-frame174-inplace-v890`,
@@ -529,6 +530,7 @@ and this page.
   `walkstuf1-low-frame136-inplace-v847`,
   `walkstuf1-low-frame53-inplace-v846`,
   `walkstuf1-low-rg394-410-v817`,
+  `building4-low-frame426-inplace-v895`,
   `building4-low-frame292-inplace-v893`,
   `building4-low-frame286-inplace-v827`,
   `building4-low-frame39-inplace-v816`,
@@ -1174,15 +1176,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-15T04:11:21</td>
-      <td>building4-low-frame292-inplace-v893</td>
+      <td>2026-05-15T04:25:14</td>
+      <td>building4-low-frame426-inplace-v895</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2853/2816</td>
       <td>40</td>
       <td>34</td>
       <td>1</td>
-      <td>same-speed frame292 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v827 while cutting active payload 810226-&gt;809792; frame292 shrinks 3556-&gt;3122, entry sectors 3-&gt;3, scene/loop/target stay 3128/2853/2816, overrun 37, blocking/refill 40/34, read VBlanks 215, due 1</td>
+      <td>same-speed frame426 in-place entry-size shrink preserves offsets/LBA/EXE bucket on top of v893 while cutting active payload 809792-&gt;809364; frame426/source621 shrinks 616-&gt;188, entry sectors 1-&gt;1, scene/loop/target stay 3128/2853/2816, overrun 37, blocking/refill 40/34, read VBlanks 215, due 1</td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>
