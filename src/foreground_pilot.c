@@ -1190,14 +1190,14 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
 static void fgDropPressureCachesForCleanSnapshot(const char *sceneName,
                                                  uint32 cleanBytes)
 {
-    fgDropOptionalPrefetchBuffersForCleanSnapshot();
-    if (walkPilotCleanBufferAllocated()) {
-        printf("JCMEM walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
-               sceneName != NULL ? sceneName : "?",
-               (unsigned long)cleanBytes,
-               walkPilotCleanBufferBytes() / 1024UL);
-        walkPilotReleaseCleanWalkArea();
-    }
+    /* Plan v9 Phase 2 manifest item #6 — pressure-drop is no longer
+     * needed. Clean-rect snapshots allocate from MEM_REGION_TRANSIENT,
+     * which has its own dedicated 250 KB; there's no libc-heap
+     * pressure to drop to make room. Body neutered to a no-op so
+     * existing callers still compile; they can be deleted in a
+     * follow-up Phase 2 commit. */
+    (void)sceneName;
+    (void)cleanBytes;
 }
 
 static void fgTelemetryUpdate(void)
