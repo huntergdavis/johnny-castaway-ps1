@@ -488,14 +488,26 @@ static size_t cacheUsedInternal(void)
 
 void memCachePreEvictForNextScene(const char *effectiveSceneName)
 {
-    (void)effectiveSceneName;
+    (void)effectiveSceneName;  /* metric lookup elided — see comment below */
     MEM_REQUIRE(g_memInited);
     MEM_REQUIRE(ps1IsMainContext());
 
-    /* TODO(phase-1): consult pack_header_metrics.h for the next
-     * scene's cachePinnedWorstCase, subtract the current pinned
-     * working set, and evict unpinned resources until the delta
-     * fits. For the stub, this is a no-op. */
+    /* Pre-emptively shed unpinned LRU resources before the next
+     * scene starts allocating from CACHE. Runs in the already-paused
+     * transition window (after the scene pick, before walk-to-scene),
+     * so the eviction's ~3-5 ms scan doesn't block the first frame
+     * (per plan v9 PR7).
+     *
+     * Projected-demand lookup against kPackHeaderMetrics is currently
+     * disabled — the pack names in the metrics are "ADS:tag" format
+     * (e.g., "MARY.ADS:1") while the scene name passed here is the
+     * picker slug (e.g., "mary1"). A slug→pack-name resolver lives
+     * in story_data.h but isn't wired up yet. For now we trust
+     * checkMemoryBudget's existing pinned-bytes comparison — which
+     * is idempotent: if pinned bytes already fit the budget, the
+     * call is a near-no-op. */
+    extern void checkMemoryBudget(void);
+    checkMemoryBudget();
 }
 
 /* ---------------------------------------------------------------------
