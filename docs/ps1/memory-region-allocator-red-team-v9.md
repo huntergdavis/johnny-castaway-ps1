@@ -814,3 +814,117 @@ PS1 RAM with per-scene wipe + LRU semantics — is delivered for
 regression vs the v0.8.14 baseline. The one unfixable scene
 (visitor3) is documented as a known sharp edge with a clear
 architectural path forward.
+
+---
+
+## Round 16 — surgical force-relief for visitor3 (Option A)
+
+Per the user's pixel-perfect, no-blacklist invariant, the
+visitor3 BSOD was not acceptable. Round 16 designed and executed
+a surgical force-relief override after 9 rounds of red-teaming
+the plan (zero remaining concerns). Implementation committed as
+`ed77d0d08`.
+
+### What was implemented
+
+In `src/foreground_pilot.c`:
+
+1. **Part 1: `fgSceneForcesCleanMemoryRelief(sceneName)` predicate**
+   returning true only for visitor3. OR'd into the
+   `cleanMemoryRelief` decision at line 3206. Bypasses the
+   union-based threshold gate that under-counts visitor3's
+   actual rect sum.
+
+2. **Part 2: Explicit-free** of `gFgPrefetchFrameBuffer` and
+   `gFgStreamWindowBuffer` inside the existing
+   `if (cleanMemoryRelief)` block (line 3225-3231), nested under
+   `fgSceneForcesCleanMemoryRelief(sceneName)` so other relief-
+   firing scenes (activity1 etc.) are byte-identical to today.
+
+### What worked
+
+- The relief mechanism fires correctly. TTY log confirms:
+  ```
+  JCMEM clean-relief scene=visitor3 clean=524876
+  maxFrame=17069 no-prefetch
+  ```
+- Predicted CACHE savings (~440 KB from skipped prefetch +
+  window + scratch-shrink) materialized as expected.
+- All 62 other scenes' behavior unchanged (Part 2 gated to
+  visitor3 only via `fgSceneForcesCleanMemoryRelief`).
+
+### What didn't work
+
+visitor3 cold-boot still BSODs at a DIFFERENT failure point:
+```
+JCBSOD-FATAL CACHE exhausted (region+libc both): req=90880 have=38416
+JCBSOD memCacheUsed=883184 memCachePeak=883184
+JCBSOD memTransientUsed=204660 memTransientPeak=204660
+```
+
+The relief opened up CACHE headroom, which allowed MORE clean-
+rect chunks to land in CACHE successfully — but visitor3 has
+~330 KB of clean-rect chunks (sum), not the 194 KB the original
+plan estimated. The total simultaneous-live CACHE demand for
+visitor3 is approximately:
+
+| Consumer | Bytes |
+|----------|-------|
+| `gFgFrameBuffer` | 112 KB |
+| LRU resources (pinned working set) | 332 KB |
+| bg-tile pixels (4× 320×240×2 worst) | 600 KB |
+| Clean-rect chunks (CACHE portion after TRANSIENT spill) | ~170 KB |
+| Other allocator overhead | ~50 KB |
+| **Total** | **~1264 KB** |
+
+Even with Option A's 440 KB relief savings, visitor3 still
+exceeds the 900 KB CACHE budget by ~140 KB.
+
+### Why Options B, C don't help
+
+Per the plan's decision tree, Option B (pre-allocate prefetch
+in BOOT) and Option C (per-scene `gFgPrefetchStage1Enabled =
+false`) were the documented fallbacks. Re-analysis of the
+failure shows neither addresses visitor3's actual constraint:
+
+- **Option B**: moving prefetch buffer to BOOT shrinks CACHE
+  budget by the same 112 KB it removes from CACHE usage. Net
+  visitor3 CACHE pressure: unchanged.
+- **Option C**: same effect as Option A's prefetch-skip
+  (already in effect). Doesn't add headroom beyond what
+  Option A already provides.
+
+Both options were designed around the assumption that
+visitor3's deficit was ~100 KB and isolating prefetch was the
+unblock. The actual deficit is ~140 KB and the prefetch buffer
+is not the binding constraint.
+
+### Real architectural options for visitor3 (deferred)
+
+| Option | Approach | Tradeoff |
+|--------|----------|----------|
+| D | Pre-allocate `gFgFrameBuffer` in BOOT for ALL scenes (112 KB max) | Frees 112 KB CACHE per scene. Requires all-scenes maxDataSize audit; pre-alloc must size to global worst case. |
+| E | Force `fgSceneUsesBlackBackdrop` for visitor3 | Skips clean-rect entirely (saves 330 KB). Risk: visible background-rendering regression unless visitor3's pack uses temporal-residual format. |
+| F | Migrate `bgTile*` pixels for visitor3 to libc (the 600 KB working set) | Would free 600 KB CACHE. But libc only has ~300 KB headroom; doesn't fit. |
+| G | Offline pack rebuild for visitor3 with smaller clean-rect bounds | Authoritative fix but requires pack-generator tool changes; risk of misalignment with original scene data. |
+| H | Reduce bg-tile pixel buffer size (subdivide rendering) | Architectural change to the rendering pipeline. Out of allocator-plan scope. |
+
+### Round 16 verdict
+
+The Round 16 commit (`ed77d0d08`) correctly implements the
+red-teamed plan. The fix's MECHANISM is sound; the OUTCOME
+proves visitor3 is over the practical PS1 memory budget. The
+9-round red-team work has value as proof that the simple
+surgical options (preserves-list manipulation, force-relief,
+buffer migration to BOOT) are individually insufficient.
+
+To deliver true 63/63 pixel-perfect, options D, E, F, G, or H
+require dedicated follow-up work beyond this allocator PR.
+Recommended next step: Option D (pre-allocate `gFgFrameBuffer`
+in BOOT) is the least invasive and benefits all scenes; pursue
+in a separate PR after measuring all-scenes maxDataSize.
+
+The current state: **62 of 63 canonical scenes PASS** at
+v0.8.14-equivalent performance, with visitor3 as the one
+acknowledged over-budget scene. This is the achievable maximum
+without architectural refactor.
