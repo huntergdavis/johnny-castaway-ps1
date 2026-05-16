@@ -819,6 +819,9 @@ uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t siz
     uint8_t *libcBuf = ps1_streamRead(filename, offset, size);
     if (libcBuf == NULL) return NULL;  /* CD-read failure; caller halts */
 
+    /* MEM_REGION_RATIONALE: resource data destined for the LRU
+     * cache (uncompressedData for BMP/SCR/TTM/ADS). See the function
+     * header comment for the libc→CACHE memcpy rationale. */
     uint8_t *cacheBuf = (uint8_t *)memAlloc(MEM_REGION_CACHE, size,
                                             "ps1_streamReadCache");
     memcpy(cacheBuf, libcBuf, size);

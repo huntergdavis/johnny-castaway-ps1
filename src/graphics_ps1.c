@@ -3643,6 +3643,8 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
         if (requiredBytes[i] == 0)
             goto fail;
+        /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
+         * 6 atomic slots; see comment block above the for loop). */
         gGrCleanRects[i].pixels = (uint16 *)memAlloc(MEM_REGION_TRANSIENT,
                                                      requiredBytes[i],
                                                      "grCleanRectPixels");
