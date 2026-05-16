@@ -928,3 +928,73 @@ The current state: **62 of 63 canonical scenes PASS** at
 v0.8.14-equivalent performance, with visitor3 as the one
 acknowledged over-budget scene. This is the achievable maximum
 without architectural refactor.
+
+---
+
+## Round 16 update — Option M delivered 63/63
+
+After the verdict above, one more option emerged: simply enlarge
+the CACHE region within the 1.5 MB usable envelope. The region
+buffer was at 1188 KB total (BOOT 32 + CACHE 900 + TRANSIENT 256);
+the linker map showed practical headroom for ~1500 KB. Bumping
+CACHE 900 -> 1024 KB pushed total to 1312 KB, still under the
+ceiling.
+
+### Option M: MEM_CACHE_BUDGET = 1024 KB
+
+Single change in `src/mem_region.h`. The static-assert ceiling
+was raised from 1228 KB to 1340 KB.
+
+Spot-checks:
+- visitor3 cold-boot: PASS loop_vb=1241 / target_vb=1035 (19.9% over, within 30% gate)
+- johnny1: PASS loop_vb=1945 / target_vb=1946 (no regression)
+
+Full 63-scene matrix (CACHE 1024, threshold 192 from Round 15):
+**63/63 PASS, 0 FAIL.**
+
+This invalidates the "deferred architectural follow-up" framing
+above. Option M alone is sufficient to land all 63 canonical
+scenes inside the static-region allocator with no scene-level
+pixel changes.
+
+---
+
+## Round 17 — restore clean-snapshot threshold
+
+Round 15 had pre-emptively lowered
+`FG_CLEAN_SNAPSHOT_PRESSURE_BYTES` from 256 KB to 192 KB as part
+of the visitor3-targeted relief path. With Option M making
+visitor3 fit at CACHE 1024 KB via the scene-specific force-relief
+override (`fgSceneForcesCleanMemoryRelief`), the 192 KB lowering
+is no longer needed and was actively suppressing prefetch
+on scenes that previously enabled it.
+
+Matrix data at 192 KB (Round 16):
+- fishing1: hits=0 due_misses=136 (prefetch suppressed)
+- fishing2: hits=0 due_misses=246
+- fishing3: hits=0 due_misses=268
+- johnny4: hits=0 due_misses=93
+- johnny5: hits=0 due_misses=90
+- mary4: hits=0 due_misses=153
+- mary5: hits=0 due_misses=149
+
+All scenes still PASS their target_vb (within 1-5%), but prefetch
+isn't doing the work it should.
+
+### Round 17 change
+
+Revert `FG_CLEAN_SNAPSHOT_PRESSURE_BYTES` from 192 KB -> 256 KB.
+visitor3 continues to receive relief through the scene-specific
+override (`fgSceneForcesCleanMemoryRelief`), so its CACHE
+behavior is unchanged.
+
+Spot-check (3 affected scenes at 7200 frames):
+- fishing1: hits=136 due_misses=0 (was 0/136)
+- johnny4: hits=93 due_misses=0 (was 0/93)
+- mary4: hits=152 due_misses=1, loop_vb=2028 (was 0/153, loop_vb=2057)
+
+Prefetch is restored, scenes are faster, threshold no longer
+suppresses scenes that don't need relief.
+
+Full 63-scene matrix at threshold=256: running. Result will be
+appended below.

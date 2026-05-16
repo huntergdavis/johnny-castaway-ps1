@@ -226,12 +226,14 @@ enum {
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 #define FG_LARGE_CLEAN_SNAPSHOT_BYTES (384UL * 1024UL)
-/* Lowered from 256 KB to 192 KB (Round 15): visitor3 has a
- * 194 KB clean snapshot (2x 97 KB rects) that exceeds the
- * region partition's contiguous space when the prefetch buffer
- * is held in CACHE. Dropping the prefetch buffer frees 112 KB
- * of CACHE, giving the second rect room to land. */
-#define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (192UL * 1024UL)
+/* Round 17: restored to 256 KB after Round 16 (CACHE 1024 KB)
+ * gave visitor3 enough headroom via force-relief override
+ * (fgSceneForcesCleanMemoryRelief). The 192 KB lowering from
+ * Round 15 was over-tight — it caused fishing1-3, johnny4-5,
+ * and mary4-5 to skip prefetch (hits=0 due_misses=N) without
+ * actually being needed for visitor3 (which uses the
+ * scene-specific force-relief path, not the threshold). */
+#define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (256UL * 1024UL)
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
 #define FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES (112UL * 1024UL)
