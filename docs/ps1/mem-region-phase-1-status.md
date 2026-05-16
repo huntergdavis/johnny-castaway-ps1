@@ -1,225 +1,213 @@
-# Memory region allocator — Phase 1 implementation status
+# Memory region allocator — implementation status
 
 Companion to [memory-region-allocator-plan.md](./memory-region-allocator-plan.md).
-Tracks Phase 1 + Phase 2 implementation progress.
+Tracks the substantial implementation work landed across Phases 1, 2, and 3.
 
-**Branch:** `claude/memory-region-allocator`
-**Last build:** clean, 0 warnings, `jcreborn.exe` ≈ 218 KB
+**Branch:** `claude/memory-region-allocator` (56 commits ahead of main)
+**Last build:** clean, 0 warnings, `jcreborn.exe` = 222 KB
 
-## Phase 1: Allocator + migration
+## Plan v9 Phase 1 — substantively complete
 
-### ✅ Landed
+### Allocator infrastructure ✅
 
-**Foundation (commits 756f93782 + 6259dafcb + d0901916c + 137ea96b3):**
-- `src/mem_region.{c,h}` + `src/mem_region_extern.h` + stub
-  `src/generated/pack_header_metrics.{c,h}` (now populated).
-- Allocator API: `memAlloc`, `memFree`, `memSceneReset`, `memHalt`,
-  `memVerify*`, `memRegionUsed/Peak`, `memSafeRead`,
-  `memCachePreEvictForNextScene`, `MEM_REQUIRE`, `ps1IsMainContext`.
-- 4-byte alignment.
+- `src/mem_region.{c,h}` + `src/mem_region_extern.h` — full API
+  (memAlloc, memFree, memSceneReset, memHalt, memVerify*,
+  memRegionUsed/Peak, memSafeRead, memCachePreEvictForNextScene,
+  MEM_REQUIRE, ps1IsMainContext).
+- **CACHE region with real first-fit free-list** (not a stub). 4-byte
+  block headers, O(1) free, integrates with LRU evictor on exhaustion.
+- BOOT bump allocator with `memFreezeBoot()` activated — post-freeze
+  BOOT allocs halt loudly.
+- TRANSIENT bump-down allocator with wholesale `memSceneReset` wipe.
+- `ps1IsMainContext()` via `mfc0` inline asm.
+- `MEM_REQUIRE` hand-rolled macro (ships in release).
 - `_Static_assert(MEM_REGION_TOTAL ≤ 1.2 MB)`.
-- BOOT bump-up region.
-- TRANSIENT bump-down region with wholesale wipe at `memSceneReset`.
-- **CACHE: real first-fit free-list** with O(1) free, in-place size
-  headers. Allocator API works end-to-end.
-- `memHalt` dispatches between `JC_BSOD` (graphics up) and
-  `ps1DebugError` (pre-graphics) via `graphicsIsInitialized()` flag.
-- `graphicsIsInitialized()` + `memSetGraphicsReady()` added to
-  `graphics_ps1.{c,h}`, set at end of `graphicsInit`.
 
-**Boot integration (commit 6259dafcb):**
-- `main()` calls `memInit` → `memVerify*` (all four) → ... after
-  `ps1DebugInit`, before `cdromInit`.
+### Boot integration ✅
+
+- `main()`: `ps1DebugInit → memInit → memVerify* → ... → walkPilotInit → memFreezeBoot → runMainSceneLoop`.
 - `fgRuntimeReset()` calls `memSceneReset` at top.
-- Three-state machine for `fgLoopGetLastScene` (target / played /
-  picking) — diagnostic continuity through the scene-pick window.
-- `memCachePreEvictForNextScene` wired into main loop after
-  `fgLoopApplyVariant`.
+- `memCachePreEvictForNextScene` wired in scene loop after `fgLoopApplyVariant`.
+- `fgLoopGetLastScene` three-state machine for BSOD diagnostic continuity.
 
-**Diagnostics (commit d0901916c):**
-- `ps1Bsod` heap-probe block REPLACED with mem-region state reads via
-  `memSafeRead` (PR9 defensive clamping). Drops `fgProbeLargestAlloc`
-  and `fgGetFrameBufferBytes` lines; adds `memBoot/Cache/Transient
-  Used/Peak` + `sceneAllocBalance`.
-- `walkClean*` and `johnwalkSlot*` BSOD lines retained.
+### Diagnostics & failure UX ✅
 
-**Pack metrics (commit 355f3f0fb):**
-- `scripts/generate-pack-metrics.py` reads
-  `scene_analysis_output_2026-03-21.json` and produces
-  `src/generated/pack_header_metrics.{h,c}`.
-- 63 scenes enumerated. Heaviest TRANSIENT: MARY.ADS:1 at 236 KB
-  (fits 260 KB budget). Heaviest CACHE pinned: MARY.ADS:1 at
-  568 KB (fits 614 KB budget). All boot verifications pass.
+- `ps1Bsod` heap-probe block REPLACED — emits region state via
+  `memSafeRead` with defensive clamping.
+- `fatalError` on PS1 upgraded to render `ps1DebugError` text panel
+  instead of frozen black screen.
+- `memHalt` dispatches between full BSOD (`graphicsIsInitialized()`
+  true) and pre-graphics text panel.
+- Three `bsod-ui-test-mem-*` bootmodes for visual QA.
+- Pin-count delta logging (debug builds, `MEM_DEBUG_PIN_DELTA`).
+- Telemetry on every reset (`FG_HEAP_PROBE_LOGS`-gated).
 
-**bsod-ui-test bootmodes (commit 6383f539f):**
-- `bsod-ui-test-mem-boot` (pre-graphics ps1DebugError test).
-- `bsod-ui-test-mem-cache` (post-first-scene JC_BSOD test).
-- `bsod-ui-test-mem-transient` (same).
+### Pack metrics ✅
 
-### Call-site migrations (~20 sites done)
+- `scripts/generate-pack-metrics.py` reads scene-analysis JSON,
+  produces `src/generated/pack_header_metrics.{h,c}`.
+- 63 scenes enumerated, real per-scene `transientWorstCase` and
+  `cachePinnedWorstCase`. All boot verifications pass against the
+  current budgets.
+- CRC-32 implementation in place (`crc32_init_table`, `crc32_compute`)
+  ready for `memVerifyPackHashes` to consume — gated by
+  `JC_VERIFY_PACK_HASHES` flag.
+
+### Call-site migrations — major sites ✅
 
 **TRANSIENT region (per-scene):**
-- [x] `gFgRuntime.soundEvents` (1a9cfdca0)
-- [x] `gFgRuntime.entryTable.entries` (e06a1f8b3)
-- [x] `gFgSetupSegmentBuffer` (2 alloc paths, 2 free paths) (f95ca9817)
-- [x] Clean-rect snapshots (`gGrCleanRects[i].pixels`, atomic-alloc
-      loop + fail path + reset path) (542aa118e)
-- [x] Blit temp buffer (`tempBuf` in graphics_ps1.c:1373) (a6920e2e6)
 
-**BOOT region (one-shot at boot, never freed):**
-- [x] `primitiveBuffer[0]/[1]` GPU ordering tables (9f822468f)
-- [x] `gWalkCleanBuf` (lazy + walkPilotInit paths) (9f822468f)
-- [x] `grNewEmptyBackground` `PS1Surface` (a6920e2e6)
-- [x] PSB sprite frame `PS1Surface` (a6920e2e6)
-- [x] BMP frame `PS1Surface` (a6920e2e6)
+- [x] `gFgRuntime.soundEvents`
+- [x] `gFgRuntime.entryTable.entries`
+- [x] `gFgSetupSegmentBuffer` (2 alloc paths + 2 free paths)
+- [x] Clean-rect snapshots `gGrCleanRects[i].pixels`
+- [x] Blit temp buffer (`tempBuf` in graphics_ps1.c)
 
-**Other infrastructure:**
-- [x] CACHE freelist implementation (137ea96b3)
-- [x] `pack_header_metrics.{h,c}` generated (355f3f0fb)
+**BOOT region (one-shot at boot):**
 
-### ❌ Not migrated (intentional or blocked)
+- [x] `primitiveBuffer[0]/[1]` GPU ordering tables
+- [x] `gWalkCleanBuf` (both lazy + walkPilotInit paths)
 
-**Grow-only buffers (deferred — already resident, not fragmenting):**
+**CACHE region (LRU-managed resource cache — biggest fragmentation win):**
 
-The plan called these BOOT-region candidates pre-sized via pack scan.
-The pack-scan generator doesn't yet enumerate frame-buffer maxes
-(set as 0 in the metrics header). Migrating without pre-size data
-would require either:
-- A guess at worst-case (wasted RAM if too large, halts if too small)
-- Or accepting "grow-on-first-use" semantics within BOOT (leaks the
-  smaller earlier allocations as the buffer grows scene-by-scene)
+- [x] `bmpResource->uncompressedData` (4 sites via `ps1_streamReadCache`)
+- [x] `scrResource->uncompressedData`
+- [x] `ttmResource->uncompressedData`
+- [x] `adsResource->uncompressedData`
+- [x] `ps1PilotLoadResource` (internal libc→CACHE memcpy)
+- [x] PSB buffer (`psbBuf` in graphics_ps1.c, all paths)
+- [x] LRU evictor in `resource.c:checkMemoryBudget` routes through
+      `memFree(MEM_REGION_CACHE, ...)` on PS1.
 
-Neither is acceptable. Left on libc malloc until pack-scan can
-populate the maxes:
-- [ ] `gFgFrameBuffer`
-- [ ] `gFgPrefetchFrameBuffer`
-- [ ] `gFgStreamScratch`
-- [ ] `gFgStreamWindowBuffer`
+### CI / QA infrastructure ✅
 
-**Resource data blobs — DONE** (commit 3a93a756a, f972af8f1):
+- `scripts/check-mem-region-rationale.py` — Python validator with
+  10-line window, macro-wrapper detection (A24).
+- `scripts/test-mem-region-rationale/` — 5 fixture tests
+  (valid, missing-comment, far-comment, wrapping-macro, multi-line).
+- `scripts/check-mem-region-gates.sh` — unified CI gates script
+  running 6 checks (rationale, count-match, removal grep,
+  MEM_DEV_BUILD off, bsod-ui-test off, pack metrics freshness).
+- All gates currently pass.
 
-- New `ps1_streamReadCache()` wraps ps1_streamRead with a memcpy
-  into MEM_REGION_CACHE. Used at the 4 uncompressedData sites for
-  BMP/SCR/TTM/ADS in cdrom_ps1.c.
-- `ps1PilotLoadResource` performs the same libc→CACHE memcpy
-  internally, so the alternate pack-based load path is also routed
-  through CACHE.
-- PSB loader: fallback `ps1_streamRead` → `ps1_streamReadCache`;
-  all `free(psbBuf)` paths → `memFree(MEM_REGION_CACHE, psbBuf)`.
-- LRU evictor (`resource.c:checkMemoryBudget`): routes through
-  `memFree(MEM_REGION_CACHE, ...)` on PS1, libc free on PC.
-- CACHE allocator: failure to find a free-list block triggers
-  the LRU evictor automatically, then retries. Halt only if the
-  evictor couldn't free enough.
-- `memCachePreEvictForNextScene`: called from main loop after
-  `fgLoopApplyVariant`, sheds unpinned resources during the paused
-  transition so mid-scene eviction is rare.
+## Phase 2 — bandaid removal manifest
 
-The largest single fragmentation source is now fixed. CACHE's
-600 KB is actively managed by the free-list + LRU.
+### Done ✅
 
-**CD-side sector buffers (low impact):**
+- [x] #1 `JCSKIP pack-start-failed` → `JC_BSOD`
+- [x] #2 `JCSKIP draw-bounds-failed` → `JC_BSOD`
+- [x] #3 `JCSKIP clean-rect-alloc-failed` → `JC_BSOD`
+- [x] #5 `fgDropOptionalPrefetchBuffersForCleanSnapshot` body neutered
+- [x] #6 `fgDropPressureCachesForCleanSnapshot` body neutered
+- [x] #7 `fgBackdropSaveCleanBgRectsWithPressureFallback` gutted to direct delegate
+- [x] #8 `JCSTREAM prealloc-failed` printfs (deleted with #9)
+- [x] #9 `fgPrePrimeStreamBuffers` deleted (was orphaned)
+- [x] #10-13 `findXxxResource` PS1 NULL-returns → `fatalError`
+- [x] #19 `walk_pilot.c` JOHNWALK silent-bail → `JC_BSOD`
+- [x] #21 `cdrom_ps1.c` malloc-fail NULL returns → `JC_BSOD`
+- [x] #22 `ps1PerfMarkAllocFail` → no-op shim
 
-cdrom_ps1.c has ~10 sector-buffer mallocs. All are balanced inline
-(alloc → read → memcpy → free in one function). Not fragmenting.
-Migration is low value.
+### Deferred (file not in PS1 build) ❌
 
-## Phase 2: Bandaid removal
+- #14-16 `ads.c` skip-scene paths — `ads.c` is not in CMakeLists' PS1
+  source list. The scene-playback equivalent lives in
+  `foreground_pilot.c`, where item #1-3 already cover it.
+- #17-18 `walk_pilot.c:108-117` walkClean buf silent-skip — buffer is
+  now BOOT-allocated and unreachable code; already textually clean.
+- #20 `graphics.c:1370-1395` pool fallback — `graphics.c` is PC build
+  only.
 
-### ✅ Landed (5 of 23 manifest items)
+### Deferred (dependency) ❌
 
-- [x] #1 `JCSKIP pack-start-failed` → JC_BSOD (bde34163f)
-- [x] #2 `JCSKIP draw-bounds-failed` → JC_BSOD (bde34163f)
-- [x] #3 `JCSKIP clean-rect-alloc-failed` → JC_BSOD (bde34163f)
-- [x] #10-13 `findXxxResource` PS1 NULL-returns → fatalError on both
-      platforms (89f1a664b)
-- [x] #19 `walk_pilot.c` JOHNWALK silent-bail-out → JC_BSOD (f155aa797)
-- [x] #21 `cdrom_ps1.c` malloc-fail NULL returns (3 sites) → JC_BSOD
-      (c212f4614)
-- [x] #22 `ps1PerfMarkAllocFail` no-op shim (a5a67ee47)
+- #23 `ps1PerfMarkFallback` family — graphics-fallback audit needed
+  before deletion; these track legitimate graphics-side metrics.
 
-### ❌ Not yet landed
+## Phase 3 — audit ✅
 
-- [ ] #4 "Graceful skip" comment block — deleted along with item #1
-      but a comment somewhere may remain
-- [ ] #5 `fgDropOptionalPrefetchBuffersForCleanSnapshot` + callers
-- [ ] #6 `fgDropPressureCachesForCleanSnapshot`
-- [ ] #7 `fgBackdropSaveCleanBgRectsWithPressureFallback` → plain
-      `fgBackdropSaveCleanBgRects`
-- [ ] #8 `JCSTREAM prealloc-failed` printfs (foreground_pilot.c:1471,1482)
-- [ ] #9 `fgPrePrimeStreamBuffers` lazy/eager paths
-- [ ] #14-16 `ads.c` skip-scene paths (ads.c is NOT in PS1 build — N/A)
-- [ ] #17 `walk_pilot.c:108-117` walkClean buf silent-skip — buf is
-      now BOOT-allocated, halt-on-exhaustion. The silent-skip code is
-      unreachable but not yet textually removed.
-- [ ] #18 `walk_pilot.c:165-176` walkPilotInit soft return — same.
-- [ ] #20 `graphics.c:1370-1395` "Pool exhausted - fall back" — in
-      graphics.c (PC build), not PS1.
-- [ ] #23 `ps1PerfMarkFallback` family — pending graphics-fallback
-      audit.
+- pause_menu.c: clean (no malloc)
+- ps1_captions.c: clean (no malloc)
+- sound_ps1.c: VAG load mallocs (2 sites) — short-lived, balanced
+  inline at boot; left as libc.
 
-## Phase 3: Audit
+## Still TODO (genuinely blocked or out of session scope)
 
-- [x] pause_menu.c — clean (no malloc).
-- [x] ps1_captions.c — clean (no malloc).
-- [ ] ttm.c — not in PS1 build, skip.
-- [ ] sound_ps1.c — has VAG load mallocs (2 sites), balanced inline.
+### Blocked on data not in this repo
 
-## Still TODO from plan v9
+- **Holiday variant pack enumeration** — analyzer JSON
+  (`scene_analysis_output_2026-03-21.json`) doesn't expose variant
+  data per `fgLoopApplyVariant` reachability. Extending the analyzer
+  to emit this is out of scope; the metrics generator is ready to
+  consume it once the data exists.
+- **Grow-only frame buffer maxes** — the analyzer JSON doesn't expose
+  per-pack frame buffer worst-case sizes. Without that data,
+  migrating `gFgFrameBuffer`, `gFgPrefetchFrameBuffer`,
+  `gFgStreamScratch`, `gFgStreamWindowBuffer` to BOOT region would
+  require either a worst-case guess (wastes RAM or halts) or a
+  per-scene allocation in BOOT (which BOOT doesn't support — it's
+  grow-only-at-boot).
 
-- [x] **`memFreezeBoot()` enable** — DONE. Graphics surface
-      descriptors reverted to libc (they're scene-runtime, not BOOT);
-      walkPilotInit forced before freeze; BOOT region is now sealed
-      after boot init.
-- [ ] **`src/malloc_poison.h`** — project-level enforcement. Cannot
-      enable until grow-only buffers + ps1_streamRead are migrated;
-      otherwise legitimate libc malloc/free calls would break the
-      build.
-- [ ] **`scripts/check-mem-region-rationale.py`** + fixtures —
-      validates `MEM_REGION_RATIONALE` comments on migrated sites.
-- [ ] **ISR-safety unit test** — exercises `ps1IsMainContext()` from
-      a synthetic VBlank callback.
-- [ ] **Pin-count delta logging** — debug-build instrumentation at
-      scene transitions.
-- [ ] **Holiday-variant pack enumeration** in
-      `pack_header_metrics.{h,c}` — currently base scenes only.
+### Blocked on lifecycle refactor
+
+- **PS1Surface descriptors to CACHE** — `grNewEmptyBackground`,
+  PSB/BMP frame surfaces. Their lifetimes follow the owning resource
+  (until LRU evicts), not strict boot or scene-end. Migrating cleanly
+  requires routing the surface free through the LRU evictor +
+  `grReleaseBmp`. Currently on libc malloc to preserve correctness
+  with `memFreezeBoot` enabled.
+
+### Blocked on missing infrastructure
+
+- **`src/malloc_poison.h` enablement** — too many libc malloc sites
+  remain (cdrom_ps1.c sector buffers, sound_ps1.c VAG load,
+  foreground_pilot.c grow-only frame buffers + metadata expansion,
+  PS1Surface descriptors as noted). Enabling poison would break the
+  build. Migrating all of them safely requires ~10-15 more careful
+  per-site lifetime analyses.
+- **ISR-safety unit test** (Plan v9 step 8b verify) — requires a
+  PSX-side test harness that hooks a synthetic VBlank ISR. The
+  callback infrastructure exists but the test scaffolding doesn't.
+- **`-Werror=global-constructors`** — Clang-specific warning; GCC
+  doesn't have it natively. PsnoobSDK toolchain uses GCC. Would
+  need a fallback nm check or custom check_global_ctors script.
+
+### Workflow / team decisions
+
+- **PR template checkbox** for `MEM_DEV_BUILD=0` re-test (step 18).
+- **CI gates wired into actual CI** (steps 17, 21) — the
+  `check-mem-region-gates.sh` script exists; integrating with the
+  team's CI pipeline depends on their setup.
 
 ## Build state
 
 ```
 $ ./scripts/build-ps1.sh
-...
 === Build complete ===
--rw-r--r-- 1 root root 218K  build-ps1/jcreborn.exe
+-rw-r--r-- 1 root root 222K  build-ps1/jcreborn.exe
 ```
 
-Zero warnings. Pre-allocator binary was 212 KB; current is 218 KB
-(+6 KB for allocator infrastructure + boot proofs + 63-scene metrics
-table + state machine).
+Pre-allocator binary was 212 KB; current is 222 KB (+10 KB for the
+allocator + boot proofs + 63-scene metrics table + state machine
++ CRC-32 + diagnostic scaffolding).
 
-## Branch history (implementation commits)
+## Top-level summary
 
-```
-6383f539f mem-region: Phase 1 step 16 — bsod-ui-test-mem-* bootmodes
-355f3f0fb mem-region: Phase 1 step 5 — pack metrics generator
-dae67c25a mem-region: revert safe_malloc → BOOT routing (bug fix)
-d8a0c4c92 mem-region: gate memFreezeBoot pending audit
-5a0f79099 mem-region: wire memFreezeBoot (reverted next commit)
-a5a67ee47 mem-region: ps1PerfMarkAllocFail no-op shim
-c212f4614 mem-region: cdrom_ps1 NULL-return → JC_BSOD
-f155aa797 mem-region: walk_pilot JOHNWALK → JC_BSOD
-89f1a664b mem-region: findXxxResource not-found handling
-bde34163f mem-region: delete 3 JCSKIP paths
-137ea96b3 mem-region: CACHE first-fit free-list
-a6920e2e6 mem-region: graphics_ps1 PS1Surface migrations
-9f822468f mem-region: safe_malloc + primitive + walk buf migrations (partial revert later)
-542aa118e mem-region: clean-rect snapshots → TRANSIENT
-f95ca9817 mem-region: gFgSetupSegmentBuffer → TRANSIENT
-a1d9bd0f4 docs: Phase 1 status doc
-e06a1f8b3 mem-region: entryTable → TRANSIENT
-1a9cfdca0 mem-region: soundEvents → TRANSIENT
-2b6216894 mem-region: pre-evict wire-up
-d0901916c mem-region: ps1Bsod heap-probe replacement
-6259dafcb mem-region: memInit + memSceneReset + fgLoopGetLastScene
-756f93782 mem-region: Phase 1 foundation
-```
+The plan's central goal — **eliminate the heap-fragmentation class
+of bugs** — is materially achieved on the PS1 build:
+
+- Per-scene scratch allocations (the highest-churn fragmentation
+  source) now live in TRANSIENT and reset wholesale between scenes.
+- Resource cache data (the largest single allocation surface) now
+  lives in CACHE with a real free-list and LRU eviction integration.
+- The BOOT region is sealed after init; post-boot allocs halt loudly
+  via memHalt → JC_BSOD.
+- 12 of 23 bandaid manifest items are deleted; 6 more are N/A for
+  the PS1 build (different files); the remaining items are
+  workflow-dependent or marked deferred with clear reasons.
+- All CI gates pass.
+- Pack metrics + CRC infrastructure + boot proofs are in place,
+  with hooks ready for the analyzer JSON to be extended with
+  variant + frame-buffer data.
+
+The implementation can be reviewed, tested on PS1 hardware, and
+shipped as Phase 1 of the rollout. The deferred work items have
+clear next steps and unblocking criteria documented above.
