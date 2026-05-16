@@ -196,7 +196,6 @@ static void memHaltFmt(const char *region, const char *what,
 
 void memInit(void)
 {
-    extern int printf(const char *, ...);
     /* All-libc-backed mode: no static region buffer. The allocator
      * API routes each allocation directly to libc; TRANSIENT
      * preserves wholesale-wipe via the libc-fallback linked list. */
@@ -205,7 +204,6 @@ void memInit(void)
     g_cacheBase     = NULL;
     g_transientBase = NULL;
     g_transientEnd  = NULL;
-    printf("JCMEM memInit: all-libc-backed mode (no static region)\n");
 
     g_bootTop       = g_bootBase;
     g_transientNext = g_transientEnd;  /* grows DOWN */
