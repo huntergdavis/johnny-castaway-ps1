@@ -71,6 +71,11 @@ If "across scenes" means "until evicted under pressure" → **CACHE**
 means "always available" → **BOOT**. The decision is whether you can
 afford to regenerate it on the rare cache miss.
 
+```c
+uint16 *palette = memAlloc(MEM_REGION_CACHE, 256 * sizeof(uint16),
+                           "myCachedPalette");
+```
+
 ### "My new TTM opcode needs a 256 B temp during opcode dispatch"
 
 Lifetime: a few instructions. → use a **stack buffer**, not the
