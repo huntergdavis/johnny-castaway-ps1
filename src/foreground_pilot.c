@@ -1472,36 +1472,17 @@ unsigned long fgGetPrefetchFrameBufferBytes(void)
     return (unsigned long)gFgPrefetchFrameBufferSize;
 }
 
-int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
-                            unsigned long scratchMaxBytes)
-{
-    extern int printf(const char *, ...);
-    int ok = 1;
-
-    if (frameMaxBytes > 0 && gFgFrameBuffer == NULL) {
-        gFgFrameBuffer = (uint8 *)malloc((size_t)frameMaxBytes);
-        if (gFgFrameBuffer == NULL) {
-            printf("JCSTREAM frameBuffer prealloc failed (need %lu)\n",
-                   frameMaxBytes);
-            ok = 0;
-        } else {
-            gFgFrameBufferSize = (uint32)frameMaxBytes;
-        }
-    }
-
-    if (scratchMaxBytes > 0 && gFgStreamScratch == NULL) {
-        gFgStreamScratch = (uint8 *)malloc((size_t)scratchMaxBytes);
-        if (gFgStreamScratch == NULL) {
-            printf("JCSTREAM streamScratch prealloc failed (need %lu)\n",
-                   scratchMaxBytes);
-            ok = 0;
-        } else {
-            gFgStreamScratchSize = (uint32)scratchMaxBytes;
-        }
-    }
-
-    return ok;
-}
+/* fgPrePrimeStreamBuffers was a v0.8.10-era pre-allocation helper
+ * that the v0.8.11 rollback orphaned (no remaining callers).
+ * Plan v9 Phase 2 manifest item #9: delete entirely. The new
+ * memory-region allocator makes boot-time pre-priming the
+ * stream-buffer maxes redundant (the worst-case grow pattern is
+ * captured by the pack-header scan once frame-buffer maxes are
+ * added to pack_header_metrics).
+ *
+ * Declaration in foreground_pilot.h is kept for API stability
+ * until a downstream cleanup commit can remove it; the body here
+ * is gone. */
 
 unsigned long fgProbeLargestAlloc(void)
 {
