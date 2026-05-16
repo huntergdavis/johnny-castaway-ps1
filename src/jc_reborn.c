@@ -1900,17 +1900,25 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
 
-    /* memFreezeBoot() not called yet — see plan v9 step 13. Activating
-     * the freeze requires a full audit of every memAlloc(MEM_REGION_BOOT,
-     * ...) call site to confirm none fire post-boot. Several surfaces
-     * (grNewEmptyBackground, PSB/BMP frame allocations in graphics_ps1.c)
-     * are called from resource loaders that may execute during scene
-     * playback, not just at boot. Until each is verified or migrated
-     * to a different region, freeze stays off; this means the no-fail
-     * invariant for BOOT is unenforced at runtime, but the static_assert
-     * + boot proofs still guarantee budget. Follow-up commit will close
-     * this gap. */
-    /* memFreezeBoot(); */
+    /* Force walk-subsystem to pre-allocate its 149 KB clean buffer
+     * before memFreezeBoot. Without this, the lazy allocation inside
+     * walkPilotCaptureCleanWalkAreaIfStale fires post-freeze and
+     * halts. */
+    {
+        extern int walkPilotInit(void);
+        (void)walkPilotInit();
+    }
+
+    /* Freeze the BOOT region. Activating the no-fail invariant: any
+     * later memAlloc(MEM_REGION_BOOT, ...) halts via memHalt with a
+     * clear "post-freeze" message. Per plan v9 step 13.
+     *
+     * BOOT call sites remaining at this point: primitiveBuffer[0/1]
+     * (in graphicsInit, runs before this), walkCleanBuf (walkPilotInit
+     * just ran), and any safe_malloc calls (still on libc after revert).
+     * Graphics surface descriptors (grNewEmptyBackground, PSB/BMP
+     * frames) stay on libc — they're scene-runtime, not BOOT lifetime. */
+    memFreezeBoot();
 
     do {
         int skipWalkThisIteration = 0;

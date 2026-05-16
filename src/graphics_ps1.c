@@ -923,13 +923,15 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
  */
 PS1Surface *grNewEmptyBackground()
 {
-    /* MEM_REGION_RATIONALE: graphics-side PS1Surface descriptor for the
-     * background. Allocated at scene/init time, kept resident.
-     * INIT_FULL_WRITE — every field assigned below. */
-    PS1Surface *sfc = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
-                                            sizeof(PS1Surface),
-                                            "grBackgroundSurface");
-    /* memAlloc halts on exhaustion. */
+    /* Kept on libc malloc — this is called from island.c at scene
+     * runtime (via grNewLayer for TTM threads), not strictly at boot.
+     * Migrating to BOOT would block memFreezeBoot enablement.
+     * Future: route through MEM_REGION_CACHE with corresponding
+     * memFree in the TTM-thread shutdown path. */
+    PS1Surface *sfc = (PS1Surface*)malloc(sizeof(PS1Surface));
+    if (sfc == NULL) {
+        fatalError("Failed to allocate PS1Surface");
+    }
 
     sfc->width = SCREEN_WIDTH;
     sfc->height = SCREEN_HEIGHT;
@@ -1151,16 +1153,13 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
         if (fr->width == 0 || fr->height == 0 ||
             fr->width > 640 || fr->height > 480) break;
 
-        /* MEM_REGION_RATIONALE: PSB-loaded sprite frame descriptor.
-         * Allocated during resource loading at scene-init (or earlier
-         * for resident sprites like JOHNWALK). INIT_FULL_WRITE.
-         * The old "fall back to BMP path on OOM" pattern is replaced
-         * by memAlloc-halts-on-exhaustion: the BSOD will identify
-         * which sprite couldn't fit so the budget can be raised
-         * deterministically. */
-        surface = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
-                                        sizeof(PS1Surface),
-                                        "psbSpriteFrame");
+        /* Kept on libc malloc — sprite frame descriptors live with
+         * their owning resource (BMP/PSB). Lifecycle is "until LRU
+         * eviction." Migrating to BOOT would block memFreezeBoot.
+         * Future: route through MEM_REGION_CACHE with companion frees
+         * inside grReleaseBmp / the LRU evictor. */
+        surface = (PS1Surface*)malloc(sizeof(PS1Surface));
+        if (!surface) break;
 
         surface->width = fr->width;
         surface->height = fr->height;
@@ -1282,13 +1281,14 @@ void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
             uint16 height = bmpResource->heights[frameIdx];
             uint32 indexedSize = ((uint32)width * (uint32)height + 1) / 2;
 
-            /* MEM_REGION_RATIONALE: BMP-frame surface descriptor.
-             * Resident for the life of the resource cache entry.
-             * INIT_FULL_WRITE — all fields assigned below.
-             * memAlloc halts on exhaustion; no NULL check needed. */
-            PS1Surface *surface = (PS1Surface*)memAlloc(MEM_REGION_BOOT,
-                                                        sizeof(PS1Surface),
-                                                        "bmpFrameSurface");
+            /* Kept on libc malloc — same rationale as PSB frame
+             * surfaces above: lifecycle is "until LRU eviction,"
+             * not strict boot. */
+            PS1Surface *surface = (PS1Surface*)malloc(sizeof(PS1Surface));
+            if (!surface) {
+                gStatLastBmpStatus = 6;  /* allocation failure / partial install */
+                break;
+            }
 
             surface->width = width;
             surface->height = height;
