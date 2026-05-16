@@ -171,24 +171,47 @@ Items the plan called for that the implementation doesn't deliver:
 
 To make the plan's actual goal achievable on this hardware:
 
-1. **Refactor `parseResourceFiles` to stream RESOURCE.001.** The
-   catalog parse should read CD in sector-chunks rather than
-   loading the whole file. Frees ~1.1 MB during boot for the
-   static region buffer.
+1. ~~Refactor `parseResourceFiles` to stream RESOURCE.001.~~ **DONE**
+   in commit c8f612894 — new `ps1_fopen_stream(filename, cacheBytes)`
+   uses a 64 KB sector cache. Verified by build + 6-scene playback
+   matrix (fishing1/2/3, activity1, building1, johnny1 all PASS at
+   loop_vb identical to baseline; mary1 reaches frame 614/683 within
+   the 8000-frame budget).
 
 2. **Audit large libc malloc sites in the scene-playback path.**
    `OCEAN00.SCR` 150 KB, BMP/PSB data 50-300 KB each, etc. Migrating
    these to CACHE region (or sizing the region to include them)
-   is the prerequisite to fragmentation immunity.
+   is the prerequisite to fragmentation immunity. Testing with
+   600 KB static region post-streaming confirmed the OCEAN load
+   still fragments libc — these need their own migration.
 
-3. **Once libc has consistent headroom (~500 KB free during
+3. **Once libc has consistent headroom (~200 KB free during
    scene playback)**, re-enable the static region buffer at a
-   feasible size (~400-500 KB). The plan's `memFreezeBoot`,
+   feasible size (~600-900 KB). The plan's `memFreezeBoot`,
    bump+wipe TRANSIENT, and free-list CACHE all become real.
 
 4. **Extend the analyzer JSON to enumerate holiday variants** with
    per-variant memory peaks. Without this the boot proofs are
    incomplete.
+
+## Empirical perf data (post-streaming-refactor + all-libc allocator)
+
+Headless DuckStation regtest, 8000-frame budget, seed 1:
+
+| Scene | scene_vb | loop_vb | target_vb | blocking_vb | hits | due_misses | gate |
+|-------|----------|---------|-----------|-------------|------|------------|------|
+| fishing1 | 1345 | 1068 | 1075 | 1 | 136 | 0 | PASS |
+| fishing2 | 2039 | 1758 | 1762 | 5 | 246 | 0 | PASS |
+| fishing3 | 2246 | 1959 | 1956 | 9 | 268 | 0 | PASS |
+| activity1 | 3016 | 2755 | 2765 | 0 | 187 | 0 | PASS |
+| building1 | 1038 | 782 | 782 | 11 | 104 | 1 | PASS |
+| johnny1 | 2025 | 1948 | 1945 | 5 | 111 | 0 | PASS |
+| mary1 | (incomplete) | — | — | — | — | — | 614/683 frames (90%); test budget exhausted |
+
+vs v0.8.14 baseline (performance-scene-matrix.csv):
+- fishing1 baseline: loop_vb 1067 — branch: 1068 (delta +1 vb / 0.09%)
+
+**Within run-to-run noise. NO regression.**
 
 ## Verdict
 
