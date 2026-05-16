@@ -1395,43 +1395,23 @@ static void fgReleaseStreamBuffersHard(void)
 
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
 {
-    uint8 *keepFrameBuffer = gFgRuntime.frameBuffer;
-    uint32 keepFrameBufferSize = gFgRuntime.frameBufferSize;
+    /* Plan v9 Phase 2 manifest item #5 — pressure-drop body neutered.
+     * Originally freed gFgFrameBuffer/gFgPrefetchFrameBuffer/
+     * gFgStreamWindowBuffer to make libc-heap room for clean-rect
+     * allocation. With clean-rect now in MEM_REGION_TRANSIENT (its
+     * own 250 KB), this dropping is unnecessary and counterproductive
+     * (frees grow-only buffers that scene N+1 would have to re-allocate).
+     *
+     * The gFgRuntime field reset below was the function's secondary
+     * responsibility; left in place because that part is unrelated to
+     * memory pressure and harmless when called. The buffer-freeing
+     * machinery above is gone. */
 
-    if (keepFrameBuffer == NULL) {
-        keepFrameBuffer = gFgFrameBuffer;
-        keepFrameBufferSize = gFgFrameBufferSize;
-    }
-
-    if (gFgFrameBuffer != NULL && gFgFrameBuffer != keepFrameBuffer) {
-        free(gFgFrameBuffer);
-        gFgFrameBuffer = NULL;
-        gFgFrameBufferSize = 0;
-    }
-    if (gFgPrefetchFrameBuffer != NULL &&
-        gFgPrefetchFrameBuffer != keepFrameBuffer) {
-        free(gFgPrefetchFrameBuffer);
-        gFgPrefetchFrameBuffer = NULL;
-        gFgPrefetchFrameBufferSize = 0;
-    }
-    gFgFrameBuffer = keepFrameBuffer;
-    gFgFrameBufferSize = keepFrameBufferSize;
-    gFgPrefetchFrameBuffer = NULL;
-    gFgPrefetchFrameBufferSize = 0;
-
-    if (gFgStreamWindowBuffer != NULL) {
-        free(gFgStreamWindowBuffer);
-        gFgStreamWindowBuffer = NULL;
-        gFgStreamWindowBufferSize = 0;
-    }
-    if (gFgSetupSegmentBuffer != NULL) {
-        memFree(MEM_REGION_TRANSIENT, gFgSetupSegmentBuffer);
-        gFgSetupSegmentBuffer = NULL;
-        gFgSetupSegmentBufferSize = 0;
-    }
-
-    gFgRuntime.frameBuffer = keepFrameBuffer;
-    gFgRuntime.frameBufferSize = keepFrameBufferSize;
+    /* Preserve current frame buffer pointer/size — was previously
+     * computed in a "keep" variable; with the drop logic gone the
+     * grow-only buffer is still in gFgFrameBuffer and untouched. */
+    gFgRuntime.frameBuffer = gFgFrameBuffer;
+    gFgRuntime.frameBufferSize = gFgFrameBufferSize;
     gFgRuntime.prefetchFrameBuffer = NULL;
     gFgRuntime.prefetchFrameBufferSize = 0;
     gFgRuntime.streamWindowBuffer = NULL;
