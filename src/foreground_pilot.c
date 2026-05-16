@@ -1904,25 +1904,20 @@ static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
                                                           uint32 cleanBytes,
                                                           int *deferWalkCleanRecapture)
 {
-    if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
-        return 1;
-
-    if (walkPilotCleanBufferAllocated()) {
-        printf("JCMEM clean-retry walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
-               sceneName != NULL ? sceneName : "?",
-               (unsigned long)cleanBytes,
-               walkPilotCleanBufferBytes() / 1024UL);
-        walkPilotReleaseCleanWalkArea();
-        if (deferWalkCleanRecapture != NULL)
-            *deferWalkCleanRecapture = 1;
-        if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
-            return 1;
-    }
-
-    printf("JCMEM clean-retry drop-prefetch scene=%s clean=%lu\n",
-           sceneName != NULL ? sceneName : "?",
-           (unsigned long)cleanBytes);
-    fgDropOptionalPrefetchBuffersForCleanSnapshot();
+    /* Plan v9 Phase 2 manifest item #7: pressure-fallback chain is
+     * no longer needed. Clean-rect snapshots now allocate from
+     * MEM_REGION_TRANSIENT, which has its own 250 KB dedicated to
+     * per-scene scratch and cannot fragment. memAlloc(TRANSIENT) halts
+     * loudly on exhaustion; there is no "fall back and retry" semantic
+     * to recover with.
+     *
+     * Kept as a thin pass-through so existing callers don't need
+     * touching — they still call the same wrapper name; the wrapper
+     * just delegates directly to the underlying save function and
+     * returns its result. */
+    (void)sceneName;
+    (void)cleanBytes;
+    (void)deferWalkCleanRecapture;
     return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
 }
 
