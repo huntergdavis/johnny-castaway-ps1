@@ -3292,6 +3292,12 @@ struct TGrCleanRect {
     uint16 width, height;
     uint16 *pixels;
     uint32 capacityBytes;
+    /* MEM_REGION tag for the pixels allocation (0=TRANSIENT,
+     * 1=CACHE). Round 13 introduced dynamic routing: clean-rect
+     * snapshots prefer TRANSIENT (right semantic) but spill to
+     * CACHE when TRANSIENT can't fit. memFree must use the same
+     * region the alloc came from. */
+    uint8 pixelsRegion;
 };
 
 static struct TGrCleanRect gGrCleanRects[GR_MAX_CLEAN_RECTS];
@@ -3522,11 +3528,15 @@ static void grResetCleanBgRects(int releasePixels)
     int i;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (releasePixels && gGrCleanRects[i].pixels) {
-            /* TRANSIENT — bytes reclaimed by memSceneReset; just clear
-             * the dangling pointer + capacity to avoid stale state. */
-            memFree(MEM_REGION_TRANSIENT, gGrCleanRects[i].pixels);
+            /* Use the recorded region; dynamic routing in
+             * grSaveCleanBgTiles may have placed pixels in
+             * EITHER TRANSIENT or CACHE. */
+            MemRegion freeRegion = gGrCleanRects[i].pixelsRegion
+                ? MEM_REGION_CACHE : MEM_REGION_TRANSIENT;
+            memFree(freeRegion, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
+            gGrCleanRects[i].pixelsRegion = 0;
         }
         gGrCleanRects[i].x = 0;
         gGrCleanRects[i].y = 0;
@@ -3657,15 +3667,36 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
             goto fail;
         /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
          * 6 atomic slots; see comment block above the for loop).
-         * TRANSIENT: clean-rects are reclaimed at scene transition;
-         * libc fallback gives wholesale-wipe via TransientLibcEntry
-         * for snapshots that exceed budget. Migration to CACHE was
-         * tested (Round 13) and rejected: it shifts overflow from
-         * TRANSIENT to CACHE on the same scenes without resolving
-         * the underlying budget pressure. */
-        gGrCleanRects[i].pixels = (uint16 *)memAlloc(MEM_REGION_TRANSIENT,
-                                                     requiredBytes[i],
-                                                     "grCleanRectPixels");
+         * Dynamic routing (Round 13): prefer TRANSIENT for correct
+         * wholesale-wipe semantics; spill to CACHE when TRANSIENT
+         * lacks contiguous space. Each rect records which region
+         * its pixels came from so the matching memFree is used
+         * (memFree's range-check would otherwise mismatch and
+         * double-free via the TransientLibcEntry list).
+         *
+         * Heavier scenes (activity10 ~290 KB snapshot, fishing1-
+         * style ~181 KB) exceed the 256 KB TRANSIENT budget on
+         * their own; CACHE has 100-200 KB free at the time, and
+         * its coalescing free-list reclaims bytes when
+         * grFreeCleanBgRects fires. */
+        {
+            const size_t transRemaining = MEM_TRANSIENT_BUDGET -
+                memRegionUsed((unsigned int)MEM_REGION_TRANSIENT);
+            /* Keep a safety margin so concurrent TRANSIENT allocs
+             * (sound events, setup buffer) don't get squeezed out. */
+            const size_t TRANSIENT_RESERVE = 16u * 1024u;
+            MemRegion target;
+            if (requiredBytes[i] + TRANSIENT_RESERVE <= transRemaining) {
+                target = MEM_REGION_TRANSIENT;
+            } else {
+                target = MEM_REGION_CACHE;
+            }
+            gGrCleanRects[i].pixels = (uint16 *)memAlloc(target,
+                                                         requiredBytes[i],
+                                                         "grCleanRectPixels");
+            gGrCleanRects[i].pixelsRegion =
+                (target == MEM_REGION_CACHE) ? 1u : 0u;
+        }
         gGrCleanRects[i].capacityBytes = requiredBytes[i];
         allocatedThisCall[i] = 1;
     }
@@ -3688,12 +3719,13 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
 fail:
     for (i = 0; i < n; i++) {
         if (allocatedThisCall[i] && gGrCleanRects[i].pixels != NULL) {
-            /* TRANSIENT bytes get reclaimed by next memSceneReset;
-             * just clear the dangling pointer and capacity to avoid
-             * stale-state confusion. */
-            memFree(MEM_REGION_TRANSIENT, gGrCleanRects[i].pixels);
+            /* Use the recorded region (dynamic routing). */
+            MemRegion freeRegion = gGrCleanRects[i].pixelsRegion
+                ? MEM_REGION_CACHE : MEM_REGION_TRANSIENT;
+            memFree(freeRegion, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
+            gGrCleanRects[i].pixelsRegion = 0;
         }
     }
     grDeactivateCleanBgRects();
