@@ -84,13 +84,25 @@ typedef enum MemRegion {
  *   CACHE: 700 KB (MARY pinned 568 KB + file buffer + result peaks)
  *   TRANSIENT: 280 KB (sectorBuffer 300 KB peak split + scene scratch)
  *   Total: 1012 KB (~1 MB) */
-/* Red-team measurements drove these budgets:
- *   - mary1:   CACHE peak 716 KB → bumped from 700 to 800 KB
- *   - johnny1: pre-scene CACHE residency 614 KB + 2x112 KB frame buffers
- *              + bg-tile etc. exceeded 800 KB → bumped to 900 KB
- *   - TRANSIENT peak observed at 231 KB (mary1) — 256 KB leaves headroom
+/* Red-team measurements drove these budgets (Round 10 + Round 11):
+ *   - mary1:    CACHE peak 716 KB → bumped from 700 to 800 KB
+ *   - johnny1:  needs 614 KB pre-scene + 2x112 KB frame buffers; 800 KB
+ *               overflowed → bumped CACHE to 900 KB
+ *   - activity4 TRANSIENT peak 256 KB (98% of budget). LEFT AT 256 KB
+ *               because TRANSIENT's libc fallback is benign (small
+ *               per-sector allocs freed wholesale at memSceneReset),
+ *               whereas CACHE's libc fallback is fragile (big contiguous
+ *               blocks). Tested at 288 KB total 1220 KB: johnny1 BSODs
+ *               because the 32 KB stolen from libc breaks its 114 KB
+ *               CACHE-overflow fallback path.
  *
- * Total = 1188 KB, under the 1228 KB linker-map ceiling. */
+ * Total = 1188 KB, under the 1228 KB linker-map ceiling.
+ *
+ * SHARP EDGE: activity4 is at 98% TRANSIENT. A scene with a slightly
+ * heavier TRANSIENT pattern would overflow into the libc fallback.
+ * The wholesale-wipe semantics survive (TransientLibcEntry linked
+ * list is freed at memSceneReset), so this is a performance/safety
+ * concern not a correctness concern. */
 #define MEM_BOOT_BUDGET      ( 32u * 1024u)
 #define MEM_CACHE_BUDGET     (900u * 1024u)
 #define MEM_TRANSIENT_BUDGET (256u * 1024u)

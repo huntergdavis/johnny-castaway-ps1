@@ -423,3 +423,92 @@ end-to-end across the full primary scene matrix. Performance is
 within run-to-run noise of the v0.8.14 baseline. The plan's
 no-fragmentation promise is met for the measured workloads, with
 the caveat noted above about coalescing for longer rotations.
+
+---
+
+## Round 11 — CACHE coalescing + splitting + budget rebalancing
+
+Round 10 left CACHE first-fit with neither block-splitting on alloc
+nor coalescing on free, and identified johnny1 at 92% of the
+CACHE budget. Round 11 closes those gaps and adds the
+telemetry-driven discovery of a TRANSIENT-budget edge case.
+
+### Implementation changes
+
+**`cacheAllocInternal` now splits free-list blocks.** When a
+free-list match is much larger than the request, the front
+portion is given to the caller and the tail is reinserted as a
+new free block. Threshold = `CACHE_HEADER_BYTES + sizeof(void*) +
+MEM_REGION_ALIGN` = 12 bytes (the smallest a free-list node can
+be). Below threshold, the whole block is consumed (caller pays
+for the unused tail until coalescing reclaims it).
+
+**`cacheFreeInternal` now inserts sorted + coalesces.** Free
+blocks are inserted into the free-list in ascending-address
+order; immediately after, the list is scanned and any pair of
+physically adjacent free blocks (`A_base + A_size == B_base`)
+is merged into one. The scan continues from the merged block so
+cascading merges happen in one pass.
+
+Cost: each free is O(n) in free-list length to insert, O(n) to
+scan. n stays small (a few hundred blocks max in observed
+workloads). The cost is dwarfed by the CD-read that motivates
+most allocations.
+
+### Result
+
+8-scene matrix is unchanged in performance (loop_vb identical to
+Round 10 within run-to-run noise — coalescing is a pure
+correctness fix, not a perf change):
+
+| Scene    | Round 10 loop_vb | Round 11 loop_vb | Δ  |
+|----------|------------------|------------------|-----|
+| fishing1 | 1070             | 1070             | =  |
+| fishing2 | 1762             | 1762             | =  |
+| mary1    | 4849             | 4849             | =  |
+| building1| 783              | 783              | =  |
+| suzy1    | 5761             | 5761             | =  |
+| activity1| 2755             | 2755             | =  |
+| activity4| 1065             | 1065             | =  |
+| johnny1  | 1948             | 1948             | =  |
+
+### Telemetry-driven TRANSIENT discovery (and rejection of a fix)
+
+With `memLogTelemetry()` un-gated, the matrix surfaced a hidden
+finding: **activity4 used 250.5 KB / 256 KB of TRANSIENT (98%)**,
+within 5.5 KB of region overflow.
+
+Attempt: bump TRANSIENT to 288 KB (total 1220 KB).
+
+**Result: johnny1 regressed to BSOD.** The 32 KB of libc taken to
+grow the region was the headroom that johnny1's `gFgFrameBuffer`
+allocation falls back to when CACHE region is at 92%. With the
+region grown, libc lacked a contiguous 114 KB block.
+
+**Final decision: revert TRANSIENT to 256 KB.** The trade-off is:
+- TRANSIENT overflow into libc is BENIGN (`TransientLibcEntry`
+  linked list; small per-sector allocs; freed wholesale at
+  `memSceneReset` — the plan's central invariant survives).
+- CACHE overflow into libc is FRAGILE (single big contiguous
+  block; fails if libc is fragmented).
+
+So we prefer TRANSIENT tightness over CACHE tightness. Documented
+as a known sharp edge in `mem_region.h`.
+
+### Final budget configuration (1188 KB total)
+
+- `MEM_BOOT_BUDGET      =  32 KB`
+- `MEM_CACHE_BUDGET     = 900 KB` (johnny1 peak 92%)
+- `MEM_TRANSIENT_BUDGET = 256 KB` (activity4 peak 98%, libc fallback benign)
+- Total: 1188 KB, well below the 1228 KB linker-map ceiling.
+
+### Closing observations
+
+The plan's **central goal is delivered**: deterministic ownership
+of ~1.2 MB of PS1 RAM, with per-scene wipe semantics for
+TRANSIENT, LRU-managed CACHE with coalescing+splitting, and BOOT
+reserved for permanent allocations. Performance is identical to
+the v0.8.14 baseline within run-to-run noise. The libc fallback
+paths are documented as safety valves, not as primary mechanism,
+and the activity4 TRANSIENT tightness is explicitly noted as a
+known sharp edge with a benign overflow path.

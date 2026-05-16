@@ -496,7 +496,11 @@ typedef struct CacheFreeBlock {
 } CacheFreeBlock;
 
 static unsigned char *g_cacheBumpTop;
-static CacheFreeBlock *g_cacheFreeList;
+static CacheFreeBlock *g_cacheFreeList;  /* sorted by ascending address */
+
+/* Minimum block size we'll leave behind when splitting a free block.
+ * Must fit a 4-byte header plus a CacheFreeBlock (next pointer). */
+#define CACHE_MIN_SPLIT_BLOCK ((size_t)(CACHE_HEADER_BYTES + sizeof(void *) + MEM_REGION_ALIGN))
 
 static void cacheInit_(void)
 {
@@ -518,6 +522,46 @@ static void cacheWriteSize_(unsigned char *blockBase, unsigned int sz)
     memcpy(blockBase, &sz, sizeof(unsigned int));
 }
 
+/* Insert fb into the free-list at the position that keeps the list
+ * sorted by ascending address. Required for coalescing to find
+ * adjacent blocks. */
+static void cacheInsertSorted_(CacheFreeBlock *fb)
+{
+    CacheFreeBlock **prev = &g_cacheFreeList;
+    CacheFreeBlock *cur   = g_cacheFreeList;
+    while (cur != NULL && (unsigned char *)cur < (unsigned char *)fb) {
+        prev = &cur->next;
+        cur  = cur->next;
+    }
+    fb->next = cur;
+    *prev = fb;
+}
+
+/* Walk the sorted free-list and merge each pair of physically
+ * adjacent free blocks. Two blocks A and B are adjacent iff
+ * A_base + A_size == B_base, where A_base is the header start
+ * (user_ptr - CACHE_HEADER_BYTES). The merged block keeps A's
+ * header position; its size becomes A_size + B_size; B is dropped
+ * from the list. */
+static void cacheCoalesce_(void)
+{
+    CacheFreeBlock *cur = g_cacheFreeList;
+    while (cur != NULL && cur->next != NULL) {
+        unsigned char *curBase  = (unsigned char *)cur  - CACHE_HEADER_BYTES;
+        unsigned char *nextBase = (unsigned char *)cur->next - CACHE_HEADER_BYTES;
+        unsigned int   curSize  = cacheReadSize_(curBase);
+        if (curBase + curSize == nextBase) {
+            unsigned int nextSize = cacheReadSize_(nextBase);
+            cacheWriteSize_(curBase, curSize + nextSize);
+            cur->next = cur->next->next;
+            /* Don't advance; the merged block might be adjacent to
+             * the *new* next. */
+        } else {
+            cur = cur->next;
+        }
+    }
+}
+
 static void *cacheAllocInternal(size_t size)
 {
     /* Lazy init on first use. */
@@ -528,7 +572,7 @@ static void *cacheAllocInternal(size_t size)
     const size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
                               & ~((size_t)MEM_REGION_ALIGN - 1);
 
-    /* Try free-list first (first-fit). */
+    /* Try free-list first (first-fit, with splitting). */
     CacheFreeBlock **prev = &g_cacheFreeList;
     CacheFreeBlock *cur = g_cacheFreeList;
     while (cur != NULL) {
@@ -537,10 +581,21 @@ static void *cacheAllocInternal(size_t size)
         if (freeSize >= blockSize) {
             /* Remove from free-list. */
             *prev = cur->next;
-            /* The free block's reported size may be larger than what
-             * we need; we honor the full block (no splitting in this
-             * implementation). g_cacheUsed adds back the full block. */
-            g_cacheUsed += freeSize;
+            if (freeSize >= blockSize + CACHE_MIN_SPLIT_BLOCK) {
+                /* Split: keep front blockSize bytes; leave the tail
+                 * as a new free block. */
+                cacheWriteSize_(blockBase, (unsigned int)blockSize);
+                unsigned char *tailBase = blockBase + blockSize;
+                unsigned int   tailSize = (unsigned int)(freeSize - blockSize);
+                cacheWriteSize_(tailBase, tailSize);
+                CacheFreeBlock *tailFb =
+                    (CacheFreeBlock *)(tailBase + CACHE_HEADER_BYTES);
+                cacheInsertSorted_(tailFb);
+                g_cacheUsed += blockSize;
+            } else {
+                /* Whole-block take — caller pays for the unused tail. */
+                g_cacheUsed += freeSize;
+            }
             return (void *)cur;
         }
         prev = &cur->next;
@@ -551,8 +606,7 @@ static void *cacheAllocInternal(size_t size)
     const size_t used = (size_t)(g_cacheBumpTop - g_cacheBase);
     const size_t remaining = MEM_CACHE_BUDGET - used;
     if (blockSize > remaining) {
-        /* CACHE exhausted. TODO(phase-1): integrate LRU eviction
-         * before returning NULL — caller halts in that case. */
+        /* CACHE exhausted. Caller invokes LRU evictor + retries. */
         return NULL;
     }
     unsigned char *blockBase = g_cacheBumpTop;
@@ -574,11 +628,13 @@ static void cacheFreeInternal(void *ptr)
     } else {
         g_cacheUsed = 0;  /* defensive on counter underflow */
     }
-    /* Prepend to free-list. The block's body is reinterpreted as a
-     * CacheFreeBlock; first sizeof(void *) bytes hold `next`. */
+    /* Insert into the sorted free-list, then merge adjacent blocks.
+     * Both ops are O(n) in the free-list length; n stays small (a
+     * few hundred at most) so the cost is dwarfed by the CD read
+     * that motivated the alloc. */
     CacheFreeBlock *fb = (CacheFreeBlock *)ptr;
-    fb->next = g_cacheFreeList;
-    g_cacheFreeList = fb;
+    cacheInsertSorted_(fb);
+    cacheCoalesce_();
 }
 
 static size_t cacheUsedInternal(void)
