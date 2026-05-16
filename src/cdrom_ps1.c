@@ -1049,13 +1049,20 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
-    /* Allocate sector-aligned scratch for the CD read. Goes in
-     * TRANSIENT region post-memInit so it lives in the scene-wipe
-     * pool; libc fallback pre-init. MEM_REGION_RATIONALE: pure
-     * scratch — freed within this function. */
+    /* Allocate sector-aligned scratch for the CD read. CACHE
+     * region post-memInit: large streaming-window reads (up to
+     * ~70 KB) consistently overflow TRANSIENT (which peaks at
+     * ~200 KB on activity-high variants from clean-rect + per-
+     * frame scratch), and TRANSIENT's libc fallback also fails
+     * because libc is fragmented by the bgTile*Clean buffers.
+     * CACHE has a coalescing free-list, plenty of headroom (peak
+     * 760 KB / 900 KB), and the buffer is freed individually at
+     * function exit so it doesn't accumulate in CACHE.
+     * MEM_REGION_RATIONALE: large per-read scratch; CACHE because
+     * size can exceed TRANSIENT budget. */
     int sectorBufferFromRegion = 0;
     if (memIsReady()) {
-        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_TRANSIENT,
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
                                           bufferSize,
                                           "cdrom_sectorBuffer");
         sectorBufferFromRegion = 1;
@@ -1141,7 +1148,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                                   ps1PerfElapsedVBlanks(perfStartTick),
                                   1, perfFileLba, offset, 0);
     if (sectorBufferFromRegion) {
-        memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+        memFree(MEM_REGION_CACHE, sectorBuffer);
     } else {
         free(sectorBuffer);
     }
@@ -1171,8 +1178,10 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
     int sectorBufferFromRegion2 = 0;
     if (memIsReady()) {
         /* MEM_REGION_RATIONALE: sector-aligned scratch for CD-read-
-         * into-caller-buffer path; freed at function exit. */
-        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_TRANSIENT,
+         * into-caller-buffer path; freed at function exit. CACHE
+         * for the same reason as the streaming-read variant
+         * above. */
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
                                           bufferSize,
                                           "cdrom_sectorBuffer_into");
         sectorBufferFromRegion2 = 1;
@@ -1184,7 +1193,7 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
 
     result = ps1_streamReadFromCdFileIntoBuffered(cdfile, offset, size, dstBuffer, sectorBuffer, bufferSize);
     if (sectorBufferFromRegion2) {
-        memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+        memFree(MEM_REGION_CACHE, sectorBuffer);
     } else {
         free(sectorBuffer);
     }

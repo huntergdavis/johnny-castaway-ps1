@@ -1367,12 +1367,14 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         /* No DrawSync here - let main loop handle sync */
     } else {
         /* MEM_REGION_RATIONALE: per-blit clipped-region temp buffer.
-         * Lives ~one frame; freed inline. TRANSIENT region: the bytes
-         * persist until the next memSceneReset, but typical blit sizes
-         * are <16 KB so cumulative TRANSIENT consumption is small even
-         * with many blits per frame. INIT_FULL_WRITE — populated by
-         * the memcpy loop below. */
-        uint16 *tempBuf = (uint16*)memAlloc(MEM_REGION_TRANSIENT,
+         * Lives ~one frame; freed inline. CACHE region: memFree(CACHE)
+         * actually reclaims bytes via the coalescing free-list, so
+         * per-blit allocs of any size can be reused. TRANSIENT was
+         * the wrong fit because its memFree only decrements balance;
+         * bytes persist until memSceneReset, and large blits (up to
+         * 70 KB on activity-high variants) overflow the budget.
+         * INIT_FULL_WRITE — populated by the memcpy loop below. */
+        uint16 *tempBuf = (uint16*)memAlloc(MEM_REGION_CACHE,
                                             blitW * blitH * 2,
                                             "grBlitTempBuf");
         uint16 *src = sprite->pixels;
@@ -1388,7 +1390,7 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         LoadImage(&dstRect, (uint32*)tempBuf);
         DrawSync(0);  /* Must sync before "releasing" buffer - LoadImage is async! */
 
-        memFree(MEM_REGION_TRANSIENT, tempBuf);
+        memFree(MEM_REGION_CACHE, tempBuf);
     }
 }
 
@@ -3654,7 +3656,13 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         if (requiredBytes[i] == 0)
             goto fail;
         /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
-         * 6 atomic slots; see comment block above the for loop). */
+         * 6 atomic slots; see comment block above the for loop).
+         * TRANSIENT is the right region: clean-rects are reclaimed
+         * at scene transition. Activity1-high overflows the 256 KB
+         * TRANSIENT budget with a 330 KB snapshot — that scene
+         * variant is a documented known-overflow case (libc fallback
+         * still gives wholesale-wipe via TransientLibcEntry; only
+         * fails when libc is also exhausted). */
         gGrCleanRects[i].pixels = (uint16 *)memAlloc(MEM_REGION_TRANSIENT,
                                                      requiredBytes[i],
                                                      "grCleanRectPixels");

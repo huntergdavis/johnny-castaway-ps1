@@ -512,3 +512,105 @@ the v0.8.14 baseline within run-to-run noise. The libc fallback
 paths are documented as safety valves, not as primary mechanism,
 and the activity4 TRANSIENT tightness is explicitly noted as a
 known sharp edge with a benign overflow path.
+
+---
+
+## Round 12 — 126-variant matrix expansion
+
+Round 11's 8-scene matrix used the canonical (single-variant)
+boot of each scene. The full `ps1-perf-all-scenes.sh` matrix
+runs 63 scenes × 2 tide variants = 126 cases with night/holiday/
+raft-stage variants too. Round 12 expanded to that matrix and
+surfaced two more migrations + one unfixable over-budget variant.
+
+### Finding 12-A: large CD-stream sector buffers exceed TRANSIENT
+
+`activity4-high` BSOD'd with `TRANSIENT region+libc both
+exhausted: req=70356`. The 68 KB allocation is the sector buffer
+in `ps1_streamReadFromCdFile` for a streaming-window read. It
+went to TRANSIENT (256 KB budget); when scene-level state had
+already committed ~208 KB to TRANSIENT, the 68 KB overflowed.
+TRANSIENT's libc fallback also failed because libc was
+fragmented by other big persistent allocations (walk clean buf,
+bg-tile clean tiles).
+
+**Fix:** route the streaming sector buffer to CACHE in both
+`ps1_streamReadFromCdFile` and `ps1_streamReadFromCdFileInto`.
+The CACHE has 154 KB free at the failure point, the buffer is
+freed individually at function exit, and CACHE's coalescing
+free-list reclaims the bytes immediately.
+
+`activity4-high` now PASSes: scene_vb=1308 loop_vb=1065.
+
+### Finding 12-B: per-blit clipped temp buffer in wrong region
+
+`grPixelBlit`'s per-blit clipped-region temp buffer was in
+TRANSIENT (`memAlloc(MEM_REGION_TRANSIENT, blitW * blitH * 2,
+"grBlitTempBuf")`). For large blits (up to 70 KB on activity-
+high variants), TRANSIENT overflowed.
+
+But the real issue: `memFree(MEM_REGION_TRANSIENT, ...)` only
+decrements the balance counter — bytes are reclaimed by
+`memSceneReset`, not the explicit free. So per-blit allocations
+accumulated in TRANSIENT until scene transition.
+
+**Fix:** route to CACHE. `memFree(MEM_REGION_CACHE)` actually
+reclaims bytes (via the coalescing free-list), so per-blit
+allocation cycles can reuse the same CACHE space.
+
+### Finding 12-C: activity1-high — fundamental over-budget variant
+
+`activity1-high` fails irrespective of region tuning. Telemetry
+captures the exact constraints:
+```
+JCMEM large-clean scene=activity1 bytes=330512 drop-prefetch
+JCMEM-PRE-HALT ... cache:843172/921600 trans:198512/262144 ...
+```
+
+The scene needs a 323 KB clean-rect snapshot. TRANSIENT budget
+256 KB can't hold it; CACHE budget 900 KB can't either alongside
+the 718 KB of bg-tile pixels + LRU residency the scene also
+needs. Tested both routings; both fail.
+
+The variant is over the practical memory budget of the PS1 RAM
+(2 MB total - 450 KB exe - 64 KB stack - 148 KB walk = 1386 KB
+usable, of which the region takes 1188 KB leaving 198 KB libc).
+Activity1-high needs ~1450 KB of simultaneously-live allocations.
+No region tuning fixes this without architectural changes
+(streaming clean-rects in chunks, or moving bg-tiles out of
+CACHE entirely).
+
+**Decision:** documented as a known-overflow variant. The plan's
+explicit scope was 63 scenes, and the canonical activity1 (low
+tide, raft-stage 0) PASSes cleanly. The night/holiday/raft-stage
+variant explosion is out of scope and would require dedicated
+architectural work beyond this allocator plan.
+
+### Round 12 final matrix (8 canonical scenes)
+
+After 12-A and 12-B fixes, the 8 canonical scenes still pass with
+identical loop_vb to Round 11:
+
+| Scene    | loop_vb | Result |
+|----------|---------|--------|
+| fishing1 | 1070    | PASS   |
+| fishing2 | 1762    | PASS   |
+| mary1    | 4849    | PASS   |
+| building1| 783     | PASS   |
+| suzy1    | 5761    | PASS   |
+| activity1| 2755    | PASS   |
+| activity4| 1065    | PASS   |
+| activity4-high | 1065 | PASS (new in 12-A) |
+| johnny1  | 1948    | PASS   |
+
+### Final final verdict
+
+Plan central goal: delivered.
+- Static region 1188 KB (32/900/256), under the 1228 KB ceiling.
+- Coalescing+splitting CACHE allocator (Round 11).
+- TRANSIENT wholesale-wipe with libc-fallback linked list.
+- All canonical scenes PASS, performance unchanged.
+- Per-blit and sector-buffer allocations routed to CACHE for
+  proper reclamation (Round 12).
+- Documented known overflow: activity1-high needs ~1450 KB
+  simultaneous live which exceeds PS1's practical capacity.
