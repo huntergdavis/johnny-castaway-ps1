@@ -265,12 +265,21 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
     case MEM_REGION_CACHE: {
         /* cacheAllocInternal updates g_cacheUsed itself (per-block,
          * including the 4-byte header). NULL return means the
-         * free-list missed and the bump's headroom was insufficient
-         * — caller halts. */
+         * free-list missed and the bump's headroom was insufficient. */
         void *p = cacheAllocInternal(alignedSize);
         if (p == NULL) {
-            memHaltFmt("CACHE", "exhausted",
-                       alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
+            /* CACHE exhausted: call the LRU evictor (resource.c
+             * provides it as a weak symbol so the link stays clean
+             * even when the evictor isn't compiled in). The evictor
+             * walks LRU and calls memFree(CACHE, ...) on unpinned
+             * resources, returning freed bytes to the free-list. */
+            extern void checkMemoryBudget(void);
+            checkMemoryBudget();
+            p = cacheAllocInternal(alignedSize);
+            if (p == NULL) {
+                memHaltFmt("CACHE", "exhausted (eviction insufficient)",
+                           alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
+            }
         }
         if (g_cacheUsed > g_cachePeak) {
             g_cachePeak = g_cacheUsed;
