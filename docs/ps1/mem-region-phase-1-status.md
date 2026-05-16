@@ -96,19 +96,27 @@ populate the maxes:
 - [ ] `gFgStreamScratch`
 - [ ] `gFgStreamWindowBuffer`
 
-**Resource data blobs (blocked on CACHE eviction integration):**
+**Resource data blobs — DONE** (commit 3a93a756a, f972af8f1):
 
-The plan wants `uncompressedData` blobs (BMP/TTM/SCR/ADS) in CACHE
-with LRU eviction. On PS1, these are loaded via `ps1_streamRead` in
-cdrom_ps1.c. Migration requires:
-- ps1_streamRead callers split: cache-data callers vs scratch callers
-- The LRU evictor (`resource.c:checkMemoryBudget`) routed through
-  `memFree(CACHE, ...)` instead of libc `free()`
+- New `ps1_streamReadCache()` wraps ps1_streamRead with a memcpy
+  into MEM_REGION_CACHE. Used at the 4 uncompressedData sites for
+  BMP/SCR/TTM/ADS in cdrom_ps1.c.
+- `ps1PilotLoadResource` performs the same libc→CACHE memcpy
+  internally, so the alternate pack-based load path is also routed
+  through CACHE.
+- PSB loader: fallback `ps1_streamRead` → `ps1_streamReadCache`;
+  all `free(psbBuf)` paths → `memFree(MEM_REGION_CACHE, psbBuf)`.
+- LRU evictor (`resource.c:checkMemoryBudget`): routes through
+  `memFree(MEM_REGION_CACHE, ...)` on PS1, libc free on PC.
+- CACHE allocator: failure to find a free-list block triggers
+  the LRU evictor automatically, then retries. Halt only if the
+  evictor couldn't free enough.
+- `memCachePreEvictForNextScene`: called from main loop after
+  `fgLoopApplyVariant`, sheds unpinned resources during the paused
+  transition so mid-scene eviction is rare.
 
-Left on libc to avoid the latent free-on-region-pointer bug that
-nearly shipped (see commit dae67c25a). Site of the largest single
-remaining win — implementing this safely is the next-most-impactful
-work.
+The largest single fragmentation source is now fixed. CACHE's
+600 KB is actively managed by the free-list + LRU.
 
 **CD-side sector buffers (low impact):**
 
@@ -159,11 +167,10 @@ Migration is low value.
 
 ## Still TODO from plan v9
 
-- [ ] **`memFreezeBoot()` enable** — gated pending full BOOT call-site
-      audit. Several surfaces (grNewEmptyBackground, PSB/BMP frame
-      surfaces) may allocate lazily during resource loading rather
-      than at strict boot time. Activating the freeze prematurely
-      would halt the game on first scene.
+- [x] **`memFreezeBoot()` enable** — DONE. Graphics surface
+      descriptors reverted to libc (they're scene-runtime, not BOOT);
+      walkPilotInit forced before freeze; BOOT region is now sealed
+      after boot init.
 - [ ] **`src/malloc_poison.h`** — project-level enforcement. Cannot
       enable until grow-only buffers + ps1_streamRead are migrated;
       otherwise legitimate libc malloc/free calls would break the
