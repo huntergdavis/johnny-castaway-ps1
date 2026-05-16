@@ -1175,6 +1175,21 @@ fgScenePreservesPrefetchUnderCleanPressure(const char *sceneName)
            fgSceneEquals(sceneName, "fishing4");
 }
 
+/* Round 16: scene-specific override that forces cleanMemoryRelief=1
+ * regardless of the union-based threshold check in
+ * fgSceneNeedsCleanMemoryRelief. visitor3 has a 2x 97 KB clean-rect
+ * snapshot that overflows CACHE when the preserved prefetch buffer
+ * (112 KB) + setup-prime window (208-320 KB) + LRU residency are
+ * also live. The threshold check uses unionWidth*unionHeight from
+ * the pack header, which under-counts when rects don't span the
+ * full union. Forcing relief skips up to 540 KB of CACHE
+ * allocations (prefetch + stream window + scratch) — only this
+ * one scene needs it. */
+static int fgSceneForcesCleanMemoryRelief(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "visitor3");
+}
+
 static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
                                          uint32 cleanBytes,
                                          uint32 maxFrameBytes)
@@ -3203,8 +3218,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 maxDataSize = FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES;
             }
             cleanSnapshotEstimate = fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
-            cleanMemoryRelief = (uint8)fgSceneNeedsCleanMemoryRelief(
-                sceneName, cleanSnapshotEstimate, maxDataSize);
+            cleanMemoryRelief = (uint8)(
+                fgSceneNeedsCleanMemoryRelief(sceneName, cleanSnapshotEstimate, maxDataSize)
+                || fgSceneForcesCleanMemoryRelief(sceneName));
             if (maxDataSize > gFgFrameBufferSize) {
                 if (gFgFrameBuffer != NULL)
                     memFree(MEM_REGION_CACHE, gFgFrameBuffer);
@@ -3228,6 +3244,40 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                        (unsigned long)cleanSnapshotEstimate,
                        (unsigned long)maxDataSize);
                 fgDropOptionalPrefetchBuffersForCleanSnapshot();
+                if (fgSceneForcesCleanMemoryRelief(sceneName)) {
+                    /* Round 16: explicit-free of grow-only persistent
+                     * buffers for force-relief scenes (visitor3 only).
+                     * fgDropOptionalPrefetchBuffersForCleanSnapshot
+                     * above only clears runtime mirror fields; the
+                     * global CACHE-resident pointers persist across
+                     * scene transitions per fgReleaseStreamBuffers'
+                     * grow-only design. For visitor3, those bytes
+                     * compete with the 2x 97 KB clean-rect snapshot
+                     * and trigger the BSOD. Free them explicitly.
+                     *
+                     * memFree(MEM_REGION_CACHE, ptr) range-checks
+                     * the pointer (mem_region.c:379-386), so it
+                     * routes correctly whether the buffer was
+                     * CACHE-allocated (prefetch, always) or
+                     * libc-allocated (window, primary path is
+                     * malloc with CACHE fallback at line 3328/3337).
+                     *
+                     * Cold-boot: both pointers are NULL, the if-NULL
+                     * guards skip the free; Part 1's allocation-skip
+                     * already prevents them from being allocated.
+                     * Mid-session: prior scenes grew the buffers,
+                     * this free reclaims them. */
+                    if (gFgPrefetchFrameBuffer != NULL) {
+                        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+                        gFgPrefetchFrameBuffer = NULL;
+                        gFgPrefetchFrameBufferSize = 0;
+                    }
+                    if (gFgStreamWindowBuffer != NULL) {
+                        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+                        gFgStreamWindowBuffer = NULL;
+                        gFgStreamWindowBufferSize = 0;
+                    }
+                }
             }
             if (gFgPrefetchStage1Enabled && !cleanMemoryRelief) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
