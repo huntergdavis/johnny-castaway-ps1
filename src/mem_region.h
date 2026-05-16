@@ -84,9 +84,16 @@ typedef enum MemRegion {
  *   CACHE: 700 KB (MARY pinned 568 KB + file buffer + result peaks)
  *   TRANSIENT: 280 KB (sectorBuffer 300 KB peak split + scene scratch)
  *   Total: 1012 KB (~1 MB) */
+/* Red-team measurements drove these budgets:
+ *   - mary1:   CACHE peak 716 KB → bumped from 700 to 800 KB
+ *   - johnny1: pre-scene CACHE residency 614 KB + 2x112 KB frame buffers
+ *              + bg-tile etc. exceeded 800 KB → bumped to 900 KB
+ *   - TRANSIENT peak observed at 231 KB (mary1) — 256 KB leaves headroom
+ *
+ * Total = 1188 KB, under the 1228 KB linker-map ceiling. */
 #define MEM_BOOT_BUDGET      ( 32u * 1024u)
-#define MEM_CACHE_BUDGET     (700u * 1024u)
-#define MEM_TRANSIENT_BUDGET (280u * 1024u)
+#define MEM_CACHE_BUDGET     (900u * 1024u)
+#define MEM_TRANSIENT_BUDGET (256u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
 /* Hard ceiling against the linker map (build-ps1/jcreborn.map):

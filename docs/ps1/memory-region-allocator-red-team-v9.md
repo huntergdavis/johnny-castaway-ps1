@@ -329,3 +329,97 @@ The plan's central goal — **deterministic region ownership of
 sub-allocator and TRANSIENT wiped between scenes** — is delivered,
 with measured per-scene performance unchanged vs the prior
 all-libc-backed baseline.
+
+---
+
+## Round 10 — telemetry-driven budget tuning (2026-05-16)
+
+Enabling `memLogTelemetry()` (temporarily un-gating the
+`FG_HEAP_PROBE_LOGS` `#ifdef`) at every `memSceneReset` surfaced
+two findings the happy-path scene matrix missed.
+
+### Finding 10-A: CACHE 700 KB was one byte from libc fallback on mary1
+
+mary1 mid-scene snapshot at the 1012 KB budget configuration:
+```
+JCMEM boot=0/32768 cache=716084/716800 transient=230696/286720
+      (peaks 0 716084 230696) balance=6
+```
+CACHE was 99.9% utilized. Functionally fine — the LRU evictor +
+libc fallback would catch any overflow — but eliminates the
+deterministic-region promise for MARY's load pattern in practice.
+**Mitigation:** bumped CACHE to 800 KB.
+
+### Finding 10-B: johnny1 BSOD reproducibly at CACHE 800 KB
+
+After the 800 KB bump, johnny1 still failed:
+```
+JCBSOD-FATAL CACHE exhausted (region+libc both): req=116736 have=81736
+JCBSOD memCacheUsed=737464 memCachePeak=737464
+```
+johnny1 needs `gFgFrameBuffer` 112 KB + `gFgPrefetchFrameBuffer`
+112 KB simultaneously, plus the bg-tile pixel buffer (150 KB) +
+other LRU residency (~580 KB carried across the boot/title
+transition). 614 KB pre-scene residency + 2x 114 KB johnny1
+buffers ≈ 842 KB > 800 KB budget. The libc fallback also failed —
+the 1012 KB region had displaced libc's contiguous heap.
+
+Two follow-on changes resolved this:
+
+1. **Migrated grow-only buffers from libc to CACHE** in
+   `src/foreground_pilot.c` (per plan Phase 3 table):
+   - `gFgFrameBuffer` (line 3206)
+   - `gFgPrefetchFrameBuffer` (line 3227)
+   - `gFgStreamWindowBuffer` (line 3323)
+   - `gFgStreamScratch` (line 3358)
+   - Their matching `free()` calls in `fgReleaseStreamBuffers`
+     (lines 1373-1391).
+
+2. **Bumped CACHE budget to 900 KB**, shrunk TRANSIENT to 256 KB
+   (peak observed 230 KB on mary1 — 256 leaves 12% headroom),
+   total 1188 KB (under the 1228 KB linker-map ceiling).
+
+### Verified end-to-end at 1188 KB
+
+7-scene matrix at CACHE 900 / TRANSIENT 256 / BOOT 32:
+
+| Scene    | scene_vb | loop_vb | block_vb | hits | due_misses | Result |
+|----------|----------|---------|----------|------|------------|--------|
+| fishing1 | 1325     | 1070    | 4        | 136  | 0          | PASS   |
+| fishing2 | 2020     | 1762    | 8        | 246  | 0          | PASS   |
+| mary1    | 5139     | 4849    | 18       | 681  | 1          | PASS   |
+| building1| 1038     | 783     | 13       | 104  | 1          | PASS   |
+| suzy1    | 5938     | 5761    | 18       | 176  | 0          | PASS   |
+| activity1| 3016     | 2755    | 0        | 187  | 0          | PASS   |
+| activity4| 1326     | 1065    | 1        | 155  | 0          | PASS   |
+| johnny1  | 2025     | 1948    | 5        | 111  | 0          | PASS   |
+
+vs v0.8.14 baseline: fishing1 loop_vb 1067 → 1070 (+3 / +0.3 %),
+within run-to-run noise.
+
+Peak telemetry captured during the run:
+- mary1:   CACHE peak 758076 / 921600 (82%); TRANSIENT 230696 / 262144 (88%)
+- johnny1: CACHE peak 852156 / 921600 (92%); TRANSIENT  10432 / 262144  (4%)
+
+### Limitations and known sharp edges
+
+- **CACHE first-fit free-list does not coalesce.** Adjacent freed
+  blocks don't merge, so worst-case fragmentation could exceed
+  observed peaks on long-running scene rotations. The 92%
+  johnny1 peak is uncomfortably close to budget. A future PR
+  should add boundary-tag coalescing in `cacheFreeInternal`.
+- **mary1 reports `due_misses=1`, building1 reports `due_misses=1`.**
+  These predate this branch (same number on v0.8.14 baseline);
+  not introduced by the region work.
+- **`memLogTelemetry()` ships gated behind `FG_HEAP_PROBE_LOGS`.**
+  To reproduce these peaks: build with
+  `-DFG_HEAP_PROBE_LOGS=1` or temporarily un-gate the call site
+  in `memSceneReset`.
+
+### Final verdict
+
+The static region is now **delivering correctness AND headroom**
+end-to-end across the full primary scene matrix. Performance is
+within run-to-run noise of the v0.8.14 baseline. The plan's
+no-fragmentation promise is met for the measured workloads, with
+the caveat noted above about coalescing for longer rotations.

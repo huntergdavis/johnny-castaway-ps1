@@ -1371,22 +1371,22 @@ static void fgReleaseStreamBuffers(void)
 static void fgReleaseStreamBuffersHard(void)
 {
     if (gFgFrameBuffer != NULL) {
-        free(gFgFrameBuffer);
+        memFree(MEM_REGION_CACHE, gFgFrameBuffer);
         gFgFrameBuffer = NULL;
         gFgFrameBufferSize = 0;
     }
     if (gFgPrefetchFrameBuffer != NULL) {
-        free(gFgPrefetchFrameBuffer);
+        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
     }
     if (gFgStreamWindowBuffer != NULL) {
-        free(gFgStreamWindowBuffer);
+        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;
     }
     if (gFgStreamScratch != NULL) {
-        free(gFgStreamScratch);
+        memFree(MEM_REGION_CACHE, gFgStreamScratch);
         gFgStreamScratch = NULL;
         gFgStreamScratchSize = 0;
     }
@@ -3202,8 +3202,12 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 sceneName, cleanSnapshotEstimate, maxDataSize);
             if (maxDataSize > gFgFrameBufferSize) {
                 if (gFgFrameBuffer != NULL)
-                    free(gFgFrameBuffer);
-                gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
+                    memFree(MEM_REGION_CACHE, gFgFrameBuffer);
+                /* MEM_REGION_RATIONALE: grow-only frame buffer, persistent
+                 * across scenes; not LRU-tracked. CACHE region. */
+                gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                   maxDataSize,
+                                                   "fg-frame");
                 if (gFgFrameBuffer == NULL) {
                     if (ps1PerfEnabled)
                         ps1PerfMarkAllocFail(maxDataSize);
@@ -3223,8 +3227,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchStage1Enabled && !cleanMemoryRelief) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
                     if (gFgPrefetchFrameBuffer != NULL)
-                        free(gFgPrefetchFrameBuffer);
-                    gFgPrefetchFrameBuffer = (uint8 *)malloc(maxDataSize);
+                        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+                    /* MEM_REGION_RATIONALE: grow-only prefetch frame
+                     * buffer, peer of gFgFrameBuffer. CACHE region. */
+                    gFgPrefetchFrameBuffer = (uint8 *)memAlloc(
+                        MEM_REGION_CACHE, maxDataSize, "fg-prefetch-frame");
                     if (gFgPrefetchFrameBuffer == NULL) {
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(maxDataSize);
@@ -3320,7 +3327,12 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         gFgRuntime.setupPrimeWindowBytes = 0;
                         windowCapacityBytes = windowBytes;
                         if (windowCapacityBytes > gFgStreamWindowBufferSize)
-                            newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                            /* MEM_REGION_RATIONALE: grow-only prefetch
+                             * window. CACHE region. */
+                            newWindowBuffer = (uint8 *)memAlloc(
+                                MEM_REGION_CACHE,
+                                windowCapacityBytes,
+                                "fg-stream-window");
                     }
                     if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                         if (newWindowBuffer == NULL) {
@@ -3331,11 +3343,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             return 0;
                         }
                         if (gFgStreamWindowBuffer != NULL)
-                            free(gFgStreamWindowBuffer);
+                            memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
                         gFgStreamWindowBuffer = newWindowBuffer;
                         gFgStreamWindowBufferSize = windowCapacityBytes;
                     } else if (newWindowBuffer != NULL) {
-                        free(newWindowBuffer);
+                        memFree(MEM_REGION_CACHE, newWindowBuffer);
                     }
                 }
                 gFgRuntime.streamWindowReadSize = windowBytes;
@@ -3348,14 +3360,18 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (cleanMemoryRelief &&
                     gFgStreamScratch != NULL &&
                     gFgStreamScratchSize > requiredScratch) {
-                    free(gFgStreamScratch);
+                    memFree(MEM_REGION_CACHE, gFgStreamScratch);
                     gFgStreamScratch = NULL;
                     gFgStreamScratchSize = 0;
                 }
                 if (requiredScratch > gFgStreamScratchSize) {
                     if (gFgStreamScratch != NULL)
-                        free(gFgStreamScratch);
-                    gFgStreamScratch = (uint8 *)malloc(requiredScratch);
+                        memFree(MEM_REGION_CACHE, gFgStreamScratch);
+                    /* MEM_REGION_RATIONALE: grow-only alignment scratch.
+                     * CACHE region. */
+                    gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                          requiredScratch,
+                                                          "fg-stream-scratch");
                     if (gFgStreamScratch == NULL) {
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(requiredScratch);
