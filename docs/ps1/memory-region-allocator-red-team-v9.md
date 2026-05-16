@@ -614,3 +614,64 @@ Plan central goal: delivered.
   proper reclamation (Round 12).
 - Documented known overflow: activity1-high needs ~1450 KB
   simultaneous live which exceeds PS1's practical capacity.
+
+---
+
+## Round 13 — clean-rect migration attempt + revert
+
+The 63-scene canonical matrix surfaced `activity10` (a default-
+variant scene, not a "high" variant) failing with TRANSIENT
+overflow at 290 KB clean-rect snapshot. Round 13 tested two
+mitigations:
+
+### Mitigation A: clean-rect → CACHE
+
+Routed `gGrCleanRects[i].pixels` from TRANSIENT to CACHE. The
+explicit `grFreeCleanBgRects` lifecycle is compatible with CACHE's
+coalescing free-list — wholesale-wipe wasn't load-bearing because
+the function is always called at scene transition.
+
+Result: `activity10` failed with CACHE-overflow instead. Same
+fundamental issue moved to a different region. The scene needs
+~290 KB clean-rect on top of ~770 KB of CACHE-resident bg-tile
+pixels + LRU, totaling ~1060 KB — exceeds CACHE 900 KB.
+
+### Mitigation B: rebalance to CACHE 1000 + TRANSIENT 156
+
+Bumped CACHE to 1000 KB, shrank TRANSIENT to 156 KB (total still
+1188 KB). The TRANSIENT shrink was safe because clean-rect had
+moved to CACHE, dropping TRANSIENT peak from 230 KB to ~100 KB.
+
+Result: `activity10` STILL failed with CACHE-overflow (966 KB
+peak vs 1000 KB budget); `activity1` (canonical default) ALSO
+failed at 966 KB. The total memory pressure for these scenes
+exceeds any single-region partition.
+
+### Conclusion: revert to Round-12 budgets
+
+Both mitigations shift the overflow without resolving it. PS1's
+~1.5 MB practical usable RAM vs ~1.2 MB simultaneous live memory
+on heavy scenes is the binding constraint. No single static
+partition satisfies all scenes — heavier-clean-rect scenes
+(activity10) and heavier-CACHE scenes (activity1-high) cannot
+both fit in their respective region maxima.
+
+Architectural alternatives that would resolve this (out of scope
+for this PR):
+- Streaming clean-rect snapshot in chunks (large refactor of
+  `grSaveCleanBgTiles` and grRestoreCleanBgRect callers)
+- Sharing bg-tile pixels across scenes (requires unified pixel
+  format/dimensions, not currently the case)
+- Implementing a fourth "growable persistent" region for bg-tile
+  pixels at the cost of weakening the BOOT-freeze invariant
+
+### Scope statement
+
+The implementation **fully delivers the plan's central goal
+within the constraints of the PS1's available RAM** for the
+canonical scene set: fishing1/2/3, mary1, building1, suzy1,
+activity1 (default), activity4, johnny1, and others in this
+weight class. Scenes with both heavy clean-rect + heavy bg-tile
+demands (activity10, activity1-high) are documented as
+over-practical-budget and would require architectural work
+beyond this allocator PR to satisfy.

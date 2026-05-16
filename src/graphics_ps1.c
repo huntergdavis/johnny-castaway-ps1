@@ -3657,12 +3657,12 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
             goto fail;
         /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
          * 6 atomic slots; see comment block above the for loop).
-         * TRANSIENT is the right region: clean-rects are reclaimed
-         * at scene transition. Activity1-high overflows the 256 KB
-         * TRANSIENT budget with a 330 KB snapshot — that scene
-         * variant is a documented known-overflow case (libc fallback
-         * still gives wholesale-wipe via TransientLibcEntry; only
-         * fails when libc is also exhausted). */
+         * TRANSIENT: clean-rects are reclaimed at scene transition;
+         * libc fallback gives wholesale-wipe via TransientLibcEntry
+         * for snapshots that exceed budget. Migration to CACHE was
+         * tested (Round 13) and rejected: it shifts overflow from
+         * TRANSIENT to CACHE on the same scenes without resolving
+         * the underlying budget pressure. */
         gGrCleanRects[i].pixels = (uint16 *)memAlloc(MEM_REGION_TRANSIENT,
                                                      requiredBytes[i],
                                                      "grCleanRectPixels");
