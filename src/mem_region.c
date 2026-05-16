@@ -680,10 +680,57 @@ void memVerifyAllScenesPinnedFitCache(void)
 }
 
 #ifdef JC_VERIFY_PACK_HASHES
+/* CRC-32 via Sarwate's algorithm. 1 KB lookup table in .rodata
+ * (BOOT-region budget unaffected). Polynomial 0xEDB88320 (reflected
+ * IEEE 802.3 standard CRC32). */
+static uint32_t crc32_lookup[256];
+static int      crc32_table_inited = 0;
+
+static void crc32_init_table(void)
+{
+    uint32_t c;
+    int i, j;
+    for (i = 0; i < 256; i++) {
+        c = (uint32_t)i;
+        for (j = 0; j < 8; j++) {
+            c = (c & 1u) ? (0xEDB88320u ^ (c >> 1)) : (c >> 1);
+        }
+        crc32_lookup[i] = c;
+    }
+    crc32_table_inited = 1;
+}
+
+static uint32_t crc32_compute(const uint8_t *data, size_t len)
+{
+    if (!crc32_table_inited) crc32_init_table();
+    uint32_t c = 0xFFFFFFFFu;
+    for (size_t i = 0; i < len; i++) {
+        c = crc32_lookup[(c ^ data[i]) & 0xFFu] ^ (c >> 8);
+    }
+    return c ^ 0xFFFFFFFFu;
+}
+
 void memVerifyPackHashes(void)
 {
-    /* TODO(phase-1): for each entry in kPackHeaderMetrics, read the
-     * pack's header bytes from CD, CRC-32 them, compare against
-     * .headerCrc. memHalt on mismatch. ~9 seconds total CD work. */
+    /* For each pack in kPackHeaderMetrics with a non-zero headerCrc,
+     * read its header bytes from CD and verify the CRC. memHalt on
+     * mismatch with the pack name. ~150 ms per pack at PSX CD
+     * speeds (seek + read header + CRC), so ~9 sec total for 63
+     * packs. Gated by JC_VERIFY_PACK_HASHES build flag (default off
+     * in release; on in dev/QA).
+     *
+     * NOTE: kPackHeaderMetrics currently has headerCrc = 0 for all
+     * entries (the generator doesn't emit CRCs yet — analyzer JSON
+     * doesn't include them). When the generator is extended to
+     * compute CRCs offline, this verifier becomes meaningful. For
+     * now it's a no-op even with the flag on. */
+    for (size_t i = 0; i < kPackHeaderMetricsCount; i++) {
+        if (kPackHeaderMetrics[i].headerCrc == 0) continue;
+        /* TODO: read the pack header bytes from CD; compute CRC via
+         * crc32_compute(); compare against kPackHeaderMetrics[i].headerCrc;
+         * memHalt on mismatch. CD-read path requires hooking
+         * cdrom_ps1.c — deferred. The crc32_compute helper above
+         * is ready to use. */
+    }
 }
 #endif
