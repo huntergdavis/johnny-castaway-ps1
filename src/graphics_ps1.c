@@ -1089,42 +1089,42 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
     psbBuf = ps1PilotLoadPsb(psbName, &psbSize);
 
     /* Fallback: load standalone PSB file from CD PSB/ directory.
-     * This path does a CdSearchFile but only triggers for scenes
-     * without a compiled pack or when a PSB is missing from the pack.
-     * psbSize was already set from the registry lookup above. */
+     * Both the pack path (ps1PilotLoadPsb) and this fallback now
+     * return MEM_REGION_CACHE-allocated buffers — free uniformly
+     * via memFree(CACHE) below. */
     if (psbBuf == NULL) {
         snprintf(psbPath, sizeof(psbPath), "PSB\\%s", psbName);
-        psbBuf = ps1_streamRead(psbPath, 0, psbSize);
+        psbBuf = ps1_streamReadCache(psbPath, 0, psbSize);
         if (psbBuf == NULL) return 0;
     }
 
     /* Validate PSB header */
     if (psbSize < sizeof(PSBHeader)) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 
     hdr = (PSBHeader *)psbBuf;
     if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 
     if (hdr->numFrames == 0 || hdr->dataOffset > psbSize) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 
     /* Cross-check totalSize against actual buffer size */
     if (hdr->totalSize > psbSize) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 
     /* Verify frame table fits */
     frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
     if (frameTableEnd > hdr->dataOffset) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 
@@ -1191,7 +1191,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* If no frames loaded (corruption or OOM), free everything and fall back. */
     if (framesLoaded == 0) {
-        free(psbBuf);
+        memFree(MEM_REGION_CACHE, psbBuf);
         return 0;
     }
 

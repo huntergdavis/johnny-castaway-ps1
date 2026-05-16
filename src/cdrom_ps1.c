@@ -799,6 +799,33 @@ static int ps1CdReadSyncBounded(void)
  * This is for dynamic loading - reads only the necessary CD sectors.
  * Returns malloc'd buffer that caller must free, or NULL on error.
  */
+
+/* ps1_streamReadCache: same as ps1_streamRead but returns a buffer
+ * allocated from MEM_REGION_CACHE — used by resource loaders that
+ * store the result as long-lived uncompressedData (BMP/SCR/TTM/ADS).
+ * Caller frees via memFree(MEM_REGION_CACHE, ptr), wired through the
+ * LRU evictor in resource.c.
+ *
+ * Implementation: call the libc-backed ps1_streamRead, memcpy into
+ * a fresh CACHE allocation, free the libc temp. The extra memcpy is
+ * ~1-2 ms per resource (~250 KB worst case at PSX memory bandwidth)
+ * but eliminates the per-resource libc-heap fragmentation that the
+ * region-allocator plan is designed to prevent.
+ *
+ * memAlloc(CACHE, ...) halts on exhaustion — no NULL return path. */
+#include "mem_region.h"
+uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t size)
+{
+    uint8_t *libcBuf = ps1_streamRead(filename, offset, size);
+    if (libcBuf == NULL) return NULL;  /* CD-read failure; caller halts */
+
+    uint8_t *cacheBuf = (uint8_t *)memAlloc(MEM_REGION_CACHE, size,
+                                            "ps1_streamReadCache");
+    memcpy(cacheBuf, libcBuf, size);
+    free(libcBuf);
+    return cacheBuf;
+}
+
 uint8_t* ps1_streamRead(const char* filename, uint32_t offset, uint32_t size)
 {
     CdlFILE cdfile;
@@ -1545,6 +1572,8 @@ static uint8_t *ps1PilotLoadResource(const char *resourceType, const char *name,
 {
     const struct TPs1PackedResourceEntry *entry = ps1PilotFindEntry(resourceType, name);
     uint8_t *data;
+    uint8_t *cacheCopy;
+    uint32_t copySize;
 
     if (entry == NULL) {
         if (ps1PilotActivePack.entries != NULL)
@@ -1582,6 +1611,19 @@ static uint8_t *ps1PilotLoadResource(const char *resourceType, const char *name,
         if (ps1PilotDbgHits < 0xFFFFU)
             ps1PilotDbgHits++;
         ps1PilotDbgLastHitEntry = (uint16)((entry - ps1PilotActivePack.entries) + 1);
+
+        /* MEM_REGION_RATIONALE: this function's return value becomes
+         * resource->uncompressedData in the LRU cache. Copy from the
+         * libc-temp buffer into MEM_REGION_CACHE so the LRU evictor's
+         * memFree(CACHE, ...) works on a region-allocated pointer.
+         * Extra memcpy is ~1-2 ms per resource — acceptable in
+         * exchange for no libc-heap fragmentation. */
+        copySize  = entry->sizeBytes;
+        cacheCopy = (uint8_t *)memAlloc(MEM_REGION_CACHE, copySize,
+                                        "ps1PilotLoadResource");
+        memcpy(cacheCopy, data, copySize);
+        free(data);
+        data = cacheCopy;
     } else {
         /* When the entry exists but the sector read fails, keep the overlay
          * value as the pack entry index so screenshot-based validation can
@@ -2446,7 +2488,10 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    bmpResource->uncompressedData = ps1_streamRead(path, 0, readSize);
+    /* MEM_REGION_RATIONALE: LRU-cached resource data. ps1_streamReadCache
+     * allocates from MEM_REGION_CACHE so the LRU evictor can reclaim
+     * via memFree(CACHE, ...) without fragmenting the libc heap. */
+    bmpResource->uncompressedData = ps1_streamReadCache(path, 0, readSize);
 
     /* Update uncompressedSize to match what we actually read */
     if (bmpResource->uncompressedData != NULL && fileSize < bmpResource->uncompressedSize) {
@@ -2494,7 +2539,7 @@ void ps1_loadScrData(struct TScrResource *scrResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    scrResource->uncompressedData = ps1_streamRead(path, 0, scrResource->uncompressedSize);
+    scrResource->uncompressedData = ps1_streamReadCache(path, 0, scrResource->uncompressedSize);
 }
 
 /*
@@ -2534,7 +2579,7 @@ void ps1_loadTtmData(struct TTtmResource *ttmResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    ttmResource->uncompressedData = ps1_streamRead(path, 0, ttmResource->uncompressedSize);
+    ttmResource->uncompressedData = ps1_streamReadCache(path, 0, ttmResource->uncompressedSize);
 }
 
 /*
@@ -2576,5 +2621,5 @@ void ps1_loadAdsData(struct TAdsResource *adsResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    adsResource->uncompressedData = ps1_streamRead(path, 0, adsResource->uncompressedSize);
+    adsResource->uncompressedData = ps1_streamReadCache(path, 0, adsResource->uncompressedSize);
 }

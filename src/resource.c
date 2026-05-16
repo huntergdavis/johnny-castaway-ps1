@@ -51,6 +51,9 @@ extern void free(void *ptr);
 #include <string.h>
 
 #include "mytypes.h"
+#ifdef PS1_BUILD
+#include "mem_region.h"
+#endif
 #include "utils.h"
 #include "resource.h"
 #include "uncompress.h"
@@ -916,7 +919,15 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ads->resName, lruSize / 1024.0);
                 }
+                /* On PS1, uncompressedData was allocated via
+                 * ps1_streamReadCache → MEM_REGION_CACHE; the LRU
+                 * evictor frees through memFree to keep the region
+                 * bookkeeping consistent (free-list reclaim). */
+#ifdef PS1_BUILD
+                memFree(MEM_REGION_CACHE, ads->uncompressedData);
+#else
                 free(ads->uncompressedData);
+#endif
                 ads->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             } else if (strcmp(lruType, "TTM") == 0) {
@@ -925,7 +936,11 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ttm->resName, lruSize / 1024.0);
                 }
+#ifdef PS1_BUILD
+                memFree(MEM_REGION_CACHE, ttm->uncompressedData);
+#else
                 free(ttm->uncompressedData);
+#endif
                 ttm->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             }
