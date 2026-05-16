@@ -551,7 +551,13 @@ static void parseResourceFile(char * filename)
 #ifdef PS1_BUILD
     PS1File *f;
 
-    f = ps1_fopen(mapFile.resFileName,"rb");
+    /* Stream RESOURCE.001 via a 64 KB sector cache rather than loading
+     * the whole ~1.1 MB file. This frees ~1 MB of libc heap for the
+     * memory-region allocator's static buffer. The parser's access
+     * pattern is many independent fseek+readBlock pairs (one per
+     * resource entry), each touching ~50-200 bytes; the streaming
+     * cache absorbs nearby entries without re-reading CD sectors. */
+    f = ps1_fopen_stream(mapFile.resFileName, 64 * 1024);
 
     if (f == NULL) {
         fatalError("Main resources file not found: %s\n", mapFile.resFileName);

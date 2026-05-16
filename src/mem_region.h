@@ -48,24 +48,31 @@ typedef enum MemRegion {
  *   - TRANSIENT  ~250 KB (clean-rect ≤181 KB + per-scene scratch)
  *   - Total      1.2 MB (fits under usable RAM per linker map)
  */
-/* Region budgets are 0 — the allocator runs in pure libc-fallback
- * mode. All allocations route through libc malloc; TRANSIENT
- * preserves its per-scene wholesale-wipe semantic by tracking
- * allocations in a linked list and freeing them at memSceneReset.
+/* Region budgets — set to 0 (all-libc-backed mode).
  *
- * Why: this codebase's existing graphics/CD paths claim ~800 KB
- * from libc at runtime, and the 1.1 MB RESOURCE.001 catalog parse
- * uses libc as scratch. Any static region buffer competes for the
- * same memory; sizing one large enough to be useful starves the
- * other allocators. The "all-libc-backed" mode preserves the
- * allocator API + wholesale-wipe semantic while sidestepping the
- * memory-overlap problem.
+ * Empirical testing revealed that ANY static region buffer of
+ * useful size (≥600 KB) collides with this codebase's existing
+ * libc demand during scene playback. Key existing libc allocations:
+ *   - OCEAN.SCR background: 150 KB
+ *   - FG2 pack body + sectorBuffer scratch: 300 KB peak temp
+ *   - Other graphics surfaces / walk PSB / etc.: 100+ KB
+ * Even with RESOURCE.001 streamed, a 600 KB region leaves libc with
+ * insufficient contiguous space for the OCEAN load, etc.
  *
- * The big win that remains: the TRANSIENT linked-list wipe gives
- * the same fragmentation-immune wholesale-cleanup semantic the
- * region allocator was designed for — just backed by libc instead
- * of a static buffer. Long-term: refactor parseResourceFiles to
- * stream RESOURCE.001, freeing up the static-buffer pool. */
+ * All-libc-backed mode: the allocator API runs but every allocation
+ * routes through libc malloc. TRANSIENT still preserves its
+ * wholesale-wipe semantic via a linked list of libc pointers freed
+ * at memSceneReset — the central architectural benefit (per-scene
+ * cleanup invariant) is delivered without competing for the static
+ * buffer pool.
+ *
+ * To enable static-buffer mode in the future, the prerequisites are:
+ *   1. RESOURCE.001 streamed (DONE — ps1_fopen_stream)
+ *   2. OCEAN/scene-pack loads migrated to region or streamed
+ *   3. graphics-surface allocations migrated to region
+ *   4. sector-buffer scratch migrated to TRANSIENT
+ * After those, libc's transient demand drops below ~200 KB and a
+ * 1 MB+ static region becomes feasible. */
 #define MEM_BOOT_BUDGET      0u
 #define MEM_CACHE_BUDGET     0u
 #define MEM_TRANSIENT_BUDGET 0u

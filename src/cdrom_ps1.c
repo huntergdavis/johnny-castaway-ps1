@@ -670,6 +670,100 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     return file;
 }
 
+PS1File* ps1_fopen_stream(const char* filename, uint32_t cacheBytes)
+{
+    static PS1File streamFiles[4];  /* small pool; ps1_fopen has its own slot */
+    static int streamSlot = 0;
+
+    /* Round cacheBytes up to a multiple of 2048 (CD sector). */
+    const uint32_t SECTOR = 2048u;
+    cacheBytes = ((cacheBytes + SECTOR - 1u) / SECTOR) * SECTOR;
+    if (cacheBytes == 0) cacheBytes = SECTOR;
+
+    PS1File *file = &streamFiles[streamSlot];
+    streamSlot = (streamSlot + 1) % 4;
+    /* Reset slot if it was in use */
+    if (file->isOpen && file->buffer) {
+        free(file->buffer);
+        file->buffer = NULL;
+    }
+    memset(file, 0, sizeof(*file));
+
+    /* Resolve file on CD. */
+    CdlFILE *result = CdSearchFile(&file->cdfile, (char*)filename);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    file->isOpen = 1;
+    file->isStream = 1;
+    strncpy(file->filename, filename, sizeof(file->filename) - 1);
+    file->filename[sizeof(file->filename) - 1] = '\0';
+    file->currentPos = 0;
+    file->bufferSize = cacheBytes;
+
+    file->buffer = (uint8_t*)malloc(cacheBytes);
+    if (!file->buffer) {
+        JC_BSOD(filename, "ps1_fopen_stream: cache alloc failed");
+    }
+    file->streamBase = 0;
+    file->streamBytesCached = 0;
+    /* No CD read yet — first ps1_fread does the refill. */
+    return file;
+}
+
+/* Stream-mode helper: refill the cache to cover currentPos through
+ * currentPos+needBytes-1 (clamped to file end). Re-reads CD sectors
+ * via CdRead. Returns 1 on success, 0 on CD failure. */
+static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
+{
+    if (!file || !file->isOpen || !file->isStream || !file->buffer) return 0;
+    if (file->currentPos < 0) return 0;
+    uint32_t fileSize = file->cdfile.size;
+    if ((uint32_t)file->currentPos >= fileSize) return 0;
+    if ((uint32_t)file->currentPos + needBytes > fileSize) {
+        needBytes = fileSize - (uint32_t)file->currentPos;
+    }
+    /* Sector-align the cache: start at the sector containing currentPos. */
+    const uint32_t SECTOR = 2048u;
+    uint32_t startSector = (uint32_t)file->currentPos / SECTOR;
+    uint32_t startOffset = startSector * SECTOR;
+    uint32_t needEnd     = (uint32_t)file->currentPos + needBytes;
+    uint32_t endSector   = (needEnd + SECTOR - 1u) / SECTOR;
+    uint32_t numSectors  = endSector - startSector;
+    /* Clamp to cache capacity (full sectors only). */
+    uint32_t capSectors  = file->bufferSize / SECTOR;
+    if (capSectors == 0) return 0;
+    if (numSectors > capSectors) numSectors = capSectors;
+    /* Clamp to file end. */
+    uint32_t fileSectors = (fileSize + SECTOR - 1u) / SECTOR;
+    if (startSector + numSectors > fileSectors)
+        numSectors = fileSectors - startSector;
+
+    /* Seek + read. */
+    CdlLOC loc = file->cdfile.pos;
+    uint32_t baseLba = (uint32_t)CdPosToInt((CdlLOC*)&loc);
+    uint32_t targetLba = baseLba + startSector;
+    /* Convert back to BCD MSF for CdControl. */
+    CdlLOC seekLoc;
+    CdIntToPos((int)targetLba, &seekLoc);
+    CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL);
+    /* Brief seek wait. */
+    for (volatile int i = 0; i < 200000; i++);
+    CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
+    if (CdReadSync(0, NULL) < 0) {
+        cdromResetState();
+        return 0;
+    }
+    file->streamBase = startOffset;
+    file->streamBytesCached = numSectors * SECTOR;
+    /* Clamp last-sector overhang to file size. */
+    if (file->streamBase + file->streamBytesCached > fileSize) {
+        file->streamBytesCached = fileSize - file->streamBase;
+    }
+    return 1;
+}
+
 size_t ps1_fread(void* ptr, size_t size, size_t nmemb, PS1File* file)
 {
     if (!file || !file->isOpen || !file->buffer) {
@@ -677,19 +771,50 @@ size_t ps1_fread(void* ptr, size_t size, size_t nmemb, PS1File* file)
     }
 
     size_t totalBytes = size * nmemb;
+    if (totalBytes == 0) return 0;
     uint8_t* dest = (uint8_t*)ptr;
+    size_t bytesRead = 0;
 
-    /* Check if read goes past end of buffer */
+    if (file->isStream) {
+        /* Stream mode: refill cache as the read crosses sectors. */
+        uint32_t fileSize = file->cdfile.size;
+        if ((uint32_t)file->currentPos >= fileSize) return 0;
+        while (bytesRead < totalBytes) {
+            uint32_t pos = (uint32_t)file->currentPos;
+            if (pos >= fileSize) break;
+            /* Is pos inside the current cache window? */
+            int hit = (pos >= file->streamBase) &&
+                      (pos < file->streamBase + file->streamBytesCached);
+            if (!hit) {
+                if (!ps1_streamRefill(file, totalBytes - bytesRead)) {
+                    return bytesRead / size;
+                }
+                pos = (uint32_t)file->currentPos;
+            }
+            uint32_t inCache = pos - file->streamBase;
+            uint32_t available = file->streamBytesCached - inCache;
+            uint32_t want = (uint32_t)(totalBytes - bytesRead);
+            if (want > available) want = available;
+            if (pos + want > fileSize) want = fileSize - pos;
+            if (want == 0) break;
+            for (uint32_t i = 0; i < want; i++) {
+                dest[bytesRead + i] = file->buffer[inCache + i];
+            }
+            bytesRead += want;
+            file->currentPos += want;
+            if (file->currentPos >= (long)fileSize) break;
+        }
+        return bytesRead / size;
+    }
+
+    /* Whole-file mode (legacy). */
     if (file->currentPos + totalBytes > file->bufferSize) {
         totalBytes = file->bufferSize - file->currentPos;
         if (totalBytes == 0) return 0;
     }
-
-    /* Simple memory copy from preloaded buffer - no CD-ROM operations! */
     for (size_t i = 0; i < totalBytes; i++) {
         dest[i] = file->buffer[file->currentPos + i];
     }
-
     file->currentPos += totalBytes;
     return totalBytes / size;
 }
@@ -720,6 +845,16 @@ int ps1_fseek(PS1File* file, long offset, int whence)
     }
 
     file->currentPos = newPos;
+    /* Stream mode: invalidate cache if seek goes outside the current
+     * window. The next ps1_fread will refill from CD. */
+    if (file->isStream) {
+        if ((uint32_t)newPos < file->streamBase ||
+            (uint32_t)newPos >= file->streamBase + file->streamBytesCached) {
+            /* Out of window — next read will refill. */
+            file->streamBytesCached = 0;
+            file->streamBase = (uint32_t)newPos;
+        }
+    }
     return 0;
 }
 

@@ -196,17 +196,17 @@ static void memHaltFmt(const char *region, const char *what,
 
 void memInit(void)
 {
-    /* All-libc-backed mode: no static region buffer. The allocator
-     * API routes each allocation directly to libc; TRANSIENT
-     * preserves wholesale-wipe via the libc-fallback linked list. */
+    /* All-libc-backed mode (MEM_REGION_TOTAL = 0). The allocator
+     * API runs without a static buffer; each allocation routes to
+     * libc directly. TRANSIENT preserves its wholesale-wipe semantic
+     * via the libc-pointer linked list. */
     g_memRegionBuf  = NULL;
     g_bootBase      = NULL;
     g_cacheBase     = NULL;
     g_transientBase = NULL;
     g_transientEnd  = NULL;
-
-    g_bootTop       = g_bootBase;
-    g_transientNext = g_transientEnd;  /* grows DOWN */
+    g_bootTop       = NULL;
+    g_transientNext = NULL;
 
     g_bootPeak      = 0;
     g_cacheUsed     = 0;
@@ -255,10 +255,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
             memHaltFmt("BOOT", "alloc-after-freeze",
                        alignedSize, 0);
         }
-        /* All-libc-backed mode. BOOT allocations go to libc directly;
-         * they're never freed (BOOT lifecycle = program lifetime).
-         * Same effect as a static region but without competing for
-         * memory at boot. */
+        /* All-libc-backed: BOOT goes to libc, never freed. */
         void *p = malloc(alignedSize);
         if (p == NULL) {
             memHaltFmt("BOOT", "libc malloc failed", alignedSize, 0);
@@ -291,7 +288,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
 
     case MEM_REGION_CACHE: {
         /* All-libc-backed: libc malloc directly. The LRU evictor's
-         * free() calls work natively on these pointers. */
+         * existing free() calls work natively. */
         void *p = malloc(alignedSize);
         if (p == NULL) {
             memHaltFmt("CACHE", "libc malloc failed", alignedSize, 0);
@@ -338,8 +335,8 @@ void memFree(MemRegion region, void *ptr)
         return;
 
     case MEM_REGION_CACHE: {
-        /* All-libc-backed mode: free directly. (Used only by the LRU
-         * evictor; game code touches CACHE via pin/unpin.) */
+        /* All-libc-backed: free directly. Used only by the LRU
+         * evictor; game code touches CACHE via pin/unpin. */
         extern void free(void *);
         free(ptr);
         return;
@@ -675,64 +672,25 @@ void memVerifyBootBudget(void)
             maxScratch  = kPackHeaderMetrics[i].maxStreamScratchBytes;
     }
 
-    /* All large BOOT migrations have been reverted to libc (walk
-     * clean buffer, GPU primitive buffers, surface descriptors).
-     * Current BOOT region holds only small structures (~few KB).
-     * The original budget check is now a no-op shim. */
-    extern int printf(const char *, ...);
-    const size_t fixedBoot = 4u * 1024u;
-    const size_t bootEstimate = maxFrame + maxPrefetch + maxWindow +
-                                maxScratch + fixedBoot;
-    if (bootEstimate > MEM_BOOT_BUDGET) {
-        printf("JCMEM WARN: BOOT verify-budget %lu > %lu (not halting)\n",
-               (unsigned long)bootEstimate,
-               (unsigned long)MEM_BOOT_BUDGET);
-    }
+    /* All-libc-backed mode: BOOT budget is 0 and allocations route
+     * to libc; the verify is a no-op (libc handles BOOT allocs as
+     * they happen). Kept as a symbol so the boot sequence's call
+     * site doesn't need a conditional. */
+    (void)maxFrame; (void)maxPrefetch; (void)maxWindow; (void)maxScratch;
 }
 
 void memVerifyAllScenesFitTransient(void)
 {
-    extern int printf(const char *, ...);
-    int overflows = 0;
-    for (size_t i = 0; i < kPackHeaderMetricsCount; i++) {
-        const size_t need = kPackHeaderMetrics[i].transientWorstCase;
-        if (need > MEM_TRANSIENT_BUDGET) {
-            if (overflows < 3) {
-                printf("JCMEM WARN: TRANSIENT overflow scene=%s need=%lu budget=%lu\n",
-                       kPackHeaderMetrics[i].packName,
-                       (unsigned long)need,
-                       (unsigned long)MEM_TRANSIENT_BUDGET);
-            }
-            overflows++;
-        }
-    }
-    if (overflows > 0) {
-        printf("JCMEM WARN: %d scene(s) exceed TRANSIENT budget; "
-               "runtime fallback to libc malloc + manual cleanup expected\n",
-               overflows);
-    }
+    /* All-libc-backed mode: TRANSIENT budget = 0; every alloc goes
+     * to libc and is tracked in the linked list for memSceneReset
+     * wholesale wipe. No pre-flight budget check needed. */
 }
 
 void memVerifyAllScenesPinnedFitCache(void)
 {
-    extern int printf(const char *, ...);
-    int overflows = 0;
-    for (size_t i = 0; i < kPackHeaderMetricsCount; i++) {
-        const size_t need = kPackHeaderMetrics[i].cachePinnedWorstCase;
-        if (need > MEM_CACHE_BUDGET) {
-            if (overflows < 3) {
-                printf("JCMEM WARN: CACHE pinned overflow scene=%s need=%lu budget=%lu\n",
-                       kPackHeaderMetrics[i].packName,
-                       (unsigned long)need,
-                       (unsigned long)MEM_CACHE_BUDGET);
-            }
-            overflows++;
-        }
-    }
-    if (overflows > 0) {
-        printf("JCMEM WARN: %d scene(s) exceed CACHE pinned budget; "
-               "LRU eviction handles overflow at runtime\n", overflows);
-    }
+    /* All-libc-backed mode: CACHE budget = 0, no static buffer. The
+     * LRU evictor handles overflow via libc free as it always did.
+     * No verification needed (libc allocates as requested). */
 }
 
 #ifdef JC_VERIFY_PACK_HASHES
