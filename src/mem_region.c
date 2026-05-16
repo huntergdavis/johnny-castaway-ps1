@@ -335,7 +335,6 @@ void memFree(MemRegion region, void *ptr)
 
 void memSceneReset(const char *sceneName)
 {
-    (void)sceneName;
     MEM_REQUIRE(g_memInited);
     MEM_REQUIRE(ps1IsMainContext());
 
@@ -349,6 +348,33 @@ void memSceneReset(const char *sceneName)
     }
 #endif
 
+    /* Pin-count delta logging (plan v9 step 26 / A25). At every
+     * scene transition, surface mismatched pin/unpin pairs that
+     * would otherwise quietly accumulate. Compiled out in release. */
+#ifdef MEM_DEBUG_PIN_DELTA
+    {
+        extern size_t getTotalMemoryUsed(void);
+        static size_t s_prevPinned = 0;
+        size_t pin = getTotalMemoryUsed();
+        if (pin != s_prevPinned) {
+            extern int printf(const char *, ...);
+            printf("JCMEM pin-delta scene=%s prev=%lu now=%lu delta=%ld\n",
+                   sceneName ? sceneName : "(unknown)",
+                   (unsigned long)s_prevPinned,
+                   (unsigned long)pin,
+                   (long)pin - (long)s_prevPinned);
+            s_prevPinned = pin;
+        }
+    }
+#endif
+
+    /* Telemetry on every reset — emits one JCMEM line summarizing
+     * the regions, gated behind FG_HEAP_PROBE_LOGS so log volume
+     * stays opt-in. */
+#ifdef FG_HEAP_PROBE_LOGS
+    memLogTelemetry();
+#endif
+
     /* Wipe — bump the pointer back to the top of TRANSIENT (which
      * grows DOWN, so top == g_transientEnd). */
     g_transientNext     = g_transientEnd;
@@ -359,6 +385,8 @@ void memSceneReset(const char *sceneName)
      * uninitialized TRANSIENT bytes gets a recognizable pattern. */
     memset(g_transientBase, 0xCD, MEM_TRANSIENT_BUDGET);
 #endif
+
+    (void)sceneName;
 }
 
 /* ---------------------------------------------------------------------
