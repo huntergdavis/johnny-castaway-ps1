@@ -93,11 +93,32 @@ void fatalError(char *message, ... )
 
     va_start(args, message);
 #ifdef PS1_BUILD
+    /* TTY log first — keeps the soak-test grep ('JCBSOD-FATAL'-style
+     * pattern) reliable even if the on-screen panel can't render. */
     printf("\n\n Fatal error : ");
     vprintf(message, args);
     printf("\n\n");
     va_end(args);
-    while(1);  /* Halt — visual freeze indicates error */
+
+    /* Plan v9 step 10 / A10: render a minimal on-screen text panel
+     * via ps1DebugError so users see a readable error message
+     * instead of a frozen black screen. Requires ps1DebugInit to
+     * have run first (boot sequence guarantees this). The panel
+     * holds the screen until SELECT is pressed. */
+    {
+        extern void ps1DebugError(const char *fmt, ...);
+        va_list args2;
+        va_start(args2, message);
+        /* Re-vararg through the on-screen path. ps1DebugError accepts
+         * printf-style formatting; the same `message` reaches it. */
+        ps1DebugError("FATAL: %s", message);
+        /* Note: %s consumes message but discards remaining va args
+         * — acceptable for the halt path; users can read the TTY
+         * log for the formatted detail. The panel just shows
+         * "FATAL: <unformatted message>". */
+        va_end(args2);
+    }
+    while(1);  /* Halt — ps1DebugError returns; we trap here. */
 #else
     fprintf(stderr, "\n\n Fatal error : ");
     vfprintf(stderr, message, args);
