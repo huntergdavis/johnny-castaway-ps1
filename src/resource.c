@@ -919,15 +919,11 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ads->resName, lruSize / 1024.0);
                 }
-                /* On PS1, uncompressedData was allocated via
-                 * ps1_streamReadCache → MEM_REGION_CACHE; the LRU
-                 * evictor frees through memFree to keep the region
-                 * bookkeeping consistent (free-list reclaim). */
-#ifdef PS1_BUILD
-                memFree(MEM_REGION_CACHE, ads->uncompressedData);
-#else
+                /* Resource data is libc-allocated on both platforms
+                 * (the CACHE-region migration was reverted after
+                 * measuring libc heap constraints — see
+                 * docs/ps1/memory-region-allocator-plan.md notes). */
                 free(ads->uncompressedData);
-#endif
                 ads->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             } else if (strcmp(lruType, "TTM") == 0) {
@@ -936,11 +932,7 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ttm->resName, lruSize / 1024.0);
                 }
-#ifdef PS1_BUILD
-                memFree(MEM_REGION_CACHE, ttm->uncompressedData);
-#else
                 free(ttm->uncompressedData);
-#endif
                 ttm->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             }

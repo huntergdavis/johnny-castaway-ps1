@@ -800,33 +800,21 @@ static int ps1CdReadSyncBounded(void)
  * Returns malloc'd buffer that caller must free, or NULL on error.
  */
 
-/* ps1_streamReadCache: same as ps1_streamRead but returns a buffer
- * allocated from MEM_REGION_CACHE — used by resource loaders that
- * store the result as long-lived uncompressedData (BMP/SCR/TTM/ADS).
- * Caller frees via memFree(MEM_REGION_CACHE, ptr), wired through the
- * LRU evictor in resource.c.
+/* ps1_streamReadCache: was originally a libc→CACHE memcpy wrapper
+ * for resource data destined for the LRU cache. Reverted to a plain
+ * pass-through after measuring that the available libc heap on this
+ * target (after RESOURCE.001 catalog parse + existing graphics code
+ * paths) can't accommodate both the catalog and a 600 KB CACHE
+ * region. With CACHE shrunk to 100 KB, large resources (MARY's
+ * 568 KB pinned set) can't fit there anyway — they stay on libc
+ * where the LRU's free() works directly.
  *
- * Implementation: call the libc-backed ps1_streamRead, memcpy into
- * a fresh CACHE allocation, free the libc temp. The extra memcpy is
- * ~1-2 ms per resource (~250 KB worst case at PSX memory bandwidth)
- * but eliminates the per-resource libc-heap fragmentation that the
- * region-allocator plan is designed to prevent.
- *
- * memAlloc(CACHE, ...) halts on exhaustion — no NULL return path. */
+ * The 4 callers (BMP/SCR/TTM/ADS loaders) keep calling this name
+ * for source-stability; behavior is now identical to ps1_streamRead. */
 #include "mem_region.h"
 uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t size)
 {
-    uint8_t *libcBuf = ps1_streamRead(filename, offset, size);
-    if (libcBuf == NULL) return NULL;  /* CD-read failure; caller halts */
-
-    /* MEM_REGION_RATIONALE: resource data destined for the LRU
-     * cache (uncompressedData for BMP/SCR/TTM/ADS). See the function
-     * header comment for the libc→CACHE memcpy rationale. */
-    uint8_t *cacheBuf = (uint8_t *)memAlloc(MEM_REGION_CACHE, size,
-                                            "ps1_streamReadCache");
-    memcpy(cacheBuf, libcBuf, size);
-    free(libcBuf);
-    return cacheBuf;
+    return ps1_streamRead(filename, offset, size);
 }
 
 uint8_t* ps1_streamRead(const char* filename, uint32_t offset, uint32_t size)
@@ -1614,19 +1602,11 @@ static uint8_t *ps1PilotLoadResource(const char *resourceType, const char *name,
         if (ps1PilotDbgHits < 0xFFFFU)
             ps1PilotDbgHits++;
         ps1PilotDbgLastHitEntry = (uint16)((entry - ps1PilotActivePack.entries) + 1);
-
-        /* MEM_REGION_RATIONALE: this function's return value becomes
-         * resource->uncompressedData in the LRU cache. Copy from the
-         * libc-temp buffer into MEM_REGION_CACHE so the LRU evictor's
-         * memFree(CACHE, ...) works on a region-allocated pointer.
-         * Extra memcpy is ~1-2 ms per resource — acceptable in
-         * exchange for no libc-heap fragmentation. */
-        copySize  = entry->sizeBytes;
-        cacheCopy = (uint8_t *)memAlloc(MEM_REGION_CACHE, copySize,
-                                        "ps1PilotLoadResource");
-        memcpy(cacheCopy, data, copySize);
-        free(data);
-        data = cacheCopy;
+        /* Resource data stays on libc heap. See ps1_streamReadCache
+         * note above for rationale. The unused locals below are
+         * still declared to avoid a wider diff. */
+        (void)cacheCopy;
+        (void)copySize;
     } else {
         /* When the entry exists but the sector read fails, keep the overlay
          * value as the pack entry index so screenshot-based validation can

@@ -1740,18 +1740,15 @@ int main(int argc, char **argv)
     /* FntLoad must happen before CdInit or it causes hangs */
     ps1DebugInit();
 
-    /* Initialize memory region allocator immediately after ps1DebugInit.
-     * memHalt's pre-graphics path uses ps1DebugError so ps1DebugInit
-     * must precede memInit. Per docs/ps1/memory-region-allocator-plan.md
-     * boot sequence. Boot-time verify gates run inside memInit; halt
-     * surfaces at boot if a pack would overrun. */
-    memInit();
-    memVerifyBootBudget();
-    memVerifyAllScenesFitTransient();
-    memVerifyAllScenesPinnedFitCache();
-#ifdef JC_VERIFY_PACK_HASHES
-    memVerifyPackHashes();
-#endif
+    /* memInit is DEFERRED until after parseResourceFiles. The region
+     * buffer is 1.2 MB of libc malloc, but parseResourceFiles loads
+     * RESOURCE.001 (~1.1 MB) into a temporary libc buffer first.
+     * Doing memInit() here would leave libc with insufficient heap
+     * for the catalog. The region buffer is allocated AFTER the
+     * catalog is parsed and its temp buffer returned to libc.
+     *
+     * Migrated call sites that run BEFORE memInit must use libc
+     * malloc — currently that's just safe_malloc (libc-backed). */
 
     /* Initialize CD-ROM subsystem */
     if (cdromInit() < 0) {
@@ -1779,6 +1776,22 @@ int main(int argc, char **argv)
     /* Parse resource files from CD - needed for background and sprites */
     parseResourceFiles("RESOURCE.MAP");
     ps1PrintfProbe("resources-loaded", NULL);
+
+    /* Now that parseResourceFiles has closed RESOURCE.001 and returned
+     * its temp buffer to libc, libc has the headroom for the
+     * memory-region allocator's 1.2 MB buffer. Initialize it and run
+     * the boot proofs. Per plan v9 boot sequence (revised).
+     *
+     * Boot-time memVerify* failures route through memHalt; ps1DebugInit
+     * has already run so the pre-graphics path renders correctly. */
+    memInit();
+    memVerifyBootBudget();
+    memVerifyAllScenesFitTransient();
+    memVerifyAllScenesPinnedFitCache();
+#ifdef JC_VERIFY_PACK_HASHES
+    memVerifyPackHashes();
+#endif
+    ps1PrintfProbe("mem-region-ready", NULL);
 
     /* Seed RNG — use forced seed if specified in BOOTMODE, else hardware RNG. */
     if (ps1BootForcedSeed >= 0) {

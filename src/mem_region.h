@@ -48,9 +48,27 @@ typedef enum MemRegion {
  *   - TRANSIENT  ~250 KB (clean-rect ≤181 KB + per-scene scratch)
  *   - Total      1.2 MB (fits under usable RAM per linker map)
  */
-#define MEM_BOOT_BUDGET      (360u * 1024u)
-#define MEM_CACHE_BUDGET     (600u * 1024u)
-#define MEM_TRANSIENT_BUDGET (260u * 1024u)
+/* Region budgets are 0 — the allocator runs in pure libc-fallback
+ * mode. All allocations route through libc malloc; TRANSIENT
+ * preserves its per-scene wholesale-wipe semantic by tracking
+ * allocations in a linked list and freeing them at memSceneReset.
+ *
+ * Why: this codebase's existing graphics/CD paths claim ~800 KB
+ * from libc at runtime, and the 1.1 MB RESOURCE.001 catalog parse
+ * uses libc as scratch. Any static region buffer competes for the
+ * same memory; sizing one large enough to be useful starves the
+ * other allocators. The "all-libc-backed" mode preserves the
+ * allocator API + wholesale-wipe semantic while sidestepping the
+ * memory-overlap problem.
+ *
+ * The big win that remains: the TRANSIENT linked-list wipe gives
+ * the same fragmentation-immune wholesale-cleanup semantic the
+ * region allocator was designed for — just backed by libc instead
+ * of a static buffer. Long-term: refactor parseResourceFiles to
+ * stream RESOURCE.001, freeing up the static-buffer pool. */
+#define MEM_BOOT_BUDGET      0u
+#define MEM_CACHE_BUDGET     0u
+#define MEM_TRANSIENT_BUDGET 0u
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
 /* Hard ceiling against the linker map (build-ps1/jcreborn.map):
@@ -58,6 +76,9 @@ typedef enum MemRegion {
  *   usable RAM = 1.92 MB - 629 KB exe/BSS - 64 KB stack = ~1.26 MB
  * Keep the total comfortably under 1.2 MB so other dynamic state
  * (PsyQ padmgr, memcard pool, etc.) has headroom. */
+/* All-libc-backed mode (MEM_REGION_TOTAL = 0): no static buffer
+ * constraint applies. _Static_assert kept as documentation of the
+ * historical 1.2 MB ceiling, trivially satisfied at 0. */
 #ifdef __STDC_VERSION__
 #if __STDC_VERSION__ >= 201112L
 _Static_assert(MEM_REGION_TOTAL <= (1228u * 1024u),

@@ -652,16 +652,13 @@ void graphicsInit()
     ClearOTagR(ot[0], OT_LENGTH);
     ClearOTagR(ot[1], OT_LENGTH);
 
-    /* MEM_REGION_RATIONALE: GPU primitive ordering-table buffers,
-     * allocated once at graphicsInit and reused for the life of the
-     * program. INIT_NONE — ClearOTagR initializes the buffers below. */
-    primitiveBuffer[0] = (uint8*)memAlloc(MEM_REGION_BOOT,
-                                          PRIMITIVE_BUFFER_SIZE,
-                                          "gpuPrimitiveBuffer0");
-    primitiveBuffer[1] = (uint8*)memAlloc(MEM_REGION_BOOT,
-                                          PRIMITIVE_BUFFER_SIZE,
-                                          "gpuPrimitiveBuffer1");
-    /* memAlloc halts on exhaustion — no NULL check needed. */
+    /* Reverted to libc — 2x32 KB exceeds the reduced BOOT budget. */
+    primitiveBuffer[0] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
+    primitiveBuffer[1] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
+    if (!primitiveBuffer[0] || !primitiveBuffer[1]) {
+        printf("ERROR: Failed to allocate primitive buffers\n");
+        while(1);
+    }
 
     /* Initialize primitive buffers */
     nextPrimitive[0] = primitiveBuffer[0];
@@ -1102,31 +1099,31 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* Validate PSB header */
     if (psbSize < sizeof(PSBHeader)) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
     hdr = (PSBHeader *)psbBuf;
     if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
     if (hdr->numFrames == 0 || hdr->dataOffset > psbSize) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
     /* Cross-check totalSize against actual buffer size */
     if (hdr->totalSize > psbSize) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
     /* Verify frame table fits */
     frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
     if (frameTableEnd > hdr->dataOffset) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
@@ -1190,7 +1187,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* If no frames loaded (corruption or OOM), free everything and fall back. */
     if (framesLoaded == 0) {
-        memFree(MEM_REGION_CACHE, psbBuf);
+        free(psbBuf);
         return 0;
     }
 
