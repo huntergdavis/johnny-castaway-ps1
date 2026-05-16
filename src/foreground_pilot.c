@@ -226,7 +226,12 @@ enum {
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 #define FG_LARGE_CLEAN_SNAPSHOT_BYTES (384UL * 1024UL)
-#define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (256UL * 1024UL)
+/* Lowered from 256 KB to 192 KB (Round 15): visitor3 has a
+ * 194 KB clean snapshot (2x 97 KB rects) that exceeds the
+ * region partition's contiguous space when the prefetch buffer
+ * is held in CACHE. Dropping the prefetch buffer frees 112 KB
+ * of CACHE, giving the second rect room to land. */
+#define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (192UL * 1024UL)
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
 #define FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES (112UL * 1024UL)

@@ -3653,52 +3653,66 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     /* Atomic allocation phase: all requested rect buffers must exist before
      * any rect becomes active. Otherwise a partial clean-restore set can both
      * leak and leave stale pixels from a prior foreground frame. */
-    /* MEM_REGION_RATIONALE: per-scene clean-rect snapshots; the
-     * largest TRANSIENT allocation (up to ~181 KB for FISHING1 etc.).
-     * Allocated FIRST in scene setup (per plan v9 reordering rule) so
-     * the full TRANSIENT region is available for it. Reclaimed
-     * wholesale at the next memSceneReset. The old "reuse if capacity
-     * is enough" path is gone — bump+wipe semantics make per-scene
-     * fresh allocation the only option, but it's free of fragmentation
-     * cost so the win is net positive. */
+    /* Compute required bytes for every rect first, then allocate in
+     * size-DESCENDING order. Round 15 fix: smaller rects allocated
+     * first can fragment TRANSIENT such that a later large rect
+     * doesn't fit, even though TRANSIENT had enough space at start.
+     * Visitor5 specifically: 97 KB rect last in iteration order would
+     * fail when 60 KB was left after smaller rects took TRANSIENT
+     * first. Sorting biggest-first gives the large rect first crack
+     * at the contiguous TRANSIENT space.
+     *
+     * Selection sort by index — n ≤ 8 so O(n²) is fine. */
+    int sortedIdx[GR_MAX_CLEAN_RECTS];
     for (i = 0; i < n; i++) {
         requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
         if (requiredBytes[i] == 0)
             goto fail;
+        sortedIdx[i] = i;
+    }
+    /* Sort indices by requiredBytes descending. */
+    for (int a = 0; a < n - 1; a++) {
+        int maxJ = a;
+        for (int b = a + 1; b < n; b++) {
+            if (requiredBytes[sortedIdx[b]] > requiredBytes[sortedIdx[maxJ]])
+                maxJ = b;
+        }
+        if (maxJ != a) {
+            int tmp = sortedIdx[a];
+            sortedIdx[a] = sortedIdx[maxJ];
+            sortedIdx[maxJ] = tmp;
+        }
+    }
+    /* Allocate in size-descending order. The rect at original index
+     * `idx` is still stored at gGrCleanRects[idx]. */
+    for (int s = 0; s < n; s++) {
+        int idx = sortedIdx[s];
         /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
          * 6 atomic slots; see comment block above the for loop).
-         * Dynamic routing (Round 13): prefer TRANSIENT for correct
+         * Dynamic routing (Round 14): prefer TRANSIENT for correct
          * wholesale-wipe semantics; spill to CACHE when TRANSIENT
          * lacks contiguous space. Each rect records which region
          * its pixels came from so the matching memFree is used
          * (memFree's range-check would otherwise mismatch and
-         * double-free via the TransientLibcEntry list).
-         *
-         * Heavier scenes (activity10 ~290 KB snapshot, fishing1-
-         * style ~181 KB) exceed the 256 KB TRANSIENT budget on
-         * their own; CACHE has 100-200 KB free at the time, and
-         * its coalescing free-list reclaims bytes when
-         * grFreeCleanBgRects fires. */
-        {
-            const size_t transRemaining = MEM_TRANSIENT_BUDGET -
-                memRegionUsed((unsigned int)MEM_REGION_TRANSIENT);
-            /* Keep a safety margin so concurrent TRANSIENT allocs
-             * (sound events, setup buffer) don't get squeezed out. */
-            const size_t TRANSIENT_RESERVE = 16u * 1024u;
-            MemRegion target;
-            if (requiredBytes[i] + TRANSIENT_RESERVE <= transRemaining) {
-                target = MEM_REGION_TRANSIENT;
-            } else {
-                target = MEM_REGION_CACHE;
-            }
-            gGrCleanRects[i].pixels = (uint16 *)memAlloc(target,
-                                                         requiredBytes[i],
-                                                         "grCleanRectPixels");
-            gGrCleanRects[i].pixelsRegion =
-                (target == MEM_REGION_CACHE) ? 1u : 0u;
+         * double-free via the TransientLibcEntry list). */
+        const size_t transRemaining = MEM_TRANSIENT_BUDGET -
+            memRegionUsed((unsigned int)MEM_REGION_TRANSIENT);
+        /* Keep a safety margin so concurrent TRANSIENT allocs
+         * (sound events, setup buffer) don't get squeezed out. */
+        const size_t TRANSIENT_RESERVE = 16u * 1024u;
+        MemRegion target;
+        if (requiredBytes[idx] + TRANSIENT_RESERVE <= transRemaining) {
+            target = MEM_REGION_TRANSIENT;
+        } else {
+            target = MEM_REGION_CACHE;
         }
-        gGrCleanRects[i].capacityBytes = requiredBytes[i];
-        allocatedThisCall[i] = 1;
+        gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
+                                                     requiredBytes[idx],
+                                                     "grCleanRectPixels");
+        gGrCleanRects[idx].pixelsRegion =
+            (target == MEM_REGION_CACHE) ? 1u : 0u;
+        gGrCleanRects[idx].capacityBytes = requiredBytes[idx];
+        allocatedThisCall[idx] = 1;
     }
 
     for (i = 0; i < n; i++) {
