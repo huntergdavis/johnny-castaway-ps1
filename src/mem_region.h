@@ -99,9 +99,18 @@ typedef enum MemRegion {
  *          scene types; no single static partition satisfies all.
  *
  * Total = 1188 KB, under the 1228 KB linker-map ceiling. */
-#define MEM_BOOT_BUDGET      ( 32u * 1024u)
-#define MEM_CACHE_BUDGET     (900u * 1024u)
-#define MEM_TRANSIENT_BUDGET (256u * 1024u)
+/* Round 16 Option M: bump CACHE to 1024 KB.
+ * Reasoning:
+ * - Linker map: _end ~ 447 KB, stack ~ 64 KB → 1537 KB usable RAM for region+libc
+ * - Region @ 1312 KB → libc has 225 KB total, 77 KB free after walk_clean (148 KB)
+ * - johnny1 (CACHE peak 852 KB) fits 1024 KB natively — no libc fallback needed,
+ *   so libc-headroom shrinkage doesn't break its fallback path
+ * - visitor3 needs CACHE peak ~973 KB at BSOD point — fits 1024 KB with 51 KB margin
+ * - Other scenes' peaks all < 800 KB — no impact
+ * - Bumped _Static_assert ceiling accordingly */
+#define MEM_BOOT_BUDGET      (  32u * 1024u)
+#define MEM_CACHE_BUDGET     (1024u * 1024u)
+#define MEM_TRANSIENT_BUDGET ( 256u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
 /* Hard ceiling against the linker map (build-ps1/jcreborn.map):
@@ -114,8 +123,8 @@ typedef enum MemRegion {
  * historical 1.2 MB ceiling, trivially satisfied at 0. */
 #ifdef __STDC_VERSION__
 #if __STDC_VERSION__ >= 201112L
-_Static_assert(MEM_REGION_TOTAL <= (1228u * 1024u),
-               "MEM_REGION_TOTAL exceeds 1.2 MB ceiling — see linker map");
+_Static_assert(MEM_REGION_TOTAL <= (1340u * 1024u),
+               "MEM_REGION_TOTAL exceeds 1340 KB ceiling — leaves <77 KB libc headroom");
 #endif
 #endif
 
