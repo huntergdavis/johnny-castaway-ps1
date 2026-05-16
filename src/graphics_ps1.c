@@ -3038,7 +3038,12 @@ int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, si
  */
 static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
 {
-    PS1Surface *tile = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
+    /* MEM_REGION_RATIONALE: persistent BG tile surface (256x240..320x240,
+     * ~150 KB pixel buffer). Owned by static slots (bgTile0/1/3/4 etc.);
+     * not LRU-tracked. CACHE region with libc fallback pre-init. */
+    PS1Surface *tile = memIsReady()
+        ? (PS1Surface*)memAlloc(MEM_REGION_CACHE, sizeof(PS1Surface), "bgtile-struct")
+        : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
     tile->width = width;
     tile->height = height;
     tile->x = 0;
@@ -3047,7 +3052,9 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     tile->indexedOwned = 0;
     tile->psbNibbles = 0;
     tile->nextTile = NULL;
-    tile->pixels = (uint16*)safe_malloc(width * height * 2);
+    tile->pixels = memIsReady()
+        ? (uint16*)memAlloc(MEM_REGION_CACHE, (size_t)width * height * 2u, "bgtile-pixels")
+        : (uint16*)safe_malloc(width * height * 2);
     /* Fill with black (0x0000 = transparent/black) */
     for (uint32 i = 0; i < width * height; i++) {
         tile->pixels[i] = 0x0000;
@@ -3088,9 +3095,15 @@ static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 heigh
     if (*slot == NULL || (*slot)->pixels == NULL ||
         (*slot)->width != width || (*slot)->height != height) {
         freeBgTile(slot);
-        *slot = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
+        /* MEM_REGION_RATIONALE: persistent BG tile, same lifetime as
+         * createEmptyBgTileRAM. CACHE with libc fallback pre-init. */
+        *slot = memIsReady()
+            ? (PS1Surface*)memAlloc(MEM_REGION_CACHE, sizeof(PS1Surface), "bgtile-struct")
+            : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
         resetBgTileRAMFields(*slot, width, height);
-        (*slot)->pixels = (uint16*)safe_malloc((uint32)width * height * 2);
+        (*slot)->pixels = memIsReady()
+            ? (uint16*)memAlloc(MEM_REGION_CACHE, (uint32)width * height * 2u, "bgtile-pixels")
+            : (uint16*)safe_malloc((uint32)width * height * 2);
     } else {
         resetBgTileRAMFields(*slot, width, height);
     }
@@ -4438,8 +4451,13 @@ void grFadeOut()
 static void freeBgTile(PS1Surface **tile)
 {
     if (*tile != NULL) {
-        if ((*tile)->pixels) free((*tile)->pixels);
-        free(*tile);
+        if ((*tile)->pixels) {
+            /* memFree(CACHE) range-checks for libc vs region origin. */
+            if (memIsReady()) memFree(MEM_REGION_CACHE, (*tile)->pixels);
+            else free((*tile)->pixels);
+        }
+        if (memIsReady()) memFree(MEM_REGION_CACHE, *tile);
+        else free(*tile);
         *tile = NULL;
     }
 }

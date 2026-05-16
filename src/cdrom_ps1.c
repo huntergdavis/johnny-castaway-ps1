@@ -22,6 +22,7 @@
 #include "utils.h"
 #include "ps1_debug.h"
 #include "resource.h"
+#include "mem_region.h"
 
 /* PS1 CD-ROM sector size */
 #define CD_SECTOR_SIZE 2048
@@ -636,14 +637,24 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     strncpy(file->filename, filename, sizeof(file->filename) - 1);
     file->filename[sizeof(file->filename) - 1] = '\0';
 
-    /* Allocate buffer for entire file. Plan v9 manifest item #21:
-     * NULL-return-on-malloc-fail is gone; under the deterministic
-     * allocator, malloc cannot fail. If a future migration routes
-     * this through memAlloc, the halt path is automatic. */
+    /* Allocate buffer for entire file. Once memInit() has fired, the
+     * file buffer comes from CACHE region — keeps libc heap stable so
+     * subsequent allocations don't fragment. Before memInit (e.g.,
+     * early TITLE.RAW load), falls back to libc.
+     *
+     * MEM_REGION_RATIONALE: ps1_fopen file buffer; freed at fclose. */
     file->bufferSize = file->cdfile.size;
-    file->buffer = (uint8_t*)malloc(file->bufferSize);
-    if (!file->buffer) {
-        JC_BSOD(filename, "cdrom open: file-buffer alloc failed");
+    if (memIsReady()) {
+        file->buffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
+                                          file->bufferSize,
+                                          "ps1_fopen_file_buffer");
+        file->bufferFromRegion = 1;
+    } else {
+        file->buffer = (uint8_t*)malloc(file->bufferSize);
+        if (!file->buffer) {
+            JC_BSOD(filename, "cdrom open: file-buffer alloc failed");
+        }
+        file->bufferFromRegion = 0;
     }
 
     /* Calculate sectors needed */
@@ -872,9 +883,14 @@ int ps1_fclose(PS1File* file)
         return -1;
     }
 
-    /* Free preloaded buffer if it exists */
+    /* Free preloaded buffer if it exists. Use the right allocator
+     * based on how the buffer was obtained at fopen time. */
     if (file->buffer) {
-        free(file->buffer);
+        if (file->bufferFromRegion) {
+            memFree(MEM_REGION_CACHE, file->buffer);
+        } else {
+            free(file->buffer);
+        }
         file->buffer = NULL;
     }
 
@@ -946,7 +962,6 @@ static int ps1CdReadSyncBounded(void)
  *
  * The 4 callers (BMP/SCR/TTM/ADS loaders) keep calling this name
  * for source-stability; behavior is now identical to ps1_streamRead. */
-#include "mem_region.h"
 uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t size)
 {
     return ps1_streamRead(filename, offset, size);
@@ -1034,11 +1049,21 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
-    /* Allocate buffer for the sectors we need.
-     * Plan v9 manifest item #21: NULL-return-on-fail → halt. */
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
-    if (!sectorBuffer) {
-        JC_BSOD("cdrom", "sector-buffer alloc failed");
+    /* Allocate sector-aligned scratch for the CD read. Goes in
+     * TRANSIENT region post-memInit so it lives in the scene-wipe
+     * pool; libc fallback pre-init. MEM_REGION_RATIONALE: pure
+     * scratch — freed within this function. */
+    int sectorBufferFromRegion = 0;
+    if (memIsReady()) {
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_TRANSIENT,
+                                          bufferSize,
+                                          "cdrom_sectorBuffer");
+        sectorBufferFromRegion = 1;
+    } else {
+        sectorBuffer = (uint8_t*)malloc(bufferSize);
+        if (!sectorBuffer) {
+            JC_BSOD("cdrom", "sector-buffer alloc failed");
+        }
     }
 
     /* Read in smaller sector chunks. Large single-shot reads on packed BMPs
@@ -1087,11 +1112,24 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         sectorsRead += chunkSectors;
     }
 
-    /* Allocate exact-size output buffer and copy the data we need */
-    result = (uint8_t*)malloc(size);
-    if (!result) {
-        free(sectorBuffer);
-        return NULL;
+    /* Allocate exact-size output buffer for the caller. Post-init:
+     * CACHE region (this is the buffer the caller will hold as
+     * resource data / pack body). Pre-init: libc.
+     * MEM_REGION_RATIONALE: resource-data result buffer; caller
+     * is responsible for its lifetime. */
+    if (memIsReady()) {
+        result = (uint8_t*)memAlloc(MEM_REGION_CACHE, size,
+                                    "cdrom_read_result");
+    } else {
+        result = (uint8_t*)malloc(size);
+        if (!result) {
+            if (sectorBufferFromRegion) {
+                memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+            } else {
+                free(sectorBuffer);
+            }
+            return NULL;
+        }
     }
 
     /* Copy from sector buffer at the correct offset */
@@ -1102,7 +1140,11 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
                                   1, perfFileLba, offset, 0);
-    free(sectorBuffer);
+    if (sectorBufferFromRegion) {
+        memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+    } else {
+        free(sectorBuffer);
+    }
     return result;
 }
 
@@ -1126,12 +1168,26 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
 
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
-    if (!sectorBuffer)
-        return 0;
+    int sectorBufferFromRegion2 = 0;
+    if (memIsReady()) {
+        /* MEM_REGION_RATIONALE: sector-aligned scratch for CD-read-
+         * into-caller-buffer path; freed at function exit. */
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_TRANSIENT,
+                                          bufferSize,
+                                          "cdrom_sectorBuffer_into");
+        sectorBufferFromRegion2 = 1;
+    } else {
+        sectorBuffer = (uint8_t*)malloc(bufferSize);
+        if (!sectorBuffer)
+            return 0;
+    }
 
     result = ps1_streamReadFromCdFileIntoBuffered(cdfile, offset, size, dstBuffer, sectorBuffer, bufferSize);
-    free(sectorBuffer);
+    if (sectorBufferFromRegion2) {
+        memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+    } else {
+        free(sectorBuffer);
+    }
     return result;
 }
 
@@ -1389,10 +1445,17 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
         sectorsRead += chunkSectors;
     }
 
-    result = (uint8_t*)malloc(size);
-    if (result == NULL) {
-        free(fileBuffer);
-        return NULL;
+    /* MEM_REGION_RATIONALE: result of whole-file CD read, returned
+     * to caller as resource data. CACHE region post-init. */
+    if (memIsReady()) {
+        result = (uint8_t*)memAlloc(MEM_REGION_CACHE, size,
+                                    "cdrom_whole_file_result");
+    } else {
+        result = (uint8_t*)malloc(size);
+        if (result == NULL) {
+            free(fileBuffer);
+            return NULL;
+        }
     }
 
     memcpy(result, fileBuffer + offset, size);

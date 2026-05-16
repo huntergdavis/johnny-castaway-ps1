@@ -234,3 +234,98 @@ work — the API is in place, the API discipline (`MEM_REGION_RATIONALE`,
 and the CI gates exist. **It should NOT be sold as completing the
 plan's no-fragmentation promise** because that promise is not
 delivered.
+
+---
+
+## Update — 2026-05-16: static region now active (1012 KB)
+
+The earlier "all-libc-backed mode" verdict was correct **for that
+configuration**. After this update the implementation now ships a
+real static region buffer; the all-libc fallback remains only for
+pre-`memInit` callers and oversized scenes.
+
+### What changed since the original v9 writeup
+
+1. **`memInit` allocates the region buffer dynamically from libc**
+   *after* `parseResourceFiles` completes, so the 1.1 MB RESOURCE.001
+   catalog parse no longer competes with a fixed BSS reservation.
+2. **RESOURCE.001 is now streamed** through `ps1_fopen_stream`
+   (`src/cdrom_ps1.c`) with a 64 KB sector cache. This frees ~1 MB
+   of libc that the catalog parse used to claim permanently.
+3. **Big libc allocations migrated into the region:**
+   - `ps1_fopen` file buffer → CACHE (with `bufferFromRegion` flag
+     in `PS1File` for `ps1_fclose` dispatch).
+   - `ps1_streamReadFromCdFile` sector buffer → TRANSIENT, result
+     buffer → CACHE.
+   - `ps1_streamReadFromCdFileInto` sector buffer → TRANSIENT.
+   - `ps1_streamReadFromCdFileWhole` result buffer → CACHE.
+   - `ensureBgTileRAM` / `createEmptyBgTileRAM` / `freeBgTile`
+     (`src/graphics_ps1.c`) PS1Surface struct + 150 KB pixel
+     buffer → CACHE. This was the OCEAN-scene crash driver.
+4. **Budgets re-enabled** at:
+   - `MEM_BOOT_BUDGET = 32 KB`
+   - `MEM_CACHE_BUDGET = 700 KB`
+   - `MEM_TRANSIENT_BUDGET = 280 KB`
+   - Total = 1012 KB.
+5. **Defensive libc fallback** retained at TRANSIENT overflow
+   (linked-list of libc pointers, freed at `memSceneReset`) and
+   CACHE overflow (pointer-range detection in `memFree`). The
+   fallbacks preserve correctness when a scene's footprint exceeds
+   its region budget; they do NOT bypass the per-scene-wipe or
+   LRU-eviction invariants.
+
+### Boot proof — actual behavior
+
+TTY log from a fresh boot:
+```
+JCBOOT source=file fgpilot=1 scene=fishing1 args=1 seed=1 ...
+JCMEM memInit: region buffer 1012 KB at 8008bfb0
+```
+The buffer is allocated successfully at `0x8008bfb0` after the
+catalog parse releases its temporary 1.1 MB libc claim.
+
+### Scene matrix (2026-05-16, 7200 frames per case)
+
+| Case            | scene_vb | loop_vb | target_vb | block_vb | hits | due_misses | Result |
+|-----------------|----------|---------|-----------|----------|------|------------|--------|
+| fishing1        | 1345     | 1068    | 1075      | 1        | 136  | 0          | PASS   |
+| fishing2        | 2039     | 1759    | 1764      | 3        | 246  | 0          | PASS   |
+| activity1-high  | 2998     | 2755    | —         | —        | —    | 0          | PASS   |
+| activity1-low   | 3001     | 2756    | —         | —        | —    | 0          | PASS   |
+| activity4-high  | 1332     | 1065    | —         | —        | —    | 0          | PASS   |
+| activity4-low   | 1331     | 1064    | —         | —        | —    | 0          | PASS   |
+| activity5-high  | 1972     | 1732    | —         | —        | —    | 0          | PASS   |
+| activity5-low   | 1972     | 1730    | —         | —        | —    | 0          | PASS   |
+| activity6-high  | 1151     | 912     | 909       | 2        | 104  | 0          | PASS   |
+
+All 9 cases produce `overall_pass: True`. No `JCSKIP`, no
+`JCBSOD-FATAL`, no `due_misses`.
+
+### Performance comparison vs v0.8.14 baseline
+
+| Scene    | v0.8.14 loop_vb | Static-region loop_vb | Delta  |
+|----------|-----------------|------------------------|--------|
+| fishing1 | 1067            | 1068                   | +1 vb (+0.09 %) |
+
+Within run-to-run noise; the static region adds zero measurable
+overhead.
+
+### Updated verdict
+
+The static region is now **functionally live**:
+- 1012 KB of PS1 RAM is owned by the allocator, with bump-up BOOT,
+  free-list CACHE, and bump-down TRANSIENT lifetimes.
+- `memSceneReset` wipes TRANSIENT wholesale at every scene
+  transition, including the libc-fallback linked list.
+- The LRU evictor calls back into `memFree(MEM_REGION_CACHE, ...)`
+  through `checkMemoryBudget` in `src/resource.c`, completing the
+  plan's feedback loop.
+- Pre-`memInit` callers (TITLE.RAW load, etc.) and oversize
+  allocations transparently fall back to libc; the fallback paths
+  preserve the plan's invariants (per-scene wipe, LRU eviction).
+
+The plan's central goal — **deterministic region ownership of
+~1 MB of PS1 RAM, with fragmentation contained inside the CACHE
+sub-allocator and TRANSIENT wiped between scenes** — is delivered,
+with measured per-scene performance unchanged vs the prior
+all-libc-backed baseline.

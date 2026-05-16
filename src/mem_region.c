@@ -196,17 +196,26 @@ static void memHaltFmt(const char *region, const char *what,
 
 void memInit(void)
 {
-    /* All-libc-backed mode (MEM_REGION_TOTAL = 0). The allocator
-     * API runs without a static buffer; each allocation routes to
-     * libc directly. TRANSIENT preserves its wholesale-wipe semantic
-     * via the libc-pointer linked list. */
-    g_memRegionBuf  = NULL;
-    g_bootBase      = NULL;
-    g_cacheBase     = NULL;
-    g_transientBase = NULL;
-    g_transientEnd  = NULL;
-    g_bootTop       = NULL;
-    g_transientNext = NULL;
+    extern int printf(const char *, ...);
+    extern void *malloc(size_t);
+    /* Allocate the region buffer from libc. After parseResourceFiles
+     * streamed RESOURCE.001 (was 1.1 MB libc temp), libc has the
+     * headroom to give us ~1 MB for the region. */
+    g_memRegionBuf = (unsigned char *)malloc(MEM_REGION_TOTAL);
+    if (g_memRegionBuf == NULL) {
+        printf("JCMEM memInit: libc malloc FAILED for %lu bytes\n",
+               (unsigned long)MEM_REGION_TOTAL);
+        memHalt("(boot)", "memInit: libc malloc for region buffer failed");
+    }
+    g_bootBase      = &g_memRegionBuf[0];
+    g_cacheBase     = g_bootBase  + MEM_BOOT_BUDGET;
+    g_transientBase = g_cacheBase + MEM_CACHE_BUDGET;
+    g_transientEnd  = g_transientBase + MEM_TRANSIENT_BUDGET;
+    g_bootTop       = g_bootBase;
+    g_transientNext = g_transientEnd;
+    printf("JCMEM memInit: region buffer %lu KB at %p\n",
+           (unsigned long)(MEM_REGION_TOTAL / 1024u),
+           (void*)g_memRegionBuf);
 
     g_bootPeak      = 0;
     g_cacheUsed     = 0;
@@ -225,6 +234,11 @@ void memFreezeBoot(void)
 {
     MEM_REQUIRE(g_memInited);
     g_bootFrozen = 1;
+}
+
+int memIsReady(void)
+{
+    return g_memInited;
 }
 
 /* ---------------------------------------------------------------------
@@ -246,8 +260,6 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
 
     const size_t alignedSize = alignUp(size);
 
-    extern void *malloc(size_t);
-
     switch (region) {
 
     case MEM_REGION_BOOT: {
@@ -255,45 +267,71 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
             memHaltFmt("BOOT", "alloc-after-freeze",
                        alignedSize, 0);
         }
-        /* All-libc-backed: BOOT goes to libc, never freed. */
-        void *p = malloc(alignedSize);
-        if (p == NULL) {
-            memHaltFmt("BOOT", "libc malloc failed", alignedSize, 0);
+        const size_t used = (size_t)(g_bootTop - g_bootBase);
+        const size_t remaining = MEM_BOOT_BUDGET - used;
+        if (alignedSize > remaining) {
+            memHaltFmt("BOOT", "exhausted", alignedSize, remaining);
         }
-        g_bootPeak += alignedSize;
+        void *p = g_bootTop;
+        g_bootTop += alignedSize;
+        const size_t newUsed = used + alignedSize;
+        if (newUsed > g_bootPeak) {
+            g_bootPeak = newUsed;
+        }
         return p;
     }
 
     case MEM_REGION_TRANSIENT: {
-        /* All-libc-backed: libc malloc + track in linked list for
-         * wholesale free at memSceneReset. */
-        void *p = malloc(alignedSize);
-        if (p == NULL) {
-            memHaltFmt("TRANSIENT", "libc malloc failed",
-                       alignedSize, 0);
+        const size_t used = (size_t)(g_transientEnd - g_transientNext);
+        const size_t remaining = MEM_TRANSIENT_BUDGET - used;
+        if (alignedSize > remaining) {
+            /* TRANSIENT region exhausted — fall back to libc with
+             * linked-list tracking so wholesale-wipe still works. */
+            extern void *malloc(size_t);
+            void *p = malloc(alignedSize);
+            if (p == NULL) {
+                memHaltFmt("TRANSIENT", "region+libc both exhausted",
+                           alignedSize, remaining);
+            }
+            TransientLibcEntry *entry =
+                (TransientLibcEntry *)malloc(sizeof(TransientLibcEntry));
+            if (entry == NULL) {
+                memHaltFmt("TRANSIENT", "libc-fallback entry failed",
+                           sizeof(TransientLibcEntry), 0);
+            }
+            entry->ptr  = p;
+            entry->next = g_transientLibcHead;
+            g_transientLibcHead = entry;
+            g_sceneAllocBalance++;
+            return p;
         }
-        TransientLibcEntry *entry =
-            (TransientLibcEntry *)malloc(sizeof(TransientLibcEntry));
-        if (entry == NULL) {
-            memHaltFmt("TRANSIENT", "libc-fallback entry failed",
-                       sizeof(TransientLibcEntry), 0);
+        g_transientNext -= alignedSize;
+        const size_t newUsed = used + alignedSize;
+        if (newUsed > g_transientPeak) {
+            g_transientPeak = newUsed;
         }
-        entry->ptr  = p;
-        entry->next = g_transientLibcHead;
-        g_transientLibcHead = entry;
         g_sceneAllocBalance++;
-        g_transientPeak += alignedSize;
-        return p;
+        return g_transientNext;
     }
 
     case MEM_REGION_CACHE: {
-        /* All-libc-backed: libc malloc directly. The LRU evictor's
-         * existing free() calls work natively. */
-        void *p = malloc(alignedSize);
+        void *p = cacheAllocInternal(alignedSize);
         if (p == NULL) {
-            memHaltFmt("CACHE", "libc malloc failed", alignedSize, 0);
+            extern void checkMemoryBudget(void);
+            checkMemoryBudget();
+            p = cacheAllocInternal(alignedSize);
+            if (p == NULL) {
+                /* CACHE region + eviction both insufficient — fall
+                 * back to libc. memFree(CACHE) detects libc pointers
+                 * by range check and frees them appropriately. */
+                extern void *malloc(size_t);
+                p = malloc(alignedSize);
+                if (p == NULL) {
+                    memHaltFmt("CACHE", "exhausted (region+libc both)",
+                               alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
+                }
+            }
         }
-        g_cacheUsed += alignedSize;
         if (g_cacheUsed > g_cachePeak) {
             g_cachePeak = g_cacheUsed;
         }
@@ -335,10 +373,17 @@ void memFree(MemRegion region, void *ptr)
         return;
 
     case MEM_REGION_CACHE: {
-        /* All-libc-backed: free directly. Used only by the LRU
-         * evictor; game code touches CACHE via pin/unpin. */
-        extern void free(void *);
-        free(ptr);
+        /* If the pointer is inside the CACHE region, use the
+         * free-list. Otherwise it was libc-allocated (fallback) — use
+         * libc free. */
+        if (g_cacheBase != NULL &&
+            (unsigned char *)ptr >= g_cacheBase &&
+            (unsigned char *)ptr <  g_cacheBase + MEM_CACHE_BUDGET) {
+            cacheFreeInternal(ptr);
+        } else {
+            extern void free(void *);
+            free(ptr);
+        }
         return;
     }
 
@@ -672,25 +717,58 @@ void memVerifyBootBudget(void)
             maxScratch  = kPackHeaderMetrics[i].maxStreamScratchBytes;
     }
 
-    /* All-libc-backed mode: BOOT budget is 0 and allocations route
-     * to libc; the verify is a no-op (libc handles BOOT allocs as
-     * they happen). Kept as a symbol so the boot sequence's call
-     * site doesn't need a conditional. */
-    (void)maxFrame; (void)maxPrefetch; (void)maxWindow; (void)maxScratch;
+    /* BOOT region is mostly idle (the big BOOT migrations were
+     * reverted to libc; walk buf, GPU primitives etc. stay there).
+     * Small safety estimate. */
+    const size_t fixedBoot = 4u * 1024u;
+    const size_t bootEstimate = maxFrame + maxPrefetch + maxWindow +
+                                maxScratch + fixedBoot;
+    if (bootEstimate > MEM_BOOT_BUDGET) {
+        memHaltFmt("BOOT", "verify-budget", bootEstimate, MEM_BOOT_BUDGET);
+    }
 }
 
 void memVerifyAllScenesFitTransient(void)
 {
-    /* All-libc-backed mode: TRANSIENT budget = 0; every alloc goes
-     * to libc and is tracked in the linked list for memSceneReset
-     * wholesale wipe. No pre-flight budget check needed. */
+    /* TRANSIENT has libc fallback for overflowing scenes; only warn. */
+    extern int printf(const char *, ...);
+    int overflows = 0;
+    for (size_t i = 0; i < kPackHeaderMetricsCount; i++) {
+        const size_t need = kPackHeaderMetrics[i].transientWorstCase;
+        if (need > MEM_TRANSIENT_BUDGET) {
+            if (overflows < 3) {
+                printf("JCMEM WARN: TRANSIENT overflow scene=%s need=%lu budget=%lu (libc fallback)\n",
+                       kPackHeaderMetrics[i].packName,
+                       (unsigned long)need,
+                       (unsigned long)MEM_TRANSIENT_BUDGET);
+            }
+            overflows++;
+        }
+    }
+    if (overflows > 0) {
+        printf("JCMEM WARN: %d scene(s) exceed TRANSIENT budget; libc fallback active\n",
+               overflows);
+    }
 }
 
 void memVerifyAllScenesPinnedFitCache(void)
 {
-    /* All-libc-backed mode: CACHE budget = 0, no static buffer. The
-     * LRU evictor handles overflow via libc free as it always did.
-     * No verification needed (libc allocates as requested). */
+    /* CACHE has LRU eviction + libc fallback; only halt on truly
+     * pathological cases (>2x budget). */
+    extern int printf(const char *, ...);
+    for (size_t i = 0; i < kPackHeaderMetricsCount; i++) {
+        const size_t need = kPackHeaderMetrics[i].cachePinnedWorstCase;
+        if (need > MEM_CACHE_BUDGET * 2u) {
+            memHaltFmt("CACHE", kPackHeaderMetrics[i].packName,
+                       need, MEM_CACHE_BUDGET);
+        }
+        if (need > MEM_CACHE_BUDGET) {
+            printf("JCMEM WARN: CACHE pinned overflow scene=%s need=%lu budget=%lu (LRU evict)\n",
+                   kPackHeaderMetrics[i].packName,
+                   (unsigned long)need,
+                   (unsigned long)MEM_CACHE_BUDGET);
+        }
+    }
 }
 
 #ifdef JC_VERIFY_PACK_HASHES

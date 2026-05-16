@@ -73,9 +73,20 @@ typedef enum MemRegion {
  *   4. sector-buffer scratch migrated to TRANSIENT
  * After those, libc's transient demand drops below ~200 KB and a
  * 1 MB+ static region becomes feasible. */
-#define MEM_BOOT_BUDGET      0u
-#define MEM_CACHE_BUDGET     0u
-#define MEM_TRANSIENT_BUDGET 0u
+/* Static region budgets — re-enabled after migrating the big libc
+ * allocations (ps1_fopen file buffer, ps1_streamReadFromCdFile
+ * sectorBuffer + result) into CACHE/TRANSIENT. With those migrated,
+ * libc demand post-memInit drops to ~50 KB (small struct allocations
+ * + audio init scratch), leaving the rest of usable RAM for the
+ * region buffer.
+ *
+ *   BOOT: 32 KB (placeholder — most BOOT residents still libc)
+ *   CACHE: 700 KB (MARY pinned 568 KB + file buffer + result peaks)
+ *   TRANSIENT: 280 KB (sectorBuffer 300 KB peak split + scene scratch)
+ *   Total: 1012 KB (~1 MB) */
+#define MEM_BOOT_BUDGET      ( 32u * 1024u)
+#define MEM_CACHE_BUDGET     (700u * 1024u)
+#define MEM_TRANSIENT_BUDGET (280u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
 /* Hard ceiling against the linker map (build-ps1/jcreborn.map):
@@ -108,6 +119,12 @@ void memInit(void);
  * surfacePoolInit, walkPilotInit, pauseMenuInit). Subsequent BOOT
  * allocations halt. */
 void memFreezeBoot(void);
+
+/* Returns 1 once memInit() has completed; 0 before. Used by code that
+ * may run both pre- and post-init (e.g., ps1_fopen called during
+ * early TITLE.RAW load before memInit, and later for OCEAN.SCR after
+ * memInit) — early callers stay on libc, later ones use regions. */
+int memIsReady(void);
 
 /* ---------------------------------------------------------------------
  * Allocation API

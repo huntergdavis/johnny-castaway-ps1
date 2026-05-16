@@ -98,6 +98,7 @@ typedef struct {
     int      isStream;
     uint32_t streamBase;     /* file offset of buffer[0] in stream mode */
     uint32_t streamBytesCached; /* valid bytes in buffer (stream mode) */
+    int      bufferFromRegion; /* 1 = file->buffer is MEM_REGION_CACHE; 0 = libc malloc */
 } PS1File;
 
 PS1File* ps1_fopen(const char* filename, const char* mode);
