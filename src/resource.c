@@ -149,7 +149,7 @@ static size_t totalMemoryUsed = 0;
  * eviction → more CD reloads of recently-touched BMP/TTM/SCR/ADS. The
  * `target_vb` perf gates measure scene-loop time including reloads;
  * any regression will surface in the matrix. */
-static size_t memoryBudget = 320 * 1024;  /* PS1: leave bump-tail headroom for scene metadata + per-scene buffers */
+static size_t memoryBudget = 200 * 1024;  /* PS1: leave bump-tail headroom for scene metadata + per-scene buffers (R33f-soak: 320 KB still had peak 551 / fragmentation killed visitor6 at 226s; 200 KB targets peak ~470 KB) */
 #else
 static size_t memoryBudget = 256 * 1024;  /* PC: Conservative for responsiveness */
 #endif
