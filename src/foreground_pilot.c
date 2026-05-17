@@ -13,6 +13,7 @@
 #include "cdrom_ps1.h"
 #include "island.h"
 #include "mem_region.h"
+#include "resource.h"
 #include "holidays.h"
 #include "pause_menu.h"
 #include "ps1_captions.h"
@@ -3856,9 +3857,49 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         int rewound = memCacheRewindIfEmpty();
         if (!rewound) {
             extern size_t memRegionUsed(unsigned int);
-            printf("JCMEM CACHE-rewind-skip scene=%s cacheUsed=%lu\n",
+            extern int numAdsResources;
+            extern int numTtmResources;
+            extern int numBmpResources;
+            extern int numScrResources;
+            extern struct TAdsResource *adsResources[];
+            extern struct TTtmResource *ttmResources[];
+            extern struct TBmpResource *bmpResources[];
+            extern struct TScrResource *scrResources[];
+            int adsLive = 0, ttmLive = 0, bmpLive = 0, scrLive = 0;
+            int adsPinned = 0, ttmPinned = 0, bmpPinned = 0, scrPinned = 0;
+            size_t adsBytes = 0, ttmBytes = 0, bmpBytes = 0, scrBytes = 0;
+            for (int i = 0; i < numAdsResources; i++) {
+                if (adsResources[i] && adsResources[i]->uncompressedData) {
+                    adsLive++; adsBytes += adsResources[i]->uncompressedSize;
+                    if (adsResources[i]->pinCount > 0) adsPinned++;
+                }
+            }
+            for (int i = 0; i < numTtmResources; i++) {
+                if (ttmResources[i] && ttmResources[i]->uncompressedData) {
+                    ttmLive++; ttmBytes += ttmResources[i]->uncompressedSize;
+                    if (ttmResources[i]->pinCount > 0) ttmPinned++;
+                }
+            }
+            for (int i = 0; i < numBmpResources; i++) {
+                if (bmpResources[i] && bmpResources[i]->uncompressedData) {
+                    bmpLive++; bmpBytes += bmpResources[i]->uncompressedSize;
+                    if (bmpResources[i]->pinCount > 0) bmpPinned++;
+                }
+            }
+            for (int i = 0; i < numScrResources; i++) {
+                if (scrResources[i] && scrResources[i]->uncompressedData) {
+                    scrLive++; scrBytes += scrResources[i]->uncompressedSize;
+                    if (scrResources[i]->pinCount > 0) scrPinned++;
+                }
+            }
+            printf("JCMEM CACHE-rewind-skip scene=%s cacheUsed=%lu "
+                   "ADS=%d/%d/%luKB TTM=%d/%d/%luKB BMP=%d/%d/%luKB SCR=%d/%d/%luKB\n",
                    sceneName ? sceneName : "(?)",
-                   (unsigned long)memRegionUsed((unsigned int)MEM_REGION_CACHE));
+                   (unsigned long)memRegionUsed((unsigned int)MEM_REGION_CACHE),
+                   adsLive, adsPinned, (unsigned long)(adsBytes/1024),
+                   ttmLive, ttmPinned, (unsigned long)(ttmBytes/1024),
+                   bmpLive, bmpPinned, (unsigned long)(bmpBytes/1024),
+                   scrLive, scrPinned, (unsigned long)(scrBytes/1024));
         }
     }
 

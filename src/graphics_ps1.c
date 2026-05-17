@@ -1025,7 +1025,18 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
     /* Free PSB data buffer if this slot was loaded from a PSB file.
      * Must happen AFTER freeing sprites since they pointed into it. */
     if (ttmSlot->psbData[bmpSlotNo] != NULL) {
-        free(ttmSlot->psbData[bmpSlotNo]);
+        /* R33-soak fix: PSB buffer comes from ps1PilotLoadPsb /
+         * ps1_streamReadCache → CACHE region (post-memInit). The prior
+         * libc free() was a silent no-op on CACHE pointers, leaving
+         * the ~80–120 KB PSB block leaked in CACHE forever. memFree(CACHE)
+         * range-checks the pointer and routes correctly to either the
+         * CACHE free-list or libc free. The R33m diagnostic showed
+         * cacheUsed=512 KB with LRU empty — that 512 KB was leaked PSB
+         * buffers from prior scenes. */
+        if (memIsReady())
+            memFree(MEM_REGION_CACHE, ttmSlot->psbData[bmpSlotNo]);
+        else
+            free(ttmSlot->psbData[bmpSlotNo]);
         ttmSlot->psbData[bmpSlotNo] = NULL;
     }
 
@@ -1099,31 +1110,31 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* Validate PSB header */
     if (psbSize < sizeof(PSBHeader)) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     hdr = (PSBHeader *)psbBuf;
     if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     if (hdr->numFrames == 0 || hdr->dataOffset > psbSize) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     /* Cross-check totalSize against actual buffer size */
     if (hdr->totalSize > psbSize) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     /* Verify frame table fits */
     frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
     if (frameTableEnd > hdr->dataOffset) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
@@ -1187,7 +1198,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* If no frames loaded (corruption or OOM), free everything and fall back. */
     if (framesLoaded == 0) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
