@@ -1556,15 +1556,15 @@ static void fgRuntimeReset(void)
      * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
     grBackgroundTilesAssumeWiped();
 
-    /* Note: the R33-soak experimental fgReleaseStreamBuffersHard() call
-     * here was reverted — it actually INCREASED fragmentation. Reasoning:
-     * the 4 grow-only buffers (frame/prefetch/window/scratch) vary in
-     * size per scene. Releasing and re-allocating each scene with
-     * different sizes leaves variable-shaped holes in CACHE. With
-     * grow-only behavior preserved, the buffers grow to worst-case
-     * over the first few scenes and then stay at fixed positions
-     * forever — CACHE fragmentation can only come from LRU resource
-     * churn (smaller, more predictable). */
+    /* Round 33-soak: re-add fgReleaseStreamBuffersHard. The "revert to
+     * grow-only" experiment (R33i) measured a soak BSOD at 182s vs
+     * R33h's 226s — grow-only fragmented WORSE. The release-and-
+     * coalesce path helps because it returns each scene's per-buffer
+     * allocations to the free-list in one contiguous coalesced run,
+     * whereas grow-only leaves prior scenes' over-sized blocks pinned
+     * indefinitely with LRU churn creating fragmentation around them.
+     * 226s ceiling remains the better state. */
+    fgReleaseStreamBuffersHard();
 
     /* Clear file-static TRANSIENT pointers so the next scene sees a
      * clean slate. memSceneReset reclaimed the underlying bytes, but
