@@ -1219,3 +1219,68 @@ hoisted) is correct and represents the largest single CACHE pressure
 relief available without one of (1)/(2)/(3). The session's experiments
 established a hard 226–247s ceiling that further allocator tuning at
 the current level cannot break.
+
+---
+
+## Round 33j-q: CACHE rewind at scene boundary — breakthrough
+
+### The full picture
+
+After R33h's 226s ceiling, the rest of R33 was an iterative hunt for
+sources of "ghost" CACHE residency that blocked the scene-boundary
+rewind from firing. Diagnostic instrumentation (`memDumpCacheStats`,
+`cache-alloc-big` per-alloc log) revealed three leaks in succession:
+
+| Round | Leak found | Bytes recovered |
+|-------|------------|----------------|
+| R33n | PSB buffer freed via raw `free()` instead of `memFree(CACHE)` (silent no-op on CACHE pointers) | ~40 KB |
+| R33q | Clean-rect pixels kept across scenes by historic anti-fragmentation policy (`grDeactivateCleanBgRects`) | ~380 KB |
+| Remaining at HEAD | 1 block ~93 KB (likely a one-time boot allocation; not growing) | stable |
+
+The fix sequence now in `fgPlayOceanRuntimeScene` at scene boundary:
+
+1. `fgRuntimeReset()` — wipes TRANSIENT, releases 4 grow-only CACHE
+   buffers (frame/prefetch/window/scratch)
+2. `grFreeCleanBgRects()` — release clean-rect pixel buffers
+   (overrides historic deactivate-only policy)
+3. `lruEvictAllUnpinned()` — drop ADS+TTM+BMP+SCR unpinned LRU
+   resources (panic-mode, bypasses memoryBudget)
+4. `memCacheRewindIfEmpty()` — if g_cacheUsed == 0, discard the
+   free-list and rewind bump_top to base (O(1) defragmentation)
+
+Plus the related fixes:
+
+- PSB buffer release: route through `memFree(CACHE, ...)` (7 sites
+  in graphics_ps1.c)
+- Stream window allocation: route through `memAlloc(CACHE, ...)`
+  instead of libc-primary `malloc()` (the silent-NULL path on
+  exhausted libc was masking real errors as "pack-start failed")
+
+### Soak result
+
+With all fixes in place, the soak runs past the 226–247s ceiling
+that had been hit by all previous R33 attempts (R33a–R33h):
+
+- visitor3 (scene 1) — clean play
+- fishing1 (scene 2) — clean transition at 162s
+- suzy1 (scene 3) — clean transition at 199s
+- visitor3 (scene 4) — clean transition at 220s, with bump_offset
+  shrunk 570→236 KB (indicating partial rewind happened at the
+  boundary)
+- stand8 (scene 5) — clean transition at ~245s
+- walkstuf1 (scene 6) — clean transition at 252s with bump shifted
+  back to 619 KB (workload-dependent)
+- Past 262s with no BSOD, no JCSKIP, no JCMEM black-clean visual
+  fallback
+
+The 93 KB residual is stable across scenes (doesn't grow) — it's a
+one-time allocation (most likely from foregroundPilotRuntimeStart's
+gFgFrameBuffer reaching its visitor3-size 93 KB and persisting via
+the grow-only path). Doesn't block scene progression.
+
+### 24-hour soak
+
+Still wall-clock-bound; can't be validated in a single session. But
+the architectural class of failure that capped every prior soak
+(deterministic 226–247s CACHE fragmentation BSOD) is broken. The
+remaining work is wall-clock validation only.
