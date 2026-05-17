@@ -998,3 +998,110 @@ suppresses scenes that don't need relief.
 
 Full 63-scene matrix at threshold=256: running. Result will be
 appended below.
+
+---
+
+## Round 33 (2026-05-16): bg-tile pixels → TRANSIENT — partial
+
+### What changed
+
+R33 is the architectural fix that earlier rounds couldn't land: move
+the 4× 320×240×2-byte bg-tile pixel buffers (~600 KB worst case) out
+of CACHE and into TRANSIENT.
+
+Three coupled changes (commit `4ffb69da7`):
+
+1. `graphics_ps1.c` — `createEmptyBgTileRAM` / `ensureBgTileRAM` /
+   `freeBgTile` allocate from `MEM_REGION_TRANSIENT`. A new helper
+   `grBackgroundTilesAssumeWiped()` NULLs the static slot pointers
+   (`bgTile0/1/3/4` + `grBackgroundSfc`) after a wipe — without it
+   the slots dangle into reclaimed memory.
+
+2. `foreground_pilot.c` — `fgRuntimeReset()` now calls
+   `grBackgroundTilesAssumeWiped()` immediately after `memSceneReset`.
+   The reset itself is hoisted out of `foregroundPilotRuntimeStart`
+   and into the very top of `fgPlayOceanRuntimeScene`, BEFORE
+   `grLoadScreen`. Previously the wipe ran AFTER backdrop population,
+   which is the conflict that made Rounds 26–32 revert ("stuck on
+   title screen"). With the hoist, bg-tile pixels live in TRANSIENT
+   safely.
+
+3. `mem_region.h` — CACHE budget 1024 → 640 KB, TRANSIENT 256 → 768 KB,
+   total 1440 KB (was 1312), ceiling 1450 KB.
+
+Follow-up (commit `b84b21b60`): drop the `TRANSIENT_RESERVE` (16 KB)
+in `grSaveCleanBgRects` so clean-rects always prefer TRANSIENT —
+the reserve was pushing them into CACHE where they fragmented across
+scene transitions.
+
+### What validates
+
+- Build: clean, region 1440 KB allocated at boot.
+- Single-scene runs (5000–7200 frames each):
+  - fishing1: PASS loop_vb=1072 / target_vb=1074
+  - fishing1-high: PASS loop_vb=1070 / target_vb=1072
+  - fishing2: PASS loop_vb=1760 / target_vb=1765
+  - fishing3: PASS loop_vb=1959 / target_vb=1960
+  - visitor3: PASS loop_vb=1243 / target_vb=1031 (no force-relief needed)
+  - johnny1: PASS loop_vb=1945 / target_vb=1946
+  - mary1: clean play, no JCMEM degradation markers
+- 4-scene perf matrix: 4/4 PASS at Round-16 baselines.
+- Mid-soak: first 3 scene transitions clean (building3 → fishing8 →
+  stand6 → stand3) with no `JCSKIP`, no `JCMEM black-clean`, no
+  visual fallback.
+
+### What does NOT validate
+
+The 24-hour soak goal is NOT met. The soak BSODs at ~230s during
+the 4th scene with CACHE fragmentation:
+
+```
+JCBSOD-FATAL CACHE exhausted (region+libc both): req=49152 have=113260
+memCacheUsed=542100 memCachePeak=568728
+memTransientUsed=0 memTransientPeak=785156
+sceneAllocBalance=0
+```
+
+The signature: ~113 KB total free CACHE, but no 49 KB contiguous
+block. CACHE is NOT wiped per-scene (it's the LRU + grow-only
+buffers), so its bump high-water grows monotonically and the
+free-list accumulates non-coalesceable holes across many scene
+transitions. R33's bg-tile relocation eliminated the 600 KB CACHE
+pressure that caused the deterministic 242s BSOD, but uncovered a
+deeper fragmentation problem in the remaining ~570 KB working set.
+
+### What's left
+
+The remaining CACHE pressure comes from:
+- LRU resources (uncompressedData blobs from BMP/SCR/TTM/ADS) bounded
+  at 600 KB by `memoryBudget` in `resource.c:136`, peaking ~324 KB
+- `gFgFrameBuffer` (grow-only): 17–112 KB
+- `gFgPrefetchFrameBuffer` (grow-only): 0 or 112 KB
+- `gFgStreamScratch` (grow-only): 16–135 KB
+- `gFgStreamWindowBuffer` (libc-primary, CACHE fallback): occasional
+
+Three viable next steps:
+
+(A) Panic-mode CACHE compaction. When alloc fails despite total-free
+    > request, move every live block down, rewind the bump pointer.
+    Requires either an owner-table for relocation pointer fixups or
+    a "marker handle" indirection for every CACHE allocation.
+    Largest implementation surface; cleanest semantics.
+
+(B) Move grow-only buffers (`gFgFrameBuffer`,
+    `gFgPrefetchFrameBuffer`, `gFgStreamScratch`) into TRANSIENT.
+    Loses the "grow-only" optimization but eliminates their CACHE
+    residency entirely. CACHE pressure drops to ~324 KB (LRU peak)
+    + occasional overflow. TRANSIENT pressure rises by ~300 KB
+    worst-case, which doesn't fit the current 768 KB budget —
+    needs additional juggling.
+
+(C) Shrink LRU `memoryBudget` from 600 KB to 300 KB. Forces more
+    aggressive eviction; more CD reloads (slower scene playback)
+    but smaller LRU residency means more bump-tail headroom in
+    CACHE for the 49–71 KB clean-rect/resource allocs that fail
+    in (A)'s absence.
+
+Decision deferred to user; (B) is the most aligned with the
+established "per-scene wipe is load-bearing" pattern but requires
+TRANSIENT-budget rework.
