@@ -661,6 +661,49 @@ static size_t cacheUsedInternal(void)
     return g_cacheUsed;
 }
 
+/* R33-soak final fix: rewind the CACHE bump pointer to base if there
+ * are zero live bytes. Called from fgRuntimeReset after release+evict
+ * has freed every CACHE allocation it knows about; if g_cacheUsed is
+ * zero at that point, no live block references CACHE bytes, so the
+ * free-list (which may have many fragmented entries from years of
+ * scene transitions) can be discarded and bump_top reset to base.
+ *
+ * Defragments CACHE entirely without needing to relocate live blocks —
+ * because there are no live blocks at the moment we run. The next
+ * scene's allocations start fresh from the bump pointer, so the
+ * cycle of "alloc-fragment-fail" can never accumulate across many
+ * scenes.
+ *
+ * Cost: the unpinned-LRU drop and grow-only buffer release that
+ * precede this call collectively re-allocate ~250–400 KB of CACHE
+ * for the next scene. LRU re-loads its resources from CD on demand
+ * (slower scene setup); grow-only buffers re-allocate from the now-
+ * empty CACHE. The CD reload is bounded — each scene only pulls in
+ * what its TTM/BMP/SCR/ADS references demand.
+ *
+ * Returns 1 if rewind happened, 0 if some allocations remain live. */
+int memCacheRewindIfEmpty(void)
+{
+    MEM_REQUIRE(g_memInited);
+    MEM_REQUIRE(ps1IsMainContext());
+
+    if (g_cacheUsed != 0) {
+        /* Something is still live in CACHE. Don't rewind — that would
+         * dangle the live pointer(s). The caller's eviction pass
+         * either missed something or LRU has pinned resources. */
+        return 0;
+    }
+
+    /* No live bytes. The free-list points into now-irrelevant memory;
+     * dropping it and rewinding bump_top defragments CACHE in O(1). */
+    g_cacheFreeList = NULL;
+    g_cacheBumpTop = g_cacheBase;
+    /* Keep g_cachePeak as the historical max — useful for telemetry.
+     * If we reset it to 0 here, the "peak" reading after a rewind
+     * would lie about how much CACHE the workload actually demanded. */
+    return 1;
+}
+
 void memCachePreEvictForNextScene(const char *effectiveSceneName)
 {
     (void)effectiveSceneName;  /* metric lookup elided — see comment below */

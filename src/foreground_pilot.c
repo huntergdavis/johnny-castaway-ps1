@@ -1556,15 +1556,47 @@ static void fgRuntimeReset(void)
      * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
     grBackgroundTilesAssumeWiped();
 
-    /* Round 33-soak: re-add fgReleaseStreamBuffersHard. The "revert to
-     * grow-only" experiment (R33i) measured a soak BSOD at 182s vs
-     * R33h's 226s — grow-only fragmented WORSE. The release-and-
-     * coalesce path helps because it returns each scene's per-buffer
-     * allocations to the free-list in one contiguous coalesced run,
-     * whereas grow-only leaves prior scenes' over-sized blocks pinned
-     * indefinitely with LRU churn creating fragmentation around them.
-     * 226s ceiling remains the better state. */
+    /* Round 33-soak: release+evict+rewind the entire CACHE at scene
+     * boundary. The fundamental fragmentation issue (R33h–R33i: free-
+     * list has 113 KB scattered but no 96 KB contiguous block, BSOD at
+     * 226s) was that CACHE accumulates fragmentation across many scene
+     * transitions because it's never wiped wholesale.
+     *
+     * Three-step drain:
+     *   1. fgReleaseStreamBuffersHard — return the 4 per-scene
+     *      grow-and-release buffers (frame/prefetch/window/scratch)
+     *      to the free-list.
+     *   2. lruEvictAllUnpinned — drop EVERY unpinned LRU resource,
+     *      bypassing the memoryBudget threshold (the panic-mode path
+     *      added in R33h, now run unconditionally at scene boundary).
+     *   3. memCacheRewindIfEmpty — if g_cacheUsed dropped to 0,
+     *      discard the (now-irrelevant) free-list and rewind
+     *      bump_top to base. O(1) defragmentation.
+     *
+     * If step 3 fails (live bytes remain), something is pinned that
+     * we don't know about — log it and continue without rewinding;
+     * the next scene's alloc may still succeed via the existing
+     * free-list path.
+     *
+     * Cost: LRU re-loads its resources from CD per-scene. Each scene
+     * pulls in only what its TTM/BMP/SCR/ADS demands; bounded by the
+     * scene's pack size. CACHE allocator latency drops to near zero
+     * because every alloc is a fresh bump. */
     fgReleaseStreamBuffersHard();
+    {
+        extern void lruEvictAllUnpinned(void);
+        lruEvictAllUnpinned();
+    }
+    {
+        int rewound = memCacheRewindIfEmpty();
+        if (!rewound) {
+            /* Some bytes still pinned in CACHE — likely a resource
+             * we forgot to release. Log and continue without rewind. */
+            extern size_t memRegionUsed(unsigned int);
+            printf("JCMEM CACHE-rewind-skip cacheUsed=%lu\n",
+                   (unsigned long)memRegionUsed((unsigned int)MEM_REGION_CACHE));
+        }
+    }
 
     /* Clear file-static TRANSIENT pointers so the next scene sees a
      * clean slate. memSceneReset reclaimed the underlying bytes, but

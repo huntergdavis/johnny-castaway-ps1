@@ -177,6 +177,13 @@ void memFreezeBoot(void);
  * memInit) — early callers stay on libc, later ones use regions. */
 int memIsReady(void);
 
+/* R33-soak: rewind the CACHE bump pointer to base if g_cacheUsed
+ * is zero. Called from fgRuntimeReset after the scene-boundary
+ * release+evict sequence; if it drained CACHE completely, this
+ * resets the bump and clears the free-list — defragmenting in O(1).
+ * Returns 1 on rewind, 0 if live bytes remain. */
+int memCacheRewindIfEmpty(void);
+
 /* ---------------------------------------------------------------------
  * Allocation API
  * ------------------------------------------------------------------- */
