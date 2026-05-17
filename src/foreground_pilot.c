@@ -3418,20 +3418,39 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                     uint8 *newWindowBuffer;
 
-                    /* Setup-prime is a startup cache, not scene state.
-                     * If the larger cache allocation ever fails, keep the
-                     * scene deterministic by falling back to the normal
-                     * streaming window. The small window remains mandatory:
-                     * if that allocation fails, the scene really cannot run. */
-                    newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                    /* Round 33-soak: route stream window through CACHE.
+                     *
+                     * The original libc-primary path (malloc here, CACHE
+                     * fallback only on setup-prime size) was R8-era
+                     * intent to preserve CACHE space for LRU. With the
+                     * R33 budget retune (LRU 320 KB, CACHE 640 KB,
+                     * ~320 KB CACHE headroom after grow-only stream
+                     * buffers), CACHE has plenty of space — but libc
+                     * post-region-allocation has only ~70 KB headroom
+                     * total, so a 100–300 KB stream window malloc
+                     * silently returns NULL when libc is tight,
+                     * triggering the foregroundPilotRuntimeStart
+                     * return-0 → JC_BSOD "pack-start failed" at
+                     * visitor6 around 247s in random rotation.
+                     *
+                     * memAlloc(MEM_REGION_CACHE, ...) halts on
+                     * exhaustion (region + libc both) instead of
+                     * silently returning NULL — making this path
+                     * deterministic. Setup-prime fallback still tries
+                     * the smaller window size on alloc failure to
+                     * keep visitor3-class behavior. */
+                    /* MEM_REGION_RATIONALE: grow-only prefetch window.
+                     * CACHE region. */
+                    newWindowBuffer = (uint8 *)memAlloc(
+                        MEM_REGION_CACHE,
+                        windowCapacityBytes,
+                        "fg-stream-window");
                     if (newWindowBuffer == NULL &&
                         gFgRuntime.setupPrimeWindowBytes > 0 &&
                         windowCapacityBytes > windowBytes) {
                         gFgRuntime.setupPrimeWindowBytes = 0;
                         windowCapacityBytes = windowBytes;
                         if (windowCapacityBytes > gFgStreamWindowBufferSize)
-                            /* MEM_REGION_RATIONALE: grow-only prefetch
-                             * window. CACHE region. */
                             newWindowBuffer = (uint8 *)memAlloc(
                                 MEM_REGION_CACHE,
                                 windowCapacityBytes,
