@@ -1105,3 +1105,57 @@ Three viable next steps:
 Decision deferred to user; (B) is the most aligned with the
 established "per-scene wipe is load-bearing" pattern but requires
 TRANSIENT-budget rework.
+
+### Round 33-soak follow-up (2026-05-16 23:50)
+
+Two further commits explored fragmentation mitigations:
+
+`b84b21b60` — drop `TRANSIENT_RESERVE` in `grSaveCleanBgRects` so
+clean-rects always prefer TRANSIENT (per-scene wipe = no
+fragmentation accumulation). Result: soak BSOD shifted from 226s
+to 236s; failure mode changed to `req=49152 have=113260` (CACHE
+still fragmented at smaller request).
+
+`b3a7f5303` — release grow-only stream buffers
+(`gFgFrameBuffer`/`gFgPrefetchFrameBuffer`/`gFgStreamWindowBuffer`/
+`gFgStreamScratch`) at scene transition via `fgReleaseStreamBuffersHard()`
+called from `fgRuntimeReset`. Coalesced free blocks should serve
+the next scene's allocations from the free-list. Result: soak BSOD
+at 247s with `pack-start failed` — TRANSIENT peak hit 785 KB (17 KB
+over budget, libc-spill) AND CACHE peak grew from 568 → 623 KB
+(LRU stayed bigger when stream buffers were released, evictor ran
+less aggressively), so the next scene's CACHE-resident metadata
+read failed.
+
+Neither change broke individual scene correctness; both stretched
+the soak window slightly (226s → 236s → 247s) but the underlying
+constraint persists: PS1 RAM ~1.5 MB total / region 1440 KB /
+libc ~70 KB headroom is **fundamentally tight** for a workload
+where peak simultaneous live memory is ~1.1 MB and the live set
+shifts non-trivially between scenes.
+
+### Remaining options for 24-hour goal
+
+(A) **Panic-mode CACHE compaction** — when alloc fails despite
+    total-free > request, walk every live CACHE allocation, move
+    them down, rewind the bump pointer. Requires either an
+    owner-table for pointer fixups or a handle-indirection layer
+    for every CACHE allocation. Largest implementation surface;
+    cleanest semantics. ~1–2 weeks engineering.
+
+(B) **Move LRU resources to TRANSIENT-with-pinning** — kills the
+    cross-scene resource cache benefit (more CD reads per scene
+    transition) but eliminates CACHE entirely from the persistent-
+    state picture. Requires lifecycle rework of `resource.c`.
+    ~1 week engineering.
+
+(C) **Smaller LRU `memoryBudget`** (currently 600 KB at
+    `resource.c:136`) — forces more aggressive eviction; cheap and
+    immediate. Risk: more CD reads → slower scene playback. Worth
+    trying as a stopgap before pursuing (A) or (B).
+
+The R33 architectural fix itself is correct and represents real
+progress (bg-tile pixels are no longer the dominant CACHE
+consumer). 24-hour soak validation is wall-clock-bound and
+requires either deeper allocator work or a multi-session test
+campaign at the current 247s ceiling to confirm/disprove.
