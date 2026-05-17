@@ -133,7 +133,23 @@ static struct TMapFile mapFile;
 static uint32 globalTick = 0;
 static size_t totalMemoryUsed = 0;
 #ifdef PS1_BUILD
-static size_t memoryBudget = 600 * 1024;  /* PS1: Use most available RAM (~700KB free) */
+/* Round 33-soak: shrink LRU budget from 600 KB to 320 KB.
+ *
+ * Post-R33 the CACHE region is 640 KB total. Other CACHE residents
+ * (gFgFrameBuffer, gFgPrefetchFrameBuffer, gFgStreamScratch, occasional
+ * stream window spill, metadata reads) consume up to ~250 KB. With LRU
+ * at the prior 600 KB cap the CACHE peak hit 623 KB — within 17 KB of
+ * the 640 KB budget — and free-list fragmentation prevented contiguous
+ * allocations of 50–100 KB that the next scene's metadata read needed,
+ * BSODing at 247s with `pack-start failed`.
+ *
+ * Capping LRU at 320 KB keeps CACHE peak under ~570 KB worst-case
+ * (320 LRU + 250 other), leaving ~70 KB bump-tail headroom for the
+ * scene-start metadata read + frame buffer alloc. Cost: more aggressive
+ * eviction → more CD reloads of recently-touched BMP/TTM/SCR/ADS. The
+ * `target_vb` perf gates measure scene-loop time including reloads;
+ * any regression will surface in the matrix. */
+static size_t memoryBudget = 320 * 1024;  /* PS1: leave bump-tail headroom for scene metadata + per-scene buffers */
 #else
 static size_t memoryBudget = 256 * 1024;  /* PC: Conservative for responsiveness */
 #endif
