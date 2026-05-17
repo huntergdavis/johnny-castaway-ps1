@@ -321,14 +321,30 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
             checkMemoryBudget();
             p = cacheAllocInternal(alignedSize);
             if (p == NULL) {
-                /* CACHE region + eviction both insufficient — fall
-                 * back to libc. memFree(CACHE) detects libc pointers
-                 * by range check and frees them appropriately. */
-                extern void *malloc(size_t);
-                p = malloc(alignedSize);
+                /* R33-soak panic mode: drop ALL unpinned LRU
+                 * resources, not just down-to-budget. The
+                 * fragmentation-driven BSOD at 226s came from a
+                 * scenario where total-free CACHE bytes exceeded
+                 * the request (113 KB free, 96 KB request) but no
+                 * contiguous block was big enough. Forcing a full
+                 * LRU drop here frees more individually-sized
+                 * blocks; cacheCoalesce_ inside cacheFreeInternal
+                 * merges adjacent ones. Retry CACHE alloc — if a
+                 * contiguous span now exists, we recover. */
+                extern void lruEvictAllUnpinned(void);
+                lruEvictAllUnpinned();
+                p = cacheAllocInternal(alignedSize);
                 if (p == NULL) {
-                    memHaltFmt("CACHE", "exhausted (region+libc both)",
-                               alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
+                    /* CACHE region + panic eviction both insufficient
+                     * — fall back to libc. memFree(CACHE) detects
+                     * libc pointers by range check and frees them
+                     * appropriately. */
+                    extern void *malloc(size_t);
+                    p = malloc(alignedSize);
+                    if (p == NULL) {
+                        memHaltFmt("CACHE", "exhausted (region+libc both)",
+                                   alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
+                    }
                 }
             }
         }

@@ -204,5 +204,10 @@ void pinResource(void *resource, uint32 size, const char *type);
 void unpinResource(void *resource, const char *type);
 void touchResource(void *resource);
 void checkMemoryBudget(void);
+/* R33-soak panic mode: drop ALL unpinned LRU resources regardless of
+ * memoryBudget. Called from memAlloc CACHE when the normal eviction
+ * path can't satisfy a request — last-resort defragmentation to free
+ * fragmented CACHE bytes before the alloc halts. */
+void lruEvictAllUnpinned(void);
 size_t getTotalMemoryUsed(void);
 size_t getMemoryBudget(void);

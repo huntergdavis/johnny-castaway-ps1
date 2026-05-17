@@ -149,7 +149,7 @@ static size_t totalMemoryUsed = 0;
  * eviction → more CD reloads of recently-touched BMP/TTM/SCR/ADS. The
  * `target_vb` perf gates measure scene-loop time including reloads;
  * any regression will surface in the matrix. */
-static size_t memoryBudget = 200 * 1024;  /* PS1: leave bump-tail headroom for scene metadata + per-scene buffers (R33f-soak: 320 KB still had peak 551 / fragmentation killed visitor6 at 226s; 200 KB targets peak ~470 KB) */
+static size_t memoryBudget = 600 * 1024;  /* PS1: original budget. R33-soak experiments showed reducing this to 320/200 KB had no measurable effect on CACHE peak — fgpilot scenes use FG2 packs that don't load through LRU (they alloc via foregroundPilotRuntimeStart's CACHE allocs directly). LRU residency stays <200 KB regardless of cap. The CACHE pressure is dominated by the 4 grow-and-release per-scene buffers + their size variation across scenes. */
 #else
 static size_t memoryBudget = 256 * 1024;  /* PC: Conservative for responsiveness */
 #endif
@@ -981,4 +981,17 @@ size_t getTotalMemoryUsed(void) {
 
 size_t getMemoryBudget(void) {
     return memoryBudget;
+}
+
+/* R33-soak panic mode: temporarily set memoryBudget to 0 and run a
+ * full eviction pass so every unpinned LRU resource is freed back to
+ * CACHE. Restore budget afterward. Called from memAlloc CACHE when
+ * an alloc fails despite having total-free bytes — the freed blocks
+ * coalesce into the free-list and improve the chance the retry
+ * finds a contiguous span. */
+void lruEvictAllUnpinned(void) {
+    size_t savedBudget = memoryBudget;
+    memoryBudget = 0;
+    checkMemoryBudget();
+    memoryBudget = savedBudget;
 }
