@@ -184,6 +184,9 @@ int memIsReady(void);
  * Returns 1 on rewind, 0 if live bytes remain. */
 int memCacheRewindIfEmpty(void);
 
+/* R33-soak diagnostic: dump CACHE bump high-water + free-list summary. */
+void memDumpCacheStats(const char *prefix);
+
 /* ---------------------------------------------------------------------
  * Allocation API
  * ------------------------------------------------------------------- */

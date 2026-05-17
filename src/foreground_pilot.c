@@ -3850,6 +3850,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * the scene's pack size. CACHE allocator returns to zero-fragmentation
      * state, breaking the 226s soak ceiling. */
     {
+        /* R33-soak: force-free clean-rect pixels. The historic design
+         * (grDeactivateCleanBgRects at scene start) kept the boot-
+         * prealloc'd clean-rect buffers in CACHE across scenes to
+         * avoid free+malloc fragmentation. With R33's CACHE-rewind-
+         * at-scene-boundary, that policy now BLOCKS the rewind:
+         * cleanRect pixels live in CACHE → cacheUsed != 0 → no
+         * rewind → fragmentation accumulates as before. Force-free
+         * here, then rely on the next scene's grSaveCleanBgRects to
+         * re-alloc from the (post-rewind) fresh CACHE bump tail. */
+        grFreeCleanBgRects();
+
         extern void lruEvictAllUnpinned(void);
         lruEvictAllUnpinned();
     }
@@ -3900,6 +3911,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                    ttmLive, ttmPinned, (unsigned long)(ttmBytes/1024),
                    bmpLive, bmpPinned, (unsigned long)(bmpBytes/1024),
                    scrLive, scrPinned, (unsigned long)(scrBytes/1024));
+            memDumpCacheStats("JCMEM cache-stats-at-rewind-skip");
         }
     }
 

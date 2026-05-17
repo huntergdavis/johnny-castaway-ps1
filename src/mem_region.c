@@ -315,6 +315,13 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
     }
 
     case MEM_REGION_CACHE: {
+        /* R33o diagnostic: log large CACHE allocations so we can correlate
+         * with scene events to find the 475 KB unaccounted residency. */
+        if (alignedSize >= (32u * 1024u)) {
+            extern int printf(const char *, ...);
+            printf("JCMEM cache-alloc-big size=%lu tag=%s\n",
+                   (unsigned long)alignedSize, tag ? tag : "(?)");
+        }
         void *p = cacheAllocInternal(alignedSize);
         if (p == NULL) {
             extern void checkMemoryBudget(void);
@@ -659,6 +666,31 @@ static size_t cacheUsedInternal(void)
      * accurate value for diagnostics. The bump high-water can be
      * higher because freed blocks haven't been compacted. */
     return g_cacheUsed;
+}
+
+/* R33-soak diagnostic: dump CACHE bump high-water and free-list summary
+ * to TTY. Helps identify CACHE residency not covered by LRU array walks. */
+void memDumpCacheStats(const char *prefix)
+{
+    if (!g_memInited) return;
+    extern int printf(const char *, ...);
+    size_t bumpOffset = (size_t)(g_cacheBumpTop - g_cacheBase);
+    size_t freeListBlocks = 0;
+    size_t freeListBytes = 0;
+    CacheFreeBlock *cur = g_cacheFreeList;
+    while (cur != NULL) {
+        unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
+        unsigned int blockSize = cacheReadSize_(blockBase);
+        freeListBlocks++;
+        freeListBytes += blockSize;
+        cur = cur->next;
+    }
+    printf("%s bumpOffset=%lu free=%lu/%lu blocks live=%lu\n",
+           prefix ? prefix : "JCMEM cache-stats",
+           (unsigned long)bumpOffset,
+           (unsigned long)freeListBytes,
+           (unsigned long)freeListBlocks,
+           (unsigned long)g_cacheUsed);
 }
 
 /* R33-soak final fix: rewind the CACHE bump pointer to base if there
