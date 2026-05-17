@@ -1318,3 +1318,67 @@ shows the same `live=93180` and bumpOffset stays bounded. JOHNWALK
 isn't blocking correctness; it just means the rewind optimization
 doesn't trigger in normal play. The architectural fix
 (release+evict+rewind on demand) is sufficient as it stands.
+
+---
+
+## R33t: full CACHE rewind on every scene boundary — implementation complete
+
+After R33r diagnosed JOHNWALK.PSB as the persistent 93 KB blocking the
+rewind, and R33s soak confirmed that with JOHNWALK released the
+ghost residency was actually **BACKGRND.BMP's PSB in
+`gFgBackdropSlot`** (the wave-backdrop sprite, intentionally retained
+across scenes by `fgBackdropPreloadBackgrndBmp`'s `keepBackgrnd=1`
+path), R33t added `fgBackdropRelease(0)` to the scene-boundary
+release sequence.
+
+### Final scene-boundary release sequence (in `fgPlayOceanRuntimeScene`)
+
+```c
+fgRuntimeReset();                   // 4 grow-only CACHE buffers + TRANSIENT wipe
+grFreeCleanBgRects();               // clean-rect snapshot pixels
+fgWalkRenderTeardown();             // JOHNWALK.PSB
+fgBackdropRelease(0);               // BACKGRND.BMP PSB
+lruEvictAllUnpinned();              // ADS/TTM/BMP/SCR with pinCount==0
+memCacheRewindIfEmpty();            // CACHE → 0 → bump_top rewound to base
+```
+
+Both walk pilot and backdrop pilot lazy-reload their sprites when the
+new scene needs them. Per-scene cost: ~93 + ~93 = ~186 KB of CD reads
+hidden behind the scene-setup phase (already does many CD reads).
+
+### Validation result
+
+**R33t soak**: 1608s sim time, 32 unique scenes played, zero BSOD,
+zero JCSKIP, zero CACHE-rewind-skip — the rewind fires on every
+scene transition. Scenes covered include the heaviest:
+- visitor3 (4× clean-rect 97 KB each, was the canonical R16 failure)
+- mary3 (37 heartbeats — longest-played)
+- johnny6 (black-backdrop with temporal residual)
+- walkstuf3 (high CD churn)
+- All fishing variants (1, 3, 5, 6)
+- All visitor variants (3, 4, 6, 7)
+- Standing scenes, activity scenes, building scenes, miscgag scenes
+
+**R33t perf matrix**: 4/4 PASS at Round-16 baselines:
+- fishing1-high: `loop_vb=1069 / target_vb=1073` (4 vb headroom)
+- fishing1-low: `loop_vb=1068 / target_vb=1074` (6 vb headroom)
+- fishing2: `loop_vb=1758 / target_vb=1765` (7 vb headroom)
+- fishing3: `loop_vb=1956 / target_vb=1956` (at target)
+
+### What this resolves
+
+The fundamental architectural class of failure (CACHE fragmentation
+across many scene transitions) is **decisively broken**. Every scene
+starts with a clean CACHE bump pointer; the rewind erases the
+free-list and resets bump_top to base. No state accumulates across
+scenes. Worst-case CACHE peak is determined per-scene by the active
+workload, not by history.
+
+The R33 work began at the canonical 226–247s ceiling that capped
+every prior R33 attempt; ended at >1600s with the rewind firing on
+every transition.
+
+### 24-hour soak
+
+Now purely wall-clock-bound. The implementation is done; the
+architectural ceiling that prevented it before is gone.
