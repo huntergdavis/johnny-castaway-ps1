@@ -1556,28 +1556,15 @@ static void fgRuntimeReset(void)
      * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
     grBackgroundTilesAssumeWiped();
 
-    /* Round 33-soak follow-up: free the grow-only CACHE-resident stream
-     * buffers at every scene transition. These were originally kept
-     * across scenes ("grow-only") to avoid free+malloc churn, but the
-     * cost of that optimization is monotonic CACHE bump high-water
-     * growth — over many scene transitions the bump grows past the
-     * fragmented free-list and large allocations stop fitting (R33
-     * soak BSOD at 236s: req=49152, ~570 KB bump high-water, 113 KB
-     * free across non-contiguous blocks).
-     *
-     * Freeing here returns the blocks to the CACHE free-list. Because
-     * we free in order (frame → prefetch → window → scratch) and the
-     * CACHE allocator coalesces adjacent free blocks (mem_region.c
-     * cacheCoalesce_), the four freed blocks merge into one large
-     * free-list entry that the next scene's allocations can carve up.
-     * Net effect: each scene gets a recycled chunk instead of fresh
-     * bump-tail, keeping the bump high-water bounded across long
-     * sessions.
-     *
-     * Per-scene cost: 4× free + 4× alloc on the CACHE free-list,
-     * which is O(n) in free-list size — typically a few hundred
-     * cycles. Negligible vs the CD read that motivated the alloc. */
-    fgReleaseStreamBuffersHard();
+    /* Note: the R33-soak experimental fgReleaseStreamBuffersHard() call
+     * here was reverted — it actually INCREASED fragmentation. Reasoning:
+     * the 4 grow-only buffers (frame/prefetch/window/scratch) vary in
+     * size per scene. Releasing and re-allocating each scene with
+     * different sizes leaves variable-shaped holes in CACHE. With
+     * grow-only behavior preserved, the buffers grow to worst-case
+     * over the first few scenes and then stay at fixed positions
+     * forever — CACHE fragmentation can only come from LRU resource
+     * churn (smaller, more predictable). */
 
     /* Clear file-static TRANSIENT pointers so the next scene sees a
      * clean slate. memSceneReset reclaimed the underlying bytes, but
