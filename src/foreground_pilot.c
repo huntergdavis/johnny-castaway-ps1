@@ -3861,18 +3861,21 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * re-alloc from the (post-rewind) fresh CACHE bump tail. */
         grFreeCleanBgRects();
 
-        /* R33r: also release JOHNWALK.PSB (~93 KB CACHE-resident).
-         * walk_pilot.c keeps it loaded persistently for inter-scene
-         * walk transitions, which is fine for the walk system —
-         * but it's the single CACHE allocation that blocked the
-         * rewind from ever firing in R33q, causing slow long-tail
-         * fragmentation accumulation (BSOD at 790s in the R33-
-         * extended soak). walkPilotEnsureBmp re-loads it on demand
-         * when the walk pilot next needs it (one CD read,
-         * ~100–300 ms). With JOHNWALK released here AND the rest
-         * of the eviction below, cacheUsed should reach 0 and the
-         * rewind will fire on every scene transition. */
+        /* R33r: also release JOHNWALK.PSB (~93 KB CACHE-resident,
+         * walk_pilot.c). walkPilotEnsureBmp reloads on demand. */
         fgWalkRenderTeardown();
+
+        /* R33s: also release BACKGRND.BMP PSB in gFgBackdropSlot
+         * (~93 KB CACHE-resident — the "ghost" allocation that
+         * persists across scenes via fgBackdropPreloadBackgrndBmp's
+         * keepBackgrnd=1 path). fgBackdropPreloadBackgrndBmp later
+         * in fgPlayOceanRuntimeScene's body reloads it from CD
+         * (BACKGRND.BMP is small, ~93 KB). With both JOHNWALK and
+         * BACKGRND.BMP released here, cacheUsed should reach 0 and
+         * the rewind will fire on every scene transition, breaking
+         * the long-tail fragmentation accumulation that BSOD'd at
+         * 790s in the R33-extended soak. */
+        fgBackdropRelease(0);
 
         extern void lruEvictAllUnpinned(void);
         lruEvictAllUnpinned();
