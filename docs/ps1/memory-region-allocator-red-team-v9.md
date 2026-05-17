@@ -1382,3 +1382,45 @@ every transition.
 
 Now purely wall-clock-bound. The implementation is done; the
 architectural ceiling that prevented it before is gone.
+
+## Round 34 — full 63-scene matrix at 7200 frames
+
+After the R33t soak demonstrated the rewind closure architecturally,
+the full canonical perf matrix was re-run at 7200 frames per case
+across both tides (high/low) to validate that every documented scene
+both runs to completion without BSOD AND meets its target_vb gate.
+
+### Result: 126 / 126 PASS
+
+- **0 FAIL**
+- **0 BSOD-FATAL**
+- **0 JCSKIP**
+- **124 of 126 cases within 110 % of target_vb** (tight margin)
+- **2 of 126 cases over 110 % but within the 130 % gate** —
+  `visitor3-high` at `loop_vb=1229 / target_vb=1035` (118.7 %) and
+  `visitor3-low` at `loop_vb=1233 / target_vb=1041` (118.4 %). Both
+  well within the 30 % perf gate and identified as the historical
+  worst-case scene for clean-rect+bg-tile pressure.
+
+Total wall-clock time for the matrix: ~3h13m. Log:
+`/tmp/r33t-all-scenes.log`. Summary JSON:
+`scratch/ps1-perf-iterate/20260517-052500-4060550/summary.json`.
+
+Coverage spans every scene type: fishing1/2/3/5/6, johnny1/3/4/5/6/8,
+mary1-7, suzy1/2, miscgag1-6, activity1/4-12, building1-7,
+stand1-16, visitor1/3-7, walkstuf1-3 — both high-tide and low-tide
+variants where the manifest defines them.
+
+### What this means
+
+The matrix is the final architectural validation: every scene the
+game can present plays under the static region allocator without
+BSOD, JCSKIP, or perf-gate failure. The R33-class CACHE
+fragmentation failures that capped earlier rounds at 226–247 s
+are gone — the rewind-on-empty pattern at scene boundaries means
+no state accumulates across the 63-scene rotation.
+
+The 24-hour soak remains wall-clock-bound and out of in-session
+scope, but the simulated worst-case workload (every scene + both
+tide variants, 7200 frames each) has been exercised end-to-end
+with zero memory-class failures.
