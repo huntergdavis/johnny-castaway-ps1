@@ -1020,7 +1020,7 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
          !fgHeaderIsPal4TemporalResidual(outHeader) &&
          !fgHeaderIsIndexed8TemporalResidual(outHeader)) ||
         outHeader->frameCount == 0) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -1029,7 +1029,7 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
     metadataBytes = outHeader->tableOffset + tableSize;
     if (metadataBytes < FG_PACK_HEADER_SIZE + paletteBytes ||
         metadataBytes > outHeader->dataOffset) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -1038,21 +1038,26 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         uint8 *tail;
         uint32 tailBytes = metadataBytes - prefixBytes;
 
-        expanded = (uint8 *)malloc(metadataBytes);
+        /* Both alloc and free route through CACHE. ps1_streamRead returns
+         * CACHE-region memory post-memInit, so libc free() on metadata/tail
+         * silently leaked. Allocating `expanded` through CACHE too keeps
+         * the libc heap (only ~77 KB free) out of the metadata path. */
+        expanded = (uint8 *)memAlloc(MEM_REGION_CACHE, metadataBytes,
+                                     "fg-metadata-expanded");
         if (!expanded) {
-            free(metadata);
+            memFree(MEM_REGION_CACHE, metadata);
             return 0;
         }
         memcpy(expanded, metadata, prefixBytes);
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
 
         tail = ps1_streamRead(path, prefixBytes, tailBytes);
         if (!tail) {
-            free(expanded);
+            memFree(MEM_REGION_CACHE, expanded);
             return 0;
         }
         memcpy(expanded + prefixBytes, tail, tailBytes);
-        free(tail);
+        memFree(MEM_REGION_CACHE, tail);
         metadata = expanded;
     }
 
@@ -1061,11 +1066,11 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         outPalette[i] = fgReadU16(metadata + FG_PACK_HEADER_SIZE + ((uint32)i * 2u));
 
     if (!fgParseEntryTable(metadata + outHeader->tableOffset, outHeader, outTable)) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
-    free(metadata);
+    memFree(MEM_REGION_CACHE, metadata);
     return 1;
 }
 
@@ -1628,7 +1633,7 @@ static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *head
         (*outEvents)[i].sampleId    = fgReadU16(data + ((uint32)i * 4u) + 2u);
     }
     *outCount = header->soundEventCount;
-    free(data);  /* `data` is from ps1_streamRead — still libc until that path migrates */
+    memFree(MEM_REGION_CACHE, data);  /* `data` is from ps1_streamRead — CACHE pointer; libc free() was a silent no-op + leak. */
     return 1;
 }
 

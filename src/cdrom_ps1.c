@@ -1636,7 +1636,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
     entryCount = ps1ReadLe32(headerData + 8);
     firstResourceOffset = ps1ReadLe32(headerData + 12);
     prefetchCount = ps1ReadLe32(headerData + 16);
-    free(headerData);
+    memFree(MEM_REGION_CACHE, headerData);  /* CACHE pointer from ps1_streamReadFromCdFile */
 
     if (magic != PS1_PACK_MAGIC || version != PS1_PACK_VERSION || entryCount == 0)
         return 0;
@@ -1651,7 +1651,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
 
     entries = (struct TPs1PackedResourceEntry *)malloc(entryCount * sizeof(*entries));
     if (entries == NULL) {
-        free(headerData);
+        memFree(MEM_REGION_CACHE, headerData);
         return 0;
     }
 
@@ -1701,7 +1701,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
         }
     }
 
-    free(headerData);
+    memFree(MEM_REGION_CACHE, headerData);
     return 1;
 }
 

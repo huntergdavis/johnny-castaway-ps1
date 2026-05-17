@@ -5021,9 +5021,15 @@ void grLoadScreen(char *strArg)
     /* Set grBackgroundSfc to first tile for compatibility with existing code */
     grBackgroundSfc = bgTile0;
 
-    /* Free SCR data after converting - saves memory */
+    /* Free SCR data after converting - saves memory. The buffer comes
+     * from ps1_streamReadCache → ps1_streamReadFromCdFile → memAlloc(CACHE)
+     * post-memInit, so libc free() is a silent no-op for that range —
+     * route through memFree(CACHE), which range-checks and dispatches
+     * to free() for pre-memInit libc fallback pointers. Plugging this
+     * leak is the difference between a soak that hits CACHE-exhaustion
+     * after ~5 scene transitions and one that stays bounded. */
     if (scrResource->uncompressedData) {
-        free(scrResource->uncompressedData);
+        memFree(MEM_REGION_CACHE, scrResource->uncompressedData);
         scrResource->uncompressedData = NULL;
     }
 
