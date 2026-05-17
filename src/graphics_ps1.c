@@ -3711,11 +3711,21 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
          * double-free via the TransientLibcEntry list). */
         const size_t transRemaining = MEM_TRANSIENT_BUDGET -
             memRegionUsed((unsigned int)MEM_REGION_TRANSIENT);
-        /* Keep a safety margin so concurrent TRANSIENT allocs
-         * (sound events, setup buffer) don't get squeezed out. */
-        const size_t TRANSIENT_RESERVE = 16u * 1024u;
+        /* Round 33-soak update: drop the TRANSIENT_RESERVE that
+         * previously forced clean-rects into CACHE when TRANSIENT
+         * was within 16 KB of full. CACHE is NOT wiped per-scene,
+         * so spilling a 70–100 KB clean-rect into it across many
+         * scene transitions accumulates fragmentation that
+         * eventually breaks a later CACHE alloc (R33 soak BSOD at
+         * 226s on stand6 with CACHE peak 568 KB and 113 KB free
+         * but fragmented below the 71 KB request). The "other
+         * TRANSIENT allocs" (sound events, setup segment) that
+         * the reserve was protecting have their own libc-fallback
+         * via TransientLibcEntry — they don't lose correctness
+         * if TRANSIENT fills, just transparently spill to libc and
+         * still get per-scene-wiped at memSceneReset. */
         MemRegion target;
-        if (requiredBytes[idx] + TRANSIENT_RESERVE <= transRemaining) {
+        if (requiredBytes[idx] <= transRemaining) {
             target = MEM_REGION_TRANSIENT;
         } else {
             target = MEM_REGION_CACHE;

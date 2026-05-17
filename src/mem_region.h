@@ -125,7 +125,16 @@ typedef enum MemRegion {
  *   → 640 KB budget; conservative, well above measured non-bg-tile peak.
  *
  * Total = 32 + 768 + 640 = 1440 KB. Bumped ceiling to 1450 KB (~70 KB
- * libc headroom after walk_clean reserves 148 KB). */
+ * libc headroom after walk_clean reserves 148 KB). The 1472 KB attempt
+ * was reverted because it left libc unable to satisfy the 64 KB
+ * primitive-buffer malloc at graphicsInit (boot-time hard failure).
+ *
+ * R33-soak BSOD class: CACHE fragmentation across scene transitions
+ * is mitigated by (a) routing clean-rects to TRANSIENT-first (zero
+ * reserve, see grSaveCleanBgRects), and (b) per-scene TRANSIENT
+ * wipe means TRANSIENT can never fragment. CACHE pressure should
+ * stay well below 640 KB once clean-rects are forced into TRANSIENT
+ * even at peak. */
 #define MEM_BOOT_BUDGET      (  32u * 1024u)
 #define MEM_CACHE_BUDGET     ( 640u * 1024u)
 #define MEM_TRANSIENT_BUDGET ( 768u * 1024u)
