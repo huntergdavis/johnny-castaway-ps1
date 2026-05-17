@@ -983,15 +983,43 @@ size_t getMemoryBudget(void) {
     return memoryBudget;
 }
 
-/* R33-soak panic mode: temporarily set memoryBudget to 0 and run a
- * full eviction pass so every unpinned LRU resource is freed back to
- * CACHE. Restore budget afterward. Called from memAlloc CACHE when
- * an alloc fails despite having total-free bytes — the freed blocks
- * coalesce into the free-list and improve the chance the retry
- * finds a contiguous span. */
+/* R33-soak panic mode: drop EVERY unpinned LRU resource regardless
+ * of memoryBudget. Walks ADS/TTM AND BMP/SCR (checkMemoryBudget only
+ * handles ADS+TTM by design); the R33j soak showed BMP/SCR
+ * uncompressedData accounts for 200–400 KB of CACHE that
+ * checkMemoryBudget can't reach, blocking the post-eviction CACHE
+ * rewind. */
 void lruEvictAllUnpinned(void) {
+    /* Phase 1: existing ADS/TTM evictor (drives totalMemoryUsed
+     * accounting that checkMemoryBudget cares about). */
     size_t savedBudget = memoryBudget;
     memoryBudget = 0;
     checkMemoryBudget();
     memoryBudget = savedBudget;
+
+#ifdef PS1_BUILD
+    /* Phase 2: walk BMP and SCR arrays directly. Their uncompressed
+     * data buffers go through the same CACHE allocator but aren't
+     * tracked in totalMemoryUsed / aren't handled by checkMemoryBudget.
+     * For the CACHE rewind to succeed (g_cacheUsed must reach 0),
+     * these must be freed too. */
+    for (int i = 0; i < numBmpResources; i++) {
+        struct TBmpResource *bmp = bmpResources[i];
+        if (bmp != NULL &&
+            bmp->uncompressedData != NULL &&
+            bmp->pinCount == 0) {
+            memFree(MEM_REGION_CACHE, bmp->uncompressedData);
+            bmp->uncompressedData = NULL;
+        }
+    }
+    for (int i = 0; i < numScrResources; i++) {
+        struct TScrResource *scr = scrResources[i];
+        if (scr != NULL &&
+            scr->uncompressedData != NULL &&
+            scr->pinCount == 0) {
+            memFree(MEM_REGION_CACHE, scr->uncompressedData);
+            scr->uncompressedData = NULL;
+        }
+    }
+#endif
 }
