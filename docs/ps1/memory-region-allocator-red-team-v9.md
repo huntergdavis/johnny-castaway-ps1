@@ -1284,3 +1284,37 @@ Still wall-clock-bound; can't be validated in a single session. But
 the architectural class of failure that capped every prior soak
 (deterministic 226–247s CACHE fragmentation BSOD) is broken. The
 remaining work is wall-clock validation only.
+
+### Round 33r diagnostic — the 93 KB residual is JOHNWALK.PSB
+
+R33q's diagnostic showed `cacheUsed=93180` consistently at every scene
+boundary, blocking the rewind from firing. Tracking the
+`cdrom_read_result` size=93176 alloc at sim ~57s revealed it's
+`JOHNWALK.PSB` — the johnny-walking sprite sheet, loaded via
+`walkPilotEnsureBmp` → `grLoadBmp("JOHNWALK.BMP")` →
+`ps1PilotLoadPsb` (CACHE allocation).
+
+JOHNWALK is **intentionally persistent** across scenes — it's the
+inter-scene walk sprite, freed only by `fgWalkRenderTeardown` (called
+specifically when the walk pilot decides to release it, not at every
+scene boundary). My eviction sequence correctly does NOT clear it
+because `gWalkBmpLoaded` is a separate persistence flag managed by
+the walk system.
+
+Consequence: `memCacheRewindIfEmpty` always returns 0 in
+mid-screensaver operation (logs `CACHE-rewind-skip` once per scene).
+But this is fine — the rewind is opportunistic. What matters is:
+
+- CACHE bump high-water peaks at ~570–619 KB per scene workload,
+  well under the 640 KB budget
+- Free-list stays small (1–2 blocks summing to ~377–477 KB) because
+  per-scene buffers are released-and-reallocated in the same pattern
+- Across many scene transitions, no monotonic CACHE growth — the
+  workload reaches steady state and stays there
+
+The 17+ scene soak past 778s with zero BSOD demonstrates this
+steady-state pattern: every scene's `cache-stats-at-rewind-skip`
+shows the same `live=93180` and bumpOffset stays bounded. JOHNWALK
+isn't blocking correctness; it just means the rewind optimization
+doesn't trigger in normal play. The architectural fix
+(release+evict+rewind on demand) is sufficient as it stands.
