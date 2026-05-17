@@ -1159,3 +1159,63 @@ progress (bg-tile pixels are no longer the dominant CACHE
 consumer). 24-hour soak validation is wall-clock-bound and
 requires either deeper allocator work or a multi-session test
 campaign at the current 247s ceiling to confirm/disprove.
+
+### Round 33h: panic-mode LRU drop — no effect
+
+`125f53068` added `lruEvictAllUnpinned()` called from memAlloc(CACHE)
+when both the normal alloc and `checkMemoryBudget` failed. Idea:
+last-resort defragmentation by evicting every unpinned LRU resource
+so coalescing produces larger free blocks.
+
+Result: BSOD at 226s byte-identical to R33g (`req=98304 have=124672`,
+`memCacheUsed=530688 memCachePeak=551660`, `sceneAllocBalance=9`).
+
+**Why it failed**: at the failure point (mid-stand6 scene setup),
+`sceneAllocBalance=9` means stand6's resource loads were in-flight
+and PINNED. The LRU contribution at that moment was already small —
+panic-mode had nothing to drop. The 124 KB free CACHE is in many
+small fragments that LRU eviction can't merge because they don't
+*belong* to LRU; they're the gaps left by interleaved per-scene
+metadata allocs and frees during fgLoadMetadataPrefix.
+
+### What this confirms
+
+The remaining ceiling at ~226–247s is genuinely from **CACHE
+free-list fragmentation that no eviction strategy can solve**:
+
+- LRU eviction frees its own blocks; if LRU isn't the dominant
+  contributor at failure time, eviction can't help.
+- Coalescing already runs on every free; it merges only physically
+  adjacent free blocks.
+- The fragmentation pattern comes from interleaving sizes of the 4
+  grow-and-release per-scene buffers (frame/prefetch/window/scratch)
+  with mid-setup metadata reads. Each scene transition leaves
+  different-sized holes; over many transitions the bump tail shrinks
+  past the largest scene's per-buffer needs.
+
+The only mechanically clean fixes from here are:
+
+1. **Bump-pointer compaction**: when alloc fails, move every live
+   CACHE block down to base, rewind bump_top. Requires either an
+   owner-table indirection or every CACHE pointer to be reachable
+   from a registry. Not a small change; ~1 week of careful
+   refactoring + audit.
+
+2. **Pre-allocate ALL per-scene buffers at boot at worst-case size**.
+   Stops the alloc/free/alloc cycle entirely so fragmentation can't
+   accumulate. Cost: ~700 KB of permanent reservation (4 × 175 KB
+   for worst-case scene buffer sizes). Does not fit current budget;
+   needs other CACHE consumers shrunk to compensate.
+
+3. **Move per-scene buffers to TRANSIENT** (per-scene wipe = no
+   fragmentation), accepting that TRANSIENT must grow to fit
+   bg-tile 614 KB + buffers 700 KB + scratch 50 KB ≈ 1.36 MB. Beyond
+   PS1 RAM headroom; would require either dropping LRU entirely or
+   architectural changes elsewhere (smaller bg-tile? VRAM-resident
+   compositing?).
+
+The R33 architectural fix (bg-tile pixels → TRANSIENT, fgRuntimeReset
+hoisted) is correct and represents the largest single CACHE pressure
+relief available without one of (1)/(2)/(3). The session's experiments
+established a hard 226–247s ceiling that further allocator tuning at
+the current level cannot break.
