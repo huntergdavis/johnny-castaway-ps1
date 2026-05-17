@@ -1547,6 +1547,15 @@ static void fgRuntimeReset(void)
     extern const char *fgLoopGetLastScene(void);
     memSceneReset(fgLoopGetLastScene());
 
+    /* Round 33: bg-tile pixels + struct live in TRANSIENT (graphics_ps1.c
+     * createEmptyBgTileRAM / ensureBgTileRAM). memSceneReset just
+     * reclaimed those bytes, so the static bgTile0/1/3/4 slots (and
+     * grBackgroundSfc) now point at dangling addresses. NULL them
+     * before any subsequent code can dereference them. The next
+     * grLoadScreen / grInitEmptyBackground call sees the cleared
+     * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
+    grBackgroundTilesAssumeWiped();
+
     /* Clear file-static TRANSIENT pointers so the next scene sees a
      * clean slate. memSceneReset reclaimed the underlying bytes, but
      * these globals still hold the (now-dangling) pointers from the
@@ -3150,8 +3159,17 @@ static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
 
 static int foregroundPilotRuntimeStart(const char *sceneName)
 {
-    fgRuntimeReset();
-
+    /* Round 33: fgRuntimeReset() previously ran here, BUT that put it
+     * AFTER fgPlayOceanRuntimeScene's grLoadScreen call. With bg-tile
+     * pixels now living in TRANSIENT (Round 33 migration), memSceneReset
+     * would have wiped the just-loaded backdrop bytes. The reset is now
+     * hoisted to the very top of fgPlayOceanRuntimeScene, so by the time
+     * we get here gFgRuntime is already zeroed and TRANSIENT is fresh.
+     *
+     * Error-recovery paths below still call fgRuntimeReset() on return-0
+     * — that's safe because the caller treats return 0 as a JC_BSOD
+     * (fatal halt); the JC_BSOD renderer NULL-checks the bg-tile slots
+     * before drawing the panic screen and re-allocates fresh tiles. */
     if (sceneName == NULL)
         return 0;
 
@@ -3763,6 +3781,25 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int largeCleanSnapshot = 0;
     int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
+
+    /* Round 33: hoist fgRuntimeReset() to BEFORE grLoadScreen.
+     *
+     * Previously the per-scene reset lived inside foregroundPilotRuntimeStart
+     * (called below at line ~3833) — but that put the TRANSIENT wipe AFTER
+     * grLoadScreen had already populated the bg-tile pixel buffers. Under
+     * Round 33's bg-tile-pixels-in-TRANSIENT design, memSceneReset would
+     * have erased the just-loaded backdrop in place, producing a black or
+     * stale-bytes scene.
+     *
+     * Resetting here ensures:
+     *   1. The previous scene's TRANSIENT bytes (bg-tile pixels, sound
+     *      events, entry table, etc.) are reclaimed wholesale.
+     *   2. grBackgroundTilesAssumeWiped (inside fgRuntimeReset) NULLs the
+     *      static bg-tile slot pointers so the upcoming grLoadScreen
+     *      allocates fresh.
+     *   3. gFgRuntime is zeroed; foregroundPilotRuntimeStart can rely on
+     *      a clean slate without calling fgRuntimeReset itself. */
+    fgRuntimeReset();
 
     fgHeapProbe("before_scene", sceneName);
     /* Clean-rect snapshots are tied to the current backdrop contents. Deactivate

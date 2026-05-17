@@ -99,18 +99,36 @@ typedef enum MemRegion {
  *          scene types; no single static partition satisfies all.
  *
  * Total = 1188 KB, under the 1228 KB linker-map ceiling. */
-/* Round 16 Option M: bump CACHE to 1024 KB.
- * Reasoning:
- * - Linker map: _end ~ 447 KB, stack ~ 64 KB → 1537 KB usable RAM for region+libc
- * - Region @ 1312 KB → libc has 225 KB total, 77 KB free after walk_clean (148 KB)
- * - johnny1 (CACHE peak 852 KB) fits 1024 KB natively — no libc fallback needed,
- *   so libc-headroom shrinkage doesn't break its fallback path
- * - visitor3 needs CACHE peak ~973 KB at BSOD point — fits 1024 KB with 51 KB margin
- * - Other scenes' peaks all < 800 KB — no impact
- * - Bumped _Static_assert ceiling accordingly */
+/* Round 33: rebalance after moving bg-tile pixels CACHE → TRANSIENT.
+ *
+ * Pre-R33 measurement (Round 16): visitor3 CACHE peak 973 KB.
+ * Of that, 600 KB was 4× 320×240×2-byte bg-tile pixel buffers (graphics_ps1.c
+ * createEmptyBgTileRAM). Move bg-tile pixels (+ tiny ~28 B structs) to
+ * TRANSIENT and the visitor3 CACHE peak drops to ~373 KB; johnny1 from
+ * 852 → ~252 KB; every other scene also drops by ~600 KB worst-case.
+ *
+ * TRANSIENT needs to hold:
+ *   - 4× bg-tile pixels  = 614 KB worst-case
+ *   - 4× bg-tile structs ≈ 112 bytes (negligible)
+ *   - per-scene entry table + sound events + setup segment ≈ 50 KB
+ *   - clean-rect chunks (dynamic-routed TRANSIENT-first) ≈ 100 KB headroom
+ *   - safety reserve for fragmentation in libc-fallback path
+ *   → 768 KB budget.
+ *
+ * CACHE needs to hold:
+ *   - LRU resources (ADS/TTM/BMP/SCR uncompressedData) ≈ 324 KB peak
+ *   - gFgFrameBuffer (grow-only) ≈ 17–112 KB
+ *   - gFgPrefetchFrameBuffer ≈ 112 KB
+ *   - gFgStreamWindowBuffer ≈ 208–320 KB (libc-primary, CACHE fallback)
+ *   - gFgStreamScratch ≈ 16–135 KB
+ *   - clean-rect overflow from TRANSIENT (occasional)
+ *   → 640 KB budget; conservative, well above measured non-bg-tile peak.
+ *
+ * Total = 32 + 768 + 640 = 1440 KB. Bumped ceiling to 1450 KB (~70 KB
+ * libc headroom after walk_clean reserves 148 KB). */
 #define MEM_BOOT_BUDGET      (  32u * 1024u)
-#define MEM_CACHE_BUDGET     (1024u * 1024u)
-#define MEM_TRANSIENT_BUDGET ( 256u * 1024u)
+#define MEM_CACHE_BUDGET     ( 640u * 1024u)
+#define MEM_TRANSIENT_BUDGET ( 768u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
 /* Hard ceiling against the linker map (build-ps1/jcreborn.map):
@@ -123,8 +141,8 @@ typedef enum MemRegion {
  * historical 1.2 MB ceiling, trivially satisfied at 0. */
 #ifdef __STDC_VERSION__
 #if __STDC_VERSION__ >= 201112L
-_Static_assert(MEM_REGION_TOTAL <= (1340u * 1024u),
-               "MEM_REGION_TOTAL exceeds 1340 KB ceiling — leaves <77 KB libc headroom");
+_Static_assert(MEM_REGION_TOTAL <= (1450u * 1024u),
+               "MEM_REGION_TOTAL exceeds 1450 KB ceiling — leaves <70 KB libc headroom");
 #endif
 #endif
 

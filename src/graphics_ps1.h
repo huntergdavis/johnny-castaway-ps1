@@ -236,6 +236,14 @@ void grSaveCleanBgTiles(void);
 void grSetSaveCleanOnScreenLoad(int enabled);
 void grFreeCleanBgTiles(void);
 void grReleaseBackgroundTiles(void);
+/* Round 33: called from fgRuntimeReset immediately after memSceneReset.
+ * memSceneReset has already reclaimed every TRANSIENT byte — including
+ * the bg-tile struct AND pixel buffers (Round 33 migration). The static
+ * slot pointers (bgTile0/1/3/4 etc.) and grBackgroundSfc still hold the
+ * post-wipe dangling addresses, so this helper NULLs them without
+ * calling memFree (the bytes are gone; calling memFree would decrement
+ * the TRANSIENT pin counter that memSceneReset already zeroed). */
+void grBackgroundTilesAssumeWiped(void);
 void grEnsureCleanBgTiles(void);
 /* Rect-based clean backup (option B): scenes declare small dynamic regions. */
 int  grSaveCleanBgRects(const sint16 *x, const sint16 *y,

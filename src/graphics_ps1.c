@@ -3040,11 +3040,22 @@ int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, si
  */
 static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
 {
-    /* MEM_REGION_RATIONALE: persistent BG tile surface (256x240..320x240,
-     * ~150 KB pixel buffer). Owned by static slots (bgTile0/1/3/4 etc.);
-     * not LRU-tracked. CACHE region with libc fallback pre-init. */
+    /* MEM_REGION_RATIONALE (Round 33): persistent-per-scene BG tile
+     * surface (320x240, ~150 KB pixel buffer). 4 tiles × 150 KB =
+     * 600 KB worst case — the largest single CACHE pressure source
+     * across all 63 scenes. Moved to TRANSIENT because:
+     *   - Pixel contents are overwritten by grLoadScreen at scene
+     *     start anyway (no cross-scene content reuse).
+     *   - Re-allocation via the TRANSIENT bump pointer is ~3
+     *     instructions vs the prior O(n) CACHE free-list walk.
+     *   - 600 KB out of CACHE eliminates the visitor3-class BSOD
+     *     (req=97280 byte clean-rect fails to find a contiguous
+     *     CACHE block when bg-tile + LRU + frame buffers occupy it).
+     * grBackgroundTilesAssumeWiped (called from fgRuntimeReset right
+     * after memSceneReset) NULLs the slot pointers so the next scene's
+     * grLoadScreen re-allocates fresh in the new TRANSIENT frame. */
     PS1Surface *tile = memIsReady()
-        ? (PS1Surface*)memAlloc(MEM_REGION_CACHE, sizeof(PS1Surface), "bgtile-struct")
+        ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
         : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
     tile->width = width;
     tile->height = height;
@@ -3055,7 +3066,7 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     tile->psbNibbles = 0;
     tile->nextTile = NULL;
     tile->pixels = memIsReady()
-        ? (uint16*)memAlloc(MEM_REGION_CACHE, (size_t)width * height * 2u, "bgtile-pixels")
+        ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (size_t)width * height * 2u, "bgtile-pixels")
         : (uint16*)safe_malloc(width * height * 2);
     /* Fill with black (0x0000 = transparent/black) */
     for (uint32 i = 0; i < width * height; i++) {
@@ -3097,14 +3108,17 @@ static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 heigh
     if (*slot == NULL || (*slot)->pixels == NULL ||
         (*slot)->width != width || (*slot)->height != height) {
         freeBgTile(slot);
-        /* MEM_REGION_RATIONALE: persistent BG tile, same lifetime as
-         * createEmptyBgTileRAM. CACHE with libc fallback pre-init. */
+        /* MEM_REGION_RATIONALE (Round 33): TRANSIENT bg-tile, see
+         * createEmptyBgTileRAM rationale. The freeBgTile call above is
+         * a defensive no-op after a scene wipe (slot is already NULL
+         * thanks to grBackgroundTilesAssumeWiped); it handles the
+         * cold-boot and width/height-change paths. */
         *slot = memIsReady()
-            ? (PS1Surface*)memAlloc(MEM_REGION_CACHE, sizeof(PS1Surface), "bgtile-struct")
+            ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
             : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
         resetBgTileRAMFields(*slot, width, height);
         (*slot)->pixels = memIsReady()
-            ? (uint16*)memAlloc(MEM_REGION_CACHE, (uint32)width * height * 2u, "bgtile-pixels")
+            ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (uint32)width * height * 2u, "bgtile-pixels")
             : (uint16*)safe_malloc((uint32)width * height * 2);
     } else {
         resetBgTileRAMFields(*slot, width, height);
@@ -4501,16 +4515,29 @@ void grFadeOut()
     }
 }
 
-/* Helper to free a tile */
+/* Helper to free a tile.
+ *
+ * Round 33: pixels + struct live in MEM_REGION_TRANSIENT post-Round-33.
+ * memFree(TRANSIENT, ptr) only decrements the scene-alloc balance — the
+ * underlying bytes survive until the next memSceneReset wipes the whole
+ * region wholesale. That's intentional: between explicit freeBgTile calls
+ * and the next scene boundary, freed tiles' bytes are dead but the
+ * TRANSIENT bump pointer doesn't reclaim them (this is normal TRANSIENT
+ * semantics). The bump pointer rewinds on memSceneReset.
+ *
+ * Pre-memInit allocations (the libc-fallback safe_malloc branch in
+ * createEmptyBgTileRAM) are never actually hit in practice — bg-tiles
+ * are first allocated by graphicsInit(), which runs after memInit().
+ * The `else free()` path remains as defensive code for any future
+ * pre-memInit caller. */
 static void freeBgTile(PS1Surface **tile)
 {
     if (*tile != NULL) {
         if ((*tile)->pixels) {
-            /* memFree(CACHE) range-checks for libc vs region origin. */
-            if (memIsReady()) memFree(MEM_REGION_CACHE, (*tile)->pixels);
+            if (memIsReady()) memFree(MEM_REGION_TRANSIENT, (*tile)->pixels);
             else free((*tile)->pixels);
         }
-        if (memIsReady()) memFree(MEM_REGION_CACHE, *tile);
+        if (memIsReady()) memFree(MEM_REGION_TRANSIENT, *tile);
         else free(*tile);
         *tile = NULL;
     }
@@ -4537,6 +4564,39 @@ void grReleaseBackgroundTiles(void)
         grSavedZonesLayer = NULL;
     }
 
+    grForceFullRedrawNextFrame();
+}
+
+/* Round 33: per-scene TRANSIENT wipe hook.
+ *
+ * The bg-tile struct AND pixel buffer both live in MEM_REGION_TRANSIENT
+ * (post-Round-33 migration), so memSceneReset has already reclaimed
+ * every byte. The static slot pointers still hold the dangling
+ * addresses; we NULL them so the next grLoadScreen / grInitEmptyBackground
+ * sees them as "uninitialised" and re-allocates fresh in the new
+ * TRANSIENT bump frame.
+ *
+ * Do NOT call freeBgTile here — that would dereference the dangling
+ * struct (to read its pixels pointer) and call memFree(TRANSIENT, ...)
+ * which would decrement the scene-alloc balance that memSceneReset
+ * already zeroed. */
+void grBackgroundTilesAssumeWiped(void)
+{
+    bgTile0 = NULL;
+    bgTile1 = NULL;
+    bgTile2a = NULL;
+    bgTile2b = NULL;
+    bgTile3 = NULL;
+    bgTile4 = NULL;
+    bgTile5a = NULL;
+    bgTile5b = NULL;
+    /* grBackgroundSfc points at one of the bgTile slots when a scene
+     * is active. After the wipe the bytes behind it are gone — NULL it
+     * so callers see "no background yet" and grLoadScreen / friends
+     * repopulate it. */
+    grBackgroundSfc = NULL;
+    /* Force a full first-frame upload after the new scene's tiles
+     * are populated; we know every pixel just got wiped. */
     grForceFullRedrawNextFrame();
 }
 
