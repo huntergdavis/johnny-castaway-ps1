@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4666 words
+          ~18 min read · 4680 words
         </p>
 
       <hr class="rule" />
@@ -441,15 +441,16 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2846%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7207%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4323%</code> / <code class="language-plaintext highlighter-rouge">100.4510%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2801%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7249%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4368%</code> / <code class="language-plaintext highlighter-rouge">100.4553%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
-instead of the old full-scene resident setup buffers. High caches relative
-sectors <code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>, improving <code class="language-plaintext highlighter-rouge">1509/1425 -&gt; 1489/1430</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">137/34 -&gt; 92/15</code>, reads/read time <code class="language-plaintext highlighter-rouge">81/369 -&gt; 56/256</code>, and due
-<code class="language-plaintext highlighter-rouge">23 -&gt; 15</code>. Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
+instead of the old full-scene resident setup buffers. High keeps relative
+sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to
+<code class="language-plaintext highlighter-rouge">286..342</code>, improving the current row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1472/1438</code>,
+blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&gt; 60/228</code>, reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..342</code> setup segment, improving the current row
 <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1480/1442</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 55/15</code>, reads/read time
 <code class="language-plaintext highlighter-rouge">50/230 -&gt; 38/211</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 6</code>. Both W1 rows stay yellow while staying
@@ -998,7 +999,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.6% (1476/1441); due 7; blk 49</td>
+      <td>+2.4% / 97.7% (1472/1438); due 10; blk 60</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
@@ -1036,9 +1037,9 @@ small prefetch buffer live when full setup-prime/window buffers no longer fit.</
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 high/low
 remain the biggest gaps after the allocator-era clean-relief promotions
-(<code class="language-plaintext highlighter-rouge">+56/+50</code> VBlanks), followed by WALKSTUF1 high/low
-(<code class="language-plaintext highlighter-rouge">+42/+44</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+38/+24</code>), and BUILDING4 low
-(<code class="language-plaintext highlighter-rouge">+37</code>). VISITOR3’s
+(<code class="language-plaintext highlighter-rouge">+40/+35</code> VBlanks), followed by BUILDING2 high (<code class="language-plaintext highlighter-rouge">+38</code>), WALKSTUF1
+low/high (<code class="language-plaintext highlighter-rouge">+38/+34</code>), BUILDING4 low (<code class="language-plaintext highlighter-rouge">+37</code>), and BUILDING2 low (<code class="language-plaintext highlighter-rouge">+24</code>).
+VISITOR3’s
 local C read-table rows are exhausted, so the next CD-shape pass needs
 generated scheduler ownership, selective preprocessing, or further pack
 data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
@@ -1099,7 +1100,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2846% over target / 99.7207% target speed, with several
+public average is now +0.2801% over target / 99.7249% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

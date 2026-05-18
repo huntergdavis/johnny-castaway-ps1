@@ -311,15 +311,16 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2846%`
-exact public over target / `99.7207%` exact public target speed); the raw
-signed optimization matrix is about `-0.4323%` / `100.4510%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2801%`
+exact public over target / `99.7249%` exact public target speed); the raw
+signed optimization matrix is about `-0.4368%` / `100.4553%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
-instead of the old full-scene resident setup buffers. High caches relative
-sectors `198..244` and `411..435`, improving `1509/1425 -> 1489/1430`,
-blocking/refill `137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due
-`23 -> 15`. Low now replaces the old `197..243` plus `410..434` split with one
+instead of the old full-scene resident setup buffers. High keeps relative
+sectors `198..244` resident and retargets the second slice from `411..435` to
+`286..342`, improving the current row `1475/1433 -> 1472/1438`,
+blocking/read time `76/229 -> 60/228`, reads `55 -> 48`, and due `15 -> 10`.
+Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..342` setup segment, improving the current row
 `1479/1435 -> 1480/1442`, blocking/refill `65/18 -> 55/15`, reads/read time
 `50/230 -> 38/211`, and due `10 -> 6`. Both W1 rows stay yellow while staying
@@ -868,7 +869,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.6% (1476/1441); due 7; blk 49</td>
+      <td>+2.4% / 97.7% (1472/1438); due 10; blk 60</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
@@ -906,9 +907,9 @@ Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 high/low
    remain the biggest gaps after the allocator-era clean-relief promotions
-   (`+56/+50` VBlanks), followed by WALKSTUF1 high/low
-   (`+42/+44`), BUILDING2 high/low (`+38/+24`), and BUILDING4 low
-   (`+37`). VISITOR3's
+   (`+40/+35` VBlanks), followed by BUILDING2 high (`+38`), WALKSTUF1
+   low/high (`+38/+34`), BUILDING4 low (`+37`), and BUILDING2 low (`+24`).
+   VISITOR3's
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
    data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
@@ -967,7 +968,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2846% over target / 99.7207% target speed, with several
+  public average is now +0.2801% over target / 99.7249% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

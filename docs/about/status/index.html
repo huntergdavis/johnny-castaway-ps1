@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2520 words
+          ~10 min read · 2524 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2846%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7207%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4323%</code> / <code class="language-plaintext highlighter-rouge">100.4510%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2801%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7249%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4368%</code> / <code class="language-plaintext highlighter-rouge">100.4553%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -149,9 +149,9 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 <code class="language-plaintext highlighter-rouge">35</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures <code class="language-plaintext highlighter-rouge">1489/1430</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">92/15/15</code>, with
-loop reads/read time down to <code class="language-plaintext highlighter-rouge">56/256</code> after caching relative sectors
-<code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code>
+buffers: high now measures <code class="language-plaintext highlighter-rouge">1472/1438</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">60/15/10</code>, with
+loop reads/read time down to <code class="language-plaintext highlighter-rouge">48/228</code> after keeping relative sectors
+<code class="language-plaintext highlighter-rouge">198..244</code> and retargeting the second slice to <code class="language-plaintext highlighter-rouge">286..342</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code>
 split with a single <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and measures
 <code class="language-plaintext highlighter-rouge">1480/1442</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">55/15/6</code>, with loop reads/read time down to
 <code class="language-plaintext highlighter-rouge">38/211</code>. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
@@ -167,10 +167,10 @@ without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors <code class="language-plaintext highlighter-rouge">264..288</code> during setup,
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">36/32 -&gt; 34/30</code>, and moving that row into green. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
-retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1475/1433</code>
-and <code class="language-plaintext highlighter-rouge">1480/1442</code>; the latest low setup-segment retarget cuts low blocking
-<code class="language-plaintext highlighter-rouge">65 -&gt; 55</code> and loop reads <code class="language-plaintext highlighter-rouge">50 -&gt; 38</code> without moving layout, while high keeps
-the v927 payload shrink and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
+retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1472/1438</code>
+and <code class="language-plaintext highlighter-rouge">1480/1442</code>; the latest high setup-segment retarget cuts high blocking
+<code class="language-plaintext highlighter-rouge">76 -&gt; 60</code> and loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code> without moving layout, while low keeps
+the <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and the no-shift payload lane. BUILDING2 low now adds the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, with the
 allocator-era matrix at
 <code class="language-plaintext highlighter-rouge">1339/1315</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill <code class="language-plaintext highlighter-rouge">54/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,

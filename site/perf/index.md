@@ -123,9 +123,10 @@ now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide further into yellow with a
 16 KiB slack-5 window plus a third retained setup segment at `206..230`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
-picked up a small scheduler win from the `83..95` read group, and WALKSTUF1
-low now uses one retained `238..342` setup segment to cut blocking and reads
-without crossing the allocator clean-rect cliff. That is the new allocator baseline rather than a visual
+picked up a small scheduler win from the `83..95` read group, WALKSTUF1
+low now uses one retained `238..342` setup segment, and WALKSTUF1 high now
+keeps `198..244` while retargeting its second retained slice to `286..342`.
+That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
 scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 low
@@ -150,10 +151,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2846%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7207%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; WALKSTUF1 low setup-segment retarget `2026-05-18T06:57:31` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2801%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7249%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; WALKSTUF1 high setup-segment retarget `2026-05-18T07:34:41` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -165,14 +166,16 @@ overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 
 Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
-High caches relative sectors `198..244` and `411..435`, improving active
-loop/target `1509/1425 -> 1489/1430`, overrun `84 -> 59`, blocking/refill
-`137/34 -> 92/15`, loop reads/read time `81/369 -> 56/256`, and due
-`23 -> 15`. Low now replaces its old split `197..243` plus `410..434` slices
+High now keeps relative sectors `198..244` resident and retargets the second
+slice from `411..435` to `286..342`, improving the current allocator-era row
+`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`.
+Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..342` setup segment, improving the current row
 `1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/refill
 `65/18 -> 55/15`, loop reads/read time `50/230 -> 38/211`, and due `10 -> 6`.
-Both W1 rows remain yellow, with low now at `97.432%` target speed.
+Both W1 rows remain yellow, with high now at `97.690%` and low at `97.432%`
+target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
 sectors `3..35` and `202..242` keep the focused allocator run measured without
@@ -441,9 +444,10 @@ and adds the low-tide `209..225` retained-read row, keeping scene/loop flat at
 `1773/1481` while improving target `1428 -> 1431`, overrun `53 -> 50`,
 blocking `78 -> 72`, reads/read time `61/279 -> 58/267`, and due `11 -> 10`.
 The allocator-era targeted setup checkpoint then narrows W1 setup residency to
-two CACHE slices per tide instead of one full-scene setup buffer. High caches
-`198..244` and `411..435`, improving `1509/1425 -> 1489/1430`, blocking/refill
-`137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due `23 -> 15`.
+CACHE slices instead of one full-scene setup buffer. High keeps `198..244` and
+retargets the second slice from `411..435` to `286..342`, improving the current
+row `1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -504,10 +508,14 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `git:339df94f5+targeted-setup` for WALKSTUF1 high/low
-  and BUILDING2 high,
-  `building4-low-local-lz-entry270-v971`,
-  `johnny1-local-lz-v932`,
+  refreshed rows use `git:bf941b4d8+walkstuf1-high-setupseg286-342`,
+  `git:44dc073e0+walkstuf1-low-setupseg238-342`,
+  `git:fbff319bf+visitor3-high-thirdseg228-262`,
+  `git:4b996f7dd+visitor3-low-thirdseg206-230`,
+  `git:1f9dcc40d+building2-high-rg83-95`,
+  and `git:391a265e1+building4-high-setupseg264-288` for the actively
+  refreshed under-green rows. Older rows retain their per-row version stamps,
+  including `johnny1-local-lz-v932`,
   `building2-high-frame100-inplace-v926`,
   `building4-low-frame40-inplace-v924`,
   `building2-high-frame173-inplace-v914`,
@@ -2513,14 +2521,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>2.9%</td>
-      <td class="spd-yellow">97.2%</td>
-      <td>1475/1433</td>
-      <td>76</td>
+      <td>2026-05-18T07:34:41</td>
+      <td>git:bf941b4d8+walkstuf1-high-setupseg286-342</td>
+      <td>2.4%</td>
+      <td class="spd-yellow">97.7%</td>
+      <td>1472/1438</td>
+      <td>60</td>
       <td>15</td>
-      <td>15</td>
+      <td>10</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf1-low">

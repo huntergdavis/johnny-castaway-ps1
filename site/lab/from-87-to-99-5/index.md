@@ -50,8 +50,8 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh and WALKSTUF1
-low setup-segment retarget is
-**+0.2846% over target / 99.7207% target speed**, with roughly **17.12
+high setup-segment retarget is
+**+0.2801% over target / 99.7249% target speed**, with roughly **17.12
 percentage points** of over-target gap closed and about **12.62 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -62,7 +62,8 @@ BUILDING2 high has a smaller yellow gap after replacing the tail read group
 with `83..95`; VISITOR3 low then adds `206..230` as a third retained setup
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
 split tail residency with a single `238..342` setup segment, moving to
-`1480/1442`.
+`1480/1442`, and WALKSTUF1 high retargets its second retained slice to
+`286..342`, moving to `1472/1438`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -153,9 +154,9 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of the current mainline there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `119` rows are green, `6`
-remain yellow, and VISITOR3 high is the single orange row. The current
+As of the current mainline there are no red or orange rows left on the
+[battle card]({{ '/perf/' | relative_url }}): `119` rows are green and `7`
+remain yellow. The current
 under-99 focus set is VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2
 high/low, and BUILDING4 low.
 The optimization plan at

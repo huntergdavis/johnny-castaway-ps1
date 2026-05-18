@@ -32,11 +32,12 @@ VISITOR3 high terminal-window trim, and the VISITOR3 high setup-segment
 extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 `83..95` read-group retime, the VISITOR3 low third setup-segment promotion,
 the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
-setup-segment promotion, and the WALKSTUF1 low `238..342` setup-segment
+setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
+retarget, and the WALKSTUF1 high `286..342` second setup-segment
 retarget:
-`+0.2846%` public average over target / `99.7207%` public target speed across
+`+0.2801%` public average over target / `99.7249%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4323%` / `100.4510%`. Since the compact full-matrix baseline was
+`-0.4368%` / `100.4553%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.12` public over-target points and added about `12.62` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
@@ -55,7 +56,11 @@ then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..342` segment, improving `1479/1435 -> 1480/1442`, overrun
 `44 -> 38`, blocking/read time `65/230 -> 55/211`, loop reads `50 -> 38`, and
 due `10 -> 6`. The
-under-green canary refresh also stamps W1 high/low at `1475/1433` and
+WALKSTUF1 high follow-up keeps the `198..244` setup slice and retargets the
+second retained slice from `411..435` to `286..342`, improving
+`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`. The
+under-green canary refresh also stamps W1 high/low at `1472/1438` and
 `1480/1442`, B2 high/low at `1351/1313` and `1339/1315`, and B4 high/low at
 `2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
 
@@ -524,7 +529,23 @@ blocking `438 -> 85`, reads `126 -> 19`, due `126 -> 15`, and target speed
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
-Latest WALKSTUF1 low setup-segment retarget: the allocator-era split low
+Latest WALKSTUF1 high setup-segment retarget: high keeps the `198..244`
+setup slice and replaces the old `411..435` second slice with a mid-cluster
+`286..342` slice. Focused artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-keepfirst-setupseg286-342-vnext/20260518-073013-258774/summary.json`;
+canary artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-keepfirst-setupseg286-342-canaries/20260518-073441-284390/summary.json`.
+The focused and under-green canaries promote the shape: WALKSTUF1 high moves
+`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 60/228`, loop reads `55 -> 48`, and due misses `15 -> 10`;
+W1 low, VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 high/low stay
+stable. Public rollup becomes `+0.2801%` over target / `99.7249%` target
+speed; raw signed becomes `-0.4368%` / `100.4553%`, and bands stay `119`
+green, `7` yellow, `0` orange, `0` red. The wider `286..350` variant crossed
+the allocator clean-rect cliff and failed before `JCPERF2`, so keep the 56-sector
+second slice until allocator/clean pressure changes.
+
+Prior WALKSTUF1 low setup-segment retarget: the allocator-era split low
 setup slices (`197..243` plus `410..434`) were replaced with one larger
 retained setup segment at relative sectors `238..342`, keeping the second
 slot disabled to stay under the CACHE clean-rect cliff. Focused artifact:
