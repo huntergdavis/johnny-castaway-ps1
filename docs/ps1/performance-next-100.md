@@ -616,6 +616,15 @@ Close `122..146`, `95..119`, and `255..271` as inert scalar appends on this
 baseline. B2-high clusters now need generated append-start/deadline ownership or
 pack/upload work, not another blind hand table row.
 
+Latest rejected BUILDING4 low read-group route: enabling a low-tide `building4`
+read-group table and adding `{274,298,0}` did not move timing. The focused gate
+stayed exact-flat at `3121/2849/2816`, overrun `33`, blocking/refill `38/31`,
+loop reads/read time `30/222`, and due `1`, with `group_hits=0`; it grew
+`foregroundPilotPlay` by `20` bytes. Artifact:
+`scratch/ps1-perf-iterate/building4-low-rg274-298-vnext/20260518-163348-3338542/summary.json`.
+Close B4-low hand-authored group routing for `274..298`; remaining B4-low work
+should target static upload/restore elimination or generated append ownership.
+
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
 `{91,107}` scalar row failed on the older `238..342` retained setup baseline,
 but passes after the low-only 48 KiB clean-rect cap and `238..344` setup edge.
