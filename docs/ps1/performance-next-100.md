@@ -565,6 +565,12 @@ slot disabled to stay under the CACHE clean-rect cliff. Focused artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-vnext/20260518-065116-38864/summary.json`;
 canary artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-canaries/20260518-065731-74208/summary.json`.
+The follow-up `238..344` edge probe is closed: allocating the 106-sector
+W1-low setup buffer (`217088` bytes) exhausted CACHE before the `97280` byte
+clean-rect allocation, so it produced no `JCPERF2` metrics. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-344-current/20260518-113619-1651972/summary.json`.
+Keep `238..342` as the current CACHE-backed W1-low boundary unless a later
+allocator/clean-rect change frees enough CACHE headroom.
 The focused and under-green canaries promote the shape: WALKSTUF1 low moves
 `1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/read time
 `65/230 -> 55/211`, refill overrun `18 -> 15`, loop reads `50 -> 38`, and
