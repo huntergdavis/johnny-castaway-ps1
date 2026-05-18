@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2415 words
+          ~9 min read · 2423 words
         </p>
 
       <hr class="rule" />
@@ -130,12 +130,12 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.5371%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.5143%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.1798%</code> / <code class="language-plaintext highlighter-rouge">100.2447%</code>. The allocator validation branch records a R34
-full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2
-checkpoint keeps WALKSTUF1 high/low and BUILDING2 high inside the allocator
-budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3685%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6457%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.3484%</code> / <code class="language-plaintext highlighter-rouge">100.3760%</code>. The allocator validation branch records a R34
+full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
+VISITOR3 checkpoints keep the top allocator-era rows measured inside the
+allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
@@ -154,12 +154,13 @@ loop reads/read time down to <code class="language-plaintext highlighter-rouge">
 <code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>; low measures <code class="language-plaintext highlighter-rouge">1477/1434</code>, blocking/refill/due
 <code class="language-plaintext highlighter-rouge">58/16/9</code>, with loop reads/read time down to <code class="language-plaintext highlighter-rouge">51/236</code> after caching
 <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>. Both paths keep pack LBA/sectors and the PS-EXE
-bucket fixed while reducing CD pressure. VISITOR3 high keeps the compact tail-pack promotion at <code class="language-plaintext highlighter-rouge">1063/1040</code>, and
-VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code> retained-read
-shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
-fixed <code class="language-plaintext highlighter-rouge">1555450</code> byte VIST3LOW footprint, LBA/sectors <code class="language-plaintext highlighter-rouge">23371/760</code>, and
-<code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while improving low to <code class="language-plaintext highlighter-rouge">1062/1040</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>,
-blocking <code class="language-plaintext highlighter-rouge">42</code>, reads/due <code class="language-plaintext highlighter-rouge">7/7</code>. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1489/1430</code>
+bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
+stage1 prefetch frame buffer alive under clean-memory relief: high improves to
+<code class="language-plaintext highlighter-rouge">1135/1035</code>, overrun <code class="language-plaintext highlighter-rouge">100</code>, blocking <code class="language-plaintext highlighter-rouge">387</code>, reads/due <code class="language-plaintext highlighter-rouge">135/109</code>, and low
+improves to <code class="language-plaintext highlighter-rouge">1110/1040</code>, overrun <code class="language-plaintext highlighter-rouge">70</code>, blocking <code class="language-plaintext highlighter-rouge">343</code>, reads/due <code class="language-plaintext highlighter-rouge">124/98</code>.
+Both rows moved out of red without reintroducing the clean-rect allocation
+failure. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
+retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1489/1430</code>
 and <code class="language-plaintext highlighter-rouge">1477/1434</code>; the latest targeted setup-segment promotion moves both rows
 out of orange without moving layout, while high keeps the v927 payload shrink
 and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
@@ -330,7 +331,7 @@ harness output is the SoT for build-and-boot regressions.</p>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
 loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code>
-has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.5%</code>
+has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.6%</code>
 target speed across all 126 timing-bearing rows after the VISITOR3,
 WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
 promotion arc. The bring-up loop remains in

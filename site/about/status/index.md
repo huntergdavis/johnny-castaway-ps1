@@ -23,12 +23,12 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.5371%` over
-target / `99.5143%` target speed; the raw signed optimization matrix is
-about `-0.1798%` / `100.2447%`. The allocator validation branch records a R34
-full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2
-checkpoint keeps WALKSTUF1 high/low and BUILDING2 high inside the allocator
-budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
+allocation. The public headless battle card is `+0.3685%` over
+target / `99.6457%` target speed; the raw signed optimization matrix is
+about `-0.3484%` / `100.3760%`. The allocator validation branch records a R34
+full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
+VISITOR3 checkpoints keep the top allocator-era rows measured inside the
+allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
@@ -47,12 +47,13 @@ loop reads/read time down to `56/256` after caching relative sectors
 `198..244` and `411..435`; low measures `1477/1434`, blocking/refill/due
 `58/16/9`, with loop reads/read time down to `51/236` after caching
 `197..243` and `410..434`. Both paths keep pack LBA/sectors and the PS-EXE
-bucket fixed while reducing CD pressure. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
-VISITOR5 high/low both remain green on the matching `30..46` retained-read
-shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
-fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
-`217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
-blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1489/1430`
+bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
+stage1 prefetch frame buffer alive under clean-memory relief: high improves to
+`1135/1035`, overrun `100`, blocking `387`, reads/due `135/109`, and low
+improves to `1110/1040`, overrun `70`, blocking `343`, reads/due `124/98`.
+Both rows moved out of red without reintroducing the clean-rect allocation
+failure. VISITOR5 high/low both remain green on the matching `30..46`
+retained-read shape. WALKSTUF1 high/low now measure `1489/1430`
 and `1477/1434`; the latest targeted setup-segment promotion moves both rows
 out of orange without moving layout, while high keeps the v927 payload shrink
 and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted

@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4597 words
+          ~18 min read · 4587 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.5% over target / 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5371%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.5143%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.1798%</code> / <code class="language-plaintext highlighter-rouge">100.2447%</code>.</p>
+the public average is <strong>+0.4% over target / 99.6% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3685%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6457%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.3484%</code> / <code class="language-plaintext highlighter-rouge">100.3760%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -1017,19 +1017,19 @@ gfx.upload_bytes  = 8,643,840
 
 <p>The FISHING1 canary remains at the public <code class="language-plaintext highlighter-rouge">100.0%</code> cap with raw signed
 headroom, but the full battle card still has CD-heavy scenes (<code class="language-plaintext highlighter-rouge">visitor3</code>,
-<code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">building6</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, and <code class="language-plaintext highlighter-rouge">building4</code>). The clean-pressure relief rows prove scene-local
-CD policy can recover large due-miss collapses, while the refreshed stale rows
-prove current-pack baselines must be cleared before ranking fixed overhead.</p>
+<code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, and <code class="language-plaintext highlighter-rouge">building4</code>). The clean-pressure relief rows
+prove scene-local CD policy can recover large due-miss collapses, and the
+allocator-era VISITOR3 stage1-only promotion proves the same path can keep a
+small prefetch buffer live when full setup-prime/window buffers no longer fit.</p>
 
 <p>Next plausible wins, in priority order:</p>
 
 <ol>
-  <li><strong>Generated read grouping or setup/data-shape work.</strong> WALKSTUF1 low/high are
-now the largest gaps at <code class="language-plaintext highlighter-rouge">+53/+48</code> VBlanks after the latest high <code class="language-plaintext highlighter-rouge">444..456</code>
-same-speed CD-work reduction. BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+38/+31</code>) and VISITOR3 low/high
-(<code class="language-plaintext highlighter-rouge">+32/+31</code>) are the next tight rows after the VISITOR3 motion-copy,
-setup-segment, setup-prime, guarded second-segment, resident-copy, and
-low no-op residual passes; its
+  <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 high/low
+remain the biggest gaps after the allocator-era stage1-only prefetch
+promotion (<code class="language-plaintext highlighter-rouge">+100/+70</code> VBlanks), followed by WALKSTUF1 high/low
+(<code class="language-plaintext highlighter-rouge">+59/+43</code>), BUILDING2 high/low (<code class="language-plaintext highlighter-rouge">+40/+22</code>), and BUILDING4 high/low
+(<code class="language-plaintext highlighter-rouge">+30/+29</code>). VISITOR3’s
 local C read-table rows are exhausted, so the next CD-shape pass needs
 generated scheduler ownership, selective preprocessing, or further pack
 data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
@@ -1057,10 +1057,10 @@ pressure.</li>
   <li><strong>Specialized indexed8 and PAL4 compositors.</strong> The pack-format wins reduce
 bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
   <li><strong>Generated scheduler ownership for the remaining under-99 rows.</strong> MARY3 is
-now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
-the bottom of the yellow band after compact-pack promotion. The remaining
-hard rows are VISITOR3 low/high, WALKSTUF1 low/high, BUILDING2 high/low,
-and BUILDING4 low. Hand-authored read groups and scalar window changes have
+now green after the guarded prefetch-preserve pass, and BUILDING6 moved out
+of the current under-99 focus set after compact-pack promotion. The remaining
+hard rows are VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high/low,
+and BUILDING4 high/low. Hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
 WALKSTUF1 low v747..v876 pass keeps the row exact-flat except for the v859
 one-VBlank target/overrun win while shrinking the no-shift frame list
@@ -1090,7 +1090,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.5371% over target / 99.5143% target speed, with several
+public average is now +0.3685% over target / 99.6457% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

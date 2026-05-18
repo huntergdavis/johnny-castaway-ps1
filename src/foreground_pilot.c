@@ -1197,16 +1197,16 @@ fgScenePreservesPrefetchUnderCleanPressure(const char *sceneName)
            fgSceneEquals(sceneName, "fishing4");
 }
 
-/* Round 16: scene-specific override that forces cleanMemoryRelief=1
- * regardless of the union-based threshold check in
- * fgSceneNeedsCleanMemoryRelief. visitor3 has a 2x 97 KB clean-rect
- * snapshot that overflows CACHE when the preserved prefetch buffer
- * (112 KB) + setup-prime window (208-320 KB) + LRU residency are
- * also live. The threshold check uses unionWidth*unionHeight from
- * the pack header, which under-counts when rects don't span the
- * full union. Forcing relief skips up to 540 KB of CACHE
- * allocations (prefetch + stream window + scratch) — only this
- * one scene needs it. */
+static int fgSceneKeepsStage1UnderCleanMemoryRelief(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "visitor3");
+}
+
+/* Round 33 allocator-era note: VISITOR3 still needs cleanMemoryRelief=1
+ * because its split clean rects can consume ~360 KB and TRANSIENT is already
+ * mostly occupied by bg tiles. Unlike the older broad relief path, keep the
+ * tiny stage1 prefetch frame buffer live and only suppress the large
+ * setup-prime/window allocation. */
 static int fgSceneForcesCleanMemoryRelief(const char *sceneName)
 {
     return fgSceneEquals(sceneName, "visitor3");
@@ -3387,7 +3387,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                      * already prevents them from being allocated.
                      * Mid-session: prior scenes grew the buffers,
                      * this free reclaims them. */
-                    if (gFgPrefetchFrameBuffer != NULL) {
+                    if (!fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName) &&
+                        gFgPrefetchFrameBuffer != NULL) {
                         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
                         gFgPrefetchFrameBuffer = NULL;
                         gFgPrefetchFrameBufferSize = 0;
@@ -3399,7 +3400,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     }
                 }
             }
-            if (gFgPrefetchStage1Enabled && !cleanMemoryRelief) {
+            if (gFgPrefetchStage1Enabled &&
+                (!cleanMemoryRelief ||
+                 fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName))) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
                     if (gFgPrefetchFrameBuffer != NULL)
                         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
@@ -3583,9 +3586,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 ps1PerfMarkBufferSizes(gFgFrameBufferSize, gFgStreamScratchSize);
             gFgRuntime.frameBuffer = gFgFrameBuffer;
             gFgRuntime.frameBufferSize = gFgFrameBufferSize;
-            gFgRuntime.prefetchFrameBuffer = cleanMemoryRelief ?
+            gFgRuntime.prefetchFrameBuffer =
+                (cleanMemoryRelief &&
+                 !fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName)) ?
                 NULL : gFgPrefetchFrameBuffer;
-            gFgRuntime.prefetchFrameBufferSize = cleanMemoryRelief ?
+            gFgRuntime.prefetchFrameBufferSize =
+                (cleanMemoryRelief &&
+                 !fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName)) ?
                 0 : gFgPrefetchFrameBufferSize;
             gFgRuntime.streamWindowBuffer = cleanMemoryRelief ?
                 NULL : gFgStreamWindowBuffer;

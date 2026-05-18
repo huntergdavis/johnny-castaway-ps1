@@ -25,18 +25,23 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current allocator-era rollup after the memory-region allocator refresh and the
-targeted W1/B2 setup-segment checkpoint: `+0.5371%` public average over target /
-`99.5143%` public target speed across all `126` timing-bearing rows. The raw
-signed optimization matrix is about `-0.1798%` / `100.2447%`. Since the compact
-full-matrix baseline was about `17.4%` over target / `87.1%` target speed, the
-headless methodology has removed about `16.86` public over-target points and
-added about `12.41` public target-speed points. Bands are now `118` green,
-`6` yellow, `0` orange, and `2` red. The latest promoted checkpoint uses
-allocator-safe targeted CACHE setup slices: W1 high `198..244` plus `411..435`
-improves `1509/1425 -> 1489/1430`, W1 low `197..243` plus `410..434` improves
-`1507/1426 -> 1477/1434`, and B2 high `3..35` plus `202..242` keeps the focused
-allocator run measured while reducing reads/read time `57/246 -> 47/208`.
+Current allocator-era rollup after the memory-region allocator refresh, targeted
+W1/B2 setup-segment checkpoint, and VISITOR3 stage1-under-clean-relief
+checkpoint: `+0.3685%` public average over target / `99.6457%` public target
+speed across all `126` timing-bearing rows. The raw signed optimization matrix
+is about `-0.3484%` / `100.3760%`. Since the compact full-matrix baseline was
+about `17.4%` over target / `87.1%` target speed, the headless methodology has
+removed about `17.03` public over-target points and added about `12.55` public
+target-speed points. Bands are now `118` green, `6` yellow, `2` orange, and
+`0` red. The latest promoted checkpoint keeps only VISITOR3's tiny stage1
+prefetch frame buffer alive under clean-memory relief: high improves
+`1232/1033 -> 1135/1035`, blocking `478 -> 387`, and due `137 -> 109`; low
+improves `1231/1040 -> 1110/1040`, blocking `438 -> 343`, and due
+`126 -> 98`. The prior allocator-safe targeted CACHE setup slices remain the
+current W1/B2 baseline: W1 high `198..244` plus `411..435` improves
+`1509/1425 -> 1489/1430`, W1 low `197..243` plus `410..434` improves
+`1507/1426 -> 1477/1434`, and B2 high `3..35` plus `202..242` keeps the
+focused allocator run measured while reducing reads/read time `57/246 -> 47/208`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
@@ -91,8 +96,8 @@ all `126` timing-bearing rows. The raw signed optimization matrix is
 about `-0.5148%` / `100.5342%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65`
-public target-speed points. Green rows are now `119 / 126`, with `7` yellow
-rows remaining and no orange/red rows.
+public target-speed points. At that pre-allocator checkpoint, green rows were
+`119 / 126`, with `7` yellow rows remaining and no orange/red rows.
 
 Latest promoted WALKSTUF1 high preserve-offset payload baseline:
 `walkstuf1-high-frame51-inplace-v839`, `walkstuf1-high-frame49-inplace-v841`,
@@ -460,7 +465,24 @@ exact-flat. This moves VISITOR5 low into green; after the later JOHNNY1 v932
 promotion, the under-99 focus set is WALKSTUF1 low/high, BUILDING2 high/low,
 VISITOR3 high/low, and BUILDING4 low.
 
-Latest promoted VISITOR3 high speed baseline: keep the v299 resident
+Latest promoted VISITOR3 allocator-era speed baseline: the old force-relief
+path dropped both the large setup-prime/window buffers and the tiny stage1
+prefetch frame buffer. Full setup-prime/window restore was rejected because
+VISITOR3 BSODed during clean-rect allocation (`CACHE exhausted` with about
+`82..100 KB` free before a `97 KB` clean snapshot request), and slack `4`/`5`
+stage1 variants helped only low tide while worsening high tide. The promoted
+shape keeps clean-memory relief enabled but preserves the small stage1 buffer,
+still freeing the large stream window. The accepted canary
+`scratch/ps1-perf-iterate/visitor3-stage1-under-green-canaries/20260517-215910-1206316/summary.json`
+improves high from `1232/1033` to `1135/1035`, overrun `199 -> 100`,
+blocking `478 -> 387`, reads `137 -> 135`, due `137 -> 109`, and target speed
+`83.847% -> 91.189%`. Low improves from `1231/1040` to `1110/1040`, overrun
+`191 -> 70`, blocking `438 -> 343`, reads `126 -> 124`, due `126 -> 98`, and
+target speed `84.484% -> 93.694%`. Use this as the allocator-era VISITOR3
+runtime baseline; future VISITOR3 work still needs data-shape or scheduler
+ownership to cross 99%.
+
+Pre-allocator promoted VISITOR3 high speed baseline: keep the v299 resident
 frame-131 placement, the v291 frame-140/tail setup-segment placement, store
 frame `137` as a 503-byte D4 previous-frame delta against frame `136`, and add
 frame `132` as a 768-byte D4 delta against frame `131`. v462 proved the
@@ -1668,7 +1690,7 @@ strict hot-symbol budget.
 | 21 | VISITOR3 low | Closed by v637 and v824: no remaining due frame produced a previous-frame D4 payload small enough for the `10588` paid setup-prime gap, the best same-offset D4 probe regressed timing, and byte-for-byte terminal relocation after frame `129` was either exact-flat or phase-negative. | Reopen only for a different custom compression family, generated deadline ownership, or newly paid residency; do not retry ordinary previous-frame D4 for frames `130`, `131`, `133`, `134`, `135`, `136`, or `138`, and do not retry raw terminal compaction after frame `129`. |
 | 22 | VISITOR3 both | Generate a timeline cost model that estimates CD saved, decode cost, upload cost, and hot-code drift before a PS1 run. VISITOR3 has too many byte wins that are phase-negative unless ownership is right. | Reject candidates whose model predicts any hidden refill or PS-EXE bucket movement. |
 | 23 | JOHNNY1 high/low | Closed by v932 for the current under-99 target: local-LZ sentinel payloads compress full-frame entries `1` and `50` in both fixed-footprint packs, cutting active payload `316608 -> 112093` and moving both tides to green at `1948/1945`, overrun `3`, blocking/refill `5`, and read time `37`. | Keep v932 as the baseline. Do not retry per-span black GPU clears, clean-span compiler toggles, or same-frame/no-op aliasing for speed on this target. |
-| 24 | JOHNNY1 high/low | Residual black-backdrop upload/coalescing work is no longer an under-99 blocker after v932. The prior v915 signal still reduces upload bytes but was not a speed win. | Reopen only as broader headroom/footprint cleanup, not ahead of the seven remaining yellow rows. |
+| 24 | JOHNNY1 high/low | Residual black-backdrop upload/coalescing work is no longer an under-99 blocker after v932. The prior v915 signal still reduces upload bytes but was not a speed win. | Reopen only as broader headroom/footprint cleanup, not ahead of the remaining under-99 rows. |
 | 25 | JOHNNY1 high/low | Exact no-op aliasing and cleanup adjacency scans remain closed: the current pack has no duplicate payload groups, repeated offset runs, or exact-adjacent cleanup spans to remove. | Future JOHNNY1 work should be whole-disc footprint or code-headroom work, not a priority speed lane. |
 | 26 | BUILDING4 low | Closed by v652 for the first classifier pass: same-commit offscreen draw-span clipping is a real pack-only win, but it only moves low from `2856/2816` to `2853/2816`. Remaining debt is still mixed CD/upload work, not a plain retained-read row. | Continue from the v652 baseline; require fixed LBA/EXE bucket and a work-counter drop before timing. |
 | 27 | BUILDING4 low | Scene-specific static-mask precomposition for the large island/tree/background area, leaving only moving foreground rows dirty. BUILDING4 low remains near target with high restore/upload pressure. | Offline mask validator first; gate only if visual status stays green and upload/restore bytes drop. |

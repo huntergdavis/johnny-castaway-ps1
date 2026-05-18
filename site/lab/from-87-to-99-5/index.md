@@ -50,10 +50,12 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh is
-**+0.5371% over target / 99.5143% target speed**, with roughly **16.86
-percentage points** of over-target gap closed and about **12.41 target-speed
+**+0.3685% over target / 99.6457% target speed**, with roughly **17.03
+percentage points** of over-target gap closed and about **12.55 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
-high/low out of orange while keeping the allocator-safe CACHE budget intact.
+high/low out of orange, and the VISITOR3 stage1-under-clean-relief promotion
+moved both VISITOR3 tides out of red while keeping the allocator-safe CACHE
+budget intact.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -144,10 +146,11 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
-As of the current mainline there are no orange or red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `119` rows are green and `7`
-remain yellow. The current under-99 focus set is WALKSTUF1 high/low,
-VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 low.
+As of the current mainline there are no red rows left on the
+[battle card]({{ '/perf/' | relative_url }}): `118` rows are green, `6`
+remain yellow, and VISITOR3 high/low are the `2` orange rows. The current
+under-99 focus set is VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2
+high/low, and BUILDING4 high/low.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
