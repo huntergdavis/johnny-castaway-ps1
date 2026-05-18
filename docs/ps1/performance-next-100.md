@@ -579,6 +579,23 @@ target / `99.7402%` target speed; raw signed is about `-0.4529%` /
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.
 
+Latest rejected WALKSTUF1 high read-group sweep: after the W1-low `{91,107}`
+promotion, raw W1-high scalar rows still trade modeled read wins for visible
+phase debt. `{84,108,0}` improved blocking `59 -> 56`, refill `13 -> 12`,
+reads `46 -> 42`, and due `10 -> 8`, but regressed loop/overrun
+`1475/34 -> 1477/36`; adding slack `4` made the row exact-flat with no key
+metric win. `{80,92,0}` regressed target/overrun/blocking/refill to
+`1438/37/66/18`, and `{164,188,0}` reduced reads to `44` but regressed
+target/overrun/blocking to `1440/35/66`. Artifacts:
+`scratch/ps1-perf-iterate/walkstuf1-high-rg84-108-vnext/20260518-160749-3189948/summary.json`,
+`scratch/ps1-perf-iterate/walkstuf1-high-rg84-108-slack4-vnext/20260518-160943-3200969/summary.json`,
+`scratch/ps1-perf-iterate/walkstuf1-high-rg80-92-vnext/20260518-161134-3211699/summary.json`,
+and
+`scratch/ps1-perf-iterate/walkstuf1-high-rg164-188-vnext/20260518-161329-3222854/summary.json`.
+Do not retry W1-high scalar grouped appends in this lane without generated
+deadline/refill ownership or a render/upload work reduction that changes the
+phase budget.
+
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
 `{91,107}` scalar row failed on the older `238..342` retained setup baseline,
 but passes after the low-only 48 KiB clean-rect cap and `238..344` setup edge.
