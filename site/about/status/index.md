@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3002%` over
-target / `99.7062%` target speed; the raw signed optimization matrix is
-about `-0.4167%` / `100.4366%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2994%` over
+target / `99.7069%` target speed; the raw signed optimization matrix is
+about `-0.4175%` / `100.4373%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -50,8 +50,8 @@ loop reads/read time down to `56/256` after caching relative sectors
 bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a `68 KiB` window with terminal overread trimming plus setup segment2
-`203..229` and measures `1096/1040`, overrun `56`, blocking `71`, reads/due
-`8/5`; low uses a
+`203..229`, then moves frame `139`'s raw payload into that retained gap. High
+measures `1096/1041`, overrun `55`, blocking `67`, reads/due `7/4`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment at `206..230` and
 measures `1074/1039`, overrun `35`, blocking `85`, reads/due `19/15`. Both rows moved out of red
 without reintroducing the clean-rect allocation

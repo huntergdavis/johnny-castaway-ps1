@@ -30,11 +30,11 @@ targeted W1/B2 setup-segment checkpoint, VISITOR3 stage1-under-clean-relief
 checkpoint, VISITOR3 high/low clean-relief stream-window checkpoints, the
 VISITOR3 high terminal-window trim, and the VISITOR3 high setup-segment
 extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
-`83..95` read-group retime, and the VISITOR3 low third setup-segment
-promotion:
-`+0.3002%` public average over target / `99.7062%` public target speed across
+`83..95` read-group retime, the VISITOR3 low third setup-segment promotion,
+and the VISITOR3 high frame139 raw-gap promotion:
+`+0.2994%` public average over target / `99.7069%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4167%` / `100.4366%`. Since the compact full-matrix baseline was
+`-0.4175%` / `100.4373%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.10` public over-target points and added about `12.61` public
 target-speed points. Bands are now `119` green, `6` yellow, `1` orange, and
@@ -42,9 +42,11 @@ target-speed points. Bands are now `119` green, `6` yellow, `1` orange, and
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
 stream windows, trims high-tide terminal reads before resident setup data, and
 extends the high-tide second setup segment through relative sector `229`, then
-adds a third low-tide retained setup segment at relative sectors `206..230`:
-high improves `1232/1033 -> 1096/1040`, blocking `478 -> 71`, reads
-`137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1074/1039`,
+adds a third low-tide retained setup segment at relative sectors `206..230` and
+relocates high frame `139`'s raw payload into the already retained `203..229`
+gap:
+high improves `1232/1033 -> 1096/1041`, blocking `478 -> 67`, reads
+`137 -> 7`, and due `137 -> 4`; low improves `1231/1040 -> 1074/1039`,
 blocking `438 -> 85`, reads `126 -> 19`, and due `126 -> 15`. The
 under-green canary refresh also stamps W1 high/low at `1475/1433` and
 `1479/1435`, B2 high/low at `1351/1313` and `1339/1315`, and B4 high/low at
@@ -493,19 +495,36 @@ promotion keeps clean-memory relief enabled, preserves the small stage1 buffer
 for both tides, allows a high-tide `68 KiB` stream window, allows low tide to
 keep a smaller `16 KiB` stream window only when at least 5 VBlanks of slack are
 available, trims high-tide terminal reads before already-resident
-setup-segment data, and extends the high-tide second setup segment through
-relative sector `229`; the latest low follow-up adds a third retained setup
-segment for relative sectors `206..230`. The accepted high setup-segment canary
+setup-segment data, extends the high-tide second setup segment through
+relative sector `229`, relocates high frame `139`'s raw payload into that
+already retained gap, and adds a third low-tide retained setup segment for
+relative sectors `206..230`. The accepted high setup-segment canary
 `scratch/ps1-perf-iterate/visitor3-high-seg203-229-payloadtrim-canaries-pass/20260518-011814-2337084/summary.json`
 improves high from `1232/1033` to `1096/1040`, overrun `199 -> 56`,
 blocking `478 -> 71`, reads `137 -> 8`, due `137 -> 5`, and target speed
-`83.847% -> 94.891%`. The accepted low third-segment canary
+`83.847% -> 94.891%`. The accepted high raw-gap canary
+`scratch/ps1-perf-iterate/visitor3-high-frame139-rawgap-canaries-pass/20260518-050438-3630173/summary.json`
+improves high further to `1096/1041`, overrun `55`, blocking `67`, reads `7`,
+due `4`, and target speed `94.982%`. The accepted low third-segment canary
 `scratch/ps1-perf-iterate/visitor3-low-thirdseg206-230-visitor-canaries-pass/20260518-043607-3468206/summary.json`
 improves low from `1231/1040` to `1074/1039`, overrun `191 -> 35`,
 blocking `438 -> 85`, reads `126 -> 19`, due `126 -> 15`, and target speed
 `84.484% -> 96.741%`. Use this as the allocator-era VISITOR3
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
+
+Latest VISITOR3 high frame139 raw-gap pass: moving the raw `15679` byte frame
+`139` payload to offset `417308` inside the already retained `203..229` setup
+segment gap removes one active read without enabling the rejected D4 decode
+path. Focused artifact:
+`scratch/ps1-perf-iterate/visitor3-high-frame139-rawgap-vnext/20260518-050255-3620479/summary.json`;
+canary artifact:
+`scratch/ps1-perf-iterate/visitor3-high-frame139-rawgap-canaries-pass/20260518-050438-3630173/summary.json`.
+The row improves `1096/1040 -> 1096/1041`, overrun `56 -> 55`,
+blocking/read time `71/83 -> 67/79`, loop reads/due `8/5 -> 7/4`, and keeps
+hidden/prefetch at `12/5`. Public rollup becomes `+0.2994%` over target /
+`99.7069%` target speed; raw signed becomes `-0.4175%` / `100.4373%`, and
+bands stay `119` green, `6` yellow, `1` orange, `0` red.
 
 Latest VISITOR3 high setup-segment sweep: after the terminal read trim,
 extending setup segment2 from only sector `203` to sectors `203..229` is the
@@ -3866,7 +3885,7 @@ pre-v0.8.0 row.
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
-| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but follow-ups around `144..156`, `102..118`, and tight low-tide standalone tables either stayed flat or regressed. The VISITOR3-only strict x-band upload retry also regressed and grew `grDrawBackground`, so runtime scratch-packed x-aware upload stays closed. Continue VISITOR3 from the current allocator-era `1096/1040` high and `1074/1039` low baseline with scene-local/generated metadata, motion-copy expansion, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership. The v204/v205/v213/v214/v216/v464/v477/v501/v510/v629 setup residency plus the allocator-era low `206..230` third segment, v227/v234/v237/v238/v291/v299/v302 unchanged-payload relocations, and v248/v249/v292/v338 no-op/cleanup residuals/data aliasing show setup-owned residency and pack-only data reduction can work only when active-loop payoff exceeds setup debt and hidden refill stays flat. The rejected v205 wide high segments, low setup-prime caps above `208 KiB`, v215 unguarded low second segment, v228 frame-127 re-anchor, v230-v233 no-op frame-118 variants, v246/v247 third-segment attempts, v290 scalar high prime growth, and v297 partial frame-131 edge copy show wider coverage or erased semantics can still lose by adding hidden refill, visible regression, setup cost, or heap pressure. |
+| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but follow-ups around `144..156`, `102..118`, and tight low-tide standalone tables either stayed flat or regressed. The VISITOR3-only strict x-band upload retry also regressed and grew `grDrawBackground`, so runtime scratch-packed x-aware upload stays closed. Continue VISITOR3 from the current allocator-era `1096/1041` high and `1074/1039` low baseline with scene-local/generated metadata, motion-copy expansion, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership. The v204/v205/v213/v214/v216/v464/v477/v501/v510/v629 setup residency plus the allocator-era low `206..230` third segment, v227/v234/v237/v238/v291/v299/v302 unchanged-payload relocations, the allocator-era high frame139 no-decode raw-gap relocation, and v248/v249/v292/v338 no-op/cleanup residuals/data aliasing show setup-owned residency and pack-only data reduction can work only when active-loop payoff exceeds setup debt and hidden refill stays flat. The rejected v205 wide high segments, low setup-prime caps above `208 KiB`, v215 unguarded low second segment, v228 frame-127 re-anchor, v230-v233 no-op frame-118 variants, v246/v247 third-segment attempts, v290 scalar high prime growth, and v297 partial frame-131 edge copy show wider coverage or erased semantics can still lose by adding hidden refill, visible regression, setup cost, or heap pressure. |
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. The current low `603..619` group saved three nominal reads but regressed loop timing `1465 -> 1469` with fixed layout, so standalone tight clusters are closed. The cleaner low `538..550` group improved loop/blocking (`1465 -> 1461`, `334 -> 328`) but failed strict promotion because refill overrun regressed `35 -> 40`; keep it as a scheduler-owned retry candidate, not a standalone table. The cleanup-metadata FGP3/v3 data shape is now accepted for BUILDING2, so future BUILDING2 work should start from `1430/1289` high and `1429/1286` low, not the older FGP3/v1 baseline. Use scheduler-owned grouping or selective preprocessing instead. |
 | BUILDING2 local min-slack grouped appends | Do not retry `{538,550}` with a local `minSlackVBlanks=6` guard. It was safe but exact-flat (`1465/1276`, `blocking_vb=334`, `prefetch_overrun_vb=35`) and only grew hot code. Scheduler ownership must be first-class enough to move cadence, not just a per-table guard around the current append path. |
 | BUILDING2 high standalone visible-cost groups | Do not retry `96..104`, `66..78`, `325..331`, `538..550`, or adjacent one-off hand tables. `96..104` saved one nominal read but worsened visible blocking/due misses, `66..78` was loop/blocking/read-flat with only a one-VBlank hidden-refill change, and the fresh tail candidate `538..550` stayed exact-flat while growing hot code by `44` bytes. BUILDING2 high needs scheduler-owned timing or selective upload-ready/preprocessed pack data. |
