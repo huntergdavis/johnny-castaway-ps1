@@ -602,14 +602,18 @@ phase budget.
 Latest rejected BUILDING2 high top early read-group probes: after the W1-high
 scalar closures, `{122,146,0}` was the largest simple B2-high candidate left in
 the refreshed matrix, and `{95,119,0}` tested whether chaining directly after
-the accepted `{83,95}` row would create runtime group hits. Both focused gates
-stayed exact-flat at `1621/1347/1313`, overrun `34`, blocking/refill `39/16`,
-loop reads/read time `45/199`, and due `5`, with `group_hits=0`. Artifacts:
+the accepted `{83,95}` row would create runtime group hits. `{255,271,0}` then
+tested the late cluster adjacent to the accepted `{271,287,5}` row. All three
+focused gates stayed exact-flat at `1621/1347/1313`, overrun `34`,
+blocking/refill `39/16`, loop reads/read time `45/199`, and due `5`, with
+`group_hits=0`. Artifacts:
 `scratch/ps1-perf-iterate/building2-high-rg122-146-vnext/20260518-162313-3278027/summary.json`
 and
-`scratch/ps1-perf-iterate/building2-high-rg95-119-vnext/20260518-162616-3295536/summary.json`.
-Close `122..146` and `95..119` as inert scalar appends on this baseline.
-B2-high early clusters now need generated append-start/deadline ownership or
+`scratch/ps1-perf-iterate/building2-high-rg95-119-vnext/20260518-162616-3295536/summary.json`,
+plus
+`scratch/ps1-perf-iterate/building2-high-rg255-271-vnext/20260518-162927-3313663/summary.json`.
+Close `122..146`, `95..119`, and `255..271` as inert scalar appends on this
+baseline. B2-high clusters now need generated append-start/deadline ownership or
 pack/upload work, not another blind hand table row.
 
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
