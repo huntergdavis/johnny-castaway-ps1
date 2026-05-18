@@ -71,6 +71,10 @@ set(SOURCES
     src/scene_freeplay.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
+    # Memory region allocator — deterministic 3-region static buffer.
+    # See docs/ps1/memory-region-allocator-plan.md.
+    src/mem_region.c
+    src/generated/pack_header_metrics.c
 )
 
 # Size-optimize only translation units that have passed the exact fishing1
@@ -92,6 +96,8 @@ set_source_files_properties(
     src/memcard.c
     src/scene_freeplay.c
     src/scene_picker.c
+    src/mem_region.c
+    src/generated/pack_header_metrics.c
     PROPERTIES COMPILE_OPTIONS "-Os"
 )
 

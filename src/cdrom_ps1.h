@@ -90,11 +90,33 @@ typedef struct {
     long currentPos;
     int isOpen;
     char filename[32];
-    uint8_t* buffer;      /* Preloaded file buffer */
-    uint32_t bufferSize;  /* Size of preloaded buffer */
+    uint8_t* buffer;      /* Whole-file buffer (legacy) OR small sector cache (stream mode) */
+    uint32_t bufferSize;  /* Whole-file: file size; Stream: cache capacity */
+    /* Stream mode: when nonzero, buffer is a sector cache (not the
+     * whole file). Used by ps1_fopen_stream to read big files like
+     * RESOURCE.001 without claiming all of libc. */
+    int      isStream;
+    uint32_t streamBase;     /* file offset of buffer[0] in stream mode */
+    uint32_t streamBytesCached; /* valid bytes in buffer (stream mode) */
+    int      bufferFromRegion; /* 1 = file->buffer is MEM_REGION_CACHE; 0 = libc malloc */
 } PS1File;
 
 PS1File* ps1_fopen(const char* filename, const char* mode);
+
+/* Streaming open: opens a file using a small fixed-size sector cache
+ * instead of loading the whole file into libc. ps1_fread/ps1_fseek
+ * refill the cache on demand. cacheBytes is rounded up to a multiple
+ * of 2048 (CD sector size); minimum effective cache is one sector.
+ *
+ * Designed for RESOURCE.001 (~1.1 MB catalog) which is too big to
+ * fit in libc heap once the static region buffer is reserved. The
+ * parser performs random-access reads through the file but never
+ * actively re-reads (each entry is touched once); first-fit cache
+ * is sufficient.
+ *
+ * Returns NULL on file-not-found or alloc failure. */
+PS1File* ps1_fopen_stream(const char* filename, uint32_t cacheBytes);
+
 size_t ps1_fread(void* ptr, size_t size, size_t nmemb, PS1File* file);
 int ps1_fseek(PS1File* file, long offset, int whence);
 long ps1_ftell(PS1File* file);
@@ -104,6 +126,14 @@ int ps1_fclose(PS1File* file);
  * For dynamic loading - only reads necessary CD sectors.
  * Returns malloc'd buffer (caller must free), or NULL on error. */
 uint8_t* ps1_streamRead(const char* filename, uint32_t offset, uint32_t size);
+
+/* Same as ps1_streamRead but returns a buffer allocated from
+ * MEM_REGION_CACHE. Use for resource data that becomes
+ * uncompressedData held by the LRU cache. Caller frees via
+ * memFree(MEM_REGION_CACHE, ptr) — the LRU evictor in resource.c
+ * does this automatically as resources get evicted. */
+uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t size);
+
 int ps1_streamResolveFile(const char* filename, CdlFILE* outFile);
 int ps1_streamReadIntoFile(const CdlFILE *cdfile, uint32_t offset, uint32_t size, uint8_t *dstBuffer);
 int ps1_streamReadIntoFileBuffered(const CdlFILE *cdfile, uint32_t offset, uint32_t size,

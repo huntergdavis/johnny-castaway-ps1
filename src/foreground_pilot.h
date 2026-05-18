@@ -26,18 +26,10 @@ unsigned long fgProbeLargestAlloc(void);
 unsigned long fgGetFrameBufferBytes(void);
 unsigned long fgGetPrefetchFrameBufferBytes(void);
 
-/* Pre-allocate the per-scene streaming buffers at boot to a worst-case
- * size. Same rationale as grPreallocCleanBgRects: per-scene free+malloc
- * cycles fragment the heap, and after ~10 minutes a wide pack alloc
- * fails. Pre-alloc'd buffers stay at fixed addresses and are reused
- * forever — fgReleaseStreamBuffers no longer frees them once primed.
- *
- * frameMaxBytes:    worst-case per-frame payload (covers all packs)
- * scratchMaxBytes:  worst-case stream-scratch (frameMax + 2KB rounded)
- *
- * Returns 1 on success, 0 if any malloc failed. */
-int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
-                            unsigned long scratchMaxBytes);
+/* fgPrePrimeStreamBuffers deleted (Phase 2 manifest item #9).
+ * Was orphaned (no callers) after the v0.8.11 rollback; new
+ * memory-region allocator replaces the pre-prime pattern. */
+
 void foregroundPilotRuntimeEnd(void);
 void foregroundPilotTeardownForFreeplay(void);
 

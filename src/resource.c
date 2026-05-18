@@ -51,6 +51,9 @@ extern void free(void *ptr);
 #include <string.h>
 
 #include "mytypes.h"
+#ifdef PS1_BUILD
+#include "mem_region.h"
+#endif
 #include "utils.h"
 #include "resource.h"
 #include "uncompress.h"
@@ -130,7 +133,23 @@ static struct TMapFile mapFile;
 static uint32 globalTick = 0;
 static size_t totalMemoryUsed = 0;
 #ifdef PS1_BUILD
-static size_t memoryBudget = 600 * 1024;  /* PS1: Use most available RAM (~700KB free) */
+/* Round 33-soak: shrink LRU budget from 600 KB to 320 KB.
+ *
+ * Post-R33 the CACHE region is 640 KB total. Other CACHE residents
+ * (gFgFrameBuffer, gFgPrefetchFrameBuffer, gFgStreamScratch, occasional
+ * stream window spill, metadata reads) consume up to ~250 KB. With LRU
+ * at the prior 600 KB cap the CACHE peak hit 623 KB — within 17 KB of
+ * the 640 KB budget — and free-list fragmentation prevented contiguous
+ * allocations of 50–100 KB that the next scene's metadata read needed,
+ * BSODing at 247s with `pack-start failed`.
+ *
+ * Capping LRU at 320 KB keeps CACHE peak under ~570 KB worst-case
+ * (320 LRU + 250 other), leaving ~70 KB bump-tail headroom for the
+ * scene-start metadata read + frame buffer alloc. Cost: more aggressive
+ * eviction → more CD reloads of recently-touched BMP/TTM/SCR/ADS. The
+ * `target_vb` perf gates measure scene-loop time including reloads;
+ * any regression will surface in the matrix. */
+static size_t memoryBudget = 600 * 1024;  /* PS1: original budget. R33-soak experiments showed reducing this to 320/200 KB had no measurable effect on CACHE peak — fgpilot scenes use FG2 packs that don't load through LRU (they alloc via foregroundPilotRuntimeStart's CACHE allocs directly). LRU residency stays <200 KB regardless of cap. The CACHE pressure is dominated by the 4 grow-and-release per-scene buffers + their size variation across scenes. */
 #else
 static size_t memoryBudget = 256 * 1024;  /* PC: Conservative for responsiveness */
 #endif
@@ -548,7 +567,13 @@ static void parseResourceFile(char * filename)
 #ifdef PS1_BUILD
     PS1File *f;
 
-    f = ps1_fopen(mapFile.resFileName,"rb");
+    /* Stream RESOURCE.001 via a 64 KB sector cache rather than loading
+     * the whole ~1.1 MB file. This frees ~1 MB of libc heap for the
+     * memory-region allocator's static buffer. The parser's access
+     * pattern is many independent fseek+readBlock pairs (one per
+     * resource entry), each touching ~50-200 bytes; the streaming
+     * cache absorbs nearby entries without re-reading CD sectors. */
+    f = ps1_fopen_stream(mapFile.resFileName, 64 * 1024);
 
     if (f == NULL) {
         fatalError("Main resources file not found: %s\n", mapFile.resFileName);
@@ -691,18 +716,21 @@ void parseResourceFiles(char * filename)
 }
 
 
+/* Plan v9 removal manifest items #10-13: unified resource-not-found
+ * handling across PS1 and PC. The "PS1 returns NULL, caller handles
+ * gracefully" pattern was a workaround for boot-time crashes when
+ * fatalError tried to printf during the game loop. With the
+ * deterministic allocator + memHalt routing (JC_BSOD when graphics
+ * is up, ps1DebugError pre-graphics), both halt mechanisms are
+ * always safe to call. Missing-resource = data bug; surface it. */
+
 struct TAdsResource *findAdsResource(char *searchString)
 {
     int idx = hashLookup(adsHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return adsResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("ADS resource %s not found.", searchString);
-    return NULL;
-#endif
+    return NULL;  /* unreachable; satisfies compiler */
 }
 
 
@@ -711,15 +739,8 @@ struct TBmpResource *findBmpResource(char *searchString)
     int idx = hashLookup(bmpHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return bmpResources[idx];
-
-#ifdef PS1_BUILD
-    /* On PS1, return NULL to allow graceful handling of missing resources.
-     * No printf here - it crashes PS1 in the game loop. */
-    return NULL;
-#else
     fatalError("BMP resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
@@ -728,13 +749,8 @@ struct TScrResource *findScrResource(char *searchString)
     int idx = hashLookup(scrHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return scrResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("SCR resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
@@ -743,13 +759,8 @@ struct TTtmResource *findTtmResource(char *searchString)
     int idx = hashLookup(ttmHashTable, RESOURCE_HASH_SIZE, searchString);
     if (idx >= 0)
         return ttmResources[idx];
-
-#ifdef PS1_BUILD
-    return NULL;  /* Caller handles gracefully */
-#else
     fatalError("TTM resource %s not found.", searchString);
     return NULL;
-#endif
 }
 
 
@@ -930,7 +941,14 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ads->resName, lruSize / 1024.0);
                 }
+                /* PS1: uncompressedData is CACHE-region allocated
+                 * via ps1_streamReadFromCdFile (or ps1_fopen file
+                 * buffer). LRU evictor frees through memFree. */
+#ifdef PS1_BUILD
+                memFree(MEM_REGION_CACHE, ads->uncompressedData);
+#else
                 free(ads->uncompressedData);
+#endif
                 ads->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             } else if (strcmp(lruType, "TTM") == 0) {
@@ -939,7 +957,11 @@ void checkMemoryBudget(void) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ttm->resName, lruSize / 1024.0);
                 }
+#ifdef PS1_BUILD
+                memFree(MEM_REGION_CACHE, ttm->uncompressedData);
+#else
                 free(ttm->uncompressedData);
+#endif
                 ttm->uncompressedData = NULL;
                 totalMemoryUsed -= lruSize;
             }
@@ -959,4 +981,45 @@ size_t getTotalMemoryUsed(void) {
 
 size_t getMemoryBudget(void) {
     return memoryBudget;
+}
+
+/* R33-soak panic mode: drop EVERY unpinned LRU resource regardless
+ * of memoryBudget. Walks ADS/TTM AND BMP/SCR (checkMemoryBudget only
+ * handles ADS+TTM by design); the R33j soak showed BMP/SCR
+ * uncompressedData accounts for 200–400 KB of CACHE that
+ * checkMemoryBudget can't reach, blocking the post-eviction CACHE
+ * rewind. */
+void lruEvictAllUnpinned(void) {
+    /* Phase 1: existing ADS/TTM evictor (drives totalMemoryUsed
+     * accounting that checkMemoryBudget cares about). */
+    size_t savedBudget = memoryBudget;
+    memoryBudget = 0;
+    checkMemoryBudget();
+    memoryBudget = savedBudget;
+
+#ifdef PS1_BUILD
+    /* Phase 2: walk BMP and SCR arrays directly. Their uncompressed
+     * data buffers go through the same CACHE allocator but aren't
+     * tracked in totalMemoryUsed / aren't handled by checkMemoryBudget.
+     * For the CACHE rewind to succeed (g_cacheUsed must reach 0),
+     * these must be freed too. */
+    for (int i = 0; i < numBmpResources; i++) {
+        struct TBmpResource *bmp = bmpResources[i];
+        if (bmp != NULL &&
+            bmp->uncompressedData != NULL &&
+            bmp->pinCount == 0) {
+            memFree(MEM_REGION_CACHE, bmp->uncompressedData);
+            bmp->uncompressedData = NULL;
+        }
+    }
+    for (int i = 0; i < numScrResources; i++) {
+        struct TScrResource *scr = scrResources[i];
+        if (scr != NULL &&
+            scr->uncompressedData != NULL &&
+            scr->pinCount == 0) {
+            memFree(MEM_REGION_CACHE, scr->uncompressedData);
+            scr->uncompressedData = NULL;
+        }
+    }
+#endif
 }

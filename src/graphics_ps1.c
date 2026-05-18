@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "graphics_ps1.h"
 #include "ads.h"
+#include "mem_region.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 #include "resource.h"
@@ -651,7 +652,7 @@ void graphicsInit()
     ClearOTagR(ot[0], OT_LENGTH);
     ClearOTagR(ot[1], OT_LENGTH);
 
-    /* Allocate primitive buffers dynamically to reduce BSS size */
+    /* Reverted to libc — 2x32 KB exceeds the reduced BOOT budget. */
     primitiveBuffer[0] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
     primitiveBuffer[1] = (uint8*)malloc(PRIMITIVE_BUFFER_SIZE);
     if (!primitiveBuffer[0] || !primitiveBuffer[1]) {
@@ -708,6 +709,25 @@ void graphicsInit()
     /* Initialize event system */
     eventsInit();
     GR_DIAG_PRINTF("GPU: Graphics initialization complete!\n");
+
+    /* Mark graphics ready — used by memHalt to decide between the
+     * full BSOD panel (ps1Bsod) and the minimal pre-graphics text
+     * panel (ps1DebugError). See plan v9 "Failure UX". */
+    extern void memSetGraphicsReady(int ready);
+    memSetGraphicsReady(1);
+}
+
+/* Mem-region allocator queries this to choose its halt path. Defined
+ * here so the flag lives next to graphicsInit; the allocator uses
+ * `extern int graphicsIsInitialized(void)` via mem_region.c. */
+static int gGraphicsReady = 0;
+
+int graphicsIsInitialized(void) {
+    return gGraphicsReady;
+}
+
+void memSetGraphicsReady(int ready) {
+    gGraphicsReady = ready ? 1 : 0;
 }
 
 /*
@@ -900,6 +920,11 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
  */
 PS1Surface *grNewEmptyBackground()
 {
+    /* Kept on libc malloc — this is called from island.c at scene
+     * runtime (via grNewLayer for TTM threads), not strictly at boot.
+     * Migrating to BOOT would block memFreezeBoot enablement.
+     * Future: route through MEM_REGION_CACHE with corresponding
+     * memFree in the TTM-thread shutdown path. */
     PS1Surface *sfc = (PS1Surface*)malloc(sizeof(PS1Surface));
     if (sfc == NULL) {
         fatalError("Failed to allocate PS1Surface");
@@ -1000,7 +1025,18 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
     /* Free PSB data buffer if this slot was loaded from a PSB file.
      * Must happen AFTER freeing sprites since they pointed into it. */
     if (ttmSlot->psbData[bmpSlotNo] != NULL) {
-        free(ttmSlot->psbData[bmpSlotNo]);
+        /* R33-soak fix: PSB buffer comes from ps1PilotLoadPsb /
+         * ps1_streamReadCache → CACHE region (post-memInit). The prior
+         * libc free() was a silent no-op on CACHE pointers, leaving
+         * the ~80–120 KB PSB block leaked in CACHE forever. memFree(CACHE)
+         * range-checks the pointer and routes correctly to either the
+         * CACHE free-list or libc free. The R33m diagnostic showed
+         * cacheUsed=512 KB with LRU empty — that 512 KB was leaked PSB
+         * buffers from prior scenes. */
+        if (memIsReady())
+            memFree(MEM_REGION_CACHE, ttmSlot->psbData[bmpSlotNo]);
+        else
+            free(ttmSlot->psbData[bmpSlotNo]);
         ttmSlot->psbData[bmpSlotNo] = NULL;
     }
 
@@ -1063,42 +1099,42 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
     psbBuf = ps1PilotLoadPsb(psbName, &psbSize);
 
     /* Fallback: load standalone PSB file from CD PSB/ directory.
-     * This path does a CdSearchFile but only triggers for scenes
-     * without a compiled pack or when a PSB is missing from the pack.
-     * psbSize was already set from the registry lookup above. */
+     * Both the pack path (ps1PilotLoadPsb) and this fallback now
+     * return MEM_REGION_CACHE-allocated buffers — free uniformly
+     * via memFree(CACHE) below. */
     if (psbBuf == NULL) {
         snprintf(psbPath, sizeof(psbPath), "PSB\\%s", psbName);
-        psbBuf = ps1_streamRead(psbPath, 0, psbSize);
+        psbBuf = ps1_streamReadCache(psbPath, 0, psbSize);
         if (psbBuf == NULL) return 0;
     }
 
     /* Validate PSB header */
     if (psbSize < sizeof(PSBHeader)) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     hdr = (PSBHeader *)psbBuf;
     if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     if (hdr->numFrames == 0 || hdr->dataOffset > psbSize) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     /* Cross-check totalSize against actual buffer size */
     if (hdr->totalSize > psbSize) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
     /* Verify frame table fits */
     frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
     if (frameTableEnd > hdr->dataOffset) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
@@ -1125,8 +1161,11 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
         if (fr->width == 0 || fr->height == 0 ||
             fr->width > 640 || fr->height > 480) break;
 
-        /* Use malloc (not safe_malloc) so OOM falls back to BMP path
-         * instead of halting the PS1 via fatalError. */
+        /* Kept on libc malloc — sprite frame descriptors live with
+         * their owning resource (BMP/PSB). Lifecycle is "until LRU
+         * eviction." Migrating to BOOT would block memFreezeBoot.
+         * Future: route through MEM_REGION_CACHE with companion frees
+         * inside grReleaseBmp / the LRU evictor. */
         surface = (PS1Surface*)malloc(sizeof(PS1Surface));
         if (!surface) break;
 
@@ -1159,7 +1198,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     /* If no frames loaded (corruption or OOM), free everything and fall back. */
     if (framesLoaded == 0) {
-        free(psbBuf);
+        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
         return 0;
     }
 
@@ -1250,7 +1289,9 @@ void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
             uint16 height = bmpResource->heights[frameIdx];
             uint32 indexedSize = ((uint32)width * (uint32)height + 1) / 2;
 
-            /* Allocate PS1Surface */
+            /* Kept on libc malloc — same rationale as PSB frame
+             * surfaces above: lifecycle is "until LRU eviction,"
+             * not strict boot. */
             PS1Surface *surface = (PS1Surface*)malloc(sizeof(PS1Surface));
             if (!surface) {
                 gStatLastBmpStatus = 6;  /* allocation failure / partial install */
@@ -1336,9 +1377,17 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         LoadImage(&dstRect, (uint32*)sprite->pixels);
         /* No DrawSync here - let main loop handle sync */
     } else {
-        /* Need to copy clipped region to temp buffer */
-        uint16 *tempBuf = (uint16*)malloc(blitW * blitH * 2);
-        if (!tempBuf) return;
+        /* MEM_REGION_RATIONALE: per-blit clipped-region temp buffer.
+         * Lives ~one frame; freed inline. CACHE region: memFree(CACHE)
+         * actually reclaims bytes via the coalescing free-list, so
+         * per-blit allocs of any size can be reused. TRANSIENT was
+         * the wrong fit because its memFree only decrements balance;
+         * bytes persist until memSceneReset, and large blits (up to
+         * 70 KB on activity-high variants) overflow the budget.
+         * INIT_FULL_WRITE — populated by the memcpy loop below. */
+        uint16 *tempBuf = (uint16*)memAlloc(MEM_REGION_CACHE,
+                                            blitW * blitH * 2,
+                                            "grBlitTempBuf");
         uint16 *src = sprite->pixels;
         uint16 *dst = tempBuf;
 
@@ -1350,9 +1399,9 @@ void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY)
         RECT dstRect;
         setRECT(&dstRect, screenX, screenY, blitW, blitH);
         LoadImage(&dstRect, (uint32*)tempBuf);
-        DrawSync(0);  /* Must sync before freeing buffer - LoadImage is async! */
+        DrawSync(0);  /* Must sync before "releasing" buffer - LoadImage is async! */
 
-        free(tempBuf);
+        memFree(MEM_REGION_CACHE, tempBuf);
     }
 }
 
@@ -3002,7 +3051,23 @@ int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, si
  */
 static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
 {
-    PS1Surface *tile = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
+    /* MEM_REGION_RATIONALE (Round 33): persistent-per-scene BG tile
+     * surface (320x240, ~150 KB pixel buffer). 4 tiles × 150 KB =
+     * 600 KB worst case — the largest single CACHE pressure source
+     * across all 63 scenes. Moved to TRANSIENT because:
+     *   - Pixel contents are overwritten by grLoadScreen at scene
+     *     start anyway (no cross-scene content reuse).
+     *   - Re-allocation via the TRANSIENT bump pointer is ~3
+     *     instructions vs the prior O(n) CACHE free-list walk.
+     *   - 600 KB out of CACHE eliminates the visitor3-class BSOD
+     *     (req=97280 byte clean-rect fails to find a contiguous
+     *     CACHE block when bg-tile + LRU + frame buffers occupy it).
+     * grBackgroundTilesAssumeWiped (called from fgRuntimeReset right
+     * after memSceneReset) NULLs the slot pointers so the next scene's
+     * grLoadScreen re-allocates fresh in the new TRANSIENT frame. */
+    PS1Surface *tile = memIsReady()
+        ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
+        : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
     tile->width = width;
     tile->height = height;
     tile->x = 0;
@@ -3011,7 +3076,9 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     tile->indexedOwned = 0;
     tile->psbNibbles = 0;
     tile->nextTile = NULL;
-    tile->pixels = (uint16*)safe_malloc(width * height * 2);
+    tile->pixels = memIsReady()
+        ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (size_t)width * height * 2u, "bgtile-pixels")
+        : (uint16*)safe_malloc(width * height * 2);
     /* Fill with black (0x0000 = transparent/black) */
     for (uint32 i = 0; i < width * height; i++) {
         tile->pixels[i] = 0x0000;
@@ -3052,9 +3119,18 @@ static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 heigh
     if (*slot == NULL || (*slot)->pixels == NULL ||
         (*slot)->width != width || (*slot)->height != height) {
         freeBgTile(slot);
-        *slot = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
+        /* MEM_REGION_RATIONALE (Round 33): TRANSIENT bg-tile, see
+         * createEmptyBgTileRAM rationale. The freeBgTile call above is
+         * a defensive no-op after a scene wipe (slot is already NULL
+         * thanks to grBackgroundTilesAssumeWiped); it handles the
+         * cold-boot and width/height-change paths. */
+        *slot = memIsReady()
+            ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
+            : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
         resetBgTileRAMFields(*slot, width, height);
-        (*slot)->pixels = (uint16*)safe_malloc((uint32)width * height * 2);
+        (*slot)->pixels = memIsReady()
+            ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (uint32)width * height * 2u, "bgtile-pixels")
+            : (uint16*)safe_malloc((uint32)width * height * 2);
     } else {
         resetBgTileRAMFields(*slot, width, height);
     }
@@ -3241,6 +3317,12 @@ struct TGrCleanRect {
     uint16 width, height;
     uint16 *pixels;
     uint32 capacityBytes;
+    /* MEM_REGION tag for the pixels allocation (0=TRANSIENT,
+     * 1=CACHE). Round 13 introduced dynamic routing: clean-rect
+     * snapshots prefer TRANSIENT (right semantic) but spill to
+     * CACHE when TRANSIENT can't fit. memFree must use the same
+     * region the alloc came from. */
+    uint8 pixelsRegion;
 };
 
 static struct TGrCleanRect gGrCleanRects[GR_MAX_CLEAN_RECTS];
@@ -3471,9 +3553,15 @@ static void grResetCleanBgRects(int releasePixels)
     int i;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (releasePixels && gGrCleanRects[i].pixels) {
-            free(gGrCleanRects[i].pixels);
+            /* Use the recorded region; dynamic routing in
+             * grSaveCleanBgTiles may have placed pixels in
+             * EITHER TRANSIENT or CACHE. */
+            MemRegion freeRegion = gGrCleanRects[i].pixelsRegion
+                ? MEM_REGION_CACHE : MEM_REGION_TRANSIENT;
+            memFree(freeRegion, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
+            gGrCleanRects[i].pixelsRegion = 0;
         }
         gGrCleanRects[i].x = 0;
         gGrCleanRects[i].y = 0;
@@ -3502,40 +3590,17 @@ void grSetCleanBgBlackMode(int enabled)
 
 void grPreallocCleanBgRects(const uint32 *capBytes, int n)
 {
-    int i;
-    if (capBytes == NULL || n <= 0)
-        return;
-    if (n > GR_MAX_CLEAN_RECTS)
-        n = GR_MAX_CLEAN_RECTS;
-
-    for (i = 0; i < n; i++) {
-        uint32 want = capBytes[i];
-        if (want == 0) continue;
-        /* Skip if already at-or-above the requested capacity. Idempotent
-         * — safe to call multiple times during boot. */
-        if (gGrCleanRects[i].capacityBytes >= want)
-            continue;
-        if (gGrCleanRects[i].pixels != NULL) {
-            free(gGrCleanRects[i].pixels);
-            gGrCleanRects[i].pixels = NULL;
-            gGrCleanRects[i].capacityBytes = 0;
-        }
-        gGrCleanRects[i].pixels = (uint16 *)malloc((size_t)want);
-        if (gGrCleanRects[i].pixels == NULL) {
-            /* Pre-alloc failure at boot is itself a fatal-class problem,
-             * but ps1Bsod isn't safe to call before graphicsInit completes
-             * the GPU bring-up. The caller (boot path) checks heap state
-             * after this returns and decides how to surface failure. */
-            extern int printf(const char *, ...);
-            printf("JCRECT prealloc[%d] failed (need %lu bytes)\n",
-                   i, (unsigned long)want);
-            continue;
-        }
-        gGrCleanRects[i].capacityBytes = want;
-        /* Leave x/y/width/height = 0 and gGrCleanRectCount = 0 — the
-         * buffer is dormant until the first per-scene grSaveCleanBgRects
-         * activates it. */
-    }
+    /* Pre-allocation is unnecessary under the new memory-region allocator.
+     * Clean-rect snapshots now live in TRANSIENT, which is wiped between
+     * scenes — every grSaveCleanBgRects call allocates fresh from a
+     * deterministic region. There's no fragmentation to pre-empt and no
+     * benefit to reserving capacity in advance.
+     *
+     * Kept as a public symbol so existing boot code that calls this
+     * compiles. The boot caller could be deleted in Phase 2 of the
+     * mem-region rollout. */
+    (void)capBytes;
+    (void)n;
 }
 
 int grCleanBgRectsCount(void)
@@ -3613,22 +3678,76 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     /* Atomic allocation phase: all requested rect buffers must exist before
      * any rect becomes active. Otherwise a partial clean-restore set can both
      * leak and leave stale pixels from a prior foreground frame. */
+    /* Compute required bytes for every rect first, then allocate in
+     * size-DESCENDING order. Round 15 fix: smaller rects allocated
+     * first can fragment TRANSIENT such that a later large rect
+     * doesn't fit, even though TRANSIENT had enough space at start.
+     * Visitor5 specifically: 97 KB rect last in iteration order would
+     * fail when 60 KB was left after smaller rects took TRANSIENT
+     * first. Sorting biggest-first gives the large rect first crack
+     * at the contiguous TRANSIENT space.
+     *
+     * Selection sort by index — n ≤ 8 so O(n²) is fine. */
+    int sortedIdx[GR_MAX_CLEAN_RECTS];
     for (i = 0; i < n; i++) {
         requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
         if (requiredBytes[i] == 0)
             goto fail;
-        if (gGrCleanRects[i].capacityBytes < requiredBytes[i]) {
-            if (gGrCleanRects[i].pixels != NULL) {
-                free(gGrCleanRects[i].pixels);
-                gGrCleanRects[i].pixels = NULL;
-                gGrCleanRects[i].capacityBytes = 0;
-            }
-            gGrCleanRects[i].pixels = (uint16 *)malloc(requiredBytes[i]);
-            if (gGrCleanRects[i].pixels == NULL)
-                goto fail;
-            gGrCleanRects[i].capacityBytes = requiredBytes[i];
-            allocatedThisCall[i] = 1;
+        sortedIdx[i] = i;
+    }
+    /* Sort indices by requiredBytes descending. */
+    for (int a = 0; a < n - 1; a++) {
+        int maxJ = a;
+        for (int b = a + 1; b < n; b++) {
+            if (requiredBytes[sortedIdx[b]] > requiredBytes[sortedIdx[maxJ]])
+                maxJ = b;
         }
+        if (maxJ != a) {
+            int tmp = sortedIdx[a];
+            sortedIdx[a] = sortedIdx[maxJ];
+            sortedIdx[maxJ] = tmp;
+        }
+    }
+    /* Allocate in size-descending order. The rect at original index
+     * `idx` is still stored at gGrCleanRects[idx]. */
+    for (int s = 0; s < n; s++) {
+        int idx = sortedIdx[s];
+        /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
+         * 6 atomic slots; see comment block above the for loop).
+         * Dynamic routing (Round 14): prefer TRANSIENT for correct
+         * wholesale-wipe semantics; spill to CACHE when TRANSIENT
+         * lacks contiguous space. Each rect records which region
+         * its pixels came from so the matching memFree is used
+         * (memFree's range-check would otherwise mismatch and
+         * double-free via the TransientLibcEntry list). */
+        const size_t transRemaining = MEM_TRANSIENT_BUDGET -
+            memRegionUsed((unsigned int)MEM_REGION_TRANSIENT);
+        /* Round 33-soak update: drop the TRANSIENT_RESERVE that
+         * previously forced clean-rects into CACHE when TRANSIENT
+         * was within 16 KB of full. CACHE is NOT wiped per-scene,
+         * so spilling a 70–100 KB clean-rect into it across many
+         * scene transitions accumulates fragmentation that
+         * eventually breaks a later CACHE alloc (R33 soak BSOD at
+         * 226s on stand6 with CACHE peak 568 KB and 113 KB free
+         * but fragmented below the 71 KB request). The "other
+         * TRANSIENT allocs" (sound events, setup segment) that
+         * the reserve was protecting have their own libc-fallback
+         * via TransientLibcEntry — they don't lose correctness
+         * if TRANSIENT fills, just transparently spill to libc and
+         * still get per-scene-wiped at memSceneReset. */
+        MemRegion target;
+        if (requiredBytes[idx] <= transRemaining) {
+            target = MEM_REGION_TRANSIENT;
+        } else {
+            target = MEM_REGION_CACHE;
+        }
+        gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
+                                                     requiredBytes[idx],
+                                                     "grCleanRectPixels");
+        gGrCleanRects[idx].pixelsRegion =
+            (target == MEM_REGION_CACHE) ? 1u : 0u;
+        gGrCleanRects[idx].capacityBytes = requiredBytes[idx];
+        allocatedThisCall[idx] = 1;
     }
 
     for (i = 0; i < n; i++) {
@@ -3649,9 +3768,13 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
 fail:
     for (i = 0; i < n; i++) {
         if (allocatedThisCall[i] && gGrCleanRects[i].pixels != NULL) {
-            free(gGrCleanRects[i].pixels);
+            /* Use the recorded region (dynamic routing). */
+            MemRegion freeRegion = gGrCleanRects[i].pixelsRegion
+                ? MEM_REGION_CACHE : MEM_REGION_TRANSIENT;
+            memFree(freeRegion, gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
+            gGrCleanRects[i].pixelsRegion = 0;
         }
     }
     grDeactivateCleanBgRects();
@@ -4413,12 +4536,30 @@ void grFadeOut()
     }
 }
 
-/* Helper to free a tile */
+/* Helper to free a tile.
+ *
+ * Round 33: pixels + struct live in MEM_REGION_TRANSIENT post-Round-33.
+ * memFree(TRANSIENT, ptr) only decrements the scene-alloc balance — the
+ * underlying bytes survive until the next memSceneReset wipes the whole
+ * region wholesale. That's intentional: between explicit freeBgTile calls
+ * and the next scene boundary, freed tiles' bytes are dead but the
+ * TRANSIENT bump pointer doesn't reclaim them (this is normal TRANSIENT
+ * semantics). The bump pointer rewinds on memSceneReset.
+ *
+ * Pre-memInit allocations (the libc-fallback safe_malloc branch in
+ * createEmptyBgTileRAM) are never actually hit in practice — bg-tiles
+ * are first allocated by graphicsInit(), which runs after memInit().
+ * The `else free()` path remains as defensive code for any future
+ * pre-memInit caller. */
 static void freeBgTile(PS1Surface **tile)
 {
     if (*tile != NULL) {
-        if ((*tile)->pixels) free((*tile)->pixels);
-        free(*tile);
+        if ((*tile)->pixels) {
+            if (memIsReady()) memFree(MEM_REGION_TRANSIENT, (*tile)->pixels);
+            else free((*tile)->pixels);
+        }
+        if (memIsReady()) memFree(MEM_REGION_TRANSIENT, *tile);
+        else free(*tile);
         *tile = NULL;
     }
 }
@@ -4444,6 +4585,39 @@ void grReleaseBackgroundTiles(void)
         grSavedZonesLayer = NULL;
     }
 
+    grForceFullRedrawNextFrame();
+}
+
+/* Round 33: per-scene TRANSIENT wipe hook.
+ *
+ * The bg-tile struct AND pixel buffer both live in MEM_REGION_TRANSIENT
+ * (post-Round-33 migration), so memSceneReset has already reclaimed
+ * every byte. The static slot pointers still hold the dangling
+ * addresses; we NULL them so the next grLoadScreen / grInitEmptyBackground
+ * sees them as "uninitialised" and re-allocates fresh in the new
+ * TRANSIENT bump frame.
+ *
+ * Do NOT call freeBgTile here — that would dereference the dangling
+ * struct (to read its pixels pointer) and call memFree(TRANSIENT, ...)
+ * which would decrement the scene-alloc balance that memSceneReset
+ * already zeroed. */
+void grBackgroundTilesAssumeWiped(void)
+{
+    bgTile0 = NULL;
+    bgTile1 = NULL;
+    bgTile2a = NULL;
+    bgTile2b = NULL;
+    bgTile3 = NULL;
+    bgTile4 = NULL;
+    bgTile5a = NULL;
+    bgTile5b = NULL;
+    /* grBackgroundSfc points at one of the bgTile slots when a scene
+     * is active. After the wipe the bytes behind it are gone — NULL it
+     * so callers see "no background yet" and grLoadScreen / friends
+     * repopulate it. */
+    grBackgroundSfc = NULL;
+    /* Force a full first-frame upload after the new scene's tiles
+     * are populated; we know every pixel just got wiped. */
     grForceFullRedrawNextFrame();
 }
 
@@ -4928,9 +5102,15 @@ void grLoadScreen(char *strArg)
     /* Set grBackgroundSfc to first tile for compatibility with existing code */
     grBackgroundSfc = bgTile0;
 
-    /* Free SCR data after converting - saves memory */
+    /* Free SCR data after converting - saves memory. The buffer comes
+     * from ps1_streamReadCache → ps1_streamReadFromCdFile → memAlloc(CACHE)
+     * post-memInit, so libc free() is a silent no-op for that range —
+     * route through memFree(CACHE), which range-checks and dispatches
+     * to free() for pre-memInit libc fallback pointers. Plugging this
+     * leak is the difference between a soak that hits CACHE-exhaustion
+     * after ~5 scene transitions and one that stays bounded. */
     if (scrResource->uncompressedData) {
-        free(scrResource->uncompressedData);
+        memFree(MEM_REGION_CACHE, scrResource->uncompressedData);
         scrResource->uncompressedData = NULL;
     }
 

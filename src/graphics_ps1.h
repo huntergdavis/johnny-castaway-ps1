@@ -155,6 +155,18 @@ extern int grGpuAlreadyInitialized;
 
 void graphicsInit();
 void graphicsEnd();
+
+/* Returns 1 once graphicsInit() has completed, 0 otherwise. The
+ * memory-region allocator's memHalt primitive uses this to decide
+ * between the full JC_BSOD UI (ps1Bsod, requires graphics) and the
+ * minimal pre-graphics text panel (ps1DebugError). See plan v9
+ * "Failure UX". */
+int graphicsIsInitialized(void);
+
+/* Sets the gGraphicsReady flag. graphicsInit() calls this with 1 at
+ * its tail; tests or shutdown paths may call with 0. */
+void memSetGraphicsReady(int ready);
+
 void grRefreshDisplay();
 void grToggleFullScreen();
 /* Force every bgTile row to be re-uploaded on the next grDrawBackground.
@@ -224,6 +236,14 @@ void grSaveCleanBgTiles(void);
 void grSetSaveCleanOnScreenLoad(int enabled);
 void grFreeCleanBgTiles(void);
 void grReleaseBackgroundTiles(void);
+/* Round 33: called from fgRuntimeReset immediately after memSceneReset.
+ * memSceneReset has already reclaimed every TRANSIENT byte — including
+ * the bg-tile struct AND pixel buffers (Round 33 migration). The static
+ * slot pointers (bgTile0/1/3/4 etc.) and grBackgroundSfc still hold the
+ * post-wipe dangling addresses, so this helper NULLs them without
+ * calling memFree (the bytes are gone; calling memFree would decrement
+ * the TRANSIENT pin counter that memSceneReset already zeroed). */
+void grBackgroundTilesAssumeWiped(void);
 void grEnsureCleanBgTiles(void);
 /* Rect-based clean backup (option B): scenes declare small dynamic regions. */
 int  grSaveCleanBgRects(const sint16 *x, const sint16 *y,

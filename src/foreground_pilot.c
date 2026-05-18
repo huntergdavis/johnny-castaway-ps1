@@ -12,6 +12,8 @@
 #include "graphics_ps1.h"
 #include "cdrom_ps1.h"
 #include "island.h"
+#include "mem_region.h"
+#include "resource.h"
 #include "holidays.h"
 #include "pause_menu.h"
 #include "ps1_captions.h"
@@ -231,6 +233,13 @@ enum {
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 #define FG_LARGE_CLEAN_SNAPSHOT_BYTES (384UL * 1024UL)
+/* Round 17: restored to 256 KB after Round 16 (CACHE 1024 KB)
+ * gave visitor3 enough headroom via force-relief override
+ * (fgSceneForcesCleanMemoryRelief). The 192 KB lowering from
+ * Round 15 was over-tight — it caused fishing1-3, johnny4-5,
+ * and mary4-5 to skip prefetch (hits=0 due_misses=N) without
+ * actually being needed for visitor3 (which uses the
+ * scene-specific force-relief path, not the threshold). */
 #define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (256UL * 1024UL)
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
@@ -950,9 +959,15 @@ static int fgParseEntryTable(const uint8 *data, const struct TFgPilotHeader *hea
         return 0;
 
     memset(out, 0, sizeof(*out));
-    out->entries = (struct TFgPilotEntry *)malloc((size_t)header->frameCount * sizeof(struct TFgPilotEntry));
-    if (out->entries == NULL)
-        return 0;
+    /* MEM_REGION_RATIONALE: per-scene frame metadata table. Allocated
+     * once per scene at pack-start, freed wholesale by memSceneReset
+     * at the next fgRuntimeReset. INIT_FULL_WRITE — every entry is
+     * populated by the loop below. */
+    out->entries = (struct TFgPilotEntry *)memAlloc(
+        MEM_REGION_TRANSIENT,
+        (size_t)header->frameCount * sizeof(struct TFgPilotEntry),
+        "fgPilotEntryTable");
+    /* memAlloc never returns NULL (halts on exhaustion). */
 
     out->count = header->frameCount;
     for (uint16 i = 0; i < header->frameCount; i++) {
@@ -976,7 +991,10 @@ static void fgFreeEntryTable(struct TFgPilotEntryTable *table)
     if (table == NULL)
         return;
     if (table->entries != NULL) {
-        free(table->entries);
+        /* TRANSIENT region — bytes are reclaimed by memSceneReset at
+         * the top of fgRuntimeReset; this just decrements the balance
+         * counter and clears the dangling pointer. */
+        memFree(MEM_REGION_TRANSIENT, table->entries);
         table->entries = NULL;
     }
     table->count = 0;
@@ -1010,7 +1028,7 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
          !fgHeaderIsPal4TemporalResidual(outHeader) &&
          !fgHeaderIsIndexed8TemporalResidual(outHeader)) ||
         outHeader->frameCount == 0) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -1019,7 +1037,7 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
     metadataBytes = outHeader->tableOffset + tableSize;
     if (metadataBytes < FG_PACK_HEADER_SIZE + paletteBytes ||
         metadataBytes > outHeader->dataOffset) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -1028,21 +1046,26 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         uint8 *tail;
         uint32 tailBytes = metadataBytes - prefixBytes;
 
-        expanded = (uint8 *)malloc(metadataBytes);
+        /* Both alloc and free route through CACHE. ps1_streamRead returns
+         * CACHE-region memory post-memInit, so libc free() on metadata/tail
+         * silently leaked. Allocating `expanded` through CACHE too keeps
+         * the libc heap (only ~77 KB free) out of the metadata path. */
+        expanded = (uint8 *)memAlloc(MEM_REGION_CACHE, metadataBytes,
+                                     "fg-metadata-expanded");
         if (!expanded) {
-            free(metadata);
+            memFree(MEM_REGION_CACHE, metadata);
             return 0;
         }
         memcpy(expanded, metadata, prefixBytes);
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
 
         tail = ps1_streamRead(path, prefixBytes, tailBytes);
         if (!tail) {
-            free(expanded);
+            memFree(MEM_REGION_CACHE, expanded);
             return 0;
         }
         memcpy(expanded + prefixBytes, tail, tailBytes);
-        free(tail);
+        memFree(MEM_REGION_CACHE, tail);
         metadata = expanded;
     }
 
@@ -1051,11 +1074,11 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         outPalette[i] = fgReadU16(metadata + FG_PACK_HEADER_SIZE + ((uint32)i * 2u));
 
     if (!fgParseEntryTable(metadata + outHeader->tableOffset, outHeader, outTable)) {
-        free(metadata);
+        memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
-    free(metadata);
+    memFree(MEM_REGION_CACHE, metadata);
     return 1;
 }
 
@@ -1167,6 +1190,21 @@ fgScenePreservesPrefetchUnderCleanPressure(const char *sceneName)
            fgSceneEquals(sceneName, "fishing4");
 }
 
+/* Round 16: scene-specific override that forces cleanMemoryRelief=1
+ * regardless of the union-based threshold check in
+ * fgSceneNeedsCleanMemoryRelief. visitor3 has a 2x 97 KB clean-rect
+ * snapshot that overflows CACHE when the preserved prefetch buffer
+ * (112 KB) + setup-prime window (208-320 KB) + LRU residency are
+ * also live. The threshold check uses unionWidth*unionHeight from
+ * the pack header, which under-counts when rects don't span the
+ * full union. Forcing relief skips up to 540 KB of CACHE
+ * allocations (prefetch + stream window + scratch) — only this
+ * one scene needs it. */
+static int fgSceneForcesCleanMemoryRelief(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "visitor3");
+}
+
 static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
                                          uint32 cleanBytes,
                                          uint32 maxFrameBytes)
@@ -1187,14 +1225,14 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
 static void fgDropPressureCachesForCleanSnapshot(const char *sceneName,
                                                  uint32 cleanBytes)
 {
-    fgDropOptionalPrefetchBuffersForCleanSnapshot();
-    if (walkPilotCleanBufferAllocated()) {
-        printf("JCMEM walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
-               sceneName != NULL ? sceneName : "?",
-               (unsigned long)cleanBytes,
-               walkPilotCleanBufferBytes() / 1024UL);
-        walkPilotReleaseCleanWalkArea();
-    }
+    /* Plan v9 Phase 2 manifest item #6 — pressure-drop is no longer
+     * needed. Clean-rect snapshots allocate from MEM_REGION_TRANSIENT,
+     * which has its own dedicated 250 KB; there's no libc-heap
+     * pressure to drop to make room. Body neutered to a no-op so
+     * existing callers still compile; they can be deleted in a
+     * follow-up Phase 2 commit. */
+    (void)sceneName;
+    (void)cleanBytes;
 }
 
 static void fgTelemetryUpdate(void)
@@ -1356,7 +1394,10 @@ static void fgReleaseStreamBuffers(void)
      * still cycle it because it's low-cost and makes the failure path
      * easier to read. */
     if (gFgSetupSegmentBuffer != NULL) {
-        free(gFgSetupSegmentBuffer);
+        /* TRANSIENT region — memFree just decrements the balance counter;
+         * the actual bytes were reclaimed by memSceneReset at the top of
+         * fgRuntimeReset. Clear the pointer to avoid dangling. */
+        memFree(MEM_REGION_TRANSIENT, gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
         gFgSetupSegmentBufferSize = 0;
     }
@@ -1365,22 +1406,22 @@ static void fgReleaseStreamBuffers(void)
 static void fgReleaseStreamBuffersHard(void)
 {
     if (gFgFrameBuffer != NULL) {
-        free(gFgFrameBuffer);
+        memFree(MEM_REGION_CACHE, gFgFrameBuffer);
         gFgFrameBuffer = NULL;
         gFgFrameBufferSize = 0;
     }
     if (gFgPrefetchFrameBuffer != NULL) {
-        free(gFgPrefetchFrameBuffer);
+        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
     }
     if (gFgStreamWindowBuffer != NULL) {
-        free(gFgStreamWindowBuffer);
+        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;
     }
     if (gFgStreamScratch != NULL) {
-        free(gFgStreamScratch);
+        memFree(MEM_REGION_CACHE, gFgStreamScratch);
         gFgStreamScratch = NULL;
         gFgStreamScratchSize = 0;
     }
@@ -1389,43 +1430,23 @@ static void fgReleaseStreamBuffersHard(void)
 
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
 {
-    uint8 *keepFrameBuffer = gFgRuntime.frameBuffer;
-    uint32 keepFrameBufferSize = gFgRuntime.frameBufferSize;
+    /* Plan v9 Phase 2 manifest item #5 — pressure-drop body neutered.
+     * Originally freed gFgFrameBuffer/gFgPrefetchFrameBuffer/
+     * gFgStreamWindowBuffer to make libc-heap room for clean-rect
+     * allocation. With clean-rect now in MEM_REGION_TRANSIENT (its
+     * own 250 KB), this dropping is unnecessary and counterproductive
+     * (frees grow-only buffers that scene N+1 would have to re-allocate).
+     *
+     * The gFgRuntime field reset below was the function's secondary
+     * responsibility; left in place because that part is unrelated to
+     * memory pressure and harmless when called. The buffer-freeing
+     * machinery above is gone. */
 
-    if (keepFrameBuffer == NULL) {
-        keepFrameBuffer = gFgFrameBuffer;
-        keepFrameBufferSize = gFgFrameBufferSize;
-    }
-
-    if (gFgFrameBuffer != NULL && gFgFrameBuffer != keepFrameBuffer) {
-        free(gFgFrameBuffer);
-        gFgFrameBuffer = NULL;
-        gFgFrameBufferSize = 0;
-    }
-    if (gFgPrefetchFrameBuffer != NULL &&
-        gFgPrefetchFrameBuffer != keepFrameBuffer) {
-        free(gFgPrefetchFrameBuffer);
-        gFgPrefetchFrameBuffer = NULL;
-        gFgPrefetchFrameBufferSize = 0;
-    }
-    gFgFrameBuffer = keepFrameBuffer;
-    gFgFrameBufferSize = keepFrameBufferSize;
-    gFgPrefetchFrameBuffer = NULL;
-    gFgPrefetchFrameBufferSize = 0;
-
-    if (gFgStreamWindowBuffer != NULL) {
-        free(gFgStreamWindowBuffer);
-        gFgStreamWindowBuffer = NULL;
-        gFgStreamWindowBufferSize = 0;
-    }
-    if (gFgSetupSegmentBuffer != NULL) {
-        free(gFgSetupSegmentBuffer);
-        gFgSetupSegmentBuffer = NULL;
-        gFgSetupSegmentBufferSize = 0;
-    }
-
-    gFgRuntime.frameBuffer = keepFrameBuffer;
-    gFgRuntime.frameBufferSize = keepFrameBufferSize;
+    /* Preserve current frame buffer pointer/size — was previously
+     * computed in a "keep" variable; with the drop logic gone the
+     * grow-only buffer is still in gFgFrameBuffer and untouched. */
+    gFgRuntime.frameBuffer = gFgFrameBuffer;
+    gFgRuntime.frameBufferSize = gFgFrameBufferSize;
     gFgRuntime.prefetchFrameBuffer = NULL;
     gFgRuntime.prefetchFrameBufferSize = 0;
     gFgRuntime.streamWindowBuffer = NULL;
@@ -1466,36 +1487,17 @@ unsigned long fgGetPrefetchFrameBufferBytes(void)
     return (unsigned long)gFgPrefetchFrameBufferSize;
 }
 
-int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
-                            unsigned long scratchMaxBytes)
-{
-    extern int printf(const char *, ...);
-    int ok = 1;
-
-    if (frameMaxBytes > 0 && gFgFrameBuffer == NULL) {
-        gFgFrameBuffer = (uint8 *)malloc((size_t)frameMaxBytes);
-        if (gFgFrameBuffer == NULL) {
-            printf("JCSTREAM frameBuffer prealloc failed (need %lu)\n",
-                   frameMaxBytes);
-            ok = 0;
-        } else {
-            gFgFrameBufferSize = (uint32)frameMaxBytes;
-        }
-    }
-
-    if (scratchMaxBytes > 0 && gFgStreamScratch == NULL) {
-        gFgStreamScratch = (uint8 *)malloc((size_t)scratchMaxBytes);
-        if (gFgStreamScratch == NULL) {
-            printf("JCSTREAM streamScratch prealloc failed (need %lu)\n",
-                   scratchMaxBytes);
-            ok = 0;
-        } else {
-            gFgStreamScratchSize = (uint32)scratchMaxBytes;
-        }
-    }
-
-    return ok;
-}
+/* fgPrePrimeStreamBuffers was a v0.8.10-era pre-allocation helper
+ * that the v0.8.11 rollback orphaned (no remaining callers).
+ * Plan v9 Phase 2 manifest item #9: delete entirely. The new
+ * memory-region allocator makes boot-time pre-priming the
+ * stream-buffer maxes redundant (the worst-case grow pattern is
+ * captured by the pack-header scan once frame-buffer maxes are
+ * added to pack_header_metrics).
+ *
+ * Declaration in foreground_pilot.h is kept for API stability
+ * until a downstream cleanup commit can remove it; the body here
+ * is gone. */
 
 unsigned long fgProbeLargestAlloc(void)
 {
@@ -1545,6 +1547,42 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
 
 static void fgRuntimeReset(void)
 {
+    /* Wipe the TRANSIENT region — all per-scene allocations made via
+     * memAlloc(MEM_REGION_TRANSIENT, ...) become unreachable. The bump
+     * pointer rewinds in one word write. Cheap in release; ~15 ms in
+     * MEM_POISON_TRANSIENT debug builds (250 KB 0xCD fill).
+     * See docs/ps1/memory-region-allocator-plan.md "Boot lifecycle". */
+    extern const char *fgLoopGetLastScene(void);
+    memSceneReset(fgLoopGetLastScene());
+
+    /* Round 33: bg-tile pixels + struct live in TRANSIENT (graphics_ps1.c
+     * createEmptyBgTileRAM / ensureBgTileRAM). memSceneReset just
+     * reclaimed those bytes, so the static bgTile0/1/3/4 slots (and
+     * grBackgroundSfc) now point at dangling addresses. NULL them
+     * before any subsequent code can dereference them. The next
+     * grLoadScreen / grInitEmptyBackground call sees the cleared
+     * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
+    grBackgroundTilesAssumeWiped();
+
+    /* Note: the previous attempt to call fgReleaseStreamBuffersHard +
+     * lruEvictAllUnpinned + memCacheRewindIfEmpty here fired on every
+     * fgRuntimeReset invocation — including the many error-recovery
+     * call sites inside foregroundPilotRuntimeStart. Those calls run
+     * mid-scene-setup with resources actively loading; premature
+     * release+evict freed buffers the in-progress setup was about
+     * to use. Moved to fgPlayOceanRuntimeScene::sceneStartCacheReset
+     * which fires exactly once per scene boundary. */
+    fgReleaseStreamBuffersHard();
+
+    /* Clear file-static TRANSIENT pointers so the next scene sees a
+     * clean slate. memSceneReset reclaimed the underlying bytes, but
+     * these globals still hold the (now-dangling) pointers from the
+     * previous scene's allocation. Setting them to NULL ensures the
+     * "is this allocated yet?" checks in setup paths take the alloc
+     * branch on the new scene. */
+    gFgSetupSegmentBuffer     = NULL;
+    gFgSetupSegmentBufferSize = 0;
+
     /* currentFrameData now points inside gFgFrameBuffer — don't free it
      * separately. The persistent buffers (gFgFrameBuffer / gFgStreamScratch)
      * survive the reset on purpose; only per-scene state is cleared. */
@@ -1574,7 +1612,11 @@ static void fgRuntimeReset(void)
     gFgRuntime.packCdFileValid = 0;
     fgFreeEntryTable(&gFgRuntime.entryTable);
     if (gFgRuntime.soundEvents != NULL) {
-        free(gFgRuntime.soundEvents);
+        /* TRANSIENT region — memFree decrements the balance counter; the
+         * actual bytes get reclaimed by the memSceneReset call above. The
+         * dangling pointer in gFgRuntime.soundEvents is cleared just below
+         * by the memset(0). */
+        memFree(MEM_REGION_TRANSIENT, gFgRuntime.soundEvents);
         gFgRuntime.soundEvents = NULL;
     }
     memset(&gFgRuntime, 0, sizeof(gFgRuntime));
@@ -1604,19 +1646,21 @@ static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *head
     if (!data)
         return 0;
 
-    *outEvents = (struct TFgPilotSoundEvent *)malloc(
-        (size_t)header->soundEventCount * sizeof(struct TFgPilotSoundEvent));
-    if (*outEvents == NULL) {
-        free(data);
-        return 0;
-    }
+    /* MEM_REGION_RATIONALE: per-scene sound-event table. Freed wholesale
+     * by memSceneReset at the next fgRuntimeReset. INIT_FULL_WRITE — the
+     * loop below populates every entry. */
+    *outEvents = (struct TFgPilotSoundEvent *)memAlloc(
+        MEM_REGION_TRANSIENT,
+        (size_t)header->soundEventCount * sizeof(struct TFgPilotSoundEvent),
+        "fgPilotSoundEvents");
+    /* memAlloc never returns NULL — halts on exhaustion. No NULL check needed. */
 
     for (i = 0; i < header->soundEventCount; i++) {
         (*outEvents)[i].sourceFrame = fgReadU16(data + ((uint32)i * 4u));
         (*outEvents)[i].sampleId    = fgReadU16(data + ((uint32)i * 4u) + 2u);
     }
     *outCount = header->soundEventCount;
-    free(data);
+    memFree(MEM_REGION_CACHE, data);  /* `data` is from ps1_streamRead — CACHE pointer; libc free() was a silent no-op + leak. */
     return 1;
 }
 
@@ -1894,25 +1938,20 @@ static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
                                                           uint32 cleanBytes,
                                                           int *deferWalkCleanRecapture)
 {
-    if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
-        return 1;
-
-    if (walkPilotCleanBufferAllocated()) {
-        printf("JCMEM clean-retry walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
-               sceneName != NULL ? sceneName : "?",
-               (unsigned long)cleanBytes,
-               walkPilotCleanBufferBytes() / 1024UL);
-        walkPilotReleaseCleanWalkArea();
-        if (deferWalkCleanRecapture != NULL)
-            *deferWalkCleanRecapture = 1;
-        if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
-            return 1;
-    }
-
-    printf("JCMEM clean-retry drop-prefetch scene=%s clean=%lu\n",
-           sceneName != NULL ? sceneName : "?",
-           (unsigned long)cleanBytes);
-    fgDropOptionalPrefetchBuffersForCleanSnapshot();
+    /* Plan v9 Phase 2 manifest item #7: pressure-fallback chain is
+     * no longer needed. Clean-rect snapshots now allocate from
+     * MEM_REGION_TRANSIENT, which has its own 250 KB dedicated to
+     * per-scene scratch and cannot fragment. memAlloc(TRANSIENT) halts
+     * loudly on exhaustion; there is no "fall back and retry" semantic
+     * to recover with.
+     *
+     * Kept as a thin pass-through so existing callers don't need
+     * touching — they still call the same wrapper name; the wrapper
+     * just delegates directly to the underlying save function and
+     * returns its result. */
+    (void)sceneName;
+    (void)cleanBytes;
+    (void)deferWalkCleanRecapture;
     return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
 }
 
@@ -2497,19 +2536,14 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment2Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES;
         }
         allocationBytes = segmentBytes + segment2Bytes;
-        if (gFgSetupSegmentBuffer == NULL ||
-            gFgSetupSegmentBufferSize < allocationBytes) {
-            if (gFgSetupSegmentBuffer != NULL)
-                free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(allocationBytes);
-            if (gFgSetupSegmentBuffer == NULL) {
-                gFgSetupSegmentBufferSize = 0;
-                if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(allocationBytes);
-                return 0;
-            }
-            gFgSetupSegmentBufferSize = allocationBytes;
-        }
+        /* MEM_REGION_RATIONALE: per-scene segment-decode scratch.
+         * Reclaimed wholesale by memSceneReset. The old "if big
+         * enough, reuse" logic is unnecessary under TRANSIENT
+         * semantics — every scene gets a fresh buffer. */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                  allocationBytes,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = allocationBytes;
         segmentBuffer = gFgSetupSegmentBuffer;
         if (segment2Bytes > 0)
             segment2Buffer = gFgSetupSegmentBuffer + segmentBytes;
@@ -2561,19 +2595,11 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     } else if (islandState.lowTide) {
         segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
         segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
-        if (gFgSetupSegmentBuffer == NULL ||
-            gFgSetupSegmentBufferSize < segmentBytes) {
-            if (gFgSetupSegmentBuffer != NULL)
-                free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
-            if (gFgSetupSegmentBuffer == NULL) {
-                gFgSetupSegmentBufferSize = 0;
-                if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
-                return 0;
-            }
-            gFgSetupSegmentBufferSize = segmentBytes;
-        }
+        /* MEM_REGION_RATIONALE: per-scene segment-decode scratch (fishing3 low). */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                  FG_FISHING3_LOW_SETUP_SEGMENT_BYTES,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = segmentBytes;
         segmentBuffer = gFgSetupSegmentBuffer;
     } else {
         segmentStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
@@ -3193,8 +3219,17 @@ static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
 
 static int foregroundPilotRuntimeStart(const char *sceneName)
 {
-    fgRuntimeReset();
-
+    /* Round 33: fgRuntimeReset() previously ran here, BUT that put it
+     * AFTER fgPlayOceanRuntimeScene's grLoadScreen call. With bg-tile
+     * pixels now living in TRANSIENT (Round 33 migration), memSceneReset
+     * would have wiped the just-loaded backdrop bytes. The reset is now
+     * hoisted to the very top of fgPlayOceanRuntimeScene, so by the time
+     * we get here gFgRuntime is already zeroed and TRANSIENT is fresh.
+     *
+     * Error-recovery paths below still call fgRuntimeReset() on return-0
+     * — that's safe because the caller treats return 0 as a JC_BSOD
+     * (fatal halt); the JC_BSOD renderer NULL-checks the bg-tile slots
+     * before drawing the panic screen and re-allocates fresh tiles. */
     if (sceneName == NULL)
         return 0;
 
@@ -3268,12 +3303,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 maxDataSize = FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES;
             }
             cleanSnapshotEstimate = fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
-            cleanMemoryRelief = (uint8)fgSceneNeedsCleanMemoryRelief(
-                sceneName, cleanSnapshotEstimate, maxDataSize);
+            cleanMemoryRelief = (uint8)(
+                fgSceneNeedsCleanMemoryRelief(sceneName, cleanSnapshotEstimate, maxDataSize)
+                || fgSceneForcesCleanMemoryRelief(sceneName));
             if (maxDataSize > gFgFrameBufferSize) {
                 if (gFgFrameBuffer != NULL)
-                    free(gFgFrameBuffer);
-                gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
+                    memFree(MEM_REGION_CACHE, gFgFrameBuffer);
+                /* MEM_REGION_RATIONALE: grow-only frame buffer, persistent
+                 * across scenes; not LRU-tracked. CACHE region. */
+                gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                   maxDataSize,
+                                                   "fg-frame");
                 if (gFgFrameBuffer == NULL) {
                     if (ps1PerfEnabled)
                         ps1PerfMarkAllocFail(maxDataSize);
@@ -3289,12 +3329,49 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                        (unsigned long)cleanSnapshotEstimate,
                        (unsigned long)maxDataSize);
                 fgDropOptionalPrefetchBuffersForCleanSnapshot();
+                if (fgSceneForcesCleanMemoryRelief(sceneName)) {
+                    /* Round 16: explicit-free of grow-only persistent
+                     * buffers for force-relief scenes (visitor3 only).
+                     * fgDropOptionalPrefetchBuffersForCleanSnapshot
+                     * above only clears runtime mirror fields; the
+                     * global CACHE-resident pointers persist across
+                     * scene transitions per fgReleaseStreamBuffers'
+                     * grow-only design. For visitor3, those bytes
+                     * compete with the 2x 97 KB clean-rect snapshot
+                     * and trigger the BSOD. Free them explicitly.
+                     *
+                     * memFree(MEM_REGION_CACHE, ptr) range-checks
+                     * the pointer (mem_region.c:379-386), so it
+                     * routes correctly whether the buffer was
+                     * CACHE-allocated (prefetch, always) or
+                     * libc-allocated (window, primary path is
+                     * malloc with CACHE fallback at line 3328/3337).
+                     *
+                     * Cold-boot: both pointers are NULL, the if-NULL
+                     * guards skip the free; Part 1's allocation-skip
+                     * already prevents them from being allocated.
+                     * Mid-session: prior scenes grew the buffers,
+                     * this free reclaims them. */
+                    if (gFgPrefetchFrameBuffer != NULL) {
+                        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+                        gFgPrefetchFrameBuffer = NULL;
+                        gFgPrefetchFrameBufferSize = 0;
+                    }
+                    if (gFgStreamWindowBuffer != NULL) {
+                        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+                        gFgStreamWindowBuffer = NULL;
+                        gFgStreamWindowBufferSize = 0;
+                    }
+                }
             }
             if (gFgPrefetchStage1Enabled && !cleanMemoryRelief) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
                     if (gFgPrefetchFrameBuffer != NULL)
-                        free(gFgPrefetchFrameBuffer);
-                    gFgPrefetchFrameBuffer = (uint8 *)malloc(maxDataSize);
+                        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+                    /* MEM_REGION_RATIONALE: grow-only prefetch frame
+                     * buffer, peer of gFgFrameBuffer. CACHE region. */
+                    gFgPrefetchFrameBuffer = (uint8 *)memAlloc(
+                        MEM_REGION_CACHE, maxDataSize, "fg-prefetch-frame");
                     if (gFgPrefetchFrameBuffer == NULL) {
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(maxDataSize);
@@ -3378,19 +3455,43 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                     uint8 *newWindowBuffer;
 
-                    /* Setup-prime is a startup cache, not scene state.
-                     * If the larger cache allocation ever fails, keep the
-                     * scene deterministic by falling back to the normal
-                     * streaming window. The small window remains mandatory:
-                     * if that allocation fails, the scene really cannot run. */
-                    newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                    /* Round 33-soak: route stream window through CACHE.
+                     *
+                     * The original libc-primary path (malloc here, CACHE
+                     * fallback only on setup-prime size) was R8-era
+                     * intent to preserve CACHE space for LRU. With the
+                     * R33 budget retune (LRU 320 KB, CACHE 640 KB,
+                     * ~320 KB CACHE headroom after grow-only stream
+                     * buffers), CACHE has plenty of space — but libc
+                     * post-region-allocation has only ~70 KB headroom
+                     * total, so a 100–300 KB stream window malloc
+                     * silently returns NULL when libc is tight,
+                     * triggering the foregroundPilotRuntimeStart
+                     * return-0 → JC_BSOD "pack-start failed" at
+                     * visitor6 around 247s in random rotation.
+                     *
+                     * memAlloc(MEM_REGION_CACHE, ...) halts on
+                     * exhaustion (region + libc both) instead of
+                     * silently returning NULL — making this path
+                     * deterministic. Setup-prime fallback still tries
+                     * the smaller window size on alloc failure to
+                     * keep visitor3-class behavior. */
+                    /* MEM_REGION_RATIONALE: grow-only prefetch window.
+                     * CACHE region. */
+                    newWindowBuffer = (uint8 *)memAlloc(
+                        MEM_REGION_CACHE,
+                        windowCapacityBytes,
+                        "fg-stream-window");
                     if (newWindowBuffer == NULL &&
                         gFgRuntime.setupPrimeWindowBytes > 0 &&
                         windowCapacityBytes > windowBytes) {
                         gFgRuntime.setupPrimeWindowBytes = 0;
                         windowCapacityBytes = windowBytes;
                         if (windowCapacityBytes > gFgStreamWindowBufferSize)
-                            newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                            newWindowBuffer = (uint8 *)memAlloc(
+                                MEM_REGION_CACHE,
+                                windowCapacityBytes,
+                                "fg-stream-window");
                     }
                     if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                         if (newWindowBuffer == NULL) {
@@ -3401,11 +3502,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             return 0;
                         }
                         if (gFgStreamWindowBuffer != NULL)
-                            free(gFgStreamWindowBuffer);
+                            memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
                         gFgStreamWindowBuffer = newWindowBuffer;
                         gFgStreamWindowBufferSize = windowCapacityBytes;
                     } else if (newWindowBuffer != NULL) {
-                        free(newWindowBuffer);
+                        memFree(MEM_REGION_CACHE, newWindowBuffer);
                     }
                 }
                 gFgRuntime.streamWindowReadSize = windowBytes;
@@ -3418,14 +3519,18 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (cleanMemoryRelief &&
                     gFgStreamScratch != NULL &&
                     gFgStreamScratchSize > requiredScratch) {
-                    free(gFgStreamScratch);
+                    memFree(MEM_REGION_CACHE, gFgStreamScratch);
                     gFgStreamScratch = NULL;
                     gFgStreamScratchSize = 0;
                 }
                 if (requiredScratch > gFgStreamScratchSize) {
                     if (gFgStreamScratch != NULL)
-                        free(gFgStreamScratch);
-                    gFgStreamScratch = (uint8 *)malloc(requiredScratch);
+                        memFree(MEM_REGION_CACHE, gFgStreamScratch);
+                    /* MEM_REGION_RATIONALE: grow-only alignment scratch.
+                     * CACHE region. */
+                    gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                          requiredScratch,
+                                                          "fg-stream-scratch");
                     if (gFgStreamScratch == NULL) {
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(requiredScratch);
@@ -3756,6 +3861,125 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
+    /* Round 33: hoist fgRuntimeReset() to BEFORE grLoadScreen.
+     *
+     * Previously the per-scene reset lived inside foregroundPilotRuntimeStart
+     * (called below at line ~3833) — but that put the TRANSIENT wipe AFTER
+     * grLoadScreen had already populated the bg-tile pixel buffers. Under
+     * Round 33's bg-tile-pixels-in-TRANSIENT design, memSceneReset would
+     * have erased the just-loaded backdrop in place, producing a black or
+     * stale-bytes scene.
+     *
+     * Resetting here ensures:
+     *   1. The previous scene's TRANSIENT bytes (bg-tile pixels, sound
+     *      events, entry table, etc.) are reclaimed wholesale.
+     *   2. grBackgroundTilesAssumeWiped (inside fgRuntimeReset) NULLs the
+     *      static bg-tile slot pointers so the upcoming grLoadScreen
+     *      allocates fresh.
+     *   3. gFgRuntime is zeroed; foregroundPilotRuntimeStart can rely on
+     *      a clean slate without calling fgRuntimeReset itself. */
+    fgRuntimeReset();
+
+    /* Round 33-soak: full CACHE drain at scene boundary.
+     *
+     * Runs ONLY at fgPlayOceanRuntimeScene's top (true scene boundary),
+     * not from the generic fgRuntimeReset (which is also called from
+     * mid-setup error paths). Three-step drain:
+     *   1. lruEvictAllUnpinned — drop every unpinned ADS/TTM/BMP/SCR
+     *      resource (full panic-mode eviction across all 4 types).
+     *   2. memCacheRewindIfEmpty — if g_cacheUsed dropped to 0,
+     *      discard the (now-irrelevant) free-list and rewind
+     *      bump_top to base. O(1) defragmentation.
+     *
+     * If step 2 fails (live bytes remain after eviction), log it and
+     * continue — fragmentation will accumulate but the next scene's
+     * allocs may still succeed via the existing free-list path.
+     *
+     * Cost: LRU re-loads its resources from CD per-scene. Bounded by
+     * the scene's pack size. CACHE allocator returns to zero-fragmentation
+     * state, breaking the 226s soak ceiling. */
+    {
+        /* R33-soak: force-free clean-rect pixels. The historic design
+         * (grDeactivateCleanBgRects at scene start) kept the boot-
+         * prealloc'd clean-rect buffers in CACHE across scenes to
+         * avoid free+malloc fragmentation. With R33's CACHE-rewind-
+         * at-scene-boundary, that policy now BLOCKS the rewind:
+         * cleanRect pixels live in CACHE → cacheUsed != 0 → no
+         * rewind → fragmentation accumulates as before. Force-free
+         * here, then rely on the next scene's grSaveCleanBgRects to
+         * re-alloc from the (post-rewind) fresh CACHE bump tail. */
+        grFreeCleanBgRects();
+
+        /* R33r: also release JOHNWALK.PSB (~93 KB CACHE-resident,
+         * walk_pilot.c). walkPilotEnsureBmp reloads on demand. */
+        fgWalkRenderTeardown();
+
+        /* R33s: also release BACKGRND.BMP PSB in gFgBackdropSlot
+         * (~93 KB CACHE-resident — the "ghost" allocation that
+         * persists across scenes via fgBackdropPreloadBackgrndBmp's
+         * keepBackgrnd=1 path). fgBackdropPreloadBackgrndBmp later
+         * in fgPlayOceanRuntimeScene's body reloads it from CD
+         * (BACKGRND.BMP is small, ~93 KB). With both JOHNWALK and
+         * BACKGRND.BMP released here, cacheUsed should reach 0 and
+         * the rewind will fire on every scene transition, breaking
+         * the long-tail fragmentation accumulation that BSOD'd at
+         * 790s in the R33-extended soak. */
+        fgBackdropRelease(0);
+
+        extern void lruEvictAllUnpinned(void);
+        lruEvictAllUnpinned();
+    }
+    {
+        int rewound = memCacheRewindIfEmpty();
+        if (!rewound) {
+            extern size_t memRegionUsed(unsigned int);
+            extern int numAdsResources;
+            extern int numTtmResources;
+            extern int numBmpResources;
+            extern int numScrResources;
+            extern struct TAdsResource *adsResources[];
+            extern struct TTtmResource *ttmResources[];
+            extern struct TBmpResource *bmpResources[];
+            extern struct TScrResource *scrResources[];
+            int adsLive = 0, ttmLive = 0, bmpLive = 0, scrLive = 0;
+            int adsPinned = 0, ttmPinned = 0, bmpPinned = 0, scrPinned = 0;
+            size_t adsBytes = 0, ttmBytes = 0, bmpBytes = 0, scrBytes = 0;
+            for (int i = 0; i < numAdsResources; i++) {
+                if (adsResources[i] && adsResources[i]->uncompressedData) {
+                    adsLive++; adsBytes += adsResources[i]->uncompressedSize;
+                    if (adsResources[i]->pinCount > 0) adsPinned++;
+                }
+            }
+            for (int i = 0; i < numTtmResources; i++) {
+                if (ttmResources[i] && ttmResources[i]->uncompressedData) {
+                    ttmLive++; ttmBytes += ttmResources[i]->uncompressedSize;
+                    if (ttmResources[i]->pinCount > 0) ttmPinned++;
+                }
+            }
+            for (int i = 0; i < numBmpResources; i++) {
+                if (bmpResources[i] && bmpResources[i]->uncompressedData) {
+                    bmpLive++; bmpBytes += bmpResources[i]->uncompressedSize;
+                    if (bmpResources[i]->pinCount > 0) bmpPinned++;
+                }
+            }
+            for (int i = 0; i < numScrResources; i++) {
+                if (scrResources[i] && scrResources[i]->uncompressedData) {
+                    scrLive++; scrBytes += scrResources[i]->uncompressedSize;
+                    if (scrResources[i]->pinCount > 0) scrPinned++;
+                }
+            }
+            printf("JCMEM CACHE-rewind-skip scene=%s cacheUsed=%lu "
+                   "ADS=%d/%d/%luKB TTM=%d/%d/%luKB BMP=%d/%d/%luKB SCR=%d/%d/%luKB\n",
+                   sceneName ? sceneName : "(?)",
+                   (unsigned long)memRegionUsed((unsigned int)MEM_REGION_CACHE),
+                   adsLive, adsPinned, (unsigned long)(adsBytes/1024),
+                   ttmLive, ttmPinned, (unsigned long)(ttmBytes/1024),
+                   bmpLive, bmpPinned, (unsigned long)(bmpBytes/1024),
+                   scrLive, scrPinned, (unsigned long)(scrBytes/1024));
+            memDumpCacheStats("JCMEM cache-stats-at-rewind-skip");
+        }
+    }
+
     fgHeapProbe("before_scene", sceneName);
     /* Clean-rect snapshots are tied to the current backdrop contents. Deactivate
      * (don't free) so the boot-prealloc'd buffers stay at their fixed addresses
@@ -3823,18 +4047,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
-        fgRuntimeReset();
-        fgReleaseStreamBuffers();
-        grDeactivateCleanBgRects();
-        fgBackdropRelease(0);
-        fgHeapProbe("start_failed_cleanup", sceneName);
-        /* Graceful skip instead of BSOD: long soak runs accumulate
-         * heap fragmentation and sometimes a single scene's pack-start
-         * malloc fails. Abandoning this scene and returning lets the
-         * outer scene loop pick another scene; the player sees one
-         * skipped scene instead of a permanent halt screen. */
-        printf("JCSKIP scene=%s reason=pack-start-failed\n", sceneName);
-        return;
+        /* Phase 2 of mem-region rollout deletes the JCSKIP/graceful-
+         * skip pattern: under the deterministic allocator, allocations
+         * cannot fail, so this branch should be unreachable in a
+         * well-formed build. If it does fire, the failure is a real
+         * bug (likely a non-allocator I/O issue — CD read or pack
+         * format problem) and halting via JC_BSOD surfaces it for
+         * triage instead of papering over it. See plan v9 manifest
+         * item #1. */
+        JC_BSOD(sceneName, "pack-start failed (non-recoverable I/O or data bug)");
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
@@ -3849,13 +4070,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         perfPhaseTick = ps1PerfTick();
     if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
                                     &fgBoundsW, &fgBoundsH)) {
-        fgRuntimeReset();
-        fgReleaseStreamBuffers();
-        grDeactivateCleanBgRects();
-        fgBackdropRelease(0);
-        fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
-        printf("JCSKIP scene=%s reason=draw-bounds-failed\n", sceneName);
-        return;
+        /* Phase 2 manifest item #2: drawBounds is computed from pack
+         * data; failure here means the pack file is malformed or
+         * mis-versioned. Halt loudly. */
+        JC_BSOD(sceneName, "drawBounds failed (pack data invalid)");
     }
     {
         cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
@@ -3887,15 +4105,11 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                                             fgBoundsH,
                                                             cleanRectEstimate,
                                                             &deferWalkCleanRecapture)) {
-            fgRuntimeReset();
-            fgReleaseStreamBuffers();
-            grFreeCleanBgRects();
-            grSetCleanBgBlackMode(0);
-            fgBackdropRelease(0);
-            fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            printf("JCSKIP scene=%s reason=clean-rect-alloc-failed clean=%lu heapLow\n",
-                   sceneName, (unsigned long)cleanRectEstimate);
-            return;
+            /* Phase 2 manifest item #3: clean-rect alloc is now first
+             * in TRANSIENT setup order (plan v9 PR11/PR12). The full
+             * 250 KB TRANSIENT region is available; if allocation
+             * still fails, the budget is wrong — halt for tuning. */
+            JC_BSOD(sceneName, "clean-rect alloc failed (TRANSIENT budget shortfall)");
         }
     }
     if (ps1PerfEnabled)

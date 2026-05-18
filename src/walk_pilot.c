@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "mytypes.h"
+#include "mem_region.h"
+#include "ps1_debug.h"
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "foreground_pilot.h"
@@ -105,12 +107,13 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
         return;
 
     if (gWalkCleanBuf == NULL) {
+        /* Reverted to libc — walk clean buf is 149 KB which exceeds
+         * the reduced BOOT budget (32 KB). The plan's BOOT region
+         * was sized for this buffer but had to shrink to fit
+         * alongside libc's catalog + graphics demands. */
         gWalkCleanBuf = (uint16 *)malloc(
             (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
         if (gWalkCleanBuf == NULL) {
-            /* Out of memory — leave invalid; walks will skip clean-area
-             * restore and fall back to whatever bgTile contains. Visual
-             * artifact (overpaint) but no crash. */
             extern int printf(const char *, ...);
             printf("JCWALK: walkClean buffer alloc failed\n");
             return;
@@ -167,13 +170,13 @@ int walkPilotInit(void)
     int ok = 1;
 
     if (gWalkCleanBuf == NULL) {
+        /* Reverted to libc — see note in
+         * walkPilotCaptureCleanWalkAreaIfStale above. */
         gWalkCleanBuf = (uint16 *)malloc(
             (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
         if (gWalkCleanBuf == NULL) {
             extern int printf(const char *, ...);
-            printf("JCWALK: walkPilotInit clean-buf alloc failed (%u bytes)\n",
-                   (unsigned)((unsigned long)WALK_CLEAN_W *
-                              (unsigned long)WALK_CLEAN_H * sizeof(uint16)));
+            printf("JCWALK: walkPilotInit clean-buf alloc failed\n");
             ok = 0;
         }
         /* Mark invalid until the first scene's setup captures real
@@ -252,11 +255,12 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
         return 0;
 
     if (!walkPilotEnsureBmp()) {
-        /* JOHNWALK.BMP/PSB load failed silently (likely malloc under
-         * heap pressure). Bail out and let the next scene take over —
-         * visual cost is one ugly teleport instead of an infinite
-         * hang in walkAnimate with no sprite data. */
-        return 0;
+        /* Plan v9 manifest item #19. Under the deterministic allocator,
+         * walkPilotEnsureBmp can only fail on a data bug (missing or
+         * malformed JOHNWALK.PSB/BMP); halt loudly so the issue is
+         * caught at the symptom site rather than masquerading as a
+         * teleport. */
+        JC_BSOD("walk", "walkPilotEnsureBmp failed (missing JOHNWALK asset)");
     }
     walkRenderResetCache();
 

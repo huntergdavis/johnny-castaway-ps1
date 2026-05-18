@@ -222,7 +222,11 @@ void ps1DebugError(const char *fmt, ...)
  * the developer everything they'd ask for next". On a deterministic
  * test build any BSOD = code/data bug — fail loud and stop.
  */
-extern unsigned long fgProbeLargestAlloc(void);
+#include "mem_region_extern.h"
+/* MemRegion enum values — match mem_region.h: BOOT=0, CACHE=1, TRANSIENT=2 */
+#define BSOD_REGION_BOOT      0u
+#define BSOD_REGION_CACHE     1u
+#define BSOD_REGION_TRANSIENT 2u
 
 __attribute__((noreturn))
 void ps1Bsod(const char *scene, const char *reason,
@@ -244,19 +248,30 @@ void ps1Bsod(const char *scene, const char *reason,
      *                   before tearing down the test process. */
     {
         extern int printf(const char *, ...);
-        extern unsigned long fgGetFrameBufferBytes(void);
-        extern unsigned long fgGetPrefetchFrameBufferBytes(void);
         extern int           walkPilotCleanBufferAllocated(void);
         extern unsigned long walkPilotCleanBufferBytes(void);
         extern int           walkPilotJohnwalkSlotLoaded(void);
 
-        /* Probe heap before any further state mutation. */
-        unsigned long heapKBProbe = fgProbeLargestAlloc() / 1024UL;
-        unsigned long fbBytes      = fgGetFrameBufferBytes();
-        unsigned long pfBytes      = fgGetPrefetchFrameBufferBytes();
-        unsigned long walkCleanKB  = walkPilotCleanBufferBytes() / 1024UL;
-        int walkCleanOK            = walkPilotCleanBufferAllocated();
-        int johnwalkOK             = walkPilotJohnwalkSlotLoaded();
+        /* Mem-region state (replaces the old fgProbeLargestAlloc /
+         * fgGetFrameBufferBytes / fgGetPrefetchFrameBufferBytes
+         * heap-probe lines — those queried libc malloc, which is
+         * unreachable under the new allocator). The new state covers
+         * the same diagnostic ground via region used/peak counters
+         * + the TRANSIENT outstanding-allocation balance.
+         *
+         * memSafeRead clamps the value to [0, region budget] so a
+         * corrupted metadata word can't crash the halt screen itself
+         * (PR9). See plan v9 "Failure UX". */
+        unsigned long memBootUsed       = (unsigned long)memSafeRead(BSOD_REGION_BOOT);
+        unsigned long memBootPeak       = (unsigned long)memRegionPeak(BSOD_REGION_BOOT);
+        unsigned long memCacheUsed      = (unsigned long)memSafeRead(BSOD_REGION_CACHE);
+        unsigned long memCachePeak      = (unsigned long)memRegionPeak(BSOD_REGION_CACHE);
+        unsigned long memTransientUsed  = (unsigned long)memSafeRead(BSOD_REGION_TRANSIENT);
+        unsigned long memTransientPeak  = (unsigned long)memRegionPeak(BSOD_REGION_TRANSIENT);
+        int           sceneAllocBalance = sceneAllocBalanceGet();
+        unsigned long walkCleanKB       = walkPilotCleanBufferBytes() / 1024UL;
+        int           walkCleanOK       = walkPilotCleanBufferAllocated();
+        int           johnwalkOK        = walkPilotJohnwalkSlotLoaded();
 
         /* Strip the build-tree directory prefix from __FILE__ for the
          * log line — same treatment the on-screen panel does. */
@@ -272,9 +287,13 @@ void ps1Bsod(const char *scene, const char *reason,
         printf("JCBSOD scene=%s\n",
                (scene && scene[0]) ? scene : "(unknown)");
         printf("JCBSOD where=%s:%d\n", fileBase, line);
-        printf("JCBSOD heapKB=%lu\n", heapKBProbe);
-        printf("JCBSOD frameBufBytes=%lu\n", fbBytes);
-        printf("JCBSOD prefetchBufBytes=%lu\n", pfBytes);
+        printf("JCBSOD memBootUsed=%lu memBootPeak=%lu\n",
+               memBootUsed, memBootPeak);
+        printf("JCBSOD memCacheUsed=%lu memCachePeak=%lu\n",
+               memCacheUsed, memCachePeak);
+        printf("JCBSOD memTransientUsed=%lu memTransientPeak=%lu\n",
+               memTransientUsed, memTransientPeak);
+        printf("JCBSOD sceneAllocBalance=%d\n", sceneAllocBalance);
         printf("JCBSOD walkCleanAlloc=%d walkCleanKB=%lu\n",
                walkCleanOK, walkCleanKB);
         printf("JCBSOD johnwalkSlotLoaded=%d\n", johnwalkOK);
@@ -314,10 +333,15 @@ void ps1Bsod(const char *scene, const char *reason,
     if (reason == NULL || reason[0] == '\0') reason = "(unspecified)";
     if (file == NULL) file = "(no file)";
 
-    /* Probe heap. fgProbeLargestAlloc walks malloc sizes by binary search;
-     * each tested alloc is freed, so the heap state isn't disturbed. */
-    unsigned long heapLargest = fgProbeLargestAlloc();
-    unsigned long heapKB = heapLargest / 1024UL;
+    /* Read mem-region state for the on-screen panel. Under the new
+     * allocator there's no fragmented heap to probe — the regions
+     * are deterministic, so we report TRANSIENT used as the closest
+     * analogue (it's the dynamic region per scene). memSafeRead
+     * clamps so a metadata bug can't crash the panel itself (PR9). */
+    unsigned long memTrUsed   = (unsigned long)memSafeRead(BSOD_REGION_TRANSIENT);
+    unsigned long memTrPeak   = (unsigned long)memRegionPeak(BSOD_REGION_TRANSIENT);
+    unsigned long heapKB      = memTrUsed / 1024UL;
+    (void)memTrPeak;  /* available if panel layout adds it */
 
     /* Strip directory prefix from __FILE__ — keeps the on-screen line
      * tight (the build path is usually long enough to wrap on its own). */

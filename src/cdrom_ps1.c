@@ -22,6 +22,7 @@
 #include "utils.h"
 #include "ps1_debug.h"
 #include "resource.h"
+#include "mem_region.h"
 
 /* PS1 CD-ROM sector size */
 #define CD_SECTOR_SIZE 2048
@@ -636,12 +637,24 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     strncpy(file->filename, filename, sizeof(file->filename) - 1);
     file->filename[sizeof(file->filename) - 1] = '\0';
 
-    /* Allocate buffer for entire file */
+    /* Allocate buffer for entire file. Once memInit() has fired, the
+     * file buffer comes from CACHE region — keeps libc heap stable so
+     * subsequent allocations don't fragment. Before memInit (e.g.,
+     * early TITLE.RAW load), falls back to libc.
+     *
+     * MEM_REGION_RATIONALE: ps1_fopen file buffer; freed at fclose. */
     file->bufferSize = file->cdfile.size;
-    file->buffer = (uint8_t*)malloc(file->bufferSize);
-
-    if (!file->buffer) {
-        return NULL;  /* Malloc failed */
+    if (memIsReady()) {
+        file->buffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
+                                          file->bufferSize,
+                                          "ps1_fopen_file_buffer");
+        file->bufferFromRegion = 1;
+    } else {
+        file->buffer = (uint8_t*)malloc(file->bufferSize);
+        if (!file->buffer) {
+            JC_BSOD(filename, "cdrom open: file-buffer alloc failed");
+        }
+        file->bufferFromRegion = 0;
     }
 
     /* Calculate sectors needed */
@@ -668,6 +681,100 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     return file;
 }
 
+PS1File* ps1_fopen_stream(const char* filename, uint32_t cacheBytes)
+{
+    static PS1File streamFiles[4];  /* small pool; ps1_fopen has its own slot */
+    static int streamSlot = 0;
+
+    /* Round cacheBytes up to a multiple of 2048 (CD sector). */
+    const uint32_t SECTOR = 2048u;
+    cacheBytes = ((cacheBytes + SECTOR - 1u) / SECTOR) * SECTOR;
+    if (cacheBytes == 0) cacheBytes = SECTOR;
+
+    PS1File *file = &streamFiles[streamSlot];
+    streamSlot = (streamSlot + 1) % 4;
+    /* Reset slot if it was in use */
+    if (file->isOpen && file->buffer) {
+        free(file->buffer);
+        file->buffer = NULL;
+    }
+    memset(file, 0, sizeof(*file));
+
+    /* Resolve file on CD. */
+    CdlFILE *result = CdSearchFile(&file->cdfile, (char*)filename);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    file->isOpen = 1;
+    file->isStream = 1;
+    strncpy(file->filename, filename, sizeof(file->filename) - 1);
+    file->filename[sizeof(file->filename) - 1] = '\0';
+    file->currentPos = 0;
+    file->bufferSize = cacheBytes;
+
+    file->buffer = (uint8_t*)malloc(cacheBytes);
+    if (!file->buffer) {
+        JC_BSOD(filename, "ps1_fopen_stream: cache alloc failed");
+    }
+    file->streamBase = 0;
+    file->streamBytesCached = 0;
+    /* No CD read yet — first ps1_fread does the refill. */
+    return file;
+}
+
+/* Stream-mode helper: refill the cache to cover currentPos through
+ * currentPos+needBytes-1 (clamped to file end). Re-reads CD sectors
+ * via CdRead. Returns 1 on success, 0 on CD failure. */
+static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
+{
+    if (!file || !file->isOpen || !file->isStream || !file->buffer) return 0;
+    if (file->currentPos < 0) return 0;
+    uint32_t fileSize = file->cdfile.size;
+    if ((uint32_t)file->currentPos >= fileSize) return 0;
+    if ((uint32_t)file->currentPos + needBytes > fileSize) {
+        needBytes = fileSize - (uint32_t)file->currentPos;
+    }
+    /* Sector-align the cache: start at the sector containing currentPos. */
+    const uint32_t SECTOR = 2048u;
+    uint32_t startSector = (uint32_t)file->currentPos / SECTOR;
+    uint32_t startOffset = startSector * SECTOR;
+    uint32_t needEnd     = (uint32_t)file->currentPos + needBytes;
+    uint32_t endSector   = (needEnd + SECTOR - 1u) / SECTOR;
+    uint32_t numSectors  = endSector - startSector;
+    /* Clamp to cache capacity (full sectors only). */
+    uint32_t capSectors  = file->bufferSize / SECTOR;
+    if (capSectors == 0) return 0;
+    if (numSectors > capSectors) numSectors = capSectors;
+    /* Clamp to file end. */
+    uint32_t fileSectors = (fileSize + SECTOR - 1u) / SECTOR;
+    if (startSector + numSectors > fileSectors)
+        numSectors = fileSectors - startSector;
+
+    /* Seek + read. */
+    CdlLOC loc = file->cdfile.pos;
+    uint32_t baseLba = (uint32_t)CdPosToInt((CdlLOC*)&loc);
+    uint32_t targetLba = baseLba + startSector;
+    /* Convert back to BCD MSF for CdControl. */
+    CdlLOC seekLoc;
+    CdIntToPos((int)targetLba, &seekLoc);
+    CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL);
+    /* Brief seek wait. */
+    for (volatile int i = 0; i < 200000; i++);
+    CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
+    if (CdReadSync(0, NULL) < 0) {
+        cdromResetState();
+        return 0;
+    }
+    file->streamBase = startOffset;
+    file->streamBytesCached = numSectors * SECTOR;
+    /* Clamp last-sector overhang to file size. */
+    if (file->streamBase + file->streamBytesCached > fileSize) {
+        file->streamBytesCached = fileSize - file->streamBase;
+    }
+    return 1;
+}
+
 size_t ps1_fread(void* ptr, size_t size, size_t nmemb, PS1File* file)
 {
     if (!file || !file->isOpen || !file->buffer) {
@@ -675,19 +782,50 @@ size_t ps1_fread(void* ptr, size_t size, size_t nmemb, PS1File* file)
     }
 
     size_t totalBytes = size * nmemb;
+    if (totalBytes == 0) return 0;
     uint8_t* dest = (uint8_t*)ptr;
+    size_t bytesRead = 0;
 
-    /* Check if read goes past end of buffer */
+    if (file->isStream) {
+        /* Stream mode: refill cache as the read crosses sectors. */
+        uint32_t fileSize = file->cdfile.size;
+        if ((uint32_t)file->currentPos >= fileSize) return 0;
+        while (bytesRead < totalBytes) {
+            uint32_t pos = (uint32_t)file->currentPos;
+            if (pos >= fileSize) break;
+            /* Is pos inside the current cache window? */
+            int hit = (pos >= file->streamBase) &&
+                      (pos < file->streamBase + file->streamBytesCached);
+            if (!hit) {
+                if (!ps1_streamRefill(file, totalBytes - bytesRead)) {
+                    return bytesRead / size;
+                }
+                pos = (uint32_t)file->currentPos;
+            }
+            uint32_t inCache = pos - file->streamBase;
+            uint32_t available = file->streamBytesCached - inCache;
+            uint32_t want = (uint32_t)(totalBytes - bytesRead);
+            if (want > available) want = available;
+            if (pos + want > fileSize) want = fileSize - pos;
+            if (want == 0) break;
+            for (uint32_t i = 0; i < want; i++) {
+                dest[bytesRead + i] = file->buffer[inCache + i];
+            }
+            bytesRead += want;
+            file->currentPos += want;
+            if (file->currentPos >= (long)fileSize) break;
+        }
+        return bytesRead / size;
+    }
+
+    /* Whole-file mode (legacy). */
     if (file->currentPos + totalBytes > file->bufferSize) {
         totalBytes = file->bufferSize - file->currentPos;
         if (totalBytes == 0) return 0;
     }
-
-    /* Simple memory copy from preloaded buffer - no CD-ROM operations! */
     for (size_t i = 0; i < totalBytes; i++) {
         dest[i] = file->buffer[file->currentPos + i];
     }
-
     file->currentPos += totalBytes;
     return totalBytes / size;
 }
@@ -718,6 +856,16 @@ int ps1_fseek(PS1File* file, long offset, int whence)
     }
 
     file->currentPos = newPos;
+    /* Stream mode: invalidate cache if seek goes outside the current
+     * window. The next ps1_fread will refill from CD. */
+    if (file->isStream) {
+        if ((uint32_t)newPos < file->streamBase ||
+            (uint32_t)newPos >= file->streamBase + file->streamBytesCached) {
+            /* Out of window — next read will refill. */
+            file->streamBytesCached = 0;
+            file->streamBase = (uint32_t)newPos;
+        }
+    }
     return 0;
 }
 
@@ -735,9 +883,14 @@ int ps1_fclose(PS1File* file)
         return -1;
     }
 
-    /* Free preloaded buffer if it exists */
+    /* Free preloaded buffer if it exists. Use the right allocator
+     * based on how the buffer was obtained at fopen time. */
     if (file->buffer) {
-        free(file->buffer);
+        if (file->bufferFromRegion) {
+            memFree(MEM_REGION_CACHE, file->buffer);
+        } else {
+            free(file->buffer);
+        }
         file->buffer = NULL;
     }
 
@@ -797,6 +950,23 @@ static int ps1CdReadSyncBounded(void)
  * This is for dynamic loading - reads only the necessary CD sectors.
  * Returns malloc'd buffer that caller must free, or NULL on error.
  */
+
+/* ps1_streamReadCache: was originally a libc→CACHE memcpy wrapper
+ * for resource data destined for the LRU cache. Reverted to a plain
+ * pass-through after measuring that the available libc heap on this
+ * target (after RESOURCE.001 catalog parse + existing graphics code
+ * paths) can't accommodate both the catalog and a 600 KB CACHE
+ * region. With CACHE shrunk to 100 KB, large resources (MARY's
+ * 568 KB pinned set) can't fit there anyway — they stay on libc
+ * where the LRU's free() works directly.
+ *
+ * The 4 callers (BMP/SCR/TTM/ADS loaders) keep calling this name
+ * for source-stability; behavior is now identical to ps1_streamRead. */
+uint8_t* ps1_streamReadCache(const char* filename, uint32_t offset, uint32_t size)
+{
+    return ps1_streamRead(filename, offset, size);
+}
+
 uint8_t* ps1_streamRead(const char* filename, uint32_t offset, uint32_t size)
 {
     CdlFILE cdfile;
@@ -879,10 +1049,28 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
-    /* Allocate buffer for the sectors we need */
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
-    if (!sectorBuffer) {
-        return NULL;  /* Malloc failed */
+    /* Allocate sector-aligned scratch for the CD read. CACHE
+     * region post-memInit: large streaming-window reads (up to
+     * ~70 KB) consistently overflow TRANSIENT (which peaks at
+     * ~200 KB on activity-high variants from clean-rect + per-
+     * frame scratch), and TRANSIENT's libc fallback also fails
+     * because libc is fragmented by the bgTile*Clean buffers.
+     * CACHE has a coalescing free-list, plenty of headroom (peak
+     * 760 KB / 900 KB), and the buffer is freed individually at
+     * function exit so it doesn't accumulate in CACHE.
+     * MEM_REGION_RATIONALE: large per-read scratch; CACHE because
+     * size can exceed TRANSIENT budget. */
+    int sectorBufferFromRegion = 0;
+    if (memIsReady()) {
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
+                                          bufferSize,
+                                          "cdrom_sectorBuffer");
+        sectorBufferFromRegion = 1;
+    } else {
+        sectorBuffer = (uint8_t*)malloc(bufferSize);
+        if (!sectorBuffer) {
+            JC_BSOD("cdrom", "sector-buffer alloc failed");
+        }
     }
 
     /* Read in smaller sector chunks. Large single-shot reads on packed BMPs
@@ -931,11 +1119,24 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         sectorsRead += chunkSectors;
     }
 
-    /* Allocate exact-size output buffer and copy the data we need */
-    result = (uint8_t*)malloc(size);
-    if (!result) {
-        free(sectorBuffer);
-        return NULL;
+    /* Allocate exact-size output buffer for the caller. Post-init:
+     * CACHE region (this is the buffer the caller will hold as
+     * resource data / pack body). Pre-init: libc.
+     * MEM_REGION_RATIONALE: resource-data result buffer; caller
+     * is responsible for its lifetime. */
+    if (memIsReady()) {
+        result = (uint8_t*)memAlloc(MEM_REGION_CACHE, size,
+                                    "cdrom_read_result");
+    } else {
+        result = (uint8_t*)malloc(size);
+        if (!result) {
+            if (sectorBufferFromRegion) {
+                memFree(MEM_REGION_TRANSIENT, sectorBuffer);
+            } else {
+                free(sectorBuffer);
+            }
+            return NULL;
+        }
     }
 
     /* Copy from sector buffer at the correct offset */
@@ -946,7 +1147,11 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
                                   1, perfFileLba, offset, 0);
-    free(sectorBuffer);
+    if (sectorBufferFromRegion) {
+        memFree(MEM_REGION_CACHE, sectorBuffer);
+    } else {
+        free(sectorBuffer);
+    }
     return result;
 }
 
@@ -970,12 +1175,28 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
 
-    sectorBuffer = (uint8_t*)malloc(bufferSize);
-    if (!sectorBuffer)
-        return 0;
+    int sectorBufferFromRegion2 = 0;
+    if (memIsReady()) {
+        /* MEM_REGION_RATIONALE: sector-aligned scratch for CD-read-
+         * into-caller-buffer path; freed at function exit. CACHE
+         * for the same reason as the streaming-read variant
+         * above. */
+        sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
+                                          bufferSize,
+                                          "cdrom_sectorBuffer_into");
+        sectorBufferFromRegion2 = 1;
+    } else {
+        sectorBuffer = (uint8_t*)malloc(bufferSize);
+        if (!sectorBuffer)
+            return 0;
+    }
 
     result = ps1_streamReadFromCdFileIntoBuffered(cdfile, offset, size, dstBuffer, sectorBuffer, bufferSize);
-    free(sectorBuffer);
+    if (sectorBufferFromRegion2) {
+        memFree(MEM_REGION_CACHE, sectorBuffer);
+    } else {
+        free(sectorBuffer);
+    }
     return result;
 }
 
@@ -1233,10 +1454,17 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
         sectorsRead += chunkSectors;
     }
 
-    result = (uint8_t*)malloc(size);
-    if (result == NULL) {
-        free(fileBuffer);
-        return NULL;
+    /* MEM_REGION_RATIONALE: result of whole-file CD read, returned
+     * to caller as resource data. CACHE region post-init. */
+    if (memIsReady()) {
+        result = (uint8_t*)memAlloc(MEM_REGION_CACHE, size,
+                                    "cdrom_whole_file_result");
+    } else {
+        result = (uint8_t*)malloc(size);
+        if (result == NULL) {
+            free(fileBuffer);
+            return NULL;
+        }
     }
 
     memcpy(result, fileBuffer + offset, size);
@@ -1408,7 +1636,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
     entryCount = ps1ReadLe32(headerData + 8);
     firstResourceOffset = ps1ReadLe32(headerData + 12);
     prefetchCount = ps1ReadLe32(headerData + 16);
-    free(headerData);
+    memFree(MEM_REGION_CACHE, headerData);  /* CACHE pointer from ps1_streamReadFromCdFile */
 
     if (magic != PS1_PACK_MAGIC || version != PS1_PACK_VERSION || entryCount == 0)
         return 0;
@@ -1423,7 +1651,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
 
     entries = (struct TPs1PackedResourceEntry *)malloc(entryCount * sizeof(*entries));
     if (entries == NULL) {
-        free(headerData);
+        memFree(MEM_REGION_CACHE, headerData);
         return 0;
     }
 
@@ -1473,7 +1701,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
         }
     }
 
-    free(headerData);
+    memFree(MEM_REGION_CACHE, headerData);
     return 1;
 }
 
@@ -1542,6 +1770,8 @@ static uint8_t *ps1PilotLoadResource(const char *resourceType, const char *name,
 {
     const struct TPs1PackedResourceEntry *entry = ps1PilotFindEntry(resourceType, name);
     uint8_t *data;
+    uint8_t *cacheCopy;
+    uint32_t copySize;
 
     if (entry == NULL) {
         if (ps1PilotActivePack.entries != NULL)
@@ -1579,6 +1809,11 @@ static uint8_t *ps1PilotLoadResource(const char *resourceType, const char *name,
         if (ps1PilotDbgHits < 0xFFFFU)
             ps1PilotDbgHits++;
         ps1PilotDbgLastHitEntry = (uint16)((entry - ps1PilotActivePack.entries) + 1);
+        /* Resource data stays on libc heap. See ps1_streamReadCache
+         * note above for rationale. The unused locals below are
+         * still declared to avoid a wider diff. */
+        (void)cacheCopy;
+        (void)copySize;
     } else {
         /* When the entry exists but the sector read fails, keep the overlay
          * value as the pack entry index so screenshot-based validation can
@@ -2351,8 +2586,8 @@ uint8 *ps1_uncompressRLE(PS1File *f, uint32 inSize, uint32 outSize)
 
     outData = malloc(outSize);
     if (!outData) {
-        printf("ps1_uncompressRLE: malloc failed for %lu bytes\n", (unsigned long)outSize);
-        return NULL;
+        /* Plan v9 manifest item #21: NULL-return-on-fail → halt. */
+        JC_BSOD("cdrom", "ps1_uncompressRLE: outData alloc failed");
     }
 
     while (outOffset < outSize && ps1_inOffset < inSize) {
@@ -2443,7 +2678,10 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    bmpResource->uncompressedData = ps1_streamRead(path, 0, readSize);
+    /* MEM_REGION_RATIONALE: LRU-cached resource data. ps1_streamReadCache
+     * allocates from MEM_REGION_CACHE so the LRU evictor can reclaim
+     * via memFree(CACHE, ...) without fragmenting the libc heap. */
+    bmpResource->uncompressedData = ps1_streamReadCache(path, 0, readSize);
 
     /* Update uncompressedSize to match what we actually read */
     if (bmpResource->uncompressedData != NULL && fileSize < bmpResource->uncompressedSize) {
@@ -2491,7 +2729,7 @@ void ps1_loadScrData(struct TScrResource *scrResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    scrResource->uncompressedData = ps1_streamRead(path, 0, scrResource->uncompressedSize);
+    scrResource->uncompressedData = ps1_streamReadCache(path, 0, scrResource->uncompressedSize);
 }
 
 /*
@@ -2531,7 +2769,7 @@ void ps1_loadTtmData(struct TTtmResource *ttmResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    ttmResource->uncompressedData = ps1_streamRead(path, 0, ttmResource->uncompressedSize);
+    ttmResource->uncompressedData = ps1_streamReadCache(path, 0, ttmResource->uncompressedSize);
 }
 
 /*
@@ -2573,5 +2811,5 @@ void ps1_loadAdsData(struct TAdsResource *adsResource)
     if (ps1PilotDbgFallbacks < 0xFFFFU)
         ps1PilotDbgFallbacks++;
     ps1PilotDbgLastFallbackEntry = 0;
-    adsResource->uncompressedData = ps1_streamRead(path, 0, adsResource->uncompressedSize);
+    adsResource->uncompressedData = ps1_streamReadCache(path, 0, adsResource->uncompressedSize);
 }

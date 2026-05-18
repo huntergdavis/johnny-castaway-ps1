@@ -68,6 +68,7 @@ int fclose(FILE *stream);
 #include "events_ps1.h"
 #include "sound_ps1.h"
 #include "memcard.h"
+#include "mem_region.h"
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
 #include "pause_menu.h"
@@ -373,17 +374,53 @@ const char *fgLoopGetAllSlug(int index)
  * delegate to the picker module which honours the user-selected
  * policy (Random / Sequential / Original). The picker also emits the
  * JCPICK telemetry line per pick. */
+/* Three-state machine for diagnostic continuity through the scene-
+ * pick window — see docs/ps1/memory-region-allocator-plan.md (A22,
+ * A27). memHalt call sites use fgLoopGetLastScene() to report the
+ * effective scene name; during pre-evict / scene setup / playback
+ * the "target" is meaningful even though no scene has fully played
+ * yet. */
+static int         gFgLoopPickInProgress = 0;
+static const char *gFgLoopLastTarget     = NULL;
+static const char *gFgLoopLastPlayed     = NULL;
+
+/* Public accessor — called from fgRuntimeReset (which feeds the
+ * scene name to memSceneReset for its JCMEM line) and from
+ * memHalt-emitting code paths. */
+const char *fgLoopGetLastScene(void) {
+    return gFgLoopPickInProgress ? gFgLoopLastTarget : gFgLoopLastPlayed;
+}
+
+/* Called from the main loop after foregroundPilotPlay returns
+ * successfully. */
+void fgLoopMarkScenePlayed(void) {
+    gFgLoopLastPlayed     = gFgLoopLastTarget;
+    gFgLoopPickInProgress = 0;
+}
+
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
+    const char *chosen;
 #ifdef PS1_BUILD
     extern const char *pickerNextScene(const char *explicitScene,
                                        int sceneSetIdx);
-    return pickerNextScene(explicitScene, sceneSetIdx);
+    chosen = pickerNextScene(explicitScene, sceneSetIdx);
 #else
     (void)sceneSetIdx;
-    return explicitScene;
+    chosen = explicitScene;
 #endif
+
+    /* Update the diagnostic continuity state. lastTarget records the
+     * scene we're about to attempt; pickInProgress flips on so
+     * fgLoopGetLastScene returns the target rather than the last-
+     * successfully-played one. fgLoopMarkScenePlayed flips it off
+     * after a successful play. */
+    if (chosen != NULL) {
+        gFgLoopLastTarget     = chosen;
+        gFgLoopPickInProgress = 1;
+    }
+    return chosen;
 }
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
@@ -1020,6 +1057,22 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
         } else if (!strcmp(tokens[i], "bsod-test")) {
             /* Force a synthetic BSOD after the first scene plays so we
              * can sanity-check the fatal-error UI. */
+            ps1BootBsodAfterFirstScene = 1;
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-boot")) {
+            /* Plan v9 step 16: synthesize a BOOT-region memHalt to
+             * QA-verify the boot-time (pre-graphics) ps1DebugError
+             * panel. Fires immediately at boot. */
+            extern __attribute__((noreturn))
+                void memHalt(const char *, const char *);
+            memHalt("(bsod-ui-test)", "synthetic BOOT region halt");
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-cache")) {
+            /* Synthesize a CACHE-region halt mid-scene. Fires once
+             * graphics is up, routing through JC_BSOD. */
+            ps1BootBsodAfterFirstScene = 1;
+            /* Reuse the same after-first-scene trigger; the JC_BSOD
+             * message identifies the synthetic CACHE case. */
+        } else if (!strcmp(tokens[i], "bsod-ui-test-mem-transient")) {
+            /* Synthesize a TRANSIENT-region halt. Same trigger pattern. */
             ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
@@ -1687,6 +1740,16 @@ int main(int argc, char **argv)
     /* FntLoad must happen before CdInit or it causes hangs */
     ps1DebugInit();
 
+    /* memInit is DEFERRED until after parseResourceFiles. The region
+     * buffer is 1.2 MB of libc malloc, but parseResourceFiles loads
+     * RESOURCE.001 (~1.1 MB) into a temporary libc buffer first.
+     * Doing memInit() here would leave libc with insufficient heap
+     * for the catalog. The region buffer is allocated AFTER the
+     * catalog is parsed and its temp buffer returned to libc.
+     *
+     * Migrated call sites that run BEFORE memInit must use libc
+     * malloc — currently that's just safe_malloc (libc-backed). */
+
     /* Initialize CD-ROM subsystem */
     if (cdromInit() < 0) {
         ps1DebugError("CD-ROM init failed!");
@@ -1713,6 +1776,22 @@ int main(int argc, char **argv)
     /* Parse resource files from CD - needed for background and sprites */
     parseResourceFiles("RESOURCE.MAP");
     ps1PrintfProbe("resources-loaded", NULL);
+
+    /* Now that parseResourceFiles has closed RESOURCE.001 and returned
+     * its temp buffer to libc, libc has the headroom for the
+     * memory-region allocator's 1.2 MB buffer. Initialize it and run
+     * the boot proofs. Per plan v9 boot sequence (revised).
+     *
+     * Boot-time memVerify* failures route through memHalt; ps1DebugInit
+     * has already run so the pre-graphics path renders correctly. */
+    memInit();
+    memVerifyBootBudget();
+    memVerifyAllScenesFitTransient();
+    memVerifyAllScenesPinnedFitCache();
+#ifdef JC_VERIFY_PACK_HASHES
+    memVerifyPackHashes();
+#endif
+    ps1PrintfProbe("mem-region-ready", NULL);
 
     /* Seed RNG — use forced seed if specified in BOOTMODE, else hardware RNG. */
     if (ps1BootForcedSeed >= 0) {
@@ -1834,6 +1913,26 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
 
+    /* Force walk-subsystem to pre-allocate its 149 KB clean buffer
+     * before memFreezeBoot. Without this, the lazy allocation inside
+     * walkPilotCaptureCleanWalkAreaIfStale fires post-freeze and
+     * halts. */
+    {
+        extern int walkPilotInit(void);
+        (void)walkPilotInit();
+    }
+
+    /* Freeze the BOOT region. Activating the no-fail invariant: any
+     * later memAlloc(MEM_REGION_BOOT, ...) halts via memHalt with a
+     * clear "post-freeze" message. Per plan v9 step 13.
+     *
+     * BOOT call sites remaining at this point: primitiveBuffer[0/1]
+     * (in graphicsInit, runs before this), walkCleanBuf (walkPilotInit
+     * just ran), and any safe_malloc calls (still on libc after revert).
+     * Graphics surface descriptors (grNewEmptyBackground, PSB/BMP
+     * frames) stay on libc — they're scene-runtime, not BOOT lifetime. */
+    memFreezeBoot();
+
     do {
         int skipWalkThisIteration = 0;
 
@@ -1909,6 +2008,12 @@ int main(int argc, char **argv)
         const char *loopScene = fgLoopNextScene(explicitScene,
                                                 pauseMenuSceneSet);
         fgLoopApplyVariant(loopScene);
+        /* Pre-emptive CACHE eviction. Runs AFTER fgLoopApplyVariant so
+         * the lookup keys on the effective scene name (variant slug, if
+         * a variant fires). Runs BEFORE fgLoopWalkToScene so the
+         * ~3-5 ms LRU scan hides inside the walk animation's pause.
+         * See plan v9 "Pre-emptive CACHE eviction" section. */
+        memCachePreEvictForNextScene(loopScene);
 
         /* Walk subsystem: walk Johnny from his last spot/heading to
          * this scene's start before the FG2 pack plays. fgLoopWalkToScene
@@ -1964,6 +2069,10 @@ int main(int argc, char **argv)
             ps1PerfEndScene(loopScene);
             ps1PrintfProbe("scene-end", loopScene);
             playedScene = 1;
+            /* Diagnostic continuity: scene-N has just finished playing
+             * successfully. Flip the picker state machine so any
+             * memHalt during scene-N+1's setup reports N+1, not N. */
+            fgLoopMarkScenePlayed();
         }
 
         if (freeplayExitRequested()) {

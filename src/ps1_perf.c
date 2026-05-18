@@ -1031,10 +1031,13 @@ void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes)
 
 void ps1PerfMarkAllocFail(uint32 bytes)
 {
-    if (!ps1PerfEnabled)
-        return;
-    gPs1Perf.allocFailures++;
-    gPs1Perf.allocFailBytes = bytes;
+    /* Plan v9 manifest item #22. Under the deterministic memory-
+     * region allocator, allocations cannot fail at runtime in a
+     * well-formed build — any failure halts via JC_BSOD. This
+     * counter no longer corresponds to a runtime event; kept as a
+     * no-op shim so existing callers still link cleanly. They can
+     * be deleted in a follow-up cleanup pass. */
+    (void)bytes;
 }
 
 void ps1PerfMarkSoundEvent(void)
