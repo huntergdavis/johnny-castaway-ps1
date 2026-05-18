@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2794%`
-exact public over target / `99.7255%` exact public target speed); the raw
-signed optimization matrix is about `-0.4375%` / `100.4559%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2771%`
+exact public over target / `99.7278%` exact public target speed); the raw
+signed optimization matrix is about `-0.4398%` / `100.4582%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -328,9 +328,10 @@ inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors `3..35` and `202..242`, then replaces the tail read group
-with the `83..95` scheduler row. The current row is `1351/1313`, overrun `38`,
-blocking `50`, refill overrun `14`, read time `207`, and due `7`, and removes the allocator-era clean-rect
-failure seen with full setup buffers.
+with `83..95` and adds guarded `271..287`. The current row is `1347/1313`,
+overrun `34`, blocking `41`, refill overrun `16`, read time `203`, and due
+`6`, and removes the allocator-era clean-rect failure seen with full setup
+buffers.
 
 The latest BUILDING2 low allocator baseline adds a setup-resident
 `112..128` slice. It keeps loop flat at `1339`, improves target `1315 -> 1316`,
@@ -630,8 +631,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.9% / 97.2% (1351/1313); due 7; blk 50</td>
-      <td>+2.3% / 97.8% (1349/1319); due 17; blk 80</td>
+      <td>+2.6% / 97.5% (1347/1313); due 6; blk 41</td>
+      <td>+1.7% / 98.3% (1339/1316); due 11; blk 53</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -913,8 +914,9 @@ Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 high/low
    remain the biggest gaps after the allocator-era clean-relief promotions
-   (`+40/+35` VBlanks), followed by BUILDING2 high (`+38`), WALKSTUF1
-   low/high (`+38/+34`), BUILDING4 low (`+37`), and BUILDING2 low (`+23`).
+   (`+40/+35` VBlanks), followed by WALKSTUF1 low (`+38`), BUILDING4 low
+   (`+37`), BUILDING2 high and WALKSTUF1 high (`+34` each), and BUILDING2 low
+   (`+23`).
    VISITOR3's
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
@@ -974,7 +976,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2794% over target / 99.7255% target speed, with several
+  public average is now +0.2771% over target / 99.7278% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

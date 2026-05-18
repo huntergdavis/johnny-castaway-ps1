@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2794%` over
-target / `99.7255%` target speed; the raw signed optimization matrix is
-about `-0.4375%` / `100.4559%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2771%` over
+target / `99.7278%` target speed; the raw signed optimization matrix is
+about `-0.4398%` / `100.4582%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -68,8 +68,9 @@ the `238..342` retained setup segment and the no-shift payload lane. BUILDING2 l
 relative sectors `112..128` during setup, with the allocator-era matrix at
 `1339/1316`, overrun `23`, blocking/refill `53/2`, reads/read time `34/141`,
 and due `11`. BUILDING2 high currently measures
-`1351/1313`, overrun `38`, blocking `50`, refill overrun `14`, and due misses
-`7`; the allocator-safe setup slices plus the `83..95` scheduler row keep reads/read time at `47/207`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`1347/1313`, overrun `34`, blocking `41`, refill overrun `16`, and due misses
+`6`; the allocator-safe setup slices plus the `83..95` and guarded `271..287`
+scheduler rows keep reads/read time at `47/203`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload `674798 -> 672026` without moving pack layout.
 The live ledger is at

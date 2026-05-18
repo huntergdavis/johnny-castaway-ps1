@@ -61,8 +61,11 @@ second retained slice from `411..435` to `286..342`, improving
 `1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
 `76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1472/1438` and
-`1480/1442`, B2 high/low at `1351/1313` and `1339/1315`, and B4 high/low at
+`1480/1442`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
 `2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
+BUILDING2 high's latest guarded `271..287` read-group promotion improves
+loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
+hidden-refill tradeoff `14 -> 16`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure

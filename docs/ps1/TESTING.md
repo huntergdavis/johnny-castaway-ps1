@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/).
 
-Current battle-card rollup as of 2026-05-17:
+Current battle-card rollup as of 2026-05-18:
 
 | Metric | Value |
 |---|---:|
@@ -76,11 +76,11 @@ Current battle-card rollup as of 2026-05-17:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.5%` (`0.5371%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.5143%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; targeted W1/B2 checkpoint `2026-05-17T21:27:42` |
-| Stats version | mixed; newest targeted allocator rows use `git:339df94f5+targeted-setup` for WALKSTUF1 high/low and BUILDING2 high; full row-level versions remain in `performance-scene-matrix.csv` |
-| FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
+| Timing-bearing average over target | `+0.3%` (`0.2771%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7278%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group promotion `2026-05-18T09:43:05` |
+| Stats version | mixed; newest targeted allocator rows include `git:2bb011192+building2-high-rg271-287`, `git:776e57df+building2-low-setupseg112-128`, `git:bf941b4d8+walkstuf1-high-setupseg286-342`, and `git:44dc073e0+walkstuf1-low-setupseg238-342`; full row-level versions remain in `performance-scene-matrix.csv` |
+| FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
 `100.0%` target speed so the website never presents playback faster than
@@ -95,13 +95,13 @@ PS-EXE bucket while cutting active payload `316608 -> 112093`. Both tides move
 to `1948/1945`, overrun `3`, blocking/refill `5`, read time `37`, due `0`, and
 target speed `99.85%`.
 
-Latest promoted BUILDING2 high setup-segment note:
+Latest promoted BUILDING2 high read-group note:
 the allocator-era targeted setup checkpoint caches only relative sectors
 `3..35` and `202..242` in MEM_REGION_CACHE instead of retaining a full setup
-buffer. The row changes `1347/1311 -> 1350/1310`, so loop debt rises slightly,
-but read pressure improves materially: reads/read time `57/246 -> 47/208` and
-due `8 -> 7`, while refill stays `17`. This is accepted because the focused
-allocator run stays measured instead of failing clean-rect allocation.
+buffer, then the scheduler path replaces the tail read group with `83..95` and
+adds guarded `271..287`. The latest row improves active loop `1351 -> 1347`,
+overrun `38 -> 34`, blocking `50 -> 41`, read time `207 -> 203`, and due
+`7 -> 6`; the accepted hidden-refill tradeoff is `14 -> 16`.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`
@@ -235,7 +235,9 @@ top of v702/v701/v700 frames `90`, `91`, and `92`, v698 safe `94..104`, and
 v664 late `168..177`.
 The payload-work baseline stays exact-flat at `1602`, active loop/target
 `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
-and due `7`; the later v979 setup segment is the current B2-high speed row. Runtime
+and due `7`; the current B2-high speed row layers allocator-safe setup slices,
+`83..95`, and guarded `271..287` to reach `1347/1313`, overrun `34`,
+blocking/refill `41/16`, read time `203`, and due `6`. Runtime
 frame rows/spans/pixels remain at the v703 `18030/105645/446246` row, while
 active payload drops `674798 -> 669408` with fixed pack LBA/sectors and
 PS-EXE bucket.
