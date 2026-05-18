@@ -571,6 +571,13 @@ clean-rect allocation, so it produced no `JCPERF2` metrics. Artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-344-current/20260518-113619-1651972/summary.json`.
 Keep `238..342` as the current CACHE-backed W1-low boundary unless a later
 allocator/clean-rect change frees enough CACHE headroom.
+A follow-up `648 KiB CACHE / 760 KiB TRANSIENT` rebalance is also closed:
+`238..344` became measurable and improved visible overrun/blocking, but
+regressed hidden refill `15 -> 20`; `238..343` regressed visible timing and
+refill. Artifacts:
+`scratch/ps1-perf-iterate/cache648-w1low-setupseg238-344-focused/20260518-114116-1679988/summary.json`
+and
+`scratch/ps1-perf-iterate/cache648-w1low-setupseg238-343-focused/20260518-114558-1706973/summary.json`.
 The focused and under-green canaries promote the shape: WALKSTUF1 low moves
 `1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/read time
 `65/230 -> 55/211`, refill overrun `18 -> 15`, loop reads `50 -> 38`, and
