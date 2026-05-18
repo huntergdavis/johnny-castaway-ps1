@@ -639,6 +639,24 @@ Keep the clean baseline first-frame dirty invariant; VISITOR3 high's remaining
 work is driven by another upload producer or by CD/window phase, not by these
 two clean-save marks.
 
+Latest corrected VISITOR3 clean-relief read-plan and rejected low read-group
+sweep: `scripts/ps1-foreground-read-plan.py` now mirrors runtime clean-memory
+relief by reporting `setup_prime_bytes=0` for VISITOR3 while preserving the
+targeted setup segments. The regenerated read matrix now shows real early
+VISITOR3 high/low active-read pressure instead of treating the disabled
+setup-prime window as resident coverage. The first three VISITOR3-low grouped
+append probes are still rejected: `{9,33,0}` regressed `1369/1065/75` to
+`1371/1067/76`, `{9,25,0}` regressed to `1374/1070/1039` with overrun `31`
+and blocking `79`, and `{92,108,0}` regressed to `1371/1067/1041` with
+blocking `76`. Artifacts:
+`scratch/ps1-perf-iterate/visitor3-low-rg9-33-vnext/20260518-164901-3424623/summary.json`,
+`scratch/ps1-perf-iterate/visitor3-low-rg9-25-vnext/20260518-165046-3434768/summary.json`,
+and
+`scratch/ps1-perf-iterate/visitor3-low-rg92-108-vnext/20260518-165221-3444117/summary.json`.
+Keep the analysis fix, but close VISITOR3-low blind grouped appends in this
+lane; next low work needs data-shape/setup relocation that changes where the
+reads land, not merely how adjacent reads are grouped.
+
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
 `{91,107}` scalar row failed on the older `238..342` retained setup baseline,
 but passes after the low-only 48 KiB clean-rect cap and `238..344` setup edge.
