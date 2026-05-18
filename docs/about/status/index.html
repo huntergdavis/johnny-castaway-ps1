@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.15; built 2026-05-15" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.15; built 2026-05-17" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,11 +102,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state after v0.8.14-ps1</p>
+      <p class="eyebrow">Component-level state after v0.8.16-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2304 words
+          ~9 min read · 2390 words
         </p>
 
       <hr class="rule" />
@@ -122,16 +122,20 @@ holiday, raft-stage):
 <strong>63 / 63</strong>.
 The current release line keeps every row in the live per-scene ledger signed
 off, all 126 high/low scene variants routed and timing-bearing, deterministic
-BOOTMODE scene selection logged and gated, and the latest JOHNNY1 high/low
-local-LZ full-frame payload compression promoted into green. The
+BOOTMODE scene selection logged and gated, and the new memory-region allocator
+promoted into mainline. BOOT allocations now seal after startup, CACHE
+allocations reuse long-lived resource storage through free-list/LRU paths, and
+TRANSIENT scene allocations can be wiped between major scene loads. The
 chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2285%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7746%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.5387%</code> / <code class="language-plaintext highlighter-rouge">100.5570%</code>.
-The newest accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.5699%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.4843%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.1470%</code> / <code class="language-plaintext highlighter-rouge">100.2147%</code>. The allocator validation branch records a R34
+full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the release gates now require a
+nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
+The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
 the <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while moving both tides to <code class="language-plaintext highlighter-rouge">1948/1945</code>,
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, and target speed <code class="language-plaintext highlighter-rouge">99.85%</code>.
@@ -324,7 +328,7 @@ harness output is the SoT for build-and-boot regressions.</p>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
 loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.15-ps1</code>
-has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.7%</code>
+has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.5%</code>
 target speed across all 126 timing-bearing rows after the VISITOR3,
 WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
 promotion arc. The bring-up loop remains in
@@ -368,7 +372,12 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> promotes the current mainline
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code> promotes the memory-region
+allocator: BOOT/CACHE/TRANSIENT lifetimes, scene-boundary transient wipes,
+CACHE free-list/LRU reuse, generated pack-header metrics, and allocator
+rationale gates. <code class="language-plaintext highlighter-rouge">v0.8.15-ps1</code> promotes the WALKSTUF1 high setup-resident CD
+row. <code class="language-plaintext highlighter-rouge">v0.8.14-ps1</code> promotes JOHNNY1 high/low local-LZ full-frame compression.
+<code class="language-plaintext highlighter-rouge">v0.8.9-ps1</code> promotes the current mainline
 optimization set: VISITOR5 low reuses the green <code class="language-plaintext highlighter-rouge">30..46</code> retained-read shape,
 BUILDING2 low carries the <code class="language-plaintext highlighter-rouge">218..229</code> slack8 row plus v739 draw-tail trim,
 and WALKSTUF1 low carries no-shift frame <code class="language-plaintext highlighter-rouge">51</code>/<code class="language-plaintext highlighter-rouge">49</code>/<code class="language-plaintext highlighter-rouge">47</code>/<code class="language-plaintext highlighter-rouge">61</code>/<code class="language-plaintext highlighter-rouge">62</code>/<code class="language-plaintext highlighter-rouge">58</code>/<code class="language-plaintext highlighter-rouge">45</code>/<code class="language-plaintext highlighter-rouge">37</code>/<code class="language-plaintext highlighter-rouge">35</code>

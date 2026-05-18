@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 351 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 367 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -30,6 +30,7 @@ for a guided learning path through the machinery.
 ## Active PS1 reference
 
 <ul class="doc-grid">
+<li><a href="{{ '/source/docs/ps1/adding-new-scenes-memory/' | relative_url }}">Adding a new scene or holiday variant — memory checklist</a><p><code>docs/ps1/adding-new-scenes-memory.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/api-mapping/' | relative_url }}">PS1 Port - API Mapping Reference</a><p><code>docs/ps1/api-mapping.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/audio-optimization-spec/' | relative_url }}">PS1 Audio Implementation Spec</a><p><code>docs/ps1/audio-optimization-spec.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/background-music-feasibility/' | relative_url }}">Ocean Ambience — PS1 Implementation Plan</a><p><code>docs/ps1/background-music-feasibility.md</code></p></li>
@@ -43,6 +44,20 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/holidays-implementation-plan/' | relative_url }}">Holiday Art Implementation Plan</a><p><code>docs/ps1/holidays-implementation-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-pipeline/' | relative_url }}">Holiday emblem sheet pipeline</a><p><code>docs/ps1/holidays-pipeline.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-style-guide/' | relative_url }}">Holiday Emblem Style Guide</a><p><code>docs/ps1/holidays-style-guide.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/mem-region-decision-tree/' | relative_url }}">Memory region decision tree</a><p><code>docs/ps1/mem-region-decision-tree.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/mem-region-phase-1-checklist/' | relative_url }}">Memory region allocator — Phase 1 implementation checklist</a><p><code>docs/ps1/mem-region-phase-1-checklist.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/mem-region-phase-1-status/' | relative_url }}">Memory region allocator — implementation status</a><p><code>docs/ps1/mem-region-phase-1-status.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/mem-region-README/' | relative_url }}">Memory region allocator — documentation index</a><p><code>docs/ps1/mem-region-README.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-plan/' | relative_url }}">Memory region allocator — implementation plan</a><p><code>docs/ps1/memory-region-allocator-plan.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v2/' | relative_url }}">Memory region allocator — red team v2 (multi-reviewer)</a><p><code>docs/ps1/memory-region-allocator-red-team-v2.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v3/' | relative_url }}">Memory region allocator — red team v3 (panel re-review of v4)</a><p><code>docs/ps1/memory-region-allocator-red-team-v3.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v4/' | relative_url }}">Memory region allocator — red team v4 (panel re-review of v5)</a><p><code>docs/ps1/memory-region-allocator-red-team-v4.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v5/' | relative_url }}">Memory region allocator — red team v5 (panel re-review of v6)</a><p><code>docs/ps1/memory-region-allocator-red-team-v5.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v6/' | relative_url }}">Memory region allocator — red team v6 (panel re-review of v7)</a><p><code>docs/ps1/memory-region-allocator-red-team-v6.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v7/' | relative_url }}">Memory region allocator — red team v7 (panel re-review of v8)</a><p><code>docs/ps1/memory-region-allocator-red-team-v7.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v8/' | relative_url }}">Memory region allocator — red team v8 (panel re-review of v9)</a><p><code>docs/ps1/memory-region-allocator-red-team-v8.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team-v9/' | relative_url }}">Memory region allocator — red team v9 (post-implementation reality check)</a><p><code>docs/ps1/memory-region-allocator-red-team-v9.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/memory-region-allocator-red-team/' | relative_url }}">Memory region allocator — red team</a><p><code>docs/ps1/memory-region-allocator-red-team.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/milestones-2026-04-25/' | relative_url }}">Milestones — 2026-04-25</a><p><code>docs/ps1/milestones-2026-04-25.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/pause-menu-design/' | relative_url }}">Pause Menu Design</a><p><code>docs/ps1/pause-menu-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-experiment-log/' | relative_url }}">PS1 Performance Experiment Log</a><p><code>docs/ps1/performance-experiment-log.md</code></p></li>
@@ -68,6 +83,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.13/' | relative_url }}">v0.8.13-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.13.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.14/' | relative_url }}">v0.8.14-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.14.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.15/' | relative_url }}">v0.8.15-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.15.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.16/' | relative_url }}">v0.8.16-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.16.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }}">v0.8.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.2.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }}">v0.8.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.3.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }}">v0.8.4-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.4.md</code></p></li>

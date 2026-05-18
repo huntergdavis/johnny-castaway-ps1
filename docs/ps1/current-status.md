@@ -3,9 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-15 (`main` after `walkstuf1-high-setupseg242-388-v998`; all 63 scenes remain
-validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2285%` over target / `99.7746%` target speed).
+**Last updated:** 2026-05-17 (`main` after the memory-region allocator merge;
+all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and
+the public headless battle card is `+0.5699%` over target / `99.4843%` target
+speed).
 
 ## Overall
 
@@ -151,15 +152,17 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.14-ps1` is the JOHNNY1 local-LZ green promotion
-after the `v0.8.13-ps1` under-99 payload-work checkpoint. All 63 scenes remain
-validated, all 126 high/low
-variants are routed and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured
-and green; `suzy3` is not a standalone scene route. The promoted
-`walkstuf1-low-frame106-inplace-v910`, `building2-high-frame173-inplace-v914`,
-`building4-low-frame283-inplace-v913`, and `johnny1-local-lz-v932` passes are
-the latest release payload-work baselines. Earlier pack/data wins remain in
-force: the MARY3
+Latest point release: `v0.8.16-ps1` is the memory-region allocator stability
+release after the `v0.8.15-ps1` WALKSTUF1 high setup-segment performance
+promotion. All 63 scenes remain validated, all 126 high/low variants are routed
+and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured; `suzy3` is not a
+standalone scene route. The allocator route now separates BOOT, CACHE, and
+TRANSIENT lifetimes, wipes scene-boundary transient allocations, reuses CACHE
+storage through free-list/LRU paths, and gates every `memAlloc` call site with a
+nearby `MEM_REGION_RATIONALE`. The current allocator matrix battle card is
+`+0.5699%` over target / `99.4843%` target speed, raw signed `-0.1470%` /
+`100.2147%`, with `118` green, `4` yellow, `2` orange, and `2` red rows.
+Earlier pack/data wins remain in force: the MARY3
 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 `2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
 `690/693 -> 53/51` while keeping hidden refill overrun at zero. The latest
@@ -388,6 +391,19 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.8.16-ps1` — memory-region allocator stability release. Promotes
+  BOOT/CACHE/TRANSIENT allocation lifetimes, scene-boundary TRANSIENT wipes,
+  CACHE free-list/LRU reuse, generated pack-header metrics, and allocator
+  rationale gates. The R34 full matrix remains `126/126` PASS with 0 BSODs.
+  Public rollup after the allocator refresh is `+0.5699%` over target /
+  `99.4843%` target speed, raw signed `-0.1470%` / `100.2147%`, with `118`
+  green, `4` yellow, `2` orange, and `2` red rows.
+- `v0.8.15-ps1` — WALKSTUF1 high setup-resident CD promotion. High tide primes
+  relative sectors `242..388` during setup, improving the active loop/target
+  from `1481/1428` to `1476/1441`, overrun `53 -> 35`, blocking/refill
+  `88/24 -> 49/17`, reads/read time `67/287 -> 37/182`, and due `15 -> 7`.
+  Public rollup is `+0.2285%` over target / `99.7746%` target speed with `119`
+  green and `7` yellow rows.
 - `v0.8.14-ps1` — JOHNNY1 local-LZ green promotion. Both JOHNNY1 tides compress
   full-frame entries `1` and `50` inside the existing `448370` byte high/low
   packs, preserve pack LBA/sectors and the `217088` byte PS-EXE bucket, and move

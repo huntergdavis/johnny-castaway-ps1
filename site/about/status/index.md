@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state after v0.8.14-ps1
+eyebrow: Component-level state after v0.8.16-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -15,16 +15,20 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 The current release line keeps every row in the live per-scene ledger signed
 off, all 126 high/low scene variants routed and timing-bearing, deterministic
-BOOTMODE scene selection logged and gated, and the latest JOHNNY1 high/low
-local-LZ full-frame payload compression promoted into green. The
+BOOTMODE scene selection logged and gated, and the new memory-region allocator
+promoted into mainline. BOOT allocations now seal after startup, CACHE
+allocations reuse long-lived resource storage through free-list/LRU paths, and
+TRANSIENT scene allocations can be wiped between major scene loads. The
 chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2285%` over
-target / `99.7746%` target speed; the raw signed optimization matrix is
-about `-0.5387%` / `100.5570%`.
-The newest accepted JOHNNY1 pack promotion compresses full-frame entries `1`
+allocation. The public headless battle card is `+0.5699%` over
+target / `99.4843%` target speed; the raw signed optimization matrix is
+about `-0.1470%` / `100.2147%`. The allocator validation branch records a R34
+full matrix of `126/126` PASS with 0 BSODs, and the release gates now require a
+nearby `MEM_REGION_RATIONALE` for every `memAlloc` call site.
+The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
 overrun `3`, blocking/refill `5`, and target speed `99.85%`.
@@ -181,7 +185,12 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.9-ps1` promotes the current mainline
+- **Milestone release cadence.** `v0.8.16-ps1` promotes the memory-region
+  allocator: BOOT/CACHE/TRANSIENT lifetimes, scene-boundary transient wipes,
+  CACHE free-list/LRU reuse, generated pack-header metrics, and allocator
+  rationale gates. `v0.8.15-ps1` promotes the WALKSTUF1 high setup-resident CD
+  row. `v0.8.14-ps1` promotes JOHNNY1 high/low local-LZ full-frame compression.
+  `v0.8.9-ps1` promotes the current mainline
   optimization set: VISITOR5 low reuses the green `30..46` retained-read shape,
   BUILDING2 low carries the `218..229` slack8 row plus v739 draw-tail trim,
   and WALKSTUF1 low carries no-shift frame `51`/`49`/`47`/`61`/`62`/`58`/`45`/`37`/`35`

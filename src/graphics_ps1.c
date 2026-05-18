@@ -3065,6 +3065,8 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
      * grBackgroundTilesAssumeWiped (called from fgRuntimeReset right
      * after memSceneReset) NULLs the slot pointers so the next scene's
      * grLoadScreen re-allocates fresh in the new TRANSIENT frame. */
+    /* MEM_REGION_RATIONALE: TRANSIENT background tile descriptor, paired
+     * with per-scene pixel storage and wiped by memSceneReset. */
     PS1Surface *tile = memIsReady()
         ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
         : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
@@ -3076,6 +3078,8 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     tile->indexedOwned = 0;
     tile->psbNibbles = 0;
     tile->nextTile = NULL;
+    /* MEM_REGION_RATIONALE: TRANSIENT background tile pixels, overwritten
+     * by each scene's screen load and not reused across scene boundaries. */
     tile->pixels = memIsReady()
         ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (size_t)width * height * 2u, "bgtile-pixels")
         : (uint16*)safe_malloc(width * height * 2);
@@ -3124,10 +3128,14 @@ static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 heigh
          * a defensive no-op after a scene wipe (slot is already NULL
          * thanks to grBackgroundTilesAssumeWiped); it handles the
          * cold-boot and width/height-change paths. */
+        /* MEM_REGION_RATIONALE: TRANSIENT background tile descriptor, same
+         * per-scene lifetime as createEmptyBgTileRAM. */
         *slot = memIsReady()
             ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
             : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
         resetBgTileRAMFields(*slot, width, height);
+        /* MEM_REGION_RATIONALE: TRANSIENT background tile pixels, same
+         * per-scene lifetime as createEmptyBgTileRAM. */
         (*slot)->pixels = memIsReady()
             ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (uint32)width * height * 2u, "bgtile-pixels")
             : (uint16*)safe_malloc((uint32)width * height * 2);
@@ -3741,6 +3749,8 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         } else {
             target = MEM_REGION_CACHE;
         }
+        /* MEM_REGION_RATIONALE: clean-rect pixels prefer TRANSIENT for
+         * scene-lifetime snapshots and spill to CACHE only when needed. */
         gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
                                                      requiredBytes[idx],
                                                      "grCleanRectPixels");

@@ -1046,7 +1046,8 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         uint8 *tail;
         uint32 tailBytes = metadataBytes - prefixBytes;
 
-        /* Both alloc and free route through CACHE. ps1_streamRead returns
+        /* MEM_REGION_RATIONALE: metadata expansion follows CACHE resource
+         * lifetime. Both alloc and free route through CACHE. ps1_streamRead returns
          * CACHE-region memory post-memInit, so libc free() on metadata/tail
          * silently leaked. Allocating `expanded` through CACHE too keeps
          * the libc heap (only ~77 KB free) out of the metadata path. */
@@ -3487,11 +3488,14 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         windowCapacityBytes > windowBytes) {
                         gFgRuntime.setupPrimeWindowBytes = 0;
                         windowCapacityBytes = windowBytes;
-                        if (windowCapacityBytes > gFgStreamWindowBufferSize)
+                        if (windowCapacityBytes > gFgStreamWindowBufferSize) {
+                            /* MEM_REGION_RATIONALE: fallback allocation for
+                             * same grow-only CACHE prefetch window above. */
                             newWindowBuffer = (uint8 *)memAlloc(
                                 MEM_REGION_CACHE,
                                 windowCapacityBytes,
                                 "fg-stream-window");
+                        }
                     }
                     if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                         if (newWindowBuffer == NULL) {
