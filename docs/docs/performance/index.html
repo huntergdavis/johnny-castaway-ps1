@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4623 words
+          ~18 min read · 4631 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3202%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6880%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.3967%</code> / <code class="language-plaintext highlighter-rouge">100.4183%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3141%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6933%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4028%</code> / <code class="language-plaintext highlighter-rouge">100.4237%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -460,16 +460,17 @@ regression (<code class="language-plaintext highlighter-rouge">1347/1311 -&gt; 1
 (<code class="language-plaintext highlighter-rouge">57/246 -&gt; 47/208</code>, due <code class="language-plaintext highlighter-rouge">8 -&gt; 7</code>) and removes the allocator-era clean-rect
 failure seen with full setup buffers.</p>
 
-<p>The latest VISITOR3 high promotion trims terminal stream-window reads before
-already-resident setup-segment data. It improves the current allocator-era high
-row from <code class="language-plaintext highlighter-rouge">1113/1042</code> to <code class="language-plaintext highlighter-rouge">1106/1042</code>, overrun <code class="language-plaintext highlighter-rouge">71 -&gt; 64</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">83/95 -&gt; 76/88</code>, and keeps reads/due/refill flat at <code class="language-plaintext highlighter-rouge">8/5/5</code>.</p>
+<p>The latest VISITOR3 high promotion extends setup segment2 through relative
+sector <code class="language-plaintext highlighter-rouge">229</code> after the terminal stream-window trim. It improves the current
+allocator-era high row from <code class="language-plaintext highlighter-rouge">1106/1042</code> to <code class="language-plaintext highlighter-rouge">1096/1040</code>, overrun <code class="language-plaintext highlighter-rouge">64 -&gt; 56</code>,
+blocking/read time <code class="language-plaintext highlighter-rouge">76/88 -&gt; 71/83</code>, and keeps reads/due/refill flat at
+<code class="language-plaintext highlighter-rouge">8/5/5</code>.</p>
 
 <p>The latest allocator-era VISITOR3 checkpoint keeps clean-memory relief enabled,
 preserves the stage1 prefetch buffer for both tides, and restores only bounded
 stream windows under clean pressure. High uses the accepted <code class="language-plaintext highlighter-rouge">68 KiB</code> knee plus
-terminal read trimming at <code class="language-plaintext highlighter-rouge">1106/1042</code>, while low now uses a <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5
-window at <code class="language-plaintext highlighter-rouge">1088/1038</code>,
+terminal read trimming and setup segment2 <code class="language-plaintext highlighter-rouge">203..229</code> at <code class="language-plaintext highlighter-rouge">1096/1040</code>, while
+low now uses a <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window at <code class="language-plaintext highlighter-rouge">1088/1038</code>,
 cutting low blocking/read pressure from <code class="language-plaintext highlighter-rouge">347/124/426/98</code> to <code class="language-plaintext highlighter-rouge">104/21/123/17</code>
 without hidden prefetch debt.</p>
 
@@ -1095,7 +1096,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3202% over target / 99.6880% target speed, with several
+public average is now +0.3141% over target / 99.6933% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

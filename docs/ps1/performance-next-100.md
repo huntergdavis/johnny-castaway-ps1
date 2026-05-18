@@ -27,18 +27,20 @@ target / `99.4872%` target speed across `120` timing-bearing rows after the
 
 Current allocator-era rollup after the memory-region allocator refresh,
 targeted W1/B2 setup-segment checkpoint, VISITOR3 stage1-under-clean-relief
-checkpoint, VISITOR3 high/low clean-relief stream-window checkpoints, and the
-VISITOR3 high terminal-window trim:
-`+0.3202%` public average over target / `99.6880%` public target speed across
+checkpoint, VISITOR3 high/low clean-relief stream-window checkpoints, the
+VISITOR3 high terminal-window trim, and the VISITOR3 high setup-segment
+extension:
+`+0.3141%` public average over target / `99.6933%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.3967%` / `100.4183%`. Since the compact full-matrix baseline was
+`-0.4028%` / `100.4237%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.08` public over-target points and added about `12.59` public
+removed about `17.09` public over-target points and added about `12.59` public
 target-speed points. Bands are now `118` green, `7` yellow, `1` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
-stream windows, and trims high-tide terminal reads before resident setup data:
-high improves `1232/1033 -> 1106/1042`, blocking `478 -> 76`, reads
+stream windows, trims high-tide terminal reads before resident setup data, and
+extends the high-tide second setup segment through relative sector `229`:
+high improves `1232/1033 -> 1096/1040`, blocking `478 -> 71`, reads
 `137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1088/1038`,
 blocking `438 -> 104`, reads `126 -> 21`, and due `126 -> 17`. The
 under-green canary refresh also stamps W1 high/low at `1475/1433` and
@@ -475,16 +477,37 @@ promotion proved the small stage buffer could survive clean relief. The current
 promotion keeps clean-memory relief enabled, preserves the small stage1 buffer
 for both tides, allows a high-tide `68 KiB` stream window, allows low tide to
 keep a smaller `16 KiB` stream window only when at least 5 VBlanks of slack are
-available, and trims high-tide terminal reads before already-resident
-setup-segment data. The accepted high-trim canary
-`scratch/ps1-perf-iterate/visitor3-high-payloadtrim-canaries-pass/20260518-004641-2155905/summary.json`
-improves high from `1232/1033` to `1106/1042`, overrun `199 -> 64`,
-blocking `478 -> 76`, reads `137 -> 8`, due `137 -> 5`, and target speed
-`83.847% -> 94.213%`. Low improves from `1231/1040` to `1088/1038`, overrun
+available, trims high-tide terminal reads before already-resident
+setup-segment data, and extends the high-tide second setup segment through
+relative sector `229`. The accepted high setup-segment canary
+`scratch/ps1-perf-iterate/visitor3-high-seg203-229-payloadtrim-canaries-pass/20260518-011814-2337084/summary.json`
+improves high from `1232/1033` to `1096/1040`, overrun `199 -> 56`,
+blocking `478 -> 71`, reads `137 -> 8`, due `137 -> 5`, and target speed
+`83.847% -> 94.891%`. Low improves from `1231/1040` to `1088/1038`, overrun
 `191 -> 50`, blocking `438 -> 104`, reads `126 -> 21`, due `126 -> 17`, and
 target speed `84.484% -> 95.404%`. Use this as the allocator-era VISITOR3
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
+
+Latest VISITOR3 high setup-segment sweep: after the terminal read trim,
+extending setup segment2 from only sector `203` to sectors `203..229` is the
+current clean knee. `18` sectors passed but was smaller (`1102/1042`, blocking
+`74`); `26` sectors passed best (`1096/1040`, overrun `56`, blocking/read time
+`71/83`); `27`, `30`, and `34` sectors failed by raising hidden refill to `6`;
+and `28` sectors passed but was weaker (`1097/1041`, blocking `73`). The
+promoted row improves the active baseline `1106/1042 -> 1096/1040`, overrun
+`64 -> 56`, blocking/read time `76/88 -> 71/83`, with refill/due flat at
+`5/5`.
+
+Latest VISITOR3 high terminal-window trim: the active window refill was reading
+through the last non-resident high-tide payloads and into relative sectors that
+were already resident from setup. The accepted runtime trim stops that terminal
+read at the last needed payload boundary before the resident setup segment,
+improving the then-current row `1113/1042 -> 1106/1042`, overrun `71 -> 64`,
+blocking/read time `83/95 -> 76/88`, and keeping refill/due flat at `5/5`.
+That trim enabled the later setup-segment2 `203..229` sweep above; the broader
+`203..245` swing reached `1088/1043` but stayed rejected because it raised
+hidden refill from `5` to `6`.
 
 Latest VISITOR3 high window-size sweep: `68 KiB` is the current allocator-safe
 knee. `72 KiB` passed but regressed to `1121/1042`, `70 KiB` passed but
@@ -500,16 +523,6 @@ improved low from the stage1/window64 baseline `1107/1042` to `1088/1038`,
 overrun `65 -> 50`, blocking `347 -> 104`, reads/read time `124/426 -> 21/123`,
 and due `98 -> 17`. `20 KiB` regressed versus the knee to `1092/1039`, `24 KiB`
 passed but was slower at `1090/1039`, and slack `6` was exact-flat to slack `5`.
-
-Latest VISITOR3 high terminal-window trim: the active window refill was reading
-through the last non-resident high-tide payloads and into relative sectors that
-were already resident from setup. The accepted runtime trim stops that terminal
-read at the last needed payload boundary before the resident setup segment,
-improving the current row `1113/1042 -> 1106/1042`, overrun `71 -> 64`,
-blocking/read time `83/95 -> 76/88`, and keeping refill/due flat at `5/5`.
-The wider setup-segment swing over `203..245` reached `1088/1043` but was not
-promoted because it raised hidden refill from `5` to `6`; keep it closed until
-prefetch debt or gate policy changes.
 
 Pre-allocator promoted VISITOR3 high speed baseline: keep the v299 resident
 frame-131 placement, the v291 frame-140/tail setup-segment placement, store
