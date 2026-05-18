@@ -119,13 +119,14 @@ linked in the Rollup section.</p>
 </p>
 
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
-now moved out of red into orange after the stage1-under-clean-relief promotion,
-WALKSTUF1 high/low are yellow after targeted setup segments, and BUILDING2 plus
-BUILDING4 remain close yellow/green-edge rows. That is the new allocator
-baseline rather than a visual regression: the R34 allocator matrix still
-records `126/126` PASS with 0 BSODs. The remaining performance work should keep
-targeting VISITOR3 data-shape or scheduler ownership first, then residual
-WALKSTUF1, BUILDING2, and BUILDING4 polish.
+now moved out of red into orange, and the latest VISITOR3 high-only 64 KiB
+clean-relief stream window cuts both VISITOR3 rows further while preserving the
+clean-rect safety path. WALKSTUF1, BUILDING2, and BUILDING4 remain close
+yellow/green-edge rows. That is the new allocator baseline rather than a visual
+regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
+The remaining performance work should keep targeting VISITOR3 data-shape or
+scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4
+polish.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -146,10 +147,10 @@ Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.4%` (`0.3685%` exact, public-capped) |
-| Timing-bearing average target speed | `99.6%` (`99.6457%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; targeted W1/B2 checkpoint `2026-05-17T21:27:42`; VISITOR3 stage1 checkpoint `2026-05-17T21:59:10` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1/B2 rows stamped `git:339df94f5+targeted-setup`; refreshed VISITOR3 rows stamped `git:6ee6fe6d6+visitor3-stage1`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3414%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6691%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; allocator-era under-green canary checkpoint `2026-05-17T22:56:51` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -179,13 +180,14 @@ clean-rect failure mode while staying inside the CACHE budget.
 
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
-room for full setup-prime/window buffers. The latest promotion keeps only the
-tiny stage1 prefetch frame buffer live under that relief path. High improves
-`1232/1033 -> 1135/1035`, overrun `199 -> 100`, blocking `478 -> 387`, reads
-`137 -> 135`, and due `137 -> 109`; low improves `1231/1040 -> 1110/1040`,
-overrun `191 -> 70`, blocking `438 -> 343`, reads `126 -> 124`, and due
-`126 -> 98`. Both rows move from red into orange without reintroducing the
-allocator clean-rect BSOD.
+room for full setup-prime buffers. The current promotion keeps the tiny stage1
+prefetch frame buffer for both tides and allows a high-tide-only 64 KiB stream
+window while keeping low tide on stage1-only relief. High improves
+`1232/1033 -> 1118/1041`, overrun `199 -> 77`, blocking `478 -> 98`, reads
+`137 -> 14`, and due `137 -> 7`; low improves `1231/1040 -> 1107/1042`,
+overrun `191 -> 65`, blocking `438 -> 347`, reads `126 -> 124`, and due
+`126 -> 98`. Both rows stay orange but are materially closer to the 99% line
+without reintroducing the allocator clean-rect BSOD.
 
 Current BUILDING4-low payload track: `building4-low-local-lz-entry270-v971`
 adds entry `270` / source frame `410` on top of the entry `30` and `33`
@@ -1120,13 +1122,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T21:27:42</td>
-      <td>git:339df94f5+targeted-setup</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
       <td>3.0%</td>
       <td class="spd-yellow">97.0%</td>
-      <td>1350/1310</td>
-      <td>54</td>
-      <td>17</td>
+      <td>1351/1311</td>
+      <td>50</td>
+      <td>18</td>
       <td>7</td>
       <td></td>
     </tr>
@@ -1134,13 +1136,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>1.7%</td>
-      <td class="spd-yellow">98.4%</td>
-      <td>1339/1317</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>1.8%</td>
+      <td class="spd-yellow">98.2%</td>
+      <td>1339/1315</td>
       <td>54</td>
-      <td>0</td>
+      <td>2</td>
       <td>12</td>
       <td></td>
     </tr>
@@ -1176,11 +1178,11 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-high"><code>building4</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
       <td>1.1%</td>
       <td class="spd-yellow">98.9%</td>
-      <td>2846/2816</td>
+      <td>2847/2816</td>
       <td>36</td>
       <td>32</td>
       <td>1</td>
@@ -1190,13 +1192,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>1.0%</td>
-      <td class="spd-yellow">99.0%</td>
-      <td>2846/2817</td>
-      <td>34</td>
-      <td>27</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>1.3%</td>
+      <td class="spd-yellow">98.7%</td>
+      <td>2853/2816</td>
+      <td>42</td>
+      <td>35</td>
       <td>1</td>
       <td></td>
     </tr>
@@ -2352,26 +2354,26 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T21:59:10</td>
-      <td>git:6ee6fe6d6+visitor3-stage1</td>
-      <td>9.7%</td>
-      <td class="spd-orange">91.2%</td>
-      <td>1135/1035</td>
-      <td>387</td>
-      <td>0</td>
-      <td>109</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>7.4%</td>
+      <td class="spd-orange">93.1%</td>
+      <td>1118/1041</td>
+      <td>98</td>
+      <td>5</td>
+      <td>7</td>
       <td></td>
     </tr>
     <tr id="perf-visitor3-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T21:59:10</td>
-      <td>git:6ee6fe6d6+visitor3-stage1</td>
-      <td>6.7%</td>
-      <td class="spd-orange">93.7%</td>
-      <td>1110/1040</td>
-      <td>343</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>6.2%</td>
+      <td class="spd-orange">94.1%</td>
+      <td>1107/1042</td>
+      <td>347</td>
       <td>0</td>
       <td>98</td>
       <td></td>
@@ -2492,12 +2494,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T21:27:42</td>
-      <td>git:339df94f5+targeted-setup</td>
-      <td>4.1%</td>
-      <td class="spd-yellow">96.0%</td>
-      <td>1489/1430</td>
-      <td>92</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1475/1433</td>
+      <td>76</td>
       <td>15</td>
       <td>15</td>
       <td></td>
@@ -2506,14 +2508,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T21:27:42</td>
-      <td>git:339df94f5+targeted-setup</td>
-      <td>3.0%</td>
-      <td class="spd-yellow">97.1%</td>
-      <td>1477/1434</td>
-      <td>58</td>
-      <td>16</td>
-      <td>9</td>
+      <td>2026-05-17T22:56:51</td>
+      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>3.1%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1479/1435</td>
+      <td>65</td>
+      <td>18</td>
+      <td>10</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">

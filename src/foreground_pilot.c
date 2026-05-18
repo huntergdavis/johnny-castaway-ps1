@@ -1202,11 +1202,23 @@ static int fgSceneKeepsStage1UnderCleanMemoryRelief(const char *sceneName)
     return fgSceneEquals(sceneName, "visitor3");
 }
 
+static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide;
+}
+
+static uint32 fgSceneCleanReliefWindowBytes(const char *sceneName)
+{
+    if (fgSceneEquals(sceneName, "visitor3"))
+        return 64UL * 1024UL;
+    return 0;
+}
+
 /* Round 33 allocator-era note: VISITOR3 still needs cleanMemoryRelief=1
  * because its split clean rects can consume ~360 KB and TRANSIENT is already
  * mostly occupied by bg tiles. Unlike the older broad relief path, keep the
  * tiny stage1 prefetch frame buffer live and only suppress the large
- * setup-prime/window allocation. */
+ * setup-prime window allocation. */
 static int fgSceneForcesCleanMemoryRelief(const char *sceneName)
 {
     return fgSceneEquals(sceneName, "visitor3");
@@ -3393,7 +3405,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         gFgPrefetchFrameBuffer = NULL;
                         gFgPrefetchFrameBufferSize = 0;
                     }
-                    if (gFgStreamWindowBuffer != NULL) {
+                    if (!fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName) &&
+                        gFgStreamWindowBuffer != NULL) {
                         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
                         gFgStreamWindowBuffer = NULL;
                         gFgStreamWindowBufferSize = 0;
@@ -3420,15 +3433,27 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgPrefetchFrameBufferSize = maxDataSize;
                 }
             }
-            if (gFgPrefetchWindowBytes > 0 && !cleanMemoryRelief) {
+            if (gFgPrefetchWindowBytes > 0 &&
+                (!cleanMemoryRelief ||
+                 fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName))) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
                 const struct TFgPilotReadGroup *streamReadGroups = NULL;
                 uint8 streamReadGroupCount = 0;
                 windowBytes = fgRuntimeStreamWindowBytes(sceneName, windowBytes);
+                if (cleanMemoryRelief &&
+                    fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName)) {
+                    uint32 reliefWindowBytes =
+                        fgSceneCleanReliefWindowBytes(sceneName);
+                    if (reliefWindowBytes > 0)
+                        windowBytes = reliefWindowBytes;
+                }
                 windowCapacityBytes = windowBytes;
                 gFgRuntime.setupPrimeWindowBytes =
                     fgRuntimeSetupPrimeWindowBytes(sceneName, windowBytes);
+                if (cleanMemoryRelief &&
+                    fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName))
+                    gFgRuntime.setupPrimeWindowBytes = 0;
                 if (gFgRuntime.setupPrimeWindowBytes > 0 &&
                     windowCapacityBytes < gFgRuntime.setupPrimeWindowBytes)
                     windowCapacityBytes = gFgRuntime.setupPrimeWindowBytes;
@@ -3594,9 +3619,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 (cleanMemoryRelief &&
                  !fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName)) ?
                 0 : gFgPrefetchFrameBufferSize;
-            gFgRuntime.streamWindowBuffer = cleanMemoryRelief ?
+            gFgRuntime.streamWindowBuffer =
+                (cleanMemoryRelief &&
+                 !fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName)) ?
                 NULL : gFgStreamWindowBuffer;
-            gFgRuntime.streamWindowSize = cleanMemoryRelief ?
+            gFgRuntime.streamWindowSize =
+                (cleanMemoryRelief &&
+                 !fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName)) ?
                 0 : gFgStreamWindowBufferSize;
             gFgRuntime.streamWindowStart = 0;
             gFgRuntime.streamWindowBytes = 0;

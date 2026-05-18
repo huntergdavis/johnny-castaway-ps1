@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2423 words
+          ~9 min read · 2425 words
         </p>
 
       <hr class="rule" />
@@ -130,12 +130,12 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3685%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6457%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.3484%</code> / <code class="language-plaintext highlighter-rouge">100.3760%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3414%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6691%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.3755%</code> / <code class="language-plaintext highlighter-rouge">100.3994%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
+VISITOR3 high-only stream-window checkpoints keep the top allocator-era rows
+measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and

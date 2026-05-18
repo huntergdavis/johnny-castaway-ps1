@@ -50,12 +50,12 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh is
-**+0.3685% over target / 99.6457% target speed**, with roughly **17.03
-percentage points** of over-target gap closed and about **12.55 target-speed
+**+0.3414% over target / 99.6691% target speed**, with roughly **17.06
+percentage points** of over-target gap closed and about **12.57 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
-high/low out of orange, and the VISITOR3 stage1-under-clean-relief promotion
-moved both VISITOR3 tides out of red while keeping the allocator-safe CACHE
-budget intact.
+high/low out of orange, and the VISITOR3 high-only 64 KiB clean-relief
+stream-window promotion moved both VISITOR3 tides out of red while keeping the
+allocator-safe CACHE budget intact.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
