@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3255%`
-exact public over target / `99.6833%` exact public target speed); the raw
-signed optimization matrix is about `-0.3914%` / `100.4136%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3202%`
+exact public over target / `99.6880%` exact public target speed); the raw
+signed optimization matrix is about `-0.3967%` / `100.4183%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -330,18 +330,16 @@ regression (`1347/1311 -> 1350/1310`) for materially lower read pressure
 (`57/246 -> 47/208`, due `8 -> 7`) and removes the allocator-era clean-rect
 failure seen with full setup buffers.
 
-The latest VISITOR3 high promotion reuses the proven low compact frame143/144
-cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
-inside the existing `277..293` setup segment. It improves high to `1063/1040`,
-overrun `23`, blocking/read time `35`, and reads/due `6/6`, while pack
-bytes/LBA/sectors and the PS-EXE bucket stay fixed. BUILDING2 low now keeps the
-earlier `218..229` slack-8 row and adds v739 draw-tail trimming, improving to
-`1339/1317`.
+The latest VISITOR3 high promotion trims terminal stream-window reads before
+already-resident setup-segment data. It improves the current allocator-era high
+row from `1113/1042` to `1106/1042`, overrun `71 -> 64`, blocking/read time
+`83/95 -> 76/88`, and keeps reads/due/refill flat at `8/5/5`.
 
 The latest allocator-era VISITOR3 checkpoint keeps clean-memory relief enabled,
 preserves the stage1 prefetch buffer for both tides, and restores only bounded
-stream windows under clean pressure. High uses the accepted `68 KiB` knee at
-`1113/1042`, while low now uses a `16 KiB` slack-5 window at `1088/1038`,
+stream windows under clean pressure. High uses the accepted `68 KiB` knee plus
+terminal read trimming at `1106/1042`, while low now uses a `16 KiB` slack-5
+window at `1088/1038`,
 cutting low blocking/read pressure from `347/124/426/98` to `104/21/123/17`
 without hidden prefetch debt.
 
@@ -965,7 +963,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3255% over target / 99.6833% target speed, with several
+  public average is now +0.3202% over target / 99.6880% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

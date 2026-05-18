@@ -147,10 +147,10 @@ Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3255%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6833%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 low window checkpoint `2026-05-17T23:58:35` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; refreshed VISITOR3 high row stamped `git:3502b9195+visitor3-window68`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3202%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6880%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 high terminal-window trim `2026-05-18T00:46:41` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 high row stamped `git:f6e2cfa79+visitor3-high-payloadtrim`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -184,7 +184,7 @@ room for full setup-prime buffers. The current promotion keeps the tiny stage1
 prefetch frame buffer for both tides, allows a high-tide 68 KiB stream
 window, and allows low tide to keep a 16 KiB clean-relief stream window behind
 a slack-5 guard. High improves
-`1232/1033 -> 1113/1042`, overrun `199 -> 71`, blocking `478 -> 83`, reads
+`1232/1033 -> 1106/1042`, overrun `199 -> 64`, blocking `478 -> 76`, reads
 `137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1088/1038`,
 overrun `191 -> 50`, blocking `438 -> 104`, reads `126 -> 21`, and due
 `126 -> 17`. High remains orange and low is now yellow, both materially closer to the 99% line
@@ -2355,12 +2355,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T23:29:12</td>
-      <td>git:3502b9195+visitor3-window68</td>
-      <td>6.8%</td>
-      <td class="spd-orange">93.6%</td>
-      <td>1113/1042</td>
-      <td>83</td>
+      <td>2026-05-18T00:46:41</td>
+      <td>git:f6e2cfa79+visitor3-high-payloadtrim</td>
+      <td>6.1%</td>
+      <td class="spd-orange">94.2%</td>
+      <td>1106/1042</td>
+      <td>76</td>
       <td>5</td>
       <td>5</td>
       <td></td>

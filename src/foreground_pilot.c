@@ -2120,6 +2120,50 @@ static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
     return fgRuntimeFindSetupSegmentForEntry(entry, NULL, NULL);
 }
 
+static uint32 fgRuntimeTrimReadEndBeforeResidentSegment(uint32 windowStart,
+                                                        uint32 readEnd,
+                                                        uint32 entryEnd)
+{
+    uint16 i;
+    uint32 trimEnd = readEnd;
+    uint32 payloadEnd = entryEnd;
+
+    if (!fgSceneEquals(gFgRuntime.sceneName, "visitor3") || islandState.lowTide)
+        return readEnd;
+
+    if (gFgRuntime.setupSegmentPrimed &&
+        gFgRuntime.setupSegmentStart > windowStart &&
+        gFgRuntime.setupSegmentStart < trimEnd &&
+        entryEnd <= gFgRuntime.setupSegmentStart)
+        trimEnd = gFgRuntime.setupSegmentStart;
+
+    if (gFgRuntime.setupSegment2Primed &&
+        gFgRuntime.setupSegment2Start > windowStart &&
+        gFgRuntime.setupSegment2Start < trimEnd &&
+        entryEnd <= gFgRuntime.setupSegment2Start)
+        trimEnd = gFgRuntime.setupSegment2Start;
+
+    if (trimEnd != readEnd) {
+        for (i = 0; i < gFgRuntime.entryTable.count; i++) {
+            const struct TFgPilotEntry *candidate = &gFgRuntime.entryTable.entries[i];
+            uint32 candidateEnd;
+
+            if (!fgEntryHasPayload(candidate) ||
+                candidate->dataOffset < windowStart)
+                continue;
+
+            candidateEnd = candidate->dataOffset + candidate->dataSize;
+            if (candidateEnd <= trimEnd && candidateEnd > payloadEnd)
+                payloadEnd = candidateEnd;
+        }
+        payloadEnd = fgSectorAlignUp(payloadEnd);
+        if (payloadEnd > windowStart && payloadEnd < trimEnd)
+            trimEnd = payloadEnd;
+    }
+
+    return trimEnd;
+}
+
 static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
                                         uint8 *dst,
                                         uint8 countsAsDueHit)
@@ -2247,6 +2291,10 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     readEnd = windowStart + readBytes;
     if (readEnd > (uint32)gFgRuntime.packCdFile.size)
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
+    readEnd = fgRuntimeTrimReadEndBeforeResidentSegment(windowStart,
+                                                        windowStart + readBytes,
+                                                        entry->dataOffset + entry->dataSize);
+    readBytes = readEnd - windowStart;
 
     ok = fgRuntimeTryExtendWindow(windowStart,
                                   readBytes,
