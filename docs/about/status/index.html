@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2581 words
+          ~10 min read · 2586 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2690%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7354%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4479%</code> / <code class="language-plaintext highlighter-rouge">100.4658%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2657%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7386%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4512%</code> / <code class="language-plaintext highlighter-rouge">100.4689%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -154,9 +154,9 @@ baselines use allocator-safe targeted setup slices instead of full setup
 buffers: high now measures <code class="language-plaintext highlighter-rouge">1475/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">59/13/10</code>, with
 loop reads/read time down to <code class="language-plaintext highlighter-rouge">46/212</code> after keeping relative sectors
 <code class="language-plaintext highlighter-rouge">198..244</code> and extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code>
-split with a single <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and measures
-<code class="language-plaintext highlighter-rouge">1480/1442</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">55/15/6</code>, with loop reads/read time down to
-<code class="language-plaintext highlighter-rouge">38/211</code>. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
+split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained setup segment after low-only 48 KiB
+clean-rect chunking and measures <code class="language-plaintext highlighter-rouge">1475/1443</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">48/12/6</code>,
+with loop reads/read time at <code class="language-plaintext highlighter-rouge">39/200</code>. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a <code class="language-plaintext highlighter-rouge">68 KiB</code> window with terminal overread trimming, setup segment2
@@ -171,9 +171,9 @@ failure. BUILDING4 high now primes relative sectors <code class="language-plaint
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">36/32 -&gt; 34/30</code>, and moving that row into green. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
 retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1475/1441</code>
-and <code class="language-plaintext highlighter-rouge">1480/1442</code>; the latest high setup-segment retarget cuts high blocking
+and <code class="language-plaintext highlighter-rouge">1475/1443</code>; the latest high setup-segment retarget cuts high blocking
 <code class="language-plaintext highlighter-rouge">76 -&gt; 59</code> and loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code> without moving layout, while low keeps
-the <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
+the <code class="language-plaintext highlighter-rouge">238..344</code> retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, then primes
 relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> during setup, with the allocator-era matrix at
 <code class="language-plaintext highlighter-rouge">1339/1316</code>, overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">34/141</code>,

@@ -33,14 +33,15 @@ extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 `83..95` read-group retime, the VISITOR3 low third setup-segment promotion,
 the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
 setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
-retarget, and the WALKSTUF1 high `286..344` second setup-segment
+retarget, the WALKSTUF1 high `286..344` second setup-segment
 retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
 the `315..327` same-loop CD-pressure row, the BUILDING4 low gap-8
-dirty-upload band merge retune, and the VISITOR3 low frame138 raw-gap
+dirty-upload band merge retune, the VISITOR3 low frame138 raw-gap
+promotion, and the WALKSTUF1 low clean-rect/setup-edge
 promotion:
-`+0.2690%` public average over target / `99.7354%` public target speed across
+`+0.2657%` public average over target / `99.7386%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4479%` / `100.4658%`. Since the compact full-matrix baseline was
+`-0.4512%` / `100.4689%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.13` public over-target points and added about `12.64` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
@@ -56,16 +57,17 @@ high improves `1232/1033 -> 1082/1042`, blocking `478 -> 50`, reads
 `137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
-retained `238..342` segment, improving `1479/1435 -> 1480/1442`, overrun
-`44 -> 38`, blocking/read time `65/230 -> 55/211`, loop reads `50 -> 38`, and
-due `10 -> 6`. The
+retained `238..344` segment after low-only 48 KiB clean-rect chunking,
+improving `1479/1435 -> 1475/1443`, overrun `44 -> 32`,
+blocking/read time `65/230 -> 48/200`, refill `18 -> 12`,
+loop reads `50 -> 39`, and due `10 -> 6`. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice and retargets the
 second retained slice from `411..435` to `286..344`, improving
 `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
 `76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
 due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1475/1441` and
-`1480/1442`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
+`1475/1443`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
 `2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -562,11 +564,28 @@ pressure win: WALKSTUF1 high moves to `1475/1441`, overrun stays `34`, while
 blocking/read time improves `60/228 -> 59/212`, prefetch overrun `15 -> 13`,
 loop reads `48 -> 46`, and due misses stay `10`; W1 low, VISITOR3 high/low,
 BUILDING2 high/low, and BUILDING4 low stay stable. After the later VISITOR3
-low frame138 raw-gap promotion, public rollup is `+0.2690%` over target /
-`99.7354%` target speed; raw signed is about `-0.4479%` / `100.4658%`, and bands stay `119` green, `7` yellow, `0` orange,
+low frame138 raw-gap promotion and W1-low clean-rect/setup-edge promotion,
+public rollup is `+0.2657%` over target / `99.7386%` target speed; raw signed
+is about `-0.4512%` / `100.4689%`, and bands stay `119` green, `7` yellow, `0` orange,
 `0` red. The wider `286..346` edge regressed overrun to `35`, while the older
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.
+
+Latest WALKSTUF1 low clean-rect/setup-edge retarget: low-only 48 KiB
+clean-rect chunking lets the allocator keep the low retained setup segment
+at relative sectors `238..344` without destabilizing W1-high or other canaries.
+Focused artifact:
+`scratch/ps1-perf-iterate/w1low-clean48-runtimecap-setup238-344-focused/20260518-134826-2404755/summary.json`;
+under-green canary artifact:
+`scratch/ps1-perf-iterate/w1low-clean48-runtimecap-setup238-344-canaries/20260518-135202-2425616/summary.json`;
+W1-high canary:
+`scratch/ps1-perf-iterate/w1low-clean48-runtimecap-setup238-344-w1high-canary/20260518-135014-2415120/summary.json`;
+VISITOR3-low canary:
+`scratch/ps1-perf-iterate/w1low-clean48-runtimecap-setup238-344-visitor3low-canary/20260518-140437-2497177/summary.json`.
+The promoted shape improves W1-low `1480/1442 -> 1475/1443`, overrun
+`38 -> 32`, blocking/read time `55/211 -> 48/200`, refill `15 -> 12`,
+and keeps due misses at `6`; W1-high, VISITOR3 high/low, BUILDING2 high/low,
+and BUILDING4 low stay stable.
 
 Prior WALKSTUF1 low setup-segment retarget: the allocator-era split low
 setup slices (`197..243` plus `410..434`) were replaced with one larger
@@ -575,12 +594,14 @@ slot disabled to stay under the CACHE clean-rect cliff. Focused artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-vnext/20260518-065116-38864/summary.json`;
 canary artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-canaries/20260518-065731-74208/summary.json`.
-The follow-up `238..344` edge probe is closed: allocating the 106-sector
-W1-low setup buffer (`217088` bytes) exhausted CACHE before the `97280` byte
-clean-rect allocation, so it produced no `JCPERF2` metrics. Artifact:
+The earlier `238..344` edge probe failed before the clean-rect cap was made
+low-specific: allocating the 106-sector W1-low setup buffer (`217088` bytes)
+exhausted CACHE before the `97280` byte clean-rect allocation, so it produced
+no `JCPERF2` metrics. Artifact:
 `scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-344-current/20260518-113619-1651972/summary.json`.
-Keep `238..342` as the current CACHE-backed W1-low boundary unless a later
-allocator/clean-rect change frees enough CACHE headroom.
+That failure is now superseded by the promoted low-only 48 KiB clean-rect
+chunking path above; keep `238..344` as the current CACHE-backed W1-low
+boundary.
 A follow-up `648 KiB CACHE / 760 KiB TRANSIENT` rebalance is also closed:
 `238..344` became measurable and improved visible overrun/blocking, but
 regressed hidden refill `15 -> 20`; `238..343` regressed visible timing and

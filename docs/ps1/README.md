@@ -12,62 +12,28 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.14-ps1` |
+| Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2523% public over target / 99.7519% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2657% public over target / 99.7386% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.14-ps1` is the current performance point release, collecting the
-JOHNNY1 local-LZ green promotion on top of the post-v0.8.12 under-99
-payload-work checkpoint tracked in the battle card and matrix.
-It keeps all 63 scenes visually/audibly validated, preserves deterministic
-BOOTMODE scene selection and heapless Scene Explorer preview loading, and the
-latest mainline promotes the JOHNNY1 local-LZ full-frame payload compression,
-the BUILDING4 low offscreen draw-span clip plus the
-v928 frame425 fixed-sector payload shrink, the
-BUILDING2 high/low offscreen draw-span work-volume clips, the BUILDING2 low
-draw-tail trim, the WALKSTUF1 high/low late-tail work-volume clips plus the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135 preserve-offset payload shrinks, the WALKSTUF1 low `394..410`
-retained-read win, and the WALKSTUF1 high late-tail physical compaction after
-the VISITOR3 high tail-pack repack and the VISITOR5 high/low and BUILDING2 low
-retained-read wins; the current low retained-read lane is now
-`walkstuf1-low-rg209-225-v935`. The
-public battle card is now `+0.2523%` over target /
-`99.7519%` target speed across all 126
-timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
-WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
-compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
-low/high setup-segment, high frame-126/frame-125 re-anchor, and high
-setup-prime plus guarded low second-segment and low frame-125/frame-126
-resident re-anchor plus low frame-118/frame-127 resident-copy, high
-frame-127/frame-130 resident-copy, low frame-114/frame-117 no-op residual,
-low frame-113 no-op residual, the VISITOR3 high frame-140 setup-segment copy,
-VISITOR3 low frame-114/frame-117 no-op payload aliasing, and the VISITOR3
-high frame-121/frame-123 resident alias plus frame-131 setup-prime copy,
-VISITOR3 low frame-123 resident alias plus frame-128 setup-segment copy,
-and WALKSTUF1 high sector `201..213` read-group follow-ups plus the WALKSTUF1
-high gap-compressed/window-prefetch guard and low gap6-prefix plus slack-guard
-follow-up, the WALKSTUF1 high `213..229` read-group/slack4 promotion, the
-VISITOR3 low frame128/frame129 resident-slot swap, the WALKSTUF1 low
-staged-prepare-before-window scheduler fallback, the VISITOR3 low tail
-pack-only compaction, the WALKSTUF1 high `344..360` read-group promotion,
-the BUILDING6 scene-local slack4 guard, the BUILDING2 high `226..242`
-and `206..230` retained-read groups plus 24-sector grouped-read capacity,
-the WALKSTUF1 high `422..434` / `444..456`
-CD-work reductions, and the shared WALKSTUF1 low/high `443..455` /
-`444..456` dual-tail reduction, plus VISITOR3 low frame129/frame132 and high
-frame132/frame137 D4 previous-frame deltas plus the VISITOR3 high one-sector
-frame132/frame137 setup segment and VISITOR3 low frame132 setup-prime gap relocation,
-the VISITOR5 high/low `30..46` retained-read groups, the BUILDING2 low
-`218..229` slack8 row and v739 draw-tail trim, the VISITOR3 high `277..293` tail-pack repack, the
-BUILDING4 low offscreen draw-span clip plus frame425 and entry30/entry33 local-LZ payload shrinks, the JOHNNY1 local-LZ full-frame payload compression, the BUILDING2 high/low offscreen
-draw-span work-volume clips, the W1-high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips plus the W1-high frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place payload shrinks, and the W1-low frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107/frame110/frame111/frame106 in-place payload shrinks plus the W1-low `209..225` retained-read row; the raw signed
-optimization matrix is about `-0.5148%` / `100.5342%`.
-That is about `17.15` public over-target points removed and `12.65` public
-target-speed points added since the compact full-matrix baseline. MARY1/2/3
-and SUZY1/2 are measured and green; SUZY3 is not a standalone Johnny
-Castaway scene route, only an asset/reference naming source.
+`v0.8.16-ps1` is the current release, with the memory-region allocator
+promoted and the post-release optimization branch now focused on the final
+under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
+deterministic BOOTMODE scene selection and heapless Scene Explorer preview
+loading, and the current battle card is `+0.2657%` over target /
+`99.7386%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4512%` / `100.4689%`; bands are `119`
+green, `7` yellow, `0` orange, and `0` red. The latest allocator-era wins
+include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
+setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
+setup residency, BUILDING4 low gap-8 dirty-upload merge, WALKSTUF1 high
+`286..344` setup residency, and WALKSTUF1 low `238..344` setup residency
+enabled by low-only 48 KiB clean-rect chunking. MARY1/2/3 and SUZY1/2 are
+measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
+only an asset/reference naming source.
 
 The latest JOHNNY1 baseline, `johnny1-local-lz-v932`, stores a scene-local
 copy/literal stream behind a sentinel inside the existing FGP3/v4 payloads.

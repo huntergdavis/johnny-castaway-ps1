@@ -147,6 +147,7 @@ struct TFgPilotRuntime {
 static char gForegroundPilotScene[16] = "";
 static sint16 gFgSceneDrawOffsetX = 0;
 static sint16 gFgSceneDrawOffsetY = 0;
+static uint32 gFgCleanRectMaxBytes = 96UL * 1024UL;
 #ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 #define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
 #endif
@@ -214,7 +215,7 @@ enum {
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_START (264UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (238UL * FG_CD_SECTOR_SIZE)
-#define FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES (104UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES (106UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START (410UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_BYTES (0UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START (198UL * FG_CD_SECTOR_SIZE)
@@ -1812,7 +1813,7 @@ static void fgBackdropEnableWaveBackdrop(void)
 
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH)
 {
-    const uint32 kMaxCleanRectBytes = 96UL * 1024UL;
+    const uint32 kMaxCleanRectBytes = gFgCleanRectMaxBytes;
     const sint16 kWaveMinX = 129;
     const sint16 kWaveMinY = 303;
     const sint16 kWaveEndX = 608;
@@ -2626,6 +2627,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     uint8 *segment2Buffer = NULL;
     uint8 *segment3Buffer = NULL;
 
+    gFgCleanRectMaxBytes = 96UL * 1024UL;
     gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.setupSegment2Buffer = NULL;
     gFgRuntime.setupSegment2Start = 0;
@@ -2741,6 +2743,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segmentBytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES;
             segment2Start = FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START;
             segment2Bytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT2_BYTES;
+            gFgCleanRectMaxBytes = 48UL * 1024UL;
         } else {
             segmentStart = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START;
             segmentBytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES;
