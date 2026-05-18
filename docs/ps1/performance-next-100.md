@@ -625,6 +625,20 @@ loop reads/read time `30/222`, and due `1`, with `group_hits=0`; it grew
 Close B4-low hand-authored group routing for `274..298`; remaining B4-low work
 should target static upload/restore elimination or generated append ownership.
 
+Latest rejected clean first-frame upload dirty-mark probe: VISITOR3 high's
+remaining max-upload row looked like a possible first-frame full-refresh cost,
+so the binary check removed the clean-rect full-dirty mark first, then removed
+the clean-tile full-dirty mark too. Both focused gates stayed exact-flat at
+`1395/1082/1042`, overrun `40`, blocking/refill `50/5`, loop reads `6`, due
+`3`, and max upload `614400`; the second probe only shifted code addresses.
+Artifacts:
+`scratch/ps1-perf-iterate/cleanrect-no-full-first-upload-visitor3-high-vnext/20260518-163900-3367927/summary.json`
+and
+`scratch/ps1-perf-iterate/clean-no-full-first-upload-visitor3-high-vnext/20260518-164046-3378263/summary.json`.
+Keep the clean baseline first-frame dirty invariant; VISITOR3 high's remaining
+work is driven by another upload producer or by CD/window phase, not by these
+two clean-save marks.
+
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
 `{91,107}` scalar row failed on the older `238..342` retained setup baseline,
 but passes after the low-only 48 KiB clean-rect cap and `238..344` setup edge.
