@@ -121,9 +121,9 @@ linked in the Rollup section.</p>
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide into yellow with a 16 KiB
-slack-5 window. The latest BUILDING4 high setup-segment pass moves that row
-into green, leaving BUILDING4 low plus WALKSTUF1 and BUILDING2 as the close
-yellow/green-edge rows. That is the new allocator baseline rather than a visual
+slack-5 window. BUILDING4 high is now green after the setup-segment pass, and
+BUILDING2 high picked up a small scheduler win from the `83..95` read group
+while remaining yellow. That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
 scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 low
@@ -148,10 +148,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3130%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6944%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING4 high setup-segment promotion `2026-05-18T02:30:50` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3117%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6956%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high read-group promotion `2026-05-18T03:44:14` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -171,13 +171,12 @@ loop/target `1509/1425 -> 1489/1430`, overrun `84 -> 59`, blocking/refill
 `142/26 -> 58/16`, loop reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. Both W1 rows moved out of orange into yellow.
 
-Current B2-high allocator-safe setup track: targeted CACHE slices at relative
+Current B2-high allocator-era speed track: targeted CACHE slices at relative
 sectors `3..35` and `202..242` keep the focused allocator run measured without
-the old full-scene setup buffer. The row changes `1347/1311 -> 1350/1310`, so
-loop debt rises slightly, but read pressure improves materially:
-blocking/refill `52/17 -> 54/17`, loop reads/read time `57/246 -> 47/208`, and
-due `8 -> 7`. The tradeoff is accepted because it removes the allocator-era
-clean-rect failure mode while staying inside the CACHE budget.
+the old full-scene setup buffer, and the current scheduler pass replaces the
+tail read group with the `83..95` row. The latest row keeps loop flat at
+`1351`, improves target `1311 -> 1313`, overrun `40 -> 38`, and refill overrun
+`18 -> 14`, with blocking/read time/due flat at `50/207/7`.
 
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
@@ -196,8 +195,8 @@ Current BUILDING4 high speed track: the allocator-era setup-segment pass primes
 relative sectors `264..288` during setup. It improves high tide
 `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 `36/32 -> 34/30`, loop reads/read time `49/256 -> 47/251`, and moves the row
-into green at `99.05%` target speed. The paired B4-low, W1 high/low, and B2
-high/low canaries stayed exact-flat; the only accepted tradeoff is setup time
+into green at `99.05%` target speed. The paired B4-low and W1 high/low
+canaries stayed exact-flat; the only accepted tradeoff is setup time
 `3115 -> 3121`, under the 0.25% canary allowance.
 
 Current BUILDING4-low payload track: `building4-low-local-lz-entry270-v971`
@@ -451,11 +450,10 @@ and `105` spans, kept scene/loop flat at `1770/1478`, improved overrun
 clipping; move to `87..88` or smaller non-risk candidates.
 
 Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
-relative sectors `3..35` and `202..242` in MEM_REGION_CACHE. The final focused
-run keeps B2 high measured at `1350/1310`; this is a slight loop tradeoff from
-the allocator CSV row, but it cuts loop reads/read time `57/246 -> 47/208`,
-keeps refill flat at `17`, and improves due `8 -> 7` while avoiding the
-full-buffer clean-rect allocation failure.
+relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, and the latest
+read-group pass replaces the tail row with `83..95`. The current B2-high row is
+`1351/1313`, overrun `38`, blocking `50`, refill overrun `14`, read time `207`,
+and due `7`, while still avoiding the full-buffer clean-rect allocation failure.
 `building2-low-trimtails-v739` keeps the v626 slack-8 `218..229` retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to `1603/1339/1317`,
@@ -1133,13 +1131,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>3.0%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1351/1311</td>
+      <td>2026-05-18T03:44:14</td>
+      <td>git:1f9dcc40d+building2-high-rg83-95</td>
+      <td>2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1351/1313</td>
       <td>50</td>
-      <td>18</td>
+      <td>14</td>
       <td>7</td>
       <td></td>
     </tr>

@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2471 words
+          ~9 min read · 2478 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3130%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6944%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4039%</code> / <code class="language-plaintext highlighter-rouge">100.4248%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3117%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6956%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4052%</code> / <code class="language-plaintext highlighter-rouge">100.4260%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -169,11 +169,12 @@ retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaint
 and <code class="language-plaintext highlighter-rouge">1477/1434</code>; the latest targeted setup-segment promotion moves both rows
 out of orange without moving layout, while high keeps the v927 payload shrink
 and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
-<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, improving to
-<code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/0</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,
+<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, with the
+allocator-era matrix at
+<code class="language-plaintext highlighter-rouge">1339/1315</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill <code class="language-plaintext highlighter-rouge">54/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,
 and due <code class="language-plaintext highlighter-rouge">12</code>. BUILDING2 high currently measures
-<code class="language-plaintext highlighter-rouge">1350/1310</code>, overrun <code class="language-plaintext highlighter-rouge">40</code>, blocking <code class="language-plaintext highlighter-rouge">54</code>, hidden refill <code class="language-plaintext highlighter-rouge">17</code>, and due misses
-<code class="language-plaintext highlighter-rouge">7</code>; the allocator-safe setup slices cut reads/read time <code class="language-plaintext highlighter-rouge">57/246 -&gt; 47/208</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+<code class="language-plaintext highlighter-rouge">1351/1313</code>, overrun <code class="language-plaintext highlighter-rouge">38</code>, blocking <code class="language-plaintext highlighter-rouge">50</code>, refill overrun <code class="language-plaintext highlighter-rouge">14</code>, and due misses
+<code class="language-plaintext highlighter-rouge">7</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code> scheduler row keep reads/read time at <code class="language-plaintext highlighter-rouge">47/207</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload <code class="language-plaintext highlighter-rouge">674798 -&gt; 672026</code> without moving pack layout.
 The live ledger is at

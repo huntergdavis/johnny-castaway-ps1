@@ -49,15 +49,17 @@ same no-shift treatment for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37
 exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
-public-capped average after the memory-region allocator refresh and BUILDING4
-high setup-segment promotion is
-**+0.3130% over target / 99.6944% target speed**, with roughly **17.09
-percentage points** of over-target gap closed and about **12.59 target-speed
+public-capped average after the memory-region allocator refresh and BUILDING2
+high read-group promotion is
+**+0.3117% over target / 99.6956% target speed**, with roughly **17.09
+percentage points** of over-target gap closed and about **12.60 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
 VISITOR3 tides out of red while keeping the allocator-safe CACHE budget intact;
-BUILDING4 high is now green after caching relative sectors `264..288`.
+BUILDING4 high is now green after caching relative sectors `264..288`, and
+BUILDING2 high has a smaller yellow gap after replacing the tail read group
+with `83..95`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -149,10 +151,10 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `118` rows are green, `7`
+[battle card]({{ '/perf/' | relative_url }}): `119` rows are green, `6`
 remain yellow, and VISITOR3 high is the single orange row. The current
 under-99 focus set is VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2
-high/low, and BUILDING4 high/low.
+high/low, and BUILDING4 low.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some

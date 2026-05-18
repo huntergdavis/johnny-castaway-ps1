@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3130%`
-exact public over target / `99.6944%` exact public target speed); the raw
-signed optimization matrix is about `-0.4039%` / `100.4248%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3117%`
+exact public over target / `99.6956%` exact public target speed); the raw
+signed optimization matrix is about `-0.4052%` / `100.4260%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -324,10 +324,10 @@ blocking/refill `137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due
 `75/353 -> 51/236`, and due `25 -> 9`. Both W1 rows moved out of orange into
 yellow while staying inside the new CACHE allocator budget.
 
-The latest BUILDING2 high allocator baseline keeps only targeted CACHE slices
-at relative sectors `3..35` and `202..242`. It trades a small row-level loop
-regression (`1347/1311 -> 1350/1310`) for materially lower read pressure
-(`57/246 -> 47/208`, due `8 -> 7`) and removes the allocator-era clean-rect
+The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
+at relative sectors `3..35` and `202..242`, then replaces the tail read group
+with the `83..95` scheduler row. The current row is `1351/1313`, overrun `38`,
+blocking `50`, refill overrun `14`, read time `207`, and due `7`, and removes the allocator-era clean-rect
 failure seen with full setup buffers.
 
 The latest VISITOR3 high promotion extends setup segment2 through relative
@@ -620,7 +620,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.6% / 97.5% (1349/1315); due 7; blk 48</td>
+      <td>+2.9% / 97.2% (1351/1313); due 7; blk 50</td>
       <td>+2.3% / 97.8% (1349/1319); due 17; blk 80</td>
     </tr>
     <tr>
@@ -902,10 +902,10 @@ small prefetch buffer live when full setup-prime/window buffers no longer fit.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 high/low
-   remain the biggest gaps after the allocator-era stage1-only prefetch
-   promotion (`+100/+70` VBlanks), followed by WALKSTUF1 high/low
-   (`+59/+43`), BUILDING2 high/low (`+40/+22`), and BUILDING4 high/low
-   (`+30/+29`). VISITOR3's
+   remain the biggest gaps after the allocator-era clean-relief promotions
+   (`+56/+50` VBlanks), followed by WALKSTUF1 high/low
+   (`+42/+44`), BUILDING2 high/low (`+38/+24`), and BUILDING4 low
+   (`+37`). VISITOR3's
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
    data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
@@ -936,7 +936,7 @@ Next plausible wins, in priority order:
    now green after the guarded prefetch-preserve pass, and BUILDING6 moved out
    of the current under-99 focus set after compact-pack promotion. The remaining
    hard rows are VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high/low,
-   and BUILDING4 high/low. Hand-authored read groups and scalar window changes have
+   and BUILDING4 low. Hand-authored read groups and scalar window changes have
    repeatedly shifted cadence instead of safely removing work. The latest
    WALKSTUF1 low v747..v876 pass keeps the row exact-flat except for the v859
    one-VBlank target/overrun win while shrinking the no-shift frame list
@@ -964,7 +964,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3130% over target / 99.6944% target speed, with several
+  public average is now +0.3117% over target / 99.6956% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

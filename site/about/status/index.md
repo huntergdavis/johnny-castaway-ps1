@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3130%` over
-target / `99.6944%` target speed; the raw signed optimization matrix is
-about `-0.4039%` / `100.4248%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.3117%` over
+target / `99.6956%` target speed; the raw signed optimization matrix is
+about `-0.4052%` / `100.4260%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -62,11 +62,12 @@ retained-read shape. WALKSTUF1 high/low now measure `1489/1430`
 and `1477/1434`; the latest targeted setup-segment promotion moves both rows
 out of orange without moving layout, while high keeps the v927 payload shrink
 and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
-`218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
-`1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,
+`218..229` slack-8 retained-read row plus v739 draw-tail trimming, with the
+allocator-era matrix at
+`1339/1315`, overrun `24`, blocking/refill `54/2`, reads/read time `37/150`,
 and due `12`. BUILDING2 high currently measures
-`1350/1310`, overrun `40`, blocking `54`, hidden refill `17`, and due misses
-`7`; the allocator-safe setup slices cut reads/read time `57/246 -> 47/208`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`1351/1313`, overrun `38`, blocking `50`, refill overrun `14`, and due misses
+`7`; the allocator-safe setup slices plus the `83..95` scheduler row keep reads/read time at `47/207`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload `674798 -> 672026` without moving pack layout.
 The live ledger is at
