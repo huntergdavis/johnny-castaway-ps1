@@ -29,13 +29,13 @@ Current allocator-era rollup after the memory-region allocator refresh,
 targeted W1/B2 setup-segment checkpoint, VISITOR3 stage1-under-clean-relief
 checkpoint, VISITOR3 high/low clean-relief stream-window checkpoints, the
 VISITOR3 high terminal-window trim, and the VISITOR3 high setup-segment
-extension:
-`+0.3141%` public average over target / `99.6933%` public target speed across
+extension, and the BUILDING4 high setup-segment promotion:
+`+0.3130%` public average over target / `99.6944%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4028%` / `100.4237%`. Since the compact full-matrix baseline was
+`-0.4039%` / `100.4248%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.09` public over-target points and added about `12.59` public
-target-speed points. Bands are now `118` green, `7` yellow, `1` orange, and
+target-speed points. Bands are now `119` green, `6` yellow, `1` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
 stream windows, trims high-tide terminal reads before resident setup data, and
@@ -45,7 +45,7 @@ high improves `1232/1033 -> 1096/1040`, blocking `478 -> 71`, reads
 blocking `438 -> 104`, reads `126 -> 21`, and due `126 -> 17`. The
 under-green canary refresh also stamps W1 high/low at `1475/1433` and
 `1479/1435`, B2 high/low at `1351/1311` and `1339/1315`, and B4 high/low at
-`2847/2816` and `2853/2816`.
+`2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
@@ -236,6 +236,18 @@ flat `259 -> 255`. Close this region as a hand-authored local table insertion;
 W1-low needs generated deadline/refill ownership or non-CD static work before
 retrying large mid-tail read clusters.
 
+Latest promoted BUILDING4 high setup-segment baseline: caching relative
+sectors `264..288` during setup is the first allocator-era BUILDING4 high
+promotion to cross 99%. The accepted canary
+`scratch/ps1-perf-iterate/building4-high-setupseg264-288-canaries-pass/20260518-023050-2754222/summary.json`
+improves active loop/target `2847/2816 -> 2843/2816`, overrun `31 -> 27`,
+blocking/refill `36/32 -> 34/30`, and loop reads/read VBlanks
+`49/256 -> 47/251`; due stays `1`. B4 low, W1 high/low, and B2 high/low
+stayed exact-flat. The accepted setup trade is scene setup
+`3115 -> 3121` (+0.19%), inside the 0.25% canary allowance. This removes
+BUILDING4 high from the under-99 queue and leaves BUILDING4 low as the only
+B4 yellow row.
+
 Latest promoted BUILDING4 low speed baseline: v652 applies the successful part
 of the offscreen draw-span lane directly to `BUIL4LOW.FG2`, preserving every
 entry offset/size, the `1714154` byte pack footprint, LBA `9118`, and the
@@ -274,16 +286,16 @@ sector-collapse entries still steal phase even when batched with smaller tails.
 Green conversion should now favor generated static/upload ownership, or isolated
 fixed-sector checks only when they prove exact-flat.
 
-Latest rejected BUILDING4 high mirror pass: v715 applied the same
+Earlier rejected BUILDING4 high mirror pass: v715 applied the same
 preserve-offset offscreen draw-span clip to `BUILDING4.FG2` that v652 promoted
 for low tide. The transform is structurally safe and trims the same host-side
 work volume (`30` frames, `65111` pixels, `11871` spans, `471` draw rows, and
 `61047` logical draw bytes), but the fresh current-code baseline measured
 `2847/2815`, worse than the published stale matrix row `2844/2816`. The matched
 gate only improved target-relative overrun `32 -> 31` with loop/blocking/refill
-flat, so the pack was restored and rebuilt. Treat BUILDING4 high as needing a
-fresh row refresh plus scheduler/static-upload work before another high-tide
-pack-only promotion.
+flat, so the pack was restored and rebuilt. The later setup-segment promotion
+crosses 99%, so future BUILDING4 high work should be measured as green-margin
+polish, not as the primary under-99 lane.
 
 Latest promoted WALKSTUF1 work baselines: v653/v654 narrow the rejected
 offscreen clipping lane to late-tail frames only, preserving every entry

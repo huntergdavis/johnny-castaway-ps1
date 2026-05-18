@@ -49,13 +49,15 @@ same no-shift treatment for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37
 exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
-public-capped average after the memory-region allocator refresh is
-**+0.3141% over target / 99.6933% target speed**, with roughly **17.09
+public-capped average after the memory-region allocator refresh and BUILDING4
+high setup-segment promotion is
+**+0.3130% over target / 99.6944% target speed**, with roughly **17.09
 percentage points** of over-target gap closed and about **12.59 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
-VISITOR3 tides out of red while keeping the allocator-safe CACHE budget intact.
+VISITOR3 tides out of red while keeping the allocator-safe CACHE budget intact;
+BUILDING4 high is now green after caching relative sectors `264..288`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what

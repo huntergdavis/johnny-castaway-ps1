@@ -3,9 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-17 (`main` after the memory-region allocator merge;
+**Last updated:** 2026-05-18 (`perf/allocator-era-under-green-20260517` after
+the BUILDING4 high setup-segment promotion;
 all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and
-the public headless battle card is `+0.5699%` over target / `99.4843%` target
+the public headless battle card is `+0.3130%` over target / `99.6944%` target
 speed).
 
 ## Overall

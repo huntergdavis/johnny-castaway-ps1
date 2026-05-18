@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3141%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.6933%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4028%</code> / <code class="language-plaintext highlighter-rouge">100.4237%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.3130%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.6944%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4039%</code> / <code class="language-plaintext highlighter-rouge">100.4248%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -760,8 +760,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>building4</code></td>
-      <td>+1.0% / 99.0% (2844/2816); due 1; blk 37</td>
-      <td>+1.3% / 98.7% (2851/2815); due 1; blk 42</td>
+      <td>+1.0% / 99.1% (2843/2816); due 1; blk 34</td>
+      <td>+1.3% / 98.7% (2853/2816); due 1; blk 42</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -1096,7 +1096,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.3141% over target / 99.6933% target speed, with several
+public average is now +0.3130% over target / 99.6944% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

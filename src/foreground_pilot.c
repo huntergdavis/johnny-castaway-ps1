@@ -205,6 +205,8 @@ enum {
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES (32UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_START (202UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_BYTES (40UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING4_HIGH_SETUP_SEGMENT_START (264UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (197UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES (46UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START (410UL * FG_CD_SECTOR_SIZE)
@@ -2649,6 +2651,25 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             return 0;
         }
         segment2Buffer = segmentBuffer + segmentBytes;
+        gFgRuntime.setupSegmentReusable = 1;
+    } else if (!islandState.lowTide && fgSceneEquals(sceneName, "building4")) {
+        segmentStart = FG_BUILDING4_HIGH_SETUP_SEGMENT_START;
+        segmentBytes = FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES;
+        allocationBytes = segmentBytes;
+        /* MEM_REGION_RATIONALE: targeted reusable read-cluster cache.
+         * Small CACHE allocation; BUILDING4 rows are CD-bound near 99%. */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                  allocationBytes,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = allocationBytes;
+        gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
+        segmentBuffer = gFgSetupSegmentBuffer;
+        if (segmentBuffer == NULL) {
+            gFgSetupSegmentBufferSize = 0;
+            if (ps1PerfEnabled)
+                ps1PerfMarkAllocFail(allocationBytes);
+            return 0;
+        }
         gFgRuntime.setupSegmentReusable = 1;
     } else if (fgSceneEquals(sceneName, "walkstuf1")) {
         if (islandState.lowTide) {

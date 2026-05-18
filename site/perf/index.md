@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">118 (93.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">7 (5.6%) ≥ 95%</span>
+  <span class="spd-key spd-green">119 (94.4%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
   <span class="spd-key spd-orange">1 (0.8%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -121,11 +121,12 @@ linked in the Rollup section.</p>
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide into yellow with a 16 KiB
-slack-5 window. WALKSTUF1, BUILDING2, and BUILDING4 remain close
+slack-5 window. The latest BUILDING4 high setup-segment pass moves that row
+into green, leaving BUILDING4 low plus WALKSTUF1 and BUILDING2 as the close
 yellow/green-edge rows. That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
-scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4
+scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 low
 polish.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
@@ -135,7 +136,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
+Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 
 | Metric | Value |
 |---|---:|
@@ -147,10 +148,10 @@ Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3141%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6933%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 high setup-segment extension `2026-05-18T01:18:14` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3130%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6944%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING4 high setup-segment promotion `2026-05-18T02:30:50` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -190,6 +191,14 @@ through relative sector `229`. High improves
 overrun `191 -> 50`, blocking `438 -> 104`, reads `126 -> 21`, and due
 `126 -> 17`. High remains orange and low is now yellow, both materially closer to the 99% line
 without reintroducing the allocator clean-rect BSOD.
+
+Current BUILDING4 high speed track: the allocator-era setup-segment pass primes
+relative sectors `264..288` during setup. It improves high tide
+`2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
+`36/32 -> 34/30`, loop reads/read time `49/256 -> 47/251`, and moves the row
+into green at `99.05%` target speed. The paired B4-low, W1 high/low, and B2
+high/low canaries stayed exact-flat; the only accepted tradeoff is setup time
+`3115 -> 3121`, under the 0.25% canary allowance.
 
 Current BUILDING4-low payload track: `building4-low-local-lz-entry270-v971`
 adds entry `270` / source frame `410` on top of the entry `30` and `33`
@@ -1180,13 +1189,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-high"><code>building4</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>1.1%</td>
-      <td class="spd-yellow">98.9%</td>
-      <td>2847/2816</td>
-      <td>36</td>
-      <td>32</td>
+      <td>2026-05-18T02:30:50</td>
+      <td>git:391a265e1+building4-high-setupseg264-288</td>
+      <td>1.0%</td>
+      <td class="spd-green">99.1%</td>
+      <td>2843/2816</td>
+      <td>34</td>
+      <td>30</td>
       <td>1</td>
       <td></td>
     </tr>
