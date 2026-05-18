@@ -8,20 +8,20 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `126`
-- Average measured timing gap: `-0.4172%` over target
+- Average measured timing gap: `-0.4287%` over target
 - Average estimated align4 x-band upload byte saving: `66.50%`
 
 ## Top Upload-Ready Candidates
 
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
-| 1 | `visitor3` | `high` | 48.12 | 5.28% | 54.77% | 993.59% | 72 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
-| 2 | `mary1` | `high` | 46.77 | 0.70% | 78.75% | 274.07% | 80 | candidate; rect/frame 2.33 |
-| 3 | `building4` | `low` | 43.1 | 1.31% | 64.45% | 541.09% | 77 | x-band rect cap pressure; needs selective bands; rect/frame 1.71 |
-| 4 | `walkstuf1` | `high` | 41.94 | 2.93% | 45.7% | 722.03% | 91 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
-| 5 | `building2` | `high` | 41.57 | 2.89% | 67.28% | 594.62% | 64 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
-| 6 | `walkstuf1` | `low` | 40.97 | 3.07% | 45.96% | 789.57% | 83 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
-| 7 | `visitor3` | `low` | 40.59 | 3.37% | 55.26% | 1027.5% | 85 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
+| 1 | `mary1` | `high` | 46.77 | 0.70% | 78.75% | 274.07% | 80 | candidate; rect/frame 2.33 |
+| 2 | `building4` | `low` | 43.1 | 1.31% | 64.45% | 541.09% | 77 | x-band rect cap pressure; needs selective bands; rect/frame 1.71 |
+| 3 | `walkstuf1` | `high` | 41.94 | 2.93% | 45.7% | 722.03% | 91 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
+| 4 | `building2` | `high` | 41.57 | 2.89% | 67.28% | 594.62% | 64 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
+| 5 | `walkstuf1` | `low` | 40.97 | 3.07% | 45.96% | 789.57% | 83 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
+| 6 | `visitor3` | `low` | 40.59 | 3.37% | 55.26% | 1027.5% | 85 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
+| 7 | `visitor3` | `high` | 35.66 | 3.84% | 54.77% | 993.59% | 55 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
 | 8 | `building4` | `high` | 33.58 | 0.96% | 65.1% | 481.57% | 64 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
 | 9 | `building2` | `low` | 30.15 | 1.83% | 67.28% | 763.64% | 56 | large upload-ready payload; needs compression/selective bands; rect/frame 2.48 |
 | 10 | `walkstuf3` | `high` | 29.06 | 0.74% | 81.22% | 565.34% | 61 | large upload-ready payload; needs compression/selective bands; rect/frame 2.09 |

@@ -50,9 +50,9 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh and VISITOR3
-high frame139 raw-gap promotion is
-**+0.2994% over target / 99.7069% target speed**, with roughly **17.10
-percentage points** of over-target gap closed and about **12.61 target-speed
+high third setup-segment promotion is
+**+0.2880% over target / 99.7174% target speed**, with roughly **17.11
+percentage points** of over-target gap closed and about **12.62 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both

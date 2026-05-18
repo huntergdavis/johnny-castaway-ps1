@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the VISITOR3 high frame139 raw-gap promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2994% over target / 99.7069% target speed).
+the VISITOR3 high third setup-segment promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2880% over target / 99.7174% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 797 |
-| Approx. words | 8854 |
+| Lines | 798 |
+| Approx. words | 8864 |
 | Code fences | 1 |
 
 ## Outline

@@ -149,10 +149,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2994%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7069%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 high frame139 raw-gap promotion `2026-05-18T05:04:38` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 high row stamped `git:9b7428294+visitor3-high-frame139-rawgap`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2880%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7174%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 high third setup-segment promotion `2026-05-18T05:36:40` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -186,13 +186,14 @@ prefetch frame buffer for both tides, allows a high-tide 68 KiB stream
 window, allows low tide to keep a 16 KiB clean-relief stream window behind
 a slack-5 guard, trims high terminal overread, extends high setup segment2
 through relative sector `229`, and relocates high frame `139`'s raw payload
-into that paid setup gap. High improves
-`1232/1033 -> 1096/1041`, overrun `199 -> 55`, blocking `478 -> 67`, reads
-`137 -> 7`, and due `137 -> 4`; the latest low-tide follow-up adds a third
+into that paid setup gap, then adds a third high retained setup segment at
+relative sectors `228..262`. High improves
+`1232/1033 -> 1082/1042`, overrun `199 -> 40`, blocking `478 -> 50`, reads
+`137 -> 6`, and due `137 -> 3`; the latest low-tide follow-up adds a third
 retained setup segment for sectors `206..230`, improving low
 `1088/1038 -> 1074/1039`, overrun `50 -> 35`, blocking `104 -> 85`,
-reads `21 -> 19`, and due `17 -> 15`. High remains orange and low is now yellow, both materially closer to the 99% line
-without reintroducing the allocator clean-rect BSOD.
+reads `21 -> 19`, and due `17 -> 15`. Both VISITOR3 rows are now yellow and
+the orange band is cleared without reintroducing the allocator clean-rect BSOD.
 
 Current BUILDING4 high speed track: the allocator-era setup-segment pass primes
 relative sectors `264..288` during setup. It improves high tide
@@ -2366,14 +2367,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T05:04:38</td>
-      <td>git:9b7428294+visitor3-high-frame139-rawgap</td>
-      <td>5.3%</td>
-      <td class="spd-orange">95.0%</td>
-      <td>1096/1041</td>
-      <td>67</td>
+      <td>2026-05-18T05:36:40</td>
+      <td>git:fbff319bf+visitor3-high-thirdseg228-262</td>
+      <td>3.8%</td>
+      <td class="spd-yellow">96.3%</td>
+      <td>1082/1042</td>
+      <td>50</td>
       <td>5</td>
-      <td>4</td>
+      <td>3</td>
       <td></td>
     </tr>
     <tr id="perf-visitor3-low">

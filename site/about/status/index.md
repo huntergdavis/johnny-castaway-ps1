@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2994%` over
-target / `99.7069%` target speed; the raw signed optimization matrix is
-about `-0.4175%` / `100.4373%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2880%` over
+target / `99.7174%` target speed; the raw signed optimization matrix is
+about `-0.4289%` / `100.4478%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -49,11 +49,12 @@ loop reads/read time down to `56/256` after caching relative sectors
 `197..243` and `410..434`. Both paths keep pack LBA/sectors and the PS-EXE
 bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
-uses a `68 KiB` window with terminal overread trimming plus setup segment2
-`203..229`, then moves frame `139`'s raw payload into that retained gap. High
-measures `1096/1041`, overrun `55`, blocking `67`, reads/due `7/4`; low uses a
+uses a `68 KiB` window with terminal overread trimming, setup segment2
+`203..229`, frame `139` raw-gap relocation, and a third retained setup segment
+at `228..262`. High measures `1082/1042`, overrun `40`, blocking `50`,
+reads/due `6/3`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment at `206..230` and
-measures `1074/1039`, overrun `35`, blocking `85`, reads/due `19/15`. Both rows moved out of red
+measures `1074/1039`, overrun `35`, blocking `85`, reads/due `19/15`. Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill

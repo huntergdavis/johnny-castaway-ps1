@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2994%`
-exact public over target / `99.7069%` exact public target speed); the raw
-signed optimization matrix is about `-0.4175%` / `100.4373%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2880%`
+exact public over target / `99.7174%` exact public target speed); the raw
+signed optimization matrix is about `-0.4289%` / `100.4478%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -330,17 +330,17 @@ with the `83..95` scheduler row. The current row is `1351/1313`, overrun `38`,
 blocking `50`, refill overrun `14`, read time `207`, and due `7`, and removes the allocator-era clean-rect
 failure seen with full setup buffers.
 
-The latest VISITOR3 high promotion moves frame `139`'s raw payload into the
-already retained `203..229` setup-segment gap after the terminal stream-window
-trim. It improves the current allocator-era high row from `1096/1040` to
-`1096/1041`, overrun `56 -> 55`, blocking/read time `71/83 -> 67/79`, reads/due
-`8/5 -> 7/4`, and keeps hidden refill flat at `5`.
+The latest VISITOR3 high promotion adds a third retained setup segment for
+relative sectors `228..262` after the frame139 raw-gap relocation. It improves
+the current allocator-era high row from `1096/1041` to `1082/1042`, overrun
+`55 -> 40`, blocking/read time `67/79 -> 50/58`, reads/due `7/4 -> 6/3`, and
+keeps hidden refill flat at `5`.
 
 The latest allocator-era VISITOR3 checkpoint keeps clean-memory relief enabled,
 preserves the stage1 prefetch buffer for both tides, and restores only bounded
 stream windows under clean pressure. High uses the accepted `68 KiB` knee plus
-terminal read trimming, setup segment2 `203..229`, and the frame139 raw-gap
-relocation at `1096/1041`, while
+terminal read trimming, setup segment2 `203..229`, the frame139 raw-gap
+relocation, and setup segment3 `228..262` at `1082/1042`, while
 low now uses a `16 KiB` slack-5 window plus a third retained setup segment
 `206..230` at `1074/1039`, cutting low blocking/read pressure from
 `347/124/426/98` to `85/19/103/15`
@@ -966,7 +966,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2994% over target / 99.7069% target speed, with several
+  public average is now +0.2880% over target / 99.7174% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

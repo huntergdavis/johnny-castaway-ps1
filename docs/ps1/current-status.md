@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-18 (`perf/allocator-era-under-green-20260517` after
-the VISITOR3 high frame139 raw-gap promotion;
+the VISITOR3 high third setup-segment promotion;
 all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and
-the public headless battle card is `+0.2994%` over target / `99.7069%` target
+the public headless battle card is `+0.2880%` over target / `99.7174%` target
 speed).
 
 ## Overall
@@ -304,12 +304,12 @@ blocking/refill `42/35`. BUILDING2 high now primes relative sectors `86..242`
 during setup, improving active loop/target `1356/1312 -> 1349/1315`,
 overrun `44 -> 34`, blocking/refill `58/21 -> 48/12`, and reads/read time
 `58/259 -> 25/117` with due flat at `7`. After the allocator refresh and the
-latest VISITOR3 high frame139 raw-gap promotion, the public battle card is
-now `+0.2994%` over target / `99.7069%` target speed; the raw signed
-optimization rollup is about `-0.4175%` / `100.4373%`.
+latest VISITOR3 high third setup-segment promotion, the public battle card is
+now `+0.2880%` over target / `99.7174%` target speed; the raw signed
+optimization rollup is about `-0.4289%` / `100.4478%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.10`
-public over-target points and added about `12.61` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `17.11`
+public over-target points and added about `12.62` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -346,10 +346,11 @@ frame129/frame132 D4 deltas plus the frame132 setup-prime gap relocation, and
 the VISITOR3 high frame132/frame137 D4 deltas with a high-tide slack4 window
 guard plus a one-sector high setup segment for frames `132` and `137`, and the
 v629 high tail-pack repack, plus the allocator-era VISITOR3 low third setup
-segment for sectors `206..230` and the VISITOR3 high frame139 raw relocation
-into the retained `203..229` gap.
+segment for sectors `206..230`, the VISITOR3 high frame139 raw relocation into
+the retained `203..229` gap, and the VISITOR3 high third setup segment for
+sectors `228..262`.
 VISITOR3 high is now
-`1096/1041` with `blocking_vb=67`; low is
+`1082/1042` with `blocking_vb=50`; low is
 `1074/1039` with `blocking_vb=85`. BUILDING2 high/low are `1351/1313` and
 `1339/1315`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
@@ -436,7 +437,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2994%` / `99.7069%` with `119` green, `6` yellow, and `1` orange row;
+  The public battle card is `+0.2880%` / `99.7174%` with `119` green, `7` yellow, and `0` orange rows;
   BUILDING2 high currently measures `1351/1313`, BUILDING2 low now measures
   `1339/1315` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
@@ -444,7 +445,7 @@ Milestone releases:
   `16859/129919/731016` plus active payload `860009`, WALKSTUF1 low is `1469/1447` with loop
   reads `28`, rows/spans/pixels `16257/114798/633876`, and active payload
   `790322`, VISITOR3 high is
-  `1096/1041` with blocking/read time `67`,
+  `1082/1042` with blocking/read time `50`,
   VISITOR3 low is `1074/1039` with blocking/read time `85`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is
   `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are
