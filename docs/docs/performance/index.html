@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4794 words
+          ~19 min read · 4807 words
         </p>
 
       <hr class="rule" />
@@ -272,7 +272,8 @@ and its machine-readable
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.csv"><code class="language-plaintext highlighter-rouge">performance-read-candidate-matrix.csv</code></a>.
 The current report has no standalone-safe rows, keeps VISITOR3 in the
 scheduler-owned or closed lane, and ranks the remaining under-99 work after
-the W1-low <code class="language-plaintext highlighter-rouge">238..344</code> setup-edge promotion. Remaining read-timing candidates should not
+the W1-low <code class="language-plaintext highlighter-rouge">238..344</code> setup-edge promotion and <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
+promotion. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
 slack/scheduler proof. The BUILDING6 v353 <code class="language-plaintext highlighter-rouge">181..197</code> / <code class="language-plaintext highlighter-rouge">269..285</code> probe is
 now the concrete counterexample for direct-stage clusters: the source table
@@ -442,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2657%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7386%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4512%</code> / <code class="language-plaintext highlighter-rouge">100.4689%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2640%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7402%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4529%</code> / <code class="language-plaintext highlighter-rouge">100.4705%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -454,9 +455,9 @@ blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&g
 <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB clean-rect chunking,
-improving the current row <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1475/1443</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 48/12</code>, reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 39/200</code>,
-and due <code class="language-plaintext highlighter-rouge">10 -&gt; 6</code>. Both W1 rows stay yellow while staying
+then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary read group, improving the
+current row <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1473/1444</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 43/11</code>,
+reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 36/195</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 5</code>. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.</p>
 
 <p>The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -1116,7 +1117,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2657% over target / 99.7386% target speed, with several
+public average is now +0.2640% over target / 99.7402% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

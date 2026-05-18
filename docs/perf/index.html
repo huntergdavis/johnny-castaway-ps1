@@ -213,7 +213,7 @@ BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, and <code class="language-plaintext highlighter-rouge">315..327</code> read
 groups, WALKSTUF1
 low now uses one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB
-clean-rect chunking, and WALKSTUF1 high now
+clean-rect chunking plus the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group, and WALKSTUF1 high now
 keeps <code class="language-plaintext highlighter-rouge">198..244</code> while extending its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> during setup, reducing
 loop reads and due misses while keeping loop VBlanks flat. BUILDING4 low now
@@ -276,19 +276,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2657%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2640%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7386%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7402%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-low clean-rect/setup-edge canary <code class="language-plaintext highlighter-rouge">2026-05-18T13:52:02</code>; W1-high canary <code class="language-plaintext highlighter-rouge">2026-05-18T13:50:14</code>; VISITOR3-low canary <code class="language-plaintext highlighter-rouge">2026-05-18T14:04:37</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-low <code class="language-plaintext highlighter-rouge">{91,107}</code> canary <code class="language-plaintext highlighter-rouge">2026-05-18T15:12:29</code>; W1-high canary <code class="language-plaintext highlighter-rouge">2026-05-18T15:20:51</code>; VISITOR3-low canary <code class="language-plaintext highlighter-rouge">2026-05-18T15:22:40</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed under-green rows stamped <code class="language-plaintext highlighter-rouge">git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed W1-low row stamped <code class="language-plaintext highlighter-rouge">git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48</code>; other refreshed under-green rows stamped <code class="language-plaintext highlighter-rouge">git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -313,10 +313,11 @@ slice from <code class="language-plaintext highlighter-rouge">411..435</code> to
 due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces its old split <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> slices
 with one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB clean-rect
-chunking, improving the current row <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1475/1443</code>, overrun
-<code class="language-plaintext highlighter-rouge">44 -&gt; 32</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 48/12</code>, loop reads/read time
-<code class="language-plaintext highlighter-rouge">50/230 -&gt; 39/200</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 6</code>.
-Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.695%</code> and low at <code class="language-plaintext highlighter-rouge">97.831%</code>
+chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group. The combined row
+improves <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1473/1444</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 29</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 43/11</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 36/195</code>,
+and due <code class="language-plaintext highlighter-rouge">10 -&gt; 5</code>.
+Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.695%</code> and low at <code class="language-plaintext highlighter-rouge">98.031%</code>
 target speed.</p>
 
 <p>Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -613,8 +614,9 @@ Low caches <code class="language-plaintext highlighter-rouge">197..243</code> an
 blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
 <code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. The latest low retarget replaces those two slices with one
 <code class="language-plaintext highlighter-rouge">238..344</code> retained setup segment after low-only 48 KiB clean-rect chunking,
-improving the current row <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1475/1443</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 32</code>,
-blocking/read time <code class="language-plaintext highlighter-rouge">65/230 -&gt; 48/200</code>, loop reads <code class="language-plaintext highlighter-rouge">50 -&gt; 39</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 6</code>. Larger full-scene
+then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary row, improving the current row
+<code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1473/1444</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 29</code>, blocking/read time
+<code class="language-plaintext highlighter-rouge">65/230 -&gt; 43/195</code>, loop reads <code class="language-plaintext highlighter-rouge">50 -&gt; 36</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 5</code>. Larger full-scene
 setup buffers and wider B2 second-segment probes crossed allocator
 clean-pressure cliffs and were rejected.</p>
 
@@ -670,7 +672,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed under-green canary rows use <code class="language-plaintext highlighter-rouge">git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</code>;
+refreshed W1-low row uses <code class="language-plaintext highlighter-rouge">git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48</code>;
+the other refreshed under-green canary rows use <code class="language-plaintext highlighter-rouge">git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
 including <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
@@ -2694,14 +2697,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T13:52:02</td>
-      <td>git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</td>
-      <td>2.2%</td>
-      <td class="spd-yellow">97.8%</td>
-      <td>1475/1443</td>
-      <td>48</td>
-      <td>12</td>
-      <td>6</td>
+      <td>2026-05-18T15:12:29</td>
+      <td>git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48</td>
+      <td>2.0%</td>
+      <td class="spd-yellow">98.0%</td>
+      <td>1473/1444</td>
+      <td>43</td>
+      <td>11</td>
+      <td>5</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">

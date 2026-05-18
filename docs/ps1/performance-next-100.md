@@ -37,13 +37,14 @@ retarget, the WALKSTUF1 high `286..344` second setup-segment
 retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
 the `315..327` same-loop CD-pressure row, the BUILDING4 low gap-8
 dirty-upload band merge retune, the VISITOR3 low frame138 raw-gap
-promotion, and the WALKSTUF1 low clean-rect/setup-edge
+promotion, the WALKSTUF1 low clean-rect/setup-edge promotion, and the
+WALKSTUF1 low `{91,107}` first-boundary read-group
 promotion:
-`+0.2657%` public average over target / `99.7386%` public target speed across
+`+0.2640%` public average over target / `99.7402%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4512%` / `100.4689%`. Since the compact full-matrix baseline was
+`-0.4529%` / `100.4705%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.13` public over-target points and added about `12.64` public
+removed about `17.14` public over-target points and added about `12.64` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -57,17 +58,18 @@ high improves `1232/1033 -> 1082/1042`, blocking `478 -> 50`, reads
 `137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
-retained `238..344` segment after low-only 48 KiB clean-rect chunking,
-improving `1479/1435 -> 1475/1443`, overrun `44 -> 32`,
-blocking/read time `65/230 -> 48/200`, refill `18 -> 12`,
-loop reads `50 -> 39`, and due `10 -> 6`. The
+retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
+adds the `{91,107}` first-boundary read group. The combined allocator-era W1-low
+track improves `1479/1435 -> 1473/1444`, overrun `44 -> 29`,
+blocking/read time `65/230 -> 43/195`, refill `18 -> 11`,
+loop reads `50 -> 36`, and due `10 -> 5`. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice and retargets the
 second retained slice from `411..435` to `286..344`, improving
 `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
 `76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
 due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1475/1441` and
-`1475/1443`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
+`1473/1444`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
 `2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -83,6 +85,11 @@ the paid gap at offset `457772` and extends the third low setup segment from
 `206..230` to `206..232`, improving low `1074/1039 -> 1065/1039`, overrun
 `35 -> 26`, blocking/read time `85/103 -> 75/97`, reads `19 -> 18`, and due
 `15 -> 14` while keeping hidden refill `0`.
+The newest W1-low first-boundary read-group promotion reopens the previously
+rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
+improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
+blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
+and due `6 -> 5`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
@@ -564,12 +571,30 @@ pressure win: WALKSTUF1 high moves to `1475/1441`, overrun stays `34`, while
 blocking/read time improves `60/228 -> 59/212`, prefetch overrun `15 -> 13`,
 loop reads `48 -> 46`, and due misses stay `10`; W1 low, VISITOR3 high/low,
 BUILDING2 high/low, and BUILDING4 low stay stable. After the later VISITOR3
-low frame138 raw-gap promotion and W1-low clean-rect/setup-edge promotion,
-public rollup is `+0.2657%` over target / `99.7386%` target speed; raw signed
-is about `-0.4512%` / `100.4689%`, and bands stay `119` green, `7` yellow, `0` orange,
+low frame138 raw-gap promotion, W1-low clean-rect/setup-edge promotion, and
+W1-low `{91,107}` first-boundary read group, public rollup is `+0.2640%` over
+target / `99.7402%` target speed; raw signed is about `-0.4529%` /
+`100.4705%`, and bands stay `119` green, `7` yellow, `0` orange,
 `0` red. The wider `286..346` edge regressed overrun to `35`, while the older
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.
+
+Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
+`{91,107}` scalar row failed on the older `238..342` retained setup baseline,
+but passes after the low-only 48 KiB clean-rect cap and `238..344` setup edge.
+Focused artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-rg91-107-post-clean48-vnext/20260518-150229-2825275/summary.json`;
+under-green canary artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-rg91-107-post-clean48-canaries-noregress/20260518-151229-2883104/summary.json`;
+W1-high canary:
+`scratch/ps1-perf-iterate/walkstuf1-low-rg91-107-w1high-canary/20260518-152051-2931418/summary.json`;
+VISITOR3-low canary:
+`scratch/ps1-perf-iterate/walkstuf1-low-rg91-107-visitor3low-canary/20260518-152240-2942030/summary.json`.
+The promoted row improves W1-low `1475/1443 -> 1473/1444`, overrun
+`32 -> 29`, blocking/read time `48/200 -> 43/195`, refill `12 -> 11`,
+loop reads `39 -> 36`, and due `6 -> 5`; W1 high, VISITOR3 high/low,
+BUILDING2 high/low, and BUILDING4 low stay stable. Keep `{91,107,0}` after
+the existing `{78,91,0}` first-boundary row.
 
 Latest WALKSTUF1 low clean-rect/setup-edge retarget: low-only 48 KiB
 clean-rect chunking lets the allocator keep the low retained setup segment

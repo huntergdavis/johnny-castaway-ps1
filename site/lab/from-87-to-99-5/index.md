@@ -52,8 +52,9 @@ reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh, the latest
 BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
-the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge promotion, is
-**+0.2657% over target / 99.7386% target speed**, with roughly **17.13
+the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
+`{91,107}` first-boundary promotions, is
+**+0.2640% over target / 99.7402% target speed**, with roughly **17.14
 percentage points** of over-target gap closed and about **12.64 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -63,8 +64,8 @@ BUILDING4 high is now green after caching relative sectors `264..288`, and
 BUILDING2 high has a smaller yellow gap after replacing the tail read group
 with `83..95` and adding guarded `271..287` plus the same-loop `315..327` CD-pressure row; VISITOR3 low then adds `206..230` as a third retained setup
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
-split tail residency with a single `238..344` setup segment, moving to
-`1475/1443`, and WALKSTUF1 high retargets its second retained slice to
+split tail residency with a single `238..344` setup segment and adds
+`{91,107}`, moving to `1473/1444`, and WALKSTUF1 high retargets its second retained slice to
 `286..344`, moving to `1475/1441`; BUILDING2 low now primes `112..128`
 during setup, moving to `1339/1316`; BUILDING2 high now measures `1347/1313`
 with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8

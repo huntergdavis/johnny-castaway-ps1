@@ -153,7 +153,8 @@ and its machine-readable
 [`performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv).
 The current report has no standalone-safe rows, keeps VISITOR3 in the
 scheduler-owned or closed lane, and ranks the remaining under-99 work after
-the W1-low `238..344` setup-edge promotion. Remaining read-timing candidates should not
+the W1-low `238..344` setup-edge promotion and `{91,107}` first-boundary
+promotion. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
 slack/scheduler proof. The BUILDING6 v353 `181..197` / `269..285` probe is
 now the concrete counterexample for direct-stage clusters: the source table
@@ -312,9 +313,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2657%`
-exact public over target / `99.7386%` exact public target speed); the raw
-signed optimization matrix is about `-0.4512%` / `100.4689%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2640%`
+exact public over target / `99.7402%` exact public target speed); the raw
+signed optimization matrix is about `-0.4529%` / `100.4705%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -324,9 +325,9 @@ blocking/read time `76/229 -> 59/212`, prefetch overrun `15 -> 13`, reads
 `55 -> 46`, and due `15 -> 10`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` setup segment after low-only 48 KiB clean-rect chunking,
-improving the current row `1479/1435 -> 1475/1443`,
-blocking/refill `65/18 -> 48/12`, reads/read time `50/230 -> 39/200`,
-and due `10 -> 6`. Both W1 rows stay yellow while staying
+then adds `{91,107}` as the first post-boundary read group, improving the
+current row `1479/1435 -> 1473/1444`, blocking/refill `65/18 -> 43/11`,
+reads/read time `50/230 -> 36/195`, and due `10 -> 5`. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -984,7 +985,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2657% over target / 99.7386% target speed, with several
+  public average is now +0.2640% over target / 99.7402% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

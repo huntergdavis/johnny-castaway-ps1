@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1 low clean-rect/setup-edge promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2657% over target / 99.7386% target speed).
+the WALKSTUF1 low first-boundary read-group promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2640% over target / 99.7402% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 811 |
-| Approx. words | 9025 |
+| Lines | 812 |
+| Approx. words | 9041 |
 | Code fences | 1 |
 
 ## Outline
