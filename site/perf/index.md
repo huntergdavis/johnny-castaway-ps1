@@ -119,8 +119,8 @@ linked in the Rollup section.</p>
 </p>
 
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
-now moved out of red into orange, and the latest VISITOR3 high-only 64 KiB
-clean-relief stream window cuts both VISITOR3 rows further while preserving the
+now moved out of red into orange, and the latest VISITOR3 high-only 68 KiB
+clean-relief stream window cuts the high-tide row further while preserving the
 clean-rect safety path. WALKSTUF1, BUILDING2, and BUILDING4 remain close
 yellow/green-edge rows. That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
@@ -147,10 +147,10 @@ Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3414%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6691%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; allocator-era under-green canary checkpoint `2026-05-17T22:56:51` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3367%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.6731%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 high window-knee checkpoint `2026-05-17T23:29:12` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 high row stamped `git:3502b9195+visitor3-window68`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -181,10 +181,10 @@ clean-rect failure mode while staying inside the CACHE budget.
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
 room for full setup-prime buffers. The current promotion keeps the tiny stage1
-prefetch frame buffer for both tides and allows a high-tide-only 64 KiB stream
+prefetch frame buffer for both tides and allows a high-tide-only 68 KiB stream
 window while keeping low tide on stage1-only relief. High improves
-`1232/1033 -> 1118/1041`, overrun `199 -> 77`, blocking `478 -> 98`, reads
-`137 -> 14`, and due `137 -> 7`; low improves `1231/1040 -> 1107/1042`,
+`1232/1033 -> 1113/1042`, overrun `199 -> 71`, blocking `478 -> 83`, reads
+`137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1107/1042`,
 overrun `191 -> 65`, blocking `438 -> 347`, reads `126 -> 124`, and due
 `126 -> 98`. Both rows stay orange but are materially closer to the 99% line
 without reintroducing the allocator clean-rect BSOD.
@@ -2354,14 +2354,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>7.4%</td>
-      <td class="spd-orange">93.1%</td>
-      <td>1118/1041</td>
-      <td>98</td>
+      <td>2026-05-17T23:29:12</td>
+      <td>git:3502b9195+visitor3-window68</td>
+      <td>6.8%</td>
+      <td class="spd-orange">93.6%</td>
+      <td>1113/1042</td>
+      <td>83</td>
       <td>5</td>
-      <td>7</td>
+      <td>5</td>
       <td></td>
     </tr>
     <tr id="perf-visitor3-low">

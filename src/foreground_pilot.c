@@ -1210,7 +1210,7 @@ static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
 static uint32 fgSceneCleanReliefWindowBytes(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "visitor3"))
-        return 64UL * 1024UL;
+        return 68UL * 1024UL;
     return 0;
 }
 
