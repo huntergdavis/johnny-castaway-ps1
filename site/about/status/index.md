@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2760%` over
-target / `99.7290%` target speed; the raw signed optimization matrix is
-about `-0.4410%` / `100.4593%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2690%` over
+target / `99.7354%` target speed; the raw signed optimization matrix is
+about `-0.4479%` / `100.4658%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -56,8 +56,9 @@ uses a `68 KiB` window with terminal overread trimming, setup segment2
 `203..229`, frame `139` raw-gap relocation, and a third retained setup segment
 at `228..262`. High measures `1082/1042`, overrun `40`, blocking `50`,
 reads/due `6/3`; low uses a
-`16 KiB` slack-5 window plus a third retained setup segment at `206..230` and
-measures `1074/1039`, overrun `35`, blocking `85`, reads/due `19/15`. Both rows moved out of red and the orange band is now empty
+`16 KiB` slack-5 window plus a third retained setup segment extended to
+`206..232`, with frame `138` raw relocated into that paid gap, and measures
+`1065/1039`, overrun `26`, blocking `75`, reads/due `18/14`. Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill

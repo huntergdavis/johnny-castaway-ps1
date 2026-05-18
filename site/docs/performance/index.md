@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2760%`
-exact public over target / `99.7290%` exact public target speed); the raw
-signed optimization matrix is about `-0.4410%` / `100.4593%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2690%`
+exact public over target / `99.7354%` exact public target speed); the raw
+signed optimization matrix is about `-0.4479%` / `100.4658%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -356,8 +356,9 @@ stream windows under clean pressure. High uses the accepted `68 KiB` knee plus
 terminal read trimming, setup segment2 `203..229`, the frame139 raw-gap
 relocation, and setup segment3 `228..262` at `1082/1042`, while
 low now uses a `16 KiB` slack-5 window plus a third retained setup segment
-`206..230` at `1074/1039`, cutting low blocking/read pressure from
-`347/124/426/98` to `85/19/103/15`
+extended to `206..232`, with frame `138` raw relocated into that paid gap, at
+`1065/1039`, cutting low blocking/read pressure from
+`347/124/426/98` to `75/18/97/14`
 without hidden prefetch debt.
 
 ## Scene Battle Card
@@ -981,7 +982,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2760% over target / 99.7290% target speed, with several
+  public average is now +0.2690% over target / 99.7354% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

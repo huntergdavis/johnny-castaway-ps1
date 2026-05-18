@@ -35,13 +35,14 @@ the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
 setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
 retarget, and the WALKSTUF1 high `286..344` second setup-segment
 retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
-the `315..327` same-loop CD-pressure row, and the BUILDING4 low gap-8
-dirty-upload band merge retune:
-`+0.2760%` public average over target / `99.7290%` public target speed across
+the `315..327` same-loop CD-pressure row, the BUILDING4 low gap-8
+dirty-upload band merge retune, and the VISITOR3 low frame138 raw-gap
+promotion:
+`+0.2690%` public average over target / `99.7354%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4410%` / `100.4593%`. Since the compact full-matrix baseline was
+`-0.4479%` / `100.4658%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.12` public over-target points and added about `12.63` public
+removed about `17.13` public over-target points and added about `12.64` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -52,8 +53,8 @@ relocates high frame `139`'s raw payload into the already retained `203..229`
 gap, then adds a third high-tide retained setup segment at relative sectors
 `228..262`:
 high improves `1232/1033 -> 1082/1042`, blocking `478 -> 50`, reads
-`137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1074/1039`,
-blocking `438 -> 85`, reads `126 -> 19`, and due `126 -> 15`. WALKSTUF1 low
+`137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
+blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..342` segment, improving `1479/1435 -> 1480/1442`, overrun
 `44 -> 38`, blocking/read time `65/230 -> 55/211`, loop reads `50 -> 38`, and
@@ -75,6 +76,11 @@ same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
 BUILDING4 low `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
 blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`; gap `11`
 was rejected as a one-VBlank regression against gap `8`.
+The newest VISITOR3 low raw-gap promotion moves frame `138`'s raw payload into
+the paid gap at offset `457772` and extends the third low setup segment from
+`206..230` to `206..232`, improving low `1074/1039 -> 1065/1039`, overrun
+`35 -> 26`, blocking/read time `85/103 -> 75/97`, reads `19 -> 18`, and due
+`15 -> 14` while keeping hidden refill `0`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
@@ -522,8 +528,9 @@ available, trims high-tide terminal reads before already-resident
 setup-segment data, extends the high-tide second setup segment through
 relative sector `229`, relocates high frame `139`'s raw payload into that
 already retained gap, adds a third high-tide retained setup segment for
-relative sectors `228..262`, and adds a third low-tide retained setup segment for
-relative sectors `206..230`. The accepted high setup-segment canary
+relative sectors `228..262`, adds a third low-tide retained setup segment for
+relative sectors `206..230`, and then extends that low segment to `206..232`
+so frame `138` can be moved raw into the paid gap. The accepted high setup-segment canary
 `scratch/ps1-perf-iterate/visitor3-high-seg203-229-payloadtrim-canaries-pass/20260518-011814-2337084/summary.json`
 improves high from `1232/1033` to `1096/1040`, overrun `199 -> 56`,
 blocking `478 -> 71`, reads `137 -> 8`, due `137 -> 5`, and target speed
@@ -537,7 +544,10 @@ due `3`, and target speed `96.303%`. The accepted low third-segment canary
 `scratch/ps1-perf-iterate/visitor3-low-thirdseg206-230-visitor-canaries-pass/20260518-043607-3468206/summary.json`
 improves low from `1231/1040` to `1074/1039`, overrun `191 -> 35`,
 blocking `438 -> 85`, reads `126 -> 19`, due `126 -> 15`, and target speed
-`84.484% -> 96.741%`. Use this as the allocator-era VISITOR3
+`84.484% -> 96.741%`. The accepted frame138 raw-gap follow-up
+`scratch/ps1-perf-iterate/visitor3-low-frame138-rawgap-seg206-232-vnext/20260518-124907-2068964/summary.json`
+improves low again to `1065/1039`, overrun `26`, blocking/read time `75/97`,
+reads `18`, due `14`, and target speed `97.559%`. Use this as the allocator-era VISITOR3
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
@@ -551,9 +561,9 @@ The focused and under-green canaries promote the shape as a same-overrun
 pressure win: WALKSTUF1 high moves to `1475/1441`, overrun stays `34`, while
 blocking/read time improves `60/228 -> 59/212`, prefetch overrun `15 -> 13`,
 loop reads `48 -> 46`, and due misses stay `10`; W1 low, VISITOR3 high/low,
-BUILDING2 high/low, and BUILDING4 low stay stable. Public rollup remains
-`+0.2760%` over target / `99.7290%` target speed; raw signed remains about
-`-0.4410%` / `100.4593%`, and bands stay `119` green, `7` yellow, `0` orange,
+BUILDING2 high/low, and BUILDING4 low stay stable. After the later VISITOR3
+low frame138 raw-gap promotion, public rollup is `+0.2690%` over target /
+`99.7354%` target speed; raw signed is about `-0.4479%` / `100.4658%`, and bands stay `119` green, `7` yellow, `0` orange,
 `0` red. The wider `286..346` edge regressed overrun to `35`, while the older
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.

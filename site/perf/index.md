@@ -121,7 +121,8 @@ linked in the Rollup section.</p>
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide further into yellow with a
-16 KiB slack-5 window plus a third retained setup segment at `206..230`.
+16 KiB slack-5 window plus a third retained setup segment extended to
+`206..232` and frame `138` raw relocated into that paid gap.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups, WALKSTUF1
@@ -156,10 +157,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7290%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high setup-slice focused run `2026-05-18T11:11:09`; under-green canary refresh `2026-05-18T11:13:08` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green W1-high setup-slice rows stamped `git:d8c2e3965+walkstuf1-high-setupseg286-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2690%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7354%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high setup-slice focused run `2026-05-18T11:11:09`; under-green canary refresh `2026-05-18T11:13:08`; VISITOR3-low raw-gap focused run `2026-05-18T12:49:07` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 low row stamped `git:43ad15b8+visitor3-low-frame138-rawgap`; refreshed under-green W1-high setup-slice rows stamped `git:d8c2e3965+walkstuf1-high-setupseg286-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -217,9 +218,10 @@ into that paid setup gap, then adds a third high retained setup segment at
 relative sectors `228..262`. High improves
 `1232/1033 -> 1082/1042`, overrun `199 -> 40`, blocking `478 -> 50`, reads
 `137 -> 6`, and due `137 -> 3`; the latest low-tide follow-up adds a third
-retained setup segment for sectors `206..230`, improving low
-`1088/1038 -> 1074/1039`, overrun `50 -> 35`, blocking `104 -> 85`,
-reads `21 -> 19`, and due `17 -> 15`. Both VISITOR3 rows are now yellow and
+retained setup segment for sectors `206..230`, then extends it to `206..232`
+and relocates frame `138` raw into the paid gap, improving low
+`1088/1038 -> 1065/1039`, overrun `50 -> 26`, blocking `104 -> 75`,
+reads `21 -> 18`, and due `17 -> 14`. Both VISITOR3 rows are now yellow and
 the orange band is cleared without reintroducing the allocator clean-rect BSOD.
 
 Current BUILDING4 high speed track: the allocator-era setup-segment pass primes
@@ -2415,14 +2417,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T11:13:08</td>
-      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
-      <td>3.4%</td>
-      <td class="spd-yellow">96.7%</td>
-      <td>1074/1039</td>
-      <td>85</td>
+      <td>2026-05-18T12:49:07</td>
+      <td>git:43ad15b8+visitor3-low-frame138-rawgap</td>
+      <td>2.5%</td>
+      <td class="spd-yellow">97.6%</td>
+      <td>1065/1039</td>
+      <td>75</td>
       <td>0</td>
-      <td>15</td>
+      <td>14</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">
