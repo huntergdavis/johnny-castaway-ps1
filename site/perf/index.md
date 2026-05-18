@@ -120,10 +120,11 @@ linked in the Rollup section.</p>
 
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
-keeps high at its 68 KiB knee while moving low tide into yellow with a 16 KiB
-slack-5 window. BUILDING4 high is now green after the setup-segment pass, and
-BUILDING2 high picked up a small scheduler win from the `83..95` read group
-while remaining yellow. That is the new allocator baseline rather than a visual
+keeps high at its 68 KiB knee while moving low tide further into yellow with a
+16 KiB slack-5 window plus a third retained setup segment at `206..230`.
+BUILDING4 high is now green after the setup-segment pass, and BUILDING2 high
+picked up a small scheduler win from the `83..95` read group while remaining
+yellow. That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
 scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 low
@@ -148,10 +149,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.3117%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.6956%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high read-group promotion `2026-05-18T03:44:14` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; refreshed VISITOR3 low row stamped `git:a2d6356ca+visitor3-low-window16`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.3002%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7062%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3 low third setup-segment promotion `2026-05-18T04:36:07` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed VISITOR3 high row stamped `git:4f3297c33+visitor3-high-seg203-229`; prior under-green canary rows stamped `git:cbe2244ee+visitor3-window64`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -183,12 +184,13 @@ clean-memory relief because its split clean rects and bg tiles leave too little
 room for full setup-prime buffers. The current promotion keeps the tiny stage1
 prefetch frame buffer for both tides, allows a high-tide 68 KiB stream
 window, allows low tide to keep a 16 KiB clean-relief stream window behind
-a slack-5 guard, trims high terminal overread, and extends high setup segment2
+a slack-5 guard, trims high terminal overread, extends high setup segment2
 through relative sector `229`. High improves
 `1232/1033 -> 1096/1040`, overrun `199 -> 56`, blocking `478 -> 71`, reads
-`137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1088/1038`,
-overrun `191 -> 50`, blocking `438 -> 104`, reads `126 -> 21`, and due
-`126 -> 17`. High remains orange and low is now yellow, both materially closer to the 99% line
+`137 -> 8`, and due `137 -> 5`; the latest low-tide follow-up adds a third
+retained setup segment for sectors `206..230`, improving low
+`1088/1038 -> 1074/1039`, overrun `50 -> 35`, blocking `104 -> 85`,
+reads `21 -> 19`, and due `17 -> 15`. High remains orange and low is now yellow, both materially closer to the 99% line
 without reintroducing the allocator clean-rect BSOD.
 
 Current BUILDING4 high speed track: the allocator-era setup-segment pass primes
@@ -2377,14 +2379,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T23:58:35</td>
-      <td>git:a2d6356ca+visitor3-low-window16</td>
-      <td>4.8%</td>
-      <td class="spd-yellow">95.4%</td>
-      <td>1088/1038</td>
-      <td>104</td>
+      <td>2026-05-18T04:36:07</td>
+      <td>git:4b996f7dd+visitor3-low-thirdseg206-230</td>
+      <td>3.4%</td>
+      <td class="spd-yellow">96.7%</td>
+      <td>1074/1039</td>
+      <td>85</td>
       <td>0</td>
-      <td>17</td>
+      <td>15</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">

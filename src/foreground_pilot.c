@@ -117,6 +117,9 @@ struct TFgPilotRuntime {
     uint8 *setupSegment2Buffer;
     uint32 setupSegment2Start;
     uint32 setupSegment2Bytes;
+    uint8 *setupSegment3Buffer;
+    uint32 setupSegment3Start;
+    uint32 setupSegment3Bytes;
     uint8 setupSegmentReusable;
     const struct TFgPilotReadGroup *streamReadGroups;
     uint8 streamReadGroupCount;
@@ -124,6 +127,7 @@ struct TFgPilotRuntime {
     uint8 setupWindowPrimed;
     uint8 setupSegmentPrimed;
     uint8 setupSegment2Primed;
+    uint8 setupSegment3Primed;
     uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
     CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
@@ -227,6 +231,8 @@ enum {
 #define FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT2_START (150UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT2_BYTES (27UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_LOW_SETUP_SEGMENT3_START (206UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_LOW_SETUP_SEGMENT3_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define fgRuntimeWindowReadSize() (gFgRuntime.streamWindowReadSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
@@ -1486,6 +1492,9 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
     gFgRuntime.setupSegment2Buffer = NULL;
     gFgRuntime.setupSegment2Start = 0;
     gFgRuntime.setupSegment2Bytes = 0;
+    gFgRuntime.setupSegment3Buffer = NULL;
+    gFgRuntime.setupSegment3Start = 0;
+    gFgRuntime.setupSegment3Bytes = 0;
     gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.streamReadGroups = NULL;
     gFgRuntime.streamReadGroupCount = 0;
@@ -1493,6 +1502,7 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
     gFgRuntime.setupWindowPrimed = 0;
     gFgRuntime.setupSegmentPrimed = 0;
     gFgRuntime.setupSegment2Primed = 0;
+    gFgRuntime.setupSegment3Primed = 0;
     gFgRuntime.stagedFrameValid = 0;
     gFgRuntime.preparedFrameValid = 0;
 
@@ -1629,10 +1639,14 @@ static void fgRuntimeReset(void)
     gFgRuntime.setupSegment2Buffer = NULL;
     gFgRuntime.setupSegment2Start = 0;
     gFgRuntime.setupSegment2Bytes = 0;
+    gFgRuntime.setupSegment3Buffer = NULL;
+    gFgRuntime.setupSegment3Start = 0;
+    gFgRuntime.setupSegment3Bytes = 0;
     gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.streamReadGroups = NULL;
     gFgRuntime.streamReadGroupCount = 0;
     gFgRuntime.streamWindowValid = 0;
+    gFgRuntime.setupSegment3Primed = 0;
     gFgRuntime.streamScratch = NULL;
     gFgRuntime.streamScratchSize = 0;
     gFgRuntime.packCdFileValid = 0;
@@ -2023,6 +2037,7 @@ static inline void fgRuntimeClearVolatileSetupSegment(void)
     if (!gFgRuntime.setupSegmentReusable) {
         gFgRuntime.setupSegmentPrimed = 0;
         gFgRuntime.setupSegment2Primed = 0;
+        gFgRuntime.setupSegment3Primed = 0;
     }
 }
 
@@ -2049,6 +2064,16 @@ static int fgRuntimeFindSetupSegmentForEntry(const struct TFgPilotEntry *entry,
             *outBuffer = gFgRuntime.setupSegment2Buffer;
         if (outStart != NULL)
             *outStart = gFgRuntime.setupSegment2Start;
+        return 1;
+    }
+
+    if (gFgRuntime.setupSegment3Primed &&
+        entry->dataOffset >= gFgRuntime.setupSegment3Start &&
+        entryEnd <= gFgRuntime.setupSegment3Start + gFgRuntime.setupSegment3Bytes) {
+        if (outBuffer != NULL)
+            *outBuffer = gFgRuntime.setupSegment3Buffer;
+        if (outStart != NULL)
+            *outStart = gFgRuntime.setupSegment3Start;
         return 1;
     }
 
@@ -2588,28 +2613,37 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     uint32 segmentBytes;
     uint32 segment2Start = 0;
     uint32 segment2Bytes = 0;
+    uint32 segment3Start = 0;
+    uint32 segment3Bytes = 0;
     uint32 allocationBytes;
     uint8 *segmentBuffer;
     uint8 *segment2Buffer = NULL;
+    uint8 *segment3Buffer = NULL;
 
     gFgRuntime.setupSegmentReusable = 0;
     gFgRuntime.setupSegment2Buffer = NULL;
     gFgRuntime.setupSegment2Start = 0;
     gFgRuntime.setupSegment2Bytes = 0;
     gFgRuntime.setupSegment2Primed = 0;
+    gFgRuntime.setupSegment3Buffer = NULL;
+    gFgRuntime.setupSegment3Start = 0;
+    gFgRuntime.setupSegment3Bytes = 0;
+    gFgRuntime.setupSegment3Primed = 0;
     if (fgSceneEquals(sceneName, "visitor3")) {
         if (islandState.lowTide) {
             segmentStart = FG_VISITOR3_LOW_SETUP_SEGMENT_START;
             segmentBytes = FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES;
             segment2Start = FG_VISITOR3_LOW_SETUP_SEGMENT2_START;
             segment2Bytes = FG_VISITOR3_LOW_SETUP_SEGMENT2_BYTES;
+            segment3Start = FG_VISITOR3_LOW_SETUP_SEGMENT3_START;
+            segment3Bytes = FG_VISITOR3_LOW_SETUP_SEGMENT3_BYTES;
         } else {
             segmentStart = FG_VISITOR3_HIGH_SETUP_SEGMENT_START;
             segmentBytes = FG_VISITOR3_HIGH_SETUP_SEGMENT_BYTES;
             segment2Start = FG_VISITOR3_HIGH_SETUP_SEGMENT2_START;
             segment2Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES;
         }
-        allocationBytes = segmentBytes + segment2Bytes;
+        allocationBytes = segmentBytes + segment2Bytes + segment3Bytes;
         /* MEM_REGION_RATIONALE: per-scene segment-decode scratch.
          * Reclaimed wholesale by memSceneReset. The old "if big
          * enough, reuse" logic is unnecessary under TRANSIENT
@@ -2628,6 +2662,8 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         }
         if (segment2Bytes > 0)
             segment2Buffer = segmentBuffer + segmentBytes;
+        if (segment3Bytes > 0)
+            segment3Buffer = segmentBuffer + segmentBytes + segment2Bytes;
         gFgRuntime.setupSegmentReusable = 1;
     } else if (!islandState.lowTide && fgSceneEquals(sceneName, "building2")) {
         segmentStart = FG_BUILDING2_HIGH_SETUP_SEGMENT_START;
@@ -2735,6 +2771,18 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                                        segment2Buffer)) {
         gFgRuntime.setupSegmentPrimed = 0;
         gFgRuntime.setupSegment2Primed = 0;
+        gFgRuntime.setupSegment3Primed = 0;
+        return 0;
+    }
+
+    if (segment3Bytes > 0 &&
+        !ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
+                                       segment3Start,
+                                       segment3Bytes,
+                                       segment3Buffer)) {
+        gFgRuntime.setupSegmentPrimed = 0;
+        gFgRuntime.setupSegment2Primed = 0;
+        gFgRuntime.setupSegment3Primed = 0;
         return 0;
     }
 
@@ -2744,6 +2792,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                                        segmentBuffer)) {
         gFgRuntime.setupSegmentPrimed = 0;
         gFgRuntime.setupSegment2Primed = 0;
+        gFgRuntime.setupSegment3Primed = 0;
         return 0;
     }
 
@@ -2756,6 +2805,12 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         gFgRuntime.setupSegment2Start = segment2Start;
         gFgRuntime.setupSegment2Bytes = segment2Bytes;
         gFgRuntime.setupSegment2Primed = 1;
+    }
+    if (segment3Bytes > 0) {
+        gFgRuntime.setupSegment3Buffer = segment3Buffer;
+        gFgRuntime.setupSegment3Start = segment3Start;
+        gFgRuntime.setupSegment3Bytes = segment3Bytes;
+        gFgRuntime.setupSegment3Primed = 1;
     }
     return 1;
 }

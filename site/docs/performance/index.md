@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.3117%`
-exact public over target / `99.6956%` exact public target speed); the raw
-signed optimization matrix is about `-0.4052%` / `100.4260%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.3002%`
+exact public over target / `99.7062%` exact public target speed); the raw
+signed optimization matrix is about `-0.4167%` / `100.4366%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
 instead of the old full-scene resident setup buffers. High caches relative
@@ -340,8 +340,9 @@ The latest allocator-era VISITOR3 checkpoint keeps clean-memory relief enabled,
 preserves the stage1 prefetch buffer for both tides, and restores only bounded
 stream windows under clean pressure. High uses the accepted `68 KiB` knee plus
 terminal read trimming and setup segment2 `203..229` at `1096/1040`, while
-low now uses a `16 KiB` slack-5 window at `1088/1038`,
-cutting low blocking/read pressure from `347/124/426/98` to `104/21/123/17`
+low now uses a `16 KiB` slack-5 window plus a third retained setup segment
+`206..230` at `1074/1039`, cutting low blocking/read pressure from
+`347/124/426/98` to `85/19/103/15`
 without hidden prefetch debt.
 
 ## Scene Battle Card
@@ -964,7 +965,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.3117% over target / 99.6956% target speed, with several
+  public average is now +0.3002% over target / 99.7062% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2478 words
+          ~9 min read · 2486 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3117%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6956%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4052%</code> / <code class="language-plaintext highlighter-rouge">100.4260%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3002%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7062%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4167%</code> / <code class="language-plaintext highlighter-rouge">100.4366%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -159,8 +159,8 @@ stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a <code class="language-plaintext highlighter-rouge">68 KiB</code> window with terminal overread trimming plus setup segment2
 <code class="language-plaintext highlighter-rouge">203..229</code> and measures <code class="language-plaintext highlighter-rouge">1096/1040</code>, overrun <code class="language-plaintext highlighter-rouge">56</code>, blocking <code class="language-plaintext highlighter-rouge">71</code>, reads/due
 <code class="language-plaintext highlighter-rouge">8/5</code>; low uses a
-<code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window and measures <code class="language-plaintext highlighter-rouge">1088/1038</code>,
-overrun <code class="language-plaintext highlighter-rouge">50</code>, blocking <code class="language-plaintext highlighter-rouge">104</code>, reads/due <code class="language-plaintext highlighter-rouge">21/17</code>. Both rows moved out of red
+<code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment at <code class="language-plaintext highlighter-rouge">206..230</code> and
+measures <code class="language-plaintext highlighter-rouge">1074/1039</code>, overrun <code class="language-plaintext highlighter-rouge">35</code>, blocking <code class="language-plaintext highlighter-rouge">85</code>, reads/due <code class="language-plaintext highlighter-rouge">19/15</code>. Both rows moved out of red
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors <code class="language-plaintext highlighter-rouge">264..288</code> during setup,
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill

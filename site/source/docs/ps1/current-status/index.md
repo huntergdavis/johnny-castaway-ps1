@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the BUILDING2 high read-group promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.3117% over target / 99.6956% target speed).
+the VISITOR3 low third setup-segment promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.3002% over target / 99.7062% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 794 |
-| Approx. words | 8816 |
+| Lines | 796 |
+| Approx. words | 8841 |
 | Code fences | 1 |
 
 ## Outline

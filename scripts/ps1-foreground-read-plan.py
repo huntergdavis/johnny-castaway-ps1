@@ -594,7 +594,7 @@ def parse_source_setup_policy() -> dict[str, Any]:
 
     for tide in ("HIGH", "LOW"):
         segments = []
-        for suffix in ("", "2"):
+        for suffix in ("", "2", "3"):
             start = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_START")
             size = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_BYTES")
             if start is not None and size is not None and size > 0:
