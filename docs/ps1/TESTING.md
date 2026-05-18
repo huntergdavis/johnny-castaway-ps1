@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-18:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2771%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7278%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group promotion `2026-05-18T09:43:05` |
-| Stats version | mixed; newest targeted allocator rows include `git:2bb011192+building2-high-rg271-287`, `git:776e57df+building2-low-setupseg112-128`, `git:bf941b4d8+walkstuf1-high-setupseg286-342`, and `git:44dc073e0+walkstuf1-low-setupseg238-342`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group pressure promotion `2026-05-18T10:00:45` |
+| Stats version | mixed; newest targeted allocator rows include `git:2417ab233+building2-high-rg315-327`, `git:776e57df+building2-low-setupseg112-128`, `git:bf941b4d8+walkstuf1-high-setupseg286-342`, and `git:44dc073e0+walkstuf1-low-setupseg238-342`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -99,9 +99,11 @@ Latest promoted BUILDING2 high read-group note:
 the allocator-era targeted setup checkpoint caches only relative sectors
 `3..35` and `202..242` in MEM_REGION_CACHE instead of retaining a full setup
 buffer, then the scheduler path replaces the tail read group with `83..95` and
-adds guarded `271..287`. The latest row improves active loop `1351 -> 1347`,
-overrun `38 -> 34`, blocking `50 -> 41`, read time `207 -> 203`, and due
-`7 -> 6`; the accepted hidden-refill tradeoff is `14 -> 16`.
+adds guarded `271..287` plus `315..327`. The visible-speed row improves active
+loop `1351 -> 1347`, overrun `38 -> 34`, blocking `50 -> 41`, read time
+`207 -> 203`, and due `7 -> 6`; the newest same-loop pressure row keeps
+`1347/1313`, overrun `34`, and refill `16` flat while reducing blocking
+`41 -> 39`, loop reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`
@@ -236,8 +238,8 @@ v664 late `168..177`.
 The payload-work baseline stays exact-flat at `1602`, active loop/target
 `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
 and due `7`; the current B2-high speed row layers allocator-safe setup slices,
-`83..95`, and guarded `271..287` to reach `1347/1313`, overrun `34`,
-blocking/refill `41/16`, read time `203`, and due `6`. Runtime
+`83..95`, guarded `271..287`, and `315..327` to reach `1347/1313`,
+overrun `34`, blocking/refill `39/16`, reads/read time `45/199`, and due `5`. Runtime
 frame rows/spans/pixels remain at the v703 `18030/105645/446246` row, while
 active payload drops `674798 -> 669408` with fixed pack LBA/sectors and
 PS-EXE bucket.

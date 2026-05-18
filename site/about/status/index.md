@@ -37,7 +37,9 @@ overrun `3`, blocking/refill `5`, and target speed `99.85%`.
 The accepted BUILDING2 low setup-segment promotion primes relative sectors
 `112..128` during setup without changing pack size/LBA, improving low to
 `1339/1316`, overrun `23`, blocking/read time `53`/`141`, reads `34`, and due
-`11`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+`11`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
+of the allocator-safe setup slices, holding `1347/1313` while cutting blocking
+to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
 `2851/2815`, overrun `36`, blocking/read time `42`/`223`, and prefetch overrun
 `35`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
@@ -68,9 +70,9 @@ the `238..342` retained setup segment and the no-shift payload lane. BUILDING2 l
 relative sectors `112..128` during setup, with the allocator-era matrix at
 `1339/1316`, overrun `23`, blocking/refill `53/2`, reads/read time `34/141`,
 and due `11`. BUILDING2 high currently measures
-`1347/1313`, overrun `34`, blocking `41`, refill overrun `16`, and due misses
-`6`; the allocator-safe setup slices plus the `83..95` and guarded `271..287`
-scheduler rows keep reads/read time at `47/203`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, and due misses
+`5`; the allocator-safe setup slices plus the `83..95`, guarded `271..287`,
+and `315..327` scheduler rows keep reads/read time at `45/199`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload `674798 -> 672026` without moving pack layout.
 The live ledger is at

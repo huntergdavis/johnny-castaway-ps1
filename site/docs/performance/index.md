@@ -328,10 +328,10 @@ inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors `3..35` and `202..242`, then replaces the tail read group
-with `83..95` and adds guarded `271..287`. The current row is `1347/1313`,
-overrun `34`, blocking `41`, refill overrun `16`, read time `203`, and due
-`6`, and removes the allocator-era clean-rect failure seen with full setup
-buffers.
+with `83..95` and adds guarded `271..287` plus `315..327`. The current row is
+`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, reads/read time
+`45/199`, and due `5`, and removes the allocator-era clean-rect failure seen
+with full setup buffers.
 
 The latest BUILDING2 low allocator baseline adds a setup-resident
 `112..128` slice. It keeps loop flat at `1339`, improves target `1315 -> 1316`,
@@ -631,7 +631,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.6% / 97.5% (1347/1313); due 6; blk 41</td>
+      <td>+2.6% / 97.5% (1347/1313); due 5; blk 39</td>
       <td>+1.7% / 98.3% (1339/1316); due 11; blk 53</td>
     </tr>
     <tr>

@@ -123,7 +123,7 @@ now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide further into yellow with a
 16 KiB slack-5 window plus a third retained setup segment at `206..230`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
-picked up small scheduler wins from the `83..95` and guarded `271..287` read
+picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups, WALKSTUF1
 low now uses one retained `238..342` setup segment, and WALKSTUF1 high now
 keeps `198..244` while retargeting its second retained slice to `286..342`.
@@ -156,8 +156,8 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2771%` exact, public-capped) |
 | Timing-bearing average target speed | `99.7%` (`99.7278%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group promotion `2026-05-18T09:43:05` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 high row stamped `git:2bb011192+building2-high-rg271-287`; refreshed BUILDING2 low row stamped `git:776e57df+building2-low-setupseg112-128`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group pressure promotion `2026-05-18T10:00:45` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 high row stamped `git:2417ab233+building2-high-rg315-327`; refreshed BUILDING2 low row stamped `git:776e57df+building2-low-setupseg112-128`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -183,10 +183,12 @@ target speed.
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
 sectors `3..35` and `202..242` keep the focused allocator run measured without
 the old full-scene setup buffer, and the current scheduler pass replaces the
-tail read group with `83..95` and adds guarded `271..287`. The latest row
-improves active loop `1351 -> 1347`, overrun `38 -> 34`, blocking
-`50 -> 41`, read time `207 -> 203`, and due `7 -> 6`; the accepted
-hidden-refill tradeoff is `14 -> 16`.
+tail read group with `83..95` and adds guarded `271..287` plus `315..327`.
+The visible-speed row improves active loop `1351 -> 1347`, overrun
+`38 -> 34`, blocking `50 -> 41`, read time `207 -> 203`, and due `7 -> 6`;
+the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
+`16` flat while reducing blocking `41 -> 39`, loop reads `47 -> 45`, read time
+`203 -> 199`, and due `6 -> 5`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` during setup. It keeps loop flat at `1339`,
@@ -476,8 +478,8 @@ clipping; move to `87..88` or smaller non-risk candidates.
 Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
 relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, then the
 read-group passes replace the tail row with `83..95` and add guarded
-`271..287`. The current B2-high row is `1347/1313`, overrun `34`, blocking
-`41`, refill overrun `16`, read time `203`, and due `6`, while still avoiding
+`271..287` plus `315..327`. The current B2-high row is `1347/1313`, overrun
+`34`, blocking `39`, refill overrun `16`, reads/read time `45/199`, and due `5`, while still avoiding
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
@@ -523,7 +525,7 @@ and this page.
   `git:44dc073e0+walkstuf1-low-setupseg238-342`,
   `git:fbff319bf+visitor3-high-thirdseg228-262`,
   `git:4b996f7dd+visitor3-low-thirdseg206-230`,
-  `git:2bb011192+building2-high-rg271-287`,
+  `git:2417ab233+building2-high-rg315-327`,
   and `git:391a265e1+building4-high-setupseg264-288` for the actively
   refreshed under-green rows. Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -1160,14 +1162,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T09:43:05</td>
-      <td>git:2bb011192+building2-high-rg271-287</td>
+      <td>2026-05-18T10:00:45</td>
+      <td>git:2417ab233+building2-high-rg315-327</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
-      <td>41</td>
+      <td>39</td>
       <td>16</td>
-      <td>6</td>
+      <td>5</td>
       <td></td>
     </tr>
     <tr id="perf-building2-low">

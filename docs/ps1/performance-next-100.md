@@ -34,12 +34,13 @@ extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
 setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
 retarget, and the WALKSTUF1 high `286..342` second setup-segment
-retarget:
-`+0.2801%` public average over target / `99.7249%` public target speed across
+retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row
+and `315..327` same-loop CD-pressure row:
+`+0.2771%` public average over target / `99.7278%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4368%` / `100.4553%`. Since the compact full-matrix baseline was
+`-0.4398%` / `100.4582%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.12` public over-target points and added about `12.62` public
+removed about `17.12` public over-target points and added about `12.63` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -65,7 +66,10 @@ under-green canary refresh also stamps W1 high/low at `1472/1438` and
 `2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
-hidden-refill tradeoff `14 -> 16`.
+hidden-refill tradeoff `14 -> 16`. The follow-up guarded `315..327` row is a
+same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
+`16`, while blocking drops `41 -> 39`, loop reads `47 -> 45`, read time
+`203 -> 199`, and due `6 -> 5`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
@@ -1150,6 +1154,10 @@ in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
 `18144/110717/468636 -> 18030/105645/446246`. Use v926 as the current
 same-speed BUILDING2 high work baseline for future comparisons.
+The allocator-era speed row now layers targeted setup slices with `83..95`,
+guarded `271..287`, and `315..327`, keeping B2-high at `1347/1313`
+while lowering active CD pressure to blocking/refill `39/16`, reads/read time
+`45/199`, and due `5`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for

@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4734 words
+          ~18 min read · 4736 words
         </p>
 
       <hr class="rule" />
@@ -458,10 +458,10 @@ inside the new CACHE allocator budget.</p>
 
 <p>The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code>, then replaces the tail read group
-with <code class="language-plaintext highlighter-rouge">83..95</code> and adds guarded <code class="language-plaintext highlighter-rouge">271..287</code>. The current row is <code class="language-plaintext highlighter-rouge">1347/1313</code>,
-overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">41</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, read time <code class="language-plaintext highlighter-rouge">203</code>, and due
-<code class="language-plaintext highlighter-rouge">6</code>, and removes the allocator-era clean-rect failure seen with full setup
-buffers.</p>
+with <code class="language-plaintext highlighter-rouge">83..95</code> and adds guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code>. The current row is
+<code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, reads/read time
+<code class="language-plaintext highlighter-rouge">45/199</code>, and due <code class="language-plaintext highlighter-rouge">5</code>, and removes the allocator-era clean-rect failure seen
+with full setup buffers.</p>
 
 <p>The latest BUILDING2 low allocator baseline adds a setup-resident
 <code class="language-plaintext highlighter-rouge">112..128</code> slice. It keeps loop flat at <code class="language-plaintext highlighter-rouge">1339</code>, improves target <code class="language-plaintext highlighter-rouge">1315 -&gt; 1316</code>,
@@ -761,7 +761,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.6% / 97.5% (1347/1313); due 6; blk 41</td>
+      <td>+2.6% / 97.5% (1347/1313); due 5; blk 39</td>
       <td>+1.7% / 98.3% (1339/1316); due 11; blk 53</td>
     </tr>
     <tr>

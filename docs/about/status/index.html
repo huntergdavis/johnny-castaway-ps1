@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2532 words
+          ~10 min read · 2564 words
         </p>
 
       <hr class="rule" />
@@ -144,7 +144,9 @@ overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/re
 The accepted BUILDING2 low setup-segment promotion primes relative sectors
 <code class="language-plaintext highlighter-rouge">112..128</code> during setup without changing pack size/LBA, improving low to
 <code class="language-plaintext highlighter-rouge">1339/1316</code>, overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">141</code>, reads <code class="language-plaintext highlighter-rouge">34</code>, and due
-<code class="language-plaintext highlighter-rouge">11</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+<code class="language-plaintext highlighter-rouge">11</code>. BUILDING2 high now layers guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code> rows on top
+of the allocator-safe setup slices, holding <code class="language-plaintext highlighter-rouge">1347/1313</code> while cutting blocking
+to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time to <code class="language-plaintext highlighter-rouge">45/199</code>, and due to <code class="language-plaintext highlighter-rouge">5</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
 <code class="language-plaintext highlighter-rouge">2851/2815</code>, overrun <code class="language-plaintext highlighter-rouge">36</code>, blocking/read time <code class="language-plaintext highlighter-rouge">42</code>/<code class="language-plaintext highlighter-rouge">223</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">35</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
@@ -175,9 +177,9 @@ the <code class="language-plaintext highlighter-rouge">238..342</code> retained 
 relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> during setup, with the allocator-era matrix at
 <code class="language-plaintext highlighter-rouge">1339/1316</code>, overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">34/141</code>,
 and due <code class="language-plaintext highlighter-rouge">11</code>. BUILDING2 high currently measures
-<code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">41</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, and due misses
-<code class="language-plaintext highlighter-rouge">6</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code> and guarded <code class="language-plaintext highlighter-rouge">271..287</code>
-scheduler rows keep reads/read time at <code class="language-plaintext highlighter-rouge">47/203</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+<code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, and due misses
+<code class="language-plaintext highlighter-rouge">5</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>,
+and <code class="language-plaintext highlighter-rouge">315..327</code> scheduler rows keep reads/read time at <code class="language-plaintext highlighter-rouge">45/199</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload <code class="language-plaintext highlighter-rouge">674798 -&gt; 672026</code> without moving pack layout.
 The live ledger is at
