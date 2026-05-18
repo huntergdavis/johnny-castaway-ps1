@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4680 words
+          ~18 min read · 4729 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2801%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7249%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4368%</code> / <code class="language-plaintext highlighter-rouge">100.4553%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2794%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7255%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4375%</code> / <code class="language-plaintext highlighter-rouge">100.4559%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -461,6 +461,12 @@ at relative sectors <code class="language-plaintext highlighter-rouge">3..35</co
 with the <code class="language-plaintext highlighter-rouge">83..95</code> scheduler row. The current row is <code class="language-plaintext highlighter-rouge">1351/1313</code>, overrun <code class="language-plaintext highlighter-rouge">38</code>,
 blocking <code class="language-plaintext highlighter-rouge">50</code>, refill overrun <code class="language-plaintext highlighter-rouge">14</code>, read time <code class="language-plaintext highlighter-rouge">207</code>, and due <code class="language-plaintext highlighter-rouge">7</code>, and removes the allocator-era clean-rect
 failure seen with full setup buffers.</p>
+
+<p>The latest BUILDING2 low allocator baseline adds a setup-resident
+<code class="language-plaintext highlighter-rouge">112..128</code> slice. It keeps loop flat at <code class="language-plaintext highlighter-rouge">1339</code>, improves target <code class="language-plaintext highlighter-rouge">1315 -&gt; 1316</code>,
+overrun <code class="language-plaintext highlighter-rouge">24 -&gt; 23</code>, blocking <code class="language-plaintext highlighter-rouge">54 -&gt; 53</code>, loop reads/read time
+<code class="language-plaintext highlighter-rouge">37/152 -&gt; 34/141</code>, and due <code class="language-plaintext highlighter-rouge">12 -&gt; 11</code>, with setup cost paid before the
+active loop.</p>
 
 <p>The latest VISITOR3 high promotion adds a third retained setup segment for
 relative sectors <code class="language-plaintext highlighter-rouge">228..262</code> after the frame139 raw-gap relocation. It improves
@@ -1038,7 +1044,7 @@ small prefetch buffer live when full setup-prime/window buffers no longer fit.</
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 high/low
 remain the biggest gaps after the allocator-era clean-relief promotions
 (<code class="language-plaintext highlighter-rouge">+40/+35</code> VBlanks), followed by BUILDING2 high (<code class="language-plaintext highlighter-rouge">+38</code>), WALKSTUF1
-low/high (<code class="language-plaintext highlighter-rouge">+38/+34</code>), BUILDING4 low (<code class="language-plaintext highlighter-rouge">+37</code>), and BUILDING2 low (<code class="language-plaintext highlighter-rouge">+24</code>).
+low/high (<code class="language-plaintext highlighter-rouge">+38/+34</code>), BUILDING4 low (<code class="language-plaintext highlighter-rouge">+37</code>), and BUILDING2 low (<code class="language-plaintext highlighter-rouge">+23</code>).
 VISITOR3’s
 local C read-table rows are exhausted, so the next CD-shape pass needs
 generated scheduler ownership, selective preprocessing, or further pack
@@ -1100,7 +1106,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2801% over target / 99.7249% target speed, with several
+public average is now +0.2794% over target / 99.7255% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

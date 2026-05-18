@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1 high setup-segment retarget; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2801% over target / 99.7249% target speed).
+the BUILDING2 low setup-segment promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2794% over target / 99.7255% target speed).
 
 ## File facts
 
@@ -22,7 +22,7 @@ the WALKSTUF1 high setup-segment retarget; all 63 scenes remain validated, all 1
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 799 |
-| Approx. words | 8867 |
+| Approx. words | 8882 |
 | Code fences | 1 |
 
 ## Outline

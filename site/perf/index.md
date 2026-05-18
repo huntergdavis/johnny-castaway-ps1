@@ -126,6 +126,8 @@ BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up a small scheduler win from the `83..95` read group, WALKSTUF1
 low now uses one retained `238..342` setup segment, and WALKSTUF1 high now
 keeps `198..244` while retargeting its second retained slice to `286..342`.
+BUILDING2 low now primes relative sectors `112..128` during setup, reducing
+loop reads and due misses while keeping loop VBlanks flat.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
@@ -151,10 +153,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2801%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7249%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; WALKSTUF1 high setup-segment retarget `2026-05-18T07:34:41` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2794%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7255%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 low setup-segment promotion `2026-05-18T08:19:45` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 low row stamped `git:776e57df+building2-low-setupseg112-128`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING2 high row stamped `git:1f9dcc40d+building2-high-rg83-95`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -183,6 +185,12 @@ the old full-scene setup buffer, and the current scheduler pass replaces the
 tail read group with the `83..95` row. The latest row keeps loop flat at
 `1351`, improves target `1311 -> 1313`, overrun `40 -> 38`, and refill overrun
 `18 -> 14`, with blocking/read time/due flat at `50/207/7`.
+
+Current B2-low allocator-era speed track: targeted setup residency now primes
+relative sectors `112..128` during setup. It keeps loop flat at `1339`,
+improves target `1315 -> 1316`, overrun `24 -> 23`, blocking `54 -> 53`,
+loop reads/read time `37/152 -> 34/141`, and due `12 -> 11`; setup cost rises
+`265 -> 275` VBlanks but stays outside the active loop.
 
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
@@ -468,12 +476,11 @@ relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, and the latest
 read-group pass replaces the tail row with `83..95`. The current B2-high row is
 `1351/1313`, overrun `38`, blocking `50`, refill overrun `14`, read time `207`,
 and due `7`, while still avoiding the full-buffer clean-rect allocation failure.
-`building2-low-trimtails-v739` keeps the v626 slack-8 `218..229` retained-read
-row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
-payload inside the existing pack footprint. It improves to `1603/1339/1317`,
-overrun `22`, blocking/refill `53/0`, reads/read time `37/150`, and due `12`
-while trimming active payload `660236 -> 538534` across `41` entries with fixed
-pack LBA/sectors and PS-EXE bucket.
+BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
+offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
+sectors `112..128` during setup. It now measures `1339/1316`, overrun `23`,
+blocking/refill `53/2`, reads/read time `34/141`, and due `11` with fixed pack
+LBA/sectors.
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -509,6 +516,7 @@ and this page.
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed rows use `git:bf941b4d8+walkstuf1-high-setupseg286-342`,
+  `git:776e57df+building2-low-setupseg112-128`,
   `git:44dc073e0+walkstuf1-low-setupseg238-342`,
   `git:fbff319bf+visitor3-high-thirdseg228-262`,
   `git:4b996f7dd+visitor3-low-thirdseg206-230`,
@@ -1163,14 +1171,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
+      <td>2026-05-18T08:19:45</td>
+      <td>git:776e57df+building2-low-setupseg112-128</td>
       <td>1.8%</td>
       <td class="spd-yellow">98.2%</td>
-      <td>1339/1315</td>
-      <td>54</td>
+      <td>1339/1316</td>
+      <td>53</td>
       <td>2</td>
-      <td>12</td>
+      <td>11</td>
       <td></td>
     </tr>
     <tr id="perf-building3-high">

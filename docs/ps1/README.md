@@ -120,12 +120,12 @@ and due `7`, while dropping runtime frame rows/spans/pixels from
 `674798 -> 669408`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
-row and v660 offscreen low-tide draw-span clip, then trims dead draw-tail
-payload inside the existing pack footprint. It improves to `1339/1317`,
-overrun `22`, blocking/refill `53/0`, loop reads/read time `37/150`, and due
-misses `12` while trimming active payload `660236 -> 538534` across `41`
-entries. Pack size, LBA, sectors, and the `217088` byte PS-EXE bucket stay
-fixed, so this now counts as a speed-bearing BUILDING2 low baseline.
+row, v660 offscreen low-tide draw-span clip, and dead draw-tail payload trim,
+then primes relative sectors `112..128` during setup. It keeps loop flat at
+`1339`, improves target `1315 -> 1316`, overrun `24 -> 23`, blocking
+`54 -> 53`, loop reads/read time `37/152 -> 34/141`, and due `12 -> 11`
+while preserving pack size, LBA/sectors, and the `233472` byte PS-EXE bucket.
+The row now measures `98.282%` target speed.
 
 The latest VISITOR3 high baseline keeps the resident-copy and D4 data-shape
 work, preloads the 768-byte frame `132` and 503-byte frame `137` D4 payloads

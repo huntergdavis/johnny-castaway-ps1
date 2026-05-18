@@ -311,9 +311,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2801%`
-exact public over target / `99.7249%` exact public target speed); the raw
-signed optimization matrix is about `-0.4368%` / `100.4553%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2794%`
+exact public over target / `99.7255%` exact public target speed); the raw
+signed optimization matrix is about `-0.4375%` / `100.4559%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -331,6 +331,12 @@ at relative sectors `3..35` and `202..242`, then replaces the tail read group
 with the `83..95` scheduler row. The current row is `1351/1313`, overrun `38`,
 blocking `50`, refill overrun `14`, read time `207`, and due `7`, and removes the allocator-era clean-rect
 failure seen with full setup buffers.
+
+The latest BUILDING2 low allocator baseline adds a setup-resident
+`112..128` slice. It keeps loop flat at `1339`, improves target `1315 -> 1316`,
+overrun `24 -> 23`, blocking `54 -> 53`, loop reads/read time
+`37/152 -> 34/141`, and due `12 -> 11`, with setup cost paid before the
+active loop.
 
 The latest VISITOR3 high promotion adds a third retained setup segment for
 relative sectors `228..262` after the frame139 raw-gap relocation. It improves
@@ -908,7 +914,7 @@ Next plausible wins, in priority order:
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 high/low
    remain the biggest gaps after the allocator-era clean-relief promotions
    (`+40/+35` VBlanks), followed by BUILDING2 high (`+38`), WALKSTUF1
-   low/high (`+38/+34`), BUILDING4 low (`+37`), and BUILDING2 low (`+24`).
+   low/high (`+38/+34`), BUILDING4 low (`+37`), and BUILDING2 low (`+23`).
    VISITOR3's
    local C read-table rows are exhausted, so the next CD-shape pass needs
    generated scheduler ownership, selective preprocessing, or further pack
@@ -968,7 +974,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2801% over target / 99.7249% target speed, with several
+  public average is now +0.2794% over target / 99.7255% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

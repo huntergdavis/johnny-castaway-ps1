@@ -584,25 +584,23 @@ def parse_source_setup_policy() -> dict[str, Any]:
             "FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES"
         ]
 
-    for tide in ("HIGH", "LOW"):
-        start = symbols.get(f"FG_FISHING3_{tide}_SETUP_SEGMENT_START")
-        size = symbols.get(f"FG_FISHING3_{tide}_SETUP_SEGMENT_BYTES")
-        if start is not None and size is not None and size > 0:
-            policy[f"fishing3_{tide.lower()}_segments"] = [
-                (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
-            ]
-
-    for tide in ("HIGH", "LOW"):
-        segments = []
-        for suffix in ("", "2", "3"):
-            start = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_START")
-            size = symbols.get(f"FG_VISITOR3_{tide}_SETUP_SEGMENT{suffix}_BYTES")
-            if start is not None and size is not None and size > 0:
-                segments.append(
-                    (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
-                )
-        if segments:
-            policy[f"visitor3_{tide.lower()}_segments"] = segments
+    segmented_scenes = ("FISHING3", "BUILDING2", "BUILDING4", "WALKSTUF1", "VISITOR3")
+    for scene_key in segmented_scenes:
+        scene_policy_key = scene_key.lower()
+        for tide in ("HIGH", "LOW"):
+            segments = []
+            for suffix in ("", "2", "3"):
+                start = symbols.get(f"FG_{scene_key}_{tide}_SETUP_SEGMENT{suffix}_START")
+                size = symbols.get(f"FG_{scene_key}_{tide}_SETUP_SEGMENT{suffix}_BYTES")
+                if start is not None and size is not None and size > 0:
+                    segments.append(
+                        (
+                            start // SECTOR_SIZE,
+                            int(math.ceil((start + size) / SECTOR_SIZE)),
+                        )
+                    )
+            if segments:
+                policy[f"{scene_policy_key}_{tide.lower()}_segments"] = segments
 
     return policy
 
@@ -659,7 +657,10 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
         prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
         if prime is not None:
             policy_name = "auto:building2-low" if lowtide else "auto:building2-high"
-            return clamp_setup_prime_bytes(source_policy, prime), [], policy_name
+            segments = source_policy.get(
+                "building2_low_segments" if lowtide else "building2_high_segments"
+            ) or []
+            return clamp_setup_prime_bytes(source_policy, prime), list(segments), policy_name
     if scene_name == "activity12" and not lowtide:
         prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
         if prime is None:
@@ -715,7 +716,10 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
                 else "walkstuf1_high_setup_prime_max_resident_bytes"
             )
             cap_override = cap if isinstance(cap, int) and cap > 0 else None
-            return clamp_setup_prime_bytes(source_policy, prime, cap_override), [], (
+            segments = source_policy.get(
+                "walkstuf1_low_segments" if lowtide else "walkstuf1_high_segments"
+            ) or []
+            return clamp_setup_prime_bytes(source_policy, prime, cap_override), list(segments), (
                 "auto:walkstuf1-low" if lowtide else "auto:walkstuf1-high"
             )
     if scene_name == "visitor1" and not lowtide:

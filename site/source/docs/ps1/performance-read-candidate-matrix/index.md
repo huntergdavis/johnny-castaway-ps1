@@ -21,14 +21,14 @@ This host-side report aggregates the current foreground-read-plan.json artifacts
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-read-candidate-matrix.md` |
-| Lines | 73 |
-| Approx. words | 608 |
+| Lines | 83 |
+| Approx. words | 738 |
 | Code fences | 0 |
 
 ## Outline
 
 - PS1 Foreground Read Candidate Matrix
--   Top 30 Candidates
+-   Top 40 Candidates
 -   CSV
 -   Columns
 

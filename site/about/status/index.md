@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2801%` over
-target / `99.7249%` target speed; the raw signed optimization matrix is
-about `-0.4368%` / `100.4553%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2794%` over
+target / `99.7255%` target speed; the raw signed optimization matrix is
+about `-0.4375%` / `100.4559%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -34,10 +34,10 @@ The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
 overrun `3`, blocking/refill `5`, and target speed `99.85%`.
-The accepted BUILDING2 low pack promotion trims dead draw-tail payload
-without changing pack size/LBA or the PS-EXE bucket, improving low to
-`1339/1317`, overrun `22`, blocking/read time `53`/`150`, reads `37`, and due
-`12`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+The accepted BUILDING2 low setup-segment promotion primes relative sectors
+`112..128` during setup without changing pack size/LBA, improving low to
+`1339/1316`, overrun `23`, blocking/read time `53`/`141`, reads `34`, and due
+`11`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
 `2851/2815`, overrun `36`, blocking/read time `42`/`223`, and prefetch overrun
 `35`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
@@ -63,11 +63,11 @@ improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 retained-read shape. WALKSTUF1 high/low now measure `1472/1438`
 and `1480/1442`; the latest high setup-segment retarget cuts high blocking
 `76 -> 60` and loop reads `55 -> 48` without moving layout, while low keeps
-the `238..342` retained setup segment and the no-shift payload lane. BUILDING2 low now adds the accepted
-`218..229` slack-8 retained-read row plus v739 draw-tail trimming, with the
-allocator-era matrix at
-`1339/1315`, overrun `24`, blocking/refill `54/2`, reads/read time `37/150`,
-and due `12`. BUILDING2 high currently measures
+the `238..342` retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
+`218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes
+relative sectors `112..128` during setup, with the allocator-era matrix at
+`1339/1316`, overrun `23`, blocking/refill `53/2`, reads/read time `34/141`,
+and due `11`. BUILDING2 high currently measures
 `1351/1313`, overrun `38`, blocking `50`, refill overrun `14`, and due misses
 `7`; the allocator-safe setup slices plus the `83..95` scheduler row keep reads/read time at `47/207`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96

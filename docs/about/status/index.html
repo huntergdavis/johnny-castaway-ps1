@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2524 words
+          ~10 min read · 2529 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2801%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7249%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4368%</code> / <code class="language-plaintext highlighter-rouge">100.4553%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2794%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7255%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4375%</code> / <code class="language-plaintext highlighter-rouge">100.4559%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -141,10 +141,10 @@ The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code cl
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
 the <code class="language-plaintext highlighter-rouge">217088</code> byte PS-EXE bucket while moving both tides to <code class="language-plaintext highlighter-rouge">1948/1945</code>,
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, and target speed <code class="language-plaintext highlighter-rouge">99.85%</code>.
-The accepted BUILDING2 low pack promotion trims dead draw-tail payload
-without changing pack size/LBA or the PS-EXE bucket, improving low to
-<code class="language-plaintext highlighter-rouge">1339/1317</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">150</code>, reads <code class="language-plaintext highlighter-rouge">37</code>, and due
-<code class="language-plaintext highlighter-rouge">12</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
+The accepted BUILDING2 low setup-segment promotion primes relative sectors
+<code class="language-plaintext highlighter-rouge">112..128</code> during setup without changing pack size/LBA, improving low to
+<code class="language-plaintext highlighter-rouge">1339/1316</code>, overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/read time <code class="language-plaintext highlighter-rouge">53</code>/<code class="language-plaintext highlighter-rouge">141</code>, reads <code class="language-plaintext highlighter-rouge">34</code>, and due
+<code class="language-plaintext highlighter-rouge">11</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up at
 <code class="language-plaintext highlighter-rouge">2851/2815</code>, overrun <code class="language-plaintext highlighter-rouge">36</code>, blocking/read time <code class="language-plaintext highlighter-rouge">42</code>/<code class="language-plaintext highlighter-rouge">223</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">35</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
@@ -170,11 +170,11 @@ improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 284
 retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1472/1438</code>
 and <code class="language-plaintext highlighter-rouge">1480/1442</code>; the latest high setup-segment retarget cuts high blocking
 <code class="language-plaintext highlighter-rouge">76 -&gt; 60</code> and loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code> without moving layout, while low keeps
-the <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and the no-shift payload lane. BUILDING2 low now adds the accepted
-<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, with the
-allocator-era matrix at
-<code class="language-plaintext highlighter-rouge">1339/1315</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill <code class="language-plaintext highlighter-rouge">54/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">37/150</code>,
-and due <code class="language-plaintext highlighter-rouge">12</code>. BUILDING2 high currently measures
+the <code class="language-plaintext highlighter-rouge">238..342</code> retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
+<code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, then primes
+relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> during setup, with the allocator-era matrix at
+<code class="language-plaintext highlighter-rouge">1339/1316</code>, overrun <code class="language-plaintext highlighter-rouge">23</code>, blocking/refill <code class="language-plaintext highlighter-rouge">53/2</code>, reads/read time <code class="language-plaintext highlighter-rouge">34/141</code>,
+and due <code class="language-plaintext highlighter-rouge">11</code>. BUILDING2 high currently measures
 <code class="language-plaintext highlighter-rouge">1351/1313</code>, overrun <code class="language-plaintext highlighter-rouge">38</code>, blocking <code class="language-plaintext highlighter-rouge">50</code>, refill overrun <code class="language-plaintext highlighter-rouge">14</code>, and due misses
 <code class="language-plaintext highlighter-rouge">7</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code> scheduler row keep reads/read time at <code class="language-plaintext highlighter-rouge">47/207</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>, and the v877/v879/v880 preserve-offset frame172/frame171/frame96

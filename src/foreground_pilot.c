@@ -209,6 +209,8 @@ enum {
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES (32UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_START (202UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_BYTES (40UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING2_LOW_SETUP_SEGMENT_START (112UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING2_LOW_SETUP_SEGMENT_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_START (264UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (238UL * FG_CD_SECTOR_SIZE)
@@ -2691,6 +2693,26 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             return 0;
         }
         segment2Buffer = segmentBuffer + segmentBytes;
+        gFgRuntime.setupSegmentReusable = 1;
+    } else if (islandState.lowTide && fgSceneEquals(sceneName, "building2")) {
+        segmentStart = FG_BUILDING2_LOW_SETUP_SEGMENT_START;
+        segmentBytes = FG_BUILDING2_LOW_SETUP_SEGMENT_BYTES;
+        allocationBytes = segmentBytes;
+        /* MEM_REGION_RATIONALE: targeted low-tide BUILDING2 cluster cache.
+         * The setup-prime window covers the early pack; this pays the next
+         * dense active-loop read cluster without growing the main window. */
+        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                  allocationBytes,
+                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBufferSize = allocationBytes;
+        gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
+        segmentBuffer = gFgSetupSegmentBuffer;
+        if (segmentBuffer == NULL) {
+            gFgSetupSegmentBufferSize = 0;
+            if (ps1PerfEnabled)
+                ps1PerfMarkAllocFail(allocationBytes);
+            return 0;
+        }
         gFgRuntime.setupSegmentReusable = 1;
     } else if (!islandState.lowTide && fgSceneEquals(sceneName, "building4")) {
         segmentStart = FG_BUILDING4_HIGH_SETUP_SEGMENT_START;

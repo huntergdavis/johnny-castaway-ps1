@@ -49,10 +49,10 @@ same no-shift treatment for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37
 exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
-public-capped average after the memory-region allocator refresh and WALKSTUF1
-high setup-segment retarget is
-**+0.2801% over target / 99.7249% target speed**, with roughly **17.12
-percentage points** of over-target gap closed and about **12.62 target-speed
+public-capped average after the memory-region allocator refresh and BUILDING2
+low setup-segment promotion is
+**+0.2794% over target / 99.7255% target speed**, with roughly **17.12
+percentage points** of over-target gap closed and about **12.63 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
@@ -63,7 +63,8 @@ with `83..95`; VISITOR3 low then adds `206..230` as a third retained setup
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
 split tail residency with a single `238..342` setup segment, moving to
 `1480/1442`, and WALKSTUF1 high retargets its second retained slice to
-`286..342`, moving to `1472/1438`.
+`286..342`, moving to `1472/1438`; BUILDING2 low now primes `112..128`
+during setup, moving to `1339/1316`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
