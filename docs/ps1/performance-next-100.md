@@ -27,18 +27,19 @@ target / `99.4872%` target speed across `120` timing-bearing rows after the
 
 Current allocator-era rollup after the memory-region allocator refresh,
 targeted W1/B2 setup-segment checkpoint, VISITOR3 stage1-under-clean-relief
-checkpoint, and VISITOR3 high-only clean-relief stream-window checkpoints
-through the 68 KiB knee: `+0.3367%` public average over target / `99.6731%` public target
-speed across all `126` timing-bearing rows. The raw signed optimization matrix
-is about `-0.3802%` / `100.4035%`. Since the compact full-matrix baseline was
+checkpoint, and VISITOR3 high/low clean-relief stream-window checkpoints:
+`+0.3255%` public average over target / `99.6833%` public target speed across
+all `126` timing-bearing rows. The raw signed optimization matrix is about
+`-0.3914%` / `100.4136%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.06` public over-target points and added about `12.57` public
-target-speed points. Bands are now `118` green, `6` yellow, `2` orange, and
+removed about `17.07` public over-target points and added about `12.58` public
+target-speed points. Bands are now `118` green, `7` yellow, `1` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
-frame buffer alive under clean-memory relief and allows only high tide to keep
-a `68 KiB` stream window: high improves `1232/1033 -> 1113/1042`, blocking
-`478 -> 83`, reads `137 -> 8`, and due `137 -> 5`; low improves
-`1231/1040 -> 1107/1042`, blocking `438 -> 347`, and due `126 -> 98`. The
+frame buffer alive under clean-memory relief, lets high tide keep a `68 KiB`
+stream window, and lets low tide keep a `16 KiB` stream window behind a slack-5
+guard: high improves `1232/1033 -> 1113/1042`, blocking `478 -> 83`, reads
+`137 -> 8`, and due `137 -> 5`; low improves `1231/1040 -> 1088/1038`,
+blocking `438 -> 104`, reads `126 -> 21`, and due `126 -> 17`. The
 under-green canary refresh also stamps W1 high/low at `1475/1433` and
 `1479/1435`, B2 high/low at `1351/1311` and `1339/1315`, and B4 high/low at
 `2847/2816` and `2853/2816`.
@@ -471,14 +472,15 @@ prefetch frame buffer. Full setup-prime/window restore was rejected because
 VISITOR3 BSODed during clean-rect allocation, and the first stage1-only
 promotion proved the small stage buffer could survive clean relief. The current
 promotion keeps clean-memory relief enabled, preserves the small stage1 buffer
-for both tides, allows a high-tide-only `68 KiB` stream window, and keeps low
-tide stage1-only because low regressed with the window. The accepted canary
-`scratch/ps1-perf-iterate/visitor3-high-window68-canaries/20260517-232912-1713414/summary.json`
+for both tides, allows a high-tide `68 KiB` stream window, and allows low tide
+to keep a smaller `16 KiB` stream window only when at least 5 VBlanks of slack
+are available. The accepted canary
+`scratch/ps1-perf-iterate/visitor3-low-window16-slack5-canaries/20260517-235835-1880144/summary.json`
 improves high from `1232/1033` to `1113/1042`, overrun `199 -> 71`,
 blocking `478 -> 83`, reads `137 -> 8`, due `137 -> 5`, and target speed
-`83.847% -> 93.621%`. Low improves from `1231/1040` to `1107/1042`, overrun
-`191 -> 65`, blocking `438 -> 347`, reads `126 -> 124`, due `126 -> 98`, and
-target speed `84.484% -> 94.128%`. Use this as the allocator-era VISITOR3
+`83.847% -> 93.621%`. Low improves from `1231/1040` to `1088/1038`, overrun
+`191 -> 50`, blocking `438 -> 104`, reads `126 -> 21`, due `126 -> 17`, and
+target speed `84.484% -> 95.404%`. Use this as the allocator-era VISITOR3
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
@@ -487,6 +489,15 @@ knee. `72 KiB` passed but regressed to `1121/1042`, `70 KiB` passed but
 regressed versus the knee to `1115/1041`, and `67 KiB` / `69 KiB` were
 phase-negative (`1123/1041` and `1124/1041`). Keep `68 KiB` until a data-shape
 or clean-rect pressure change shifts the knee.
+
+Latest VISITOR3 low clean-relief window sweep: restoring a low-tide
+`16 KiB` stream window under clean relief is the new allocator-safe knee when
+paired with the VISITOR3 low slack guard at `5`. Slack `4` was faster locally
+but introduced `prefetch_overrun_vb=3`; slack `5` kept hidden refill clean and
+improved low from the stage1/window64 baseline `1107/1042` to `1088/1038`,
+overrun `65 -> 50`, blocking `347 -> 104`, reads/read time `124/426 -> 21/123`,
+and due `98 -> 17`. `20 KiB` regressed versus the knee to `1092/1039`, `24 KiB`
+passed but was slower at `1090/1039`, and slack `6` was exact-flat to slack `5`.
 
 Pre-allocator promoted VISITOR3 high speed baseline: keep the v299 resident
 frame-131 placement, the v291 frame-140/tail setup-segment placement, store

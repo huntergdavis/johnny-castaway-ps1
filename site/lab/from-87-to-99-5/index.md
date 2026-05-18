@@ -50,11 +50,11 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh is
-**+0.3367% over target / 99.6731% target speed**, with roughly **17.06
-percentage points** of over-target gap closed and about **12.57 target-speed
+**+0.3255% over target / 99.6833% target speed**, with roughly **17.07
+percentage points** of over-target gap closed and about **12.58 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
-high/low out of orange, and the VISITOR3 high-only 68 KiB clean-relief
-stream-window promotion moved both VISITOR3 tides out of red while keeping the
+high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
+promotions moved both VISITOR3 tides out of red while keeping the
 allocator-safe CACHE budget intact.
 The optimization-side
 raw signed average sits past target — the public number is the
@@ -147,8 +147,8 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `118` rows are green, `6`
-remain yellow, and VISITOR3 high/low are the `2` orange rows. The current
+[battle card]({{ '/perf/' | relative_url }}): `118` rows are green, `7`
+remain yellow, and VISITOR3 high is the single orange row. The current
 under-99 focus set is VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2
 high/low, and BUILDING4 high/low.
 The optimization plan at

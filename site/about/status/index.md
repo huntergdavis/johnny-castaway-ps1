@@ -23,11 +23,11 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.3367%` over
-target / `99.6731%` target speed; the raw signed optimization matrix is
-about `-0.3802%` / `100.4035%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.3255%` over
+target / `99.6833%` target speed; the raw signed optimization matrix is
+about `-0.3914%` / `100.4136%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 high-only stream-window checkpoints keep the top allocator-era rows
+VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
@@ -48,10 +48,11 @@ loop reads/read time down to `56/256` after caching relative sectors
 `58/16/9`, with loop reads/read time down to `51/236` after caching
 `197..243` and `410..434`. Both paths keep pack LBA/sectors and the PS-EXE
 bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
-stage1 prefetch frame buffer alive under clean-memory relief: high improves to
-`1135/1035`, overrun `100`, blocking `387`, reads/due `135/109`, and low
-improves to `1110/1040`, overrun `70`, blocking `343`, reads/due `124/98`.
-Both rows moved out of red without reintroducing the clean-rect allocation
+stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
+uses a `68 KiB` window and measures `1113/1042`, overrun `71`, blocking `83`,
+reads/due `8/5`; low uses a `16 KiB` slack-5 window and measures `1088/1038`,
+overrun `50`, blocking `104`, reads/due `21/17`. Both rows moved out of red
+without reintroducing the clean-rect allocation
 failure. VISITOR5 high/low both remain green on the matching `30..46`
 retained-read shape. WALKSTUF1 high/low now measure `1489/1430`
 and `1477/1434`; the latest targeted setup-segment promotion moves both rows

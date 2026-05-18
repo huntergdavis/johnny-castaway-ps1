@@ -198,16 +198,16 @@ linked in the Rollup section.</p>
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
   <span class="spd-key spd-green">118 (93.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
-  <span class="spd-key spd-orange">2 (1.6%) ≥ 90%</span>
+  <span class="spd-key spd-yellow">7 (5.6%) ≥ 95%</span>
+  <span class="spd-key spd-orange">1 (0.8%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
 </p>
 
 <p>The allocator refresh changed the current risk profile: VISITOR3 high/low have
-now moved out of red into orange, and the latest VISITOR3 high-only 68 KiB
-clean-relief stream window cuts the high-tide row further while preserving the
-clean-rect safety path. WALKSTUF1, BUILDING2, and BUILDING4 remain close
+now moved out of red, and the latest VISITOR3 clean-relief stream-window work
+keeps high at its 68 KiB knee while moving low tide into yellow with a 16 KiB
+slack-5 window. WALKSTUF1, BUILDING2, and BUILDING4 remain close
 yellow/green-edge rows. That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
@@ -265,19 +265,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.3367%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.3255%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.6731%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.6833%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; VISITOR3 high window-knee checkpoint <code class="language-plaintext highlighter-rouge">2026-05-17T23:29:12</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; VISITOR3 low window checkpoint <code class="language-plaintext highlighter-rouge">2026-05-17T23:58:35</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed VISITOR3 high row stamped <code class="language-plaintext highlighter-rouge">git:3502b9195+visitor3-window68</code>; prior under-green canary rows stamped <code class="language-plaintext highlighter-rouge">git:cbe2244ee+visitor3-window64</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed VISITOR3 low row stamped <code class="language-plaintext highlighter-rouge">git:a2d6356ca+visitor3-low-window16</code>; refreshed VISITOR3 high row stamped <code class="language-plaintext highlighter-rouge">git:3502b9195+visitor3-window68</code>; prior under-green canary rows stamped <code class="language-plaintext highlighter-rouge">git:cbe2244ee+visitor3-window64</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -314,12 +314,13 @@ clean-rect failure mode while staying inside the CACHE budget.</p>
 <p>Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
 room for full setup-prime buffers. The current promotion keeps the tiny stage1
-prefetch frame buffer for both tides and allows a high-tide-only 68 KiB stream
-window while keeping low tide on stage1-only relief. High improves
+prefetch frame buffer for both tides, allows a high-tide 68 KiB stream
+window, and allows low tide to keep a 16 KiB clean-relief stream window behind
+a slack-5 guard. High improves
 <code class="language-plaintext highlighter-rouge">1232/1033 -&gt; 1113/1042</code>, overrun <code class="language-plaintext highlighter-rouge">199 -&gt; 71</code>, blocking <code class="language-plaintext highlighter-rouge">478 -&gt; 83</code>, reads
-<code class="language-plaintext highlighter-rouge">137 -&gt; 8</code>, and due <code class="language-plaintext highlighter-rouge">137 -&gt; 5</code>; low improves <code class="language-plaintext highlighter-rouge">1231/1040 -&gt; 1107/1042</code>,
-overrun <code class="language-plaintext highlighter-rouge">191 -&gt; 65</code>, blocking <code class="language-plaintext highlighter-rouge">438 -&gt; 347</code>, reads <code class="language-plaintext highlighter-rouge">126 -&gt; 124</code>, and due
-<code class="language-plaintext highlighter-rouge">126 -&gt; 98</code>. Both rows stay orange but are materially closer to the 99% line
+<code class="language-plaintext highlighter-rouge">137 -&gt; 8</code>, and due <code class="language-plaintext highlighter-rouge">137 -&gt; 5</code>; low improves <code class="language-plaintext highlighter-rouge">1231/1040 -&gt; 1088/1038</code>,
+overrun <code class="language-plaintext highlighter-rouge">191 -&gt; 50</code>, blocking <code class="language-plaintext highlighter-rouge">438 -&gt; 104</code>, reads <code class="language-plaintext highlighter-rouge">126 -&gt; 21</code>, and due
+<code class="language-plaintext highlighter-rouge">126 -&gt; 17</code>. High remains orange and low is now yellow, both materially closer to the 99% line
 without reintroducing the allocator clean-rect BSOD.</p>
 
 <p>Current BUILDING4-low payload track: <code class="language-plaintext highlighter-rouge">building4-low-local-lz-entry270-v971</code>
@@ -2503,14 +2504,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>6.2%</td>
-      <td class="spd-orange">94.1%</td>
-      <td>1107/1042</td>
-      <td>347</td>
+      <td>2026-05-17T23:58:35</td>
+      <td>git:a2d6356ca+visitor3-low-window16</td>
+      <td>4.8%</td>
+      <td class="spd-yellow">95.4%</td>
+      <td>1088/1038</td>
+      <td>104</td>
       <td>0</td>
-      <td>98</td>
+      <td>17</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">

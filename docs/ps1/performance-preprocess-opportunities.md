@@ -8,15 +8,15 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `126`
-- Average measured timing gap: `-0.3800%` over target
+- Average measured timing gap: `-0.3912%` over target
 - Average estimated align4 x-band upload byte saving: `66.50%`
 
 ## Top Upload-Ready Candidates
 
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
-| 1 | `visitor3` | `low` | 122.67 | 6.24% | 55.26% | 1027.5% | 347 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
-| 2 | `visitor3` | `high` | 60.89 | 6.81% | 54.77% | 993.59% | 88 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
+| 1 | `visitor3` | `high` | 60.89 | 6.81% | 54.77% | 993.59% | 88 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
+| 2 | `visitor3` | `low` | 53.63 | 4.82% | 55.26% | 1027.5% | 104 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
 | 3 | `mary1` | `high` | 46.77 | 0.70% | 78.75% | 274.07% | 80 | candidate; rect/frame 2.33 |
 | 4 | `building2` | `high` | 43.91 | 3.05% | 67.28% | 594.62% | 68 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
 | 5 | `building4` | `low` | 43.1 | 1.31% | 64.45% | 541.09% | 77 | x-band rect cap pressure; needs selective bands; rect/frame 1.71 |

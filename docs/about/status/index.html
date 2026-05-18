@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2425 words
+          ~9 min read · 2436 words
         </p>
 
       <hr class="rule" />
@@ -130,11 +130,11 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3367%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.6731%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.3802%</code> / <code class="language-plaintext highlighter-rouge">100.4035%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.3255%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.6833%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.3914%</code> / <code class="language-plaintext highlighter-rouge">100.4136%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 high-only stream-window checkpoints keep the top allocator-era rows
+VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
@@ -155,10 +155,11 @@ loop reads/read time down to <code class="language-plaintext highlighter-rouge">
 <code class="language-plaintext highlighter-rouge">58/16/9</code>, with loop reads/read time down to <code class="language-plaintext highlighter-rouge">51/236</code> after caching
 <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>. Both paths keep pack LBA/sectors and the PS-EXE
 bucket fixed while reducing CD pressure. VISITOR3 now keeps only its tiny
-stage1 prefetch frame buffer alive under clean-memory relief: high improves to
-<code class="language-plaintext highlighter-rouge">1135/1035</code>, overrun <code class="language-plaintext highlighter-rouge">100</code>, blocking <code class="language-plaintext highlighter-rouge">387</code>, reads/due <code class="language-plaintext highlighter-rouge">135/109</code>, and low
-improves to <code class="language-plaintext highlighter-rouge">1110/1040</code>, overrun <code class="language-plaintext highlighter-rouge">70</code>, blocking <code class="language-plaintext highlighter-rouge">343</code>, reads/due <code class="language-plaintext highlighter-rouge">124/98</code>.
-Both rows moved out of red without reintroducing the clean-rect allocation
+stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
+uses a <code class="language-plaintext highlighter-rouge">68 KiB</code> window and measures <code class="language-plaintext highlighter-rouge">1113/1042</code>, overrun <code class="language-plaintext highlighter-rouge">71</code>, blocking <code class="language-plaintext highlighter-rouge">83</code>,
+reads/due <code class="language-plaintext highlighter-rouge">8/5</code>; low uses a <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window and measures <code class="language-plaintext highlighter-rouge">1088/1038</code>,
+overrun <code class="language-plaintext highlighter-rouge">50</code>, blocking <code class="language-plaintext highlighter-rouge">104</code>, reads/due <code class="language-plaintext highlighter-rouge">21/17</code>. Both rows moved out of red
+without reintroducing the clean-rect allocation
 failure. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
 retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1489/1430</code>
 and <code class="language-plaintext highlighter-rouge">1477/1434</code>; the latest targeted setup-segment promotion moves both rows

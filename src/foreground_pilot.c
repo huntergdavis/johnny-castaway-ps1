@@ -234,7 +234,7 @@ enum {
 #define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS 4
-#define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 4
+#define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 5
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
@@ -1204,13 +1204,15 @@ static int fgSceneKeepsStage1UnderCleanMemoryRelief(const char *sceneName)
 
 static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
 {
-    return fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide;
+    return fgSceneEquals(sceneName, "visitor3");
 }
 
 static uint32 fgSceneCleanReliefWindowBytes(const char *sceneName)
 {
-    if (fgSceneEquals(sceneName, "visitor3"))
+    if (fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide)
         return 68UL * 1024UL;
+    if (fgSceneEquals(sceneName, "visitor3"))
+        return FG_PREFETCH_DEFAULT_WINDOW_BYTES;
     return 0;
 }
 
