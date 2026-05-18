@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-18 (`perf/allocator-era-under-green-20260517` after
-the VISITOR3 high third setup-segment promotion;
+the WALKSTUF1 low setup-segment retarget;
 all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and
-the public headless battle card is `+0.2880%` over target / `99.7174%` target
+the public headless battle card is `+0.2846%` over target / `99.7207%` target
 speed).
 
 ## Overall
@@ -291,10 +291,10 @@ while dropping active payload `855284 -> 810226`. The JOHNNY1 local-LZ payload
 swing now compresses entries `1` and `50` in both high/low packs, cutting
 active payload `316608 -> 112093` bytes and moving both tides from
 `1973/1945` to `1948/1945`. WALKSTUF1 low now primes relative sectors
-`238..388` during setup, improving active loop/target `1481/1431 -> 1469/1447`,
-overrun `50 -> 22`, blocking/refill `72/27 -> 34/12`, reads/read time
-`58/267 -> 28/145`, and due `10 -> 4`; setup rises `1773 -> 1820`, accepted
-under the `4%` material setup-regression gate. WALKSTUF1 high now primes relative sectors
+`238..342` during setup, improving the current allocator-era row
+`1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/refill
+`65/18 -> 55/15`, reads/read time `50/230 -> 38/211`, and due `10 -> 6`;
+setup stays inside the canary allowance. WALKSTUF1 high now primes relative sectors
 `242..388` during setup, improving active loop/target `1481/1428 -> 1476/1441`,
 overrun `53 -> 35`, blocking/refill `88/24 -> 49/17`, reads/read time
 `67/287 -> 37/182`, and due `15 -> 7`. BUILDING4 low now carries the v971 local-LZ entry270
@@ -303,12 +303,16 @@ follow-up on top of entry30/entry33, cutting active payload
 blocking/refill `42/35`. BUILDING2 high now primes relative sectors `86..242`
 during setup, improving active loop/target `1356/1312 -> 1349/1315`,
 overrun `44 -> 34`, blocking/refill `58/21 -> 48/12`, and reads/read time
-`58/259 -> 25/117` with due flat at `7`. After the allocator refresh and the
-latest VISITOR3 high third setup-segment promotion, the public battle card is
-now `+0.2880%` over target / `99.7174%` target speed; the raw signed
-optimization rollup is about `-0.4289%` / `100.4478%`.
+`58/259 -> 25/117` with due flat at `7`. The latest allocator-era WALKSTUF1
+low pass replaces the split `197..243` plus `410..434` setup slices with one
+retained `238..342` setup segment, improving `1479/1435 -> 1480/1442`,
+overrun `44 -> 38`, blocking/refill `65/18 -> 55/15`, loop reads/read time
+`50/230 -> 38/211`, and due `10 -> 6`. After the allocator refresh and the
+latest WALKSTUF1 low setup-segment retarget, the public battle card is now
+`+0.2846%` over target / `99.7207%` target speed; the raw signed optimization
+rollup is about `-0.4323%` / `100.4510%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.11`
+`87.1%` target speed, the headless methodology has removed about `17.12`
 public over-target points and added about `12.62` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
@@ -354,7 +358,7 @@ VISITOR3 high is now
 `1074/1039` with `blocking_vb=85`. BUILDING2 high/low are `1351/1313` and
 `1339/1315`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
-`1475/1433` and `1479/1435`, WALKSTUF3 high/low are `2310/2290` and
+`1475/1433` and `1480/1442`, WALKSTUF3 high/low are `2310/2290` and
 `2310/2295`, JOHNNY1 high/low are both green at `1948/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup, with low-tide offscreen draw-span clipping on
@@ -437,14 +441,14 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2880%` / `99.7174%` with `119` green, `7` yellow, and `0` orange rows;
+  The public battle card is `+0.2846%` / `99.7207%` with `119` green, `7` yellow, and `0` orange rows;
   BUILDING2 high currently measures `1351/1313`, BUILDING2 low now measures
   `1339/1315` after trimming active payload `660236 -> 538534`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
   `1476/1441` with loop reads `37` and rows/spans/pixels
-  `16859/129919/731016` plus active payload `860009`, WALKSTUF1 low is `1469/1447` with loop
-  reads `28`, rows/spans/pixels `16257/114798/633876`, and active payload
-  `790322`, VISITOR3 high is
+  `16859/129919/731016` plus active payload `860009`, WALKSTUF1 low is `1480/1442` with loop
+  reads `38`, rows/spans/pixels `16257/114798/633876`, and active payload
+  `790208`, VISITOR3 high is
   `1082/1042` with blocking/read time `50`,
   VISITOR3 low is `1074/1039` with blocking/read time `85`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is

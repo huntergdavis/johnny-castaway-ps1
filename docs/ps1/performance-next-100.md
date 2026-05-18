@@ -31,13 +31,14 @@ checkpoint, VISITOR3 high/low clean-relief stream-window checkpoints, the
 VISITOR3 high terminal-window trim, and the VISITOR3 high setup-segment
 extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 `83..95` read-group retime, the VISITOR3 low third setup-segment promotion,
-the VISITOR3 high frame139 raw-gap promotion, and the VISITOR3 high third
-setup-segment promotion:
-`+0.2880%` public average over target / `99.7174%` public target speed across
+the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
+setup-segment promotion, and the WALKSTUF1 low `238..342` setup-segment
+retarget:
+`+0.2846%` public average over target / `99.7207%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4289%` / `100.4478%`. Since the compact full-matrix baseline was
+`-0.4323%` / `100.4510%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.11` public over-target points and added about `12.62` public
+removed about `17.12` public over-target points and added about `12.62` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -49,9 +50,13 @@ gap, then adds a third high-tide retained setup segment at relative sectors
 `228..262`:
 high improves `1232/1033 -> 1082/1042`, blocking `478 -> 50`, reads
 `137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1074/1039`,
-blocking `438 -> 85`, reads `126 -> 19`, and due `126 -> 15`. The
+blocking `438 -> 85`, reads `126 -> 19`, and due `126 -> 15`. WALKSTUF1 low
+then replaces its split `197..243` plus `410..434` setup residency with one
+retained `238..342` segment, improving `1479/1435 -> 1480/1442`, overrun
+`44 -> 38`, blocking/read time `65/230 -> 55/211`, loop reads `50 -> 38`, and
+due `10 -> 6`. The
 under-green canary refresh also stamps W1 high/low at `1475/1433` and
-`1479/1435`, B2 high/low at `1351/1313` and `1339/1315`, and B4 high/low at
+`1480/1442`, B2 high/low at `1351/1313` and `1339/1315`, and B4 high/low at
 `2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
@@ -519,7 +524,22 @@ blocking `438 -> 85`, reads `126 -> 19`, due `126 -> 15`, and target speed
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
-Latest VISITOR3 high third-segment pass: the remaining uncovered high-tide
+Latest WALKSTUF1 low setup-segment retarget: the allocator-era split low
+setup slices (`197..243` plus `410..434`) were replaced with one larger
+retained setup segment at relative sectors `238..342`, keeping the second
+slot disabled to stay under the CACHE clean-rect cliff. Focused artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-vnext/20260518-065116-38864/summary.json`;
+canary artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-setupseg238-342-replace-canaries/20260518-065731-74208/summary.json`.
+The focused and under-green canaries promote the shape: WALKSTUF1 low moves
+`1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/read time
+`65/230 -> 55/211`, refill overrun `18 -> 15`, loop reads `50 -> 38`, and
+due misses `10 -> 6`; W1 high, VISITOR3 high/low, BUILDING2 high/low, and
+BUILDING4 high/low stay stable. Public rollup becomes `+0.2846%` over target /
+`99.7207%` target speed; raw signed becomes `-0.4323%` / `100.4510%`, and
+bands stay `119` green, `7` yellow, `0` orange, `0` red.
+
+Prior VISITOR3 high third-segment pass: the remaining uncovered high-tide
 active read was the `228..262` sector range covering frames `135`, `136`, and
 `138`. Adding that range as a third high retained setup segment removes all
 uncovered active reads in the planner while preserving clean-relief operation.
