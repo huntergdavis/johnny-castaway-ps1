@@ -33,11 +33,11 @@ extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 `83..95` read-group retime, the VISITOR3 low third setup-segment promotion,
 the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
 setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
-retarget, and the WALKSTUF1 high `286..342` second setup-segment
+retarget, and the WALKSTUF1 high `286..344` second setup-segment
 retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
 the `315..327` same-loop CD-pressure row, and the BUILDING4 low gap-8
 dirty-upload band merge retune:
-`+0.2760%` public average over target / `99.7289%` public target speed across
+`+0.2760%` public average over target / `99.7290%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4410%` / `100.4593%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
@@ -59,10 +59,11 @@ retained `238..342` segment, improving `1479/1435 -> 1480/1442`, overrun
 `44 -> 38`, blocking/read time `65/230 -> 55/211`, loop reads `50 -> 38`, and
 due `10 -> 6`. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice and retargets the
-second retained slice from `411..435` to `286..342`, improving
-`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`. The
-under-green canary refresh also stamps W1 high/low at `1472/1438` and
+second retained slice from `411..435` to `286..344`, improving
+`1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
+due `15 -> 10`. The
+under-green canary refresh also stamps W1 high/low at `1475/1441` and
 `1480/1442`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
 `2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
@@ -541,20 +542,21 @@ runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
 Latest WALKSTUF1 high setup-segment retarget: high keeps the `198..244`
-setup slice and replaces the old `411..435` second slice with a mid-cluster
-`286..342` slice. Focused artifact:
-`scratch/ps1-perf-iterate/walkstuf1-high-keepfirst-setupseg286-342-vnext/20260518-073013-258774/summary.json`;
-canary artifact:
-`scratch/ps1-perf-iterate/walkstuf1-high-keepfirst-setupseg286-342-canaries/20260518-073441-284390/summary.json`.
-The focused and under-green canaries promote the shape: WALKSTUF1 high moves
-`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 60/228`, loop reads `55 -> 48`, and due misses `15 -> 10`;
-W1 low, VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 high/low stay
-stable. Public rollup becomes `+0.2801%` over target / `99.7249%` target
-speed; raw signed becomes `-0.4368%` / `100.4553%`, and bands stay `119`
-green, `7` yellow, `0` orange, `0` red. The wider `286..350` variant crossed
-the allocator clean-rect cliff and failed before `JCPERF2`, so keep the 56-sector
-second slice until allocator/clean pressure changes.
+setup slice and extends the second retained slice to the allocator-safe
+`286..344` edge. Focused artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-current/20260518-111109-1509132/summary.json`;
+under-green canary artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-canaries/20260518-111308-1520614/summary.json`.
+The focused and under-green canaries promote the shape as a same-overrun
+pressure win: WALKSTUF1 high moves to `1475/1441`, overrun stays `34`, while
+blocking/read time improves `60/228 -> 59/212`, prefetch overrun `15 -> 13`,
+loop reads `48 -> 46`, and due misses stay `10`; W1 low, VISITOR3 high/low,
+BUILDING2 high/low, and BUILDING4 low stay stable. Public rollup remains
+`+0.2760%` over target / `99.7290%` target speed; raw signed remains about
+`-0.4410%` / `100.4593%`, and bands stay `119` green, `7` yellow, `0` orange,
+`0` red. The wider `286..346` edge regressed overrun to `35`, while the older
+`286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
+the current second-slice boundary.
 
 Prior WALKSTUF1 low setup-segment retarget: the allocator-era split low
 setup slices (`197..243` plus `410..434`) were replaced with one larger

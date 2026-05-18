@@ -312,14 +312,15 @@ sound_late = 0   cd_fail = 0
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
 the public average is **+0.3% over target / 99.7% target speed** (`0.2760%`
-exact public over target / `99.7289%` exact public target speed); the raw
+exact public over target / `99.7290%` exact public target speed); the raw
 signed optimization matrix is about `-0.4410%` / `100.4593%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
 sectors `198..244` resident and retargets the second slice from `411..435` to
-`286..342`, improving the current row `1475/1433 -> 1472/1438`,
-blocking/read time `76/229 -> 60/228`, reads `55 -> 48`, and due `15 -> 10`.
+`286..344`, improving the current row `1475/1433 -> 1475/1441`,
+blocking/read time `76/229 -> 59/212`, prefetch overrun `15 -> 13`, reads
+`55 -> 46`, and due `15 -> 10`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..342` setup segment, improving the current row
 `1479/1435 -> 1480/1442`, blocking/refill `65/18 -> 55/15`, reads/read time
@@ -880,7 +881,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.7% (1472/1438); due 10; blk 60</td>
+      <td>+2.4% / 97.7% (1475/1441); due 10; blk 59</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
@@ -980,7 +981,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2760% over target / 99.7289% target speed, with several
+  public average is now +0.2760% over target / 99.7290% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

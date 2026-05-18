@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4765 words
+          ~19 min read · 4770 words
         </p>
 
       <hr class="rule" />
@@ -442,14 +442,15 @@ sound_late = 0   cd_fail = 0
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
 the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2760%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7289%</code> exact public target speed); the raw
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7290%</code> exact public target speed); the raw
 signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4410%</code> / <code class="language-plaintext highlighter-rouge">100.4593%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
 sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to
-<code class="language-plaintext highlighter-rouge">286..342</code>, improving the current row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1472/1438</code>,
-blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&gt; 60/228</code>, reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+<code class="language-plaintext highlighter-rouge">286..344</code>, improving the current row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>,
+blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, reads
+<code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..342</code> setup segment, improving the current row
 <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1480/1442</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 55/15</code>, reads/read time
@@ -1010,7 +1011,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.7% (1472/1438); due 10; blk 60</td>
+      <td>+2.4% / 97.7% (1475/1441); due 10; blk 59</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
@@ -1112,7 +1113,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2760% over target / 99.7289% target speed, with several
+public average is now +0.2760% over target / 99.7290% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

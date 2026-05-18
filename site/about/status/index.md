@@ -24,7 +24,7 @@ chapter-select grid in the in-game
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
 allocation. The public headless battle card is `+0.2760%` over
-target / `99.7289%` target speed; the raw signed optimization matrix is
+target / `99.7290%` target speed; the raw signed optimization matrix is
 about `-0.4410%` / `100.4593%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
@@ -44,9 +44,9 @@ to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries 
 `31`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures `1472/1438`, blocking/refill/due `60/15/10`, with
-loop reads/read time down to `48/228` after keeping relative sectors
-`198..244` and retargeting the second slice to `286..342`; low replaces the old `197..243` plus `410..434`
+buffers: high now measures `1475/1441`, blocking/refill/due `59/13/10`, with
+loop reads/read time down to `46/212` after keeping relative sectors
+`198..244` and extending the second slice to `286..344`; low replaces the old `197..243` plus `410..434`
 split with a single `238..342` retained setup segment and measures
 `1480/1442`, blocking/refill/due `55/15/6`, with loop reads/read time down to
 `38/211`. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
@@ -62,9 +62,9 @@ without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 `36/32 -> 34/30`, and moving that row into green. VISITOR5 high/low both remain green on the matching `30..46`
-retained-read shape. WALKSTUF1 high/low now measure `1472/1438`
+retained-read shape. WALKSTUF1 high/low now measure `1475/1441`
 and `1480/1442`; the latest high setup-segment retarget cuts high blocking
-`76 -> 60` and loop reads `55 -> 48` without moving layout, while low keeps
+`76 -> 59` and loop reads `55 -> 46` without moving layout, while low keeps
 the `238..342` retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes
 relative sectors `112..128` during setup, with the allocator-era matrix at

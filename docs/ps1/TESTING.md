@@ -77,15 +77,26 @@ Current battle-card rollup as of 2026-05-18:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7289%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; dirty-upload band merge retune canary `2026-05-18T10:27:31`; BUILDING2 high focused refresh `2026-05-18T10:39:25` |
-| Stats version | mixed; newest targeted under-green rows include `git:1176b6b0b+upload-gap8-bands`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average target speed | `99.7%` (`99.7290%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high setup-slice focused run `2026-05-18T11:11:09`; under-green canary refresh `2026-05-18T11:13:08` |
+| Stats version | mixed; newest targeted under-green rows include `git:d8c2e3965+walkstuf1-high-setupseg286-344`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
 `100.0%` target speed so the website never presents playback faster than
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
+
+Latest promoted WALKSTUF1 high setup-slice pressure note:
+the high-tide path keeps the `198..244` first setup slice and extends the
+second retained slice from `286..342` to `286..344`. The focused proof is
+`scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-current/20260518-111109-1509132/summary.json`;
+the under-green canary is
+`scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-canaries/20260518-111308-1520614/summary.json`.
+The promotion keeps overrun flat at `34` while moving W1 high to
+`1475/1441`, blocking/read time `59/212`, refill overrun `13`, loop reads
+`46`, and due `10`. The rejected `286..346` edge regressed overrun to `35`, so
+`286..344` is the current allocator-safe boundary.
 
 Latest promoted JOHNNY1 local-LZ payload note:
 `johnny1-local-lz-v932` stores a scene-local copy/literal stream behind a

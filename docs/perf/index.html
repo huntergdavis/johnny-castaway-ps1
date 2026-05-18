@@ -212,7 +212,7 @@ BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, and <code class="language-plaintext highlighter-rouge">315..327</code> read
 groups, WALKSTUF1
 low now uses one retained <code class="language-plaintext highlighter-rouge">238..342</code> setup segment, and WALKSTUF1 high now
-keeps <code class="language-plaintext highlighter-rouge">198..244</code> while retargeting its second retained slice to <code class="language-plaintext highlighter-rouge">286..342</code>.
+keeps <code class="language-plaintext highlighter-rouge">198..244</code> while extending its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> during setup, reducing
 loop reads and due misses while keeping loop VBlanks flat. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
@@ -278,15 +278,15 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7289%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7290%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; dirty-upload band merge retune canary <code class="language-plaintext highlighter-rouge">2026-05-18T10:27:31</code>; BUILDING2 high focused refresh <code class="language-plaintext highlighter-rouge">2026-05-18T10:39:25</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high setup-slice focused run <code class="language-plaintext highlighter-rouge">2026-05-18T11:11:09</code>; under-green canary refresh <code class="language-plaintext highlighter-rouge">2026-05-18T11:13:08</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed under-green dirty-upload canary rows stamped <code class="language-plaintext highlighter-rouge">git:1176b6b0b+upload-gap8-bands</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed under-green W1-high setup-slice rows stamped <code class="language-plaintext highlighter-rouge">git:d8c2e3965+walkstuf1-high-setupseg286-344</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -305,14 +305,15 @@ overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/re
 <p>Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
 High now keeps relative sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second
-slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..342</code>, improving the current allocator-era row
-<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1472/1438</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">76/229 -&gt; 60/228</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, improving the current allocator-era row
+<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
+<code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and
+due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces its old split <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> slices
 with one retained <code class="language-plaintext highlighter-rouge">238..342</code> setup segment, improving the current row
 <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1480/1442</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 38</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">65/18 -&gt; 55/15</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 38/211</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 6</code>.
-Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.690%</code> and low at <code class="language-plaintext highlighter-rouge">97.432%</code>
+Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.695%</code> and low at <code class="language-plaintext highlighter-rouge">97.432%</code>
 target speed.</p>
 
 <p>Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -600,9 +601,10 @@ and adds the low-tide <code class="language-plaintext highlighter-rouge">209..22
 blocking <code class="language-plaintext highlighter-rouge">78 -&gt; 72</code>, reads/read time <code class="language-plaintext highlighter-rouge">61/279 -&gt; 58/267</code>, and due <code class="language-plaintext highlighter-rouge">11 -&gt; 10</code>.
 The allocator-era targeted setup checkpoint then narrows W1 setup residency to
 CACHE slices instead of one full-scene setup buffer. High keeps <code class="language-plaintext highlighter-rouge">198..244</code> and
-retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..342</code>, improving the current
-row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1472/1438</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">76/229 -&gt; 60/228</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 48</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, improving the current
+row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
+<code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and
+due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving <code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
 <code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. The latest low retarget replaces those two slices with one
@@ -664,7 +666,7 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed under-green canary rows use <code class="language-plaintext highlighter-rouge">git:1176b6b0b+upload-gap8-bands</code>;
+refreshed under-green canary rows use <code class="language-plaintext highlighter-rouge">git:d8c2e3965+walkstuf1-high-setupseg286-344</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
 including <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
@@ -1302,8 +1304,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:39:25</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -1316,8 +1318,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>1.8%</td>
       <td class="spd-yellow">98.2%</td>
       <td>1339/1316</td>
@@ -1372,8 +1374,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>1.2%</td>
       <td class="spd-yellow">98.8%</td>
       <td>2849/2816</td>
@@ -2534,8 +2536,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>3.8%</td>
       <td class="spd-yellow">96.3%</td>
       <td>1082/1042</td>
@@ -2548,8 +2550,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>3.4%</td>
       <td class="spd-yellow">96.7%</td>
       <td>1074/1039</td>
@@ -2674,13 +2676,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:11:09</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
-      <td>1472/1438</td>
-      <td>60</td>
-      <td>15</td>
+      <td>1475/1441</td>
+      <td>59</td>
+      <td>13</td>
       <td>10</td>
       <td></td>
     </tr>
@@ -2688,8 +2690,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.4%</td>
       <td>1480/1442</td>

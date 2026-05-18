@@ -126,7 +126,7 @@ BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups, WALKSTUF1
 low now uses one retained `238..342` setup segment, and WALKSTUF1 high now
-keeps `198..244` while retargeting its second retained slice to `286..342`.
+keeps `198..244` while extending its second retained slice to `286..344`.
 BUILDING2 low now primes relative sectors `112..128` during setup, reducing
 loop reads and due misses while keeping loop VBlanks flat. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
@@ -157,9 +157,9 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7289%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; dirty-upload band merge retune canary `2026-05-18T10:27:31`; BUILDING2 high focused refresh `2026-05-18T10:39:25` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green dirty-upload canary rows stamped `git:1176b6b0b+upload-gap8-bands`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average target speed | `99.7%` (`99.7290%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high setup-slice focused run `2026-05-18T11:11:09`; under-green canary refresh `2026-05-18T11:13:08` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green W1-high setup-slice rows stamped `git:d8c2e3965+walkstuf1-high-setupseg286-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -172,14 +172,15 @@ overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
 High now keeps relative sectors `198..244` resident and retargets the second
-slice from `411..435` to `286..342`, improving the current allocator-era row
-`1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`.
+slice from `411..435` to `286..344`, improving the current allocator-era row
+`1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
+due `15 -> 10`.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..342` setup segment, improving the current row
 `1479/1435 -> 1480/1442`, overrun `44 -> 38`, blocking/refill
 `65/18 -> 55/15`, loop reads/read time `50/230 -> 38/211`, and due `10 -> 6`.
-Both W1 rows remain yellow, with high now at `97.690%` and low at `97.432%`
+Both W1 rows remain yellow, with high now at `97.695%` and low at `97.432%`
 target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -467,9 +468,10 @@ and adds the low-tide `209..225` retained-read row, keeping scene/loop flat at
 blocking `78 -> 72`, reads/read time `61/279 -> 58/267`, and due `11 -> 10`.
 The allocator-era targeted setup checkpoint then narrows W1 setup residency to
 CACHE slices instead of one full-scene setup buffer. High keeps `198..244` and
-retargets the second slice from `411..435` to `286..342`, improving the current
-row `1475/1433 -> 1472/1438`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`.
+retargets the second slice from `411..435` to `286..344`, improving the current
+row `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
+`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
+due `15 -> 10`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -530,7 +532,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed under-green canary rows use `git:1176b6b0b+upload-gap8-bands`;
+  refreshed under-green canary rows use `git:d8c2e3965+walkstuf1-high-setupseg286-344`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -1167,8 +1169,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:39:25</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -1181,8 +1183,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>1.8%</td>
       <td class="spd-yellow">98.2%</td>
       <td>1339/1316</td>
@@ -1237,8 +1239,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>1.2%</td>
       <td class="spd-yellow">98.8%</td>
       <td>2849/2816</td>
@@ -2399,8 +2401,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>3.8%</td>
       <td class="spd-yellow">96.3%</td>
       <td>1082/1042</td>
@@ -2413,8 +2415,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>3.4%</td>
       <td class="spd-yellow">96.7%</td>
       <td>1074/1039</td>
@@ -2539,13 +2541,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:11:09</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
-      <td>1472/1438</td>
-      <td>60</td>
-      <td>15</td>
+      <td>1475/1441</td>
+      <td>59</td>
+      <td>13</td>
       <td>10</td>
       <td></td>
     </tr>
@@ -2553,8 +2555,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T10:27:31</td>
-      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>2026-05-18T11:13:08</td>
+      <td>git:d8c2e3965+walkstuf1-high-setupseg286-344</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.4%</td>
       <td>1480/1442</td>
