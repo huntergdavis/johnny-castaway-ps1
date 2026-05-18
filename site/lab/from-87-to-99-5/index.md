@@ -50,9 +50,11 @@ exact-flat. WALKSTUF1 high/low also get
 same-speed late-tail work-volume clips for frames `194..210` and `202..210`,
 reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh is
-**+0.5699% over target / 99.4843% target speed**, with roughly **16.83
-percentage points** of over-target gap closed and about **12.38 target-speed
-points** added. The optimization-side
+**+0.5371% over target / 99.5143% target speed**, with roughly **16.86
+percentage points** of over-target gap closed and about **12.41 target-speed
+points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
+high/low out of orange while keeping the allocator-safe CACHE budget intact.
+The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
 that loop actually looked like.

@@ -23,11 +23,13 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.5699%` over
-target / `99.4843%` target speed; the raw signed optimization matrix is
-about `-0.1470%` / `100.2147%`. The allocator validation branch records a R34
-full matrix of `126/126` PASS with 0 BSODs, and the release gates now require a
-nearby `MEM_REGION_RATIONALE` for every `memAlloc` call site.
+allocation. The public headless battle card is `+0.5371%` over
+target / `99.5143%` target speed; the raw signed optimization matrix is
+about `-0.1798%` / `100.2447%`. The allocator validation branch records a R34
+full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2
+checkpoint keeps WALKSTUF1 high/low and BUILDING2 high inside the allocator
+budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
+`memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
@@ -39,26 +41,26 @@ without changing pack size/LBA or the PS-EXE bucket, improving low to
 `2851/2815`, overrun `36`, blocking/read time `42`/`223`, and prefetch overrun
 `35`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
-baselines combine same-speed work-volume clips with setup-resident CD ownership:
-high now measures `1476/1441`, blocking/refill/due `49/17/7`, with loop
-reads/read time down to `37/182` after priming relative sectors `242..388`;
-low measures `1469/1447`, blocking/refill/due `34/12/4`, with loop reads/read time
-down to `28/145` after priming relative sectors `238..388` during setup. Both
-paths keep pack LBA/sectors and the PS-EXE bucket fixed while reducing draw or
-CD pressure. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
+baselines use allocator-safe targeted setup slices instead of full setup
+buffers: high now measures `1489/1430`, blocking/refill/due `92/15/15`, with
+loop reads/read time down to `56/256` after caching relative sectors
+`198..244` and `411..435`; low measures `1477/1434`, blocking/refill/due
+`58/16/9`, with loop reads/read time down to `51/236` after caching
+`197..243` and `410..434`. Both paths keep pack LBA/sectors and the PS-EXE
+bucket fixed while reducing CD pressure. VISITOR3 high keeps the compact tail-pack promotion at `1063/1040`, and
 VISITOR5 high/low both remain green on the matching `30..46` retained-read
 shape. The VISITOR3 low frame132/frame137 setup-prime relocation keeps the
 fixed `1555450` byte VIST3LOW footprint, LBA/sectors `23371/760`, and
 `217088` byte PS-EXE bucket while improving low to `1062/1040`, overrun `22`,
-blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1476/1441`
-and `1469/1447`; the latest setup-segment promotions save thirty active-loop
-reads on each tide without moving layout, while high keeps the v927 payload
-shrink and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
+blocking `42`, reads/due `7/7`. WALKSTUF1 high/low now measure `1489/1430`
+and `1477/1434`; the latest targeted setup-segment promotion moves both rows
+out of orange without moving layout, while high keeps the v927 payload shrink
+and low keeps the no-shift payload lane. BUILDING2 low now adds the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, improving to
 `1339/1317`, overrun `22`, blocking/refill `53/0`, reads/read time `37/150`,
 and due `12`. BUILDING2 high currently measures
-`1349/1315`, overrun `34`, blocking `48`, hidden refill `12`, and due misses
-`7`; same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`1350/1310`, overrun `40`, blocking `54`, hidden refill `17`, and due misses
+`7`; the allocator-safe setup slices cut reads/read time `57/246 -> 47/208`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims reduce active payload `674798 -> 672026` without moving pack layout.
 The live ledger is at

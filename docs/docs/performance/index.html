@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-17" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-18" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4581 words
+          ~18 min read · 4597 words
         </p>
 
       <hr class="rule" />
@@ -441,23 +441,24 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.6% over target / 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5699%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.4843%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.1470%</code> / <code class="language-plaintext highlighter-rouge">100.2147%</code>.</p>
+the public average is <strong>+0.5% over target / 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5371%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.5143%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.1798%</code> / <code class="language-plaintext highlighter-rouge">100.2447%</code>.</p>
 
-<p>The latest WALKSTUF1 high baseline primes relative sectors <code class="language-plaintext highlighter-rouge">242..388</code> during
-setup. Against the v949 current control it improves active loop/target
-<code class="language-plaintext highlighter-rouge">1481/1428 -&gt; 1476/1441</code>, overrun <code class="language-plaintext highlighter-rouge">53 -&gt; 35</code>, blocking/refill <code class="language-plaintext highlighter-rouge">88/24 -&gt; 49/17</code>,
-reads/read time <code class="language-plaintext highlighter-rouge">67/287 -&gt; 37/182</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 7</code>; setup rises
-<code class="language-plaintext highlighter-rouge">1770 -&gt; 1822</code> and setup bytes <code class="language-plaintext highlighter-rouge">413236 -&gt; 712244</code>, accepted under the 4%
-material setup-regression gate.</p>
+<p>The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
+instead of the old full-scene resident setup buffers. High caches relative
+sectors <code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>, improving <code class="language-plaintext highlighter-rouge">1509/1425 -&gt; 1489/1430</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">137/34 -&gt; 92/15</code>, reads/read time <code class="language-plaintext highlighter-rouge">81/369 -&gt; 56/256</code>, and due
+<code class="language-plaintext highlighter-rouge">23 -&gt; 15</code>. Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving
+<code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>, blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time
+<code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due <code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. Both W1 rows moved out of orange into
+yellow while staying inside the new CACHE allocator budget.</p>
 
-<p>The latest WALKSTUF1 low baseline primes relative sectors <code class="language-plaintext highlighter-rouge">238..388</code> during
-setup on top of the no-shift payload lane. Low now measures <code class="language-plaintext highlighter-rouge">1469/1447</code>,
-overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">34/12/4</code>, and loop reads/read time
-<code class="language-plaintext highlighter-rouge">28/145</code>; setup rises <code class="language-plaintext highlighter-rouge">1773 -&gt; 1820</code> and setup bytes <code class="language-plaintext highlighter-rouge">421428 -&gt; 728628</code>,
-accepted under the 4% material setup-regression gate while pack offsets,
-LBA/sectors, and PS-EXE size stay fixed.</p>
+<p>The latest BUILDING2 high allocator baseline keeps only targeted CACHE slices
+at relative sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code>. It trades a small row-level loop
+regression (<code class="language-plaintext highlighter-rouge">1347/1311 -&gt; 1350/1310</code>) for materially lower read pressure
+(<code class="language-plaintext highlighter-rouge">57/246 -&gt; 47/208</code>, due <code class="language-plaintext highlighter-rouge">8 -&gt; 7</code>) and removes the allocator-era clean-rect
+failure seen with full setup buffers.</p>
 
 <p>The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames <code class="language-plaintext highlighter-rouge">141/140/142/143/144</code> plus sound events
@@ -1089,7 +1090,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.5699% over target / 99.4843% target speed, with several
+public average is now +0.5371% over target / 99.5143% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

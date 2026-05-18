@@ -112,19 +112,19 @@ linked in the Rollup section.</p>
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
   <span class="spd-key spd-green">118 (93.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">4 (3.2%) ≥ 95%</span>
-  <span class="spd-key spd-orange">2 (1.6%) ≥ 90%</span>
+  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
+  <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">2 (1.6%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
 </p>
 
-The allocator refresh changes the current risk profile: VISITOR3 high/low are
-now red, WALKSTUF1 high/low are orange, and BUILDING2 plus BUILDING4 remain
-close yellow/green-edge rows. That is the new allocator baseline rather than a
-visual regression: the R34 allocator matrix still records `126/126` PASS with
-0 BSODs. The remaining performance work should target VISITOR3 data-shape or
-scheduler ownership first, then WALKSTUF1 CD pressure, then residual
-BUILDING2/BUILDING4 polish.
+The allocator refresh changed the current risk profile: VISITOR3 high/low are
+still red, WALKSTUF1 high/low have moved out of orange into yellow after the
+targeted setup-segment checkpoint, and BUILDING2 plus BUILDING4 remain close
+yellow/green-edge rows. That is the new allocator baseline rather than a visual
+regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
+The remaining performance work should target VISITOR3 data-shape or scheduler
+ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 polish.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -133,7 +133,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-16">2026-05-16</time>:
+Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:
 
 | Metric | Value |
 |---|---:|
@@ -145,10 +145,10 @@ Current battle-card rollup as of <time datetime="2026-05-16">2026-05-16</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.5699%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4843%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-16T11:29:21` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.5%` (`0.5371%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.5143%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; targeted W1/B2 checkpoint `2026-05-17T21:27:42` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1/B2 rows stamped `git:339df94f5+targeted-setup`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -158,21 +158,23 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Current W1 payload/speed track: `walkstuf1-high-setupseg242-388-v998` and
-`walkstuf1-low-setupseg238-388-v989` use tide-local setup-resident sector
-ranges. High improves active loop/target `1481/1428 -> 1476/1441`, overrun
-`53 -> 35`, blocking/refill `88/24 -> 49/17`, loop reads/read time
-`67/287 -> 37/182`, and due `15 -> 7`. Low improves active loop/target
-`1481/1431 -> 1469/1447`, overrun `50 -> 22`, blocking/refill `72/27 -> 34/12`,
-loop reads/read time `58/267 -> 28/145`, and due `10 -> 4`.
+Current W1 allocator-era speed track: targeted dual setup segments replace the
+old full-scene setup buffers with CACHE slices that fit the new allocator.
+High caches relative sectors `198..244` and `411..435`, improving active
+loop/target `1509/1425 -> 1489/1430`, overrun `84 -> 59`, blocking/refill
+`137/34 -> 92/15`, loop reads/read time `81/369 -> 56/256`, and due
+`23 -> 15`. Low caches `197..243` and `410..434`, improving active loop/target
+`1507/1426 -> 1477/1434`, overrun `81 -> 43`, blocking/refill
+`142/26 -> 58/16`, loop reads/read time `75/353 -> 51/236`, and due
+`25 -> 9`. Both W1 rows moved out of orange into yellow.
 
-Current B2-high speed track: `building2-high-setupseg86-242-v979` primes
-relative sectors `86..242` during setup. Against the fresh current control it
-improves active loop/target `1356/1312 -> 1349/1315`, overrun `44 -> 34`,
-blocking/refill `58/21 -> 48/12`, reads/read time `58/259 -> 25/117`, and keeps
-due flat at `7`. Setup cost rises scene `1607 -> 1659` and setup bytes
-`282260 -> 601748`, accepted under the material gate with pack LBA/sectors and
-the PS-EXE bucket fixed.
+Current B2-high allocator-safe setup track: targeted CACHE slices at relative
+sectors `3..35` and `202..242` keep the focused allocator run measured without
+the old full-scene setup buffer. The row changes `1347/1311 -> 1350/1310`, so
+loop debt rises slightly, but read pressure improves materially:
+blocking/refill `52/17 -> 54/17`, loop reads/read time `57/246 -> 47/208`, and
+due `8 -> 7`. The tradeoff is accepted because it removes the allocator-era
+clean-rect failure mode while staying inside the CACHE budget.
 
 Current BUILDING4-low payload track: `building4-low-local-lz-entry270-v971`
 adds entry `270` / source frame `410` on top of the entry `30` and `33`
@@ -409,11 +411,14 @@ v860/v861/v862/v863 frame89/frame98/frame27/frame101 trims keep those metrics ex
 and adds the low-tide `209..225` retained-read row, keeping scene/loop flat at
 `1773/1481` while improving target `1428 -> 1431`, overrun `53 -> 50`,
 blocking `78 -> 72`, reads/read time `61/279 -> 58/267`, and due `11 -> 10`.
-`walkstuf1-low-setupseg238-388-v989` then moves the dense low-tide late sector
-range into setup residency, improving active loop/target to `1469/1447`,
-overrun `22`, blocking/refill/due `34/12/4`, and loop reads/read time
-`28/145`; larger `238..404` and `238..422` probes crossed the clean-pressure
-cliff and disabled prefetch.
+The allocator-era targeted setup checkpoint then narrows W1 setup residency to
+two CACHE slices per tide instead of one full-scene setup buffer. High caches
+`198..244` and `411..435`, improving `1509/1425 -> 1489/1430`, blocking/refill
+`137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due `23 -> 15`.
+Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
+blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
+`25 -> 9`. Larger full-scene setup buffers and wider B2 second-segment probes
+crossed allocator clean-pressure cliffs and were rejected.
 
 Latest rejected W1 note: `walkstuf1-low-midright-ac-offscreen-v683` isolated
 frame `86` from the old `85..92` mid-right miss. It removed only `319` pixels
@@ -421,12 +426,12 @@ and `105` spans, kept scene/loop flat at `1770/1478`, improved overrun
 `47 -> 46`, but regressed blocking `64 -> 65`. Close frame `86` for direct
 clipping; move to `87..88` or smaller non-risk candidates.
 
-Latest promoted BUILDING2 note: `building2-high-setupseg86-242-v979`
-adds a high-tide setup segment for relative sectors `86..242`, shifting a
-large tight CD cluster out of the active loop while staying below the clean
-snapshot prefetch-pressure cliff. Active loop/target improves
-`1356/1312 -> 1349/1315`, overrun `44 -> 34`, blocking/refill
-`58/21 -> 48/12`, reads/read time `58/259 -> 25/117`, and due stays `7`.
+Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
+relative sectors `3..35` and `202..242` in MEM_REGION_CACHE. The final focused
+run keeps B2 high measured at `1350/1310`; this is a slight loop tradeoff from
+the allocator CSV row, but it cuts loop reads/read time `57/246 -> 47/208`,
+keeps refill flat at `17`, and improves due `8 -> 7` while avoiding the
+full-buffer clean-rect allocation failure.
 `building2-low-trimtails-v739` keeps the v626 slack-8 `218..229` retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to `1603/1339/1317`,
@@ -467,9 +472,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-high-setupseg242-388-v998`,
-  `walkstuf1-low-setupseg238-388-v989`,
-  `building2-high-setupseg86-242-v979`,
+  refreshed rows use `git:339df94f5+targeted-setup` for WALKSTUF1 high/low
+  and BUILDING2 high,
   `building4-low-local-lz-entry270-v971`,
   `johnny1-local-lz-v932`,
   `building2-high-frame100-inplace-v926`,
@@ -1105,14 +1109,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>2.8%</td>
-      <td class="spd-yellow">97.3%</td>
-      <td>1347/1311</td>
-      <td>52</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>3.0%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1350/1310</td>
+      <td>54</td>
       <td>17</td>
-      <td>8</td>
+      <td>7</td>
       <td></td>
     </tr>
     <tr id="perf-building2-low">
@@ -2477,28 +2481,28 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>5.9%</td>
-      <td class="spd-orange">94.4%</td>
-      <td>1509/1425</td>
-      <td>137</td>
-      <td>34</td>
-      <td>23</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>4.1%</td>
+      <td class="spd-yellow">96.0%</td>
+      <td>1489/1430</td>
+      <td>92</td>
+      <td>15</td>
+      <td>15</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>5.7%</td>
-      <td class="spd-orange">94.6%</td>
-      <td>1507/1426</td>
-      <td>142</td>
-      <td>26</td>
-      <td>25</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>3.0%</td>
+      <td class="spd-yellow">97.1%</td>
+      <td>1477/1434</td>
+      <td>58</td>
+      <td>16</td>
+      <td>9</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">

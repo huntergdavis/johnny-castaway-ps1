@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance battle card — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-17" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-18" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -198,19 +198,19 @@ linked in the Rollup section.</p>
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
   <span class="spd-key spd-green">118 (93.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">4 (3.2%) ≥ 95%</span>
-  <span class="spd-key spd-orange">2 (1.6%) ≥ 90%</span>
+  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
+  <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">2 (1.6%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
 </p>
 
-<p>The allocator refresh changes the current risk profile: VISITOR3 high/low are
-now red, WALKSTUF1 high/low are orange, and BUILDING2 plus BUILDING4 remain
-close yellow/green-edge rows. That is the new allocator baseline rather than a
-visual regression: the R34 allocator matrix still records <code class="language-plaintext highlighter-rouge">126/126</code> PASS with
-0 BSODs. The remaining performance work should target VISITOR3 data-shape or
-scheduler ownership first, then WALKSTUF1 CD pressure, then residual
-BUILDING2/BUILDING4 polish.</p>
+<p>The allocator refresh changed the current risk profile: VISITOR3 high/low are
+still red, WALKSTUF1 high/low have moved out of orange into yellow after the
+targeted setup-segment checkpoint, and BUILDING2 plus BUILDING4 remain close
+yellow/green-edge rows. That is the new allocator baseline rather than a visual
+regression: the R34 allocator matrix still records <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs.
+The remaining performance work should target VISITOR3 data-shape or scheduler
+ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 polish.</p>
 
 <p>All 126 rows now carry active-loop timing. <a href="../scenes/suzy1/"><code class="language-plaintext highlighter-rouge">SUZY 1</code></a>
 needs a longer <code class="language-plaintext highlighter-rouge">12000</code>-frame matrix budget because its valid
@@ -219,7 +219,7 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
 
 <h2 id="rollup">Rollup</h2>
 
-<p>Current battle-card rollup as of <time datetime="2026-05-16">2026-05-16</time>:</p>
+<p>Current battle-card rollup as of <time datetime="2026-05-17">2026-05-17</time>:</p>
 
 <table>
   <thead>
@@ -263,19 +263,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.6%</code> (<code class="language-plaintext highlighter-rouge">0.5699%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.5%</code> (<code class="language-plaintext highlighter-rouge">0.5371%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.4843%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.5143%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; targeted W1/B2 checkpoint <code class="language-plaintext highlighter-rouge">2026-05-17T21:27:42</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed W1/B2 rows stamped <code class="language-plaintext highlighter-rouge">git:339df94f5+targeted-setup</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -291,21 +291,23 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Current W1 payload/speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-setupseg242-388-v998</code> and
-<code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code> use tide-local setup-resident sector
-ranges. High improves active loop/target <code class="language-plaintext highlighter-rouge">1481/1428 -&gt; 1476/1441</code>, overrun
-<code class="language-plaintext highlighter-rouge">53 -&gt; 35</code>, blocking/refill <code class="language-plaintext highlighter-rouge">88/24 -&gt; 49/17</code>, loop reads/read time
-<code class="language-plaintext highlighter-rouge">67/287 -&gt; 37/182</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 7</code>. Low improves active loop/target
-<code class="language-plaintext highlighter-rouge">1481/1431 -&gt; 1469/1447</code>, overrun <code class="language-plaintext highlighter-rouge">50 -&gt; 22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">72/27 -&gt; 34/12</code>,
-loop reads/read time <code class="language-plaintext highlighter-rouge">58/267 -&gt; 28/145</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 4</code>.</p>
+<p>Current W1 allocator-era speed track: targeted dual setup segments replace the
+old full-scene setup buffers with CACHE slices that fit the new allocator.
+High caches relative sectors <code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>, improving active
+loop/target <code class="language-plaintext highlighter-rouge">1509/1425 -&gt; 1489/1430</code>, overrun <code class="language-plaintext highlighter-rouge">84 -&gt; 59</code>, blocking/refill
+<code class="language-plaintext highlighter-rouge">137/34 -&gt; 92/15</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">81/369 -&gt; 56/256</code>, and due
+<code class="language-plaintext highlighter-rouge">23 -&gt; 15</code>. Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving active loop/target
+<code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>, overrun <code class="language-plaintext highlighter-rouge">81 -&gt; 43</code>, blocking/refill
+<code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
+<code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. Both W1 rows moved out of orange into yellow.</p>
 
-<p>Current B2-high speed track: <code class="language-plaintext highlighter-rouge">building2-high-setupseg86-242-v979</code> primes
-relative sectors <code class="language-plaintext highlighter-rouge">86..242</code> during setup. Against the fresh current control it
-improves active loop/target <code class="language-plaintext highlighter-rouge">1356/1312 -&gt; 1349/1315</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 34</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">58/21 -&gt; 48/12</code>, reads/read time <code class="language-plaintext highlighter-rouge">58/259 -&gt; 25/117</code>, and keeps
-due flat at <code class="language-plaintext highlighter-rouge">7</code>. Setup cost rises scene <code class="language-plaintext highlighter-rouge">1607 -&gt; 1659</code> and setup bytes
-<code class="language-plaintext highlighter-rouge">282260 -&gt; 601748</code>, accepted under the material gate with pack LBA/sectors and
-the PS-EXE bucket fixed.</p>
+<p>Current B2-high allocator-safe setup track: targeted CACHE slices at relative
+sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code> keep the focused allocator run measured without
+the old full-scene setup buffer. The row changes <code class="language-plaintext highlighter-rouge">1347/1311 -&gt; 1350/1310</code>, so
+loop debt rises slightly, but read pressure improves materially:
+blocking/refill <code class="language-plaintext highlighter-rouge">52/17 -&gt; 54/17</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">57/246 -&gt; 47/208</code>, and
+due <code class="language-plaintext highlighter-rouge">8 -&gt; 7</code>. The tradeoff is accepted because it removes the allocator-era
+clean-rect failure mode while staying inside the CACHE budget.</p>
 
 <p>Current BUILDING4-low payload track: <code class="language-plaintext highlighter-rouge">building4-low-local-lz-entry270-v971</code>
 adds entry <code class="language-plaintext highlighter-rouge">270</code> / source frame <code class="language-plaintext highlighter-rouge">410</code> on top of the entry <code class="language-plaintext highlighter-rouge">30</code> and <code class="language-plaintext highlighter-rouge">33</code>
@@ -542,11 +544,14 @@ v860/v861/v862/v863 frame89/frame98/frame27/frame101 trims keep those metrics ex
 and adds the low-tide <code class="language-plaintext highlighter-rouge">209..225</code> retained-read row, keeping scene/loop flat at
 <code class="language-plaintext highlighter-rouge">1773/1481</code> while improving target <code class="language-plaintext highlighter-rouge">1428 -&gt; 1431</code>, overrun <code class="language-plaintext highlighter-rouge">53 -&gt; 50</code>,
 blocking <code class="language-plaintext highlighter-rouge">78 -&gt; 72</code>, reads/read time <code class="language-plaintext highlighter-rouge">61/279 -&gt; 58/267</code>, and due <code class="language-plaintext highlighter-rouge">11 -&gt; 10</code>.
-<code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code> then moves the dense low-tide late sector
-range into setup residency, improving active loop/target to <code class="language-plaintext highlighter-rouge">1469/1447</code>,
-overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">34/12/4</code>, and loop reads/read time
-<code class="language-plaintext highlighter-rouge">28/145</code>; larger <code class="language-plaintext highlighter-rouge">238..404</code> and <code class="language-plaintext highlighter-rouge">238..422</code> probes crossed the clean-pressure
-cliff and disabled prefetch.</p>
+The allocator-era targeted setup checkpoint then narrows W1 setup residency to
+two CACHE slices per tide instead of one full-scene setup buffer. High caches
+<code class="language-plaintext highlighter-rouge">198..244</code> and <code class="language-plaintext highlighter-rouge">411..435</code>, improving <code class="language-plaintext highlighter-rouge">1509/1425 -&gt; 1489/1430</code>, blocking/refill
+<code class="language-plaintext highlighter-rouge">137/34 -&gt; 92/15</code>, reads/read time <code class="language-plaintext highlighter-rouge">81/369 -&gt; 56/256</code>, and due <code class="language-plaintext highlighter-rouge">23 -&gt; 15</code>.
+Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving <code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
+<code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. Larger full-scene setup buffers and wider B2 second-segment probes
+crossed allocator clean-pressure cliffs and were rejected.</p>
 
 <p>Latest rejected W1 note: <code class="language-plaintext highlighter-rouge">walkstuf1-low-midright-ac-offscreen-v683</code> isolated
 frame <code class="language-plaintext highlighter-rouge">86</code> from the old <code class="language-plaintext highlighter-rouge">85..92</code> mid-right miss. It removed only <code class="language-plaintext highlighter-rouge">319</code> pixels
@@ -554,12 +559,12 @@ and <code class="language-plaintext highlighter-rouge">105</code> spans, kept sc
 <code class="language-plaintext highlighter-rouge">47 -&gt; 46</code>, but regressed blocking <code class="language-plaintext highlighter-rouge">64 -&gt; 65</code>. Close frame <code class="language-plaintext highlighter-rouge">86</code> for direct
 clipping; move to <code class="language-plaintext highlighter-rouge">87..88</code> or smaller non-risk candidates.</p>
 
-<p>Latest promoted BUILDING2 note: <code class="language-plaintext highlighter-rouge">building2-high-setupseg86-242-v979</code>
-adds a high-tide setup segment for relative sectors <code class="language-plaintext highlighter-rouge">86..242</code>, shifting a
-large tight CD cluster out of the active loop while staying below the clean
-snapshot prefetch-pressure cliff. Active loop/target improves
-<code class="language-plaintext highlighter-rouge">1356/1312 -&gt; 1349/1315</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 34</code>, blocking/refill
-<code class="language-plaintext highlighter-rouge">58/21 -&gt; 48/12</code>, reads/read time <code class="language-plaintext highlighter-rouge">58/259 -&gt; 25/117</code>, and due stays <code class="language-plaintext highlighter-rouge">7</code>.
+<p>Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
+relative sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code> in MEM_REGION_CACHE. The final focused
+run keeps B2 high measured at <code class="language-plaintext highlighter-rouge">1350/1310</code>; this is a slight loop tradeoff from
+the allocator CSV row, but it cuts loop reads/read time <code class="language-plaintext highlighter-rouge">57/246 -&gt; 47/208</code>,
+keeps refill flat at <code class="language-plaintext highlighter-rouge">17</code>, and improves due <code class="language-plaintext highlighter-rouge">8 -&gt; 7</code> while avoiding the
+full-buffer clean-rect allocation failure.
 <code class="language-plaintext highlighter-rouge">building2-low-trimtails-v739</code> keeps the v626 slack-8 <code class="language-plaintext highlighter-rouge">218..229</code> retained-read
 row and v660 offscreen draw-span clip, then trims dead low-tide draw-tail
 payload inside the existing pack footprint. It improves to <code class="language-plaintext highlighter-rouge">1603/1339/1317</code>,
@@ -601,9 +606,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">walkstuf1-high-setupseg242-388-v998</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-low-setupseg238-388-v989</code>,
-<code class="language-plaintext highlighter-rouge">building2-high-setupseg86-242-v979</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">git:339df94f5+targeted-setup</code> for WALKSTUF1 high/low
+and BUILDING2 high,
 <code class="language-plaintext highlighter-rouge">building4-low-local-lz-entry270-v971</code>,
 <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
 <code class="language-plaintext highlighter-rouge">building2-high-frame100-inplace-v926</code>,
@@ -1240,14 +1244,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>2.8%</td>
-      <td class="spd-yellow">97.3%</td>
-      <td>1347/1311</td>
-      <td>52</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>3.0%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1350/1310</td>
+      <td>54</td>
       <td>17</td>
-      <td>8</td>
+      <td>7</td>
       <td></td>
     </tr>
     <tr id="perf-building2-low">
@@ -2612,28 +2616,28 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>5.9%</td>
-      <td class="spd-orange">94.4%</td>
-      <td>1509/1425</td>
-      <td>137</td>
-      <td>34</td>
-      <td>23</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>4.1%</td>
+      <td class="spd-yellow">96.0%</td>
+      <td>1489/1430</td>
+      <td>92</td>
+      <td>15</td>
+      <td>15</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf1-low">
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-16T11:29:21</td>
-      <td>git:2b617cbc</td>
-      <td>5.7%</td>
-      <td class="spd-orange">94.6%</td>
-      <td>1507/1426</td>
-      <td>142</td>
-      <td>26</td>
-      <td>25</td>
+      <td>2026-05-17T21:27:42</td>
+      <td>git:339df94f5+targeted-setup</td>
+      <td>3.0%</td>
+      <td class="spd-yellow">97.1%</td>
+      <td>1477/1434</td>
+      <td>58</td>
+      <td>16</td>
+      <td>9</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">

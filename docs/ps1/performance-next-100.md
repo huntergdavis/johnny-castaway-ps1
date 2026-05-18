@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-15
+Date: 2026-05-17
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -25,7 +25,20 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the VISITOR3 high-only sparse frame-117
+Current allocator-era rollup after the memory-region allocator refresh and the
+targeted W1/B2 setup-segment checkpoint: `+0.5371%` public average over target /
+`99.5143%` public target speed across all `126` timing-bearing rows. The raw
+signed optimization matrix is about `-0.1798%` / `100.2447%`. Since the compact
+full-matrix baseline was about `17.4%` over target / `87.1%` target speed, the
+headless methodology has removed about `16.86` public over-target points and
+added about `12.41` public target-speed points. Bands are now `118` green,
+`6` yellow, `0` orange, and `2` red. The latest promoted checkpoint uses
+allocator-safe targeted CACHE setup slices: W1 high `198..244` plus `411..435`
+improves `1509/1425 -> 1489/1430`, W1 low `197..243` plus `410..434` improves
+`1507/1426 -> 1477/1434`, and B2 high `3..35` plus `202..242` keeps the focused
+allocator run measured while reducing reads/read time `57/246 -> 47/208`.
+
+Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
 promotions, the v204 low persistent setup segment, the v205 high persistent
 setup segment, the v213/v214 high setup-prime expansions, the v216 guarded low

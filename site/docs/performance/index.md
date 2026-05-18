@@ -311,23 +311,24 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.6% over target / 99.5% target speed** (`0.5699%`
-exact public over target / `99.4843%` exact public target speed); the raw
-signed optimization matrix is about `-0.1470%` / `100.2147%`.
+the public average is **+0.5% over target / 99.5% target speed** (`0.5371%`
+exact public over target / `99.5143%` exact public target speed); the raw
+signed optimization matrix is about `-0.1798%` / `100.2447%`.
 
-The latest WALKSTUF1 high baseline primes relative sectors `242..388` during
-setup. Against the v949 current control it improves active loop/target
-`1481/1428 -> 1476/1441`, overrun `53 -> 35`, blocking/refill `88/24 -> 49/17`,
-reads/read time `67/287 -> 37/182`, and due `15 -> 7`; setup rises
-`1770 -> 1822` and setup bytes `413236 -> 712244`, accepted under the 4%
-material setup-regression gate.
+The latest WALKSTUF1 allocator-era baseline uses targeted dual setup segments
+instead of the old full-scene resident setup buffers. High caches relative
+sectors `198..244` and `411..435`, improving `1509/1425 -> 1489/1430`,
+blocking/refill `137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due
+`23 -> 15`. Low caches `197..243` and `410..434`, improving
+`1507/1426 -> 1477/1434`, blocking/refill `142/26 -> 58/16`, reads/read time
+`75/353 -> 51/236`, and due `25 -> 9`. Both W1 rows moved out of orange into
+yellow while staying inside the new CACHE allocator budget.
 
-The latest WALKSTUF1 low baseline primes relative sectors `238..388` during
-setup on top of the no-shift payload lane. Low now measures `1469/1447`,
-overrun `22`, blocking/refill/due `34/12/4`, and loop reads/read time
-`28/145`; setup rises `1773 -> 1820` and setup bytes `421428 -> 728628`,
-accepted under the 4% material setup-regression gate while pack offsets,
-LBA/sectors, and PS-EXE size stay fixed.
+The latest BUILDING2 high allocator baseline keeps only targeted CACHE slices
+at relative sectors `3..35` and `202..242`. It trades a small row-level loop
+regression (`1347/1311 -> 1350/1310`) for materially lower read pressure
+(`57/246 -> 47/208`, due `8 -> 7`) and removes the allocator-era clean-rect
+failure seen with full setup buffers.
 
 The latest VISITOR3 high promotion reuses the proven low compact frame143/144
 cleanup payloads and repacks frames `141/140/142/143/144` plus sound events
@@ -957,7 +958,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.5699% over target / 99.4843% target speed, with several
+  public average is now +0.5371% over target / 99.5143% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

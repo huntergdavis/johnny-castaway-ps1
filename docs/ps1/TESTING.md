@@ -65,9 +65,9 @@ PS1_PERF_STATS_VERSION=compact-fgp3-v2-fullmatrix \
 The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
 mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
-[/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
+[/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/).
 
-Current battle-card rollup as of 2026-05-15:
+Current battle-card rollup as of 2026-05-17:
 
 | Metric | Value |
 |---|---:|
@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-15:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2285%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7746%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-15T14:14:21` |
-| Stats version | mixed; newest optimized/code-headroom rows use `walkstuf1-high-setupseg242-388-v998`, `walkstuf1-low-setupseg238-388-v989`, `building2-high-setupseg86-242-v979`, `building4-low-local-lz-entry270-v971`, `johnny1-local-lz-v932`, `building2-high-frame100-inplace-v926`, `building4-low-frame40-inplace-v924`, `building2-high-frame173-inplace-v914`, `building4-low-frame283-inplace-v913`, and earlier matrix refresh versions; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.5%` (`0.5371%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.5143%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; targeted W1/B2 checkpoint `2026-05-17T21:27:42` |
+| Stats version | mixed; newest targeted allocator rows use `git:339df94f5+targeted-setup` for WALKSTUF1 high/low and BUILDING2 high; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1072 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=5` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -96,13 +96,12 @@ to `1948/1945`, overrun `3`, blocking/refill `5`, read time `37`, due `0`, and
 target speed `99.85%`.
 
 Latest promoted BUILDING2 high setup-segment note:
-`building2-high-setupseg86-242-v979` primes relative sectors `86..242`
-during setup. Against the fresh current control it improves active loop/target
-`1356/1312 -> 1349/1315`, overrun `44 -> 34`, blocking/refill `58/21 -> 48/12`,
-reads/read time `58/259 -> 25/117`, while due stays `7`. Setup cost rises
-scene `1607 -> 1659` and setup bytes `282260 -> 601748`, which is accepted
-under the material setup-regression gate with pack LBA/sectors and PS-EXE
-bucket fixed.
+the allocator-era targeted setup checkpoint caches only relative sectors
+`3..35` and `202..242` in MEM_REGION_CACHE instead of retaining a full setup
+buffer. The row changes `1347/1311 -> 1350/1310`, so loop debt rises slightly,
+but read pressure improves materially: reads/read time `57/246 -> 47/208` and
+due `8 -> 7`, while refill stays `17`. This is accepted because the focused
+allocator run stays measured instead of failing clean-rect allocation.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`
@@ -136,25 +135,15 @@ accepted `30..46` retained-read shape on low tide. Low improves from
 and reads/due `19/0 -> 18/0`, moving VISITOR5 low into green while the high
 control and VISITOR3 / BUILDING2 / WALKSTUF1 canaries stay exact-flat.
 
-Latest promoted WALKSTUF1 low setup-segment note:
-`walkstuf1-low-setupseg238-388-v989` primes relative sectors `238..388`
-during setup. Against v935 it improves active loop/target
-`1481/1431 -> 1469/1447`, overrun `50 -> 22`, blocking/refill `72/27 -> 34/12`,
-reads/read time `58/267 -> 28/145`, and due `10 -> 4`. Setup cost rises
-scene `1773 -> 1820` and setup bytes `421428 -> 728628`, accepted under the
-`4%` material setup-regression gate. Boundary probes found `238..404` and
-`238..422` cross the clean-pressure cliff and disable prefetch, while
-`238..396`, `232..388`, and two-segment variants were safe but slower.
-
-Latest promoted WALKSTUF1 high setup-segment note:
-`walkstuf1-high-setupseg242-388-v998` primes relative sectors `242..388`
-during setup. Against the v949 current control it improves active loop/target
-`1481/1428 -> 1476/1441`, overrun `53 -> 35`, blocking/refill `88/24 -> 49/17`,
-reads/read time `67/287 -> 37/182`, and due `15 -> 7`. Setup cost rises
-scene `1770 -> 1822` and setup bytes `413236 -> 712244`, accepted under the
-`4%` material setup-regression gate. Boundary probes found `228..388` and
-split `252..388 + 228..252` cross the structural cliff; `252..388`,
-`244..388`, `240..388`, and `241..388` were safe but slower or worse-speed.
+Latest promoted WALKSTUF1 allocator setup-segment note:
+the allocator-era targeted setup checkpoint uses two CACHE slices per tide
+instead of full-scene setup buffers. High caches `198..244` and `411..435`,
+improving `1509/1425 -> 1489/1430`, overrun `84 -> 59`, blocking/refill
+`137/34 -> 92/15`, reads/read time `81/369 -> 56/256`, and due `23 -> 15`.
+Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
+overrun `81 -> 43`, blocking/refill `142/26 -> 58/16`, reads/read time
+`75/353 -> 51/236`, and due `25 -> 9`. Both rows moved out of orange into
+yellow while staying inside allocator pressure limits.
 The earlier `walkstuf1-high-frame139-inplace-v927` remains the high payload
 baseline, shrinking entry `139` / source frame `247` in place.
 `walkstuf1-low-rg209-225-v935` adds the low-tide `209..225` retained-read row
@@ -291,13 +280,12 @@ loop reads/read time `50/218 -> 37/150`, and due misses `14 -> 12` with refill
 still `0`. BUILDING2 high, WALKSTUF1 low/high, and VISITOR3 low/high controls
 stayed exact-flat.
 
-Latest promoted WALKSTUF1 note: high is `walkstuf1-high-setupseg242-388-v998`;
-low is `walkstuf1-low-setupseg238-388-v989`. High primes relative sectors
-`242..388` during setup and measures `1476/1441`, overrun `35`,
-blocking/refill `49/17`, reads/due `37/7`. Low primes relative sectors
-`238..388` and measures `1469/1447`, overrun `22`, blocking/refill `34/12`,
-reads/due `28/4`. The older shared retained-read table rows remain part of the
-history, but the current speed-bearing W1 baselines are setup-segment wins.
+Latest promoted WALKSTUF1 note: the current speed-bearing W1 baselines are the
+allocator-targeted setup slices above. High measures `1489/1430`, overrun `59`,
+blocking/refill `92/15`, reads/due `56/15`; low measures `1477/1434`, overrun
+`43`, blocking/refill `58/16`, reads/due `51/9`. The older retained-read table
+rows and full setup segments remain part of the history, but are superseded by
+the allocator-safe targeted setup checkpoint.
 
 Latest rejected VISITOR3 v183-v212 note: low-tide precursor motion-copy frames
 `114..118`, a C-side motion fastspan copy path, terminal zero/origin trimming,
