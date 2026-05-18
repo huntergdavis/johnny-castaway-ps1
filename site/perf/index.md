@@ -128,7 +128,9 @@ groups, WALKSTUF1
 low now uses one retained `238..342` setup segment, and WALKSTUF1 high now
 keeps `198..244` while retargeting its second retained slice to `286..342`.
 BUILDING2 low now primes relative sectors `112..128` during setup, reducing
-loop reads and due misses while keeping loop VBlanks flat.
+loop reads and due misses while keeping loop VBlanks flat. BUILDING4 low now
+uses a gap-8 dirty-upload band merge retune to cut its active row to
+`2849/2816`.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
@@ -154,10 +156,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2771%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7278%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group pressure promotion `2026-05-18T10:00:45` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2 high row stamped `git:2417ab233+building2-high-rg315-327`; refreshed BUILDING2 low row stamped `git:776e57df+building2-low-setupseg112-128`; refreshed WALKSTUF1 high row stamped `git:bf941b4d8+walkstuf1-high-setupseg286-342`; refreshed WALKSTUF1 low row stamped `git:44dc073e0+walkstuf1-low-setupseg238-342`; refreshed VISITOR3 high row stamped `git:fbff319bf+visitor3-high-thirdseg228-262`; refreshed VISITOR3 low row stamped `git:4b996f7dd+visitor3-low-thirdseg206-230`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7289%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; dirty-upload band merge retune canary `2026-05-18T10:27:31`; BUILDING2 high focused refresh `2026-05-18T10:39:25` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed under-green dirty-upload canary rows stamped `git:1176b6b0b+upload-gap8-bands`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -196,6 +198,13 @@ improves target `1315 -> 1316`, overrun `24 -> 23`, blocking `54 -> 53`,
 loop reads/read time `37/152 -> 34/141`, and due `12 -> 11`; setup cost rises
 `265 -> 275` VBlanks but stays outside the active loop.
 
+Current B4-low dirty-upload speed track: the renderer now merges dirty upload
+bands across clean gaps up to `8` rows instead of splitting every clean gap.
+BUILDING4 low improves `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
+blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`, while loop
+reads/due stay flat at `30/1`. A gap-11 probe was rejected as a one-VBlank
+regression against gap `8`.
+
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
 room for full setup-prime buffers. The current promotion keeps the tiny stage1
@@ -227,7 +236,8 @@ sectors `5 -> 4`, while preserving the fixed `1714154` byte pack footprint,
 pack LBA/sectors, and PS-EXE bucket. The material gate improves loop/target
 `2853/2815 -> 2851/2815`, overrun `38 -> 36`, and refill `36 -> 35`, with
 blocking/read time/due flat at `42/223/1`; active payload drops
-`807263 -> 799277`.
+`807263 -> 799277`. The current gap-8 dirty-upload band retune now carries the
+public row to `2849/2816`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -520,14 +530,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `git:bf941b4d8+walkstuf1-high-setupseg286-342`,
-  `git:776e57df+building2-low-setupseg112-128`,
-  `git:44dc073e0+walkstuf1-low-setupseg238-342`,
-  `git:fbff319bf+visitor3-high-thirdseg228-262`,
-  `git:4b996f7dd+visitor3-low-thirdseg206-230`,
-  `git:2417ab233+building2-high-rg315-327`,
-  and `git:391a265e1+building4-high-setupseg264-288` for the actively
-  refreshed under-green rows. Older rows retain their per-row version stamps,
+  refreshed under-green canary rows use `git:1176b6b0b+upload-gap8-bands`;
+  BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
+  Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
   `building2-high-frame100-inplace-v926`,
   `building4-low-frame40-inplace-v924`,
@@ -1162,8 +1167,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T10:00:45</td>
-      <td>git:2417ab233+building2-high-rg315-327</td>
+      <td>2026-05-18T10:39:25</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -1176,8 +1181,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T08:19:45</td>
-      <td>git:776e57df+building2-low-setupseg112-128</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>1.8%</td>
       <td class="spd-yellow">98.2%</td>
       <td>1339/1316</td>
@@ -1232,13 +1237,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-17T22:56:51</td>
-      <td>git:cbe2244ee+visitor3-window64</td>
-      <td>1.3%</td>
-      <td class="spd-yellow">98.7%</td>
-      <td>2853/2816</td>
-      <td>42</td>
-      <td>35</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
+      <td>1.2%</td>
+      <td class="spd-yellow">98.8%</td>
+      <td>2849/2816</td>
+      <td>38</td>
+      <td>31</td>
       <td>1</td>
       <td></td>
     </tr>
@@ -2394,8 +2399,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T05:36:40</td>
-      <td>git:fbff319bf+visitor3-high-thirdseg228-262</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>3.8%</td>
       <td class="spd-yellow">96.3%</td>
       <td>1082/1042</td>
@@ -2408,8 +2413,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T04:36:07</td>
-      <td>git:4b996f7dd+visitor3-low-thirdseg206-230</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>3.4%</td>
       <td class="spd-yellow">96.7%</td>
       <td>1074/1039</td>
@@ -2534,8 +2539,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T07:34:41</td>
-      <td>git:bf941b4d8+walkstuf1-high-setupseg286-342</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1472/1438</td>
@@ -2548,8 +2553,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T06:57:31</td>
-      <td>git:44dc073e0+walkstuf1-low-setupseg238-342</td>
+      <td>2026-05-18T10:27:31</td>
+      <td>git:1176b6b0b+upload-gap8-bands</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.4%</td>
       <td>1480/1442</td>

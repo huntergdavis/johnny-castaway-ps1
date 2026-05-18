@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~18 min read · 4736 words
+          ~19 min read · 4765 words
         </p>
 
       <hr class="rule" />
@@ -441,9 +441,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2771%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7278%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4398%</code> / <code class="language-plaintext highlighter-rouge">100.4582%</code>.</p>
+the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2760%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7289%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4410%</code> / <code class="language-plaintext highlighter-rouge">100.4593%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -468,6 +468,10 @@ with full setup buffers.</p>
 overrun <code class="language-plaintext highlighter-rouge">24 -&gt; 23</code>, blocking <code class="language-plaintext highlighter-rouge">54 -&gt; 53</code>, loop reads/read time
 <code class="language-plaintext highlighter-rouge">37/152 -&gt; 34/141</code>, and due <code class="language-plaintext highlighter-rouge">12 -&gt; 11</code>, with setup cost paid before the
 active loop.</p>
+
+<p>The latest BUILDING4 low renderer retune widens dirty-upload band merging to
+gap <code class="language-plaintext highlighter-rouge">8</code>, improving the public row to <code class="language-plaintext highlighter-rouge">2849/2816</code>, overrun <code class="language-plaintext highlighter-rouge">33</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">38/31</code>, read time <code class="language-plaintext highlighter-rouge">222</code>, and due <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
 <p>The latest VISITOR3 high promotion adds a third retained setup segment for
 relative sectors <code class="language-plaintext highlighter-rouge">228..262</code> after the frame139 raw-gap relocation. It improves
@@ -772,7 +776,7 @@ rows are historical only.</p>
     <tr>
       <td><code>building4</code></td>
       <td>+1.0% / 99.1% (2843/2816); due 1; blk 34</td>
-      <td>+1.3% / 98.7% (2853/2816); due 1; blk 42</td>
+      <td>+1.2% / 98.8% (2849/2816); due 1; blk 38</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -1108,7 +1112,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2771% over target / 99.7278% target speed, with several
+public average is now +0.2760% over target / 99.7289% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

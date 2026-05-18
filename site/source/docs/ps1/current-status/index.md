@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the BUILDING2 high guarded read-group pressure promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2771% over target / 99.7278% target speed).
+the dirty-upload band merge retune; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2760% over target / 99.7289% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 802 |
-| Approx. words | 8924 |
+| Lines | 807 |
+| Approx. words | 8984 |
 | Code fences | 1 |
 
 ## Outline

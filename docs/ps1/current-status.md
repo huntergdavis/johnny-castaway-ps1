@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-18 (`perf/allocator-era-under-green-20260517` after
-the BUILDING2 high guarded read-group pressure promotion;
+the dirty-upload band merge retune;
 all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and
-the public headless battle card is `+0.2771%` over target / `99.7278%` target
+the public headless battle card is `+0.2760%` over target / `99.7289%` target
 speed).
 
 ## Overall
@@ -270,7 +270,9 @@ blocking/read time `35`, and reads/due `6/6`.
 BUILDING4 low now clips offscreen PAL4 draw spans directly in the pack,
 improving to `2853/2816`, overrun `37`, blocking/read time `40`/`215`, and
 prefetch overrun `34` while preserving fixed pack footprints and the `217088`
-byte PS-EXE bucket. WALKSTUF1 high/low now also carry late-tail work-volume
+byte PS-EXE bucket. The current dirty-upload band retune then widens the
+clean-row merge gap to `8`, moving BUILDING4 low to `2849/2816`, overrun `33`,
+blocking/refill `38/31`, read time `222`, and due `1`. WALKSTUF1 high/low now also carry late-tail work-volume
 clips, high v837 adds frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen clips, and high v839/v841/v842/v843/v844/v882/v884 shrink frame51/frame49/frame47/frame45/frame43/frame138/frame135 in place with preserved offsets. High now primes relative sectors `242..388` during setup and measures
 `1476/1441` with blocking/refill `49/17`, reads/due `37/7`, while dropping
 runtime rows/spans/pixels to `16859/129919/731016` and active payload to
@@ -288,7 +290,9 @@ also exact-flat and drops high runtime rows/spans/pixels
 `17296/134136/776856 -> 16859/129919/731016`. BUILDING4 low v827 now carries
 the same-speed no-shift payload lane through frame `286`, keeping
 `3128/2853/2816`, blocking/refill `40/34`, read VBlanks `215`, and due `1`
-while dropping active payload `855284 -> 810226`. The JOHNNY1 local-LZ payload
+while dropping active payload `855284 -> 810226`; the current gap-8 dirty-upload
+band merge retune moves the active row to `2849/2816` without changing that
+pack layout. The JOHNNY1 local-LZ payload
 swing now compresses entries `1` and `50` in both high/low packs, cutting
 active payload `316608 -> 112093` bytes and moving both tides from
 `1973/1945` to `1948/1945`. WALKSTUF1 low now primes relative sectors
@@ -308,9 +312,10 @@ loop `1351 -> 1347`, overrun `38 -> 34`, blocking `50 -> 41`, read time
 `14 -> 16`. The newest same-loop guarded row adds `315..327`, keeping
 `1347/1313`, overrun `34`, and refill `16` flat while reducing blocking
 `41 -> 39`, reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`.
-After the allocator refresh and the latest BUILDING2 high guarded read-group pressure promotion,
-the public battle card is now `+0.2771%` over target / `99.7278%` target speed;
-the raw signed optimization rollup is about `-0.4398%` / `100.4582%`.
+After the allocator refresh, BUILDING2 high guarded read-group pressure promotions,
+and the BUILDING4 low gap-8 dirty-upload band retune,
+the public battle card is now `+0.2760%` over target / `99.7289%` target speed;
+the raw signed optimization rollup is about `-0.4410%` / `100.4593%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.12`
 public over-target points and added about `12.63` public target-speed points.
@@ -362,8 +367,8 @@ high/low are now
 `2310/2295`, JOHNNY1 high/low are both green at `1948/1945`, and the FISHING1 high control sits at the public cap
 (`1068/1072`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup, with low-tide offscreen draw-span clipping on
-top: high is `2843/2816` with `blocking_vb=34`, and low is `2853/2816` with
-`blocking_vb=42`. The earlier WALKSTUF1 high
+top plus the gap-8 dirty-upload band merge retune: high is `2843/2816` with
+`blocking_vb=34`, and low is `2849/2816` with `blocking_vb=38`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
 matrix; the next true outliers are residual WALKSTUF1 work, BUILDING2 high
@@ -441,7 +446,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2771%` / `99.7278%` with `119` green, `7` yellow, and `0` orange rows;
+  The public battle card is `+0.2760%` / `99.7289%` with `119` green, `7` yellow, and `0` orange rows;
   BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/45/5`, BUILDING2 low now measures
   `1339/1316` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
@@ -452,7 +457,7 @@ Milestone releases:
   `1082/1042` with blocking/read time `50`,
   VISITOR3 low is `1074/1039` with blocking/read time `85`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is
-  `2853/2816` with blocking/read time `40`/`215`, and VISITOR5 high/low are
+  `2849/2816` with blocking/read time `38`/`222`, and VISITOR5 high/low are
   now green at `1101/1096` and `1102/1097`.
 - `v0.8.7-ps1` — deterministic BOOTMODE scene selection and Scene Explorer
   preview stability. Adds auditable direct-scene boot logging, expected-scene

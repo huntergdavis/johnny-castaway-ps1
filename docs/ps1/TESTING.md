@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-18:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2771%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7278%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; BUILDING2 high guarded read-group pressure promotion `2026-05-18T10:00:45` |
-| Stats version | mixed; newest targeted allocator rows include `git:2417ab233+building2-high-rg315-327`, `git:776e57df+building2-low-setupseg112-128`, `git:bf941b4d8+walkstuf1-high-setupseg286-342`, and `git:44dc073e0+walkstuf1-low-setupseg238-342`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7289%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; dirty-upload band merge retune canary `2026-05-18T10:27:31`; BUILDING2 high focused refresh `2026-05-18T10:39:25` |
+| Stats version | mixed; newest targeted under-green rows include `git:1176b6b0b+upload-gap8-bands`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -104,6 +104,14 @@ loop `1351 -> 1347`, overrun `38 -> 34`, blocking `50 -> 41`, read time
 `207 -> 203`, and due `7 -> 6`; the newest same-loop pressure row keeps
 `1347/1313`, overrun `34`, and refill `16` flat while reducing blocking
 `41 -> 39`, loop reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`.
+
+Latest promoted BUILDING4 low dirty-upload note:
+the renderer now merges dirty upload bands across clean gaps up to `8` rows
+instead of splitting every gap. The accepted canary improves BUILDING4 low
+`2853/2816 -> 2849/2816`, overrun `37 -> 33`, blocking/refill
+`42/35 -> 38/31`, and read time `223 -> 222`, while loop reads/due stay
+flat at `30/1`. A wider gap-11 probe was rejected at `2850/2816` with
+blocking/refill `39/32`, so gap `8` is the current promoted band merge.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`

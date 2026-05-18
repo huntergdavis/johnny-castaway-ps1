@@ -34,11 +34,12 @@ extension, the BUILDING4 high setup-segment promotion, the BUILDING2 high
 the VISITOR3 high frame139 raw-gap promotion, the VISITOR3 high third
 setup-segment promotion, the WALKSTUF1 low `238..342` setup-segment
 retarget, and the WALKSTUF1 high `286..342` second setup-segment
-retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row
-and `315..327` same-loop CD-pressure row:
-`+0.2771%` public average over target / `99.7278%` public target speed across
+retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
+the `315..327` same-loop CD-pressure row, and the BUILDING4 low gap-8
+dirty-upload band merge retune:
+`+0.2760%` public average over target / `99.7289%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4398%` / `100.4582%`. Since the compact full-matrix baseline was
+`-0.4410%` / `100.4593%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.12` public over-target points and added about `12.63` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
@@ -63,13 +64,16 @@ second retained slice from `411..435` to `286..342`, improving
 `76/229 -> 60/228`, loop reads `55 -> 48`, and due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1472/1438` and
 `1480/1442`, B2 high/low at `1347/1313` and `1339/1316`, and B4 high/low at
-`2843/2816` and `2853/2816`; BUILDING4 high is now green at `99.05%`.
+`2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
 hidden-refill tradeoff `14 -> 16`. The follow-up guarded `315..327` row is a
 same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
 `16`, while blocking drops `41 -> 39`, loop reads `47 -> 45`, read time
-`203 -> 199`, and due `6 -> 5`.
+`203 -> 199`, and due `6 -> 5`. The newest gap-8 upload retune improves
+BUILDING4 low `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
+blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`; gap `11`
+was rejected as a one-VBlank regression against gap `8`.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
