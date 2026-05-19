@@ -38,11 +38,12 @@ retarget, followed by the BUILDING2 high guarded `271..287` visible-speed row,
 the `315..327` same-loop CD-pressure row, the BUILDING4 low gap-8
 dirty-upload band merge retune, the VISITOR3 low frame138 raw-gap
 promotion, the WALKSTUF1 low clean-rect/setup-edge promotion, and the
-WALKSTUF1 low `{91,107}` first-boundary read-group
+WALKSTUF1 low `{91,107}` first-boundary read-group, and the VISITOR3 high
+frame56/57 raw-gap plus tight-refill
 promotion:
-`+0.2640%` public average over target / `99.7402%` public target speed across
+`+0.2610%` public average over target / `99.7431%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4529%` / `100.4705%`. Since the compact full-matrix baseline was
+`-0.4560%` / `100.4734%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.14` public over-target points and added about `12.64` public
 target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
@@ -53,9 +54,10 @@ extends the high-tide second setup segment through relative sector `229`, then
 adds a third low-tide retained setup segment at relative sectors `206..230` and
 relocates high frame `139`'s raw payload into the already retained `203..229`
 gap, then adds a third high-tide retained setup segment at relative sectors
-`228..262`:
-high improves `1232/1033 -> 1082/1042`, blocking `478 -> 50`, reads
-`137 -> 6`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
+`228..262`, then moves high frames `56` and `57` raw into that paid gap and
+caps tight-slack speculative refills at `64 KiB`:
+high improves `1232/1033 -> 1079/1043`, blocking `478 -> 49`, reads
+`137 -> 4`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
@@ -538,8 +540,10 @@ setup-segment data, extends the high-tide second setup segment through
 relative sector `229`, relocates high frame `139`'s raw payload into that
 already retained gap, adds a third high-tide retained setup segment for
 relative sectors `228..262`, adds a third low-tide retained setup segment for
-relative sectors `206..230`, and then extends that low segment to `206..232`
-so frame `138` can be moved raw into the paid gap. The accepted high setup-segment canary
+relative sectors `206..230`, then extends that low segment to `206..232`
+so frame `138` can be moved raw into the paid gap, and finally moves high
+frames `56` and `57` raw into the retained `228..262` gap with a `64 KiB`
+tight-refill cap. The accepted high setup-segment canary
 `scratch/ps1-perf-iterate/visitor3-high-seg203-229-payloadtrim-canaries-pass/20260518-011814-2337084/summary.json`
 improves high from `1232/1033` to `1096/1040`, overrun `199 -> 56`,
 blocking `478 -> 71`, reads `137 -> 8`, due `137 -> 5`, and target speed
@@ -549,7 +553,11 @@ improves high further to `1096/1041`, overrun `55`, blocking `67`, reads `7`,
 due `4`, and target speed `94.982%`. The accepted high third-segment canary
 `scratch/ps1-perf-iterate/visitor3-high-thirdseg228-262-canaries-pass/20260518-053640-3809465/summary.json`
 improves high again to `1082/1042`, overrun `40`, blocking `50`, reads `6`,
-due `3`, and target speed `96.303%`. The accepted low third-segment canary
+due `3`, and target speed `96.303%`. The accepted high frame56/57 raw-gap
+tight-refill gate
+`scratch/ps1-perf-iterate/visitor3-high-frame56-57-rawgap-tight64-currentbaseline/20260518-174143-3725529/summary.json`
+improves high to `1079/1043`, overrun `36`, blocking/read time `49/57`,
+reads `4`, due `3`, and target speed `96.664%`. The accepted low third-segment canary
 `scratch/ps1-perf-iterate/visitor3-low-thirdseg206-230-visitor-canaries-pass/20260518-043607-3468206/summary.json`
 improves low from `1231/1040` to `1074/1039`, overrun `191 -> 35`,
 blocking `438 -> 85`, reads `126 -> 19`, due `126 -> 15`, and target speed
@@ -572,9 +580,10 @@ blocking/read time improves `60/228 -> 59/212`, prefetch overrun `15 -> 13`,
 loop reads `48 -> 46`, and due misses stay `10`; W1 low, VISITOR3 high/low,
 BUILDING2 high/low, and BUILDING4 low stay stable. After the later VISITOR3
 low frame138 raw-gap promotion, W1-low clean-rect/setup-edge promotion, and
-W1-low `{91,107}` first-boundary read group, public rollup is `+0.2640%` over
-target / `99.7402%` target speed; raw signed is about `-0.4529%` /
-`100.4705%`, and bands stay `119` green, `7` yellow, `0` orange,
+W1-low `{91,107}` first-boundary read group, and VISITOR3 high frame56/57
+raw-gap plus tight-refill promotion, public rollup is `+0.2610%` over
+target / `99.7431%` target speed; raw signed is about `-0.4560%` /
+`100.4734%`, and bands stay `119` green, `7` yellow, `0` orange,
 `0` red. The wider `286..346` edge regressed overrun to `35`, while the older
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.
@@ -656,6 +665,25 @@ and
 Keep the analysis fix, but close VISITOR3-low blind grouped appends in this
 lane; next low work needs data-shape/setup relocation that changes where the
 reads land, not merely how adjacent reads are grouped.
+
+Latest VISITOR3 high frame56/57 raw-gap plus tight-refill promotion: the
+earlier raw-gap probe had the right visible shape but carried one extra hidden
+refill VBlank. Keeping frames `56` and `57` raw in the retained high-tide
+`228..262` gap and capping tight-slack speculative window refills at `64 KiB`
+turns that near miss strict-safe. Focused artifact:
+`scratch/ps1-perf-iterate/visitor3-high-frame56-57-rawgap-tight64-vnext/20260518-172551-3635538/summary.json`;
+current-baseline no-regress artifact:
+`scratch/ps1-perf-iterate/visitor3-high-frame56-57-rawgap-tight64-currentbaseline/20260518-174143-3725529/summary.json`;
+stale-baseline eight-case guard artifact:
+`scratch/ps1-perf-iterate/visitor3-high-frame56-57-rawgap-tight64-canaries/20260518-172833-3650847/summary.json`;
+transform summary:
+`scratch/visitor3-high-frame57-rawgap-current/summary-frame56-57.json`.
+The promoted row improves VISITOR3 high `1082/1042 -> 1079/1043`, overrun
+`40 -> 36`, blocking/read time `50/62 -> 49/57`, loop reads `6 -> 4`, and due
+stays `3`; hidden refill stays `5`. BUILDING2 high/low, BUILDING4 low, and
+WALKSTUF1 low stayed exact-flat against the current baseline. Slack-only
+retunes `6`, `7`, and `8` plus a `32 KiB` cap were rejected; keep the accepted
+`64 KiB` cap and the frame56/57 raw-gap layout.
 
 Latest WALKSTUF1 low first-boundary read-group promotion: the earlier
 `{91,107}` scalar row failed on the older `238..342` retained setup baseline,
@@ -4110,7 +4138,7 @@ pre-v0.8.0 row.
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
-| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but follow-ups around `144..156`, `102..118`, and tight low-tide standalone tables either stayed flat or regressed. The VISITOR3-only strict x-band upload retry also regressed and grew `grDrawBackground`, so runtime scratch-packed x-aware upload stays closed. Continue VISITOR3 from the current allocator-era `1082/1042` high and `1074/1039` low baseline with scene-local/generated metadata, motion-copy expansion, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership. The v204/v205/v213/v214/v216/v464/v477/v501/v510/v629 setup residency plus the allocator-era low `206..230` third segment, the allocator-era high `228..262` third segment, v227/v234/v237/v238/v291/v299/v302 unchanged-payload relocations, the allocator-era high frame139 no-decode raw-gap relocation, and v248/v249/v292/v338 no-op/cleanup residuals/data aliasing show setup-owned residency and pack-only data reduction can work only when active-loop payoff exceeds setup debt and hidden refill stays flat. The rejected v205 wide high segments, low setup-prime caps above `208 KiB`, v215 unguarded low second segment, v228 frame-127 re-anchor, v230-v233 no-op frame-118 variants, v246/v247 third-segment attempts, v290 scalar high prime growth, and v297 partial frame-131 edge copy show wider coverage or erased semantics can still lose by adding hidden refill, visible regression, setup cost, or heap pressure. |
+| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but follow-ups around `144..156`, `102..118`, and tight low-tide standalone tables either stayed flat or regressed. The VISITOR3-only strict x-band upload retry also regressed and grew `grDrawBackground`, so runtime scratch-packed x-aware upload stays closed. Continue VISITOR3 from the current allocator-era `1079/1043` high and `1065/1039` low baseline with scene-local/generated metadata, motion-copy expansion, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership. The v204/v205/v213/v214/v216/v464/v477/v501/v510/v629 setup residency plus the allocator-era low `206..230` third segment, the allocator-era high `228..262` third segment, v227/v234/v237/v238/v291/v299/v302 unchanged-payload relocations, the allocator-era high frame139 and frame56/frame57 no-decode raw-gap relocations, and v248/v249/v292/v338 no-op/cleanup residuals/data aliasing show setup-owned residency and pack-only data reduction can work only when active-loop payoff exceeds setup debt and hidden refill stays flat. The rejected v205 wide high segments, low setup-prime caps above `208 KiB`, v215 unguarded low second segment, v228 frame-127 re-anchor, v230-v233 no-op frame-118 variants, v246/v247 third-segment attempts, v290 scalar high prime growth, and v297 partial frame-131 edge copy show wider coverage or erased semantics can still lose by adding hidden refill, visible regression, setup cost, or heap pressure. |
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. The current low `603..619` group saved three nominal reads but regressed loop timing `1465 -> 1469` with fixed layout, so standalone tight clusters are closed. The cleaner low `538..550` group improved loop/blocking (`1465 -> 1461`, `334 -> 328`) but failed strict promotion because refill overrun regressed `35 -> 40`; keep it as a scheduler-owned retry candidate, not a standalone table. The cleanup-metadata FGP3/v3 data shape is now accepted for BUILDING2, so future BUILDING2 work should start from `1430/1289` high and `1429/1286` low, not the older FGP3/v1 baseline. Use scheduler-owned grouping or selective preprocessing instead. |
 | BUILDING2 local min-slack grouped appends | Do not retry `{538,550}` with a local `minSlackVBlanks=6` guard. It was safe but exact-flat (`1465/1276`, `blocking_vb=334`, `prefetch_overrun_vb=35`) and only grew hot code. Scheduler ownership must be first-class enough to move cadence, not just a per-table guard around the current append path. |
 | BUILDING2 high standalone visible-cost groups | Do not retry `96..104`, `66..78`, `325..331`, `538..550`, or adjacent one-off hand tables. `96..104` saved one nominal read but worsened visible blocking/due misses, `66..78` was loop/blocking/read-flat with only a one-VBlank hidden-refill change, and the fresh tail candidate `538..550` stayed exact-flat while growing hot code by `44` bytes. BUILDING2 high needs scheduler-owned timing or selective upload-ready/preprocessed pack data. |

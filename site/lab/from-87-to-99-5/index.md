@@ -53,8 +53,9 @@ public-capped average after the memory-region allocator refresh, the latest
 BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
-`{91,107}` first-boundary promotions, is
-**+0.2640% over target / 99.7402% target speed**, with roughly **17.14
+`{91,107}` first-boundary promotions, plus the VISITOR3 high frame56/57
+raw-gap tight-refill promotion, is
+**+0.2610% over target / 99.7431% target speed**, with roughly **17.14
 percentage points** of over-target gap closed and about **12.64 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -71,7 +72,9 @@ during setup, moving to `1339/1316`; BUILDING2 high now measures `1347/1313`
 with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune to reach `2849/2816`; and VISITOR3 low now
 moves frame `138` raw data into the retained `206..232` segment to reach
-`1065/1039` with overrun down to `26`.
+`1065/1039` with overrun down to `26`; VISITOR3 high now moves frames `56`
+and `57` raw into the retained `228..262` gap with a `64 KiB` tight-refill cap,
+reaching `1079/1043`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what

@@ -122,7 +122,10 @@ The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
 keeps high at its 68 KiB knee while moving low tide further into yellow with a
 16 KiB slack-5 window plus a third retained setup segment extended to
-`206..232` and frame `138` raw relocated into that paid gap.
+`206..232` and frame `138` raw relocated into that paid gap. The newest
+VISITOR3 high pass moves frames `56` and `57` raw into the retained `228..262`
+gap and caps tight speculative refills at `64 KiB`, improving high to
+`1079/1043` without hidden-refill debt.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups, WALKSTUF1
@@ -158,10 +161,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2640%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7402%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{91,107}` canary `2026-05-18T15:12:29`; W1-high canary `2026-05-18T15:20:51`; VISITOR3-low canary `2026-05-18T15:22:40` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1-low row stamped `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`; other refreshed under-green rows stamped `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2610%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7431%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{91,107}` canary `2026-05-18T15:12:29`; W1-high canary `2026-05-18T15:20:51`; VISITOR3-low canary `2026-05-18T15:22:40`; VISITOR3-high tight64 gate `2026-05-18T17:41:43` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1-low row stamped `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`; refreshed VISITOR3-high row stamped `git:8dd83d35+visitor3-high-frame56-57-rawgap-tight64`; other refreshed under-green rows stamped `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -218,9 +221,10 @@ window, allows low tide to keep a 16 KiB clean-relief stream window behind
 a slack-5 guard, trims high terminal overread, extends high setup segment2
 through relative sector `229`, and relocates high frame `139`'s raw payload
 into that paid setup gap, then adds a third high retained setup segment at
-relative sectors `228..262`. High improves
-`1232/1033 -> 1082/1042`, overrun `199 -> 40`, blocking `478 -> 50`, reads
-`137 -> 6`, and due `137 -> 3`; the latest low-tide follow-up adds a third
+relative sectors `228..262`, then moves high frames `56` and `57` raw into
+that retained gap with a `64 KiB` tight-refill cap. High improves
+`1232/1033 -> 1079/1043`, overrun `199 -> 36`, blocking `478 -> 49`, reads
+`137 -> 4`, and due `137 -> 3`; the latest low-tide follow-up adds a third
 retained setup segment for sectors `206..230`, then extends it to `206..232`
 and relocates frame `138` raw into the paid gap, improving low
 `1088/1038 -> 1065/1039`, overrun `50 -> 26`, blocking `104 -> 75`,
@@ -2408,12 +2412,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T13:52:02</td>
-      <td>git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</td>
-      <td>3.8%</td>
-      <td class="spd-yellow">96.3%</td>
-      <td>1082/1042</td>
-      <td>50</td>
+      <td>2026-05-18T17:41:43</td>
+      <td>git:8dd83d35+visitor3-high-frame56-57-rawgap-tight64</td>
+      <td>3.5%</td>
+      <td class="spd-yellow">96.7%</td>
+      <td>1079/1043</td>
+      <td>49</td>
       <td>5</td>
       <td>3</td>
       <td></td>

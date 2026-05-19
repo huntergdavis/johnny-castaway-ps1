@@ -248,6 +248,8 @@ enum {
 #define FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 5
+#define FG_VISITOR3_HIGH_TIGHT_WINDOW_SLACK_VBLANKS 8
+#define FG_VISITOR3_HIGH_TIGHT_WINDOW_BYTES (64UL * 1024UL)
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
@@ -2323,6 +2325,19 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     readBytes = fgRuntimeWindowReadSize();
     if (windowStart >= (uint32)gFgRuntime.packCdFile.size)
         return 0;
+    if (countAsPrefetch &&
+        !islandState.lowTide &&
+        fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+        slackVBlanks > 0 &&
+        slackVBlanks <= FG_VISITOR3_HIGH_TIGHT_WINDOW_SLACK_VBLANKS &&
+        readBytes > FG_VISITOR3_HIGH_TIGHT_WINDOW_BYTES) {
+        uint32 tightReadEnd = windowStart + FG_VISITOR3_HIGH_TIGHT_WINDOW_BYTES;
+        uint32 entryEnd = fgSectorAlignUp(entry->dataOffset + entry->dataSize);
+        if (tightReadEnd < entryEnd)
+            tightReadEnd = entryEnd;
+        if (tightReadEnd - windowStart < readBytes)
+            readBytes = tightReadEnd - windowStart;
+    }
     readEnd = windowStart + readBytes;
     if (readEnd > (uint32)gFgRuntime.packCdFile.size)
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
