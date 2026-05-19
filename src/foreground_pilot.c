@@ -917,6 +917,8 @@ static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
             return frameIndex == 129 || frameIndex == 132 || frameIndex == 137;
         return frameIndex == 132 || frameIndex == 137;
     }
+    if (!islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "walkstuf1"))
+        return frameIndex == 92;
     if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
         return frameIndex == 71 || frameIndex == 77;
     return 0;

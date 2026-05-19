@@ -132,7 +132,8 @@ picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..
 groups, WALKSTUF1
 low now uses one retained `238..344` setup segment after low-only 48 KiB
 clean-rect chunking plus the `{91,107}` first-boundary read group, and WALKSTUF1 high now
-keeps `198..244`, extends its second retained slice to `286..344`, and adds `{149,165}`.
+keeps `198..244`, extends its second retained slice to `286..344`, adds `{149,165}`,
+and encodes frame `92` as a previous-frame D4 delta.
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
@@ -162,10 +163,10 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2470%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7566%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B4-low window24 canary `2026-05-19T09:17:25` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2453%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7581%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame92 D4 gate `2026-05-19T10:42:05` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed WALKSTUF1 high row stamped `git:af2e3110ad+walkstuf1-high-frame92-d4`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -177,18 +178,20 @@ overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 
 Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
-High now keeps relative sectors `198..244` resident and retargets the second
-slice from `411..435` to `286..344`, improving the current allocator-era row
-`1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 57/199`, prefetch overrun `15 -> 13`, loop reads `55 -> 44`, and
-due `15 -> 10`.
+High now keeps relative sectors `198..244` resident, retargets the second
+slice from `411..435` to `286..344`, adds `{149,165}`, and encodes frame `92`
+as a previous-frame D4 delta. The current allocator-era row improves
+`1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`,
+prefetch overrun `15 -> 13`, and due `15 -> 10`; the D4 pass trades loop
+reads/read time from `44/199` to `45/209` while still cutting visible loop
+time and overrun.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` setup segment after low-only 48 KiB clean-rect
 chunking, then adds the `{91,107}` first-boundary read group. The combined row
 improves `1479/1435 -> 1473/1444`, overrun `44 -> 29`,
 blocking/refill `65/18 -> 43/11`, loop reads/read time `50/230 -> 36/195`,
 and due `10 -> 5`.
-Both W1 rows remain yellow, with high now at `97.695%` and low at `98.031%`
+Both W1 rows remain yellow, with high now at `97.893%` and low at `98.031%`
 target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -207,6 +210,13 @@ at `80 KiB`, raises the low window slack to `5`, and adds `{141,153}`. It
 improves active loop/target `1336/1316 -> 1327/1318`, cuts overrun
 `20 -> 9`, blocking `48 -> 47`, reads `35 -> 27`, and due `10 -> 9`, moving
 the row into green while setup cost stays outside the active loop.
+
+Current W1-high D4 speed track: `walkstuf1-high-frame92-d4-current` rewrites
+frame `92` as a `2056` byte previous-frame D4 payload instead of the original
+`6035` byte frame. The focused row improves `1811/1475/1441 -> 1807/1471/1440`,
+overrun `34 -> 31`, and target speed `97.695% -> 97.893%` with
+blocking/refill flat at `57/13`; VISITOR3 high/low, BUILDING2 high/low,
+WALKSTUF1 low, and BUILDING4 low stayed flat in the under-green canary.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to `8` rows instead of splitting every clean gap.
@@ -484,11 +494,11 @@ and adds the low-tide `209..225` retained-read row, keeping scene/loop flat at
 `1773/1481` while improving target `1428 -> 1431`, overrun `53 -> 50`,
 blocking `78 -> 72`, reads/read time `61/279 -> 58/267`, and due `11 -> 10`.
 The allocator-era targeted setup checkpoint then narrows W1 setup residency to
-CACHE slices instead of one full-scene setup buffer. High keeps `198..244` and
-retargets the second slice from `411..435` to `286..344`, improving the current
-row `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
-due `15 -> 10`.
+CACHE slices instead of one full-scene setup buffer. High keeps `198..244`,
+retargets the second slice from `411..435` to `286..344`, adds `{149,165}`,
+and now encodes frame `92` as D4, improving the current row
+`1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
+overrun `15 -> 13`, and due `15 -> 10`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -2561,11 +2571,11 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T01:09:53</td>
-      <td>git:7680edc56a+visitor3-high-clean64</td>
-      <td>2.4%</td>
-      <td class="spd-yellow">97.7%</td>
-      <td>1475/1441</td>
+      <td>2026-05-19T10:42:05</td>
+      <td>git:af2e3110ad+walkstuf1-high-frame92-d4</td>
+      <td>2.1%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>1471/1440</td>
       <td>57</td>
       <td>13</td>
       <td>10</td>

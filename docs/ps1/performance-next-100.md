@@ -40,14 +40,16 @@ dirty-upload band merge retune, the VISITOR3 low frame138 raw-gap
 promotion, the WALKSTUF1 low clean-rect/setup-edge promotion, and the
 WALKSTUF1 low `{91,107}` first-boundary read-group, the VISITOR3 high
 frame56/57 raw-gap plus tight-refill, the BUILDING2 low `226..238` setup-segment
-promotion, the VISITOR3 high tight56 retune, and the BUILDING2 low
-`226..262` + clean80 green promotion, and the VISITOR3 high clean64 retune:
-`+0.2487%` public average over target / `99.7549%` public target speed across
+promotion, the VISITOR3 high tight56 retune, the BUILDING2 low
+`226..262` + clean80 green promotion, the VISITOR3 high clean64 retune, the
+BUILDING4 low 24 KiB stream-window green promotion, and the WALKSTUF1 high
+frame92 D4 promotion:
+`+0.2453%` public average over target / `99.7581%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4683%` / `100.4852%`. Since the compact full-matrix baseline was
+`-0.4716%` / `100.4885%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.15` public over-target points and added about `12.65` public
-target-speed points. Bands are now `120` green, `6` yellow, `0` orange, and
+removed about `17.15` public over-target points and added about `12.66` public
+target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
 stream windows, trims high-tide terminal reads before resident setup data, and
@@ -67,14 +69,14 @@ track improves `1479/1435 -> 1473/1444`, overrun `44 -> 29`,
 blocking/read time `65/230 -> 43/195`, refill `18 -> 11`,
 loop reads `50 -> 36`, and due `10 -> 5`. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
-second retained slice from `411..435` to `286..344`, and adds `{149,165}`,
-improving
-`1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 57/199`, prefetch overrun `15 -> 13`, loop reads `55 -> 44`, and
-due `15 -> 10`. The
-under-green canary refresh also stamps W1 high/low at `1475/1441` and
+second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
+encodes frame `92` as previous-frame D4, improving
+`1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
+overrun `15 -> 13`, and due `15 -> 10`; the D4 step trades reads/read time
+`44/199 -> 45/209` while still cutting visible loop time. The
+under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1473/1444`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
-`2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
+`2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
 hidden-refill tradeoff `14 -> 16`. The follow-up guarded `315..327` row is a
@@ -1341,19 +1343,16 @@ multi-frame D4 sector-boundary compression for WALKSTUF1 low under the current
 decoder/cadence; future byte cuts need a lower-CPU representation or generated
 CD ownership.
 
-Latest rejected WALKSTUF1 high D4 probes: v457 encoded high frame `100` against
-frame `99`, shrinking `4683 -> 586` bytes and preserving pack LBA and the
-`217088` byte PS-EXE bucket. The first focused gate appeared to pass only
-because the matrix row still pointed at the older v428 `1480/1432` profile.
-After restoring source/pack and rerunning the current control, both candidate
-and control measured `1764`, `1476/1434`, overrun `42`, blocking `81`, refill
-`23`, loop reads `65`, loop-read time `282`, and due misses `16`. v482 then
-encoded frame `175` against frame `174`, shrinking `4529 -> 2096` bytes, but
-the focused current gate had no key metric improvement and measured target
-drift `1434 -> 1433`, overrun `42 -> 43`, blocking `81`, refill `23`, and
-reads/due `65/16`. Close standalone WALKSTUF1 high D4 sector-boundary deltas
-under the current decoder/cadence; future byte cuts need a lower-CPU
-representation or generated CD ownership before retrying.
+Latest promoted WALKSTUF1 high D4 probe: the current allocator-era baseline
+reopened previous-frame D4 with a fresh same-source gate. Encoding high frame
+`92` against frame `91` shrinks `6035 -> 2056` bytes with `26` commands and
+promotes because the focused row improves scene/loop/target
+`1811/1475/1441 -> 1807/1471/1440`, overrun `34 -> 31`, and target speed
+`97.695% -> 97.893%`; blocking/refill stay `57/13`, due stays `10`, and
+VISITOR3 high/low, BUILDING2 high/low, WALKSTUF1 low, and BUILDING4 low stayed
+flat. Keep this as a narrow exception to the old D4 closure: frame `100` was a
+stale-baseline exact-flat miss, frame `175` failed, and VISITOR3/B2 large-frame
+D4 still fails unless the candidate proves a current-baseline visible win.
 
 Latest promoted BUILDING2 high baseline: keep accepted `60..72`, `226..242`,
 and `249..257`, add `206..230`, and raise grouped-read capacity to 24 sectors.

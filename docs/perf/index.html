@@ -218,7 +218,8 @@ picked up small scheduler wins from the <code class="language-plaintext highligh
 groups, WALKSTUF1
 low now uses one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB
 clean-rect chunking plus the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group, and WALKSTUF1 high now
-keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, and adds <code class="language-plaintext highlighter-rouge">{149,165}</code>.
+keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adds <code class="language-plaintext highlighter-rouge">{149,165}</code>,
+and encodes frame <code class="language-plaintext highlighter-rouge">92</code> as a previous-frame D4 delta.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during
 setup with a low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip cap, slack-5 window guard, and
 <code class="language-plaintext highlighter-rouge">{141,153}</code> read row, moving that row into green. BUILDING4 low now
@@ -280,19 +281,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2470%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2453%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7566%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7581%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; B4-low window24 canary <code class="language-plaintext highlighter-rouge">2026-05-19T09:17:25</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high frame92 D4 gate <code class="language-plaintext highlighter-rouge">2026-05-19T10:42:05</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed VISITOR3-high clean64 row and under-green canaries stamped <code class="language-plaintext highlighter-rouge">git:7680edc56a+visitor3-high-clean64</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed VISITOR3-high clean64 row and under-green canaries stamped <code class="language-plaintext highlighter-rouge">git:7680edc56a+visitor3-high-clean64</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed WALKSTUF1 high row stamped <code class="language-plaintext highlighter-rouge">git:af2e3110ad+walkstuf1-high-frame92-d4</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -310,18 +311,20 @@ overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/re
 
 <p>Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
-High now keeps relative sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second
-slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, improving the current allocator-era row
-<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">76/229 -&gt; 57/199</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 44</code>, and
-due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+High now keeps relative sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident, retargets the second
+slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, adds <code class="language-plaintext highlighter-rouge">{149,165}</code>, and encodes frame <code class="language-plaintext highlighter-rouge">92</code>
+as a previous-frame D4 delta. The current allocator-era row improves
+<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1471/1440</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 31</code>, blocking <code class="language-plaintext highlighter-rouge">76 -&gt; 57</code>,
+prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>; the D4 pass trades loop
+reads/read time from <code class="language-plaintext highlighter-rouge">44/199</code> to <code class="language-plaintext highlighter-rouge">45/209</code> while still cutting visible loop
+time and overrun.
 Low now replaces its old split <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> slices
 with one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB clean-rect
 chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group. The combined row
 improves <code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1473/1444</code>, overrun <code class="language-plaintext highlighter-rouge">44 -&gt; 29</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 43/11</code>, loop reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 36/195</code>,
 and due <code class="language-plaintext highlighter-rouge">10 -&gt; 5</code>.
-Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.695%</code> and low at <code class="language-plaintext highlighter-rouge">98.031%</code>
+Both W1 rows remain yellow, with high now at <code class="language-plaintext highlighter-rouge">97.893%</code> and low at <code class="language-plaintext highlighter-rouge">98.031%</code>
 target speed.</p>
 
 <p>Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -340,6 +343,13 @@ at <code class="language-plaintext highlighter-rouge">80 KiB</code>, raises the 
 improves active loop/target <code class="language-plaintext highlighter-rouge">1336/1316 -&gt; 1327/1318</code>, cuts overrun
 <code class="language-plaintext highlighter-rouge">20 -&gt; 9</code>, blocking <code class="language-plaintext highlighter-rouge">48 -&gt; 47</code>, reads <code class="language-plaintext highlighter-rouge">35 -&gt; 27</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 9</code>, moving
 the row into green while setup cost stays outside the active loop.</p>
+
+<p>Current W1-high D4 speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-high-frame92-d4-current</code> rewrites
+frame <code class="language-plaintext highlighter-rouge">92</code> as a <code class="language-plaintext highlighter-rouge">2056</code> byte previous-frame D4 payload instead of the original
+<code class="language-plaintext highlighter-rouge">6035</code> byte frame. The focused row improves <code class="language-plaintext highlighter-rouge">1811/1475/1441 -&gt; 1807/1471/1440</code>,
+overrun <code class="language-plaintext highlighter-rouge">34 -&gt; 31</code>, and target speed <code class="language-plaintext highlighter-rouge">97.695% -&gt; 97.893%</code> with
+blocking/refill flat at <code class="language-plaintext highlighter-rouge">57/13</code>; VISITOR3 high/low, BUILDING2 high/low,
+WALKSTUF1 low, and BUILDING4 low stayed flat in the under-green canary.</p>
 
 <p>Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to <code class="language-plaintext highlighter-rouge">8</code> rows instead of splitting every clean gap.
@@ -617,11 +627,11 @@ and adds the low-tide <code class="language-plaintext highlighter-rouge">209..22
 <code class="language-plaintext highlighter-rouge">1773/1481</code> while improving target <code class="language-plaintext highlighter-rouge">1428 -&gt; 1431</code>, overrun <code class="language-plaintext highlighter-rouge">53 -&gt; 50</code>,
 blocking <code class="language-plaintext highlighter-rouge">78 -&gt; 72</code>, reads/read time <code class="language-plaintext highlighter-rouge">61/279 -&gt; 58/267</code>, and due <code class="language-plaintext highlighter-rouge">11 -&gt; 10</code>.
 The allocator-era targeted setup checkpoint then narrows W1 setup residency to
-CACHE slices instead of one full-scene setup buffer. High keeps <code class="language-plaintext highlighter-rouge">198..244</code> and
-retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, improving the current
-row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and
-due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+CACHE slices instead of one full-scene setup buffer. High keeps <code class="language-plaintext highlighter-rouge">198..244</code>,
+retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, adds <code class="language-plaintext highlighter-rouge">{149,165}</code>,
+and now encodes frame <code class="language-plaintext highlighter-rouge">92</code> as D4, improving the current row
+<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1471/1440</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 31</code>, blocking <code class="language-plaintext highlighter-rouge">76 -&gt; 57</code>, prefetch
+overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving <code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
 <code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. The latest low retarget replaces those two slices with one
@@ -2696,11 +2706,11 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T01:09:53</td>
-      <td>git:7680edc56a+visitor3-high-clean64</td>
-      <td>2.4%</td>
-      <td class="spd-yellow">97.7%</td>
-      <td>1475/1441</td>
+      <td>2026-05-19T10:42:05</td>
+      <td>git:af2e3110ad+walkstuf1-high-frame92-d4</td>
+      <td>2.1%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>1471/1440</td>
       <td>57</td>
       <td>13</td>
       <td>10</td>
