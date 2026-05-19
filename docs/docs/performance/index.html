@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2437%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7598%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4733%</code> / <code class="language-plaintext highlighter-rouge">100.4901%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2431%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7603%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4738%</code> / <code class="language-plaintext highlighter-rouge">100.4906%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -457,8 +457,8 @@ Low now replaces the old <code class="language-plaintext highlighter-rouge">197.
 retained <code class="language-plaintext highlighter-rouge">238..344</code> CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary read group and a
 split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, improving the current row
-<code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1473/1447</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 41/7</code>,
-reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 36/186</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 5</code>. Both W1 rows stay yellow while staying
+<code class="language-plaintext highlighter-rouge">1479/1435 -&gt; 1470/1445</code>, blocking/refill <code class="language-plaintext highlighter-rouge">65/18 -&gt; 35/7</code>,
+reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 31/163</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 4</code>. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.</p>
 
 <p>The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -1023,7 +1023,7 @@ rows are historical only.</p>
     <tr>
       <td><code>walkstuf1</code></td>
       <td>+2.2% / 97.9% (1471/1440); due 10; blk 57</td>
-      <td>+1.8% / 98.2% (1473/1447); due 5; blk 41</td>
+      <td>+1.7% / 98.3% (1470/1445); due 4; blk 35</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -1124,7 +1124,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2437% over target / 99.7598% target speed, with several
+public average is now +0.2431% over target / 99.7603% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

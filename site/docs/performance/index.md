@@ -313,9 +313,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2437%`
-exact public over target / `99.7598%` exact public target speed); the raw
-signed optimization matrix is about `-0.4733%` / `100.4901%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2431%`
+exact public over target / `99.7603%` exact public target speed); the raw
+signed optimization matrix is about `-0.4738%` / `100.4906%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -327,8 +327,8 @@ Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds `{91,107}` as the first post-boundary read group and a
 split TRANSIENT `344..350` setup edge, improving the current row
-`1479/1435 -> 1473/1447`, blocking/refill `65/18 -> 41/7`,
-reads/read time `50/230 -> 36/186`, and due `10 -> 5`. Both W1 rows stay yellow while staying
+`1479/1435 -> 1470/1445`, blocking/refill `65/18 -> 35/7`,
+reads/read time `50/230 -> 31/163`, and due `10 -> 4`. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -893,7 +893,7 @@ rows are historical only.
     <tr>
       <td><code>walkstuf1</code></td>
       <td>+2.2% / 97.9% (1471/1440); due 10; blk 57</td>
-      <td>+1.8% / 98.2% (1473/1447); due 5; blk 41</td>
+      <td>+1.7% / 98.3% (1470/1445); due 4; blk 35</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -992,7 +992,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2437% over target / 99.7598% target speed, with several
+  public average is now +0.2431% over target / 99.7603% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

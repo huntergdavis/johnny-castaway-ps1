@@ -42,13 +42,14 @@ WALKSTUF1 low `{91,107}` first-boundary read-group, the VISITOR3 high
 frame56/57 raw-gap plus tight-refill, the BUILDING2 low `226..238` setup-segment
 promotion, the VISITOR3 high tight56 retune, the BUILDING2 low
 `226..262` + clean80 green promotion, the VISITOR3 high clean64 retune, the
-BUILDING4 low 24 KiB stream-window green promotion, and the WALKSTUF1 high
-frame92 D4 promotion:
-`+0.2453%` public average over target / `99.7581%` public target speed across
+BUILDING4 low 24 KiB stream-window green promotion, the WALKSTUF1 high
+frame92 D4 promotion, the WALKSTUF1 low split `344..350` setup edge, and the
+WALKSTUF1 low frame132 payload trim:
+`+0.2431%` public average over target / `99.7603%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4716%` / `100.4885%`. Since the compact full-matrix baseline was
+`-0.4738%` / `100.4906%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.15` public over-target points and added about `12.66` public
+removed about `17.22` public over-target points and added about `12.72` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -65,9 +66,9 @@ blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
 adds the `{91,107}` first-boundary read group. The combined allocator-era W1-low
-track improves `1479/1435 -> 1473/1444`, overrun `44 -> 29`,
-blocking/read time `65/230 -> 43/195`, refill `18 -> 11`,
-loop reads `50 -> 36`, and due `10 -> 5`. The
+track improves `1479/1435 -> 1470/1445`, overrun `44 -> 25`,
+blocking/read time `65/230 -> 35/163`, refill `18 -> 7`,
+loop reads `50 -> 31`, and due `10 -> 4`. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
 second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
 encodes frame `92` as previous-frame D4, improving
@@ -75,7 +76,7 @@ encodes frame `92` as previous-frame D4, improving
 overrun `15 -> 13`, and due `15 -> 10`; the D4 step trades reads/read time
 `44/199 -> 45/209` while still cutting visible loop time. The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
-`1473/1444`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
+`1470/1445`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -91,7 +92,12 @@ the paid gap at offset `457772` and extends the third low setup segment from
 `206..230` to `206..232`, improving low `1074/1039 -> 1065/1039`, overrun
 `35 -> 26`, blocking/read time `85/103 -> 75/97`, reads `19 -> 18`, and due
 `15 -> 14` while keeping hidden refill `0`.
-The newest W1-low first-boundary read-group promotion reopens the previously
+The newest W1-low frame132 payload trim removes one compacted low-pack draw
+tail without changing pack size/LBA and improves low again
+`1473/1447 -> 1470/1445`, overrun `26 -> 25`, blocking/read time
+`41/186 -> 35/163`, loop reads `36 -> 31`, due `5 -> 4`, and target speed
+`98.235% -> 98.299%` while hidden refill stays `7`.
+The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
 blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
@@ -198,15 +204,19 @@ fixed-sector shrink into a small speed win and v860/v861/v862/v863/v864/v865/v86
 `73`, `131`, `74`, `19`, `28`, `138`, `145`, `75`, `76`, `77`, `130`,
 `135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, `99`, `100`, `134`, `91`, `92`, `95`, `140`, `108`, `109`, `107`, `110`, `111`, and `106` in-place, preserving every payload
 offset and the `1535263` byte pack footprint. Active payload drops
-`879801 -> 790208`; the latest v910 frame `106` / source frame `209` entry
-shrinks `944 -> 919` bytes and sector coverage stays `2 -> 2`.
+`879801 -> 790208`; the latest non-preserve frame132 trim then shrinks the
+current compacted low pack to `788773` active payload while preserving the
+`1535263` byte file footprint and pack LBA/sectors. The latest v910 frame
+`106` / source frame `209` entry shrinks `944 -> 919` bytes and sector
+coverage stays `2 -> 2`.
 Scene/loop remain `1769/1477`, target improves `1431 -> 1432`, overrun
 improves `46 -> 45`, blocking/refill move `64/20 -> 65/20`, loop reads stay
 `58`, loop read VBlanks improve `266 -> 259`, and due misses stay `11`.
 Treat v859 as the first speed-bearing fixed-sector payload win after the
-v747..v855 same-speed lane and v910 as the current same-speed payload baseline; remaining W1-low speed conversion likely needs
-more fixed-sector exact-flat/speed probes, generated deadline/read ownership,
-or a pack/data-shape change.
+v747..v855 same-speed lane and `walkstuf1-low-frame132-nonpreserve-current` as
+the current payload-speed baseline; remaining W1-low speed conversion likely
+needs more targeted boundary trims, generated deadline/read ownership, or a
+pack/data-shape change.
 
 Latest rejected WALKSTUF1 low no-sector payload probe:
 `walkstuf1-low-frame85-inplace-v854` tested entry `85` / source frame `148`

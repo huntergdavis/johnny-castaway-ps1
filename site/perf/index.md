@@ -164,10 +164,10 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2437%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7598%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low split setup-edge canary `2026-05-19T11:45:42` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed WALKSTUF1 high row stamped `git:af2e3110ad+walkstuf1-high-frame92-d4`; refreshed WALKSTUF1 low row stamped `git:d68fe74866+walkstuf1-low-split-seg344-350`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2431%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7603%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low frame132 non-preserve canary `2026-05-19T14:28:43` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed WALKSTUF1 high row stamped `git:af2e3110ad+walkstuf1-high-frame92-d4`; refreshed WALKSTUF1 low row stamped `git:20395e5329+walkstuf1-low-frame132-nonpreserve`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -190,10 +190,10 @@ Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` CACHE setup segment after low-only 48 KiB
 clean-rect chunking, adds the `{91,107}` first-boundary read group, and then
 adds a separate TRANSIENT `344..350` setup edge. The combined row improves
-`1479/1435 -> 1473/1447`, overrun `44 -> 26`,
-blocking/refill `65/18 -> 41/7`, loop reads/read time `50/230 -> 36/186`,
-and due `10 -> 5`.
-Both W1 rows remain yellow, with high now at `97.893%` and low at `98.235%`
+`1479/1435 -> 1470/1445`, overrun `44 -> 25`,
+blocking/refill `65/18 -> 35/7`, loop reads/read time `50/230 -> 31/163`,
+and due `10 -> 4`.
+Both W1 rows remain yellow, with high now at `97.893%` and low at `98.299%`
 target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -220,14 +220,13 @@ overrun `34 -> 31`, and target speed `97.695% -> 97.893%` with
 blocking/refill flat at `57/13`; VISITOR3 high/low, BUILDING2 high/low,
 WALKSTUF1 low, and BUILDING4 low stayed flat in the under-green canary.
 
-Current W1-low split setup-edge speed track: `walkstuf1-low-split-seg344-350-current`
-keeps the accepted `238..344` setup segment in CACHE and pays only the small
-`344..350` trailing edge from TRANSIENT. The active loop stays `1473`, but the
-target rises `1444 -> 1447`, overrun falls `29 -> 26`, blocking/refill falls
-`43/11 -> 41/7`, loop-read VBlanks fall `195 -> 186`, and target speed moves
-`98.031% -> 98.235%`. The trade is setup scene cost `1807 -> 1815`; the
-monolithic CACHE and TRANSIENT versions both failed structurally, so the split
-edge is the accepted allocator shape.
+Current W1-low frame132 payload speed track: `walkstuf1-low-frame132-nonpreserve-current`
+trims one compacted low-pack draw tail after the accepted split setup-edge
+baseline. It keeps file size/LBA/sectors fixed and moves the active row
+`1473/1447 -> 1470/1445`, overrun `26 -> 25`, blocking/refill
+`41/7 -> 35/7`, loop reads/read time `36/186 -> 31/163`, due `5 -> 4`, and
+target speed `98.235% -> 98.299%`. The broader retargeted non-preserve trim
+was rejected because hidden refill regressed `7 -> 10`.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to `8` rows instead of splitting every clean gap.
@@ -517,7 +516,9 @@ blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 then adds `{91,107}` as the first post-boundary row and a split TRANSIENT
 `344..350` setup edge, improving the current row
 `1479/1435 -> 1473/1447`, overrun `44 -> 26`, blocking/read time
-`65/230 -> 41/186`, loop reads `50 -> 36`, and due `10 -> 5`. Larger full-scene
+`65/230 -> 41/186`, loop reads `50 -> 36`, and due `10 -> 5`. The frame132
+payload trim then moves the current row to `1470/1445`, overrun `25`,
+blocking/read time `35/163`, loop reads `31`, and due `4`. Larger full-scene
 setup buffers and wider B2 second-segment probes crossed allocator
 clean-pressure cliffs and were rejected.
 
@@ -575,7 +576,7 @@ and this page.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed VISITOR3-high clean64 row and under-green canaries use
   `git:7680edc56a+visitor3-high-clean64`;
-  WALKSTUF1 low uses `git:d68fe74866+walkstuf1-low-split-seg344-350`;
+  WALKSTUF1 low uses `git:20395e5329+walkstuf1-low-frame132-nonpreserve`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -2598,14 +2599,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-19T11:45:42</td>
-      <td>git:d68fe74866+walkstuf1-low-split-seg344-350</td>
-      <td>1.8%</td>
-      <td class="spd-yellow">98.2%</td>
-      <td>1473/1447</td>
-      <td>41</td>
+      <td>2026-05-19T14:28:43</td>
+      <td>git:20395e5329+walkstuf1-low-frame132-nonpreserve</td>
+      <td>1.7%</td>
+      <td class="spd-yellow">98.3%</td>
+      <td>1470/1445</td>
+      <td>35</td>
       <td>7</td>
-      <td>5</td>
+      <td>4</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">
