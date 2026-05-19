@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-18:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2591%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7448%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3-high tight64 gate `2026-05-18T17:41:43`; B2-low `226..238` canary `2026-05-18T19:03:45` |
-| Stats version | mixed; newest targeted under-green row is `git:4299ba187+building2-low-setupseg226-238`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2561%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7477%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-low `226..238` canary `2026-05-18T19:03:45`; VISITOR3-high tight56 canary `2026-05-18T21:37:23` |
+| Stats version | mixed; newest targeted under-green rows are stamped `git:dfef577618+visitor3-high-tight56`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
