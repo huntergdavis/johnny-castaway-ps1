@@ -67,7 +67,7 @@ with `83..95` and adding guarded `271..287` plus the same-loop `315..327` CD-pre
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
 split tail residency with a single `238..344` setup segment and adds
 `{91,107}`, moving to `1473/1444`, and WALKSTUF1 high retargets its second retained slice to
-`286..344`, moving to `1475/1441`; BUILDING2 low now primes `112..128` and
+`286..344` plus `{149,165}`, moving to `1475/1441` with lower blocking; BUILDING2 low now primes `112..128` and
 `226..238` during setup, moving to `1336/1316`; BUILDING2 high now measures `1347/1313`
 with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune to reach `2849/2816`; and VISITOR3 low now

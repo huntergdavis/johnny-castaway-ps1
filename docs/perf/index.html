@@ -217,7 +217,7 @@ picked up small scheduler wins from the <code class="language-plaintext highligh
 groups, WALKSTUF1
 low now uses one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB
 clean-rect chunking plus the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group, and WALKSTUF1 high now
-keeps <code class="language-plaintext highlighter-rouge">198..244</code> while extending its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>.
+keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, and adds <code class="language-plaintext highlighter-rouge">{149,165}</code>.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..238</code> during
 setup, reducing active-loop overrun and removing hidden refill debt. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
@@ -312,7 +312,7 @@ old full-scene setup buffers with CACHE slices that fit the new allocator.
 High now keeps relative sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second
 slice from <code class="language-plaintext highlighter-rouge">411..435</code> to <code class="language-plaintext highlighter-rouge">286..344</code>, improving the current allocator-era row
 <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 34</code>, blocking/read time
-<code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and
+<code class="language-plaintext highlighter-rouge">76/229 -&gt; 57/199</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 44</code>, and
 due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces its old split <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> slices
 with one retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB clean-rect
@@ -2687,12 +2687,12 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T13:50:14</td>
-      <td>git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</td>
+      <td>2026-05-18T20:29:32</td>
+      <td>git:e8f22a68c+walkstuf1-high-rg149-165</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1475/1441</td>
-      <td>59</td>
+      <td>57</td>
       <td>13</td>
       <td>10</td>
       <td></td>

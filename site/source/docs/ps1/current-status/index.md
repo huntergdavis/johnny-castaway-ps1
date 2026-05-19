@@ -21,8 +21,8 @@ the BUILDING2 low 226..238 setup-segment promotion; all 63 scenes remain validat
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 817 |
-| Approx. words | 9083 |
+| Lines | 819 |
+| Approx. words | 9113 |
 | Code fences | 1 |
 
 ## Outline

@@ -65,10 +65,11 @@ adds the `{91,107}` first-boundary read group. The combined allocator-era W1-low
 track improves `1479/1435 -> 1473/1444`, overrun `44 -> 29`,
 blocking/read time `65/230 -> 43/195`, refill `18 -> 11`,
 loop reads `50 -> 36`, and due `10 -> 5`. The
-WALKSTUF1 high follow-up keeps the `198..244` setup slice and retargets the
-second retained slice from `411..435` to `286..344`, improving
+WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
+second retained slice from `411..435` to `286..344`, and adds `{149,165}`,
+improving
 `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
+`76/229 -> 57/199`, prefetch overrun `15 -> 13`, loop reads `55 -> 44`, and
 due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1475/1441` and
 `1473/1444`, B2 high/low at `1347/1313` and `1336/1316`, and B4 high/low at
@@ -568,7 +569,19 @@ reads `18`, due `14`, and target speed `97.559%`. Use this as the allocator-era 
 runtime baseline; future VISITOR3 work still needs data-shape or scheduler
 ownership to cross 99%.
 
-Latest WALKSTUF1 high setup-segment retarget: high keeps the `198..244`
+Latest promoted WALKSTUF1 high read group: `{149,165}` follows the accepted
+`{78,91}` row and converts the top regenerated W1-high scheduler-owned
+candidate into a same-overrun CD-pressure win. Focused artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-rg149-165-vnext/20260518-202745-469634/summary.json`;
+under-green canary artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-rg149-165-canaries/20260518-202932-479774/summary.json`.
+The canary keeps W1 high at `1475/1441`, overrun `34`, refill `13`, and due
+`10`, while improving blocking/read time `59/212 -> 57/199` and loop reads
+`46 -> 44`; W1 low, VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 low
+stay exact-flat. The public rollup remains `+0.2591%` over target /
+`99.7448%` target speed because overrun did not move.
+
+Prior WALKSTUF1 high setup-segment retarget: high keeps the `198..244`
 setup slice and extends the second retained slice to the allocator-safe
 `286..344` edge. Focused artifact:
 `scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-current/20260518-111109-1509132/summary.json`;

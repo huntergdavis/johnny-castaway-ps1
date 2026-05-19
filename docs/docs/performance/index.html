@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4828 words
+          ~19 min read · 4831 words
         </p>
 
       <hr class="rule" />
@@ -450,9 +450,9 @@ signed optimization matrix is about <code class="language-plaintext highlighter-
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
 sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to
-<code class="language-plaintext highlighter-rouge">286..344</code>, improving the current row <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>,
-blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&gt; 59/212</code>, prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, reads
-<code class="language-plaintext highlighter-rouge">55 -&gt; 46</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+<code class="language-plaintext highlighter-rouge">286..344</code>, then adds <code class="language-plaintext highlighter-rouge">{149,165}</code>, improving the current row
+<code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1475/1441</code>, blocking/read time <code class="language-plaintext highlighter-rouge">76/229 -&gt; 57/199</code>,
+prefetch overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, reads <code class="language-plaintext highlighter-rouge">55 -&gt; 44</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..344</code> setup segment after low-only 48 KiB clean-rect chunking,
 then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary read group, improving the
@@ -1016,7 +1016,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.7% (1475/1441); due 10; blk 59</td>
+      <td>+2.4% / 97.7% (1475/1441); due 10; blk 57</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>

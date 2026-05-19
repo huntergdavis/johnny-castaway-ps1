@@ -87,7 +87,18 @@ Public reporting caps faster-than-target rows at `0.0%` over target /
 native cadence. The CSV keeps the raw signed `over_target_*` values for
 optimization analysis.
 
-Latest promoted WALKSTUF1 high setup-slice pressure note:
+Latest promoted WALKSTUF1 high read-group pressure note:
+the high-tide path now adds `{149,165}` after the accepted `{78,91}` row.
+The focused proof is
+`scratch/ps1-perf-iterate/walkstuf1-high-rg149-165-vnext/20260518-202745-469634/summary.json`;
+the seven-case under-green canary is
+`scratch/ps1-perf-iterate/walkstuf1-high-rg149-165-canaries/20260518-202932-479774/summary.json`.
+The promotion keeps W1 high at `1475/1441` with overrun `34`, refill `13`,
+and due `10`, while improving blocking/read time `59/212 -> 57/199` and loop
+reads `46 -> 44`. W1 low, VISITOR3 high/low, BUILDING2 high/low, and
+BUILDING4 low stayed exact-flat.
+
+Prior promoted WALKSTUF1 high setup-slice pressure note:
 the high-tide path keeps the `198..244` first setup slice and extends the
 second retained slice from `286..342` to `286..344`. The focused proof is
 `scratch/ps1-perf-iterate/walkstuf1-high-setupseg286-344-current/20260518-111109-1509132/summary.json`;

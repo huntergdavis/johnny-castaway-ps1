@@ -131,7 +131,7 @@ picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..
 groups, WALKSTUF1
 low now uses one retained `238..344` setup segment after low-only 48 KiB
 clean-rect chunking plus the `{91,107}` first-boundary read group, and WALKSTUF1 high now
-keeps `198..244` while extending its second retained slice to `286..344`.
+keeps `198..244`, extends its second retained slice to `286..344`, and adds `{149,165}`.
 BUILDING2 low now primes relative sectors `112..128` and `226..238` during
 setup, reducing active-loop overrun and removing hidden refill debt. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
@@ -179,7 +179,7 @@ old full-scene setup buffers with CACHE slices that fit the new allocator.
 High now keeps relative sectors `198..244` resident and retargets the second
 slice from `411..435` to `286..344`, improving the current allocator-era row
 `1475/1433 -> 1475/1441`, overrun `42 -> 34`, blocking/read time
-`76/229 -> 59/212`, prefetch overrun `15 -> 13`, loop reads `55 -> 46`, and
+`76/229 -> 57/199`, prefetch overrun `15 -> 13`, loop reads `55 -> 44`, and
 due `15 -> 10`.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` setup segment after low-only 48 KiB clean-rect
@@ -2552,12 +2552,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T13:50:14</td>
-      <td>git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</td>
+      <td>2026-05-18T20:29:32</td>
+      <td>git:e8f22a68c+walkstuf1-high-rg149-165</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1475/1441</td>
-      <td>59</td>
+      <td>57</td>
       <td>13</td>
       <td>10</td>
       <td></td>

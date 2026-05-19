@@ -44,9 +44,9 @@ to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries 
 `31`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures `1475/1441`, blocking/refill/due `59/13/10`, with
-loop reads/read time down to `46/212` after keeping relative sectors
-`198..244` and extending the second slice to `286..344`; low replaces the old `197..243` plus `410..434`
+buffers: high now measures `1475/1441`, blocking/refill/due `57/13/10`, with
+loop reads/read time down to `44/199` after keeping relative sectors
+`198..244`, extending the second slice to `286..344`, and adding `{149,165}`; low replaces the old `197..243` plus `410..434`
 split with a single `238..344` retained setup segment after low-only 48 KiB
 clean-rect chunking, then adds the `{91,107}` first-boundary read group and
 measures `1473/1444`, blocking/refill/due `43/11/5`, with loop reads/read time
@@ -66,8 +66,8 @@ failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 `36/32 -> 34/30`, and moving that row into green. VISITOR5 high/low both remain green on the matching `30..46`
 retained-read shape. WALKSTUF1 high/low now measure `1475/1441`
-and `1473/1444`; the latest high setup-segment retarget cuts high blocking
-`76 -> 59` and loop reads `55 -> 46` without moving layout, while low keeps
+and `1473/1444`; the latest high setup/read-group stack cuts high blocking
+`76 -> 57` and loop reads `55 -> 44` without moving layout, while low keeps
 the `238..344` retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes
 relative sectors `112..128` and `226..238` during setup, with the allocator-era

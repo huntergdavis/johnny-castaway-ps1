@@ -305,7 +305,9 @@ setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, improving the current allocator-era row `1475/1433 -> 1475/1441`,
 overrun `42 -> 34`, blocking/read time `76/229 -> 59/212`, prefetch overrun
-`15 -> 13`, loop reads `55 -> 46`, and due `15 -> 10`. BUILDING4 low now carries the v971 local-LZ entry270
+`15 -> 13`, loop reads `55 -> 46`, and due `15 -> 10`; the later `{149,165}`
+row keeps `1475/1441` and overrun `34` flat while cutting blocking/read time to
+`57/199` and loop reads to `44`. BUILDING4 low now carries the v971 local-LZ entry270
 follow-up on top of entry30/entry33, cutting active payload
 `807263 -> 799277` and improving to `2851/2815`, overrun `36`, and refill
 `35`. The visible-speed guarded read-group pass improves BUILDING2 high active
@@ -460,7 +462,7 @@ Milestone releases:
   BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/45/5`, BUILDING2 low now measures
   `1336/1316` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..238`, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
-  `1475/1441` with loop reads `46` and rows/spans/pixels
+  `1475/1441` with blocking/read time `57`/`199`, loop reads `44`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is `1473/1444` with loop
   reads `36`, rows/spans/pixels `16257/114798/633876`, and active payload
   `790208`, VISITOR3 high is

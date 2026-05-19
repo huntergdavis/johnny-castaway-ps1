@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2615 words
+          ~10 min read · 2617 words
         </p>
 
       <hr class="rule" />
@@ -151,9 +151,9 @@ to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time
 <code class="language-plaintext highlighter-rouge">31</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures <code class="language-plaintext highlighter-rouge">1475/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">59/13/10</code>, with
-loop reads/read time down to <code class="language-plaintext highlighter-rouge">46/212</code> after keeping relative sectors
-<code class="language-plaintext highlighter-rouge">198..244</code> and extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code>
+buffers: high now measures <code class="language-plaintext highlighter-rouge">1475/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">57/13/10</code>, with
+loop reads/read time down to <code class="language-plaintext highlighter-rouge">44/199</code> after keeping relative sectors
+<code class="language-plaintext highlighter-rouge">198..244</code>, extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>, and adding <code class="language-plaintext highlighter-rouge">{149,165}</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code>
 split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained setup segment after low-only 48 KiB
 clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group and
 measures <code class="language-plaintext highlighter-rouge">1473/1444</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">43/11/5</code>, with loop reads/read time
@@ -173,8 +173,8 @@ failure. BUILDING4 high now primes relative sectors <code class="language-plaint
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">36/32 -&gt; 34/30</code>, and moving that row into green. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
 retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1475/1441</code>
-and <code class="language-plaintext highlighter-rouge">1473/1444</code>; the latest high setup-segment retarget cuts high blocking
-<code class="language-plaintext highlighter-rouge">76 -&gt; 59</code> and loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 46</code> without moving layout, while low keeps
+and <code class="language-plaintext highlighter-rouge">1473/1444</code>; the latest high setup/read-group stack cuts high blocking
+<code class="language-plaintext highlighter-rouge">76 -&gt; 57</code> and loop reads <code class="language-plaintext highlighter-rouge">55 -&gt; 44</code> without moving layout, while low keeps
 the <code class="language-plaintext highlighter-rouge">238..344</code> retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, then primes
 relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..238</code> during setup, with the allocator-era

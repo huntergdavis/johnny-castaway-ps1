@@ -320,9 +320,9 @@ signed optimization matrix is about `-0.4578%` / `100.4752%`.
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
 sectors `198..244` resident and retargets the second slice from `411..435` to
-`286..344`, improving the current row `1475/1433 -> 1475/1441`,
-blocking/read time `76/229 -> 59/212`, prefetch overrun `15 -> 13`, reads
-`55 -> 46`, and due `15 -> 10`.
+`286..344`, then adds `{149,165}`, improving the current row
+`1475/1433 -> 1475/1441`, blocking/read time `76/229 -> 57/199`,
+prefetch overrun `15 -> 13`, reads `55 -> 44`, and due `15 -> 10`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` setup segment after low-only 48 KiB clean-rect chunking,
 then adds `{91,107}` as the first post-boundary read group, improving the
@@ -886,7 +886,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.7% (1475/1441); due 10; blk 59</td>
+      <td>+2.4% / 97.7% (1475/1441); due 10; blk 57</td>
       <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
     </tr>
     <tr>
