@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2640 words
+          ~10 min read · 2645 words
         </p>
 
       <hr class="rule" />
@@ -130,9 +130,9 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2487%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7549%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4683%</code> / <code class="language-plaintext highlighter-rouge">100.4852%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2470%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7566%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4699%</code> / <code class="language-plaintext highlighter-rouge">100.4869%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -147,9 +147,9 @@ low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-
 <code class="language-plaintext highlighter-rouge">{141,153}</code>, improving low to <code class="language-plaintext highlighter-rouge">1327/1318</code>, overrun <code class="language-plaintext highlighter-rouge">9</code>, blocking <code class="language-plaintext highlighter-rouge">47</code>,
 reads <code class="language-plaintext highlighter-rouge">27</code>, refill <code class="language-plaintext highlighter-rouge">0</code>, and due <code class="language-plaintext highlighter-rouge">9</code>. BUILDING2 high now layers guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code> rows on top
 of the allocator-safe setup slices, holding <code class="language-plaintext highlighter-rouge">1347/1313</code> while cutting blocking
-to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time to <code class="language-plaintext highlighter-rouge">45/199</code>, and due to <code class="language-plaintext highlighter-rouge">5</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up plus the gap-8 dirty-upload band merge retune at
-<code class="language-plaintext highlighter-rouge">2849/2816</code>, overrun <code class="language-plaintext highlighter-rouge">33</code>, blocking/read time <code class="language-plaintext highlighter-rouge">38</code>/<code class="language-plaintext highlighter-rouge">222</code>, and prefetch overrun
-<code class="language-plaintext highlighter-rouge">31</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
+to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time to <code class="language-plaintext highlighter-rouge">45/199</code>, and due to <code class="language-plaintext highlighter-rouge">5</code>. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the <code class="language-plaintext highlighter-rouge">24 KiB</code> stream-window promotion at
+<code class="language-plaintext highlighter-rouge">2847/2820</code>, overrun <code class="language-plaintext highlighter-rouge">27</code>, blocking/read time <code class="language-plaintext highlighter-rouge">32</code>/<code class="language-plaintext highlighter-rouge">252</code>, and prefetch overrun
+<code class="language-plaintext highlighter-rouge">27</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
 buffers: high now measures <code class="language-plaintext highlighter-rouge">1475/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">57/13/10</code>, with

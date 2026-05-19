@@ -313,9 +313,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2487%`
-exact public over target / `99.7549%` exact public target speed); the raw
-signed optimization matrix is about `-0.4683%` / `100.4852%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2470%`
+exact public over target / `99.7566%` exact public target speed); the raw
+signed optimization matrix is about `-0.4699%` / `100.4869%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -345,7 +345,10 @@ due `10 -> 9`, with setup cost paid before the active loop.
 
 The latest BUILDING4 low renderer retune widens dirty-upload band merging to
 gap `8`, improving the public row to `2849/2816`, overrun `33`,
-blocking/refill `38/31`, read time `222`, and due `1`.
+blocking/refill `38/31`, read time `222`, and due `1`. The follow-up B4-low
+stream-window retune narrows the scene-local low-tide window to `24 KiB`,
+moving the row green at `2847/2820`, overrun `27`, blocking/refill `32/27`,
+read time `252`, and due `1`.
 
 The latest VISITOR3 high promotion adds a third retained setup segment for
 relative sectors `228..262` after the frame139 raw-gap relocation, moves
@@ -654,7 +657,7 @@ rows are historical only.
     <tr>
       <td><code>building4</code></td>
       <td>+1.0% / 99.1% (2843/2816); due 1; blk 34</td>
-      <td>+1.2% / 98.8% (2849/2816); due 1; blk 38</td>
+      <td>+1.0% / 99.1% (2847/2820); due 1; blk 32</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -988,7 +991,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2487% over target / 99.7549% target speed, with several
+  public average is now +0.2470% over target / 99.7566% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

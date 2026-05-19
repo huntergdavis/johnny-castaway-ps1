@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the VISITOR3 high 64 KiB clean-strip cap promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2487% over target / 99.7549% target speed).
+the BUILDING4 low 24 KiB stream-window promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2470% over target / 99.7566% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 820 |
-| Approx. words | 9159 |
+| Lines | 824 |
+| Approx. words | 9215 |
 | Code fences | 1 |
 
 ## Outline

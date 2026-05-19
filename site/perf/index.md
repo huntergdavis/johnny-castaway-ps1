@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">120 (95.2%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
+  <span class="spd-key spd-green">121 (96.0%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">5 (4.0%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -136,13 +136,12 @@ keeps `198..244`, extends its second retained slice to `286..344`, and adds `{14
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
-uses a gap-8 dirty-upload band merge retune to cut its active row to
-`2849/2816`.
+uses a gap-8 dirty-upload band merge retune plus a `24 KiB` stream window to
+cut its active row to `2847/2820` and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should keep targeting VISITOR3 data-shape or
-scheduler ownership first, then residual WALKSTUF1, BUILDING2, and BUILDING4 low
-polish.
+scheduler ownership first, then residual WALKSTUF1 and BUILDING2 high polish.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -163,10 +162,10 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2487%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7549%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; V3-high clean64 canary `2026-05-19T01:09:53` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2470%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7566%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B4-low window24 canary `2026-05-19T09:17:25` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -214,7 +213,11 @@ bands across clean gaps up to `8` rows instead of splitting every clean gap.
 BUILDING4 low improves `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
 blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`, while loop
 reads/due stay flat at `30/1`. A gap-11 probe was rejected as a one-VBlank
-regression against gap `8`.
+regression against gap `8`. The follow-up stream-window retune narrows
+B4 low from `32 KiB` to `24 KiB`, improving `2849/2816 -> 2847/2820`,
+overrun `33 -> 27`, blocking/refill `38/31 -> 32/27`, and target speed
+`98.842% -> 99.052%`, moving the row green; the `48 KiB` opposite probe was
+rejected at `2895/2813`.
 
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
@@ -251,7 +254,8 @@ pack LBA/sectors, and PS-EXE bucket. The material gate improves loop/target
 `2853/2815 -> 2851/2815`, overrun `38 -> 36`, and refill `36 -> 35`, with
 blocking/read time/due flat at `42/223/1`; active payload drops
 `807263 -> 799277`. The current gap-8 dirty-upload band retune now carries the
-public row to `2849/2816`.
+public row to `2849/2816`, and the current `24 KiB` stream-window retune moves
+it green at `2847/2820`.
 `walkstuf1-low-late-offscreen-v653` clips only late-tail frames after broader
 low clipping proved phase-negative. Low is exact-flat at
 `1770`, `1478/1431`, blocking/refill `64/20`, reads/due `62/11`, while
@@ -1255,13 +1259,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-19T01:09:53</td>
-      <td>git:7680edc56a+visitor3-high-clean64</td>
-      <td>1.2%</td>
-      <td class="spd-yellow">98.8%</td>
-      <td>2849/2816</td>
-      <td>38</td>
-      <td>31</td>
+      <td>2026-05-19T09:17:25</td>
+      <td>git:0faf443b9b+building4-low-window24</td>
+      <td>1.0%</td>
+      <td class="spd-green">99.1%</td>
+      <td>2847/2820</td>
+      <td>32</td>
+      <td>27</td>
       <td>1</td>
       <td></td>
     </tr>

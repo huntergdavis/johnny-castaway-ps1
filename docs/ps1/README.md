@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2657% public over target / 99.7386% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2470% public over target / 99.7566% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,14 +23,15 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2657%` over target /
-`99.7386%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4512%` / `100.4689%`; bands are `119`
-green, `7` yellow, `0` orange, and `0` red. The latest allocator-era wins
+loading, and the current battle card is `+0.2470%` over target /
+`99.7566%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4699%` / `100.4869%`; bands are `121`
+green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
 include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
-setup residency, BUILDING4 low gap-8 dirty-upload merge, WALKSTUF1 high
-`286..344` setup residency, and WALKSTUF1 low `238..344` setup residency
+setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
+stream-window green promotion, WALKSTUF1 high `286..344` setup residency,
+and WALKSTUF1 low `238..344` setup residency
 enabled by low-only 48 KiB clean-rect chunking. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
 only an asset/reference naming source.

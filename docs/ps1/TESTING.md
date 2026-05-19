@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-19:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2487%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7549%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; V3-high clean64 canary `2026-05-19T01:09:53` |
-| Stats version | mixed; newest targeted under-green rows are stamped `git:7680edc56a+visitor3-high-clean64`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2470%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7566%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B4-low window24 canary `2026-05-19T09:17:25` |
+| Stats version | mixed; newest targeted under-green row is stamped `git:0faf443b9b+building4-low-window24`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -141,6 +141,15 @@ instead of splitting every gap. The accepted canary improves BUILDING4 low
 `42/35 -> 38/31`, and read time `223 -> 222`, while loop reads/due stay
 flat at `30/1`. A wider gap-11 probe was rejected at `2850/2816` with
 blocking/refill `39/32`, so gap `8` is the current promoted band merge.
+
+Latest promoted BUILDING4 low stream-window note:
+the scene-local low-tide window now uses `24 KiB` instead of `32 KiB`. The
+focused proof is
+`scratch/ps1-perf-iterate/building4-low-window24/20260519-091725-675136/summary.json`.
+It improves BUILDING4 low `2849/2816 -> 2847/2820`, overrun `33 -> 27`,
+blocking/refill `38/31 -> 32/27`, and target speed `98.842% -> 99.052%`,
+moving the row into green. The rejected `48 KiB` opposite probe regressed to
+`2895/2813`, overrun `82`, and blocking/refill `61/62`.
 
 Latest promoted BUILDING4 low payload note:
 `building4-low-local-lz-entry270-v971` stacks entry `270` / source frame `410`
