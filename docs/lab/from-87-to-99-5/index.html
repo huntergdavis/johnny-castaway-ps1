@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2610,
+  "wordCount": 2621,
   "timeRequired": "PT10M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -142,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2527 words
+          ~10 min read · 2538 words
         </p>
 
       <hr class="rule" />
@@ -212,12 +212,12 @@ reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh, the latest
 BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
-the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
-<code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary promotions, plus the VISITOR3 high frame56/57
+the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge,
+<code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary, and split <code class="language-plaintext highlighter-rouge">344..350</code> setup-edge promotions, plus the VISITOR3 high frame56/57
 raw-gap tight-refill and high-only clean64 promotions, plus the BUILDING2 low
 <code class="language-plaintext highlighter-rouge">226..262</code> + clean80 setup segment, plus the BUILDING4 low <code class="language-plaintext highlighter-rouge">24 KiB</code>
 stream-window green promotion, is
-<strong>+0.2470% over target / 99.7566% target speed</strong>, with roughly <strong>17.15
+<strong>+0.2437% over target / 99.7598% target speed</strong>, with roughly <strong>17.15
 percentage points</strong> of over-target gap closed and about <strong>12.66 target-speed
 points</strong> added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -227,9 +227,9 @@ BUILDING4 high is now green after caching relative sectors <code class="language
 BUILDING2 high has a smaller yellow gap after replacing the tail read group
 with <code class="language-plaintext highlighter-rouge">83..95</code> and adding guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus the same-loop <code class="language-plaintext highlighter-rouge">315..327</code> CD-pressure row; VISITOR3 low then adds <code class="language-plaintext highlighter-rouge">206..230</code> as a third retained setup
 segment, cutting its yellow-row gap to <code class="language-plaintext highlighter-rouge">1074/1039</code>; WALKSTUF1 low now replaces
-split tail residency with a single <code class="language-plaintext highlighter-rouge">238..344</code> setup segment and adds
-<code class="language-plaintext highlighter-rouge">{91,107}</code>, moving to <code class="language-plaintext highlighter-rouge">1473/1444</code>, and WALKSTUF1 high retargets its second retained slice to
-<code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code>, moving to <code class="language-plaintext highlighter-rouge">1475/1441</code> with lower blocking; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
+split tail residency with a CACHE <code class="language-plaintext highlighter-rouge">238..344</code> setup segment, adds <code class="language-plaintext highlighter-rouge">{91,107}</code>,
+and pays a separate TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> edge, moving to <code class="language-plaintext highlighter-rouge">1473/1447</code>; WALKSTUF1 high retargets its second retained slice to
+<code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code> and frame92 D4, moving to <code class="language-plaintext highlighter-rouge">1471/1440</code> with lower overrun; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
 <code class="language-plaintext highlighter-rouge">226..262</code> during setup with clean80/slack5 shaping, moving to green at <code class="language-plaintext highlighter-rouge">1327/1318</code>; BUILDING2 high now measures <code class="language-plaintext highlighter-rouge">1347/1313</code>
 with blocking/read/due down to <code class="language-plaintext highlighter-rouge">39/45/5</code>; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune plus a <code class="language-plaintext highlighter-rouge">24 KiB</code> stream window to reach green at

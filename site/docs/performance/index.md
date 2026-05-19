@@ -153,8 +153,8 @@ and its machine-readable
 [`performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv).
 The current report has no standalone-safe rows, keeps VISITOR3 in the
 scheduler-owned or closed lane, and ranks the remaining under-99 work after
-the W1-low `238..344` setup-edge promotion and `{91,107}` first-boundary
-promotion. Remaining read-timing candidates should not
+the W1-low `238..344` setup segment, split `344..350` setup edge, and
+`{91,107}` first-boundary promotion. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
 slack/scheduler proof. The BUILDING6 v353 `181..197` / `269..285` probe is
 now the concrete counterexample for direct-stage clusters: the source table
@@ -313,21 +313,22 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2470%`
-exact public over target / `99.7566%` exact public target speed); the raw
-signed optimization matrix is about `-0.4699%` / `100.4869%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2437%`
+exact public over target / `99.7598%` exact public target speed); the raw
+signed optimization matrix is about `-0.4733%` / `100.4901%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
 sectors `198..244` resident and retargets the second slice from `411..435` to
-`286..344`, then adds `{149,165}`, improving the current row
-`1475/1433 -> 1475/1441`, blocking/read time `76/229 -> 57/199`,
-prefetch overrun `15 -> 13`, reads `55 -> 44`, and due `15 -> 10`.
+`286..344`, then adds `{149,165}` and frame92 D4, improving the current row
+`1475/1433 -> 1471/1440`, blocking/refill `76/15 -> 57/13`,
+reads/read time `55/229 -> 45/209`, and due `15 -> 10`.
 Low now replaces the old `197..243` plus `410..434` split with one
-retained `238..344` setup segment after low-only 48 KiB clean-rect chunking,
-then adds `{91,107}` as the first post-boundary read group, improving the
-current row `1479/1435 -> 1473/1444`, blocking/refill `65/18 -> 43/11`,
-reads/read time `50/230 -> 36/195`, and due `10 -> 5`. Both W1 rows stay yellow while staying
+retained `238..344` CACHE setup segment after low-only 48 KiB clean-rect
+chunking, then adds `{91,107}` as the first post-boundary read group and a
+split TRANSIENT `344..350` setup edge, improving the current row
+`1479/1435 -> 1473/1447`, blocking/refill `65/18 -> 41/7`,
+reads/read time `50/230 -> 36/186`, and due `10 -> 5`. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -891,8 +892,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.4% / 97.7% (1475/1441); due 10; blk 57</td>
-      <td>+3.2% / 96.9% (1477/1431); due 11; blk 64</td>
+      <td>+2.2% / 97.9% (1471/1440); due 10; blk 57</td>
+      <td>+1.8% / 98.2% (1473/1447); due 5; blk 41</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
@@ -991,7 +992,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2470% over target / 99.7566% target speed, with several
+  public average is now +0.2437% over target / 99.7598% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

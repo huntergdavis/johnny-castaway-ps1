@@ -52,12 +52,12 @@ reducing draw/upload work without changing the rollup. The current
 public-capped average after the memory-region allocator refresh, the latest
 BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
-the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
-`{91,107}` first-boundary promotions, plus the VISITOR3 high frame56/57
+the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge,
+`{91,107}` first-boundary, and split `344..350` setup-edge promotions, plus the VISITOR3 high frame56/57
 raw-gap tight-refill and high-only clean64 promotions, plus the BUILDING2 low
 `226..262` + clean80 setup segment, plus the BUILDING4 low `24 KiB`
 stream-window green promotion, is
-**+0.2470% over target / 99.7566% target speed**, with roughly **17.15
+**+0.2437% over target / 99.7598% target speed**, with roughly **17.15
 percentage points** of over-target gap closed and about **12.66 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -67,9 +67,9 @@ BUILDING4 high is now green after caching relative sectors `264..288`, and
 BUILDING2 high has a smaller yellow gap after replacing the tail read group
 with `83..95` and adding guarded `271..287` plus the same-loop `315..327` CD-pressure row; VISITOR3 low then adds `206..230` as a third retained setup
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
-split tail residency with a single `238..344` setup segment and adds
-`{91,107}`, moving to `1473/1444`, and WALKSTUF1 high retargets its second retained slice to
-`286..344` plus `{149,165}`, moving to `1475/1441` with lower blocking; BUILDING2 low now primes `112..128` and
+split tail residency with a CACHE `238..344` setup segment, adds `{91,107}`,
+and pays a separate TRANSIENT `344..350` edge, moving to `1473/1447`; WALKSTUF1 high retargets its second retained slice to
+`286..344` plus `{149,165}` and frame92 D4, moving to `1471/1440` with lower overrun; BUILDING2 low now primes `112..128` and
 `226..262` during setup with clean80/slack5 shaping, moving to green at `1327/1318`; BUILDING2 high now measures `1347/1313`
 with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune plus a `24 KiB` stream window to reach green at

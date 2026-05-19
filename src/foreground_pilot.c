@@ -218,8 +218,8 @@ enum {
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (238UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES (106UL * FG_CD_SECTOR_SIZE)
-#define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START (410UL * FG_CD_SECTOR_SIZE)
-#define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_BYTES (0UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START (344UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_LOW_SETUP_SEGMENT2_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START (198UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES (46UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_START (286UL * FG_CD_SECTOR_SIZE)
@@ -1421,6 +1421,9 @@ static uint32 gFgStreamScratchSize = 0;
 static uint8 *gFgSetupSegmentBuffer = NULL;
 static uint32 gFgSetupSegmentBufferSize = 0;
 static MemRegion gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+static uint8 *gFgSetupSegment2OwnedBuffer = NULL;
+static uint32 gFgSetupSegment2OwnedBufferSize = 0;
+static MemRegion gFgSetupSegment2OwnedBufferRegion = MEM_REGION_TRANSIENT;
 
 static void fgReleaseStreamBuffers(void)
 {
@@ -1447,6 +1450,12 @@ static void fgReleaseStreamBuffers(void)
         gFgSetupSegmentBuffer = NULL;
         gFgSetupSegmentBufferSize = 0;
         gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+    }
+    if (gFgSetupSegment2OwnedBuffer != NULL) {
+        memFree(gFgSetupSegment2OwnedBufferRegion, gFgSetupSegment2OwnedBuffer);
+        gFgSetupSegment2OwnedBuffer = NULL;
+        gFgSetupSegment2OwnedBufferSize = 0;
+        gFgSetupSegment2OwnedBufferRegion = MEM_REGION_TRANSIENT;
     }
 }
 
@@ -1634,6 +1643,9 @@ static void fgRuntimeReset(void)
     gFgSetupSegmentBuffer     = NULL;
     gFgSetupSegmentBufferSize = 0;
     gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+    gFgSetupSegment2OwnedBuffer = NULL;
+    gFgSetupSegment2OwnedBufferSize = 0;
+    gFgSetupSegment2OwnedBufferRegion = MEM_REGION_TRANSIENT;
 
     /* currentFrameData now points inside gFgFrameBuffer — don't free it
      * separately. The persistent buffers (gFgFrameBuffer / gFgStreamScratch)
@@ -2777,10 +2789,11 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment2Start = FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_START;
             segment2Bytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_BYTES;
         }
-        allocationBytes = segmentBytes + segment2Bytes;
+        allocationBytes = segmentBytes + (islandState.lowTide ? 0UL : segment2Bytes);
         /* MEM_REGION_RATIONALE: targeted reusable read-cluster cache.
-         * CACHE avoids the small libc heap, while the two small clusters leave
-         * enough room for stream-window prefetch and clean-rect snapshots. */
+         * CACHE avoids the small libc heap for the main W1 residency. W1-low's
+         * small trailing edge is split into TRANSIENT to avoid a large CACHE
+         * cliff while still covering the active-loop boundary. */
         gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                                   allocationBytes,
                                                   "fgSetupSegmentBuffer");
@@ -2793,7 +2806,28 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                 ps1PerfMarkAllocFail(allocationBytes);
             return 0;
         }
-        segment2Buffer = segmentBuffer + segmentBytes;
+        if (segment2Bytes > 0) {
+            if (islandState.lowTide) {
+                gFgSetupSegment2OwnedBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                                segment2Bytes,
+                                                                "fgSetupSegment2Buffer");
+                gFgSetupSegment2OwnedBufferSize = segment2Bytes;
+                gFgSetupSegment2OwnedBufferRegion = MEM_REGION_TRANSIENT;
+                segment2Buffer = gFgSetupSegment2OwnedBuffer;
+                if (segment2Buffer == NULL) {
+                    gFgSetupSegment2OwnedBufferSize = 0;
+                    memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+                    gFgSetupSegmentBuffer = NULL;
+                    gFgSetupSegmentBufferSize = 0;
+                    gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkAllocFail(segment2Bytes);
+                    return 0;
+                }
+            } else {
+                segment2Buffer = segmentBuffer + segmentBytes;
+            }
+        }
         gFgRuntime.setupSegmentReusable = 1;
     } else if (!fgSceneEquals(sceneName, "fishing3")) {
         return 1;

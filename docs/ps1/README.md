@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2470% public over target / 99.7566% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2437% public over target / 99.7598% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,15 +23,15 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2470%` over target /
-`99.7566%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4699%` / `100.4869%`; bands are `121`
+loading, and the current battle card is `+0.2437%` over target /
+`99.7598%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4733%` / `100.4901%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
 include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
 setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
 stream-window green promotion, WALKSTUF1 high `286..344` setup residency,
-and WALKSTUF1 low `238..344` setup residency
+and WALKSTUF1 low `238..344` plus split `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
 only an asset/reference naming source.
@@ -43,31 +43,19 @@ Both high and low compress entries `1` and `50`, cutting active payload
 with overrun `28 -> 3`, blocking/refill `25 -> 5`, loop read time `58 -> 37`,
 and target speed `98.56% -> 99.85%`.
 
-The latest WALKSTUF1 high baseline extends the shared retained read groups to
-`201..213`, `213..229`, `344..360`, `422..434`, `443..455`, and `444..456`,
-then physically compacts the already-clipped late-tail payloads, clips the
-offscreen frame `55`, frame `138`, frame `51`, frame `49`, frame `47`, frame `45`, frame `43`, frame `56`, frame `57`, frame `136`, frame `135`, and frame `139` draw streams, and shrinks frames `51`, `49`, `47`, `45`, `43`, `138`, `135`, and `139` in place with preserved offsets. It is still a same-speed row at `1764`,
-active loop/target `1476/1434`, overrun `42`, and blocking/refill `81/23`, but
-active payload drops `918345 -> 859666`, CD sectors `605 -> 586`, loop
-reads/read time `65/282 -> 63/276`, and runtime rows/spans/pixels
-`17296/134136/776856 -> 16859/129919/731016`; due misses stay `16`, pack
-LBA/sectors stay `24883/750`, and the PS-EXE bucket stays `217088`. The tail
-groups, physical compaction, frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 clips, and frame51/frame49/frame47/frame45/frame43/frame138/frame135/frame139 in-place shrinks are same-speed work reductions,
-so they do not count as VBlank speed wins.
+The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
+`286..344` resident, carries the `{149,165}` read group, and encodes frame
+`92` as previous-frame D4. It measures `1471/1440` at `97.893%` target speed,
+overrun `31`, blocking/refill `57/13`, loop reads/read time `45/209`, and due
+`10`, with pack LBA/sectors and the PS-EXE bucket fixed.
 
-The latest WALKSTUF1 low baseline is the v474 first post-prime boundary group
-on top of the shared tail groups, v331 staged-prepare scheduler fallback,
-v705 late-tail physical compaction, isolated offscreen work-volume clips
-through v726, the v747/v749/v750/v751/v753/v755/v756/v757/v759/v762/v763/v766/v767/v769/v770/v771/v772/v773/v774/v775/v776/v777/v779/v780/v781/v782/v783/v784/v785/v786/v787/v788/v789/v790/v791/v794/v795/v797/v798/v800/v801/v802/v846/v847/v849/v852/v853/v855/v859/v860/v861/v862/v863/v864/v865/v866/v867/v868/v869/v870/v871/v872/v873/v874/v875/v876/v908/v909/v910 no-shift
-in-place shrinks for frames `51`, `49`, `47`, `61`, `62`, `58`, `45`, `37`,
-`35`, `43`, `41`, `57`, `33`, `67`, `68`, `69`, `32`, `133`, `5`, `141`,
-`70`, `30`, `6`, `71`, `72`, `142`, `73`, `131`, `74`, `19`, `28`, `138`,
-`145`, `75`, `76`, `77`, `130`, `135`, `1`, `88`, `90`, `3`, `53`, `136`, `79`, `81`, `129`, `139`, `87`, `89`, `98`, `27`, `101`, `93`, `94`, `97`, `99`, `100`, `134`, `91`, `92`, `95`, `140`, `108`, `109`, `107`, `110`, `111`, and `106`, the
-v760 bounded CD fast-poll restoration, the v817 low `394..410` retained
-read group, and the v935 low `209..225` retained-read row. Low is now
-`1481/1431` at `96.62%` target speed with overrun `50`,
-blocking/refill `72/27`, loop reads/read time `58/267`, and due misses `10`,
-while active payload remains `790208` without moving pack offsets or sectors.
+The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
+shrinks, replaces the old split tail residency with a CACHE `238..344` setup
+segment, adds the `{91,107}` first-boundary read group, and pays the small
+`344..350` edge from TRANSIENT. Low now measures `1473/1447` at `98.235%`
+target speed with overrun `26`, blocking/refill `41/7`, loop reads/read time
+`36/186`, and due `5`, while active payload remains `790208` without moving
+pack offsets or sectors.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24
