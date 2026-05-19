@@ -21,8 +21,8 @@ Date started: 2026-04-25
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-experiment-log.md` |
-| Lines | 1982 |
-| Approx. words | 332002 |
+| Lines | 1983 |
+| Approx. words | 332166 |
 | Code fences | 0 |
 
 ## Outline
