@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-19:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2494%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7542%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-low `226..262` clean80 canary `2026-05-19T00:37:46` |
-| Stats version | mixed; newest targeted under-green rows are stamped `git:587221f3e8+building2-low-seg226-262-clean80-rg141`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2487%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7549%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; V3-high clean64 canary `2026-05-19T01:09:53` |
+| Stats version | mixed; newest targeted under-green rows are stamped `git:7680edc56a+visitor3-high-clean64`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -305,7 +305,19 @@ which aliases duplicate high frames `121` and `123` to frame `120`, compacts
 the resident setup-prime tail, and copies frame `131` fully into paid
 setup-prime coverage without changing the `1555450` byte pack footprint.
 
-Latest promoted BUILDING2 low note: `building2-low-seg226-262-clean80-rg141` keeps the
+Latest promoted VISITOR3 high note: the clean-memory relief row now caps
+high-tide clean strips at `64 KiB` after the accepted frame56/57 raw-gap and
+`56 KiB` tight-refill promotions. Focused proof
+`scratch/ps1-perf-iterate/visitor3-high-clean64-vnext/20260519-010801-2078106/summary.json`
+improves active loop/target `1075/1043 -> 1075/1044`, overrun `32 -> 31`,
+blocking/read time `46/54 -> 45/53`, with hidden refill flat at `3` and reads
+and due flat at `4/3`. The seven-case canary
+`scratch/ps1-perf-iterate/visitor3-high-clean64-canaries/20260519-010953-2088970/summary.json`
+keeps BUILDING2 high/low, VISITOR3 low, WALKSTUF1 high/low, and BUILDING4 low
+stable. The rejected neighboring caps are `80 KiB` (no improvement, overrun
+`32 -> 33`) and `48 KiB` (missing `JCPERF2`).
+
+Prior promoted BUILDING2 low note: `building2-low-seg226-262-clean80-rg141` keeps the
 v626 low-tide `218..229` slack-8 retained-read row, v660 draw-span work clip,
 and v739 draw-tail trim, then widens the late setup-resident slice to
 `226..262`, caps low clean strips at `80 KiB`, raises the low window slack to

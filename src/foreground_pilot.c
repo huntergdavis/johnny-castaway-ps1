@@ -2672,6 +2672,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment2Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES;
             segment3Start = FG_VISITOR3_HIGH_SETUP_SEGMENT3_START;
             segment3Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT3_BYTES;
+            gFgCleanRectMaxBytes = 64UL * 1024UL;
         }
         allocationBytes = segmentBytes + segment2Bytes + segment3Bytes;
         /* MEM_REGION_RATIONALE: per-scene segment-decode scratch.

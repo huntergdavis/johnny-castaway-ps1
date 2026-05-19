@@ -54,8 +54,9 @@ BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
 `{91,107}` first-boundary promotions, plus the VISITOR3 high frame56/57
-raw-gap tight-refill promotion, plus the BUILDING2 low `226..262` + clean80 setup segment, is
-**+0.2494% over target / 99.7542% target speed**, with roughly **17.15
+raw-gap tight-refill and high-only clean64 promotions, plus the BUILDING2 low
+`226..262` + clean80 setup segment, is
+**+0.2487% over target / 99.7549% target speed**, with roughly **17.15
 percentage points** of over-target gap closed and about **12.65 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -74,7 +75,7 @@ dirty-upload band merge retune to reach `2849/2816`; and VISITOR3 low now
 moves frame `138` raw data into the retained `206..232` segment to reach
 `1065/1039` with overrun down to `26`; VISITOR3 high now moves frames `56`
 and `57` raw into the retained `228..262` gap with a `56 KiB` tight-refill cap,
-reaching `1075/1043`.
+then caps high-only clean strips at `64 KiB`, reaching `1075/1044`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
@@ -166,10 +167,9 @@ The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct 
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no red or orange rows left on the
-[battle card]({{ '/perf/' | relative_url }}): `119` rows are green and `7`
-remain yellow. The current
-under-99 focus set is VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2
-high/low, and BUILDING4 low.
+[battle card]({{ '/perf/' | relative_url }}): `120` rows are green and `6`
+remain yellow. The current under-99 focus set is VISITOR3 high/low,
+WALKSTUF1 high/low, BUILDING2 high, and BUILDING4 low.
 The optimization plan at
 [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md) § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some

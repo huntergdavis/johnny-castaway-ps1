@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4839 words
+          ~19 min read · 4852 words
         </p>
 
       <hr class="rule" />
@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2494%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7542%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4675%</code> / <code class="language-plaintext highlighter-rouge">100.4845%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2487%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7549%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4683%</code> / <code class="language-plaintext highlighter-rouge">100.4852%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -478,18 +478,19 @@ gap <code class="language-plaintext highlighter-rouge">8</code>, improving the p
 blocking/refill <code class="language-plaintext highlighter-rouge">38/31</code>, read time <code class="language-plaintext highlighter-rouge">222</code>, and due <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
 <p>The latest VISITOR3 high promotion adds a third retained setup segment for
-relative sectors <code class="language-plaintext highlighter-rouge">228..262</code> after the frame139 raw-gap relocation, then moves
+relative sectors <code class="language-plaintext highlighter-rouge">228..262</code> after the frame139 raw-gap relocation, moves
 frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw into that retained gap with a <code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill
-cap. It improves the current allocator-era high row from <code class="language-plaintext highlighter-rouge">1096/1041</code> to
-<code class="language-plaintext highlighter-rouge">1075/1043</code>, overrun <code class="language-plaintext highlighter-rouge">55 -&gt; 32</code>, blocking/read time <code class="language-plaintext highlighter-rouge">67/79 -&gt; 46/54</code>,
-reads/due <code class="language-plaintext highlighter-rouge">7/4 -&gt; 4/3</code>, and cuts hidden refill <code class="language-plaintext highlighter-rouge">5 -&gt; 3</code>.</p>
+cap, then caps high-only clean strips at <code class="language-plaintext highlighter-rouge">64 KiB</code>. It improves the current
+allocator-era high row from <code class="language-plaintext highlighter-rouge">1096/1041</code> to <code class="language-plaintext highlighter-rouge">1075/1044</code>, overrun <code class="language-plaintext highlighter-rouge">55 -&gt; 31</code>,
+blocking/read time <code class="language-plaintext highlighter-rouge">67/79 -&gt; 45/53</code>, reads/due <code class="language-plaintext highlighter-rouge">7/4 -&gt; 4/3</code>, and cuts hidden
+refill <code class="language-plaintext highlighter-rouge">5 -&gt; 3</code>.</p>
 
 <p>The latest allocator-era VISITOR3 checkpoint keeps clean-memory relief enabled,
 preserves the stage1 prefetch buffer for both tides, and restores only bounded
 stream windows under clean pressure. High uses the accepted <code class="language-plaintext highlighter-rouge">68 KiB</code> knee plus
 terminal read trimming, setup segment2 <code class="language-plaintext highlighter-rouge">203..229</code>, the frame139 raw-gap
-relocation, setup segment3 <code class="language-plaintext highlighter-rouge">228..262</code>, and the frame56/57 tight56 raw-gap pass
-at <code class="language-plaintext highlighter-rouge">1075/1043</code>, while
+relocation, setup segment3 <code class="language-plaintext highlighter-rouge">228..262</code>, the frame56/57 tight56 raw-gap pass,
+and the high-only <code class="language-plaintext highlighter-rouge">64 KiB</code> clean-strip cap at <code class="language-plaintext highlighter-rouge">1075/1044</code>, while
 low now uses a <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment
 extended to <code class="language-plaintext highlighter-rouge">206..232</code>, with frame <code class="language-plaintext highlighter-rouge">138</code> raw relocated into that paid gap, at
 <code class="language-plaintext highlighter-rouge">1065/1039</code>, cutting low blocking/read pressure from
@@ -1088,8 +1089,8 @@ bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
   <li><strong>Generated scheduler ownership for the remaining under-99 rows.</strong> MARY3 is
 now green after the guarded prefetch-preserve pass, and BUILDING6 moved out
 of the current under-99 focus set after compact-pack promotion. The remaining
-hard rows are VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high/low,
-and BUILDING4 low. Hand-authored read groups and scalar window changes have
+hard rows are VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high, and
+BUILDING4 low. Hand-authored read groups and scalar window changes have
 repeatedly shifted cadence instead of safely removing work. The latest
 WALKSTUF1 low v747..v876 pass keeps the row exact-flat except for the v859
 one-VBlank target/overrun win while shrinking the no-shift frame list
@@ -1119,7 +1120,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2494% over target / 99.7542% target speed, with several
+public average is now +0.2487% over target / 99.7549% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

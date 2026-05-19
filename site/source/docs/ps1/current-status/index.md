@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the BUILDING2 low 226..262 + clean80 green promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2494% over target / 99.7542% target speed).
+the VISITOR3 high 64 KiB clean-strip cap promotion; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2487% over target / 99.7549% target speed).
 
 ## File facts
 
@@ -22,7 +22,7 @@ the BUILDING2 low 226..262 + clean80 green promotion; all 63 scenes remain valid
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 820 |
-| Approx. words | 9143 |
+| Approx. words | 9159 |
 | Code fences | 1 |
 
 ## Outline
