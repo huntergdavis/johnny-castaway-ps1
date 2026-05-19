@@ -313,9 +313,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2610%`
-exact public over target / `99.7431%` exact public target speed); the raw
-signed optimization matrix is about `-0.4560%` / `100.4734%`.
+the public average is **+0.3% over target / 99.7% target speed** (`0.2591%`
+exact public over target / `99.7448%` exact public target speed); the raw
+signed optimization matrix is about `-0.4578%` / `100.4752%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -337,11 +337,10 @@ with `83..95` and adds guarded `271..287` plus `315..327`. The current row is
 `45/199`, and due `5`, and removes the allocator-era clean-rect failure seen
 with full setup buffers.
 
-The latest BUILDING2 low allocator baseline adds a setup-resident
-`112..128` slice. It keeps loop flat at `1339`, improves target `1315 -> 1316`,
-overrun `24 -> 23`, blocking `54 -> 53`, loop reads/read time
-`37/152 -> 34/141`, and due `12 -> 11`, with setup cost paid before the
-active loop.
+The latest BUILDING2 low allocator baseline adds setup-resident `112..128`
+and `226..238` slices. It improves active loop `1339 -> 1336`, keeps target
+`1316`, cuts overrun `23 -> 20`, blocking `53 -> 48`, refill `2 -> 0`, and
+due `11 -> 10`, with setup cost paid before the active loop.
 
 The latest BUILDING4 low renderer retune widens dirty-upload band merging to
 gap `8`, improving the public row to `2849/2816`, overrun `33`,
@@ -643,7 +642,7 @@ rows are historical only.
     <tr>
       <td><code>building2</code></td>
       <td>+2.6% / 97.5% (1347/1313); due 5; blk 39</td>
-      <td>+1.7% / 98.3% (1339/1316); due 11; blk 53</td>
+      <td>+1.5% / 98.5% (1336/1316); due 10; blk 48</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -987,7 +986,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2610% over target / 99.7431% target speed, with several
+  public average is now +0.2591% over target / 99.7448% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

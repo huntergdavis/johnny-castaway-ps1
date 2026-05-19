@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-18:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2760%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7290%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high setup-slice focused run `2026-05-18T11:11:09`; under-green canary refresh `2026-05-18T11:13:08` |
-| Stats version | mixed; newest targeted under-green rows include `git:d8c2e3965+walkstuf1-high-setupseg286-344`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2591%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7448%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3-high tight64 gate `2026-05-18T17:41:43`; B2-low `226..238` canary `2026-05-18T19:03:45` |
+| Stats version | mixed; newest targeted under-green row is `git:4299ba187+building2-low-setupseg226-238`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -294,14 +294,14 @@ which aliases duplicate high frames `121` and `123` to frame `120`, compacts
 the resident setup-prime tail, and copies frame `131` fully into paid
 setup-prime coverage without changing the `1555450` byte pack footprint.
 
-Latest promoted BUILDING2 low note: `building2-low-trimtails-v739` keeps the
-v626 low-tide `218..229` slack-8 retained-read row and v660 draw-span work
-clip, then trims active draw-tail payload `660236 -> 538534` without moving the
-pack footprint, LBA/sectors, or PS-EXE bucket. The focused gate improves from
-`1614/1344/1318` to `1603/1339/1317`, overrun `26 -> 22`, blocking `61 -> 53`,
-loop reads/read time `50/218 -> 37/150`, and due misses `14 -> 12` with refill
-still `0`. BUILDING2 high, WALKSTUF1 low/high, and VISITOR3 low/high controls
-stayed exact-flat.
+Latest promoted BUILDING2 low note: `building2-low-setupseg226-238` keeps the
+v626 low-tide `218..229` slack-8 retained-read row, v660 draw-span work clip,
+and v739 draw-tail trim, then adds a late setup-resident `226..238` slice beside
+the accepted `112..128` slice. The focused and seven-case canary gates improve
+active loop `1339 -> 1336`, keep target `1316`, cut overrun `23 -> 20`,
+blocking `53 -> 48`, refill `2 -> 0`, and due `11 -> 10` with fixed pack
+LBA/sectors and PS-EXE bucket. BUILDING2 high, VISITOR3 high/low, WALKSTUF1
+low/high, and BUILDING4 low controls stayed exact-flat.
 
 Latest promoted WALKSTUF1 note: the current speed-bearing W1 baselines are the
 allocator-targeted setup slices above. High measures `1489/1430`, overrun `59`,

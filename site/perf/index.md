@@ -132,8 +132,8 @@ groups, WALKSTUF1
 low now uses one retained `238..344` setup segment after low-only 48 KiB
 clean-rect chunking plus the `{91,107}` first-boundary read group, and WALKSTUF1 high now
 keeps `198..244` while extending its second retained slice to `286..344`.
-BUILDING2 low now primes relative sectors `112..128` during setup, reducing
-loop reads and due misses while keeping loop VBlanks flat. BUILDING4 low now
+BUILDING2 low now primes relative sectors `112..128` and `226..238` during
+setup, reducing active-loop overrun and removing hidden refill debt. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
 `2849/2816`.
 That is the new allocator baseline rather than a visual
@@ -161,10 +161,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2610%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7431%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{91,107}` canary `2026-05-18T15:12:29`; W1-high canary `2026-05-18T15:20:51`; VISITOR3-low canary `2026-05-18T15:22:40`; VISITOR3-high tight64 gate `2026-05-18T17:41:43` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1-low row stamped `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`; refreshed VISITOR3-high row stamped `git:8dd83d35+visitor3-high-frame56-57-rawgap-tight64`; other refreshed under-green rows stamped `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2591%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7448%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{91,107}` canary `2026-05-18T15:12:29`; VISITOR3-high tight64 gate `2026-05-18T17:41:43`; B2-low `226..238` canary `2026-05-18T19:03:45` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1-low row stamped `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`; refreshed VISITOR3-high row stamped `git:8dd83d35+visitor3-high-frame56-57-rawgap-tight64`; refreshed BUILDING2-low row stamped `git:4299ba187+building2-low-setupseg226-238`; other refreshed under-green rows stamped `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -201,10 +201,10 @@ the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
 `203 -> 199`, and due `6 -> 5`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
-relative sectors `112..128` during setup. It keeps loop flat at `1339`,
-improves target `1315 -> 1316`, overrun `24 -> 23`, blocking `54 -> 53`,
-loop reads/read time `37/152 -> 34/141`, and due `12 -> 11`; setup cost rises
-`265 -> 275` VBlanks but stays outside the active loop.
+relative sectors `112..128` and `226..238` during setup. It improves the
+active loop `1339 -> 1336`, keeps target `1316`, cuts overrun `23 -> 20`,
+blocking `53 -> 48`, prefetch overrun `2 -> 0`, and due `11 -> 10`; setup
+cost rises to `283` VBlanks but stays outside the active loop.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to `8` rows instead of splitting every clean gap.
@@ -505,9 +505,9 @@ read-group passes replace the tail row with `83..95` and add guarded
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
-sectors `112..128` during setup. It now measures `1339/1316`, overrun `23`,
-blocking/refill `53/2`, reads/read time `34/141`, and due `11` with fixed pack
-LBA/sectors.
+sectors `112..128` and `226..238` during setup. It now measures `1336/1316`,
+overrun `20`, blocking/refill `48/0`, reads/read time `35/148`, and due `10`
+with fixed pack LBA/sectors.
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -1194,14 +1194,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T13:52:02</td>
-      <td>git:e50beb9d1+w1low-clean48-runtimecap-setup238-344</td>
-      <td>1.8%</td>
-      <td class="spd-yellow">98.3%</td>
-      <td>1339/1316</td>
-      <td>53</td>
-      <td>2</td>
-      <td>11</td>
+      <td>2026-05-18T19:03:45</td>
+      <td>git:4299ba187+building2-low-setupseg226-238</td>
+      <td>1.5%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>1336/1316</td>
+      <td>48</td>
+      <td>0</td>
+      <td>10</td>
       <td></td>
     </tr>
     <tr id="perf-building3-high">
