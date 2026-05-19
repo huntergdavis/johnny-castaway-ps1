@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2561%` over
-target / `99.7477%` target speed; the raw signed optimization matrix is
-about `-0.4608%` / `100.4780%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2494%` over
+target / `99.7542%` target speed; the raw signed optimization matrix is
+about `-0.4675%` / `100.4845%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -35,9 +35,10 @@ and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
 the `217088` byte PS-EXE bucket while moving both tides to `1948/1945`,
 overrun `3`, blocking/refill `5`, and target speed `99.85%`.
 The accepted BUILDING2 low setup-segment promotions prime relative sectors
-`112..128` and `226..238` during setup without changing pack size/LBA,
-improving low to `1336/1316`, overrun `20`, blocking/read time `48`/`148`,
-reads `35`, refill `0`, and due `10`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
+`112..128` and `226..262` during setup without changing pack size/LBA, use a
+low-only `80 KiB` clean-strip cap, raise the low window slack to `5`, and add
+`{141,153}`, improving low to `1327/1318`, overrun `9`, blocking `47`,
+reads `27`, refill `0`, and due `9`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
 of the allocator-safe setup slices, holding `1347/1313` while cutting blocking
 to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up plus the gap-8 dirty-upload band merge retune at
 `2849/2816`, overrun `33`, blocking/read time `38`/`222`, and prefetch overrun
@@ -70,9 +71,9 @@ and `1473/1444`; the latest high setup/read-group stack cuts high blocking
 `76 -> 57` and loop reads `55 -> 44` without moving layout, while low keeps
 the `238..344` retained setup segment and the no-shift payload lane. BUILDING2 low now keeps the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes
-relative sectors `112..128` and `226..238` during setup, with the allocator-era
-matrix at `1336/1316`, overrun `20`, blocking/refill `48/0`,
-reads/read time `35/148`, and due `10`. BUILDING2 high currently measures
+relative sectors `112..128` and `226..262` during setup, with the allocator-era
+matrix at `1327/1318`, overrun `9`, blocking/refill `47/0`,
+reads `27`, and due `9`. BUILDING2 high currently measures
 `1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, and due misses
 `5`; the allocator-safe setup slices plus the `83..95`, guarded `271..287`,
 and `315..327` scheduler rows keep reads/read time at `45/199`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to

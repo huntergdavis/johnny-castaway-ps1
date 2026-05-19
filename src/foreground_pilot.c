@@ -213,7 +213,7 @@ enum {
 #define FG_BUILDING2_LOW_SETUP_SEGMENT_START (112UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_LOW_SETUP_SEGMENT_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_LOW_SETUP_SEGMENT2_START (226UL * FG_CD_SECTOR_SIZE)
-#define FG_BUILDING2_LOW_SETUP_SEGMENT2_BYTES (12UL * FG_CD_SECTOR_SIZE)
+#define FG_BUILDING2_LOW_SETUP_SEGMENT2_BYTES (36UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_START (264UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING4_HIGH_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_LOW_SETUP_SEGMENT_START (238UL * FG_CD_SECTOR_SIZE)
@@ -246,7 +246,7 @@ enum {
 /* MARY3 keeps prefetch under clean pressure; 8 VBlanks is the strict-safe
  * window-refill knee that avoids hidden refill debt on both tides. */
 #define FG_MARY3_WINDOW_MIN_SLACK_VBLANKS 8
-#define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 4
+#define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 5
 #define FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS 5
@@ -551,6 +551,7 @@ static const struct TFgPilotReadGroup kBuilding2HighReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
+    {141, 153, 0},
     {218, 229, 8},
     {238, 250, 0},
     {318, 330, 0},
@@ -2722,6 +2723,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         segmentBytes = FG_BUILDING2_LOW_SETUP_SEGMENT_BYTES;
         segment2Start = FG_BUILDING2_LOW_SETUP_SEGMENT2_START;
         segment2Bytes = FG_BUILDING2_LOW_SETUP_SEGMENT2_BYTES;
+        gFgCleanRectMaxBytes = 80UL * 1024UL;
         allocationBytes = segmentBytes + segment2Bytes;
         /* MEM_REGION_RATIONALE: targeted low-tide BUILDING2 cluster cache.
          * The setup-prime window covers the early pack; this pays the next

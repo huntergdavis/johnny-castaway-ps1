@@ -39,14 +39,15 @@ the `315..327` same-loop CD-pressure row, the BUILDING4 low gap-8
 dirty-upload band merge retune, the VISITOR3 low frame138 raw-gap
 promotion, the WALKSTUF1 low clean-rect/setup-edge promotion, and the
 WALKSTUF1 low `{91,107}` first-boundary read-group, the VISITOR3 high
-frame56/57 raw-gap plus tight-refill, and the BUILDING2 low `226..238` setup-segment
-promotion:
-`+0.2561%` public average over target / `99.7477%` public target speed across
+frame56/57 raw-gap plus tight-refill, the BUILDING2 low `226..238` setup-segment
+promotion, the VISITOR3 high tight56 retune, and the BUILDING2 low
+`226..262` + clean80 green promotion:
+`+0.2494%` public average over target / `99.7542%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4608%` / `100.4780%`. Since the compact full-matrix baseline was
+`-0.4675%` / `100.4845%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.14` public over-target points and added about `12.65` public
-target-speed points. Bands are now `119` green, `7` yellow, `0` orange, and
+removed about `17.15` public over-target points and added about `12.65` public
+target-speed points. Bands are now `120` green, `6` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
 stream windows, trims high-tide terminal reads before resident setup data, and
@@ -72,7 +73,7 @@ improving
 `76/229 -> 57/199`, prefetch overrun `15 -> 13`, loop reads `55 -> 44`, and
 due `15 -> 10`. The
 under-green canary refresh also stamps W1 high/low at `1475/1441` and
-`1473/1444`, B2 high/low at `1347/1313` and `1336/1316`, and B4 high/low at
+`1473/1444`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2849/2816`; BUILDING4 high is now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -581,8 +582,9 @@ under-green canary artifact:
 The canary keeps W1 high at `1475/1441`, overrun `34`, refill `13`, and due
 `10`, while improving blocking/read time `59/212 -> 57/199` and loop reads
 `46 -> 44`; W1 low, VISITOR3 high/low, BUILDING2 high/low, and BUILDING4 low
-stay exact-flat. The later VISITOR3 high tight56 cap moves the public rollup to
-`+0.2561%` over target / `99.7477%` target speed.
+stay exact-flat. The later VISITOR3 high tight56 cap and BUILDING2 low
+`226..262` + clean80 promotion move the public rollup to
+`+0.2494%` over target / `99.7542%` target speed.
 
 Prior WALKSTUF1 high setup-segment retarget: high keeps the `198..244`
 setup slice and extends the second retained slice to the allocator-safe
@@ -598,8 +600,9 @@ BUILDING2 high/low, and BUILDING4 low stay stable. After the later VISITOR3
 low frame138 raw-gap promotion, W1-low clean-rect/setup-edge promotion, and
 W1-low `{91,107}` first-boundary read group, VISITOR3 high frame56/57
 raw-gap plus tight-refill promotion, BUILDING2 low `226..238` setup-segment
-promotion, and the later VISITOR3 high tight56 cap, public rollup is `+0.2561%` over target / `99.7477%` target speed;
-raw signed is about `-0.4608%` / `100.4780%`, and bands stay `119` green, `7` yellow, `0` orange,
+promotion, the later VISITOR3 high tight56 cap, and the BUILDING2 low
+`226..262` + clean80 promotion, public rollup is `+0.2494%` over target / `99.7542%` target speed;
+raw signed is about `-0.4675%` / `100.4845%`, and bands are `120` green, `6` yellow, `0` orange,
 `0` red. The wider `286..346` edge regressed overrun to `35`, while the older
 `286..350` variant crossed the allocator clean-rect cliff; keep `286..344` as
 the current second-slice boundary.

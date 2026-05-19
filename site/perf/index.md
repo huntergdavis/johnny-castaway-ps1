@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">119 (94.4%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">7 (5.6%) ≥ 95%</span>
+  <span class="spd-key spd-green">120 (95.2%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">6 (4.8%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -132,8 +132,9 @@ groups, WALKSTUF1
 low now uses one retained `238..344` setup segment after low-only 48 KiB
 clean-rect chunking plus the `{91,107}` first-boundary read group, and WALKSTUF1 high now
 keeps `198..244`, extends its second retained slice to `286..344`, and adds `{149,165}`.
-BUILDING2 low now primes relative sectors `112..128` and `226..238` during
-setup, reducing active-loop overrun and removing hidden refill debt. BUILDING4 low now
+BUILDING2 low now primes relative sectors `112..128` and `226..262` during
+setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
+`{141,153}` read row, moving that row into green. BUILDING4 low now
 uses a gap-8 dirty-upload band merge retune to cut its active row to
 `2849/2816`.
 That is the new allocator baseline rather than a visual
@@ -149,7 +150,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
+Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 
 | Metric | Value |
 |---|---:|
@@ -161,10 +162,10 @@ Current battle-card rollup as of <time datetime="2026-05-18">2026-05-18</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2561%` exact, public-capped) |
-| Timing-bearing average target speed | `99.7%` (`99.7477%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-low `226..238` canary `2026-05-18T19:03:45`; VISITOR3-high tight56 canary `2026-05-18T21:37:23` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed W1-low row stamped `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`; refreshed VISITOR3-high row stamped `git:dfef577618+visitor3-high-tight56`; refreshed BUILDING2-low row stamped `git:4299ba187+building2-low-setupseg226-238`; other refreshed under-green rows stamped `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2494%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7542%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-low `226..262` clean80 canary `2026-05-19T00:37:46` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed BUILDING2-low green row and under-green canaries stamped `git:587221f3e8+building2-low-seg226-262-clean80-rg141`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -201,10 +202,11 @@ the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
 `203 -> 199`, and due `6 -> 5`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
-relative sectors `112..128` and `226..238` during setup. It improves the
-active loop `1339 -> 1336`, keeps target `1316`, cuts overrun `23 -> 20`,
-blocking `53 -> 48`, prefetch overrun `2 -> 0`, and due `11 -> 10`; setup
-cost rises to `283` VBlanks but stays outside the active loop.
+relative sectors `112..128` and `226..262` during setup, caps low clean strips
+at `80 KiB`, raises the low window slack to `5`, and adds `{141,153}`. It
+improves active loop/target `1336/1316 -> 1327/1318`, cuts overrun
+`20 -> 9`, blocking `48 -> 47`, reads `35 -> 27`, and due `10 -> 9`, moving
+the row into green while setup cost stays outside the active loop.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to `8` rows instead of splitting every clean gap.
@@ -505,8 +507,9 @@ read-group passes replace the tail row with `83..95` and add guarded
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
-sectors `112..128` and `226..238` during setup. It now measures `1336/1316`,
-overrun `20`, blocking/refill `48/0`, reads/read time `35/148`, and due `10`
+sectors `112..128` and `226..262` during setup with a low-only `80 KiB` clean
+strip cap, slack-5 window guard, and `{141,153}`. It now measures
+`1327/1318`, overrun `9`, blocking/refill `47/0`, reads `27`, and due `9`
 with fixed pack LBA/sectors.
 
 The durable numeric source is
@@ -542,8 +545,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed W1-low row uses `git:bd1d92b46+walkstuf1-low-rg91-107-post-clean48`;
-  the other refreshed under-green canary rows use `git:e50beb9d1+w1low-clean48-runtimecap-setup238-344`;
+  refreshed BUILDING2-low green row and under-green canaries use
+  `git:587221f3e8+building2-low-seg226-262-clean80-rg141`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -1180,8 +1183,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -1194,14 +1197,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
-      <td>1.5%</td>
-      <td class="spd-yellow">98.5%</td>
-      <td>1336/1316</td>
-      <td>48</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
+      <td>0.7%</td>
+      <td class="spd-green">99.3%</td>
+      <td>1327/1318</td>
+      <td>47</td>
       <td>0</td>
-      <td>10</td>
+      <td>9</td>
       <td></td>
     </tr>
     <tr id="perf-building3-high">
@@ -1250,8 +1253,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>1.2%</td>
       <td class="spd-yellow">98.8%</td>
       <td>2849/2816</td>
@@ -2412,8 +2415,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1075/1043</td>
@@ -2426,8 +2429,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1065/1039</td>
@@ -2552,8 +2555,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1475/1441</td>
@@ -2566,8 +2569,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-18T21:37:23</td>
-      <td>git:dfef577618+visitor3-high-tight56</td>
+      <td>2026-05-19T00:37:46</td>
+      <td>git:587221f3e8+building2-low-seg226-262-clean80-rg141</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1473/1444</td>

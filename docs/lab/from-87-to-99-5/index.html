@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2577,
+  "wordCount": 2584,
   "timeRequired": "PT10M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -142,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2494 words
+          ~10 min read · 2501 words
         </p>
 
       <hr class="rule" />
@@ -214,8 +214,8 @@ BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge and
 <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary promotions, plus the VISITOR3 high frame56/57
-raw-gap tight-refill promotion, plus the BUILDING2 low <code class="language-plaintext highlighter-rouge">226..238</code> setup segment, is
-<strong>+0.2561% over target / 99.7477% target speed</strong>, with roughly <strong>17.14
+raw-gap tight-refill promotion, plus the BUILDING2 low <code class="language-plaintext highlighter-rouge">226..262</code> + clean80 setup segment, is
+<strong>+0.2494% over target / 99.7542% target speed</strong>, with roughly <strong>17.15
 percentage points</strong> of over-target gap closed and about <strong>12.65 target-speed
 points</strong> added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -228,7 +228,7 @@ segment, cutting its yellow-row gap to <code class="language-plaintext highlight
 split tail residency with a single <code class="language-plaintext highlighter-rouge">238..344</code> setup segment and adds
 <code class="language-plaintext highlighter-rouge">{91,107}</code>, moving to <code class="language-plaintext highlighter-rouge">1473/1444</code>, and WALKSTUF1 high retargets its second retained slice to
 <code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code>, moving to <code class="language-plaintext highlighter-rouge">1475/1441</code> with lower blocking; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
-<code class="language-plaintext highlighter-rouge">226..238</code> during setup, moving to <code class="language-plaintext highlighter-rouge">1336/1316</code>; BUILDING2 high now measures <code class="language-plaintext highlighter-rouge">1347/1313</code>
+<code class="language-plaintext highlighter-rouge">226..262</code> during setup with clean80/slack5 shaping, moving to green at <code class="language-plaintext highlighter-rouge">1327/1318</code>; BUILDING2 high now measures <code class="language-plaintext highlighter-rouge">1347/1313</code>
 with blocking/read/due down to <code class="language-plaintext highlighter-rouge">39/45/5</code>; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune to reach <code class="language-plaintext highlighter-rouge">2849/2816</code>; and VISITOR3 low now
 moves frame <code class="language-plaintext highlighter-rouge">138</code> raw data into the retained <code class="language-plaintext highlighter-rouge">206..232</code> segment to reach
@@ -328,7 +328,7 @@ that loop actually looked like.</p>
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.
+<p>The current public-capped matrix mean is <code class="language-plaintext highlighter-rouge">99.8%</code> target speed.
 The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of the current mainline there are no red or orange rows left on the
@@ -341,7 +341,7 @@ The optimization plan at
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.7%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.8%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
