@@ -11,9 +11,14 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_EXPERIMENT_LOG = REPO_ROOT / "docs/ps1/performance-experiment-log.md"
+DEFAULT_SCENE_MATRIX = REPO_ROOT / "docs/ps1/performance-scene-matrix.csv"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -82,6 +87,71 @@ def candidate_rows(plan: dict[str, Any]) -> list[tuple[int, dict[str, Any]]]:
     )
 
 
+def load_known_scenes(path: Path = DEFAULT_SCENE_MATRIX) -> list[str]:
+    if not path.exists():
+        return [
+            "visitor3",
+            "building2",
+            "walkstuf1",
+            "building4",
+            "fishing3",
+            "fishing1",
+        ]
+    scenes: set[str] = set()
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            scene = row.get("scene_slug", "").strip()
+            if scene:
+                scenes.add(scene)
+    return sorted(scenes, key=len, reverse=True)
+
+
+def load_closed_ranges(path: Path | None) -> set[tuple[str, int, int]]:
+    if path is None or not path.exists():
+        return set()
+
+    known_scenes = load_known_scenes()
+    closed: set[tuple[str, int, int]] = set()
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.lower()
+        if (
+            "failed/no promotion" not in line
+            and "rejected" not in line
+            and "do not promote" not in line
+            and "close " not in line
+        ):
+            continue
+        for scene in known_scenes:
+            if not re.search(rf"(?<![a-z0-9]){re.escape(scene)}(?![a-z0-9])", line):
+                continue
+            for match in re.finditer(r"(\d+)\s*\.\.\s*(\d+)", line):
+                closed.add((scene, int(match.group(1)), int(match.group(2))))
+            for match in re.finditer(r"\{(\d+)\s*,\s*(\d+)", line):
+                closed.add((scene, int(match.group(1)), int(match.group(2))))
+    return closed
+
+
+def scene_from_label(label: str, known_scenes: list[str]) -> str:
+    for scene in known_scenes:
+        if label == scene or label.startswith(f"{scene}-"):
+            return scene
+    return label.rsplit("-", 1)[0]
+
+
+def is_closed_candidate(
+    scene: str,
+    item: dict[str, Any],
+    closed_ranges: set[tuple[str, int, int]],
+) -> bool:
+    start = item.get("start_sector")
+    end = item.get("end_sector")
+    return (
+        isinstance(start, int)
+        and isinstance(end, int)
+        and (scene, start, end) in closed_ranges
+    )
+
+
 def scene_base_row(case: dict[str, Any], threshold_pct: float) -> dict[str, str]:
     sections = case.get("sections", {})
     timing = sections.get("timing", {}) if isinstance(sections, dict) else {}
@@ -113,7 +183,12 @@ def scene_base_row(case: dict[str, Any], threshold_pct: float) -> dict[str, str]
     }
 
 
-def candidate_base_row(rank: int, size: int, item: dict[str, Any]) -> dict[str, str]:
+def candidate_base_row(
+    rank: int,
+    size: int,
+    item: dict[str, Any],
+    closed_by_log: bool,
+) -> dict[str, str]:
     first_entry = item.get("first_entry")
     last_entry = item.get("last_entry")
     return {
@@ -137,6 +212,12 @@ def candidate_base_row(rank: int, size: int, item: dict[str, Any]) -> dict[str, 
         "candidate_first_gap_s": fmt_float(item.get("min_prev_gap_s"), 4),
         "candidate_internal_gap": str(item.get("internal_gap_slack_class", "")),
         "candidate_fireable": str(item.get("append_start_fireable", "")),
+        "candidate_closed_by_log": "yes" if closed_by_log else "no",
+        "candidate_recommendation": (
+            "closed-by-experiment-log"
+            if closed_by_log
+            else str(item.get("scheduler_retry_class", "open"))
+        ),
     }
 
 
@@ -148,6 +229,12 @@ def main() -> int:
     parser.add_argument("--threshold-pct", type=float, default=99.0)
     parser.add_argument("--top", type=int, default=5, help="candidate rows per scene")
     parser.add_argument("--all", action="store_true", help="include rows at or above threshold")
+    parser.add_argument(
+        "--experiment-log",
+        type=Path,
+        default=DEFAULT_EXPERIMENT_LOG,
+        help="experiment log used to mark closed candidate ranges",
+    )
     args = parser.parse_args()
 
     summary = load_json(summary_path(args.summary))
@@ -189,9 +276,13 @@ def main() -> int:
         "candidate_first_gap_s",
         "candidate_internal_gap",
         "candidate_fireable",
+        "candidate_closed_by_log",
+        "candidate_recommendation",
     ]
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
     writer.writeheader()
+    known_scenes = load_known_scenes()
+    closed_ranges = load_closed_ranges(args.experiment_log)
 
     for case in cases:
         sections = case.get("sections", {})
@@ -201,16 +292,23 @@ def main() -> int:
             continue
 
         base = scene_base_row(case, args.threshold_pct)
+        scene = scene_from_label(base["label"], known_scenes)
         case_dir_value = case.get("case_dir")
         candidates: list[tuple[int, dict[str, Any]]] = []
         if isinstance(case_dir_value, str):
             candidates = candidate_rows(read_case_plan(Path(case_dir_value)))
+        if closed_ranges:
+            candidates = sorted(
+                candidates,
+                key=lambda pair: is_closed_candidate(scene, pair[1], closed_ranges),
+            )
         if not candidates:
             writer.writerow(base)
             continue
         for rank, (size, item) in enumerate(candidates[:max(1, args.top)], 1):
+            closed_by_log = is_closed_candidate(scene, item, closed_ranges)
             row = dict(base)
-            row.update(candidate_base_row(rank, size, item))
+            row.update(candidate_base_row(rank, size, item, closed_by_log))
             writer.writerow(row)
     return 0
 

@@ -2138,6 +2138,49 @@ host proof before any emulator time.
 | 57 | Cross-scene | Add a scratch arena reset probe at major scene teardown with foreground pointers poisoned in debug builds. | Long-run validation must prove no live foreground allocation crosses scenes. |
 | 58 | Cross-scene | Record per-read owner reason in perf logs: due path, staged prefetch, window append, setup segment, or generated owner. | New generated lanes must prove ownership changed before PS1 timing can promote. |
 
+Post-2026-05-19 direct-read closure batch:
+the refreshed read-candidate matrix is now fully closed (`0` standalone,
+`0` guarded, `0` scheduler-owned, `49` closed). VISITOR3-low static appends
+`239..263`, `256..268`, and `256..272` all produced the same phase-negative
+`+2` loop / `+1` blocking profile. WALKSTUF1-low static appends exhausted the
+mid, early, and late pockets: only `167..183` showed useful speed
+(`1470 -> 1468`, blocking `34 -> 32`), but it always raised hidden refill
+`6 -> 9`, even with min-slack guards and a `32 KiB` window. The next queue
+therefore must stop treating saved reads as promotable by itself.
+
+| # | Target | Idea | First gate |
+| --- | --- | --- | --- |
+| 59 | WALKSTUF1 low | Convert the `167..183` near-miss into generated read ownership with an explicit refill budget, not a raw append row. | Generated hit count must be nonzero; accept only if loop `<=1468`, blocking `<=32`, and refill `<=6`. |
+| 60 | WALKSTUF1 low | Add max-slack as well as min-slack for generated groups so the `167..183` read fires only in the narrow slot that gave visible wins. | Trace must show the accepted group skipping every refill-overrun slot from the failed raw runs. |
+| 61 | WALKSTUF1 low | Try a two-phase split for `167..183`: resident setup for the first touched frame, generated append for the second. | Setup increase must stay inside the current allocator headroom and active refill must not rise. |
+| 62 | WALKSTUF1 low | Build a pack-side boundary trim around frames `109..115` that preserves file size but removes the need for the `167..183` append. | Host proof must save at least one read boundary without moving accepted setup sectors `238..350`. |
+| 63 | WALKSTUF1 low | Add a generated "never append" blacklist for pockets proven phase-negative: `120..136`, `120..132`, `174..198`, `174..186`, `366..378`. | Candidate tooling should hide these from top recommendations unless pack layout changes. |
+| 64 | WALKSTUF1 low | Search for no-decode payload relocation into the already retained `238..350` setup segment, but only for frames after the accepted early ramp. | Reject any candidate that creates a backward seek or changes setup-prime coverage. |
+| 65 | WALKSTUF1 high | Reuse the W1-low generated-owner design for the high `352..376` and `84..108` pockets instead of adding more hot C read rows. | Must keep `foregroundPilotPlay` size and addresses within the hot-symbol drift budget. |
+| 66 | WALKSTUF1 high | Target the current `57` blocking VBlanks with selective prepared-before-window ownership, scene-local and generated. | First gate is W1-high only; reject if refill exceeds `13` or loop exceeds `1471`. |
+| 67 | WALKSTUF1 high | Pack-side no-decode trim around frame92's neighbors now that frame92 D4 is accepted. | Host proof must keep the D4 predicate table unchanged and save at least one sector boundary. |
+| 68 | VISITOR3 low | Replace static low append rows with generated per-frame deadlines that preserve accepted setup clusters `150..177`, `206..232`, and `281..305`. | Dry-run log must show fewer due reads without changing setup residency or adding hidden refill. |
+| 69 | VISITOR3 low | Build a custom row-reference codec using the paid `206..232` setup segment as a dictionary for frames `134..136`. | Pixel replay must be exact and command count must be below failed D4 variants. |
+| 70 | VISITOR3 low | Test a no-decode boundary trim immediately before sectors `248..272`, not another append over that pocket. | Host CD-head replay must predict fewer visible reads while retaining `prefetch_overrun_vb=0`. |
+| 71 | VISITOR3 high | Create a generated terminal-frame deadline sidecar for `133..139`; scalar high append rows are closed. | Require high blocking `<45`, refill `<=3`, and due `<=3` before canaries. |
+| 72 | VISITOR3 high | Move a terminal high payload into the existing paid setup family via micro-header savings rather than broad relocation. | Host proof must keep all current resident setup sectors and pack LBA fixed. |
+| 73 | VISITOR3 both | Add a motion/residual hybrid for terminal frames with static hull/background ownership masks. | Offline replay must validate cleanup/background ownership across high/low, night, and raft state. |
+| 74 | BUILDING2 high | Generate a scheduler sidecar for the accepted B2-high read groups so future changes do not grow the branch cascade. | Sidecar build must be exact-flat to current B2-high before adding any new groups. |
+| 75 | BUILDING2 high | Shift from read rows to upload/restore work: identify static building rows that can be precomposed or skipped. | First gate requires lower upload or restore bytes with loop/block/refill exact-flat. |
+| 76 | BUILDING2 high | Try no-decode row-span canonicalization on hot frames `85..100`, but forbid added draw pixels and broad same-value gap filling. | Host transform must reduce payload sectors and preserve draw pixel count. |
+| 77 | BUILDING2 high | Revisit frame-local compression only when it removes a whole read boundary without adding runtime D4/local-LZ decode. | Reject same-offset byte wins unless the CD-head model predicts a read drop. |
+| 78 | Cross-scene | Teach `performance-under-green-attribution.csv` to mark experiment-log-closed ranges and phase traps. | The CSV must stop presenting closed direct rows as the top under-green work queue. |
+| 79 | Cross-scene | Add candidate freshness metadata: root artifact commit, current source commit, and current pack hash. | Any stale-root row should be `refresh-required`, not `scheduler-owned`. |
+| 80 | Cross-scene | Add a generated-owner hit counter to `JCPERF2` separate from ordinary window hits. | A generated scheduler probe must fail if owner hits are zero. |
+| 81 | Cross-scene | Add a hard hot-symbol drift gate for promotion-style source probes. | Known exact-flat source rows should fail before canary if hot symbols shift without work savings. |
+| 82 | Cross-scene | Add an automatic "same failure signature" closer for dominated exact subsets once a superset and one subset fail identically. | The tool should explain the dominance relation in the experiment log before closing. |
+| 83 | Cross-scene | Generate a refill-debt report from failed runs that ranks candidates by useful loop gain minus hidden refill cost. | `167..183` should surface as a generated-ownership lead, not a scalar reject. |
+| 84 | Cross-scene | Add binary-sweep manifests for window/slack/code-threshold probes so both sides are tested and logged together. | Produces one closure row per family instead of repeated manual commits. |
+| 85 | Cross-scene | Add an allocator-headroom column to every generated sidecar idea. | Reject sidecars that cannot fit without reducing current CACHE/TRANSIENT safety margins. |
+| 86 | Cross-scene | Build a "no hot C" metadata path for per-scene read groups in pack tails. | First proof is exact-flat current W1-low and B2-high with metadata replacing existing C rows. |
+| 87 | Cross-scene | Add a visual/static ownership mask generator for precomposed upload rows. | Before timing, every row must prove pixel source: cleanup background, previous frame, or sprite payload. |
+| 88 | Cross-scene | Add a long-run allocator validation canary after any metadata sidecar or pack-format change. | Must preserve 0 BSODs and prove scene-boundary transient wipes do not discard live sidecar data. |
+
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
 then add the v182 high-tide frame `115` state-hull motion-copy payload, then
