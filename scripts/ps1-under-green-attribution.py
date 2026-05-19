@@ -128,7 +128,7 @@ def candidate_base_row(rank: int, size: int, item: dict[str, Any]) -> dict[str, 
         "candidate_score": str(item.get("visible_safety_score", "")),
         "candidate_risk": str(item.get("visible_risk_hint", "")),
         "candidate_cd_class": str(item.get("visible_cd_cost_class", "")),
-        "candidate_scheduler_class": str(item.get("scheduler_class", "")),
+        "candidate_scheduler_class": str(item.get("scheduler_retry_class", "")),
         "candidate_entries": (
             f"{first_entry}..{last_entry}"
             if first_entry is not None and last_entry is not None else ""
