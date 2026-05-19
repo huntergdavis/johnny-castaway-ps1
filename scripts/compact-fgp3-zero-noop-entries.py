@@ -69,7 +69,8 @@ def payload_has_no_visual_work(payload: bytes) -> bool:
     return cleanup_pixels == 0 and draw_pixels == 0
 
 
-def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> None:
+def convert(input_path: Path, output_path: Path, pad_to_input_size: bool,
+            copy_unparseable: bool) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
         raise SystemExit(f"pack too small: {input_path}")
@@ -118,6 +119,7 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
     new_entries: list[tuple[int, int, int, int, int, int, int, int]] = []
     cursor = data_offset
     zeroed: list[tuple[int, int, int]] = []
+    copied_unparseable: list[tuple[int, int, str]] = []
     old_payload_bytes = 0
 
     for index, entry in enumerate(old_entries):
@@ -132,6 +134,12 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         try:
             no_visual_work = payload_has_no_visual_work(payload)
         except ValueError as exc:
+            if copy_unparseable:
+                new_entries.append((source_frame, x, y, width, height, hold_vblanks, cursor, old_size))
+                payload_out += payload
+                cursor += old_size
+                copied_unparseable.append((index, source_frame, str(exc)))
+                continue
             raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
         if no_visual_work:
             new_entries.append((source_frame, x, y, 0, 0, hold_vblanks, 0, 0))
@@ -186,7 +194,7 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         f"{input_path} -> {output_path}: {len(data)} -> {len(out)} bytes, "
         f"active_payload {old_payload_bytes} -> {len(payload_out)}, "
         f"zeroed_entries={len(zeroed)}, zeroed_bytes={sum(size for _index, _source, size in zeroed)}, "
-        f"zeroed_sources={zeroed_sources}"
+        f"zeroed_sources={zeroed_sources}, copied_unparseable={len(copied_unparseable)}"
     )
 
 
@@ -198,6 +206,11 @@ def main() -> None:
     parser.add_argument("output_fgp3", type=Path, nargs="?")
     parser.add_argument("--in-place", action="store_true")
     parser.add_argument("--pad-to-input-size", action="store_true")
+    parser.add_argument(
+        "--copy-unparseable",
+        action="store_true",
+        help="copy payloads that do not match the compact-row parser instead of aborting",
+    )
     args = parser.parse_args()
 
     if args.in_place == bool(args.output_fgp3):
@@ -208,14 +221,16 @@ def main() -> None:
         ) as tmp:
             temp_path = Path(tmp.name)
         try:
-            convert(args.input_fgp3, temp_path, args.pad_to_input_size)
+            convert(args.input_fgp3, temp_path, args.pad_to_input_size,
+                    args.copy_unparseable)
             shutil.move(temp_path, args.input_fgp3)
         finally:
             if temp_path.exists():
                 temp_path.unlink()
     else:
         assert args.output_fgp3 is not None
-        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size)
+        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size,
+                args.copy_unparseable)
 
 
 if __name__ == "__main__":
