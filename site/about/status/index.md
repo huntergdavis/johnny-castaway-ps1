@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2431%` over
-target / `99.7603%` target speed; the raw signed optimization matrix is
-about `-0.4738%` / `100.4906%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2425%` over
+target / `99.7608%` target speed; the raw signed optimization matrix is
+about `-0.4744%` / `100.4911%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -52,8 +52,8 @@ encoding frame `92` as previous-frame D4; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge. It now measures
-`1470/1445`, blocking/refill/due `35/7/4`, with loop reads/read time at
-`31/163`. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
+`1470/1446`, blocking/refill/due `34/6/4`, with loop reads/read time at
+`30/159`. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a `68 KiB` window with terminal overread trimming, setup segment2
@@ -70,10 +70,10 @@ failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 `36/32 -> 34/30`, and moving that row into green. VISITOR5 high/low both remain green on the matching `30..46`
 retained-read shape. WALKSTUF1 high/low now measure `1471/1440`
-and `1470/1445`; the latest high frame92 D4 stack cuts high overrun
+and `1470/1446`; the latest high frame92 D4 stack cuts high overrun
 `34 -> 31` without moving layout, while low keeps the `238..344` retained
 setup segment, the split `344..350` setup edge, the no-shift payload lane, and
-the frame132 payload trim. BUILDING2 low now keeps the accepted
+the frame132 payload trim plus `{378..390}` read group. BUILDING2 low now keeps the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes
 relative sectors `112..128` and `226..262` during setup, with the allocator-era
 matrix at `1327/1318`, overrun `9`, blocking/refill `47/0`,

@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2625,
+  "wordCount": 2636,
   "timeRequired": "PT10M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -142,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2542 words
+          ~10 min read · 2553 words
         </p>
 
       <hr class="rule" />
@@ -213,11 +213,12 @@ public-capped average after the memory-region allocator refresh, the latest
 BUILDING2 guarded read-group pressure promotions, the BUILDING4 low
 gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge,
-<code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary, and split <code class="language-plaintext highlighter-rouge">344..350</code> setup-edge promotions, plus the VISITOR3 high frame56/57
+<code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary, split <code class="language-plaintext highlighter-rouge">344..350</code> setup-edge, frame132 payload-trim,
+and <code class="language-plaintext highlighter-rouge">{378..390}</code> read-group promotions, plus the VISITOR3 high frame56/57
 raw-gap tight-refill and high-only clean64 promotions, plus the BUILDING2 low
 <code class="language-plaintext highlighter-rouge">226..262</code> + clean80 setup segment, plus the BUILDING4 low <code class="language-plaintext highlighter-rouge">24 KiB</code>
 stream-window green promotion, is
-<strong>+0.2431% over target / 99.7603% target speed</strong>, with roughly <strong>17.22
+<strong>+0.2425% over target / 99.7608% target speed</strong>, with roughly <strong>17.22
 percentage points</strong> of over-target gap closed and about <strong>12.72 target-speed
 points</strong> added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
@@ -229,7 +230,7 @@ with <code class="language-plaintext highlighter-rouge">83..95</code> and adding
 segment, cutting its yellow-row gap to <code class="language-plaintext highlighter-rouge">1074/1039</code>; WALKSTUF1 low now replaces
 split tail residency with a CACHE <code class="language-plaintext highlighter-rouge">238..344</code> setup segment, adds <code class="language-plaintext highlighter-rouge">{91,107}</code>,
 and pays a separate TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> edge, then trims frame132 to move to
-<code class="language-plaintext highlighter-rouge">1470/1445</code>; WALKSTUF1 high retargets its second retained slice to
+<code class="language-plaintext highlighter-rouge">1470/1445</code> and adds <code class="language-plaintext highlighter-rouge">{378..390}</code> to move to <code class="language-plaintext highlighter-rouge">1470/1446</code>; WALKSTUF1 high retargets its second retained slice to
 <code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code> and frame92 D4, moving to <code class="language-plaintext highlighter-rouge">1471/1440</code> with lower overrun; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
 <code class="language-plaintext highlighter-rouge">226..262</code> during setup with clean80/slack5 shaping, moving to green at <code class="language-plaintext highlighter-rouge">1327/1318</code>; BUILDING2 high now measures <code class="language-plaintext highlighter-rouge">1347/1313</code>
 with blocking/read/due down to <code class="language-plaintext highlighter-rouge">39/45/5</code>; BUILDING4 low now uses the gap-8
