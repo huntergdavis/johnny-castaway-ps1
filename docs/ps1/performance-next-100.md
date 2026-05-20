@@ -325,7 +325,7 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms, and the `walkstuf1` slack-5 early-prepare owner is exact-flat with hot-code growth.
 12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
-14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding is closed after the entry60 follow-up.
+14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding, entry60 recovery rows, and broad low-tide no-direct-stage ownership are closed.
 15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{160..176}` plus entry60/guard is closed.
 16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}` proves simple static recovery rows are not enough.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
@@ -431,6 +431,14 @@ shifting downstream hot symbols. Artifact:
 Keep the accepted slack-4 prepare point; W1 needs per-cluster deadline/refill
 metadata or pack/render data-shape work, not the same visual prepare one held
 VBlank earlier.
+Latest rejected W1-low no-direct-stage retest: disabling the small-payload
+direct-stage shortcut for low-tide `walkstuf1` on the current payload baseline
+again improved due ownership (`due 4 -> 2`) but regressed target/refill:
+`1809/1470/1446 -> 1811/1472/1444`, overrun `24 -> 28`, hidden refill
+`5 -> 14`, and loop reads `24 -> 25`. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-low-no-direct-stage-current/20260520-114656-1322913/summary.json`.
+Keep direct-stage enabled until a generated owner can make this decision per
+frame with an explicit refill budget.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
