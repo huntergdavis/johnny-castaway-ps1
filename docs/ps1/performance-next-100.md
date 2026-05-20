@@ -226,6 +226,19 @@ all scheduler counters matched baseline while `foregroundPilotPlay` grew by
 Close this local priority inversion for V3 high; the remaining early
 `40..64` family still needs generated append/deadline ownership or pack/render
 data-shape work, not another prepare-first branch.
+Latest rejected BUILDING2 high stream-window-size swing: high-tide-only
+`24 KiB`, `20 KiB`, and `12 KiB` windows were tested while retaining accepted
+B2 read groups. The larger windows reduced active reads but regressed cadence
+badly (`24 KiB` to `1631/1357/1312`, blocking/refill `55/28`; `20 KiB` to
+`1637/1363/1311`, blocking/refill `66/26`). The smaller `12 KiB` shape improved
+hidden refill `16 -> 13` but still regressed loop/blocking to
+`1628/1355/1311`, blocking `52`, reads `57`, due `10`. Artifacts:
+`scratch/ps1-perf-iterate/building2-high-window24-current/20260520-021817-2290475/summary.json`,
+`scratch/ps1-perf-iterate/building2-high-window20-current/20260520-022006-2301046/summary.json`,
+and `scratch/ps1-perf-iterate/building2-high-window12-current/20260520-022150-2310843/summary.json`.
+Close scalar B2-high stream-window-size retuning; future B2-high work needs
+generated deadline/refill-budget ownership, upload/restore reduction, or
+no-decode relocation with harmless eviction.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
