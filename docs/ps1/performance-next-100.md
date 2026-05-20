@@ -181,6 +181,11 @@ stage1-only behavior (`loop_reads 4 -> 114`, blocking `45 -> 315`). Keep V3
 high on the accepted stream-window plus retained-segment shape. Reopen the
 `103..127` active window only after reducing clean-rect/CACHE pressure or with
 generated deadline ownership that does not sacrifice the stream window.
+The follow-up V3-high clean-rect chunk sweep closes pure split-size retuning:
+`96 KiB` and `80 KiB` regressed target/blocking, while `56 KiB` was exact-flat
+with no material work-volume win. The accepted `64 KiB` cap remains the
+baseline until clean area/bytes can be reduced rather than just split
+differently.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
