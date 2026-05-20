@@ -186,6 +186,11 @@ The follow-up V3-high clean-rect chunk sweep closes pure split-size retuning:
 with no material work-volume win. The accepted `64 KiB` cap remains the
 baseline until clean area/bytes can be reduced rather than just split
 differently.
+The V3-high setup-prime window lane is also closed. `128 KiB` and `96 KiB`
+reopened the CACHE/clean-rect allocator cliff, while `80 KiB` and the pure
+no-extra-memory `68 KiB` form both completed but moved active CD phase
+backward. Do not re-enable clean-relief setup priming unless it is paired with
+real clean-area byte reduction or generated deadline ownership.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
