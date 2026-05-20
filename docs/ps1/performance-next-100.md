@@ -999,7 +999,10 @@ valid `JCPERF2` gate. These are now logged under
 retry with `4`, `8`, and `16` pixel alignments plus a transfer-alignment safety
 gate also failed before `JCPERF2`; the best variant reached BUILDING2 frame
 `132/334`, still emitted transfer-rounding warnings, and grew the PS-EXE bucket
-`233472 -> 235520`. Close hand-coded B2-high runtime ownership and
+`233472 -> 235520`. A refreshed medium-gap `{249,257}` grouped append then
+regressed `1347/1313 -> 1349/1313`, blocking `39 -> 40`, with `group_hits=0`;
+the one-read movement was phase drift, not a controlled append win. Close
+hand-coded B2-high runtime ownership, local read-table additions, and
 hot-renderer scratch-copy upload staging; reopen through generated metadata or
 pack-emitted/precomposed data only.
 
