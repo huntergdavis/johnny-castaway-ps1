@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-19:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{404..416}` CD-work canary `2026-05-20T00:42:46` |
-| Stats version | mixed; newest targeted under-green row is stamped `w1high-rg404-416`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high setup-alias five-yellow canary `2026-05-20T03:47:12` |
+| Stats version | mixed; newest targeted under-green row is stamped `b2high-alias141-142`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,19 +94,19 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted BUILDING2 high work-volume note: entries `92`, `94`, and `95`
-are trimmed in place with preserved offsets and the same `1303332` byte pack
-footprint. Transform summary:
-`scratch/building2-high-entries92-94-95-trim-refresh/summary.json`; focused
+Latest promoted BUILDING2 high work-volume note: entries `141` and `142` now
+alias setup-resident duplicate payloads for entries `116` and `118`, keeping the
+same `1303332` byte pack footprint. Transform summary:
+`scratch/building2-high-setup-alias141-142-current/summary.json`; focused
 proof:
-`scratch/ps1-perf-iterate/building2-high-entries92-94-95-trim-refresh/20260519-231722-1273404/summary.json`;
+`scratch/ps1-perf-iterate/building2-high-setup-alias141-142-current/20260520-034134-2761004/summary.json`;
 five-yellow no-regression canary:
-`scratch/ps1-perf-iterate/building2-high-entries92-94-95-trim-refresh-canary/20260519-231905-1283101/summary.json`.
-The entries shrink `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827`
-bytes, reducing active payload `669408 -> 663590` while B2 high stays exact-flat
-at `1621/1347/1313`, overrun `34`, blocking/refill `39/16`,
-reads/read time `45/199`, and due `5`. VISITOR3 high/low and WALKSTUF1
-high/low stayed flat in the same canary.
+`scratch/ps1-perf-iterate/building2-high-setup-alias141-142-canary/20260520-034712-2793517/summary.json`.
+B2 high stays exact-flat at `1621/1347/1313`, overrun `34`,
+blocking/refill `39/16`, reads/read time `43/197`, and due `5`, while uncovered
+active entries/payload drop `286/519400 -> 284/518994`. VISITOR3 high/low and
+WALKSTUF1 high/low stayed flat in the same canary. The prior same-speed trim of
+entries `92`, `94`, and `95` reduced active payload `669408 -> 663590`.
 
 Latest promoted VISITOR3 high clean-relief window note: the high-tide relief
 stream window widens from `68 KiB` to `80 KiB` while keeping the accepted

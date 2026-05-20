@@ -23,9 +23,9 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2425%` over target /
-`99.7608%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4744%` / `100.4911%`; bands are `121`
+loading, and the current battle card is `+0.2387%` over target /
+`99.7644%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4782%` / `100.4948%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
 include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -48,8 +48,9 @@ and target speed `98.56% -> 99.85%`.
 The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 `286..344` resident, carries the `{149,165}` read group, and encodes frame
 `92` as previous-frame D4, then layers the frame56/source67 trim, `{178,194}`,
-and `{423,439}`. It measures `1471/1440` at `97.893%` target speed, overrun
-`31`, blocking/refill `56/13`, loop reads/read time `42/205`, and due `10`,
+`{423,439}`, and `{404,416}`. It measures `1471/1440` at `97.893%` target
+speed, overrun `31`, blocking/refill `56/13`, loop reads/read time `41/200`,
+and due `10`,
 with pack LBA/sectors and the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
@@ -60,24 +61,17 @@ pack, adds `{378..390}`, then retargets setup to `244..350` plus split
 `179..185` with `{113..129}` and adds `{355..371}` as same-speed read-work.
 Low now measures `1470/1446` at `98.367%` target speed with overrun `24`,
 blocking/refill `33/5`, loop reads/read time `24/147`, and due `4`, while
-active payload is `788773` without changing pack size or sectors.
+active payload is `782698` without changing pack size or sectors.
 
-The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
-`226..242`, and `249..257` with the grouped-read window capacity raised to 24
-sectors. The v441 pass improves the current high row from scene `1603` to
-`1602`, active loop `1352/1311 -> 1351/1311`, overrun `41 -> 40`, blocking
-`55 -> 54`, hidden refill `19 -> 18`, loop reads `61 -> 58`, and loop-read time
-`262 -> 257`; due misses stay `7`, pack LBA stays fixed, and BUILDING2 low,
-WALKSTUF1 high/low, and VISITOR3 low canaries stay flat. The v664 follow-up
-clips late offscreen draw spans for frames `168..177`, v698 extends the safe
-same-speed subset to frames `94..104`, v700/v701/v702/v703 add boundary frames
-`92`, `91`, `90`, and `89`, and v877/v879/v880/v887/v888/v889/v890/v891/v892/v896/v914/v926
-trim entries `172`, `171`, `96`, `170`, `97`, `98`, `174`, `99`, `168`, `169`,
-`173`, and `100` in place with preserved offsets. All stay exact-flat at
-`1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
-and due `7`, while dropping runtime frame rows/spans/pixels from
-`18144/110717/468636 -> 18030/105645/446246` and active payload
-`674798 -> 669408`.
+The latest BUILDING2 high allocator-era baseline keeps retained groups
+`60..72`, `206..230`, `226..242`, `83..95`, guarded `271..287`, `315..327`,
+and `{185..197}`. It measures `1621/1347/1313` at `97.476%` target speed,
+overrun `34`, blocking/refill `39/16`, loop reads/read time `43/197`, and due
+`5`, with pack LBA/sectors and the `233472` byte PS-EXE bucket fixed. The
+current work-volume layer trims entries `92`, `94`, and `95` in place, then
+aliases duplicate entries `141` and `142` to setup-resident payloads for entries
+`116` and `118`; the five-yellow canary stays exact-flat while uncovered active
+ownership drops `286/519400 -> 284/518994`.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row, v660 offscreen low-tide draw-span clip, and dead draw-tail payload trim,

@@ -52,7 +52,8 @@ setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
 80 KiB clean-relief stream-window promotion, and finally the same-speed
 BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work,
-followed by the WALKSTUF1 low entry65 and entry39 payload-only trims:
+followed by the WALKSTUF1 low entry65 and entry39 payload-only trims, then the
+B2-high setup-resident duplicate alias for entries `141` and `142`:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
@@ -122,6 +123,13 @@ the same five-yellow canary stays exact-flat, while active low-pack payload
 drops again `785809 -> 782698` (`3111` more bytes). This reopens and supersedes
 the older v878 entry39 rejection because the current setup/read baseline has a
 different active-read shape.
+The latest B2-high setup-resident duplicate alias points entries `141` and `142`
+at already-retained duplicate payloads for entries `116` and `118`. The
+five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
+blocking/refill `39/16`, reads/due `43/5`, fixed pack LBA, and the same
+`233472` byte PS-EXE bucket, while uncovered active ownership drops
+`286/519400 -> 284/518994`. This is banked as same-speed payload ownership, not
+a VBlank speed win.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
@@ -133,8 +141,10 @@ same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
 `16`, while blocking drops `41 -> 39`, loop reads `47 -> 45`, read time
 `203 -> 199`, and due `6 -> 5`. The later `{185..197}` row keeps loop speed,
 blocking, refill, and due exact-flat while reducing loop reads/read time again
-`45/199 -> 43/197`; `{287..311}` was exact-flat with no key win, and
-`{249..261}` regressed blocking and loop reads. The newest gap-8 upload retune improves
+`45/199 -> 43/197`; the entries `141/142` setup duplicate alias keeps timing
+flat while reducing active uncovered owners/payload `286/519400 -> 284/518994`.
+`{287..311}` was exact-flat with no key win, and `{249..261}` regressed
+blocking and loop reads. The newest gap-8 upload retune improves
 BUILDING4 low `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
 blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`; gap `11`
 was rejected as a one-VBlank regression against gap `8`.
@@ -191,8 +201,8 @@ and due `6 -> 5`.
 Current allocator-era big-swing queue after closing the W1-low static table
 lane, banking the W1-high frame56/`{178..194}`, `{423..439}`, and `{404..416}` CD-pressure
 rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
-B2-high `{185..197}` CD-pressure row plus the W1-low entry65/entry39
-payload-only trims:
+B2-high `{185..197}` CD-pressure row, the B2-high entries `141/142` setup alias,
+and the W1-low entry65/entry39 payload-only trims:
 
 1. Generate BUILDING2-high append-start/deadline ownership for the `249..261`, `287..311`, and hot `122..146` families rather than another static table row; raw `{249..261}` regressed and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, and the entries `90..95` setup-swap are closed.
