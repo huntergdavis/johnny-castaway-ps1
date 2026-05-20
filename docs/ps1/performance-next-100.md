@@ -124,8 +124,12 @@ and loop reads/read time `30/159 -> 26/150`. The follow-up raw/min-slack
 regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
 read-candidate matrix now has no standalone or scheduler/guarded direct rows.
 The follow-up direct-stage owner lane also closed `129..153`, `160..176`, and
-`355..379`: only smaller scheduler-owned W1-low ranges such as `153..177`,
-`355..371`, `153..169`, `142..154`, `136..148`, and `360..372` remain.
+`355..379`. The follow-up `153..177` retained-group probe is also closed:
+raw and slack8 improved loop/blocking but regressed hidden refill and target,
+while slack32 was exact-flat/inert. Only smaller scheduler-owned W1-low ranges
+such as `355..371`, `153..169`, `142..154`, `136..148`, and `360..372`
+remain, and they should be treated as generated-ownership/data-shape leads,
+not direct table rows.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
@@ -2178,7 +2182,7 @@ therefore must stop treating saved reads as promotable by itself.
 | 60 | WALKSTUF1 low | Closed by `walkstuf1-low-rg167-183-maxslack-current`: bounded max-slack gates `4`, `8`, `12`, `16`, and `32` were exact-flat, while the ungated control reproduced the visible win and the hidden refill debt. | Do not retry scalar min/max slack around this grouped append. Future `167..183` work needs explicit refill-budget ownership or a pack/data-shape change. |
 | 61 | WALKSTUF1 low | Try a two-phase split for `167..183`: resident setup for the first touched frame, generated append for the second. | Setup increase must stay inside the current allocator headroom and active refill must not rise. |
 | 62 | WALKSTUF1 low | Build a pack-side boundary trim around frames `109..115` that preserves file size but removes the need for the `167..183` append. | Host proof must save at least one read boundary without moving accepted setup sectors `238..350`. |
-| 63 | WALKSTUF1 low | Add a generated "never append" blacklist for pockets proven phase-negative: `120..136`, `120..132`, `174..198`, `174..186`, `366..378`. | Candidate tooling should hide these from top recommendations unless pack layout changes. |
+| 63 | WALKSTUF1 low | Add a generated "never append" blacklist for pockets proven phase-negative: `120..136`, `120..132`, `153..177`, `160..176`, `174..198`, `174..186`, `366..378`. | Candidate tooling should hide these from top recommendations unless pack layout changes. |
 | 64 | WALKSTUF1 low | Search for no-decode payload relocation into the already retained `238..350` setup segment, but only for frames after the accepted early ramp. | Reject any candidate that creates a backward seek or changes setup-prime coverage. |
 | 65 | WALKSTUF1 high | Reuse the W1-low generated-owner design for the high `352..376` and `84..108` pockets instead of adding more hot C read rows. | Must keep `foregroundPilotPlay` size and addresses within the hot-symbol drift budget. |
 | 66 | WALKSTUF1 high | Target the current `57` blocking VBlanks with selective prepared-before-window ownership, scene-local and generated. | First gate is W1-high only; reject if refill exceeds `13` or loop exceeds `1471`. |
