@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/building2-high-setup-alias141-142-canary/20260520-034712-2793517`
+- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-low-trim-entry55-canary/20260520-043841-3084073`
 - Candidate rows: `52`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -16,7 +16,7 @@ Recent hand-authored table probes proved that nominal read-count wins can
 still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 `unsafe` rows as scheduler-owned retries, not standalone table changes.
 
-## Top 52 Candidates
+## Top 40 Candidates
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|
@@ -41,7 +41,7 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 19 | `walkstuf1` | `high` | 1471/1440 | 56 | `92..108` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 20 | `walkstuf1` | `high` | 1471/1440 | 56 | `352..368` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 21 | `walkstuf1` | `high` | 1471/1440 | 56 | `357..369` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 22 | `walkstuf1` | `high` | 1471/1440 | 56 | `84..100` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 22 | `walkstuf1` | `high` | 1471/1440 | 56 | `345..361` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 23 | `walkstuf1` | `high` | 1471/1440 | 56 | `268..280` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
 | 24 | `walkstuf1` | `high` | 1471/1440 | 56 | `74..86` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 25 | `visitor3` | `low` | 1065/1039 | 75 | `248..272` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
@@ -60,18 +60,6 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 38 | `visitor3` | `high` | 1071/1045 | 35 | `40..56` (16s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 39 | `visitor3` | `high` | 1071/1045 | 35 | `40..64` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 40 | `visitor3` | `high` | 1071/1045 | 35 | `40..46` (6s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 41 | `visitor3` | `high` | 1071/1045 | 35 | `42..48` (6s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 42 | `visitor3` | `high` | 1071/1045 | 35 | `44..50` (6s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 43 | `walkstuf1` | `low` | 1470/1446 | 33 | `129..153` (24s) | 3 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 44 | `walkstuf1` | `low` | 1470/1446 | 33 | `136..160` (24s) | 3 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 45 | `walkstuf1` | `low` | 1470/1446 | 33 | `153..177` (24s) | 2 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 46 | `walkstuf1` | `low` | 1470/1446 | 33 | `147..171` (24s) | 2 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 47 | `walkstuf1` | `low` | 1470/1446 | 33 | `160..176` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 48 | `walkstuf1` | `low` | 1470/1446 | 33 | `129..145` (16s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 49 | `walkstuf1` | `low` | 1470/1446 | 33 | `153..169` (16s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 50 | `walkstuf1` | `low` | 1470/1446 | 33 | `142..154` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 51 | `walkstuf1` | `low` | 1470/1446 | 33 | `136..148` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 52 | `walkstuf1` | `low` | 1470/1446 | 33 | `147..163` (16s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
 
 ## CSV
 

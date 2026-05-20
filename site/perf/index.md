@@ -168,8 +168,8 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{404..416}` CD-work canary `2026-05-20T00:42:46` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-rg404-416`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low entry55 payload canary `2026-05-20T04:38:41` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry55`; refreshed W1-high row uses `w1high-rg404-416`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -214,7 +214,8 @@ the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
 `203 -> 199`, and due `6 -> 5`. The newest same-speed payload trim cuts
 entries `92`, `94`, and `95` from `8834 -> 6370`, `8873 -> 6939`, and
 `10247 -> 8827` bytes, reducing active payload `669408 -> 663590` with the
-five-yellow canary exact-flat.
+five-yellow canary exact-flat. The follow-up `{185..197}` row keeps timing
+flat while reducing loop reads/read time again `45/199 -> 43/197`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -247,9 +248,11 @@ overrun `24`, blocking/refill `33/5`, due `4`, and loop reads/read time
 `26/150 -> 24/147`. The prior frame132 payload trim moved
 `1473/1447 -> 1470/1445`; the `{378..390}` speed row moved
 `1470/1445 -> 1470/1446`, overrun `25 -> 24`, blocking/refill
-`35/7 -> 34/6`, and reads/read time `31/163 -> 30/159`. The broader
-retargeted non-preserve trim was rejected because hidden refill regressed
-`7 -> 10`.
+`35/7 -> 34/6`, and reads/read time `31/163 -> 30/159`. The current
+entry65, entry39, and entry55 preserve-offset payload trims keep the five-yellow
+canary exact-flat while reducing active low-pack payload
+`788773 -> 777984`. The broader retargeted non-preserve trim was rejected
+because hidden refill regressed `7 -> 10`.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
 bands across clean gaps up to `8` rows instead of splitting every clean gap.
@@ -562,7 +565,7 @@ read-group passes replace the tail row with `83..95` and add guarded
 `271..287` plus `315..327`, then the entries `92`/`94`/`95` payload trim
 reduces active payload `669408 -> 663590`. The current B2-high row is
 `1347/1313`, overrun
-`34`, blocking `39`, refill overrun `16`, reads/read time `45/199`, and due `5`, while still avoiding
+`34`, blocking `39`, refill overrun `16`, reads/read time `43/197`, and due `5`, while still avoiding
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
@@ -606,7 +609,7 @@ and this page.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed VISITOR3-high clean-relief window row uses
   `v3high-window80-tight56`;
-  WALKSTUF1 low uses `git:3579a628+w1low-rg355-371`;
+  WALKSTUF1 low uses `w1low-trim-entry55`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -2629,8 +2632,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-19T19:47:09</td>
-      <td>git:3579a628+w1low-rg355-371</td>
+      <td>2026-05-20T04:38:41</td>
+      <td>w1low-trim-entry55</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

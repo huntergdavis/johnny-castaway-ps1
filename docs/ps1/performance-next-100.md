@@ -52,7 +52,7 @@ setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
 80 KiB clean-relief stream-window promotion, and finally the same-speed
 BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work,
-followed by the WALKSTUF1 low entry65 and entry39 payload-only trims, then the
+followed by the WALKSTUF1 low entry65, entry39, and entry55 payload-only trims, then the
 B2-high setup-resident duplicate alias for entries `141` and `142`:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
@@ -123,6 +123,11 @@ the same five-yellow canary stays exact-flat, while active low-pack payload
 drops again `785809 -> 782698` (`3111` more bytes). This reopens and supersedes
 the older v878 entry39 rejection because the current setup/read baseline has a
 different active-read shape.
+The current W1-low entry55/source frame65 preserve-offset trim continues the
+same lane: W1-low stays exact-flat at `1809/1470/1446`, overrun `24`,
+blocking/refill `33/5`, reads/due `24/4`, and pack LBA/PS-EXE bucket stay
+fixed, while active low-pack payload drops `782698 -> 777984` (`4714` more
+bytes).
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -194,11 +199,11 @@ speed while improving scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`,
 and loop reads/read time `30/159 -> 26/150`. The newest `{355..371}`
 retained-group promotion is a same-speed work-volume win: W1-low remains
 `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, and due `4`, while
-loop reads/read time drop `26/150 -> 24/147`. The later entry65/source frame96
-and entry39/source frame49 preserve-offset trims keep every speed-bearing metric
-exact-flat while reducing active payload another `6075` bytes to `782698`, so
-they are banked as payload work only and do not change the public rollup or
-speed totals. The follow-up raw/min-slack
+loop reads/read time drop `26/150 -> 24/147`. The later entry65/source frame96,
+entry39/source frame49, and entry55/source frame65 preserve-offset trims keep
+every speed-bearing metric exact-flat while reducing active payload another
+`10789` bytes to `777984`, so they are banked as payload work only and do not
+change the public rollup or speed totals. The follow-up raw/min-slack
 `160..176` owner probe is closed: raw and slack8 moved loop/blocking but
 regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
 read-candidate matrix now has no standalone or scheduler/guarded direct rows.
@@ -2362,8 +2367,8 @@ Post-v373 candidate deck after scalar read-table exhaustion:
 | 28 | Validation | Generate "next best non-scalar lane" recommendations after three same-family misses. | Keeps the headless optimizer from repeatedly trying inert table variants. |
 
 Post-v570 generated/data-shape queue after scalar read-table exhaustion:
-the refreshed read-candidate matrix now has `0` standalone, `0` guarded, `4`
-scheduler-owned-only rows, and `48` closed exact ranges. The remaining under-99
+the refreshed read-candidate matrix now has `0` standalone, `0` guarded, `0`
+scheduler-owned-only rows, and `52` closed exact ranges. The remaining under-99
 scenes are close enough that the next wins should come from generated
 ownership, pack-side byte shape, and code-neutral scene-specific compression
 rather than more hand-coded retained-read tables.
@@ -2453,7 +2458,7 @@ host proof before any emulator time.
 
 Post-2026-05-19 direct-read closure batch:
 the refreshed read-candidate matrix has `0` standalone rows, `0`
-scheduler-or-guarded rows, `4` scheduler-owned-only rows, and `48` closed
+scheduler-or-guarded rows, `0` scheduler-owned-only rows, and `52` closed
 exact ranges after promoting W1-high `{423..439}` and `{404..416}` as same-speed CD work.
 VISITOR3-low static appends `239..263`, `256..268`, and `256..272` all
 produced the same phase-negative `+2` loop / `+1` blocking profile.
