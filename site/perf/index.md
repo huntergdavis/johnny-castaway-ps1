@@ -130,7 +130,7 @@ clean slices at `64 KiB`, and the newest clean-relief window retune widens
 high from `68 KiB` to `80 KiB` to move the row to `1071/1045`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
-groups, WALKSTUF1
+groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
 low now uses one retained `238..344` setup segment plus a split TRANSIENT
 `344..350` setup edge after low-only 48 KiB clean-rect chunking and the
 `{91,107}` first-boundary read group, and WALKSTUF1 high now
@@ -169,7 +169,7 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
 | Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; V3-high 80 KiB window focused gate `2026-05-19T22:34:00` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-frame56-rg178-194`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high payload row uses `b2high-entries92-94-95-trim`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-frame56-rg178-194`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -211,7 +211,10 @@ The visible-speed row improves active loop `1351 -> 1347`, overrun
 `38 -> 34`, blocking `50 -> 41`, read time `207 -> 203`, and due `7 -> 6`;
 the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
 `16` flat while reducing blocking `41 -> 39`, loop reads `47 -> 45`, read time
-`203 -> 199`, and due `6 -> 5`.
+`203 -> 199`, and due `6 -> 5`. The newest same-speed payload trim cuts
+entries `92`, `94`, and `95` from `8834 -> 6370`, `8873 -> 6939`, and
+`10247 -> 8827` bytes, reducing active payload `669408 -> 663590` with the
+five-yellow canary exact-flat.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -554,7 +557,9 @@ clipping; move to `87..88` or smaller non-risk candidates.
 Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
 relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, then the
 read-group passes replace the tail row with `83..95` and add guarded
-`271..287` plus `315..327`. The current B2-high row is `1347/1313`, overrun
+`271..287` plus `315..327`, then the entries `92`/`94`/`95` payload trim
+reduces active payload `669408 -> 663590`. The current B2-high row is
+`1347/1313`, overrun
 `34`, blocking `39`, refill overrun `16`, reads/read time `45/199`, and due `5`, while still avoiding
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
@@ -1236,8 +1241,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T19:47:09</td>
-      <td>git:3579a628+w1low-rg355-371</td>
+      <td>2026-05-19T23:19:05</td>
+      <td>b2high-entries92-94-95-trim</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>

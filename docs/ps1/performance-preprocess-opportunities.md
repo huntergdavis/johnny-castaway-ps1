@@ -16,7 +16,7 @@ accepted performance baseline.
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `mary1` | `high` | 46.77 | 0.70% | 78.75% | 274.07% | 80 | candidate; rect/frame 2.33 |
-| 2 | `building2` | `high` | 36.63 | 2.59% | 67.28% | 594.62% | 55 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
+| 2 | `building2` | `high` | 36.63 | 2.59% | 67.28% | 600.71% | 55 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
 | 3 | `building4` | `high` | 33.58 | 0.96% | 65.1% | 481.57% | 64 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
 | 4 | `visitor3` | `low` | 33.12 | 2.50% | 55.26% | 1027.5% | 75 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
 | 5 | `building4` | `low` | 32.15 | 0.96% | 64.45% | 541.09% | 59 | x-band rect cap pressure; needs selective bands; rect/frame 1.71 |

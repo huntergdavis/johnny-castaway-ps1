@@ -40,7 +40,9 @@ low-only `80 KiB` clean-strip cap, raise the low window slack to `5`, and add
 `{141,153}`, improving low to `1327/1318`, overrun `9`, blocking `47`,
 reads `27`, refill `0`, and due `9`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
 of the allocator-safe setup slices, holding `1347/1313` while cutting blocking
-to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
+to `39`, reads/read time to `45/199`, and due to `5`; the newest entries
+`92`/`94`/`95` payload trim cuts B2-high active payload `669408 -> 663590`
+with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
 `2847/2820`, overrun `27`, blocking/read time `32`/`252`, and prefetch overrun
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
@@ -85,7 +87,8 @@ reads `27`, and due `9`. BUILDING2 high currently measures
 `5`; the allocator-safe setup slices plus the `83..95`, guarded `271..287`,
 and `315..327` scheduler rows keep reads/read time at `45/199`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
-trims reduce active payload `674798 -> 672026` without moving pack layout.
+trims plus the entries `92`/`94`/`95` follow-up reduce active payload
+`674798 -> 663590` without moving pack layout.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

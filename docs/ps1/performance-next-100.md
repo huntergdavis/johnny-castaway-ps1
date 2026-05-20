@@ -49,8 +49,9 @@ read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
 payload trims, followed by the WALKSTUF1 low `244..350`/`179..185`
 setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 `{355..371}` W1-low read-work promotion, then the same-speed W1-high
-frame56 plus `{178..194}` CD-pressure promotion, and finally the VISITOR3 high
-80 KiB clean-relief stream-window promotion:
+frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
+80 KiB clean-relief stream-window promotion, and finally the same-speed
+BUILDING2 high entries `92`/`94`/`95` payload trim:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
@@ -99,6 +100,11 @@ widens the high-tide stream window from `68 KiB` to `80 KiB` while keeping the
 `56 KiB` tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun
 `31 -> 26`, blocking `45 -> 35`, hidden refill `3 -> 1`, and due `3 -> 2`;
 the rejected `96 KiB` variants saved a read but regressed loop/target cadence.
+The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
+from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
+active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
+at B2-high `1347/1313`, VISITOR3 high/low `1071/1045` and `1065/1039`, and
+WALKSTUF1 high/low `1471/1440` and `1470/1446`.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
@@ -801,6 +807,18 @@ raising blocking to `48` and overrun to `44`/`43`. Artifacts are recorded under
 `202..242`; do not retry simple retained setup residency for the exposed early
 clusters without generated deadline/refill ownership or a clean/allocator byte
 reduction.
+
+Latest rejected BUILDING2 high runtime-owner swing: the prepare-before-window
+branch regressed B2-high to `1351/1311`, overrun `40`, blocking `45`, and
+refill `19`; hand-coded direct-stage ownership for `249..261` and `185..197`
+was exact-flat/inert while growing `foregroundPilotPlay`; and runtime staged
+x-band upload grew the PS-EXE bucket `233472 -> 235520` without producing a
+valid `JCPERF2` gate. These are now logged under
+`building2-high-prepare-before-window-current`,
+`building2-high-directstage-current`, and
+`building2-high-xband-upload-staged-current`. Close hand-coded B2-high runtime
+ownership and hot-renderer scratch-copy upload staging; reopen through generated
+metadata or pack-emitted/precomposed data only.
 
 Latest rejected BUILDING4 low read-group route: enabling a low-tide `building4`
 read-group table and adding `{274,298,0}` did not move timing. The focused gate
@@ -1509,11 +1527,12 @@ entries `172` / source frame `231`, `171` / source frame `228`, `96` /
 source frame `119`, `170` / source frame `226`, `97` / source frame `121`, `98` / source frame `123`, `174` / source frame `239`, `99` / source frame `126`, `168` / source frame `219`, `169` / source frame `223`, `173` / source frame `235`, and `100` / source frame `129`
 in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 `8781 -> 7944`, `1683 -> 1186`, `8718 -> 8258`, `8876 -> 8637`, and
-`1625 -> 1460`, `8843 -> 8728`, `1372 -> 1266`, `1820 -> 1495`, `1765 -> 1134`, and `8701 -> 8621` bytes while active payload drops `674798 -> 669408`. All stay exact-flat at scene/loop/target
+`1625 -> 1460`, `8843 -> 8728`, `1372 -> 1266`, `1820 -> 1495`, `1765 -> 1134`, and `8701 -> 8621` bytes. The current follow-up trims entries `92`, `94`, and `95` (`8834 -> 6370`, `8873 -> 6939`, `10247 -> 8827`) while active payload drops `674798 -> 663590`. All stay exact-flat at scene/loop/target
 `1602/1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time
 `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
 `18144/110717/468636 -> 18030/105645/446246`. Use v926 as the current
-same-speed BUILDING2 high work baseline for future comparisons.
+same-speed BUILDING2 high work baseline plus the entries `92`/`94`/`95` trim
+as the current payload baseline for future comparisons.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
 guarded `271..287`, and `315..327`, keeping B2-high at `1347/1313`
 while lowering active CD pressure to blocking/refill `39/16`, reads/read time

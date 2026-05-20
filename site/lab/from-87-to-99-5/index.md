@@ -66,7 +66,9 @@ plus high terminal-trim and setup-segment extension promotions moved both
 VISITOR3 tides out of red while keeping the allocator-safe CACHE budget intact;
 BUILDING4 high is now green after caching relative sectors `264..288`, and
 BUILDING2 high has a smaller yellow gap after replacing the tail read group
-with `83..95` and adding guarded `271..287` plus the same-loop `315..327` CD-pressure row; VISITOR3 low then adds `206..230` as a third retained setup
+with `83..95`, adding guarded `271..287` plus the same-loop `315..327`
+CD-pressure row, and trimming entries `92`/`94`/`95` as a same-speed payload
+baseline; VISITOR3 low then adds `206..230` as a third retained setup
 segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
 split tail residency with a CACHE `238..344` setup segment, adds `{91,107}`,
 and pays a separate TRANSIENT `344..350` edge, then trims frame132 to move to
