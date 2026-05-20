@@ -176,7 +176,7 @@ rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
 B2-high `{185..197}` CD-pressure row:
 
 1. Generate BUILDING2-high append-start/deadline ownership for the `249..261`, `287..311`, and hot `122..146` families rather than another static table row; raw `{249..261}` regressed and raw `{287..311}` was exact-flat.
-2. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode and first-frame setup/upload variants are closed.
+2. Try BUILDING2-high no-decode payload boundary relocation only when it does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, and the entries `90..95` setup-swap are closed.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
 4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage hit the clean-rect/CACHE cliff.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
@@ -1584,6 +1584,22 @@ bucket. Artifact:
 Close B2-high frame71 D4 and local decode variants even when payload ownership
 is setup-side; remaining B2-high work should be generated deadline ownership,
 upload/restore elimination, or no-decode cadence-preserving data.
+
+Latest rejected BUILDING2 high clean-safe residency swap: entries `90..95`
+were moved from the hot `141..164` physical span into the already retained
+second setup segment at sectors `202..223`, while evicting setup-resident
+entries `105..109` into the old hole at sectors `141..162`. The source-neutral
+pack kept `BUILDING2.FG2` at `1303332` bytes and pack LBA fixed, but the
+focused gate still moved B2-high from `1621/1347/1313` to `1621/1347/1311`,
+overrun `34 -> 36`, blocking/refill `39/16 -> 40/18`, and reads stayed `43`.
+Adding a temporary `{149..165}` grouped read over the evicted cluster reduced
+reads `43 -> 40` but regressed scene/loop/target to `1625/1351/1311`, overrun
+`40`, blocking `45`, and refill `20`. Artifacts:
+`scratch/ps1-perf-iterate/building2-high-setup-swap90-95-current/20260520-014411-2098182/summary.json`
+and
+`scratch/ps1-perf-iterate/building2-high-setup-swap90-95-rg149-165-current/20260520-014616-2110053/summary.json`.
+Close this same-footprint swap shape: moving active pressure into setup only
+helps if the evicted setup bytes do not become a new tight active cluster.
 
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
 and `365..381`, keep the v454 frame `71` / `77` previous-frame D4 deltas, and
