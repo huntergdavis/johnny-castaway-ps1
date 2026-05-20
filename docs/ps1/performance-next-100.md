@@ -47,7 +47,8 @@ frame92 D4 promotion, the WALKSTUF1 low split `344..350` setup edge, the
 WALKSTUF1 low frame132 payload trim, the WALKSTUF1 low `{378..390}`
 read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
 payload trims, followed by the WALKSTUF1 low `244..350`/`179..185`
-setup-retarget plus `{113..129}` CD-pressure promotion:
+setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
+`{355..371}` W1-low read-work promotion:
 `+0.2425%` public average over target / `99.7608%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4744%` / `100.4911%`. Since the compact full-matrix baseline was
@@ -76,8 +77,10 @@ then moves the current row to `1470/1446`, overrun `24`,
 blocking/refill/read time `34/6/159`, and loop reads `30`. The latest
 setup-retarget plus `{113..129}` owner keeps the same `1470/1446` target speed
 but reduces scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`, and loop
-reads/read time `30/159 -> 26/150`; it becomes the new W1-low CD-pressure
-baseline for the next candidate sweep. The
+reads/read time `30/159 -> 26/150`; the later `{355..371}` work-volume row
+keeps speed and pressure exact-flat while reducing loop reads/read time again
+to `24/147`. It becomes the new W1-low CD-pressure baseline for the next
+candidate sweep. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
 second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
 encodes frame `92` as previous-frame D4, improving
@@ -119,7 +122,10 @@ The newest W1-low setup/owner promotion revisits `{113,129}` only after moving
 setup coverage to `244..350` plus a split `179..185` setup edge. That narrower
 shape passes the focused and five-yellow gates at the same `1470/1446` target
 speed while improving scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`,
-and loop reads/read time `30/159 -> 26/150`. The follow-up raw/min-slack
+and loop reads/read time `30/159 -> 26/150`. The newest `{355..371}`
+retained-group promotion is a same-speed work-volume win: W1-low remains
+`1809/1470/1446`, overrun `24`, blocking/refill `33/5`, and due `4`, while
+loop reads/read time drop `26/150 -> 24/147`. The follow-up raw/min-slack
 `160..176` owner probe is closed: raw and slack8 moved loop/blocking but
 regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
 read-candidate matrix now has no standalone or scheduler/guarded direct rows.
@@ -127,9 +133,9 @@ The follow-up direct-stage owner lane also closed `129..153`, `160..176`, and
 `355..379`. The follow-up `153..177` retained-group probe is also closed:
 raw and slack8 improved loop/blocking but regressed hidden refill and target,
 while slack32 was exact-flat/inert. Only smaller scheduler-owned W1-low ranges
-such as `355..371`, `153..169`, `142..154`, `136..148`, and `360..372`
-remain, and they should be treated as generated-ownership/data-shape leads,
-not direct table rows.
+such as `153..169`, `142..154`, `136..148`, and `360..372` remain, and they
+should be treated as generated-ownership/data-shape leads, not direct table
+rows.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
@@ -246,7 +252,8 @@ current compacted low pack to `788773` active payload while preserving the
 `1535263` byte file footprint and pack LBA/sectors. The accepted `{378..390}`
 read group then keeps the pack fixed while moving the current speed row to
 `1470/1446`, overrun `24`, blocking/refill `34/6`, reads/read time `30/159`,
-and due `4`. The latest v910 frame
+and due `4`; the current `{355..371}` follow-up keeps timing flat and lowers
+reads/read time to `24/147`. The latest v910 frame
 `106` / source frame `209` entry shrinks `944 -> 919` bytes and sector
 coverage stays `2 -> 2`.
 Scene/loop remain `1769/1477`, target improves `1431 -> 1432`, overrun

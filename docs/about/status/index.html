@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2667 words
+          ~10 min read · 2683 words
         </p>
 
       <hr class="rule" />
@@ -158,9 +158,11 @@ loop reads/read time at <code class="language-plaintext highlighter-rouge">45/20
 encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
 <code class="language-plaintext highlighter-rouge">410..434</code> split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
-read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge. It now measures
-<code class="language-plaintext highlighter-rouge">1470/1446</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">34/6/4</code>, with loop reads/read time at
-<code class="language-plaintext highlighter-rouge">30/159</code>. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
+read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to
+<code class="language-plaintext highlighter-rouge">244..350</code> plus split <code class="language-plaintext highlighter-rouge">179..185</code>, adds <code class="language-plaintext highlighter-rouge">{113,129}</code>, and then adds
+<code class="language-plaintext highlighter-rouge">{355,371}</code> as same-speed read-work. It now measures <code class="language-plaintext highlighter-rouge">1470/1446</code>,
+blocking/refill/due <code class="language-plaintext highlighter-rouge">33/5/4</code>, with loop reads/read time at <code class="language-plaintext highlighter-rouge">24/147</code>.
+Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a <code class="language-plaintext highlighter-rouge">68 KiB</code> window with terminal overread trimming, setup segment2

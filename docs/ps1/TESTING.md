@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-19:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low setup/`{113..129}` canary `2026-05-19T18:54:02` |
-| Stats version | mixed; newest targeted under-green canary rows are stamped `git:cc7c7fd012+walkstuf1-low-seg244-rg113-129`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{355..371}` canary `2026-05-19T19:47:09` |
+| Stats version | mixed; newest targeted under-green canary rows are stamped `git:3579a628+w1low-rg355-371`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -114,14 +114,15 @@ PS-EXE bucket. The five-yellow no-regression canary at
 keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low exact-flat.
 
 Latest WALKSTUF1 low CD-pressure note: the low-tide path now retargets the main
-setup segment to `244..350`, keeps a split setup edge at `179..185`, and adds
-the retained `{113,129}` read group. The focused proof is
-`scratch/ps1-perf-iterate/walkstuf1-low-seg244-350-edge179-185-rg113-129-current/20260519-185205-3952617/summary.json`;
+setup segment to `244..350`, keeps a split setup edge at `179..185`, adds the
+retained `{113,129}` read group, and then adds `{355,371}` as same-speed
+work-volume. The latest focused proof is
+`scratch/ps1-perf-iterate/walkstuf1-low-rg355-371-current/20260519-194519-63468/summary.json`;
 the five-yellow canary is
-`scratch/ps1-perf-iterate/walkstuf1-low-seg244-edge179-rg113-129-canaries/20260519-185402-3963960/summary.json`.
-It keeps W1-low target speed flat at `1470/1446` / `98.367%` while improving
-scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`, and loop
-reads/read time `30/159 -> 26/150`.
+`scratch/ps1-perf-iterate/walkstuf1-low-rg355-371-canaries-flat-ok/20260519-194709-74452/summary.json`.
+It keeps W1-low target speed flat at `1470/1446` / `98.367%`, scene `1809`,
+blocking/refill `33/5`, and due `4`, while reducing loop reads/read time
+`26/150 -> 24/147`.
 
 Prior promoted WALKSTUF1 high setup-slice pressure note:
 the high-tide path keeps the `198..244` first setup slice and extends the

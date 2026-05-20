@@ -4,10 +4,11 @@
 
 
 **Last updated:** 2026-05-19 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion and the exact-flat
-WALKSTUF1 high entry136/entry57 payload trims; all 63 scenes remain validated,
-all 126 high/low rows are timing-bearing, and the public headless battle card
-is `+0.2425%` over target / `99.7608%` target speed).
+the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion, the same-speed
+`{355..371}` read-work row, and the exact-flat WALKSTUF1 high
+entry136/entry57 payload trims; all 63 scenes remain validated, all 126
+high/low rows are timing-bearing, and the public headless battle card is
+`+0.2425%` over target / `99.7608%` target speed).
 
 ## Overall
 
@@ -310,7 +311,9 @@ to reach `1470/1446`, overrun `24`, blocking/refill `34/6`,
 reads/read time `30/159`, and due `4`; the latest setup/owner pass shifts the
 main setup residency to `244..350`, keeps a split `179..185` edge, and adds
 `{113,129}` to hold `1470/1446` while improving scene `1812 -> 1809`,
-blocking/refill `34/6 -> 33/5`, and reads/read time `30/159 -> 26/150`.
+blocking/refill `34/6 -> 33/5`, and reads/read time `30/159 -> 26/150`; the
+same-speed `{355,371}` follow-up keeps timing flat and lowers reads/read time
+again to `24/147`.
 Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, adds `{149,165}`, and encodes frame `92` as D4, improving the
@@ -334,7 +337,8 @@ promotion, the BUILDING2 low `226..238` setup-segment promotion, the
 VISITOR3 high `56 KiB` cap promotion, the BUILDING2 low `226..262` +
 clean80 green promotion, the VISITOR3 high `64 KiB` clean-strip cap, the
 BUILDING4 low `24 KiB` stream-window green promotion, the W1-low frame132
-payload trim, and the W1-low `{378..390}` read-group promotion, the public
+payload trim, the W1-low `{378..390}` read-group promotion, and the W1-low
+same-speed `{355..371}` read-work row, the public
 battle card is now `+0.2425%` over target / `99.7608%` target speed; the raw
 signed optimization rollup is about `-0.4744%` / `100.4911%`.
 Since the compact full-matrix baseline was about `17.4%` over target /

@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2431% public over target / 99.7603% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2425% public over target / 99.7608% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,16 +23,18 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2431%` over target /
-`99.7603%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4738%` / `100.4906%`; bands are `121`
+loading, and the current battle card is `+0.2425%` over target /
+`99.7608%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4744%` / `100.4911%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
 include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
 setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
 stream-window green promotion, WALKSTUF1 high `286..344` setup residency,
 and WALKSTUF1 low `238..344` plus split `344..350` setup residency
-enabled by low-only 48 KiB clean-rect chunking. MARY1/2/3 and SUZY1/2 are
+enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
+`179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
+read-work. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
 only an asset/reference naming source.
 
@@ -52,10 +54,12 @@ overrun `31`, blocking/refill `57/13`, loop reads/read time `45/209`, and due
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
 shrinks, replaces the old split tail residency with a CACHE `238..344` setup
 segment, adds the `{91,107}` first-boundary read group, pays the small
-`344..350` edge from TRANSIENT, and trims frame132's draw tail in the compacted
-low pack. Low now measures `1470/1445` at `98.299%` target speed with overrun
-`25`, blocking/refill `35/7`, loop reads/read time `31/163`, and due `4`,
-while active payload is `788773` without changing pack size or sectors.
+`344..350` edge from TRANSIENT, trims frame132's draw tail in the compacted low
+pack, adds `{378..390}`, then retargets setup to `244..350` plus split
+`179..185` with `{113..129}` and adds `{355..371}` as same-speed read-work.
+Low now measures `1470/1446` at `98.367%` target speed with overrun `24`,
+blocking/refill `33/5`, loop reads/read time `24/147`, and due `4`, while
+active payload is `788773` without changing pack size or sectors.
 
 The latest BUILDING2 high baseline keeps retained groups `60..72`, `206..230`,
 `226..242`, and `249..257` with the grouped-read window capacity raised to 24

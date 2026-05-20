@@ -51,9 +51,11 @@ loop reads/read time at `45/209` after keeping relative sectors
 encoding frame `92` as previous-frame D4; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
-read group and a split TRANSIENT `344..350` setup edge. It now measures
-`1470/1446`, blocking/refill/due `34/6/4`, with loop reads/read time at
-`30/159`. Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
+read group and a split TRANSIENT `344..350` setup edge, retargets setup to
+`244..350` plus split `179..185`, adds `{113,129}`, and then adds
+`{355,371}` as same-speed read-work. It now measures `1470/1446`,
+blocking/refill/due `33/5/4`, with loop reads/read time at `24/147`.
+Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
 uses a `68 KiB` window with terminal overread trimming, setup segment2

@@ -4,12 +4,12 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-low-seg244-edge179-rg113-129-canaries/20260519-185402-3963960`
-- Candidate rows: `48`
+- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-low-rg355-371-canaries-flat-ok/20260519-194709-74452`
+- Candidate rows: `46`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
 - Scheduler-owned only: `5`
-- Closed exact ranges from experiment log: `43`
+- Closed exact ranges from experiment log: `41`
 - Deferred under-target rows: `0`
 
 Recent hand-authored table probes proved that nominal read-count wins can
@@ -20,11 +20,11 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|
-| 1 | `walkstuf1` | `low` | 1470/1446 | 33 | `355..371` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 1 | `walkstuf1` | `low` | 1470/1446 | 33 | `147..171` (24s) | 2 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 2 | `walkstuf1` | `low` | 1470/1446 | 33 | `153..169` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 3 | `walkstuf1` | `low` | 1470/1446 | 33 | `142..154` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 4 | `walkstuf1` | `low` | 1470/1446 | 33 | `136..148` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
-| 5 | `walkstuf1` | `low` | 1470/1446 | 33 | `360..372` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 5 | `walkstuf1` | `low` | 1470/1446 | 33 | `147..163` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 6 | `building2` | `high` | 1347/1313 | 39 | `122..146` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 7 | `building2` | `high` | 1347/1313 | 39 | `95..119` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 8 | `building2` | `high` | 1347/1313 | 39 | `140..164` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
