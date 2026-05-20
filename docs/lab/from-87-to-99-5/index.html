@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2668,
+  "wordCount": 2679,
   "timeRequired": "PT10M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -142,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2585 words
+          ~10 min read · 2596 words
         </p>
 
       <hr class="rule" />
@@ -215,11 +215,12 @@ gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge,
 <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary, split <code class="language-plaintext highlighter-rouge">344..350</code> setup-edge, frame132 payload-trim,
 and <code class="language-plaintext highlighter-rouge">{378..390}</code> read-group promotions, plus the VISITOR3 high frame56/57
-raw-gap tight-refill, high-only clean64, and 80 KiB clean-relief window
+raw-gap tight-refill, high-only clean64, 80 KiB clean-relief window, and
+setup-edge <code class="language-plaintext highlighter-rouge">40..47</code>
 promotions, plus the BUILDING2 low <code class="language-plaintext highlighter-rouge">226..262</code> + clean80 setup segment, plus
 the BUILDING4 low <code class="language-plaintext highlighter-rouge">24 KiB</code> stream-window green promotion, is
-<strong>+0.2387% over target / 99.7644% target speed</strong>, with roughly <strong>17.16
-percentage points</strong> of over-target gap closed and about <strong>12.66 target-speed
+<strong>+0.2371% over target / 99.7659% target speed</strong>, with roughly <strong>17.16
+percentage points</strong> of over-target gap closed and about <strong>12.67 target-speed
 points</strong> added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
@@ -243,8 +244,9 @@ moves frame <code class="language-plaintext highlighter-rouge">138</code> raw da
 <code class="language-plaintext highlighter-rouge">1065/1039</code> with overrun down to <code class="language-plaintext highlighter-rouge">26</code>; VISITOR3 high now moves frames <code class="language-plaintext highlighter-rouge">56</code>
 and <code class="language-plaintext highlighter-rouge">57</code> raw into the retained <code class="language-plaintext highlighter-rouge">228..262</code> gap with a <code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill cap,
 then caps high-only clean strips at <code class="language-plaintext highlighter-rouge">64 KiB</code>, reaching <code class="language-plaintext highlighter-rouge">1075/1044</code>.
-The latest V3-high window retune widens the clean-relief stream window to
-<code class="language-plaintext highlighter-rouge">80 KiB</code>, reaching <code class="language-plaintext highlighter-rouge">1071/1045</code>.
+The latest V3-high window/setup-edge retunes widen the clean-relief stream
+window to <code class="language-plaintext highlighter-rouge">80 KiB</code>, merge terminal setup coverage into <code class="language-plaintext highlighter-rouge">203..262</code>, and pay
+<code class="language-plaintext highlighter-rouge">40..47</code>, reaching <code class="language-plaintext highlighter-rouge">1070/1046</code>.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what

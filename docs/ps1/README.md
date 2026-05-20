@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2387% public over target / 99.7644% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2371% public over target / 99.7659% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,12 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2387%` over target /
-`99.7644%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4782%` / `100.4948%`; bands are `121`
+loading, and the current battle card is `+0.2371%` over target /
+`99.7659%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4798%` / `100.4962%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
+include VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
+setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
 setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
 stream-window green promotion, WALKSTUF1 high `286..344` setup residency plus
@@ -86,17 +87,16 @@ while preserving pack size, LBA/sectors, and the `233472` byte PS-EXE bucket.
 The row now measures `98.282%` target speed.
 
 The latest VISITOR3 high baseline keeps the resident-copy and D4 data-shape
-work, preloads the 768-byte frame `132` and 503-byte frame `137` D4 payloads
-through the same one-sector setup segment at sector `203`, then reuses the
-proven low-tail compact cleanup payloads and repacks frames
-`141/140/142/143/144` plus sound events inside the existing `277..293` setup
-segment. It keeps the `1555450` byte pack footprint, `22611/760` LBA/sectors,
-and `217088` byte PS-EXE bucket fixed while moving high `1065/1039 -> 1063/1040`:
-overrun `26 -> 23`, blocking/read time `41 -> 35`, loop reads `7 -> 6`, and
-due misses `7 -> 6`; hidden refill stays `0`. The latest low row keeps the v452 frame128/frame129 resident-slot
-swap plus frame129 D4 delta and v470 frame132 D4 delta, then relocates frame
-`137` into an unused setup-prime gap at sector `99`: `1062/1040`, overrun
-`22`, blocking `42`, loop reads/due `7/7`, hidden refill `0`.
+work, merges the overlapping terminal setup coverage into retained relative
+sectors `203..262`, keeps the existing `277..293` setup segment, and adds the
+early retained setup edge `40..47`. It keeps the `1555450` byte pack footprint,
+`22619/760` LBA/sectors, and `233472` byte PS-EXE bucket fixed while moving the
+accepted high baseline `1071/1045 -> 1070/1046`: overrun `26 -> 24`, blocking
+stays `35`, loop reads `7 -> 5`, due stays `2`, and hidden refill improves
+`1 -> 0`. The latest low row keeps the resident-slot/D4 data-shape work,
+extends its retained setup segment through `206..232`, and relocates frame
+`138` raw into that paid gap: `1065/1039`, overrun `26`, blocking `75`,
+loop reads/due `18/14`, hidden refill `0`.
 VISITOR3 remains a custom data-shape target, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

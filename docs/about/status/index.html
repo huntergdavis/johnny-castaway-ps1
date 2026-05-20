@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2749 words
+          ~10 min read · 2736 words
         </p>
 
       <hr class="rule" />
@@ -130,11 +130,11 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2387%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7644%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4782%</code> / <code class="language-plaintext highlighter-rouge">100.4948%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2371%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7659%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4798%</code> / <code class="language-plaintext highlighter-rouge">100.4962%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
+VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
@@ -170,13 +170,12 @@ blocking/refill/due <code class="language-plaintext highlighter-rouge">33/5/4</c
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
-uses an <code class="language-plaintext highlighter-rouge">80 KiB</code> window with terminal overread trimming, setup segment2
-<code class="language-plaintext highlighter-rouge">203..229</code>, frame <code class="language-plaintext highlighter-rouge">139</code> raw-gap relocation, and a third retained setup segment
-at <code class="language-plaintext highlighter-rouge">228..262</code>, then moves frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw into that gap with a
-<code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill cap, caps high clean strips at <code class="language-plaintext highlighter-rouge">64 KiB</code>, and widens the
-clean-relief window from <code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>.
-High measures <code class="language-plaintext highlighter-rouge">1071/1045</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>, blocking
-<code class="language-plaintext highlighter-rouge">35</code>, reads/due <code class="language-plaintext highlighter-rouge">7/2</code>; low uses a
+uses an <code class="language-plaintext highlighter-rouge">80 KiB</code> window with terminal overread trimming, merged setup segment
+<code class="language-plaintext highlighter-rouge">203..262</code>, frame <code class="language-plaintext highlighter-rouge">139</code> raw-gap relocation, frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw in that
+paid gap with a <code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill cap, high clean strips capped at
+<code class="language-plaintext highlighter-rouge">64 KiB</code>, and the early retained setup edge <code class="language-plaintext highlighter-rouge">40..47</code>.
+High measures <code class="language-plaintext highlighter-rouge">1070/1046</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking
+<code class="language-plaintext highlighter-rouge">35</code>, reads/due <code class="language-plaintext highlighter-rouge">5/2</code>; low uses a
 <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment extended to
 <code class="language-plaintext highlighter-rouge">206..232</code>, with frame <code class="language-plaintext highlighter-rouge">138</code> raw relocated into that paid gap, and measures
 <code class="language-plaintext highlighter-rouge">1065/1039</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>, blocking <code class="language-plaintext highlighter-rouge">75</code>, reads/due <code class="language-plaintext highlighter-rouge">18/14</code>. Both rows moved out of red and the orange band is now empty

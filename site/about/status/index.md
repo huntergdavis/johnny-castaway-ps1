@@ -23,11 +23,11 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2387%` over
-target / `99.7644%` target speed; the raw signed optimization matrix is
-about `-0.4782%` / `100.4948%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2371%` over
+target / `99.7659%` target speed; the raw signed optimization matrix is
+about `-0.4798%` / `100.4962%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
+VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
@@ -63,13 +63,12 @@ blocking/refill/due `33/5/4`, with loop reads/read time at `24/146`.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
-uses an `80 KiB` window with terminal overread trimming, setup segment2
-`203..229`, frame `139` raw-gap relocation, and a third retained setup segment
-at `228..262`, then moves frames `56` and `57` raw into that gap with a
-`56 KiB` tight-refill cap, caps high clean strips at `64 KiB`, and widens the
-clean-relief window from `68 KiB` to `80 KiB`.
-High measures `1071/1045`, overrun `26`, blocking
-`35`, reads/due `7/2`; low uses a
+uses an `80 KiB` window with terminal overread trimming, merged setup segment
+`203..262`, frame `139` raw-gap relocation, frames `56` and `57` raw in that
+paid gap with a `56 KiB` tight-refill cap, high clean strips capped at
+`64 KiB`, and the early retained setup edge `40..47`.
+High measures `1070/1046`, overrun `24`, blocking
+`35`, reads/due `5/2`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, and measures
 `1065/1039`, overrun `26`, blocking `75`, reads/due `18/14`. Both rows moved out of red and the orange band is now empty

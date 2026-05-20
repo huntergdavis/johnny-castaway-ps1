@@ -55,11 +55,12 @@ gap-8 dirty-upload band retune, the W1-high setup-slice pressure pass, and
 the VISITOR3 low frame138 raw-gap relocation, plus the W1-low clean-rect/setup-edge,
 `{91,107}` first-boundary, split `344..350` setup-edge, frame132 payload-trim,
 and `{378..390}` read-group promotions, plus the VISITOR3 high frame56/57
-raw-gap tight-refill, high-only clean64, and 80 KiB clean-relief window
+raw-gap tight-refill, high-only clean64, 80 KiB clean-relief window, and
+setup-edge `40..47`
 promotions, plus the BUILDING2 low `226..262` + clean80 setup segment, plus
 the BUILDING4 low `24 KiB` stream-window green promotion, is
-**+0.2387% over target / 99.7644% target speed**, with roughly **17.16
-percentage points** of over-target gap closed and about **12.66 target-speed
+**+0.2371% over target / 99.7659% target speed**, with roughly **17.16
+percentage points** of over-target gap closed and about **12.67 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
@@ -83,8 +84,9 @@ moves frame `138` raw data into the retained `206..232` segment to reach
 `1065/1039` with overrun down to `26`; VISITOR3 high now moves frames `56`
 and `57` raw into the retained `228..262` gap with a `56 KiB` tight-refill cap,
 then caps high-only clean strips at `64 KiB`, reaching `1075/1044`.
-The latest V3-high window retune widens the clean-relief stream window to
-`80 KiB`, reaching `1071/1045`.
+The latest V3-high window/setup-edge retunes widen the clean-relief stream
+window to `80 KiB`, merge terminal setup coverage into `203..262`, and pay
+`40..47`, reaching `1070/1046`.
 The optimization-side
 raw signed average sits past target — the public number is the
 conservative read this site publishes. This article is what
