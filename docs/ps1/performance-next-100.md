@@ -161,7 +161,10 @@ The guarded `249..261` follow-up is closed too: slack9, slack10, and slack12
 were all exact-flat at `1621/1347/1313`, overrun `34`, blocking/refill `39/16`,
 and reads `40`; lower guards already regress. This confirms the safe/firing
 threshold split for that row and keeps B2-high focused on generated ownership
-or prior data-shape reduction.
+or prior data-shape reduction. A prefetch-only generated-owner probe for the
+same row is also closed: it regressed B2-high to `1631/1357/1314`, overrun
+`43`, blocking `55`, due `8`, and reads `42` while only improving prefetch
+overrun `16 -> 14`.
 The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
 W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
 `24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
@@ -342,7 +345,7 @@ rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
 B2-high `{185..197}` CD-pressure row, the B2-high entries `141/142` setup alias,
 and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
 
-1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, and raw `{287..311}` was exact-flat.
+1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident or forward-order and does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, and the `3..43` setup-edge extension are closed.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
 4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence.
