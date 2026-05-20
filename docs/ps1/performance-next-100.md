@@ -261,6 +261,16 @@ Artifact:
 Close `{44..50}` as a static source row; the current yellow hand-table matrix
 is now exhausted and read work should move to generated deadline/refill
 ownership only.
+Latest rejected W1-high preserve-offset pack swing: entry `55` / source frame
+`65` was the only remaining W1-high draw-tail candidate in the current scan and
+shrunk `4716 -> 2` bytes (`4 -> 1` sectors) with fixed pack size/LBA and no
+source changes, but it regressed W1-high from `1807/1471/1440` to
+`1811/1475/1438`, overrun `31 -> 37`, blocking/refill `56/13 -> 64/18`.
+Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-trim-entry55-current/20260520-024222-2426984/summary.json`.
+Close early W1-high entry55/source frame65 sector-collapse trimming; these
+visually empty tail bytes are phase-bearing unless a generated owner can absorb
+the shifted cadence.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
