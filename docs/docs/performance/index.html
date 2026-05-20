@@ -452,7 +452,7 @@ instead of the old full-scene resident setup buffers. High keeps relative
 sectors <code class="language-plaintext highlighter-rouge">198..244</code> resident and retargets the second slice from <code class="language-plaintext highlighter-rouge">411..435</code> to
 <code class="language-plaintext highlighter-rouge">286..344</code>, then adds <code class="language-plaintext highlighter-rouge">{149,165}</code> and frame92 D4, improving the current row
 <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1471/1440</code>, blocking/refill <code class="language-plaintext highlighter-rouge">76/15 -&gt; 56/13</code>,
-reads/read time <code class="language-plaintext highlighter-rouge">55/229 -&gt; 43/207</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
+reads/read time <code class="language-plaintext highlighter-rouge">55/229 -&gt; 42/205</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>.
 Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..344</code> CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary read group and a

@@ -318,10 +318,12 @@ same-speed `{355,371}` follow-up keeps timing flat and lowers reads/read time
 again to `24/147`.
 Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
-`286..344`, adds `{149,165}`, and encodes frame `92` as D4, improving the
+`286..344`, adds `{149,165}`, encodes frame `92` as D4, and now adds
+`{423,439}` as a same-speed CD-work row. The D4/read-owner track improves the
 current allocator-era row `1475/1433 -> 1471/1440`, overrun `42 -> 31`,
-blocking/refill `76/15 -> 57/13`, loop reads/read time `55/229 -> 45/209`,
-and due `15 -> 10`. BUILDING4 low now carries the v971 local-LZ entry270
+blocking/refill `76/15 -> 56/13`, loop reads/read time `55/229 -> 45/209`,
+and due `15 -> 10`; the newest row holds timing and lowers loop reads/read time
+again `43/207 -> 42/205`. BUILDING4 low now carries the v971 local-LZ entry270
 follow-up on top of entry30/entry33, cutting active payload
 `807263 -> 799277` and improving to `2851/2815`, overrun `36`, and refill
 `35`. The visible-speed guarded read-group pass improves BUILDING2 high active
@@ -484,7 +486,7 @@ Milestone releases:
   BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/45/5`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 663590`, WALKSTUF1 high is
-  `1471/1440` with blocking/read time `56`/`207`, loop reads `43`, and rows/spans/pixels
+  `1471/1440` with blocking/read time `56`/`205`, loop reads `42`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is `1470/1446` with loop
   reads/read time `24`/`147`, rows/spans/pixels `16257/114798/633876`, and active payload
   `788773`, VISITOR3 high is

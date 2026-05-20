@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2715 words
+          ~10 min read · 2717 words
         </p>
 
       <hr class="rule" />
@@ -155,9 +155,9 @@ with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ 
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
 buffers: high now measures <code class="language-plaintext highlighter-rouge">1471/1440</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">56/13/10</code>, with
-loop reads/read time at <code class="language-plaintext highlighter-rouge">43/207</code> after keeping relative sectors
-<code class="language-plaintext highlighter-rouge">198..244</code>, extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adding <code class="language-plaintext highlighter-rouge">{149,165}</code>, and
-encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
+loop reads/read time at <code class="language-plaintext highlighter-rouge">42/205</code> after keeping relative sectors
+<code class="language-plaintext highlighter-rouge">198..244</code>, extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adding <code class="language-plaintext highlighter-rouge">{149,165}</code>,
+encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4, and adding <code class="language-plaintext highlighter-rouge">{423,439}</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
 <code class="language-plaintext highlighter-rouge">410..434</code> split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to

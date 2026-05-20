@@ -322,7 +322,7 @@ instead of the old full-scene resident setup buffers. High keeps relative
 sectors `198..244` resident and retargets the second slice from `411..435` to
 `286..344`, then adds `{149,165}` and frame92 D4, improving the current row
 `1475/1433 -> 1471/1440`, blocking/refill `76/15 -> 56/13`,
-reads/read time `55/229 -> 43/207`, and due `15 -> 10`.
+reads/read time `55/229 -> 42/205`, and due `15 -> 10`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds `{91,107}` as the first post-boundary read group and a

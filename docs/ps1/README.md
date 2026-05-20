@@ -47,9 +47,10 @@ and target speed `98.56% -> 99.85%`.
 
 The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 `286..344` resident, carries the `{149,165}` read group, and encodes frame
-`92` as previous-frame D4. It measures `1471/1440` at `97.893%` target speed,
-overrun `31`, blocking/refill `57/13`, loop reads/read time `45/209`, and due
-`10`, with pack LBA/sectors and the PS-EXE bucket fixed.
+`92` as previous-frame D4, then layers the frame56/source67 trim, `{178,194}`,
+and `{423,439}`. It measures `1471/1440` at `97.893%` target speed, overrun
+`31`, blocking/refill `56/13`, loop reads/read time `42/205`, and due `10`,
+with pack LBA/sectors and the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
 shrinks, replaces the old split tail residency with a CACHE `238..344` setup

@@ -21,8 +21,8 @@ the WALKSTUF1 low setup/{113..129} CD-pressure promotion, the same-speed {355..3
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 841 |
-| Approx. words | 9397 |
+| Lines | 843 |
+| Approx. words | 9426 |
 | Code fences | 1 |
 
 ## Outline

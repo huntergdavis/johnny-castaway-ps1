@@ -48,9 +48,9 @@ with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ 
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
 buffers: high now measures `1471/1440`, blocking/refill/due `56/13/10`, with
-loop reads/read time at `43/207` after keeping relative sectors
-`198..244`, extending the second slice to `286..344`, adding `{149,165}`, and
-encoding frame `92` as previous-frame D4; low replaces the old `197..243` plus
+loop reads/read time at `42/205` after keeping relative sectors
+`198..244`, extending the second slice to `286..344`, adding `{149,165}`,
+encoding frame `92` as previous-frame D4, and adding `{423,439}`; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to
