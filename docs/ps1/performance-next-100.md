@@ -262,6 +262,20 @@ Artifact:
 Close runtime clean-rect row-owner caching as a source-side fix; keep the
 restore-scan idea only as generated metadata, pack-owned static bands, or a
 layout-pinned graphics split.
+Latest rejected global dirty-upload band swing: reducing the renderer's
+dirty-row merge gap from `8` to `4` and then `0` kept B2-high and the full
+five-yellow canary exact-flat on timing, layout, and the `233472` byte PS-EXE
+bucket. Gap `0` saved B2-high upload bytes `21836800 -> 21205760`, W1-high
+`17241600 -> 17103360`, and W1-low `17987840 -> 17881600`, but increased
+VISITOR3 high/low upload bytes and did not move any loop/target/blocking/refill
+metric. Artifacts:
+`scratch/ps1-perf-iterate/building2-high-upload-gap4-current/20260520-031639-2620742/summary.json`,
+`scratch/ps1-perf-iterate/building2-high-upload-gap0-current/20260520-031829-2630931/summary.json`,
+and
+`scratch/ps1-perf-iterate/upload-gap0-five-yellow-canary/20260520-032111-2646392/summary.json`.
+Close global upload-gap retuning as a 99% speed path; any retry should be
+scene-local/generated and paired with CD/deadline ownership rather than a
+global constant.
 Latest rejected VISITOR3 high final hand-table row: the refreshed matrix left
 only `{44..50}` unclosed. A high-tide-only route under the current `80 KiB`
 clean-relief stream window stayed exact-flat at `1388/1071/1045`, overrun `26`,
