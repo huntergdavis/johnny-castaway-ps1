@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4980 words
+          ~19 min read · 4982 words
         </p>
 
       <hr class="rule" />
@@ -464,17 +464,17 @@ split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</cod
 reads/read time <code class="language-plaintext highlighter-rouge">50/230 -&gt; 31/163</code>, and due <code class="language-plaintext highlighter-rouge">10 -&gt; 4</code>; the later
 <code class="language-plaintext highlighter-rouge">{378..390}</code>, <code class="language-plaintext highlighter-rouge">244..350</code>/<code class="language-plaintext highlighter-rouge">179..185</code> plus <code class="language-plaintext highlighter-rouge">{113..129}</code>, and <code class="language-plaintext highlighter-rouge">{355..371}</code>
 passes keep the row at <code class="language-plaintext highlighter-rouge">1470/1446</code>, improve blocking/refill to <code class="language-plaintext highlighter-rouge">33/5</code>, and
-lower reads/read time to <code class="language-plaintext highlighter-rouge">24/147</code>. Both W1 rows stay yellow while staying
+lower reads/read time to <code class="language-plaintext highlighter-rouge">24/146</code>. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.</p>
 
 <p>The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code>, then replaces the tail read group
-with <code class="language-plaintext highlighter-rouge">83..95</code>, adds guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code>, and trims entries
-<code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> as a same-speed payload baseline. The current row is
-<code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, reads/read time
-<code class="language-plaintext highlighter-rouge">45/199</code>, and due <code class="language-plaintext highlighter-rouge">5</code>; active payload drops <code class="language-plaintext highlighter-rouge">669408 -&gt; 663590</code> without moving
-the pack layout, and the row avoids the allocator-era clean-rect failure seen
-with full setup buffers.</p>
+with <code class="language-plaintext highlighter-rouge">83..95</code>, adds <code class="language-plaintext highlighter-rouge">{158..174}</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, <code class="language-plaintext highlighter-rouge">315..327</code>, and
+<code class="language-plaintext highlighter-rouge">{185..197}</code>, and trims entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> as a same-speed payload
+baseline. The current row is <code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill
+overrun <code class="language-plaintext highlighter-rouge">16</code>, reads/read time <code class="language-plaintext highlighter-rouge">40/189</code>, and due <code class="language-plaintext highlighter-rouge">5</code>; active payload drops
+<code class="language-plaintext highlighter-rouge">669408 -&gt; 663590</code> without moving the pack layout, and the row avoids the
+allocator-era clean-rect failure seen with full setup buffers.</p>
 
 <p>The latest BUILDING2 low allocator baseline adds setup-resident <code class="language-plaintext highlighter-rouge">112..128</code>
 and <code class="language-plaintext highlighter-rouge">226..262</code> slices, low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip shaping, a slack-5 low

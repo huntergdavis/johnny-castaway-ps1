@@ -85,7 +85,7 @@ setup-retarget plus `{113..129}` owner keeps the same `1470/1446` target speed
 but reduces scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`, and loop
 reads/read time `30/159 -> 26/150`; the later `{355..371}` work-volume row
 keeps speed and pressure exact-flat while reducing loop reads/read time again
-to `24/147`. It becomes the new W1-low CD-pressure baseline for the next
+to the current `24/146`. It becomes the new W1-low CD-pressure baseline for the next
 candidate sweep. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
 second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
@@ -138,9 +138,10 @@ from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
 at B2-high `1347/1313`, VISITOR3 high/low `1071/1045` and `1065/1039`, and
 the previous WALKSTUF1 high/low baseline `1471/1440` and `1470/1446`. The follow-up `{185..197}`
-B2-high read group is another same-speed CD-pressure row: B2-high remains
+B2-high read group is another same-speed CD-pressure row, and the current
+`{158..174}` retry now lands cleanly on top of it: B2-high remains
 `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due `5`, while
-loop reads/read time drop `45/199 -> 43/197`.
+loop reads/read time drop first `45/199 -> 43/197` and then `43/197 -> 40/189`.
 The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
 W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
 `24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
@@ -243,8 +244,9 @@ hidden-refill tradeoff `14 -> 16`. The follow-up guarded `315..327` row is a
 same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
 `16`, while blocking drops `41 -> 39`, loop reads `47 -> 45`, read time
 `203 -> 199`, and due `6 -> 5`. The later `{185..197}` row keeps loop speed,
-blocking, refill, and due exact-flat while reducing loop reads/read time again
-`45/199 -> 43/197`; the entries `141/142` setup duplicate alias keeps timing
+blocking, refill, and due exact-flat while reducing loop reads/read time
+`45/199 -> 43/197`; the newest `{158..174}` row keeps the same timing while
+cutting CD pressure again to `40/189`; the entries `141/142` setup duplicate alias keeps timing
 flat while reducing active uncovered owners/payload `286/519400 -> 284/518994`.
 `{287..311}` was exact-flat with no key win, and `{249..261}` regressed
 blocking and loop reads. The newest gap-8 upload retune improves
@@ -550,7 +552,7 @@ current compacted low pack to `788773` active payload while preserving the
 read group then keeps the pack fixed while moving the current speed row to
 `1470/1446`, overrun `24`, blocking/refill `34/6`, reads/read time `30/159`,
 and due `4`; the current `{355..371}` follow-up keeps timing flat and lowers
-reads/read time to `24/147`. The latest v910 frame
+reads/read time to `24/146`. The latest v910 frame
 `106` / source frame `209` entry shrinks `944 -> 919` bytes and sector
 coverage stays `2 -> 2`.
 Scene/loop remain `1769/1477`, target improves `1431 -> 1432`, overrun
@@ -1762,14 +1764,14 @@ in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
 `18144/110717/468636 -> 18030/105645/446246`. Use v926 as the current
 same-speed BUILDING2 high work baseline plus the entries `92`/`94`/`95` trim
-as the current payload baseline for future comparisons. The newest current
-read-work row adds `{185..197}` and keeps B2-high speed exact-flat while
-reducing loop reads/read time `45/199 -> 43/197`; `{287..311}` was exact-flat
+as the current payload baseline for future comparisons. The current read-work
+rows add `{185..197}` and `{158..174}` and keep B2-high speed exact-flat while
+reducing loop reads/read time `45/199 -> 40/189`; `{287..311}` was exact-flat
 without a key win and `{249..261}` regressed visible CD pressure.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
-guarded `271..287`, `315..327`, and `{185..197}`, keeping B2-high at `1347/1313`
+`{158..174}`, guarded `271..287`, `315..327`, and `{185..197}`, keeping B2-high at `1347/1313`
 while lowering active CD pressure to blocking/refill `39/16`, reads/read time
-`43/197`, and due `5`.
+`40/189`, and due `5`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for

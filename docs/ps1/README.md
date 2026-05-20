@@ -61,14 +61,15 @@ segment, adds the `{91,107}` first-boundary read group, pays the small
 pack, adds `{378..390}`, then retargets setup to `244..350` plus split
 `179..185` with `{113..129}` and adds `{355..371}` as same-speed read-work.
 Low now measures `1470/1446` at `98.367%` target speed with overrun `24`,
-blocking/refill `33/5`, loop reads/read time `24/147`, and due `4`, while
+blocking/refill `33/5`, loop reads/read time `24/146`, and due `4`, while
 active payload is `782698` without changing pack size or sectors.
 
 The latest BUILDING2 high allocator-era baseline keeps retained groups
-`60..72`, `206..230`, `226..242`, `83..95`, guarded `271..287`, `315..327`,
-and `{185..197}`. It measures `1621/1347/1313` at `97.476%` target speed,
-overrun `34`, blocking/refill `39/16`, loop reads/read time `43/197`, and due
-`5`, with pack LBA/sectors and the `233472` byte PS-EXE bucket fixed. The
+`60..72`, `206..230`, `226..242`, `83..95`, `{158..174}`, guarded `271..287`,
+`315..327`, and `{185..197}`. It measures `1621/1347/1313` at `97.476%`
+target speed, overrun `34`, blocking/refill `39/16`, loop reads/read time
+`40/189`, and due `5`, with pack LBA/sectors and the `233472` byte PS-EXE
+bucket fixed. The
 current work-volume layer trims entries `92`, `94`, and `95` in place, then
 aliases duplicate entries `141` and `142` to setup-resident payloads for entries
 `116` and `118`; the five-yellow canary stays exact-flat while uncovered active

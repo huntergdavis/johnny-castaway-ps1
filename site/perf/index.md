@@ -170,8 +170,8 @@ Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{411..423}` replacement focused run `2026-05-20T10:12:48` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg411-423-replace`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high `{158..174}` CD-pressure canary `2026-05-20T11:06:09` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg158-174`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg411-423-replace`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -206,7 +206,7 @@ frame132, adds `{378..390}`, then retargets setup to `244..350` with a split
 `179..185` edge plus `{113..129}`, and adds `{355..371}` as same-speed
 read-work. The combined row improves
 `1479/1435 -> 1470/1446`, overrun `44 -> 24`,
-blocking/refill `65/18 -> 33/5`, loop reads/read time `50/230 -> 24/147`,
+blocking/refill `65/18 -> 33/5`, loop reads/read time `50/230 -> 24/146`,
 and due `10 -> 4`.
 Both W1 rows remain yellow, with high now at `97.894%` and low at `98.367%`
 target speed.
@@ -223,7 +223,8 @@ the newest same-loop pressure row keeps `1347/1313`, overrun `34`, and refill
 entries `92`, `94`, and `95` from `8834 -> 6370`, `8873 -> 6939`, and
 `10247 -> 8827` bytes, reducing active payload `669408 -> 663590` with the
 five-yellow canary exact-flat. The follow-up `{185..197}` row keeps timing
-flat while reducing loop reads/read time again `45/199 -> 43/197`.
+flat while reducing loop reads/read time first `45/199 -> 43/197` and then
+`43/197 -> 40/189` with `{158..174}`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -563,7 +564,7 @@ payload trim and `{378..390}` read group then move the current row to
 due `4`; the latest `244..350`/`179..185` setup retarget plus `{113..129}`
 keeps `1470/1446` while reducing blocking/read time to `33/150`, loop reads
 to `26`, and hidden refill to `5`; the `{355..371}` follow-up keeps timing
-flat and lowers loop reads/read time again to `24/147`. Larger full-scene
+flat and lowers loop reads/read time again to `24/146`. Larger full-scene
 setup buffers and wider B2 second-segment probes crossed allocator
 clean-pressure cliffs and were rejected.
 
@@ -575,11 +576,11 @@ clipping; move to `87..88` or smaller non-risk candidates.
 
 Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
 relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, then the
-read-group passes replace the tail row with `83..95` and add guarded
-`271..287` plus `315..327`, then the entries `92`/`94`/`95` payload trim
-reduces active payload `669408 -> 663590`. The current B2-high row is
+read-group passes replace the tail row with `83..95`, add `{158..174}`, guarded
+`271..287`, `315..327`, and `{185..197}`, then the entries `92`/`94`/`95`
+payload trim reduces active payload `669408 -> 663590`. The current B2-high row is
 `1347/1313`, overrun
-`34`, blocking `39`, refill overrun `16`, reads/read time `43/197`, and due `5`, while still avoiding
+`34`, blocking `39`, refill overrun `16`, reads/read time `40/189`, and due `5`, while still avoiding
 the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
@@ -623,6 +624,7 @@ and this page.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed VISITOR3-high clean-relief window row uses
   `v3high-window80-tight56`;
+  BUILDING2 high uses `b2high-rg158-174`;
   WALKSTUF1 low uses `w1low-trim-entry85`;
   WALKSTUF1 high uses `w1high-rg411-423-replace`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
@@ -1261,8 +1263,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T00:14:37</td>
-      <td>b2high-rg185-197</td>
+      <td>2026-05-20T11:06:09</td>
+      <td>b2high-rg158-174</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -2493,8 +2495,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T22:34:00</td>
-      <td>v3high-window80-tight56</td>
+      <td>2026-05-20T11:06:09</td>
+      <td>b2high-rg158-174</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1071/1045</td>
@@ -2507,8 +2509,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-19T19:47:09</td>
-      <td>git:3579a628+w1low-rg355-371</td>
+      <td>2026-05-20T11:06:09</td>
+      <td>b2high-rg158-174</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1065/1039</td>
@@ -2633,8 +2635,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T10:12:48</td>
-      <td>w1high-rg411-423-replace</td>
+      <td>2026-05-20T11:06:09</td>
+      <td>b2high-rg158-174</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2647,8 +2649,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T07:04:35</td>
-      <td>w1low-trim-entry85</td>
+      <td>2026-05-20T11:06:09</td>
+      <td>b2high-rg158-174</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

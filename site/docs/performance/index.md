@@ -334,17 +334,17 @@ split TRANSIENT `344..350` setup edge, improving the current row
 reads/read time `50/230 -> 31/163`, and due `10 -> 4`; the later
 `{378..390}`, `244..350`/`179..185` plus `{113..129}`, and `{355..371}`
 passes keep the row at `1470/1446`, improve blocking/refill to `33/5`, and
-lower reads/read time to `24/147`. Both W1 rows stay yellow while staying
+lower reads/read time to `24/146`. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors `3..35` and `202..242`, then replaces the tail read group
-with `83..95`, adds guarded `271..287` plus `315..327`, and trims entries
-`92`/`94`/`95` as a same-speed payload baseline. The current row is
-`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, reads/read time
-`45/199`, and due `5`; active payload drops `669408 -> 663590` without moving
-the pack layout, and the row avoids the allocator-era clean-rect failure seen
-with full setup buffers.
+with `83..95`, adds `{158..174}`, guarded `271..287`, `315..327`, and
+`{185..197}`, and trims entries `92`/`94`/`95` as a same-speed payload
+baseline. The current row is `1347/1313`, overrun `34`, blocking `39`, refill
+overrun `16`, reads/read time `40/189`, and due `5`; active payload drops
+`669408 -> 663590` without moving the pack layout, and the row avoids the
+allocator-era clean-rect failure seen with full setup buffers.
 
 The latest BUILDING2 low allocator baseline adds setup-resident `112..128`
 and `226..262` slices, low-only `80 KiB` clean-strip shaping, a slack-5 low

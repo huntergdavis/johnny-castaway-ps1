@@ -40,9 +40,10 @@ low-only `80 KiB` clean-strip cap, raise the low window slack to `5`, and add
 `{141,153}`, improving low to `1327/1318`, overrun `9`, blocking `47`,
 reads `27`, refill `0`, and due `9`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
 of the allocator-safe setup slices, holding `1347/1313` while cutting blocking
-to `39`, reads/read time to `45/199`, and due to `5`; the newest entries
-`92`/`94`/`95` payload trim cuts B2-high active payload `669408 -> 663590`
-with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
+to `39`, reads/read time to `40/189`, and due to `5`; the entries `92`/`94`/`95`
+payload trim cuts B2-high active payload `669408 -> 663590`, and `{185..197}`
+plus `{158..174}` bank same-speed CD-pressure work with exact-flat five-yellow
+timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
 `2847/2820`, overrun `27`, blocking/read time `32`/`252`, and prefetch overrun
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
@@ -58,7 +59,7 @@ low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to
 `244..350` plus split `179..185`, adds `{113,129}`, and then adds
 `{355,371}` as same-speed read-work. It now measures `1470/1446`,
-blocking/refill/due `33/5/4`, with loop reads/read time at `24/147`.
+blocking/refill/due `33/5/4`, with loop reads/read time at `24/146`.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
@@ -87,8 +88,9 @@ relative sectors `112..128` and `226..262` during setup, with the allocator-era
 matrix at `1327/1318`, overrun `9`, blocking/refill `47/0`,
 reads `27`, and due `9`. BUILDING2 high currently measures
 `1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, and due misses
-`5`; the allocator-safe setup slices plus the `83..95`, guarded `271..287`,
-and `315..327` scheduler rows keep reads/read time at `45/199`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`5`; the allocator-safe setup slices plus the `83..95`, `{158..174}`, guarded
+`271..287`, `315..327`, and `{185..197}` scheduler rows keep reads/read time at
+`40/189`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims plus the entries `92`/`94`/`95` follow-up reduce active payload
 `674798 -> 663590` without moving pack layout.

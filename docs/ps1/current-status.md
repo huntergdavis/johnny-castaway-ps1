@@ -318,7 +318,7 @@ main setup residency to `244..350`, keeps a split `179..185` edge, and adds
 `{113,129}` to hold `1470/1446` while improving scene `1812 -> 1809`,
 blocking/refill `34/6 -> 33/5`, and reads/read time `30/159 -> 26/150`; the
 same-speed `{355,371}` follow-up keeps timing flat and lowers reads/read time
-again to `24/147`.
+again to `24/146`.
 Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, adds `{149,165}`, encodes frame `92` as D4, and now adds
@@ -341,7 +341,8 @@ loop `1351 -> 1347`, overrun `38 -> 34`, blocking `50 -> 41`, read time
 `1347/1313`, overrun `34`, and refill `16` flat while reducing blocking
 `41 -> 39`, reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`;
 the follow-up `{185..197}` row keeps speed/blocking/refill flat while reducing
-reads/read time again `45/199 -> 43/197`.
+reads/read time `45/199 -> 43/197`, and the newest `{158..174}` row keeps the
+same timing exact-flat while lowering CD work again to `40/189`.
 After the allocator refresh, BUILDING2 high guarded read-group pressure promotions,
 the BUILDING4 low gap-8 dirty-upload band retune, the W1-high `286..344`
 pressure promotion, the VISITOR3 low frame138 raw-gap promotion, the
@@ -356,7 +357,7 @@ same-speed `{355..371}` read-work row, the W1-high frame56/`{178..194}`
 CD-pressure promotion plus `{423..439}`, `{404..416}`, `{395..411}`, and retargeted `{411..423}`, W1-high prepare-first
 scheduler ownership, the VISITOR3-high 80 KiB clean-relief
 window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
-`{185..197}` same-speed CD work, the public battle card is now `+0.2387%` over target / `99.7644%`
+`{185..197}` and `{158..174}` same-speed CD work, the public battle card is now `+0.2387%` over target / `99.7644%`
 target speed; the raw signed optimization rollup is about `-0.4782%` /
 `100.4948%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
@@ -494,12 +495,12 @@ Milestone releases:
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
   The public battle card is `+0.2387%` / `99.7644%` with `121` green, `5` yellow, and `0` orange rows;
-  BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/43/5`, BUILDING2 low now measures
+  BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/40/5`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 663590`, WALKSTUF1 high is
-  `1472/1441` with blocking/read time `43`/`201`, loop reads `42`, and rows/spans/pixels
+  `1472/1441` with blocking/read time `43`/`198`, loop reads `41`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is `1470/1446` with loop
-  reads/read time `24`/`147`, rows/spans/pixels `16257/114798/633876`, and active payload
+  reads/read time `24`/`146`, rows/spans/pixels `16257/114798/633876`, and active payload
   `788773`, VISITOR3 high is
   `1071/1045` with blocking/read time `35`/`69`,
   VISITOR3 low is `1065/1039` with blocking/read time `75`, JOHNNY1 high/low are

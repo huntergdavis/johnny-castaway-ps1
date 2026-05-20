@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2740 words
+          ~10 min read · 2749 words
         </p>
 
       <hr class="rule" />
@@ -147,9 +147,10 @@ low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-
 <code class="language-plaintext highlighter-rouge">{141,153}</code>, improving low to <code class="language-plaintext highlighter-rouge">1327/1318</code>, overrun <code class="language-plaintext highlighter-rouge">9</code>, blocking <code class="language-plaintext highlighter-rouge">47</code>,
 reads <code class="language-plaintext highlighter-rouge">27</code>, refill <code class="language-plaintext highlighter-rouge">0</code>, and due <code class="language-plaintext highlighter-rouge">9</code>. BUILDING2 high now layers guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code> rows on top
 of the allocator-safe setup slices, holding <code class="language-plaintext highlighter-rouge">1347/1313</code> while cutting blocking
-to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time to <code class="language-plaintext highlighter-rouge">45/199</code>, and due to <code class="language-plaintext highlighter-rouge">5</code>; the newest entries
-<code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> payload trim cuts B2-high active payload <code class="language-plaintext highlighter-rouge">669408 -&gt; 663590</code>
-with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the <code class="language-plaintext highlighter-rouge">24 KiB</code> stream-window promotion at
+to <code class="language-plaintext highlighter-rouge">39</code>, reads/read time to <code class="language-plaintext highlighter-rouge">40/189</code>, and due to <code class="language-plaintext highlighter-rouge">5</code>; the entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code>
+payload trim cuts B2-high active payload <code class="language-plaintext highlighter-rouge">669408 -&gt; 663590</code>, and <code class="language-plaintext highlighter-rouge">{185..197}</code>
+plus <code class="language-plaintext highlighter-rouge">{158..174}</code> bank same-speed CD-pressure work with exact-flat five-yellow
+timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the <code class="language-plaintext highlighter-rouge">24 KiB</code> stream-window promotion at
 <code class="language-plaintext highlighter-rouge">2847/2820</code>, overrun <code class="language-plaintext highlighter-rouge">27</code>, blocking/read time <code class="language-plaintext highlighter-rouge">32</code>/<code class="language-plaintext highlighter-rouge">252</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">27</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
@@ -165,7 +166,7 @@ low-only 48 KiB clean-rect chunking, then adds the <code class="language-plainte
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to
 <code class="language-plaintext highlighter-rouge">244..350</code> plus split <code class="language-plaintext highlighter-rouge">179..185</code>, adds <code class="language-plaintext highlighter-rouge">{113,129}</code>, and then adds
 <code class="language-plaintext highlighter-rouge">{355,371}</code> as same-speed read-work. It now measures <code class="language-plaintext highlighter-rouge">1470/1446</code>,
-blocking/refill/due <code class="language-plaintext highlighter-rouge">33/5/4</code>, with loop reads/read time at <code class="language-plaintext highlighter-rouge">24/147</code>.
+blocking/refill/due <code class="language-plaintext highlighter-rouge">33/5/4</code>, with loop reads/read time at <code class="language-plaintext highlighter-rouge">24/146</code>.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
@@ -194,8 +195,9 @@ relative sectors <code class="language-plaintext highlighter-rouge">112..128</co
 matrix at <code class="language-plaintext highlighter-rouge">1327/1318</code>, overrun <code class="language-plaintext highlighter-rouge">9</code>, blocking/refill <code class="language-plaintext highlighter-rouge">47/0</code>,
 reads <code class="language-plaintext highlighter-rouge">27</code>, and due <code class="language-plaintext highlighter-rouge">9</code>. BUILDING2 high currently measures
 <code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill overrun <code class="language-plaintext highlighter-rouge">16</code>, and due misses
-<code class="language-plaintext highlighter-rouge">5</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>,
-and <code class="language-plaintext highlighter-rouge">315..327</code> scheduler rows keep reads/read time at <code class="language-plaintext highlighter-rouge">45/199</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+<code class="language-plaintext highlighter-rouge">5</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code>, <code class="language-plaintext highlighter-rouge">{158..174}</code>, guarded
+<code class="language-plaintext highlighter-rouge">271..287</code>, <code class="language-plaintext highlighter-rouge">315..327</code>, and <code class="language-plaintext highlighter-rouge">{185..197}</code> scheduler rows keep reads/read time at
+<code class="language-plaintext highlighter-rouge">40/189</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims plus the entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> follow-up reduce active payload
 <code class="language-plaintext highlighter-rouge">674798 -&gt; 663590</code> without moving pack layout.

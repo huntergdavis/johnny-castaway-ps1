@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-20:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{411..423}` replacement focused run `2026-05-20T10:12:48` |
-| Stats version | mixed; newest targeted under-green row is stamped `w1high-rg411-423-replace`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high `{158..174}` CD-pressure canary `2026-05-20T11:06:09` |
+| Stats version | mixed; newest targeted under-green row is stamped `b2high-rg158-174`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -102,11 +102,13 @@ proof:
 `scratch/ps1-perf-iterate/building2-high-setup-alias141-142-current/20260520-034134-2761004/summary.json`;
 five-yellow no-regression canary:
 `scratch/ps1-perf-iterate/building2-high-setup-alias141-142-canary/20260520-034712-2793517/summary.json`.
-B2 high stays exact-flat at `1621/1347/1313`, overrun `34`,
-blocking/refill `39/16`, reads/read time `43/197`, and due `5`, while uncovered
-active entries/payload drop `286/519400 -> 284/518994`. VISITOR3 high/low and
-WALKSTUF1 high/low stayed flat in the same canary. The prior same-speed trim of
-entries `92`, `94`, and `95` reduced active payload `669408 -> 663590`.
+B2 high now also carries `{158..174}` as a same-speed CD-pressure row, staying
+exact-flat at `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due
+`5`, while reads/read time improve `43/197 -> 40/189`. The prior alias keeps
+uncovered active entries/payload at `286/519400 -> 284/518994`; VISITOR3
+high/low and WALKSTUF1 high/low stayed flat in the same canary. The prior
+same-speed trim of entries `92`, `94`, and `95` reduced active payload
+`669408 -> 663590`.
 
 Latest promoted VISITOR3 high clean-relief window note: the high-tide relief
 stream window widens from `68 KiB` to `80 KiB` while keeping the accepted
@@ -381,8 +383,9 @@ v664 late `168..177`.
 The payload-work baseline stays exact-flat at `1602`, active loop/target
 `1351/1311`, overrun `40`, blocking/refill `54/18`, reads/read time `58/257`,
 and due `7`; the current B2-high speed row layers allocator-safe setup slices,
-`83..95`, guarded `271..287`, and `315..327` to reach `1347/1313`,
-overrun `34`, blocking/refill `39/16`, reads/read time `45/199`, and due `5`. Runtime
+`83..95`, `{158..174}`, guarded `271..287`, `315..327`, and `{185..197}` to
+reach `1347/1313`, overrun `34`, blocking/refill `39/16`, reads/read time
+`40/189`, and due `5`. Runtime
 frame rows/spans/pixels remain at the v703 `18030/105645/446246` row, while
 active payload drops `674798 -> 663590` with fixed pack LBA/sectors and
 PS-EXE bucket.
