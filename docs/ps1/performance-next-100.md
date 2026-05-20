@@ -51,7 +51,7 @@ setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 `{355..371}` W1-low read-work promotion, then the same-speed W1-high
 frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
 80 KiB clean-relief stream-window promotion, and finally the same-speed
-BUILDING2 high entries `92`/`94`/`95` payload trim:
+BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
@@ -106,7 +106,10 @@ The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
 at B2-high `1347/1313`, VISITOR3 high/low `1071/1045` and `1065/1039`, and
-WALKSTUF1 high/low `1471/1440` and `1470/1446`.
+WALKSTUF1 high/low `1471/1440` and `1470/1446`. The follow-up `{185..197}`
+B2-high read group is another same-speed CD-pressure row: B2-high remains
+`1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due `5`, while
+loop reads/read time drop `45/199 -> 43/197`.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
@@ -116,7 +119,10 @@ loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
 hidden-refill tradeoff `14 -> 16`. The follow-up guarded `315..327` row is a
 same-loop pressure win: B2-high stays `1347/1313`, overrun `34`, and refill
 `16`, while blocking drops `41 -> 39`, loop reads `47 -> 45`, read time
-`203 -> 199`, and due `6 -> 5`. The newest gap-8 upload retune improves
+`203 -> 199`, and due `6 -> 5`. The later `{185..197}` row keeps loop speed,
+blocking, refill, and due exact-flat while reducing loop reads/read time again
+`45/199 -> 43/197`; `{287..311}` was exact-flat with no key win, and
+`{249..261}` regressed blocking and loop reads. The newest gap-8 upload retune improves
 BUILDING4 low `2853/2816 -> 2849/2816`, overrun `37 -> 33`,
 blocking/refill `42/35 -> 38/31`, and read time `223 -> 222`; gap `11`
 was rejected as a one-VBlank regression against gap `8`.
@@ -163,13 +169,14 @@ blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
 and due `6 -> 5`.
 
 Current allocator-era big-swing queue after closing the W1-low static table
-lane, banking the W1-high frame56/`{178..194}` CD-pressure row, and promoting
-the VISITOR3 high 80 KiB clean-relief window:
+lane, banking the W1-high frame56/`{178..194}` and `{423..439}` CD-pressure
+rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
+B2-high `{185..197}` CD-pressure row:
 
-1. Generate BUILDING2-high append-start/deadline ownership for the late `249..261` row rather than another static table row.
-2. Test BUILDING2-high first-frame upload reduction, not first-frame relocation, because setup-first-render lowered target and worsened cadence.
-3. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode is closed.
-4. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+1. Generate BUILDING2-high append-start/deadline ownership for the `249..261`, `287..311`, and hot `122..146` families rather than another static table row; raw `{249..261}` regressed and raw `{287..311}` was exact-flat.
+2. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode and first-frame setup/upload variants are closed.
+3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage hit the clean-rect/CACHE cliff.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
 7. Try VISITOR3-low static-upload/restore trimming because retained-segment swaps are proven phase-negative.
@@ -1534,11 +1541,14 @@ in place with preserved offsets, shrinking `1831 -> 851`, `1980 -> 1025`,
 `58/257`, and due `7`, and drop runtime frame rows/spans/pixels
 `18144/110717/468636 -> 18030/105645/446246`. Use v926 as the current
 same-speed BUILDING2 high work baseline plus the entries `92`/`94`/`95` trim
-as the current payload baseline for future comparisons.
+as the current payload baseline for future comparisons. The newest current
+read-work row adds `{185..197}` and keeps B2-high speed exact-flat while
+reducing loop reads/read time `45/199 -> 43/197`; `{287..311}` was exact-flat
+without a key win and `{249..261}` regressed visible CD pressure.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
-guarded `271..287`, and `315..327`, keeping B2-high at `1347/1313`
+guarded `271..287`, `315..327`, and `{185..197}`, keeping B2-high at `1347/1313`
 while lowering active CD pressure to blocking/refill `39/16`, reads/read time
-`45/199`, and due `5`.
+`43/197`, and due `5`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for

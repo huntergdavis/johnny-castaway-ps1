@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-high-rg423-439-current-canary/20260519-234312-1418051`
+- Source artifact root: `scratch/ps1-perf-iterate/building2-high-rg185-197-current-canary/20260520-001437-1595009`
 - Candidate rows: `52`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -33,12 +33,12 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 11 | `building2` | `high` | 1347/1313 | 39 | `158..182` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 12 | `building2` | `high` | 1347/1313 | 39 | `255..271` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 13 | `building2` | `high` | 1347/1313 | 39 | `249..265` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 14 | `building2` | `high` | 1347/1313 | 39 | `185..197` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 15 | `building2` | `high` | 1347/1313 | 39 | `95..111` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 16 | `building2` | `high` | 1347/1313 | 39 | `158..174` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 17 | `building2` | `high` | 1347/1313 | 39 | `249..261` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 18 | `building2` | `high` | 1347/1313 | 39 | `95..107` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 19 | `building2` | `high` | 1347/1313 | 39 | `140..152` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 14 | `building2` | `high` | 1347/1313 | 39 | `95..111` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 15 | `building2` | `high` | 1347/1313 | 39 | `158..174` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 16 | `building2` | `high` | 1347/1313 | 39 | `249..261` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 17 | `building2` | `high` | 1347/1313 | 39 | `95..107` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 18 | `building2` | `high` | 1347/1313 | 39 | `140..152` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 19 | `building2` | `high` | 1347/1313 | 39 | `122..134` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 20 | `walkstuf1` | `high` | 1471/1440 | 56 | `352..376` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 21 | `walkstuf1` | `high` | 1471/1440 | 56 | `84..108` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 22 | `walkstuf1` | `high` | 1471/1440 | 56 | `345..369` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |

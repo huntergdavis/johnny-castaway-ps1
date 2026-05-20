@@ -6,8 +6,9 @@
 **Last updated:** 2026-05-19 (`perf/allocator-era-under-green-20260517` after
 the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion, the same-speed
 `{355..371}` read-work row, the W1-high frame56/`{178..194}` CD-pressure
-promotion, the VISITOR3-high 80 KiB clean-relief window promotion, and the
-BUILDING2-high entries `92`/`94`/`95` same-speed payload trim; all 63 scenes
+promotion plus `{423..439}`, the VISITOR3-high 80 KiB clean-relief window
+promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus `{185..197}`
+same-speed CD-pressure row; all 63 scenes
 remain validated, all 126 high/low rows are timing-bearing, and the public
 headless battle card is `+0.2387%` over target / `99.7644%` target speed).
 
@@ -249,11 +250,12 @@ hidden refill `20`, loop reads `58`, loop-read time `259`, and due misses
 fixed-sector payload shrink, and the same-speed v860/v861/v862/v863 frame89/frame98/frame27/frame101 payload shrinks.
 The BUILDING2 high row keeps the accepted `60..72`, `206..230`, and `226..242`
 retained groups, replaces the old tail row with the `83..95` scheduler row,
-adds guarded `271..287` plus `315..327`,
+adds guarded `271..287` plus `315..327`, then adds `{185..197}` as same-speed
+CD-pressure work,
 and primes allocator-safe CACHE slices at relative sectors `3..35` and
 `202..242` during setup. On current HEAD it measures
-`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, loop reads `45`,
-loop-read time `199`, and due misses `5`. It also carries the v664 late-only offscreen work-volume clip
+`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, loop reads `43`,
+loop-read time `197`, and due misses `5`. It also carries the v664 late-only offscreen work-volume clip
 for frames `168..177`, the v698 post-hot tail clip for frames `94..104`, the
 v700 frame `92` clip, the v701 frame `91` clip, the v702 frame `90` clip, the
 v703 frame `89` clip, and the v877/v879/v880 preserve-offset entry `172` /
@@ -331,7 +333,9 @@ loop `1351 -> 1347`, overrun `38 -> 34`, blocking `50 -> 41`, read time
 `207 -> 203`, and due `7 -> 6`; the accepted hidden-refill tradeoff is
 `14 -> 16`. The newest same-loop guarded row adds `315..327`, keeping
 `1347/1313`, overrun `34`, and refill `16` flat while reducing blocking
-`41 -> 39`, reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`.
+`41 -> 39`, reads `47 -> 45`, read time `203 -> 199`, and due `6 -> 5`;
+the follow-up `{185..197}` row keeps speed/blocking/refill flat while reducing
+reads/read time again `45/199 -> 43/197`.
 After the allocator refresh, BUILDING2 high guarded read-group pressure promotions,
 the BUILDING4 low gap-8 dirty-upload band retune, the W1-high `286..344`
 pressure promotion, the VISITOR3 low frame138 raw-gap promotion, the
@@ -343,9 +347,9 @@ clean80 green promotion, the VISITOR3 high `64 KiB` clean-strip cap, the
 BUILDING4 low `24 KiB` stream-window green promotion, the W1-low frame132
 payload trim, the W1-low `{378..390}` read-group promotion, and the W1-low
 same-speed `{355..371}` read-work row, the W1-high frame56/`{178..194}`
-CD-pressure promotion, the VISITOR3-high 80 KiB clean-relief window
-promotion, and the BUILDING2-high entries `92`/`94`/`95` same-speed payload
-trim, the public battle card is now `+0.2387%` over target / `99.7644%`
+CD-pressure promotion plus `{423..439}`, the VISITOR3-high 80 KiB clean-relief
+window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
+`{185..197}` same-speed CD work, the public battle card is now `+0.2387%` over target / `99.7644%`
 target speed; the raw signed optimization rollup is about `-0.4782%` /
 `100.4948%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
@@ -483,7 +487,7 @@ Milestone releases:
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
   The public battle card is `+0.2387%` / `99.7644%` with `121` green, `5` yellow, and `0` orange rows;
-  BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/45/5`, BUILDING2 low now measures
+  BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/43/5`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 663590`, WALKSTUF1 high is
   `1471/1440` with blocking/read time `56`/`205`, loop reads `42`, and rows/spans/pixels

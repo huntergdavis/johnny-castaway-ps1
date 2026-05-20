@@ -168,8 +168,8 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{423..439}` CD-work canary `2026-05-19T23:43:12` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high payload row uses `b2high-entries92-94-95-trim`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-rg423-439`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high `{185..197}` CD-work canary `2026-05-20T00:14:37` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-rg423-439`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -1243,8 +1243,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T23:19:05</td>
-      <td>b2high-entries92-94-95-trim</td>
+      <td>2026-05-20T00:14:37</td>
+      <td>b2high-rg185-197</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>

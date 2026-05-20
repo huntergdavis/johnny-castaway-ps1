@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1 low setup/{113..129} CD-pressure promotion, the same-speed {355..371} read-work row, the W1-high frame56/{178..194} CD-pressure promotion, the VISITOR3-high 80 KiB clean-relief window promotion, and the BUILDING2-high entries 92/94/95 same-speed payload trim; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2387% over target / 99.7644% target speed).
+the WALKSTUF1 low setup/{113..129} CD-pressure promotion, the same-speed {355..371} read-work row, the W1-high frame56/{178..194} CD-pressure promotion plus {423..439}, the VISITOR3-high 80 KiB clean-relief window promotion, and the BUILDING2-high entries 92/94/95 trim plus {185..197} same-speed CD-pressure row; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2387% over target / 99.7644...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 843 |
-| Approx. words | 9426 |
+| Lines | 847 |
+| Approx. words | 9468 |
 | Code fences | 1 |
 
 ## Outline
