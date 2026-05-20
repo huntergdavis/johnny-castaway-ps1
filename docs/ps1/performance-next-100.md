@@ -178,9 +178,10 @@ forms either regressed target/refill/visible blocking or went exact-flat under
 high slack guards, so the W1-low static retained-read table lane is exhausted.
 Remaining W1-low work should be treated as generated-ownership/data-shape
 leads, not direct table rows.
-The latest read-candidate refresh still has zero standalone or guarded direct
-rows; its only open row is scheduler-owned W1-high `345..361`, which should be
-handled as generated deadline/refill ownership rather than another hand table.
+The latest W1-high `345..361` sweep closes the last open scheduler-owned row
+from that refresh: raw grouping saved reads but regressed visible cadence,
+slack8 was inert, and direct-stage ownership regressed blocking/due with hot
+code growth.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
@@ -203,7 +204,7 @@ payload-only trims:
 8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal setup segment or the 80 KiB relief window.
 9. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since the promoted row now trades more smaller reads for lower blocking and refill debt.
 10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
-11. Generate W1-high deadline-owned read metadata for the current scheduler-owned `345..361` row plus the earlier `84..108`/`92..108` family now that frame92 D4 changed the boundary.
+11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms.
 12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
 14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
