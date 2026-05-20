@@ -2151,7 +2151,7 @@ therefore must stop treating saved reads as promotable by itself.
 | # | Target | Idea | First gate |
 | --- | --- | --- | --- |
 | 59 | WALKSTUF1 low | Convert the `167..183` near-miss into generated read ownership with an explicit refill budget, not a raw append row. | Generated hit count must be nonzero; accept only if loop `<=1468`, blocking `<=32`, and refill `<=6`. |
-| 60 | WALKSTUF1 low | Add max-slack as well as min-slack for generated groups so the `167..183` read fires only in the narrow slot that gave visible wins. | Trace must show the accepted group skipping every refill-overrun slot from the failed raw runs. |
+| 60 | WALKSTUF1 low | Closed by `walkstuf1-low-rg167-183-maxslack-current`: bounded max-slack gates `4`, `8`, `12`, `16`, and `32` were exact-flat, while the ungated control reproduced the visible win and the hidden refill debt. | Do not retry scalar min/max slack around this grouped append. Future `167..183` work needs explicit refill-budget ownership or a pack/data-shape change. |
 | 61 | WALKSTUF1 low | Try a two-phase split for `167..183`: resident setup for the first touched frame, generated append for the second. | Setup increase must stay inside the current allocator headroom and active refill must not rise. |
 | 62 | WALKSTUF1 low | Build a pack-side boundary trim around frames `109..115` that preserves file size but removes the need for the `167..183` append. | Host proof must save at least one read boundary without moving accepted setup sectors `238..350`. |
 | 63 | WALKSTUF1 low | Add a generated "never append" blacklist for pockets proven phase-negative: `120..136`, `120..132`, `174..198`, `174..186`, `366..378`. | Candidate tooling should hide these from top recommendations unless pack layout changes. |
@@ -2180,6 +2180,16 @@ therefore must stop treating saved reads as promotable by itself.
 | 86 | Cross-scene | Build a "no hot C" metadata path for per-scene read groups in pack tails. | First proof is exact-flat current W1-low and B2-high with metadata replacing existing C rows. |
 | 87 | Cross-scene | Add a visual/static ownership mask generator for precomposed upload rows. | Before timing, every row must prove pixel source: cleanup background, previous frame, or sprite payload. |
 | 88 | Cross-scene | Add a long-run allocator validation canary after any metadata sidecar or pack-format change. | Must preserve 0 BSODs and prove scene-boundary transient wipes do not discard live sidecar data. |
+
+Latest rejected W1-low generated-owner shape probe:
+`walkstuf1-low-rg167-183-maxslack-current` added max-slack gating to grouped
+read appends and swept `4`, `8`, `12`, `16`, and `32` against the current
+five-yellow baseline. Every bounded gate skipped the candidate and stayed
+exact-flat at `1812/1470/1446`, overrun `24`, blocking/refill `34/6`,
+reads/due `30/4`. The ungated control still improved visible loop/blocking to
+`1810/1468/1445` and `32`, but it also reproduced hidden refill `6 -> 9`.
+Close scalar max-slack gating for `167..183`; the useful fire is tied to the
+same high-slack slot that causes refill debt.
 
 Latest promoted VISITOR3 motion-copy payload baseline: keep the v181
 scene-specific FGP3 marker payload for yacht translation frames `119..123`,
