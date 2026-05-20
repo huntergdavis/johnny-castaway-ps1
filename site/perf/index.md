@@ -170,8 +170,8 @@ Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high `{158..174}` CD-pressure canary `2026-05-20T11:06:09` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg158-174`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg411-423-replace`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high entry38 setup-alias canary `2026-05-20T14:44:15` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high setup-alias row uses `b2high-alias38`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg411-423-replace`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -224,7 +224,9 @@ entries `92`, `94`, and `95` from `8834 -> 6370`, `8873 -> 6939`, and
 `10247 -> 8827` bytes, reducing active payload `669408 -> 663590` with the
 five-yellow canary exact-flat. The follow-up `{185..197}` row keeps timing
 flat while reducing loop reads/read time first `45/199 -> 43/197` and then
-`43/197 -> 40/189` with `{158..174}`.
+`43/197 -> 40/189` with `{158..174}`. The current setup-alias cleanup points
+duplicate entry `38` at setup-edge entry `35`; the five-yellow canary stays
+exact-flat and pack/executable layout stays fixed.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -624,7 +626,7 @@ and this page.
 - **Stats Version**: performance/layout version for that row. The latest
   refreshed VISITOR3-high clean-relief window row uses
   `v3high-window80-tight56`;
-  BUILDING2 high uses `b2high-rg158-174`;
+  BUILDING2 high uses `b2high-alias38`;
   WALKSTUF1 low uses `w1low-trim-entry85`;
   WALKSTUF1 high uses `w1high-rg411-423-replace`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
@@ -1263,8 +1265,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T11:06:09</td>
-      <td>b2high-rg158-174</td>
+      <td>2026-05-20T14:44:15</td>
+      <td>b2high-alias38</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -2495,8 +2497,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T11:06:09</td>
-      <td>b2high-rg158-174</td>
+      <td>2026-05-20T14:44:15</td>
+      <td>b2high-alias38</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1071/1045</td>
@@ -2509,8 +2511,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T11:06:09</td>
-      <td>b2high-rg158-174</td>
+      <td>2026-05-20T14:44:15</td>
+      <td>b2high-alias38</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1065/1039</td>
@@ -2635,8 +2637,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T11:06:09</td>
-      <td>b2high-rg158-174</td>
+      <td>2026-05-20T14:44:15</td>
+      <td>b2high-alias38</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2649,8 +2651,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T11:06:09</td>
-      <td>b2high-rg158-174</td>
+      <td>2026-05-20T14:44:15</td>
+      <td>b2high-alias38</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

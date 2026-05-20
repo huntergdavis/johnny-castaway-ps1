@@ -72,8 +72,10 @@ target speed, overrun `34`, blocking/refill `39/16`, loop reads/read time
 bucket fixed. The
 current work-volume layer trims entries `92`, `94`, and `95` in place, then
 aliases duplicate entries `141` and `142` to setup-resident payloads for entries
-`116` and `118`; the five-yellow canary stays exact-flat while uncovered active
-ownership drops `286/519400 -> 284/518994`.
+`116` and `118`, then aliases duplicate entry `38` to setup-edge entry `35`;
+the five-yellow canary stays exact-flat while uncovered active ownership drops
+`286/519400 -> 284/518994` and the entry38 table ownership is cleaned up
+without moving pack/executable layout.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row, v660 offscreen low-tide draw-span clip, and dead draw-tail payload trim,
