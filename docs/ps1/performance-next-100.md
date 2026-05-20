@@ -770,6 +770,20 @@ Close `122..146`, `95..119`, and `255..271` as inert scalar appends on this
 baseline. B2-high clusters now need generated append-start/deadline ownership or
 pack/upload work, not another blind hand table row.
 
+Latest rejected BUILDING2 high setup-window swing: retargeting the accepted
+second setup segment away from `202..242` to `122..162`, `95..135`, or
+`140..180` all regressed timing, proving the late cluster is essential.
+Preserving `202..242` and adding `122..146`/`122..145`/`122..144` hit the
+CACHE clean-rect cliff before `JCPERF2`; clean-cap pairings at `80 KiB` and
+`88 KiB` ran but regressed loop/blocking/overrun. Smaller additive windows
+`122..138` and `95..111` fit but were phase-negative, reducing reads while
+raising blocking to `48` and overrun to `44`/`43`. Artifacts are recorded under
+`building2-high-seg2-*` and `building2-high-add-seg3-*` in
+`scratch/ps1-perf-iterate/`. Keep B2-high setup coverage at `3..35` plus
+`202..242`; do not retry simple retained setup residency for the exposed early
+clusters without generated deadline/refill ownership or a clean/allocator byte
+reduction.
+
 Latest rejected BUILDING4 low read-group route: enabling a low-tide `building4`
 read-group table and adding `{274,298,0}` did not move timing. The focused gate
 stayed exact-flat at `3121/2849/2816`, overrun `33`, blocking/refill `38/31`,
