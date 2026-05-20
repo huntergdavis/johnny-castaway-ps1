@@ -322,7 +322,7 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal setup segment or the 80 KiB relief window.
 9. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since the promoted row now trades more smaller reads for lower blocking and refill debt.
 10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
-11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms.
+11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms, and the `walkstuf1` slack-5 early-prepare owner is exact-flat with hot-code growth.
 12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
 14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding is closed after the entry60 follow-up.
@@ -422,6 +422,15 @@ Artifact:
 Close early W1-high entry55/source frame65 sector-collapse trimming; these
 visually empty tail bytes are phase-bearing unless a generated owner can absorb
 the shifted cadence.
+Latest rejected WALKSTUF1 early-prepare scheduler swing: allowing `walkstuf1`
+to prepare staged visual work at slack `5` as well as slack `4` kept both
+remaining W1 yellow rows exact-flat (`1808/1472/1441` high and
+`1809/1470/1446` low) while growing `foregroundPilotPlay` by `276` bytes and
+shifting downstream hot symbols. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-prepare-slack5-current/20260520-114109-1289612/summary.json`.
+Keep the accepted slack-4 prepare point; W1 needs per-cluster deadline/refill
+metadata or pack/render data-shape work, not the same visual prepare one held
+VBlank earlier.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
