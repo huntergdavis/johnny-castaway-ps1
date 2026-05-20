@@ -1559,6 +1559,20 @@ loop read but regressed scene/loop/target `1602/1351/1311 -> 1605/1354/1310`,
 overrun `40 -> 44`, and refill `18 -> 20`, so do not retry post-hot
 sector-changing entry shrinks without generated deadline ownership.
 
+Latest rejected BUILDING2 high draw-tail sector-collapse swing: the current
+preserve-offset trim scanner still finds `12084` removable bytes across 11
+entries, mostly entries `89..91`, but the broad trim regressed B2-high from
+`1621/1347/1313`, overrun `34`, blocking/refill `39/16`, reads `43`, to
+`1622/1349/1313`, overrun `36`, blocking/refill `41/15`, reads `41`.
+Isolating entry `91` still regressed the same strict counters while reducing
+only one read. Artifacts:
+`scratch/ps1-perf-iterate/building2-high-trimdrawtails-current/20260520-010146-1859565/summary.json`
+and
+`scratch/ps1-perf-iterate/building2-high-trimdrawtails-entry91-current/20260520-010330-1869410/summary.json`.
+Close B2-high entries `89..91` under draw-tail sector-collapse; the next
+B2-high path needs generated deadline ownership or upload/restore elimination,
+not another no-decode tail shrink that changes cadence.
+
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
 and `365..381`, keep the v454 frame `71` / `77` previous-frame D4 deltas, and
 add the v626 slack-8 `218..229` retained read ahead of them. The current
