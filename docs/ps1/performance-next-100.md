@@ -345,7 +345,10 @@ change the public rollup or speed totals. The follow-up raw/min-slack
 regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
 read-candidate matrix now has no standalone or scheduler/guarded direct rows.
 The follow-up direct-stage owner lane also closed `129..153`, `160..176`, and
-`355..379`. The follow-up `153..177` retained-group probe is also closed:
+`355..379`. The distinct retained-group `{129..153}` form is now closed too:
+raw and slack8 saved reads but regressed target/refill/visible blocking, while
+slack32 was exact-flat/inert. The follow-up `153..177` retained-group probe is
+also closed:
 raw and slack8 improved loop/blocking but regressed hidden refill and target,
 while slack32 was exact-flat/inert. The smaller `147..171`, `153..169`,
 `142..154`, `136..148`, and `147..163` rows are now closed too. Raw/static
@@ -383,7 +386,7 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed, D4-only frame94 was inert, restore-minus-current has no current shrink, and local-LZ entry55 regressed cadence.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
 14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding, entry60 recovery rows, and broad low-tide no-direct-stage ownership are closed.
-15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{160..176}` plus entry60/guard is closed.
+15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{129..153}` and `{160..176}` plus entry60/guard are closed.
 16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}`, slack-5 prepare, and the minSlack4 floor prove simple static/scalar recovery rows are not enough.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
