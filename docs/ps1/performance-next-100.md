@@ -148,6 +148,11 @@ hot symbol addresses by about `-8` bytes and did not move loop, overrun,
 blocking, or refill metrics. Restore-side wins now need generated/pack-owned
 metadata or a bigger renderer redesign that changes measured restore/upload
 work, not local loop hoisting.
+The current-baseline VISITOR3-low window-size retest is closed: `20 KiB`
+reduced reads/due but regressed loop and overrun, while `12 KiB` preserved
+overrun but regressed blocking/due. Keep the accepted `16 KiB` low-tide
+clean-relief window until generated ownership or pack shape changes the due
+cluster.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
