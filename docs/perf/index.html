@@ -292,11 +292,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; B2-high <code class="language-plaintext highlighter-rouge">{185..197}</code> CD-work canary <code class="language-plaintext highlighter-rouge">2026-05-20T00:14:37</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">{404..416}</code> CD-work canary <code class="language-plaintext highlighter-rouge">2026-05-20T00:42:46</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary rows use <code class="language-plaintext highlighter-rouge">git:3579a628+w1low-rg355-371</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg423-439</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary rows use <code class="language-plaintext highlighter-rouge">git:3579a628+w1low-rg355-371</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg404-416</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -368,8 +368,8 @@ five-yellow timing canary exact-flat at <code class="language-plaintext highligh
 blocking/refill <code class="language-plaintext highlighter-rouge">57/13</code>, reads <code class="language-plaintext highlighter-rouge">45</code>, and due <code class="language-plaintext highlighter-rouge">10</code>. The newest frame56 trim
 removes another <code class="language-plaintext highlighter-rouge">3101</code> bytes and one sector; paired with <code class="language-plaintext highlighter-rouge">{178..194}</code>, it
 keeps timing flat while lowering blocking to <code class="language-plaintext highlighter-rouge">56</code> and reads to <code class="language-plaintext highlighter-rouge">43</code>. The
-newest <code class="language-plaintext highlighter-rouge">{423..439}</code> row keeps the same <code class="language-plaintext highlighter-rouge">1471/1440</code> timing and lowers loop
-reads/read time again <code class="language-plaintext highlighter-rouge">43/207 -&gt; 42/205</code>.</p>
+newest <code class="language-plaintext highlighter-rouge">{423..439}</code> and <code class="language-plaintext highlighter-rouge">{404..416}</code> rows keep the same <code class="language-plaintext highlighter-rouge">1471/1440</code> timing and
+lower loop reads/read time again <code class="language-plaintext highlighter-rouge">43/207 -&gt; 41/200</code>.</p>
 
 <p>Current W1-low read-pressure speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg355-371-current</code>
 keeps the accepted frame132 payload baseline, <code class="language-plaintext highlighter-rouge">{378..390}</code> speed row, and
@@ -2750,8 +2750,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T23:43:12</td>
-      <td>w1high-rg423-439</td>
+      <td>2026-05-20T00:42:46</td>
+      <td>w1high-rg404-416</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1471/1440</td>

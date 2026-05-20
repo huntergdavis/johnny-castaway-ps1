@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/building2-high-rg185-197-current-canary/20260520-001437-1595009`
+- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-high-rg404-416-current-canary/20260520-004246-1753495`
 - Candidate rows: `52`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -20,7 +20,7 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|
-| 1 | `walkstuf1` | `high` | 1471/1440 | 56 | `404..416` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 1 | `walkstuf1` | `high` | 1471/1440 | 56 | `74..86` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 2 | `visitor3` | `high` | 1071/1045 | 35 | `40..56` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 3 | `visitor3` | `high` | 1071/1045 | 35 | `40..46` (6s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 4 | `visitor3` | `high` | 1071/1045 | 35 | `44..50` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
