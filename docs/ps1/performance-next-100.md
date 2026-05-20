@@ -391,6 +391,16 @@ metric. Artifacts:
 `scratch/ps1-perf-iterate/building2-high-upload-gap0-current/20260520-031829-2630931/summary.json`,
 and
 `scratch/ps1-perf-iterate/upload-gap0-five-yellow-canary/20260520-032111-2646392/summary.json`.
+Retest after the B2-high `{158..174}` promotion repeated the result: gap `0`
+and gap `4` stayed exact-flat on all five yellow rows, with B2-high still
+`1621/1347/1313`, VISITOR3 high/low still `1388/1071/1045` and
+`1369/1065/1039`, and W1 high/low still `1808/1472/1441` and
+`1809/1470/1446`. Gap `4` mildly reduced VISITOR3-low/B2/W1 upload bytes but
+still did not move any timing metric; gap `0` still increased VISITOR3 upload
+bytes. Retest artifacts:
+`scratch/ps1-perf-iterate/upload-gap0-five-yellow-current/20260520-115957-1396578/summary.json`
+and
+`scratch/ps1-perf-iterate/upload-gap4-five-yellow-current/20260520-120905-1449371/summary.json`.
 Close global upload-gap retuning as a 99% speed path; any retry should be
 scene-local/generated and paired with CD/deadline ownership rather than a
 global constant.
