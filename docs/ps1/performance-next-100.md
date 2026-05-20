@@ -103,7 +103,12 @@ timing flat and lowers loop reads/read time again `43/207 -> 42/205`; the
 follow-up `{404..416}` row stays exact-flat and lowers read work again
 `42/205 -> 41/200`; the current prepare-first scheduler row moves W1-high to
 `1472/1441`, keeps overrun/refill flat at `31/13`, and improves blocking/due
-`56/10 -> 43/7`. The
+`56/10 -> 43/7`. The follow-up `365..389` direct-read row is closed on this
+baseline: raw and slack4 variants reduced loop reads `44 -> 41` but regressed
+W1-high to `1812/1476/1443`, overrun `33`, blocking `46`, and refill `16`;
+slack8 was safe but exact-flat at `1808/1472/1441`, blocking/refill `43/13`.
+This makes the remaining W1-high late-cluster path generated ownership or
+smaller isolated rows, not another coarse static/slack row. The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
