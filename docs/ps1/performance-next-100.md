@@ -314,6 +314,14 @@ and
 Close global upload-gap retuning as a 99% speed path; any retry should be
 scene-local/generated and paired with CD/deadline ownership rather than a
 global constant.
+Latest rejected code-phase/link-order swing: moving `src/cdrom_ps1.c` before
+`src/foreground_pilot.c` shifted foreground hot symbols by about `+10984` bytes
+while keeping the PS-EXE bucket at `233472`, but the current five-yellow canary
+was exact-flat on every speed-bearing metric. Artifact:
+`scratch/ps1-perf-iterate/linkorder-cd-before-fg-canary/20260520-045809-3193268/summary.json`.
+Close this coarse link-order bucket; future code-phase work needs narrower
+function alignment/object padding controls or should be deferred behind
+generated scheduler and pack-side work.
 Latest rejected VISITOR3 high final hand-table row: the refreshed matrix left
 only `{44..50}` unclosed. A high-tide-only route under the current `80 KiB`
 clean-relief stream window stayed exact-flat at `1388/1071/1045`, overrun `26`,
