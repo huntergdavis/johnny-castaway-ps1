@@ -133,6 +133,13 @@ stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
 blocking `45 -> 35`, hidden refill `3 -> 1`, and due `3 -> 2`;
 the rejected `96 KiB` variants saved a read but regressed loop/target cadence.
+The VISITOR3 low direct grouped-append lane is closed on the current baseline.
+Adding low-tide-only `{9..33}` was source-shape negative with no read gain
+(`1065 -> 1067`, blocking `75 -> 76`); `{86..98}` fired and saved one read
+but regressed to `1070/1041`, overrun `29`, blocking `79`; `{92..108}` also
+saved one read but still regressed to `1067/1041`, blocking `76`. VISITOR3 low
+needs generated deadline/refill ownership or pack/render byte reduction, not a
+hand-authored low-tide append table.
 The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
