@@ -130,6 +130,11 @@ blocking/refill `39/16`, reads/due `43/5`, fixed pack LBA, and the same
 `233472` byte PS-EXE bucket, while uncovered active ownership drops
 `286/519400 -> 284/518994`. This is banked as same-speed payload ownership, not
 a VBlank speed win.
+The follow-up B2-high entry33/source frame40 setup alias is closed. Although it
+duplicates setup-resident entry30/source frame37 and preserved pack LBA plus the
+PS-EXE bucket, it regressed B2-high to `1622/1349/1309`, overrun `40`,
+blocking/refill `46/19`; this duplicate is phase-bearing across the setup-edge
+boundary, so it should not be retried without generated deadline ownership.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
