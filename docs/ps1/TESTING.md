@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-19:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2431%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7603%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low frame132 non-preserve canary `2026-05-19T14:28:43` |
-| Stats version | mixed; newest targeted under-green row is stamped `git:20395e5329+walkstuf1-low-frame132-nonpreserve`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry136 exact-flat canary `2026-05-19T17:20:35` |
+| Stats version | mixed; newest targeted under-green row is stamped `git:291daa9171+walkstuf1-high-trim-entry136`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -104,6 +104,13 @@ The promotion keeps W1 high at `1475/1441` with overrun `34`, refill `13`,
 and due `10`, while improving blocking/read time `59/212 -> 57/199` and loop
 reads `46 -> 44`. W1 low, VISITOR3 high/low, BUILDING2 high/low, and
 BUILDING4 low stayed exact-flat.
+
+Latest exact-flat WALKSTUF1 high payload note: entry `136` / source frame `244`
+is trimmed in place from `3762` to `2596` bytes (`3 -> 2` sectors) without
+moving the `WALKSTUF1.FG2` footprint, pack LBA/sectors, or PS-EXE bucket. The
+five-yellow no-regression canary at
+`scratch/ps1-perf-iterate/walkstuf1-high-trim-entry136-canaries-flat-ok/20260519-172035-3431058/summary.json`
+keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low exact-flat.
 
 Prior promoted WALKSTUF1 high setup-slice pressure note:
 the high-tide path keeps the `198..244` first setup slice and extends the
