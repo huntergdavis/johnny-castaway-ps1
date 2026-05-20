@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-high-rg395-411-canary/20260520-091302-451039`
+- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-high-rg411-423-replace422-exact-canary/20260520-101432-800575`
 - Candidate rows: `52`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -20,7 +20,7 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|
-| 1 | `walkstuf1` | `high` | 1472/1441 | 43 | `411..423` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
+| 1 | `walkstuf1` | `high` | 1472/1441 | 43 | `379..391` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 2 | `building2` | `high` | 1347/1313 | 39 | `122..146` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 3 | `building2` | `high` | 1347/1313 | 39 | `95..119` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 4 | `building2` | `high` | 1347/1313 | 39 | `140..164` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |

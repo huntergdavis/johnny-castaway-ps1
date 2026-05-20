@@ -222,8 +222,8 @@ low now uses one retained <code class="language-plaintext highlighter-rouge">238
 <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group, and WALKSTUF1 high now
 keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adds
 <code class="language-plaintext highlighter-rouge">{149,165}</code>, encodes frame <code class="language-plaintext highlighter-rouge">92</code> as a previous-frame D4 delta, uses
-prepare-first scheduler ownership, and carries same-speed <code class="language-plaintext highlighter-rouge">{395..411}</code>
-CD-pressure work.
+prepare-first scheduler ownership, and carries same-speed <code class="language-plaintext highlighter-rouge">{395..411}</code> plus
+retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> CD-pressure work.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during
 setup with a low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip cap, slack-5 window guard, and
 <code class="language-plaintext highlighter-rouge">{141,153}</code> read row, moving that row into green. BUILDING4 low now
@@ -294,11 +294,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">{395..411}</code> five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-20T09:13:02</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">{411..423}</code> replacement focused run <code class="language-plaintext highlighter-rouge">2026-05-20T10:12:48</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary row uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry85</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg395-411</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary row uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry85</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg411-423-replace</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -327,9 +327,10 @@ that same <code class="language-plaintext highlighter-rouge">1471/1440</code> sp
 reads/read time <code class="language-plaintext highlighter-rouge">45/209 -&gt; 43/207</code>. The <code class="language-plaintext highlighter-rouge">{423..439}</code> and <code class="language-plaintext highlighter-rouge">{404..416}</code> rows
 then reduce loop reads/read time to <code class="language-plaintext highlighter-rouge">41/200</code>; the high-tide
 prepare-before-window scheduler ownership improves blocking/due <code class="language-plaintext highlighter-rouge">56/10 -&gt; 43/7</code>
-while keeping overrun flat at <code class="language-plaintext highlighter-rouge">31</code>; and the newest <code class="language-plaintext highlighter-rouge">{395..411}</code> row keeps
+while keeping overrun flat at <code class="language-plaintext highlighter-rouge">31</code>; <code class="language-plaintext highlighter-rouge">{395..411}</code> banks the prior same-speed
+read cut; and the newest <code class="language-plaintext highlighter-rouge">{411..423}</code> replacement keeps
 timing exact-flat at <code class="language-plaintext highlighter-rouge">1472/1441</code> while reducing loop reads/read time
-<code class="language-plaintext highlighter-rouge">44/204 -&gt; 42/201</code>.
+<code class="language-plaintext highlighter-rouge">42/201 -&gt; 41/198</code>.
 Low now replaces its old split <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> slices
 with one retained <code class="language-plaintext highlighter-rouge">238..344</code> CACHE setup segment after low-only 48 KiB
 clean-rect chunking, adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary read group, and then
@@ -380,8 +381,8 @@ newest <code class="language-plaintext highlighter-rouge">{423..439}</code> and 
 lower loop reads/read time again <code class="language-plaintext highlighter-rouge">43/207 -&gt; 41/200</code>. The prepare-first
 scheduler row trades both loop and target up by one VBlank to <code class="language-plaintext highlighter-rouge">1472/1441</code> while
 holding overrun <code class="language-plaintext highlighter-rouge">31</code> and cutting blocking/due to <code class="language-plaintext highlighter-rouge">43/7</code>; the newest
-same-speed <code class="language-plaintext highlighter-rouge">{395..411}</code> read group keeps timing exact-flat and lowers loop
-reads/read time <code class="language-plaintext highlighter-rouge">44/204 -&gt; 42/201</code>.</p>
+same-speed <code class="language-plaintext highlighter-rouge">{411..423}</code> replacement keeps timing exact-flat and lowers loop
+reads/read time <code class="language-plaintext highlighter-rouge">42/201 -&gt; 41/198</code>.</p>
 
 <p>Current W1-low read-pressure speed track: <code class="language-plaintext highlighter-rouge">walkstuf1-low-rg355-371-current</code>
 keeps the accepted frame132 payload baseline, <code class="language-plaintext highlighter-rouge">{378..390}</code> speed row, and
@@ -680,8 +681,8 @@ retargets the second slice from <code class="language-plaintext highlighter-roug
 and now encodes frame <code class="language-plaintext highlighter-rouge">92</code> as D4, improving the current row
 <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1471/1440</code>, overrun <code class="language-plaintext highlighter-rouge">42 -&gt; 31</code>, blocking <code class="language-plaintext highlighter-rouge">76 -&gt; 57</code>, prefetch
 overrun <code class="language-plaintext highlighter-rouge">15 -&gt; 13</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>; the current prepare-first scheduler
-row plus <code class="language-plaintext highlighter-rouge">{395..411}</code> is <code class="language-plaintext highlighter-rouge">1472/1441</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>,
-blocking/refill/due <code class="language-plaintext highlighter-rouge">43/13/7</code>, and loop reads/read time <code class="language-plaintext highlighter-rouge">42/201</code>.
+row plus <code class="language-plaintext highlighter-rouge">{395..411}</code> and retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> is <code class="language-plaintext highlighter-rouge">1472/1441</code>, overrun
+<code class="language-plaintext highlighter-rouge">31</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">43/13/7</code>, and loop reads/read time <code class="language-plaintext highlighter-rouge">41/198</code>.
 Low caches <code class="language-plaintext highlighter-rouge">197..243</code> and <code class="language-plaintext highlighter-rouge">410..434</code>, improving <code class="language-plaintext highlighter-rouge">1507/1426 -&gt; 1477/1434</code>,
 blocking/refill <code class="language-plaintext highlighter-rouge">142/26 -&gt; 58/16</code>, reads/read time <code class="language-plaintext highlighter-rouge">75/353 -&gt; 51/236</code>, and due
 <code class="language-plaintext highlighter-rouge">25 -&gt; 9</code>. The latest low retarget replaces those two slices with one
@@ -757,7 +758,7 @@ matrix run has been recorded for that variant.</li>
 refreshed VISITOR3-high clean-relief window row uses
 <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>;
 WALKSTUF1 low uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry85</code>;
-WALKSTUF1 high uses <code class="language-plaintext highlighter-rouge">w1high-rg395-411</code>;
+WALKSTUF1 high uses <code class="language-plaintext highlighter-rouge">w1high-rg411-423-replace</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
 including <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
@@ -2767,8 +2768,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T09:13:02</td>
-      <td>w1high-rg395-411</td>
+      <td>2026-05-20T10:12:48</td>
+      <td>w1high-rg411-423-replace</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>

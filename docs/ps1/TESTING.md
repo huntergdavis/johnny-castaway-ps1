@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-20:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{395..411}` five-yellow canary `2026-05-20T09:13:02` |
-| Stats version | mixed; newest targeted under-green row is stamped `w1high-rg395-411`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{411..423}` replacement focused run `2026-05-20T10:12:48` |
+| Stats version | mixed; newest targeted under-green row is stamped `w1high-rg411-423-replace`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -125,15 +125,15 @@ and
 `scratch/ps1-perf-iterate/visitor3-high-window96-tight56/20260519-223211-1019798/summary.json`
 are closed because they saved a read but regressed loop/target cadence.
 
-Latest promoted WALKSTUF1 high CD-pressure note: high tide now adds the
-`{395..411}` retained-read row after the accepted prepare-first scheduler
-baseline. Focused proof:
-`scratch/ps1-perf-iterate/walkstuf1-high-rg395-411-current/20260520-091049-438248/summary.json`;
-five-yellow no-regression canary:
-`scratch/ps1-perf-iterate/walkstuf1-high-rg395-411-canary/20260520-091302-451039/summary.json`.
+Latest promoted WALKSTUF1 high CD-pressure note: high tide now retargets the
+old `{422..434}` tail row to `{411..423}` after the accepted `{395..411}`
+and prepare-first scheduler baseline. Focused proof:
+`scratch/ps1-perf-iterate/walkstuf1-high-rg411-423-replace422-exact-current/20260520-101248-790740/summary.json`;
+canonical five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/walkstuf1-high-rg411-423-replace422-exact-canary/20260520-101432-800575/summary.json`.
 The row keeps W1 high exact-flat at `1808/1472/1441`, overrun `31`,
 blocking/refill `43/13`, and due `7`, while loop reads/read time improve
-`44/204 -> 42/201`. W1 low, VISITOR3 high/low, and BUILDING2 high stayed
+`42/201 -> 41/198`. W1 low, VISITOR3 high/low, and BUILDING2 high stayed
 exact-flat.
 
 Prior promoted WALKSTUF1 high scheduler note: high tide now uses the accepted

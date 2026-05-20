@@ -31,7 +31,7 @@ include VISITOR3 high/low retained setup/data-shape work, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
 setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
 stream-window green promotion, WALKSTUF1 high `286..344` setup residency plus
-same-speed `{395..411}` CD work, and WALKSTUF1 low `238..344` plus split
+same-speed `{395..411}` and retargeted `{411..423}` CD work, and WALKSTUF1 low `238..344` plus split
 `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 `179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
@@ -49,9 +49,9 @@ and target speed `98.56% -> 99.85%`.
 The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 `286..344` resident, carries the `{149,165}` read group, and encodes frame
 `92` as previous-frame D4, then layers the frame56/source67 trim, `{178,194}`,
-`{423,439}`, `{404,416}`, `{395,411}`, and high-tide prepare-before-window scheduler
+`{423,439}`, `{404,416}`, `{395,411}`, retargeted `{411,423}`, and high-tide prepare-before-window scheduler
 ownership. It measures `1472/1441` at `97.894%` target speed, overrun `31`,
-blocking/refill `43/13`, loop reads/read time `42/201`, and due `7`,
+blocking/refill `43/13`, loop reads/read time `41/198`, and due `7`,
 with pack LBA/sectors and the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload

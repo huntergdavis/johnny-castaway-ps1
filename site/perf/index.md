@@ -136,8 +136,8 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 `{91,107}` first-boundary read group, and WALKSTUF1 high now
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
-prepare-first scheduler ownership, and carries same-speed `{395..411}`
-CD-pressure work.
+prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
+retargeted `{411..423}` CD-pressure work.
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
@@ -170,8 +170,8 @@ Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{395..411}` five-yellow canary `2026-05-20T09:13:02` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg395-411`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{411..423}` replacement focused run `2026-05-20T10:12:48` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg411-423-replace`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -194,9 +194,10 @@ that same `1471/1440` speed while reducing blocking `57 -> 56` and loop
 reads/read time `45/209 -> 43/207`. The `{423..439}` and `{404..416}` rows
 then reduce loop reads/read time to `41/200`; the high-tide
 prepare-before-window scheduler ownership improves blocking/due `56/10 -> 43/7`
-while keeping overrun flat at `31`; and the newest `{395..411}` row keeps
+while keeping overrun flat at `31`; `{395..411}` banks the prior same-speed
+read cut; and the newest `{411..423}` replacement keeps
 timing exact-flat at `1472/1441` while reducing loop reads/read time
-`44/204 -> 42/201`.
+`42/201 -> 41/198`.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` CACHE setup segment after low-only 48 KiB
 clean-rect chunking, adds the `{91,107}` first-boundary read group, and then
@@ -247,8 +248,8 @@ newest `{423..439}` and `{404..416}` rows keep the same `1471/1440` timing and
 lower loop reads/read time again `43/207 -> 41/200`. The prepare-first
 scheduler row trades both loop and target up by one VBlank to `1472/1441` while
 holding overrun `31` and cutting blocking/due to `43/7`; the newest
-same-speed `{395..411}` read group keeps timing exact-flat and lowers loop
-reads/read time `44/204 -> 42/201`.
+same-speed `{411..423}` replacement keeps timing exact-flat and lowers loop
+reads/read time `42/201 -> 41/198`.
 
 Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
@@ -547,8 +548,8 @@ retargets the second slice from `411..435` to `286..344`, adds `{149,165}`,
 and now encodes frame `92` as D4, improving the current row
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
 overrun `15 -> 13`, and due `15 -> 10`; the current prepare-first scheduler
-row plus `{395..411}` is `1472/1441`, overrun `31`,
-blocking/refill/due `43/13/7`, and loop reads/read time `42/201`.
+row plus `{395..411}` and retargeted `{411..423}` is `1472/1441`, overrun
+`31`, blocking/refill/due `43/13/7`, and loop reads/read time `41/198`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -623,7 +624,7 @@ and this page.
   refreshed VISITOR3-high clean-relief window row uses
   `v3high-window80-tight56`;
   WALKSTUF1 low uses `w1low-trim-entry85`;
-  WALKSTUF1 high uses `w1high-rg395-411`;
+  WALKSTUF1 high uses `w1high-rg411-423-replace`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
   including `johnny1-local-lz-v932`,
@@ -2632,8 +2633,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T09:13:02</td>
-      <td>w1high-rg395-411</td>
+      <td>2026-05-20T10:12:48</td>
+      <td>w1high-rg411-423-replace</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>

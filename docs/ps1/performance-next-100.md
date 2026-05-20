@@ -115,15 +115,19 @@ flat at `31`, but blocking/refill regress `43/13 -> 44/14`; slack8 skips to
 exact-flat. The next smaller `395..411` row is promoted as same-speed
 CD-pressure work: W1-high remains exact-flat at `1808/1472/1441`, overrun
 `31`, blocking/refill `43/13`, and due `7`, while loop reads/read time improve
-`44/204 -> 42/201`; the five-yellow canary stays exact-flat. This leaves the
-refreshed W1-high queue at the early `92..116` cluster and late `411..423`
-single-read row. The `92..116` family is now closed as a hand-authored table:
-raw reduced reads/read time `42/201 -> 39/199` but regressed W1-high to
-`1810/1474/1438`, overrun `36`, blocking/refill `47/15`, while slack1,
-slack2, and slack4 stayed exact-flat/inert at `1808/1472/1441` with reads
-`42`. This leaves `411..423` as the only refreshed scalar read-table item;
-larger W1-high work still needs generated ownership or paired render/work
-reduction. The
+`44/204 -> 42/201`; the five-yellow canary stays exact-flat. The `92..116`
+family is now closed as a hand-authored table: raw reduced reads/read time
+`42/201 -> 39/199` but regressed W1-high to `1810/1474/1438`, overrun `36`,
+blocking/refill `47/15`, while slack1, slack2, and slack4 stayed exact-flat
+and inert at `1808/1472/1441` with reads `42`. The late `411..423` row is now
+promoted in layout-neutral replacement form: replacing the older high-tide
+`{422..434}` tail row with `{411..423}` keeps W1-high exact-flat at
+`1808/1472/1441`, overrun `31`, blocking/refill `43/13`, and due `7`, while
+lowering loop reads/read time `42/201 -> 41/198`. The refreshed direct
+read-table queue has no standalone/guarded safe promotion left; the top
+remaining W1-high scalar item is `379..391`, scheduler-owned-only, so larger
+W1-high work now needs generated ownership or paired render/work reduction.
+The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
