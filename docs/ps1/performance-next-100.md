@@ -173,6 +173,15 @@ lane:
 24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
 25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
 
+Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
+top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
+the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
+clean-relief stream window made the run complete but regressed the row to
+stage1-only behavior (`loop_reads 4 -> 114`, blocking `45 -> 315`). Keep V3
+high on the accepted stream-window plus retained-segment shape. Reopen the
+`103..127` active window only after reducing clean-rect/CACHE pressure or with
+generated deadline ownership that does not sacrifice the stream window.
+
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
 promotions, the v204 low persistent setup segment, the v205 high persistent
