@@ -208,6 +208,16 @@ refill `3 -> 1`, and due `3 -> 2`. Keep the 80 KiB relief window and the
 56 KiB tight cap as the new V3-high baseline. The 96 KiB variants are closed:
 they reduced loop reads but tightened target cadence enough to regress strict
 promotion gates.
+Latest rejected VISITOR3 high prepare-before-window owner probe: mirroring the
+accepted W1-low scheduler priority onto high-tide VISITOR3 was exact-flat
+against the current five-yellow baseline. Focused V3 high stayed
+`1388/1071/1045`, overrun `26`, blocking/refill `35/1`, reads/due `7/2`, and
+all scheduler counters matched baseline while `foregroundPilotPlay` grew by
+`68` bytes. Artifact:
+`scratch/ps1-perf-iterate/visitor3-high-prepare-first-current/20260520-015421-2155850/summary.json`.
+Close this local priority inversion for V3 high; the remaining early
+`40..64` family still needs generated append/deadline ownership or pack/render
+data-shape work, not another prepare-first branch.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
