@@ -1573,6 +1573,18 @@ Close B2-high entries `89..91` under draw-tail sector-collapse; the next
 B2-high path needs generated deadline ownership or upload/restore elimination,
 not another no-decode tail shrink that changes cadence.
 
+Latest rejected BUILDING2 high frame71 setup-gap D4 swing: frame `71` can be
+encoded as a previous-frame D4 payload (`6656 -> 13` bytes) and physically
+moved into the already-paid setup gap at offset `6144`, but enabling that
+high-tide D4 path still regressed B2-high from `1621/1347/1313` to
+`1626/1353/1310`. Overrun moved `34 -> 43`, blocking/refill `39/16 -> 43/20`,
+and reads moved `43 -> 44` with fixed pack LBA and fixed `233472` byte PS-EXE
+bucket. Artifact:
+`scratch/ps1-perf-iterate/building2-high-frame71-primegap-current/20260520-013252-2034671/summary.json`.
+Close B2-high frame71 D4 and local decode variants even when payload ownership
+is setup-side; remaining B2-high work should be generated deadline ownership,
+upload/restore elimination, or no-decode cadence-preserving data.
+
 Latest promoted BUILDING2 low baseline: keep accepted `238..250`, `318..330`,
 and `365..381`, keep the v454 frame `71` / `77` previous-frame D4 deltas, and
 add the v626 slack-8 `218..229` retained read ahead of them. The current
