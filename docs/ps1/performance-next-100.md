@@ -142,6 +142,12 @@ payloads across an early grouped-read boundary and regressed B2-high to
 Future B2-high relocation should only move late payloads backward into already
 resident ownership or use generated deadline/refill metadata that proves the
 evicted/shifted boundary is harmless.
+The restore-span tile-hoist source variant is closed after exact-flat W1-high
+and VISITOR3-high gates. It stayed in the same PS-EXE bucket but only shifted
+hot symbol addresses by about `-8` bytes and did not move loop, overrun,
+blocking, or refill metrics. Restore-side wins now need generated/pack-owned
+metadata or a bigger renderer redesign that changes measured restore/upload
+work, not local loop hoisting.
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
