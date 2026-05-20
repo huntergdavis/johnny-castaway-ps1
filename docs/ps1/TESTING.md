@@ -166,21 +166,22 @@ It keeps W1-low target speed flat at `1470/1446` / `98.367%`, scene `1809`,
 blocking/refill `33/5`, and due `4`, while reducing loop reads/read time
 `26/150 -> 24/147`.
 
-Latest promoted WALKSTUF1 low payload note: entry `66` / source frame `100` is
-trimmed in place from `4661` to `2082` bytes (`3 -> 2` sectors), on top of the
+Latest promoted WALKSTUF1 low payload note: entry `85` / source frame `148` is
+trimmed in place from `4854` to `4351` bytes (`4 -> 3` sectors), on top of the
 prior entry `65` / source frame `96` trim (`4630 -> 1666`), entry `39` / source
 frame `49` trim (`7835 -> 4724`), entry `55` / source frame `65` trim
-(`4716 -> 2`), entry `56` / source frame `67` trim (`3425 -> 324`), and entry
-`59` / source frame `78` trim (`4200 -> 456`), and entry `63` / source frame
-`91` trim (`4643 -> 1244`).
+(`4716 -> 2`), entry `56` / source frame `67` trim (`3425 -> 324`), entry
+`59` / source frame `78` trim (`4200 -> 456`), entry `63` / source frame `91`
+trim (`4643 -> 1244`), and entry `66` / source frame `100` trim
+(`4661 -> 2082`).
 Transform summary:
-`scratch/walkstuf1-low-trim-entry66-current/summary.json`; focused proof:
-`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry66-current/20260520-060517-3572808/summary.json`;
+`scratch/walkstuf1-low-trim-entry85-current/summary.json`; focused proof:
+`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry85-current/20260520-070250-3901099/summary.json`;
 five-yellow canary:
-`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry66-canary/20260520-060704-3583196/summary.json`.
+`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry85-canary/20260520-070435-3911282/summary.json`.
 It keeps W1-low and the other four yellow rows exact-flat while active W1-low
-payload drops `767740 -> 765161`; the seven current low-pack payload trims now
-total `23612` bytes from the pre-entry65 baseline.
+payload drops `765161 -> 764658`; the eight current low-pack payload trims now
+total `24115` bytes from the pre-entry65 baseline.
 
 Prior promoted WALKSTUF1 high setup-slice pressure note:
 the high-tide path keeps the `198..244` first setup slice and extends the

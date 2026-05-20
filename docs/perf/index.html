@@ -292,11 +292,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-low entry66 payload canary <code class="language-plaintext highlighter-rouge">2026-05-20T06:07:04</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-low entry85 payload canary <code class="language-plaintext highlighter-rouge">2026-05-20T07:04:35</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary row uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry66</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg404-416</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; refreshed B2-high CD-pressure row uses <code class="language-plaintext highlighter-rouge">b2high-rg185-197</code>; refreshed VISITOR3-high clean-relief window row uses <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>; refreshed BUILDING4 high row stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; refreshed BUILDING4 low row stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; refreshed W1-low canary row uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry85</code>; refreshed W1-high row uses <code class="language-plaintext highlighter-rouge">w1high-rg404-416</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -382,9 +382,9 @@ overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/r
 <code class="language-plaintext highlighter-rouge">1473/1447 -&gt; 1470/1445</code>; the <code class="language-plaintext highlighter-rouge">{378..390}</code> speed row moved
 <code class="language-plaintext highlighter-rouge">1470/1445 -&gt; 1470/1446</code>, overrun <code class="language-plaintext highlighter-rouge">25 -&gt; 24</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">35/7 -&gt; 34/6</code>, and reads/read time <code class="language-plaintext highlighter-rouge">31/163 -&gt; 30/159</code>. The current
-entry65, entry39, entry55, entry56, entry59, entry63, and entry66 preserve-offset payload trims keep the five-yellow
+entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 preserve-offset payload trims keep the five-yellow
 canary exact-flat while reducing active low-pack payload
-<code class="language-plaintext highlighter-rouge">788773 -&gt; 765161</code>. The broader retargeted non-preserve trim was rejected
+<code class="language-plaintext highlighter-rouge">788773 -&gt; 764658</code>. The broader retargeted non-preserve trim was rejected
 because hidden refill regressed <code class="language-plaintext highlighter-rouge">7 -&gt; 10</code>.</p>
 
 <p>Current B4-low dirty-upload speed track: the renderer now merges dirty upload
@@ -743,7 +743,7 @@ matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
 refreshed VISITOR3-high clean-relief window row uses
 <code class="language-plaintext highlighter-rouge">v3high-window80-tight56</code>;
-WALKSTUF1 low uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry66</code>;
+WALKSTUF1 low uses <code class="language-plaintext highlighter-rouge">w1low-trim-entry85</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
 including <code class="language-plaintext highlighter-rouge">johnny1-local-lz-v932</code>,
@@ -2767,8 +2767,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T06:07:04</td>
-      <td>w1low-trim-entry66</td>
+      <td>2026-05-20T07:04:35</td>
+      <td>w1low-trim-entry85</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
