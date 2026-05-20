@@ -51,7 +51,8 @@ setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 `{355..371}` W1-low read-work promotion, then the same-speed W1-high
 frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
 80 KiB clean-relief stream-window promotion, and finally the same-speed
-BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work:
+BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work,
+followed by the WALKSTUF1 low entry65 payload-only trim:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
@@ -112,6 +113,10 @@ WALKSTUF1 high/low `1471/1440` and `1470/1446`. The follow-up `{185..197}`
 B2-high read group is another same-speed CD-pressure row: B2-high remains
 `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due `5`, while
 loop reads/read time drop `45/199 -> 43/197`.
+The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
+W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
+`24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
+drops `788773 -> 785809` (`2964` bytes).
 The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
@@ -151,7 +156,10 @@ speed while improving scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`,
 and loop reads/read time `30/159 -> 26/150`. The newest `{355..371}`
 retained-group promotion is a same-speed work-volume win: W1-low remains
 `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, and due `4`, while
-loop reads/read time drop `26/150 -> 24/147`. The follow-up raw/min-slack
+loop reads/read time drop `26/150 -> 24/147`. The later entry65/source frame96
+preserve-offset trim keeps every speed-bearing metric exact-flat while reducing
+active payload another `2964` bytes, so it is banked as payload work only and
+does not change the public rollup or speed totals. The follow-up raw/min-slack
 `160..176` owner probe is closed: raw and slack8 moved loop/blocking but
 regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
 read-candidate matrix now has no standalone or scheduler/guarded direct rows.
@@ -173,7 +181,7 @@ and due `6 -> 5`.
 Current allocator-era big-swing queue after closing the W1-low static table
 lane, banking the W1-high frame56/`{178..194}`, `{423..439}`, and `{404..416}` CD-pressure
 rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
-B2-high `{185..197}` CD-pressure row:
+B2-high `{185..197}` CD-pressure row plus the W1-low entry65 payload-only trim:
 
 1. Generate BUILDING2-high append-start/deadline ownership for the `249..261`, `287..311`, and hot `122..146` families rather than another static table row; raw `{249..261}` regressed and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, and the entries `90..95` setup-swap are closed.
@@ -193,7 +201,7 @@ B2-high `{185..197}` CD-pressure row:
 16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Run preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries, not on sector-collapse candidates.
+19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65 is banked exact-flat, while sector-collapse candidates still require strict canaries.
 20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
