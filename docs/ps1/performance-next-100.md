@@ -995,9 +995,13 @@ x-band upload grew the PS-EXE bucket `233472 -> 235520` without producing a
 valid `JCPERF2` gate. These are now logged under
 `building2-high-prepare-before-window-current`,
 `building2-high-directstage-current`, and
-`building2-high-xband-upload-staged-current`. Close hand-coded B2-high runtime
-ownership and hot-renderer scratch-copy upload staging; reopen through generated
-metadata or pack-emitted/precomposed data only.
+`building2-high-xband-upload-staged-current`. A later generic scratch x-band
+retry with `4`, `8`, and `16` pixel alignments plus a transfer-alignment safety
+gate also failed before `JCPERF2`; the best variant reached BUILDING2 frame
+`132/334`, still emitted transfer-rounding warnings, and grew the PS-EXE bucket
+`233472 -> 235520`. Close hand-coded B2-high runtime ownership and
+hot-renderer scratch-copy upload staging; reopen through generated metadata or
+pack-emitted/precomposed data only.
 
 Latest rejected BUILDING4 low read-group route: enabling a low-tide `building4`
 read-group table and adding `{274,298,0}` did not move timing. The focused gate
@@ -3091,8 +3095,11 @@ saved bytes, and low `74` frames using `853848 / 854114` bytes for `6166528`
 saved bytes, but both tides still have `0` draw-covered selected x-band bytes.
 Runtime dirty-upload narrowing is not a substitute: exact interval upload would
 create about `131996` loop rects, and prior scratch-packed x-band probes already
-proved the copy/code-size cost is worse than full-width tile bands. The current
-read-plan matrix also found no candidate that is append-start fireable,
+proved the copy/code-size cost is worse than full-width tile bands. The latest
+generic BUILDING2-high scratch-pack retry confirms the same failure mode even
+with `16`-pixel bands and transfer-alignment fallback: no valid `JCPERF2`, a
+stall around frame `132`, and a one-sector PS-EXE growth. The current read-plan
+matrix also found no candidate that is append-start fireable,
 current-window-sized, and low-risk; the fireable current-fit rows are the
 already-closed late tight clusters. Close VISITOR3 runtime dirty-upload and
 hand read-table work until generated scheduler ownership or safe
@@ -4790,7 +4797,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low read group `78..90` | Do not promote or retry as a narrowed early hand table. The v412/v472 current-baseline probes kept pack LBA plus EXE bucket fixed and reduced due misses, but regressed low timing and CD pressure. The accepted successor is the v474 boundary-fixed `78..91` form, which owns the overlapping sector-89 follow-up and is tracked at the top of this file. |
 | WALKSTUF1 low read group `273..297` | Do not promote or retry as a direct retained table. The v416 current-baseline probe was the remaining large medium-risk low cluster and did save reads (`67 -> 64`), but it regressed scene `1776 -> 1782`, active loop `1484 -> 1490`, overrun `53 -> 59`, blocking `72 -> 80`, and prefetch overrun `22 -> 26` with fixed pack LBA and EXE bucket. This closes the last plausible large low hand table; future low work needs generated deadline ownership, byte-removing pack transforms, or a custom representation that preserves cadence. |
 | WALKSTUF1 low boundary-frame `gap6` prefix pack | Do not promote or retry as a cleanup-gap pack move. The v417 f38/f39-only variant moved `sound_events_offset 920531 -> 920087` inside the fixed `1535263` byte pack and kept LBA stable, but it regressed low to scene `1780`, active loop/target `1488/1429`, overrun `59`, blocking `78`, and prefetch overrun `29` while reads stayed `67`. Narrow prefix cleanup is still phase-negative; future low pack work must remove bytes while preserving CD cadence or change the runtime representation. |
-| WALKSTUF1 low scratch-copy narrow upload | Do not promote or retry as a runtime upload path. The v418 scene-gated X-band uploader grew the PS-EXE bucket by one sector and failed before `JCPERF2` even with layout changes allowed; the v623 generic staged x-band retry repeated the same structural failure at `217088 -> 219136` and also timed out before `JCPERF2`. The copy-to-scratch cost overwhelms any narrower DMA benefit; upload-byte work must be prepacked/upload-ready or avoided before runtime. |
+| WALKSTUF1 low scratch-copy narrow upload | Do not promote or retry as a runtime upload path. The v418 scene-gated X-band uploader grew the PS-EXE bucket by one sector and failed before `JCPERF2` even with layout changes allowed; the v623 generic staged x-band retry repeated the same structural failure at `217088 -> 219136` and also timed out before `JCPERF2`. The current BUILDING2-high generic scratch-pack retry repeated the same class at `233472 -> 235520`, reaching only frame `132` before missing `JCPERF2`. The copy-to-scratch cost overwhelms any narrower DMA benefit; upload-byte work must be prepacked/upload-ready or avoided before runtime. |
 | WALKSTUF1 low read group `297..313` current-baseline retest | Do not promote or retry as a direct retained table. The v394 focused gate proved the high-upside cluster fires, cutting reads `67 -> 66` and due misses `12 -> 11`, but it regressed scene `1776 -> 1778`, active loop/target `1484/1431 -> 1486/1430`, overrun `53 -> 56`, blocking `72 -> 73`, and hidden refill `22 -> 25` with fixed LBA and fixed PS-EXE bucket. This reinforces that tight-gap low clusters need generated deadline ownership or pack/data-shape changes, not more source-table append groups. |
 | WALKSTUF1 low read group `297..321` current-baseline retest | Do not promote or retry as a direct retained table. The v399 24-sector version saved more reads when unguarded (`67 -> 63`) but regressed scene/loop to `1782/1490`, overrun `59`, blocking `87`, hidden refill `23`, and due misses `13`. Slack6 and slack8 guards were exact-flat and produced no key work-volume win. This closes larger scalar grouped appends over the late `297..321` cluster; future work needs generated deadline ownership or pack-side byte removal. |
 | WALKSTUF1 low late direct-stage/window ownership | Do not promote or retry as a hand-coded scene branch. The v402 direct-stage-deny branch saved reads `67 -> 65` but regressed target `1431 -> 1429`, blocking `72 -> 76`, and hidden refill `22 -> 27`; the binary opposite, forcing direct-stage for sectors `297..321`, kept scene/loop flat but still regressed target `1431 -> 1429`, blocking `72 -> 73`, and hidden refill `22 -> 24`. This closes manual direct-stage toggles for the late cluster; use generated reservation metadata or pack/data-shape work instead. |
