@@ -149,6 +149,14 @@ B2-high read group is another same-speed CD-pressure row, and the current
 `{158..174}` retry now lands cleanly on top of it: B2-high remains
 `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due `5`, while
 loop reads/read time drop first `45/199 -> 43/197` and then `43/197 -> 40/189`.
+The large setup-residency ladder is now closed on this baseline. Expanding the
+second retained segment to `86..242`, `90..242`, `104..242`, `135..242`, or
+`151..242` exhausted CACHE during clean-rect allocation; moving `104..242` to
+TRANSIENT exhausted TRANSIENT/libc; the memory-safe `185..242` form reached
+counters and cut loop reads `40 -> 38` but regressed B2-high to
+`1630/1350/1311`, overrun `39`, blocking `45`, and prefetch overrun `19`.
+Do not retry additive B2-high retained setup without first reducing clean
+snapshot/cache residency or adding generated deadline/refill ownership.
 The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
 W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
 `24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
@@ -332,7 +340,7 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident or forward-order and does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, and the `3..43` setup-edge extension are closed.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
-4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage hit the clean-rect/CACHE cliff.
+4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
 7. Try VISITOR3-low static-upload/restore trimming only with a clean-rect allocation budget; the W1-low restore-minus-current probe and W1-high entry55 draw-tail collapse both exhausted CACHE before `JCPERF2`.
