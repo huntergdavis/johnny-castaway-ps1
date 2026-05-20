@@ -192,6 +192,16 @@ intact; guard plus `{229..241}` held loop/target flat but regressed blocking
 `33 -> 39`; guard plus `{160..176}` was worse at `1817/1478/1447`,
 blocking `46`. Entry60 now needs a generated per-frame refill/visible-budget
 owner, not another scalar slack guard or static read row.
+The window-size recovery ladder for W1-low entry60 is also closed. Reapplying
+the entry60/source frame81 trim and widening only
+`FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES` to `48 KiB`, `56 KiB`, and `64 KiB`
+all produced the same visible-positive/refill-negative profile:
+`1809/1470/1446 -> 1807/1468/1445`, overrun `24 -> 23`, blocking `33 -> 28`,
+due `4 -> 3`, but hidden refill `5 -> 10` and loop reads `24 -> 27`. The
+`{204..210}` scalar row and an added 4-VBlank low guard were inert under the
+48 KiB window. Do not retry scalar W1-low resident-window growth for entry60;
+the remaining path is generated deadline/refill ownership or a different
+pack/render work reduction.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
