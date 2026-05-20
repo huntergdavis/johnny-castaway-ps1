@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-19:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry136 exact-flat canary `2026-05-19T17:20:35` |
-| Stats version | mixed; newest targeted under-green row is stamped `git:291daa9171+walkstuf1-high-trim-entry136`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry57 exact-flat canary `2026-05-19T17:53:48` |
+| Stats version | mixed; newest targeted under-green row is stamped `git:91ba96e26e+walkstuf1-high-trim-entry57`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -105,11 +105,12 @@ and due `10`, while improving blocking/read time `59/212 -> 57/199` and loop
 reads `46 -> 44`. W1 low, VISITOR3 high/low, BUILDING2 high/low, and
 BUILDING4 low stayed exact-flat.
 
-Latest exact-flat WALKSTUF1 high payload note: entry `136` / source frame `244`
-is trimmed in place from `3762` to `2596` bytes (`3 -> 2` sectors) without
-moving the `WALKSTUF1.FG2` footprint, pack LBA/sectors, or PS-EXE bucket. The
-five-yellow no-regression canary at
-`scratch/ps1-perf-iterate/walkstuf1-high-trim-entry136-canaries-flat-ok/20260519-172035-3431058/summary.json`
+Latest exact-flat WALKSTUF1 high payload note: entry `57` / source frame `70`
+is trimmed in place from `3409` to `320` bytes (`3 -> 2` sectors), on top of
+the prior entry `136` / source frame `244` trim (`3762 -> 2596`, `3 -> 2`
+sectors), without moving the `WALKSTUF1.FG2` footprint, pack LBA/sectors, or
+PS-EXE bucket. The five-yellow no-regression canary at
+`scratch/ps1-perf-iterate/walkstuf1-high-trim-entry57-canaries-flat-ok/20260519-175348-3622153/summary.json`
 keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high/low exact-flat.
 
 Prior promoted WALKSTUF1 high setup-slice pressure note:

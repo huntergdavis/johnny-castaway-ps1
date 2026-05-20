@@ -5,9 +5,9 @@
 
 **Last updated:** 2026-05-19 (`perf/allocator-era-under-green-20260517` after
 the WALKSTUF1 low frame132 payload trim plus `{378..390}` read-group promotion,
-and the exact-flat WALKSTUF1 high entry136 payload trim; all 63 scenes remain
-validated, all 126 high/low rows are timing-bearing, and the public headless
-battle card is `+0.2425%` over target / `99.7608%` target speed).
+and the exact-flat WALKSTUF1 high entry136/entry57 payload trims; all 63 scenes
+remain validated, all 126 high/low rows are timing-bearing, and the public
+headless battle card is `+0.2425%` over target / `99.7608%` target speed).
 
 ## Overall
 

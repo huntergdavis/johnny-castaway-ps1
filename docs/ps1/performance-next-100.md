@@ -44,8 +44,9 @@ promotion, the VISITOR3 high tight56 retune, the BUILDING2 low
 `226..262` + clean80 green promotion, the VISITOR3 high clean64 retune, the
 BUILDING4 low 24 KiB stream-window green promotion, the WALKSTUF1 high
 frame92 D4 promotion, the WALKSTUF1 low split `344..350` setup edge, the
-WALKSTUF1 low frame132 payload trim, and the WALKSTUF1 low `{378..390}`
-read-group promotion:
+WALKSTUF1 low frame132 payload trim, the WALKSTUF1 low `{378..390}`
+read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
+payload trims:
 `+0.2425%` public average over target / `99.7608%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4744%` / `100.4911%`. Since the compact full-matrix baseline was
@@ -77,7 +78,10 @@ second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
 encodes frame `92` as previous-frame D4, improving
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
 overrun `15 -> 13`, and due `15 -> 10`; the D4 step trades reads/read time
-`44/199 -> 45/209` while still cutting visible loop time. The
+`44/199 -> 45/209` while still cutting visible loop time. The later entry136
+and entry57 preserve-offset trims remove `4255` bytes and two payload sectors
+without changing timing, pack footprint, pack LBA/sectors, or the PS-EXE
+bucket. The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
@@ -176,7 +180,11 @@ Latest promoted WALKSTUF1 high preserve-offset payload baseline:
 `61`, `49` / source frame `59`, `47` / source frame `57`, `45` / source frame
 `55`, `43` / source frame `53`, `138` / source frame `246`, `135` / source frame `243`, and `139` / source frame `247` inside
 `WALKSTUF1.FG2` without moving any
-payload offsets. Entry `51` drops `5588 -> 770` bytes, entry `49` drops
+payload offsets. Current allocator-era follow-ups also trim entry `136` /
+source frame `244` from `3762 -> 2596` bytes and entry `57` / source frame
+`70` from `3409 -> 320` bytes, removing two more payload sectors while keeping
+W1 high exact-flat at `1471/1440`, overrun `31`, blocking/refill `57/13`, and
+reads/due `45/10`. Entry `51` drops `5588 -> 770` bytes, entry `49` drops
 `5269 -> 770` bytes, entry `47` drops `7399 -> 3158` bytes, entry `45` drops
 `5276 -> 1657` bytes, entry `43` drops `5555 -> 2211` bytes, entry `138` drops
 `4716 -> 3804` bytes, entry `135` drops `4415 -> 3850` bytes, entry `139` drops
