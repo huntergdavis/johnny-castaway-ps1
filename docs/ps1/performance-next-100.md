@@ -180,8 +180,15 @@ The follow-up B2-high entries `59`/`60` forward alias into entries `62`/`63`
 is also closed. It preserved pack LBA and the PS-EXE bucket, but moved identical
 payloads across an early grouped-read boundary and regressed B2-high to
 `1625/1351/1311`, overrun `40`, blocking/refill `44/19`, and reads `45`.
-Future B2-high relocation should only move late payloads backward into already
-resident ownership or use generated deadline/refill metadata that proves the
+The B2-high hot active duplicate alias is closed too: pointing entries `137`,
+`156`, `162`, and `164` backward to identical active-cluster payloads preserved
+pack size/LBA and source layout but regressed B2-high to `1659/1370/1311`,
+overrun `59`, blocking/refill `76/17`, reads `50`, and due misses `11`.
+Duplicate-payload relocation now needs setup residency, forward-order physical
+ownership, or generated deadline/refill ownership; backward aliases inside the
+hot `248..261` cluster are explicitly off the path.
+Future B2-high relocation should only reuse setup-resident ownership, preserve
+forward active order, or use generated deadline/refill metadata that proves the
 evicted/shifted boundary is harmless.
 The restore-span tile-hoist source variant is closed after exact-flat W1-high
 and VISITOR3-high gates. It stayed in the same PS-EXE bucket but only shifted
@@ -272,7 +279,7 @@ B2-high `{185..197}` CD-pressure row, the B2-high entries `141/142` setup alias,
 and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
 
 1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, and raw `{287..311}` was exact-flat.
-2. Try BUILDING2-high no-decode payload boundary relocation only when it does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, and the entries `90..95` setup-swap are closed.
+2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident or forward-order and does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, and backward hot duplicate aliases are closed.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
 4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage hit the clean-rect/CACHE cliff.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
