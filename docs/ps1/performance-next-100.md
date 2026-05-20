@@ -271,9 +271,9 @@ rows, promoting the VISITOR3 high 80 KiB clean-relief window, and banking the
 B2-high `{185..197}` CD-pressure row, the B2-high entries `141/142` setup alias,
 and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
 
-1. Generate BUILDING2-high append-start/deadline ownership for the `249..261`, `287..311`, and hot `122..146` families rather than another static table row; raw `{249..261}` regressed and raw `{287..311}` was exact-flat.
+1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, and the entries `90..95` setup-swap are closed.
-3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
 4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage hit the clean-rect/CACHE cliff.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
