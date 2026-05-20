@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Date: 2026-05-18
+Date: 2026-05-19
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 4582 |
-| Approx. words | 74165 |
+| Lines | 4595 |
+| Approx. words | 74375 |
 | Code fences | 0 |
 
 ## Outline

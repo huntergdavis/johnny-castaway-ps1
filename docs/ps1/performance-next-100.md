@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-18
+Date: 2026-05-19
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -46,7 +46,8 @@ BUILDING4 low 24 KiB stream-window green promotion, the WALKSTUF1 high
 frame92 D4 promotion, the WALKSTUF1 low split `344..350` setup edge, the
 WALKSTUF1 low frame132 payload trim, the WALKSTUF1 low `{378..390}`
 read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
-payload trims:
+payload trims, followed by the WALKSTUF1 low `244..350`/`179..185`
+setup-retarget plus `{113..129}` CD-pressure promotion:
 `+0.2425%` public average over target / `99.7608%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4744%` / `100.4911%`. Since the compact full-matrix baseline was
@@ -72,7 +73,11 @@ track improves `1479/1435 -> 1470/1445`, overrun `44 -> 25`,
 blocking/read time `65/230 -> 35/163`, refill `18 -> 7`,
 loop reads `50 -> 31`, and due `10 -> 4`; the newest `{378..390}` read group
 then moves the current row to `1470/1446`, overrun `24`,
-blocking/refill/read time `34/6/159`, and loop reads `30`. The
+blocking/refill/read time `34/6/159`, and loop reads `30`. The latest
+setup-retarget plus `{113..129}` owner keeps the same `1470/1446` target speed
+but reduces scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`, and loop
+reads/read time `30/159 -> 26/150`; it becomes the new W1-low CD-pressure
+baseline for the next candidate sweep. The
 WALKSTUF1 high follow-up keeps the `198..244` setup slice, retargets the
 second retained slice from `411..435` to `286..344`, adds `{149,165}`, and now
 encodes frame `92` as previous-frame D4, improving
@@ -110,6 +115,13 @@ that payload baseline into `1470/1446`, overrun `24`, blocking/refill
 `98.367%`. The rejected wider batch `{113,129}`/`{136,160}`/`{160,184}` plus
 `{378,390}` saved reads but regressed hidden refill `7 -> 15`, so only
 `{378,390}` is retained.
+The newest W1-low setup/owner promotion revisits `{113,129}` only after moving
+setup coverage to `244..350` plus a split `179..185` setup edge. That narrower
+shape passes the focused and five-yellow gates at the same `1470/1446` target
+speed while improving scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`,
+and loop reads/read time `30/159 -> 26/150`. The refreshed read-candidate
+matrix now ranks `160..176` as the first remaining W1-low scheduler/guarded
+probe.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,

@@ -4,10 +4,10 @@
 
 
 **Last updated:** 2026-05-19 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1 low frame132 payload trim plus `{378..390}` read-group promotion,
-and the exact-flat WALKSTUF1 high entry136/entry57 payload trims; all 63 scenes
-remain validated, all 126 high/low rows are timing-bearing, and the public
-headless battle card is `+0.2425%` over target / `99.7608%` target speed).
+the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion and the exact-flat
+WALKSTUF1 high entry136/entry57 payload trims; all 63 scenes remain validated,
+all 126 high/low rows are timing-bearing, and the public headless battle card
+is `+0.2425%` over target / `99.7608%` target speed).
 
 ## Overall
 
@@ -307,7 +307,11 @@ overrun `44 -> 26`, blocking/refill `65/18 -> 41/7`,
 reads/read time `50/230 -> 36/186`, and due `10 -> 5`;
 then trims frame132's draw tail in the compacted low pack and adds `{378,390}`
 to reach `1470/1446`, overrun `24`, blocking/refill `34/6`,
-reads/read time `30/159`, and due `4`. Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
+reads/read time `30/159`, and due `4`; the latest setup/owner pass shifts the
+main setup residency to `244..350`, keeps a split `179..185` edge, and adds
+`{113,129}` to hold `1470/1446` while improving scene `1812 -> 1809`,
+blocking/refill `34/6 -> 33/5`, and reads/read time `30/159 -> 26/150`.
+Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, adds `{149,165}`, and encodes frame `92` as D4, improving the
 current allocator-era row `1475/1433 -> 1471/1440`, overrun `42 -> 31`,
@@ -472,7 +476,7 @@ Milestone releases:
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 672026`, WALKSTUF1 high is
   `1471/1440` with blocking/read time `57`/`209`, loop reads `45`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is `1470/1446` with loop
-  reads/read time `30`/`159`, rows/spans/pixels `16257/114798/633876`, and active payload
+  reads/read time `26`/`150`, rows/spans/pixels `16257/114798/633876`, and active payload
   `788773`, VISITOR3 high is
   `1075/1044` with blocking/read time `45`/`53`,
   VISITOR3 low is `1065/1039` with blocking/read time `75`, JOHNNY1 high/low are
