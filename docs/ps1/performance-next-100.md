@@ -234,6 +234,21 @@ blocking and due misses (`1809/1470/1446 -> 1811/1472/1446`, blocking
 `33 -> 40`, due `4 -> 6`). Entry60 should not be retried with scalar prepare
 or min-slack controls; it needs generated frame/deadline/refill ownership or a
 new render/data-shape reduction that creates slack first.
+The preserve-offset restore-minus-current rescan is now closed for the current
+five-yellow set. After hardening the transformer to copy unparseable payloads
+and emit JSON summaries, the scan found zero same-offset shrinkable entries in
+`BUILDING2`, `VISITOR3` high/low, or `WALKSTUF1` high/low; remaining candidates
+were already unparseable/no-op or would grow. Keep the hardened scanner for
+future data-shape work, but do not spend emulator time on another current-pack
+restore-minus-current pass without a new transform family.
+The local-LZ sector-collapse swing is also closed as a standalone yellow-row
+speed path. W1-high entry `55` saved two sectors but regressed loop/blocking and
+hidden refill; B2-high entries `89..91` saved six modeled sectors but regressed
+loop by `12` VBlanks; W1-low entry `60` reproduced the known visible-positive
+but refill-negative entry60 profile (`1470/1446 -> 1468/1445`, blocking
+`33 -> 28`, refill `5 -> 10`). Local-LZ may still be useful on rows with more
+slack, but these current yellow candidates need generated deadline/refill
+ownership or a preceding render/restore reduction before retrying.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -357,7 +372,7 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, and raw `{287..311}` was exact-flat.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident or forward-order and does not evict setup-resident frames back into active tight-gap cadence; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, and the `3..43` setup-edge extension are closed.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
-4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence.
+4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence, restore-minus-current is now a no-op, and local-LZ on entries `89..91` regressed despite sector savings.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
 7. Try VISITOR3-low static-upload/restore trimming only with a clean-rect allocation budget; the W1-low restore-minus-current probe and W1-high entry55 draw-tail collapse both exhausted CACHE before `JCPERF2`.
@@ -365,14 +380,14 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 9. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since the promoted row now trades more smaller reads for lower blocking and refill debt.
 10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
 11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms, and the `walkstuf1` slack-5 early-prepare owner is exact-flat with hot-code growth.
-12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
+12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed, D4-only frame94 was inert, restore-minus-current has no current shrink, and local-LZ entry55 regressed cadence.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
 14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding, entry60 recovery rows, and broad low-tide no-direct-stage ownership are closed.
 15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{160..176}` plus entry60/guard is closed.
 16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}`, slack-5 prepare, and the minSlack4 floor prove simple static/scalar recovery rows are not enough.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}`/window-growth/slack-5-prepare/minSlack4 recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
+19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}`/window-growth/slack-5-prepare/minSlack4/local-LZ recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
 20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.

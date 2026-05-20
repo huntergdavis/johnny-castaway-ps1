@@ -12,6 +12,7 @@ back to the input size so CD LBAs stay fixed during perf probes.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import struct
 import tempfile
@@ -79,6 +80,14 @@ def add_stats(total: PayloadStats, part: PayloadStats) -> None:
     total.cleanup_spans += part.cleanup_spans
     total.cleanup_pixels += part.cleanup_pixels
     total.restore_bytes += part.restore_bytes
+
+
+def stats_dict(stats: PayloadStats) -> dict[str, int]:
+    return {
+        "cleanup_spans": stats.cleanup_spans,
+        "cleanup_pixels": stats.cleanup_pixels,
+        "restore_bytes": stats.restore_bytes,
+    }
 
 
 def parse_cleanup_rows(payload: bytes, offset: int, limit: int) -> tuple[list[Row], int]:
@@ -199,7 +208,15 @@ def compact_payload(payload: bytes) -> tuple[bytes, PayloadStats, PayloadStats]:
     return encode_cleanup_rows(new_rows) + payload[draw_offset:], old_stats, new_stats
 
 
-def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> None:
+def convert(
+    input_path: Path,
+    output_path: Path,
+    pad_to_input_size: bool,
+    copy_unparseable: bool,
+    selected_frames: set[int] | None,
+    preserve_offsets: bool,
+    summary_path: Path | None,
+) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
         raise SystemExit(f"pack too small: {input_path}")
@@ -237,6 +254,144 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         for index in range(frame_count)
     ]
 
+    if preserve_offsets:
+        out = bytearray(data)
+        old_payload_bytes = 0
+        new_payload_bytes = 0
+        changed_entries = 0
+        saved_bytes = 0
+        copied_unparseable_entries = 0
+        copied_unparseable_samples: list[str] = []
+        copied_grown_entries = 0
+        copied_grown_samples: list[str] = []
+        old_stats = PayloadStats()
+        new_stats = PayloadStats()
+        changed_entry_details: list[dict[str, int | dict[str, int]]] = []
+
+        for index, entry in enumerate(old_entries):
+            source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
+            if old_size == 0:
+                continue
+            if old_offset + old_size > len(data):
+                raise SystemExit(f"entry {index} payload extends beyond pack: {input_path}")
+            old_payload = data[old_offset:old_offset + old_size]
+            old_payload_bytes += old_size
+
+            if selected_frames is not None and index not in selected_frames:
+                new_payload_bytes += old_size
+                continue
+
+            try:
+                compact, entry_old_stats, entry_new_stats = compact_payload(old_payload)
+            except ValueError as exc:
+                if not copy_unparseable:
+                    raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+                new_payload_bytes += old_size
+                copied_unparseable_entries += 1
+                if len(copied_unparseable_samples) < 8:
+                    copied_unparseable_samples.append(f"{index}:{exc}")
+                continue
+
+            if len(compact) > old_size:
+                if not copy_unparseable:
+                    raise SystemExit(
+                        f"entry {index} compact payload grew in preserve-offset mode: "
+                        f"{old_size} -> {len(compact)}"
+                    )
+                new_payload_bytes += old_size
+                add_stats(old_stats, entry_old_stats)
+                add_stats(new_stats, entry_old_stats)
+                copied_grown_entries += 1
+                if len(copied_grown_samples) < 8:
+                    copied_grown_samples.append(f"{index}:{old_size}->{len(compact)}")
+                continue
+
+            new_payload_bytes += len(compact)
+            add_stats(old_stats, entry_old_stats)
+            add_stats(new_stats, entry_new_stats)
+            if compact == old_payload:
+                continue
+
+            entry_saved_bytes = old_size - len(compact)
+            old_sector_start = old_offset // 2048
+            old_sector_end = (old_offset + old_size + 2047) // 2048
+            new_sector_end = (old_offset + len(compact) + 2047) // 2048
+            changed_entries += 1
+            saved_bytes += entry_saved_bytes
+            changed_entry_details.append(
+                {
+                    "index": index,
+                    "source_frame": source_frame,
+                    "old_offset": old_offset,
+                    "old_size": old_size,
+                    "new_size": len(compact),
+                    "saved_bytes": entry_saved_bytes,
+                    "old_sector_count": old_sector_end - old_sector_start,
+                    "new_sector_count": new_sector_end - old_sector_start,
+                    "old_stats": stats_dict(entry_old_stats),
+                    "new_stats": stats_dict(entry_new_stats),
+                }
+            )
+            out[old_offset:old_offset + len(compact)] = compact
+            if entry_saved_bytes:
+                out[old_offset + len(compact):old_offset + old_size] = b"\0" * entry_saved_bytes
+            struct.pack_into(
+                ENTRY,
+                out,
+                table_offset + index * ENTRY_SIZE,
+                source_frame,
+                x,
+                y,
+                width,
+                height,
+                hold_vblanks,
+                old_offset,
+                len(compact),
+            )
+
+        output_path.write_bytes(out)
+        print(
+            f"{input_path} -> {output_path}: {len(data)} -> {len(out)} bytes, "
+            f"active_payload {old_payload_bytes} -> {new_payload_bytes}, "
+            f"cleanup_spans {old_stats.cleanup_spans} -> {new_stats.cleanup_spans}, "
+            f"cleanup_pixels {old_stats.cleanup_pixels} -> {new_stats.cleanup_pixels}, "
+            f"restore_bytes {old_stats.restore_bytes} -> {new_stats.restore_bytes}, "
+            f"changed_entries={changed_entries}, saved_bytes={saved_bytes}, "
+            f"copied_unparseable_entries={copied_unparseable_entries}, "
+            f"copied_grown_entries={copied_grown_entries}, preserve_offsets=1"
+        )
+        if copied_unparseable_samples:
+            print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
+        if copied_grown_samples:
+            print("copied_grown_samples=" + "; ".join(copied_grown_samples))
+        if summary_path is not None:
+            summary_path.write_text(
+                json.dumps(
+                    {
+                        "input": str(input_path),
+                        "output": str(output_path),
+                        "preserve_offsets": True,
+                        "old_bytes": len(data),
+                        "new_bytes": len(out),
+                        "old_active_payload": old_payload_bytes,
+                        "new_active_payload": new_payload_bytes,
+                        "old_stats": stats_dict(old_stats),
+                        "new_stats": stats_dict(new_stats),
+                        "changed_entries": changed_entries,
+                        "saved_bytes": saved_bytes,
+                        "copied_unparseable_entries": copied_unparseable_entries,
+                        "copied_unparseable_samples": copied_unparseable_samples,
+                        "copied_grown_entries": copied_grown_entries,
+                        "copied_grown_samples": copied_grown_samples,
+                        "changed_entry_details": changed_entry_details,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+        return
+
     sound_events = b""
     if sound_events_offset and sound_event_count:
         sound_end = sound_events_offset + sound_event_count * 4
@@ -250,6 +405,10 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
     old_payload_bytes = 0
     old_stats = PayloadStats()
     new_stats = PayloadStats()
+    changed_entries = 0
+    saved_bytes = 0
+    copied_unparseable_entries = 0
+    copied_unparseable_samples: list[str] = []
     for index, entry in enumerate(old_entries):
         source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
         if old_size == 0:
@@ -257,11 +416,27 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
             continue
         if old_offset + old_size > len(data):
             raise SystemExit(f"entry {index} payload extends beyond pack: {input_path}")
-        compact, entry_old_stats, entry_new_stats = compact_payload(
-            data[old_offset:old_offset + old_size]
-        )
-        add_stats(old_stats, entry_old_stats)
-        add_stats(new_stats, entry_new_stats)
+        old_payload = data[old_offset:old_offset + old_size]
+        if selected_frames is not None and index not in selected_frames:
+            compact = old_payload
+        else:
+            try:
+                compact, entry_old_stats, entry_new_stats = compact_payload(old_payload)
+            except ValueError as exc:
+                if not copy_unparseable:
+                    raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
+                compact = old_payload
+                entry_old_stats = PayloadStats()
+                entry_new_stats = PayloadStats()
+                copied_unparseable_entries += 1
+                if len(copied_unparseable_samples) < 8:
+                    copied_unparseable_samples.append(f"{index}:{exc}")
+            else:
+                add_stats(old_stats, entry_old_stats)
+                add_stats(new_stats, entry_new_stats)
+                if compact != old_payload:
+                    changed_entries += 1
+                    saved_bytes += old_size - len(compact)
         new_entries.append(
             (source_frame, x, y, width, height, hold_vblanks, cursor, len(compact))
         )
@@ -314,8 +489,35 @@ def convert(input_path: Path, output_path: Path, pad_to_input_size: bool) -> Non
         f"active_payload {old_payload_bytes} -> {len(payload_out)}, "
         f"cleanup_spans {old_stats.cleanup_spans} -> {new_stats.cleanup_spans}, "
         f"cleanup_pixels {old_stats.cleanup_pixels} -> {new_stats.cleanup_pixels}, "
-        f"restore_bytes {old_stats.restore_bytes} -> {new_stats.restore_bytes}"
+        f"restore_bytes {old_stats.restore_bytes} -> {new_stats.restore_bytes}, "
+        f"changed_entries={changed_entries}, saved_bytes={saved_bytes}, "
+        f"copied_unparseable_entries={copied_unparseable_entries}"
     )
+    if copied_unparseable_samples:
+        print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
+    if summary_path is not None:
+        summary_path.write_text(
+            json.dumps(
+                {
+                    "input": str(input_path),
+                    "output": str(output_path),
+                    "preserve_offsets": False,
+                    "old_bytes": len(data),
+                    "new_bytes": len(out),
+                    "old_active_payload": old_payload_bytes,
+                    "new_active_payload": len(payload_out),
+                    "old_stats": stats_dict(old_stats),
+                    "new_stats": stats_dict(new_stats),
+                    "changed_entries": changed_entries,
+                    "saved_bytes": saved_bytes,
+                    "copied_unparseable_entries": copied_unparseable_entries,
+                    "copied_unparseable_samples": copied_unparseable_samples,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
 
 
 def main() -> None:
@@ -326,23 +528,72 @@ def main() -> None:
     parser.add_argument("output_fgp3", type=Path, nargs="?")
     parser.add_argument("--in-place", action="store_true")
     parser.add_argument("--pad-to-input-size", action="store_true")
+    parser.add_argument(
+        "--copy-unparseable",
+        action="store_true",
+        help="copy entries that do not match the compact residual parser instead of aborting",
+    )
+    parser.add_argument(
+        "--frames",
+        help="Only transform selected entry indices. Comma-separated values may include inclusive ranges like 194:210.",
+    )
+    parser.add_argument(
+        "--preserve-offsets",
+        action="store_true",
+        help="Rewrite entries in place, update only their sizes, and zero the old tails.",
+    )
+    parser.add_argument("--summary", type=Path, help="Write a JSON transform summary.")
     args = parser.parse_args()
 
     if args.in_place == bool(args.output_fgp3):
         raise SystemExit("pass either --in-place or an output path")
+    selected_frames: set[int] | None = None
+    if args.frames:
+        selected_frames = set()
+        for part in args.frames.split(","):
+            item = part.strip()
+            if not item:
+                continue
+            if ":" in item:
+                start_text, end_text = item.split(":", 1)
+                start = int(start_text)
+                end = int(end_text)
+                if end < start:
+                    raise SystemExit(f"invalid frame range: {item}")
+                selected_frames.update(range(start, end + 1))
+            else:
+                selected_frames.add(int(item))
+
     if args.in_place:
         with tempfile.NamedTemporaryFile(
             prefix=f"{args.input_fgp3.name}.", dir=args.input_fgp3.parent, delete=False
         ) as tmp:
             temp_path = Path(tmp.name)
         try:
-            convert(args.input_fgp3, temp_path, args.pad_to_input_size)
+            convert(
+                args.input_fgp3,
+                temp_path,
+                args.pad_to_input_size,
+                args.copy_unparseable,
+                selected_frames,
+                args.preserve_offsets,
+                args.summary,
+            )
             shutil.move(temp_path, args.input_fgp3)
         finally:
             if temp_path.exists():
                 temp_path.unlink()
     else:
-        convert(args.input_fgp3, args.output_fgp3, args.pad_to_input_size)
+        assert args.output_fgp3 is not None
+        convert(
+            args.input_fgp3,
+            args.output_fgp3,
+            args.pad_to_input_size,
+            args.copy_unparseable,
+            selected_frames,
+            args.preserve_offsets,
+            args.summary,
+        )
 
 
 if __name__ == "__main__":
