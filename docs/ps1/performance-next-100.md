@@ -208,6 +208,7 @@ B2-high `{185..197}` CD-pressure row plus the W1-low entry65 payload-only trim:
 23. Add an automated generated-owner scanner that simulates target/refill slack before emitting a temporary owner row for one yellow scene.
 24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
 25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
+26. If clean-rect restore scanning is revisited, make it generated/pack-owned or code-size-neutral first; the runtime row-owner cache crossed the PS-EXE sector bucket and regressed B2-high before showing CPU savings.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
@@ -239,6 +240,17 @@ and `scratch/ps1-perf-iterate/building2-high-window12-current/20260520-022150-23
 Close scalar B2-high stream-window-size retuning; future B2-high work needs
 generated deadline/refill-budget ownership, upload/restore reduction, or
 no-decode relocation with harmless eviction.
+Latest rejected clean-rect row-owner source swing: a conservative
+`gGrCleanRectRowOwner[480]` cache let unique clean-rect rows skip the per-span
+scan over split clean rectangles, but the source/helper growth crossed the
+PS-EXE bucket `233472 -> 235520`, shifted `BUILDING2.FG2` LBA `6189 -> 6190`,
+and regressed B2-high from `1621/1347/1313` to `1625/1351/1311`, overrun
+`34 -> 40`, blocking/refill `39/16 -> 45/20`, with reads/due still `43/5`.
+Artifact:
+`scratch/ps1-perf-iterate/clean-rect-row-owner-b2-high-current/20260520-022946-2355589/summary.json`.
+Close runtime clean-rect row-owner caching as a source-side fix; keep the
+restore-scan idea only as generated metadata, pack-owned static bands, or a
+layout-pinned graphics split.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
