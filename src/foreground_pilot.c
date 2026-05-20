@@ -1238,7 +1238,7 @@ static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
 static uint32 fgSceneCleanReliefWindowBytes(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide)
-        return 68UL * 1024UL;
+        return 80UL * 1024UL;
     if (fgSceneEquals(sceneName, "visitor3"))
         return FG_PREFETCH_DEFAULT_WINDOW_BYTES;
     return 0;

@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `126`
-- Average measured timing gap: `-0.4714%` over target
+- Average measured timing gap: `-0.4780%` over target
 - Average estimated align4 x-band upload byte saving: `66.50%`
 
 ## Top Upload-Ready Candidates
@@ -20,18 +20,18 @@ accepted performance baseline.
 | 3 | `building4` | `high` | 33.58 | 0.96% | 65.1% | 481.57% | 64 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
 | 4 | `visitor3` | `low` | 33.12 | 2.50% | 55.26% | 1027.5% | 75 | x-band rect cap pressure; needs selective bands; rect/frame 1.65 |
 | 5 | `building4` | `low` | 32.15 | 0.96% | 64.45% | 541.09% | 59 | x-band rect cap pressure; needs selective bands; rect/frame 1.71 |
-| 6 | `walkstuf1` | `high` | 31.51 | 2.15% | 45.2% | 740.73% | 70 | x-band rect cap pressure; needs selective bands; rect/frame 2.42 |
+| 6 | `walkstuf1` | `high` | 31.26 | 2.15% | 45.2% | 748.02% | 69 | x-band rect cap pressure; needs selective bands; rect/frame 2.42 |
 | 7 | `walkstuf3` | `high` | 29.06 | 0.74% | 81.22% | 565.34% | 61 | large upload-ready payload; needs compression/selective bands; rect/frame 2.09 |
-| 8 | `visitor3` | `high` | 28.98 | 2.97% | 54.77% | 993.59% | 48 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
-| 9 | `johnny6` | `high` | 27.86 | 1.00% | 54.86% | 436.4% | 50 | candidate; rect/frame 1.52 |
-| 10 | `johnny6` | `low` | 27.86 | 1.00% | 54.86% | 436.4% | 50 | candidate; rect/frame 1.52 |
-| 11 | `walkstuf1` | `low` | 26.83 | 2.01% | 45.96% | 789.57% | 54 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
-| 12 | `suzy1` | `high` | 26.12 | 0.56% | 37.86% | 893.33% | 56 | large upload-ready payload; needs compression/selective bands; rect/frame 1.93 |
-| 13 | `suzy1` | `low` | 24.74 | 0.54% | 37.86% | 893.33% | 52 | large upload-ready payload; needs compression/selective bands; rect/frame 1.93 |
-| 14 | `fishing3` | `high` | 24.53 | 0.87% | 63.39% | 486.85% | 55 | candidate; rect/frame 1.97 |
-| 15 | `building6` | `high` | 24.44 | 0.86% | 60.41% | 482.98% | 47 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
-| 16 | `walkstuf3` | `low` | 24.28 | 0.70% | 82.98% | 540.22% | 44 | large upload-ready payload; needs compression/selective bands; rect/frame 1.44 |
-| 17 | `mary1` | `low` | 22.32 | 0.31% | 80.45% | 268.49% | 41 | candidate; rect/frame 1.61 |
+| 8 | `johnny6` | `high` | 27.86 | 1.00% | 54.86% | 436.4% | 50 | candidate; rect/frame 1.52 |
+| 9 | `johnny6` | `low` | 27.86 | 1.00% | 54.86% | 436.4% | 50 | candidate; rect/frame 1.52 |
+| 10 | `suzy1` | `high` | 26.12 | 0.56% | 37.86% | 893.33% | 56 | large upload-ready payload; needs compression/selective bands; rect/frame 1.93 |
+| 11 | `suzy1` | `low` | 24.74 | 0.54% | 37.86% | 893.33% | 52 | large upload-ready payload; needs compression/selective bands; rect/frame 1.93 |
+| 12 | `fishing3` | `high` | 24.53 | 0.87% | 63.39% | 486.85% | 55 | candidate; rect/frame 1.97 |
+| 13 | `building6` | `high` | 24.44 | 0.86% | 60.41% | 482.98% | 47 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
+| 14 | `walkstuf3` | `low` | 24.28 | 0.70% | 82.98% | 540.22% | 44 | large upload-ready payload; needs compression/selective bands; rect/frame 1.44 |
+| 15 | `visitor3` | `high` | 23.24 | 2.49% | 54.77% | 993.59% | 36 | x-band rect cap pressure; needs selective bands; rect/frame 1.67 |
+| 16 | `mary1` | `low` | 22.32 | 0.31% | 80.45% | 268.49% | 41 | candidate; rect/frame 1.61 |
+| 17 | `walkstuf1` | `low` | 20.53 | 1.66% | 45.96% | 791.19% | 38 | x-band rect cap pressure; needs selective bands; rect/frame 2.41 |
 | 18 | `building6` | `low` | 18.81 | 0.61% | 60.41% | 482.98% | 39 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
 | 19 | `suzy2` | `high` | 18.04 | 0.72% | 50.21% | 753.65% | 34 | large upload-ready payload; needs compression/selective bands; rect/frame 1.9 |
 | 20 | `suzy2` | `low` | 18.04 | 0.72% | 50.21% | 753.65% | 34 | large upload-ready payload; needs compression/selective bands; rect/frame 1.9 |

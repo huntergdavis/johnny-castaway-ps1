@@ -120,13 +120,14 @@ linked in the Rollup section.</p>
 
 The allocator refresh changed the current risk profile: VISITOR3 high/low have
 now moved out of red, and the latest VISITOR3 clean-relief stream-window work
-keeps high at its 68 KiB knee while moving low tide further into yellow with a
+widens high to an 80 KiB knee while moving low tide further into yellow with a
 16 KiB slack-5 window plus a third retained setup segment extended to
-`206..232` and frame `138` raw relocated into that paid gap. The newest
+`206..232` and frame `138` raw relocated into that paid gap. The current
 VISITOR3 high pass moves frames `56` and `57` raw into the retained `228..262`
 gap and caps tight speculative refills at `56 KiB`, improving high to
-`1075/1043` without hidden-refill debt; the latest high-only clean-strip
-retune caps clean slices at `64 KiB` and moves the row to `1075/1044`.
+`1075/1043` without hidden-refill debt; the high-only clean-strip retune caps
+clean slices at `64 KiB`, and the newest clean-relief window retune widens
+high from `68 KiB` to `80 KiB` to move the row to `1071/1045`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups, WALKSTUF1
@@ -142,8 +143,9 @@ uses a gap-8 dirty-upload band merge retune plus a `24 KiB` stream window to
 cut its active row to `2847/2820` and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
-The remaining performance work should keep targeting VISITOR3 data-shape or
-scheduler ownership first, then residual WALKSTUF1 and BUILDING2 high polish.
+The remaining performance work should target BUILDING2 high generated
+ownership first, then VISITOR3 low/high data-shape or scheduler ownership and
+the residual WALKSTUF1 rows.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -164,10 +166,10 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame56/`{178..194}` focused gate `2026-05-19T22:08:11` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row now uses `w1high-frame56-rg178-194`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; V3-high 80 KiB window focused gate `2026-05-19T22:34:00` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row uses `w1high-frame56-rg178-194`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -258,16 +260,17 @@ rejected at `2895/2813`.
 Current VISITOR3 allocator-era speed track: VISITOR3 still forces
 clean-memory relief because its split clean rects and bg tiles leave too little
 room for full setup-prime buffers. The current promotion keeps the tiny stage1
-prefetch frame buffer for both tides, allows a high-tide 68 KiB stream
+prefetch frame buffer for both tides, allows a high-tide 80 KiB stream
 window, allows low tide to keep a 16 KiB clean-relief stream window behind
 a slack-5 guard, trims high terminal overread, extends high setup segment2
 through relative sector `229`, and relocates high frame `139`'s raw payload
 into that paid setup gap, then adds a third high retained setup segment at
 relative sectors `228..262`, then moves high frames `56` and `57` raw into
 that retained gap with a `56 KiB` tight-refill cap. High improves
-`1232/1033 -> 1075/1044`, overrun `199 -> 31`, blocking `478 -> 45`, reads
-`137 -> 4`, and due `137 -> 3`; the latest high-only follow-up caps clean
-strips at `64 KiB`, and the latest low-tide follow-up adds a third
+`1232/1033 -> 1071/1045`, overrun `199 -> 26`, blocking `478 -> 35`, reads
+`137 -> 7`, and due `137 -> 2`; the latest high-only follow-up caps clean
+strips at `64 KiB` and then widens the clean-relief window from `68 KiB` to
+`80 KiB`, and the latest low-tide follow-up adds a third
 retained setup segment for sectors `206..230`, then extends it to `206..232`
 and relocates frame `138` raw into the paid gap, improving low
 `1088/1038 -> 1065/1039`, overrun `50 -> 26`, blocking `104 -> 75`,
@@ -594,8 +597,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed VISITOR3-high clean64 row and under-green canaries use
-  `git:7680edc56a+visitor3-high-clean64`;
+  refreshed VISITOR3-high clean-relief window row uses
+  `v3high-window80-tight56`;
   WALKSTUF1 low uses `git:3579a628+w1low-rg355-371`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
@@ -2465,14 +2468,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T19:47:09</td>
-      <td>git:3579a628+w1low-rg355-371</td>
-      <td>3.0%</td>
-      <td class="spd-yellow">97.1%</td>
-      <td>1075/1044</td>
-      <td>45</td>
-      <td>3</td>
-      <td>3</td>
+      <td>2026-05-19T22:34:00</td>
+      <td>v3high-window80-tight56</td>
+      <td>2.5%</td>
+      <td class="spd-yellow">97.6%</td>
+      <td>1071/1045</td>
+      <td>35</td>
+      <td>1</td>
+      <td>2</td>
       <td></td>
     </tr>
     <tr id="perf-visitor3-low">

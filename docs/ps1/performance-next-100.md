@@ -49,12 +49,13 @@ read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
 payload trims, followed by the WALKSTUF1 low `244..350`/`179..185`
 setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
 `{355..371}` W1-low read-work promotion, then the same-speed W1-high
-frame56 plus `{178..194}` CD-pressure promotion:
-`+0.2425%` public average over target / `99.7608%` public target speed across
+frame56 plus `{178..194}` CD-pressure promotion, and finally the VISITOR3 high
+80 KiB clean-relief stream-window promotion:
+`+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4744%` / `100.4911%`. Since the compact full-matrix baseline was
+`-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.22` public over-target points and added about `12.72` public
+removed about `17.16` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -65,8 +66,8 @@ relocates high frame `139`'s raw payload into the already retained `203..229`
 gap, then adds a third high-tide retained setup segment at relative sectors
 `228..262`, then moves high frames `56` and `57` raw into that paid gap and
 caps tight-slack speculative refills at `56 KiB`:
-high improves `1232/1033 -> 1075/1044`, blocking `478 -> 45`, reads
-`137 -> 4`, and due `137 -> 3`; low improves `1231/1040 -> 1065/1039`,
+high improves `1232/1033 -> 1071/1045`, blocking `478 -> 35`, reads
+`137 -> 7`, and due `137 -> 2`; low improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
@@ -93,7 +94,12 @@ without changing timing, pack footprint, pack LBA/sectors, or the PS-EXE
 bucket. The newest frame56 preserve-offset trim removes another `3101` bytes
 and one payload sector; paired with `{178..194}`, it keeps W1-high speed flat
 at `1471/1440` while improving blocking `57 -> 56` and loop reads/read time
-`45/209 -> 43/207`. The
+`45/209 -> 43/207`. The latest VISITOR3 high clean-relief window retune then
+widens the high-tide stream window from `68 KiB` to `80 KiB` while keeping the
+`56 KiB` tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun
+`31 -> 26`, blocking `45 -> 35`, hidden refill `3 -> 1`, and due `3 -> 2`;
+the rejected `96 KiB` variants saved a read but regressed loop/target cadence.
+The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
@@ -149,34 +155,42 @@ blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
 and due `6 -> 5`.
 
 Current allocator-era big-swing queue after closing the W1-low static table
-lane and banking the W1-high frame56/`{178..194}` CD-pressure row:
+lane, banking the W1-high frame56/`{178..194}` CD-pressure row, and promoting
+the VISITOR3 high 80 KiB clean-relief window:
 
-1. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
-2. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping the `160..176` loop/blocking signal.
-3. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
-4. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
-5. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-6. Run preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries, not on sector-collapse candidates.
-7. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
-8. Add a W1-low no-decode alias for unchanged foreground draw tails where the source frame is already resident in setup memory.
-9. Generate W1-high deadline-owned read metadata for the `84..108`/`92..108` family now that frame92 D4 changed the boundary.
-10. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
-11. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
-12. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal setup segment.
-13. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since CD reads are already down to `4` and blocking is likely deadline placement.
-14. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
-15. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
-16. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
-17. Try VISITOR3-low static-upload/restore trimming because retained-segment swaps are proven phase-negative.
-18. Generate BUILDING2-high append-start/deadline ownership for the late `249..261` row rather than another static table row.
-19. Test BUILDING2-high first-frame upload reduction, not first-frame relocation, because setup-first-render lowered target and worsened cadence.
-20. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode is closed.
+1. Generate BUILDING2-high append-start/deadline ownership for the late `249..261` row rather than another static table row.
+2. Test BUILDING2-high first-frame upload reduction, not first-frame relocation, because setup-first-render lowered target and worsened cadence.
+3. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode is closed.
+4. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
+6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
+7. Try VISITOR3-low static-upload/restore trimming because retained-segment swaps are proven phase-negative.
+8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal setup segment or the 80 KiB relief window.
+9. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since the promoted row now trades more smaller reads for lower blocking and refill debt.
+10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
+11. Generate W1-high deadline-owned read metadata for the `84..108`/`92..108` family now that frame92 D4 changed the boundary.
+12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
+13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
+14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
+15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping the `160..176` loop/blocking signal.
+16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
+18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
+19. Run preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries, not on sector-collapse candidates.
+20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
 23. Add an automated generated-owner scanner that simulates target/refill slack before emitting a temporary owner row for one yellow scene.
 24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
 25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
 
+Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
+stream window passes the focused and five-yellow gates, moving V3 high from
+`1075/1044` to `1071/1045` with overrun `31 -> 26`, blocking `45 -> 35`,
+refill `3 -> 1`, and due `3 -> 2`. Keep the 80 KiB relief window and the
+56 KiB tight cap as the new V3-high baseline. The 96 KiB variants are closed:
+they reduced loop reads but tightened target cadence enough to regress strict
+promotion gates.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide

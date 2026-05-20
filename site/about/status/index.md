@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2425%` over
-target / `99.7608%` target speed; the raw signed optimization matrix is
-about `-0.4744%` / `100.4911%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2387%` over
+target / `99.7644%` target speed; the raw signed optimization matrix is
+about `-0.4782%` / `100.4948%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief stream-window checkpoints keep the top allocator-era rows
 measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
@@ -45,8 +45,8 @@ to `39`, reads/read time to `45/199`, and due to `5`. BUILDING4 low now carries 
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures `1471/1440`, blocking/refill/due `57/13/10`, with
-loop reads/read time at `45/209` after keeping relative sectors
+buffers: high now measures `1471/1440`, blocking/refill/due `56/13/10`, with
+loop reads/read time at `43/207` after keeping relative sectors
 `198..244`, extending the second slice to `286..344`, adding `{149,165}`, and
 encoding frame `92` as previous-frame D4; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
@@ -58,12 +58,13 @@ blocking/refill/due `33/5/4`, with loop reads/read time at `24/147`.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
-uses a `68 KiB` window with terminal overread trimming, setup segment2
+uses an `80 KiB` window with terminal overread trimming, setup segment2
 `203..229`, frame `139` raw-gap relocation, and a third retained setup segment
 at `228..262`, then moves frames `56` and `57` raw into that gap with a
-`56 KiB` tight-refill cap and caps high clean strips at `64 KiB`.
-High measures `1075/1044`, overrun `31`, blocking
-`45`, reads/due `4/3`; low uses a
+`56 KiB` tight-refill cap, caps high clean strips at `64 KiB`, and widens the
+clean-relief window from `68 KiB` to `80 KiB`.
+High measures `1071/1045`, overrun `26`, blocking
+`35`, reads/due `7/2`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, and measures
 `1065/1039`, overrun `26`, blocking `75`, reads/due `18/14`. Both rows moved out of red and the orange band is now empty
