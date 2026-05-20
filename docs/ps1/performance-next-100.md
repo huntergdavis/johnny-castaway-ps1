@@ -132,15 +132,46 @@ read-candidate matrix now has no standalone or scheduler/guarded direct rows.
 The follow-up direct-stage owner lane also closed `129..153`, `160..176`, and
 `355..379`. The follow-up `153..177` retained-group probe is also closed:
 raw and slack8 improved loop/blocking but regressed hidden refill and target,
-while slack32 was exact-flat/inert. Only smaller scheduler-owned W1-low ranges
-such as `153..169`, `142..154`, `136..148`, and `360..372` remain, and they
-should be treated as generated-ownership/data-shape leads, not direct table
-rows.
+while slack32 was exact-flat/inert. The smaller `147..171`, `153..169`,
+`142..154`, `136..148`, and `147..163` rows are now closed too. Raw/static
+forms either regressed target/refill/visible blocking or went exact-flat under
+high slack guards, so the W1-low static retained-read table lane is exhausted.
+Remaining W1-low work should be treated as generated-ownership/data-shape
+leads, not direct table rows.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
 blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
 and due `6 -> 5`.
+
+Current allocator-era big-swing queue after closing the W1-low static table
+lane:
+
+1. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
+2. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping the `160..176` loop/blocking signal.
+3. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+4. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
+5. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
+6. Run preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries, not on sector-collapse candidates.
+7. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
+8. Add a W1-low no-decode alias for unchanged foreground draw tails where the source frame is already resident in setup memory.
+9. Generate W1-high deadline-owned read metadata for the `84..108`/`92..108` family now that frame92 D4 changed the boundary.
+10. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
+11. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
+12. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal setup segment.
+13. Try VISITOR3-high clean/upload ownership for the tiny-read profile, since CD reads are already down to `4` and blocking is likely deadline placement.
+14. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
+15. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
+16. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
+17. Try VISITOR3-low static-upload/restore trimming because retained-segment swaps are proven phase-negative.
+18. Generate BUILDING2-high append-start/deadline ownership for the late `249..261` row rather than another static table row.
+19. Test BUILDING2-high first-frame upload reduction, not first-frame relocation, because setup-first-render lowered target and worsened cadence.
+20. Try BUILDING2-high no-decode payload boundary relocation around frames `71` and `77`; high-tide D4 decode is closed.
+21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
+22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
+23. Add an automated generated-owner scanner that simulates target/refill slack before emitting a temporary owner row for one yellow scene.
+24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
+25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
 
 Pre-allocator historical all-scene rollup after the VISITOR3 high-only sparse frame-117
 target-hull timing promotion, the v202/v206/v207 high re-anchor CD-pressure
