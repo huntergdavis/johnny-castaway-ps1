@@ -166,19 +166,20 @@ It keeps W1-low target speed flat at `1470/1446` / `98.367%`, scene `1809`,
 blocking/refill `33/5`, and due `4`, while reducing loop reads/read time
 `26/150 -> 24/147`.
 
-Latest promoted WALKSTUF1 low payload note: entry `59` / source frame `78` is
-trimmed in place from `4200` to `456` bytes (`3 -> 2` sectors), on top of the
+Latest promoted WALKSTUF1 low payload note: entry `63` / source frame `91` is
+trimmed in place from `4643` to `1244` bytes (`3 -> 2` sectors), on top of the
 prior entry `65` / source frame `96` trim (`4630 -> 1666`), entry `39` / source
 frame `49` trim (`7835 -> 4724`), entry `55` / source frame `65` trim
-(`4716 -> 2`), and entry `56` / source frame `67` trim (`3425 -> 324`).
+(`4716 -> 2`), entry `56` / source frame `67` trim (`3425 -> 324`), and entry
+`59` / source frame `78` trim (`4200 -> 456`).
 Transform summary:
-`scratch/walkstuf1-low-trim-entry59-current/summary.json`; focused proof:
-`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry59-current/20260520-053427-3398149/summary.json`;
+`scratch/walkstuf1-low-trim-entry63-current/summary.json`; focused proof:
+`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry63-current/20260520-055126-3493665/summary.json`;
 five-yellow canary:
-`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry59-canary/20260520-053628-3409612/summary.json`.
+`scratch/ps1-perf-iterate/walkstuf1-low-trim-entry63-canary/20260520-055318-3504596/summary.json`.
 It keeps W1-low and the other four yellow rows exact-flat while active W1-low
-payload drops `774883 -> 771139`; the five current low-pack payload trims now
-total `17634` bytes from the pre-entry65 baseline.
+payload drops `771139 -> 767740`; the six current low-pack payload trims now
+total `21033` bytes from the pre-entry65 baseline.
 
 Prior promoted WALKSTUF1 high setup-slice pressure note:
 the high-tide path keeps the `198..244` first setup slice and extends the
