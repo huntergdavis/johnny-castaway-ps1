@@ -251,6 +251,16 @@ Artifact:
 Close runtime clean-rect row-owner caching as a source-side fix; keep the
 restore-scan idea only as generated metadata, pack-owned static bands, or a
 layout-pinned graphics split.
+Latest rejected VISITOR3 high final hand-table row: the refreshed matrix left
+only `{44..50}` unclosed. A high-tide-only route under the current `80 KiB`
+clean-relief stream window stayed exact-flat at `1388/1071/1045`, overrun `26`,
+blocking/refill `35/1`, reads/due `7/2`, with fixed pack LBA `22619` and
+PS-EXE bucket `233472`, while foreground hot code grew/shuffled by `24` bytes.
+Artifact:
+`scratch/ps1-perf-iterate/visitor3-high-rg44-50-current/20260520-023650-2395484/summary.json`.
+Close `{44..50}` as a static source row; the current yellow hand-table matrix
+is now exhausted and read work should move to generated deadline/refill
+ownership only.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
