@@ -225,6 +225,15 @@ due `4 -> 3`, but hidden refill `5 -> 10` and loop reads `24 -> 27`. The
 48 KiB window. Do not retry scalar W1-low resident-window growth for entry60;
 the remaining path is generated deadline/refill ownership or a different
 pack/render work reduction.
+The prepared-frame/refill-slack recovery ladder for entry60 is closed as well.
+Allowing `walkstuf1` to prepare staged visual work at slack `5` preserved the
+visible win but kept the same hidden-refill failure (`5 -> 10`, reads
+`24 -> 27`). Restoring normal prepare timing and raising W1-low refill
+minimum slack to `4` fixed hidden refill (`5 -> 2`) but traded it into visible
+blocking and due misses (`1809/1470/1446 -> 1811/1472/1446`, blocking
+`33 -> 40`, due `4 -> 6`). Entry60 should not be retried with scalar prepare
+or min-slack controls; it needs generated frame/deadline/refill ownership or a
+new render/data-shape reduction that creates slack first.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -360,10 +369,10 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 p
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
 14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding, entry60 recovery rows, and broad low-tide no-direct-stage ownership are closed.
 15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{160..176}` plus entry60/guard is closed.
-16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}` proves simple static recovery rows are not enough.
+16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}`, slack-5 prepare, and the minSlack4 floor prove simple static/scalar recovery rows are not enough.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}` recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
+19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}`/window-growth/slack-5-prepare/minSlack4 recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
 20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
