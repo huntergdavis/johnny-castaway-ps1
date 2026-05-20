@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-19:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{355..371}` canary `2026-05-19T19:47:09` |
-| Stats version | mixed; newest targeted under-green canary rows are stamped `git:3579a628+w1low-rg355-371`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame56/`{178..194}` focused gate `2026-05-19T22:08:11` |
+| Stats version | mixed; newest targeted under-green row is stamped `w1high-frame56-rg178-194`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,17 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1 high read-group pressure note:
+Latest promoted WALKSTUF1 high CD-pressure note: entry `56` / source frame
+`67` is trimmed in place from `3425` to `324` bytes (`2 -> 1` sectors), then
+the high-tide path adds `{178,194}`. The focused proof is
+`scratch/ps1-perf-iterate/walkstuf1-high-frame56-rg178-194-current-strict/20260519-220811-884805/summary.json`;
+the five-row no-regression canary is
+`scratch/ps1-perf-iterate/walkstuf1-high-frame56-rg178-194-current-canary-noregress/20260519-220955-894839/summary.json`.
+The promotion keeps W1 high at `1807/1471/1440`, overrun `31`, refill `13`,
+and due `10`, while improving blocking `57 -> 56` and loop reads/read time
+`45/209 -> 43/207`. W1 low, VISITOR3 high/low, and BUILDING2 high stayed flat.
+
+Prior promoted WALKSTUF1 high read-group pressure note:
 the high-tide path now adds `{149,165}` after the accepted `{78,91}` row.
 The focused proof is
 `scratch/ps1-perf-iterate/walkstuf1-high-rg149-165-vnext/20260518-202745-469634/summary.json`;

@@ -48,7 +48,8 @@ WALKSTUF1 low frame132 payload trim, the WALKSTUF1 low `{378..390}`
 read-group promotion, and the WALKSTUF1 high entry136/entry57 exact-flat
 payload trims, followed by the WALKSTUF1 low `244..350`/`179..185`
 setup-retarget plus `{113..129}` CD-pressure promotion, then the same-speed
-`{355..371}` W1-low read-work promotion:
+`{355..371}` W1-low read-work promotion, then the same-speed W1-high
+frame56 plus `{178..194}` CD-pressure promotion:
 `+0.2425%` public average over target / `99.7608%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4744%` / `100.4911%`. Since the compact full-matrix baseline was
@@ -89,7 +90,10 @@ overrun `15 -> 13`, and due `15 -> 10`; the D4 step trades reads/read time
 `44/199 -> 45/209` while still cutting visible loop time. The later entry136
 and entry57 preserve-offset trims remove `4255` bytes and two payload sectors
 without changing timing, pack footprint, pack LBA/sectors, or the PS-EXE
-bucket. The
+bucket. The newest frame56 preserve-offset trim removes another `3101` bytes
+and one payload sector; paired with `{178..194}`, it keeps W1-high speed flat
+at `1471/1440` while improving blocking `57 -> 56` and loop reads/read time
+`45/209 -> 43/207`. The
 under-green canary refresh now stamps W1 high/low at `1471/1440` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
@@ -145,7 +149,7 @@ blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
 and due `6 -> 5`.
 
 Current allocator-era big-swing queue after closing the W1-low static table
-lane:
+lane and banking the W1-high frame56/`{178..194}` CD-pressure row:
 
 1. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
 2. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping the `160..176` loop/blocking signal.
@@ -4554,8 +4558,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low setup-segment sweep `371..387` / `190..202` | Do not promote or retry as hand-owned setup residency. The v343 original-order `371..387` segment improved loop/overrun `1484 -> 1480` and `53 -> 50`, but failed strict pressure by regressing blocking `72 -> 76`, hidden refill `22 -> 24`, setup cost, and due misses `12 -> 13`. The v344 before-window ordering regressed loop/overrun/blocking to `1485`, `56`, and `80` despite one fewer read, and the v345 `190..202` segment had no key improvement (`1486`, `57`, `79`, hidden `24`, due `13`). Future low residency must avoid extra setup reads and preserve early locality, or be generated deadline-owned rather than another scalar segment. |
 | WALKSTUF1 low read groups `83..91`, `155..163`, and `237..245` | Do not promote or retry as hand-authored retained-read tables. The v355 combined table was the only apparent speed hint (`1776/1484/53 -> 1774/1482/51`), but it failed by adding pressure (`blocking_vb 72 -> 76`, `prefetch_overrun_vb 22 -> 24`, `loop_reads 67 -> 68`, `due_misses 12 -> 13`). The isolated v356-v358 probes regressed outright: `155..163` to `1783`, `1491/1423`, blocking `101`; `83..91` to `1784`, `1492/1429`, blocking `86`; and `237..245` to `1784`, `1492/1428`, blocking `80`. This closes current low-risk scalar grouping after v354; future WALKSTUF1 low work must change data shape, metadata ownership, or deadline phase. |
 | WALKSTUF1 low read group `201..213` | Do not promote as a symmetric high/low table. The v278 focused low gate proved the candidate fires and reduces reads (`67 -> 65`), but public timing regresses `scene_vb 1779 -> 1781`, active loop `1487/1424 -> 1489/1425`, overrun `63 -> 64`, blocking `95 -> 97`, hidden refill `25 -> 27`, and due misses to `17`. Low needs generated phase ownership or pack/data-shape work, not the high-side read group copied across tides. |
-| WALKSTUF1 high read group `178..194` | Do not promote or retry as a hand-authored retained stream table. The v279 focused gate reduced loop reads `68 -> 67`, but regressed high `scene_vb 1777 -> 1781`, active loop `1488/1426 -> 1492/1423`, overrun `62 -> 69`, blocking `92 -> 99`, hidden refill `27 -> 28`, and due misses `14 -> 16` with fixed pack LBA and `217088` byte PS-EXE bucket. The same sector neighborhood is now closed in both direct-stage-deny and retained-read-table forms. |
-| WALKSTUF1 high read group `178..194` current-baseline retest | Still closed after the v339 current-baseline retest. The latest probe reduced loop reads `69 -> 66`, but regressed high `scene_vb 1768 -> 1774`, active loop `1480 -> 1486`, target `1429 -> 1427`, overrun `51 -> 59`, blocking `85 -> 98`, and due misses `16 -> 17`; prefetch only improved `26 -> 23`. Do not revisit as a direct hand table; only generated deadline ownership or pack-side removal can make this neighborhood viable. |
+| WALKSTUF1 high read group `178..194` | Historical direct-table forms remain closed. The v279 focused gate reduced loop reads `68 -> 67`, but regressed high `scene_vb 1777 -> 1781`, active loop `1488/1426 -> 1492/1423`, overrun `62 -> 69`, blocking `92 -> 99`, hidden refill `27 -> 28`, and due misses `14 -> 16` with fixed pack LBA and `217088` byte PS-EXE bucket. The allocator-era current-baseline retest was also phase-negative by itself. The 2026-05-19 promotion is the narrow paired form only: first trim frame56/source67 in place, then add `{178..194}`, yielding flat `1471/1440` timing with blocking `57 -> 56` and reads/read time `45/209 -> 43/207`. Do not retry this neighborhood as a standalone hand table; pair future rows with data-shape or generated ownership proof. |
 | WALKSTUF1 high frame `37` setup-edge motion-copy | Do not promote under the current runtime motion helper. Sparse-in-place frame `37` motion-copy shrank the payload `6885 -> 4817` bytes and reduced the setup-prime spill from `2098` bytes to `30`, but the focused v280 gate regressed high to `1790`, `1501/1422`, overrun `79`, blocking `101`, and hidden refill `38`; only due misses improved `14 -> 13`. The signal should be retried only as no-runtime/precomputed data or generated scheduler ownership, not as the current compact motion marker dispatch. |
 | WALKSTUF1 high early-prefix cleanup gap1 | Do not promote without a hidden-refill fix, but keep as the strongest current signal. The v283 pack-only cleanup-gap1 transform on frames `0..37` saved `1126` bytes and improved high from `1777`, `1488/1426`, overrun `62`, blocking `92` to `1770`, `1481/1425`, overrun `56`, blocking `81`; the sole gate blocker was hidden refill `27 -> 28`. Gap3 fully setup-covered entry `37` but regressed hidden refill harder, and a high-only slack-4 guard fixed hidden refill by starving visible CD (`blocking 132`). Retry with a targeted generated refill reservation, not a scalar slack guard. |
 | WALKSTUF1 high entry136 preserve-offset trim | Done as work-volume, not a speed win. The isolated current-baseline entry `136` / source frame `244` trim shrinks `3762 -> 2596` bytes (`3 -> 2` sectors) with fixed `WALKSTUF1.FG2` footprint/LBA/sectors and exact-flat five-yellow timing. The full four-entry preserve-offset batch is rejected because the early-prefix trims regress W1 high to `1477/1433`, blocking/refill `71/24`; do not retry the early-prefix batch without generated deadline/refill ownership. |

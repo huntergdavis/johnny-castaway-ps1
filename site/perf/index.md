@@ -166,8 +166,8 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2425%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7608%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low `{355..371}` canary `2026-05-19T19:47:09` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed WALKSTUF1 high/low and the five-yellow canary rows now use `git:3579a628+w1low-rg355-371`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame56/`{178..194}` focused gate `2026-05-19T22:08:11` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed VISITOR3-high clean64 row and under-green canaries stamped `git:7680edc56a+visitor3-high-clean64`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary rows use `git:3579a628+w1low-rg355-371`; refreshed W1-high row now uses `w1high-frame56-rg178-194`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -185,7 +185,9 @@ as a previous-frame D4 delta. The current allocator-era row improves
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`,
 prefetch overrun `15 -> 13`, and due `15 -> 10`; the D4 pass trades loop
 reads/read time from `44/199` to `45/209` while still cutting visible loop
-time and overrun.
+time and overrun. The newest frame56/source67 trim plus `{178..194}` keeps
+that same `1471/1440` speed while reducing blocking `57 -> 56` and loop
+reads/read time `45/209 -> 43/207`.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` CACHE setup segment after low-only 48 KiB
 clean-rect chunking, adds the `{91,107}` first-boundary read group, and then
@@ -225,7 +227,9 @@ WALKSTUF1 low, and BUILDING4 low stayed flat in the under-green canary.
 The follow-up entry136 and entry57 preserve-offset trims remove another
 `4255` bytes and two payload sectors from the hot pack while keeping the
 five-yellow timing canary exact-flat at `1471/1440`, overrun `31`,
-blocking/refill `57/13`, reads `45`, and due `10`.
+blocking/refill `57/13`, reads `45`, and due `10`. The newest frame56 trim
+removes another `3101` bytes and one sector; paired with `{178..194}`, it
+keeps timing flat while lowering blocking to `56` and reads to `43`.
 
 Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
@@ -2601,12 +2605,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-19T19:47:09</td>
-      <td>git:3579a628+w1low-rg355-371</td>
+      <td>2026-05-19T22:08:11</td>
+      <td>w1high-frame56-rg178-194</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1471/1440</td>
-      <td>57</td>
+      <td>56</td>
       <td>13</td>
       <td>10</td>
       <td></td>
