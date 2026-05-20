@@ -119,9 +119,12 @@ The newest W1-low setup/owner promotion revisits `{113,129}` only after moving
 setup coverage to `244..350` plus a split `179..185` setup edge. That narrower
 shape passes the focused and five-yellow gates at the same `1470/1446` target
 speed while improving scene `1812 -> 1809`, blocking/refill `34/6 -> 33/5`,
-and loop reads/read time `30/159 -> 26/150`. The refreshed read-candidate
-matrix now ranks `160..176` as the first remaining W1-low scheduler/guarded
-probe.
+and loop reads/read time `30/159 -> 26/150`. The follow-up raw/min-slack
+`160..176` owner probe is closed: raw and slack8 moved loop/blocking but
+regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
+read-candidate matrix now has no standalone or scheduler/guarded direct rows;
+only scheduler-owned W1-low ranges such as `129..153`, `355..379`, and
+`153..177` remain.
 The prior W1-low first-boundary read-group promotion reopens the previously
 rejected `{91,107}` range on the newer clean-rect/setup-edge baseline and
 improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
