@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-19" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-20" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2717 words
+          ~10 min read · 2737 words
         </p>
 
       <hr class="rule" />
@@ -154,10 +154,11 @@ with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ 
 <code class="language-plaintext highlighter-rouge">27</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures <code class="language-plaintext highlighter-rouge">1471/1440</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">56/13/10</code>, with
-loop reads/read time at <code class="language-plaintext highlighter-rouge">42/205</code> after keeping relative sectors
+buffers: high now measures <code class="language-plaintext highlighter-rouge">1472/1441</code>, blocking/refill/due <code class="language-plaintext highlighter-rouge">43/13/7</code>, with
+loop reads/read time at <code class="language-plaintext highlighter-rouge">44/204</code> after keeping relative sectors
 <code class="language-plaintext highlighter-rouge">198..244</code>, extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adding <code class="language-plaintext highlighter-rouge">{149,165}</code>,
-encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4, and adding <code class="language-plaintext highlighter-rouge">{423,439}</code>; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
+encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4, adding <code class="language-plaintext highlighter-rouge">{423,439}</code> plus <code class="language-plaintext highlighter-rouge">{404,416}</code>,
+and letting high tide use prepare-before-window scheduler ownership; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
 <code class="language-plaintext highlighter-rouge">410..434</code> split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to
@@ -181,9 +182,10 @@ without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors <code class="language-plaintext highlighter-rouge">264..288</code> during setup,
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">36/32 -&gt; 34/30</code>, and moving that row into green. VISITOR5 high/low both remain green on the matching <code class="language-plaintext highlighter-rouge">30..46</code>
-retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1471/1440</code>
+retained-read shape. WALKSTUF1 high/low now measure <code class="language-plaintext highlighter-rouge">1472/1441</code>
 and <code class="language-plaintext highlighter-rouge">1470/1446</code>; the latest high frame92 D4 stack cuts high overrun
-<code class="language-plaintext highlighter-rouge">34 -&gt; 31</code> without moving layout, while low keeps the <code class="language-plaintext highlighter-rouge">238..344</code> retained
+<code class="language-plaintext highlighter-rouge">34 -&gt; 31</code> without moving layout, and the latest high scheduler row cuts
+blocking/due <code class="language-plaintext highlighter-rouge">56/10 -&gt; 43/7</code>, while low keeps the <code class="language-plaintext highlighter-rouge">238..344</code> retained
 setup segment, the split <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, the no-shift payload lane, and
 the frame132 payload trim plus <code class="language-plaintext highlighter-rouge">{378..390}</code> read group. BUILDING2 low now keeps the accepted
 <code class="language-plaintext highlighter-rouge">218..229</code> slack-8 retained-read row plus v739 draw-tail trimming, then primes

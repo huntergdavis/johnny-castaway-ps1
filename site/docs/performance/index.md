@@ -322,7 +322,9 @@ instead of the old full-scene resident setup buffers. High keeps relative
 sectors `198..244` resident and retargets the second slice from `411..435` to
 `286..344`, then adds `{149,165}` and frame92 D4, improving the current row
 `1475/1433 -> 1471/1440`, blocking/refill `76/15 -> 56/13`,
-reads/read time `55/229 -> 42/205`, and due `15 -> 10`.
+reads/read time `55/229 -> 42/205`, and due `15 -> 10`. The current
+prepare-first scheduler row moves high to `1472/1441`, keeps overrun/refill
+flat at `31/13`, and cuts blocking/due to `43/7`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds `{91,107}` as the first post-boundary read group and a
@@ -898,7 +900,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+2.2% / 97.9% (1471/1440); due 10; blk 57</td>
+      <td>+2.2% / 97.9% (1472/1441); due 7; blk 43</td>
       <td>+1.7% / 98.3% (1470/1445); due 4; blk 35</td>
     </tr>
     <tr>

@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/).
 
-Current battle-card rollup as of 2026-05-19:
+Current battle-card rollup as of 2026-05-20:
 
 | Metric | Value |
 |---|---:|
@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-19:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high setup-alias five-yellow canary `2026-05-20T03:47:12` |
-| Stats version | mixed; newest targeted under-green row is stamped `b2high-alias141-142`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high prepare-first five-yellow canary `2026-05-20T08:25:37` |
+| Stats version | mixed; newest targeted under-green row is stamped `w1high-prepare-first`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -125,16 +125,21 @@ and
 `scratch/ps1-perf-iterate/visitor3-high-window96-tight56/20260519-223211-1019798/summary.json`
 are closed because they saved a read but regressed loop/target cadence.
 
-Latest promoted WALKSTUF1 high CD-pressure note: entry `56` / source frame
+Latest promoted WALKSTUF1 high scheduler note: high tide now uses the accepted
+WALKSTUF1 prepare-before-window ownership path. Focused proof:
+`scratch/ps1-perf-iterate/walkstuf1-high-prepare-first-current/20260520-082352-168216/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/walkstuf1-high-prepare-first-canary/20260520-082537-178447/summary.json`.
+The row moves W1 high to `1808/1472/1441`, keeps overrun `31` and hidden refill
+`13` flat, improves blocking `56 -> 43`, and reduces due misses `10 -> 7`.
+W1 low, VISITOR3 high/low, and BUILDING2 high stayed exact-flat.
+
+Prior promoted WALKSTUF1 high CD-pressure note: entry `56` / source frame
 `67` is trimmed in place from `3425` to `324` bytes (`2 -> 1` sectors), then
-the high-tide path adds `{178,194}`, `{423,439}`, and the new `{404,416}`
-retained-read rows. The `{404,416}` focused proof is
-`scratch/ps1-perf-iterate/walkstuf1-high-rg404-416-current/20260520-004047-1742269/summary.json`;
-the five-yellow no-regression canary is
-`scratch/ps1-perf-iterate/walkstuf1-high-rg404-416-current-canary/20260520-004246-1753495/summary.json`.
-The latest row keeps W1 high at `1807/1471/1440`, overrun `31`, blocking/refill
-`56/13`, and due `10`, while reducing loop reads/read time `42/205 -> 41/200`.
-W1 low, VISITOR3 high/low, and BUILDING2 high stayed flat.
+the high-tide path adds `{178,194}`, `{423,439}`, and `{404,416}` retained-read
+rows. The `{404,416}` row kept W1 high at `1807/1471/1440`, overrun `31`,
+blocking/refill `56/13`, and due `10`, while reducing loop reads/read time
+`42/205 -> 41/200`.
 
 Prior promoted WALKSTUF1 high read-group pressure note:
 the high-tide path now adds `{149,165}` after the accepted `{78,91}` row.

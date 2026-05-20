@@ -4514,11 +4514,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              heldSlackVBlanks);
                     }
                 }
-                /* WALKSTUF1 low is visual-work bound at this slack point;
-                 * preparing first reduces due-path blocking more than the
+                /* WALKSTUF1 is visual-work bound at this slack point;
+                 * preparing first can reduce due-path blocking more than the
                  * skipped speculative window refill costs. */
                 if (windowWouldRead &&
-                    islandState.lowTide &&
                     fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
                     fgRuntimeCanPrepareStagedFrame()) {
                     didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,

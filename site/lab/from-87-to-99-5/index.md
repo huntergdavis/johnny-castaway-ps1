@@ -73,7 +73,8 @@ segment, cutting its yellow-row gap to `1074/1039`; WALKSTUF1 low now replaces
 split tail residency with a CACHE `238..344` setup segment, adds `{91,107}`,
 and pays a separate TRANSIENT `344..350` edge, then trims frame132 to move to
 `1470/1445` and adds `{378..390}` to move to `1470/1446`; WALKSTUF1 high retargets its second retained slice to
-`286..344` plus `{149,165}` and frame92 D4, moving to `1471/1440` with lower overrun; BUILDING2 low now primes `112..128` and
+`286..344` plus `{149,165}` and frame92 D4, then adds prepare-first scheduler
+ownership to reach `1472/1441` with blocking/due `43/7`; BUILDING2 low now primes `112..128` and
 `226..262` during setup with clean80/slack5 shaping, moving to green at `1327/1318`; BUILDING2 high now measures `1347/1313`
 with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune plus a `24 KiB` stream window to reach green at

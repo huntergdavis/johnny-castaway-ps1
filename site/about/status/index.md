@@ -47,10 +47,11 @@ with exact-flat five-yellow timing. BUILDING4 low now carries the v971 local-LZ 
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
 baselines use allocator-safe targeted setup slices instead of full setup
-buffers: high now measures `1471/1440`, blocking/refill/due `56/13/10`, with
-loop reads/read time at `42/205` after keeping relative sectors
+buffers: high now measures `1472/1441`, blocking/refill/due `43/13/7`, with
+loop reads/read time at `44/204` after keeping relative sectors
 `198..244`, extending the second slice to `286..344`, adding `{149,165}`,
-encoding frame `92` as previous-frame D4, and adding `{423,439}`; low replaces the old `197..243` plus
+encoding frame `92` as previous-frame D4, adding `{423,439}` plus `{404,416}`,
+and letting high tide use prepare-before-window scheduler ownership; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to
@@ -74,9 +75,10 @@ without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill
 `36/32 -> 34/30`, and moving that row into green. VISITOR5 high/low both remain green on the matching `30..46`
-retained-read shape. WALKSTUF1 high/low now measure `1471/1440`
+retained-read shape. WALKSTUF1 high/low now measure `1472/1441`
 and `1470/1446`; the latest high frame92 D4 stack cuts high overrun
-`34 -> 31` without moving layout, while low keeps the `238..344` retained
+`34 -> 31` without moving layout, and the latest high scheduler row cuts
+blocking/due `56/10 -> 43/7`, while low keeps the `238..344` retained
 setup segment, the split `344..350` setup edge, the no-shift payload lane, and
 the frame132 payload trim plus `{378..390}` read group. BUILDING2 low now keeps the accepted
 `218..229` slack-8 retained-read row plus v739 draw-tail trimming, then primes

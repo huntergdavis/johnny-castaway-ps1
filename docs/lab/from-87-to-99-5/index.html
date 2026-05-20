@@ -17,7 +17,7 @@
   <meta property="og:image:alt"    content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta property="og:image:width"  content="961" />
   <meta property="og:image:height" content="720" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png" /><meta name="twitter:title"       content="From 87 to 99.7: the post-validation performance loop — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><meta name="twitter:image:alt" content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-19" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." /><meta name="twitter:image:alt" content="BUILDING 4 lilliputian Gulliver-tie-down at night — the canonical clean-rect-heavy scene that the post-validation drop-prefetch unlock measured against. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-20" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2663,
+  "wordCount": 2668,
   "timeRequired": "PT10M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/building4-ps1-lilliputians.png",
@@ -142,7 +142,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2580 words
+          ~10 min read · 2585 words
         </p>
 
       <hr class="rule" />
@@ -233,7 +233,8 @@ segment, cutting its yellow-row gap to <code class="language-plaintext highlight
 split tail residency with a CACHE <code class="language-plaintext highlighter-rouge">238..344</code> setup segment, adds <code class="language-plaintext highlighter-rouge">{91,107}</code>,
 and pays a separate TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> edge, then trims frame132 to move to
 <code class="language-plaintext highlighter-rouge">1470/1445</code> and adds <code class="language-plaintext highlighter-rouge">{378..390}</code> to move to <code class="language-plaintext highlighter-rouge">1470/1446</code>; WALKSTUF1 high retargets its second retained slice to
-<code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code> and frame92 D4, moving to <code class="language-plaintext highlighter-rouge">1471/1440</code> with lower overrun; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
+<code class="language-plaintext highlighter-rouge">286..344</code> plus <code class="language-plaintext highlighter-rouge">{149,165}</code> and frame92 D4, then adds prepare-first scheduler
+ownership to reach <code class="language-plaintext highlighter-rouge">1472/1441</code> with blocking/due <code class="language-plaintext highlighter-rouge">43/7</code>; BUILDING2 low now primes <code class="language-plaintext highlighter-rouge">112..128</code> and
 <code class="language-plaintext highlighter-rouge">226..262</code> during setup with clean80/slack5 shaping, moving to green at <code class="language-plaintext highlighter-rouge">1327/1318</code>; BUILDING2 high now measures <code class="language-plaintext highlighter-rouge">1347/1313</code>
 with blocking/read/due down to <code class="language-plaintext highlighter-rouge">39/45/5</code>; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune plus a <code class="language-plaintext highlighter-rouge">24 KiB</code> stream window to reach green at

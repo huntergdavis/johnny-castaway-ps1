@@ -154,7 +154,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
+Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 
 | Metric | Value |
 |---|---:|
@@ -168,8 +168,8 @@ Current battle-card rollup as of <time datetime="2026-05-19">2026-05-19</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2387%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7644%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-low entry85 payload canary `2026-05-20T07:04:35` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-rg404-416`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high prepare-first canary `2026-05-20T08:25:37` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; refreshed B2-high CD-pressure row uses `b2high-rg185-197`; refreshed VISITOR3-high clean-relief window row uses `v3high-window80-tight56`; refreshed BUILDING4 high row stamped `git:391a265e1+building4-high-setupseg264-288`; refreshed BUILDING4 low row stamped `git:0faf443b9b+building4-low-window24`; refreshed W1-low canary row uses `w1low-trim-entry85`; refreshed W1-high row uses `w1high-prepare-first`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -183,13 +183,16 @@ Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
 High now keeps relative sectors `198..244` resident, retargets the second
 slice from `411..435` to `286..344`, adds `{149,165}`, and encodes frame `92`
-as a previous-frame D4 delta. The current allocator-era row improves
+as a previous-frame D4 delta. The allocator-era row improves
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`,
 prefetch overrun `15 -> 13`, and due `15 -> 10`; the D4 pass trades loop
 reads/read time from `44/199` to `45/209` while still cutting visible loop
 time and overrun. The newest frame56/source67 trim plus `{178..194}` keeps
 that same `1471/1440` speed while reducing blocking `57 -> 56` and loop
-reads/read time `45/209 -> 43/207`.
+reads/read time `45/209 -> 43/207`. The `{423..439}` and `{404..416}` rows
+then reduce loop reads/read time to `41/200`, and the latest high-tide
+prepare-before-window scheduler ownership improves blocking/due `56/10 -> 43/7`
+while keeping overrun flat at `31`; the current row is `1472/1441`.
 Low now replaces its old split `197..243` plus `410..434` slices
 with one retained `238..344` CACHE setup segment after low-only 48 KiB
 clean-rect chunking, adds the `{91,107}` first-boundary read group, and then
@@ -200,7 +203,7 @@ read-work. The combined row improves
 `1479/1435 -> 1470/1446`, overrun `44 -> 24`,
 blocking/refill `65/18 -> 33/5`, loop reads/read time `50/230 -> 24/147`,
 and due `10 -> 4`.
-Both W1 rows remain yellow, with high now at `97.893%` and low at `98.367%`
+Both W1 rows remain yellow, with high now at `97.894%` and low at `98.367%`
 target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
@@ -237,7 +240,9 @@ blocking/refill `57/13`, reads `45`, and due `10`. The newest frame56 trim
 removes another `3101` bytes and one sector; paired with `{178..194}`, it
 keeps timing flat while lowering blocking to `56` and reads to `43`. The
 newest `{423..439}` and `{404..416}` rows keep the same `1471/1440` timing and
-lower loop reads/read time again `43/207 -> 41/200`.
+lower loop reads/read time again `43/207 -> 41/200`. The current prepare-first
+scheduler row trades both loop and target up by one VBlank to `1472/1441` while
+holding overrun `31` and cutting blocking/due to `43/7`.
 
 Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
@@ -535,7 +540,8 @@ CACHE slices instead of one full-scene setup buffer. High keeps `198..244`,
 retargets the second slice from `411..435` to `286..344`, adds `{149,165}`,
 and now encodes frame `92` as D4, improving the current row
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
-overrun `15 -> 13`, and due `15 -> 10`.
+overrun `15 -> 13`, and due `15 -> 10`; the current prepare-first scheduler
+row is `1472/1441`, overrun `31`, blocking/refill/due `43/13/7`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -2618,14 +2624,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T00:42:46</td>
-      <td>w1high-rg404-416</td>
+      <td>2026-05-20T08:25:37</td>
+      <td>w1high-prepare-first</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
-      <td>1471/1440</td>
-      <td>56</td>
+      <td>1472/1441</td>
+      <td>43</td>
       <td>13</td>
-      <td>10</td>
+      <td>7</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf1-low">

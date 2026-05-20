@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-19
+Date: 2026-05-20
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -53,7 +53,8 @@ frame56 plus `{178..194}` CD-pressure promotion, the VISITOR3 high
 80 KiB clean-relief stream-window promotion, and finally the same-speed
 BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work,
 followed by the WALKSTUF1 low entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 payload-only trims, then the
-B2-high setup-resident duplicate alias for entries `141` and `142`:
+B2-high setup-resident duplicate alias for entries `141` and `142`, and
+W1-high prepare-before-window scheduler ownership:
 `+0.2387%` public average over target / `99.7644%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4782%` / `100.4948%`. Since the compact full-matrix baseline was
@@ -100,7 +101,9 @@ at `1471/1440` while improving blocking `57 -> 56` and loop reads/read time
 `45/209 -> 43/207`; the latest `{423..439}` retained-read row keeps the same
 timing flat and lowers loop reads/read time again `43/207 -> 42/205`; the
 follow-up `{404..416}` row stays exact-flat and lowers read work again
-`42/205 -> 41/200`. The
+`42/205 -> 41/200`; the current prepare-first scheduler row moves W1-high to
+`1472/1441`, keeps overrun/refill flat at `31/13`, and improves blocking/due
+`56/10 -> 43/7`. The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
@@ -110,7 +113,7 @@ The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
 at B2-high `1347/1313`, VISITOR3 high/low `1071/1045` and `1065/1039`, and
-WALKSTUF1 high/low `1471/1440` and `1470/1446`. The follow-up `{185..197}`
+the previous WALKSTUF1 high/low baseline `1471/1440` and `1470/1446`. The follow-up `{185..197}`
 B2-high read group is another same-speed CD-pressure row: B2-high remains
 `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, and due `5`, while
 loop reads/read time drop `45/199 -> 43/197`.
@@ -207,7 +210,7 @@ overrun but regressed blocking/due. Keep the accepted `16 KiB` low-tide
 clean-relief window until generated ownership or pack shape changes the due
 cluster.
 The
-under-green canary refresh now stamps W1 high/low at `1471/1440` and
+under-green canary refresh now stamps W1 high/low at `1472/1441` and
 `1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
@@ -2545,7 +2548,7 @@ by itself.
 | 63 | WALKSTUF1 low | Add a generated "never append" blacklist for pockets proven phase-negative: `120..136`, `120..132`, `153..177`, `160..176`, `174..198`, `174..186`, `366..378`. | Candidate tooling should hide these from top recommendations unless pack layout changes. |
 | 64 | WALKSTUF1 low | Search for no-decode payload relocation into the already retained `238..350` setup segment, but only for frames after the accepted early ramp. | Reject any candidate that creates a backward seek or changes setup-prime coverage. |
 | 65 | WALKSTUF1 high | Reuse the W1-low generated-owner design for the remaining high `74..86`, `84..108`/`92..108`, `352..368`, and late suffix pockets instead of adding more hot C read rows. | Must keep `foregroundPilotPlay` size and addresses within the hot-symbol drift budget. |
-| 66 | WALKSTUF1 high | Target the current `56` blocking VBlanks with selective prepared-before-window ownership, scene-local and generated. | First gate is W1-high only; reject if refill exceeds `13` or loop exceeds `1471`. |
+| 66 | WALKSTUF1 high | Done by `walkstuf1-high-prepare-first-current`: selective prepare-before-window ownership for W1-high only, reusing the accepted W1-low ordering shape without applying it to B2/V3. | Promoted despite loop/target both shifting `1471/1440 -> 1472/1441` because overrun/refill stayed flat at `31/13`, blocking improved `56 -> 43`, due misses improved `10 -> 7`, and the five-yellow canary stayed flat outside W1-high. |
 | 67 | WALKSTUF1 high | Pack-side no-decode trim around frame92's neighbors now that frame92 D4 is accepted. | Host proof must keep the D4 predicate table unchanged and save at least one sector boundary. |
 | 68 | VISITOR3 low | Replace static low append rows with generated per-frame deadlines that preserve accepted setup clusters `150..177`, `206..232`, and `281..305`. | Dry-run log must show fewer due reads without changing setup residency or adding hidden refill. |
 | 69 | VISITOR3 low | Build a custom row-reference codec using the paid `206..232` setup segment as a dictionary for frames `134..136`. | Pixel replay must be exact and command count must be below failed D4 variants. |
