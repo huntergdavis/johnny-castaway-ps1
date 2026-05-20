@@ -107,8 +107,11 @@ follow-up `{404..416}` row stays exact-flat and lowers read work again
 baseline: raw and slack4 variants reduced loop reads `44 -> 41` but regressed
 W1-high to `1812/1476/1443`, overrun `33`, blocking `46`, and refill `16`;
 slack8 was safe but exact-flat at `1808/1472/1441`, blocking/refill `43/13`.
-This makes the remaining W1-high late-cluster path generated ownership or
-smaller isolated rows, not another coarse static/slack row. The
+The next broad `379..403` row repeats that result: raw reduces loop reads
+`44 -> 40` but regresses to `1814/1478/1441`, overrun `37`, blocking `50`,
+and refill `20`; slack8 is safe but exact-flat. This makes the remaining
+W1-high late-cluster path generated ownership or smaller isolated rows, not
+another coarse 24-sector static/slack row. The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
