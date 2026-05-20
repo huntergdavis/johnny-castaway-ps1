@@ -132,6 +132,12 @@ The follow-up W1-low entry56/source frame67 preserve-offset trim keeps the
 same five-yellow canary exact-flat and drops active low-pack payload again
 `777984 -> 774883` (`3101` more bytes), bringing the current W1-low payload
 lane to `13890` bytes removed from the pre-entry65 baseline.
+The next larger W1-low entry60/source frame81 preserve-offset trim is closed
+as log-only on this baseline: it improved visible scene/loop/blocking
+(`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
+`5 -> 10` and reads `24 -> 27`; paired scalar `{199..211}` and `{204..220}`
+owners did not recover the refill debt. Reopen only with generated
+refill-budget ownership.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -254,7 +260,7 @@ and the W1-low entry65/entry39/entry55/entry56 payload-only trims:
 16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, and entry56 are banked exact-flat, while sector-collapse candidates still require strict canaries.
+19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, and entry56 are banked exact-flat, entry60 is closed until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
 20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
