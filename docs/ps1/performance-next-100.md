@@ -152,6 +152,14 @@ as log-only on this baseline: it improved visible scene/loop/blocking
 `5 -> 10` and reads `24 -> 27`; paired scalar `{199..211}` and `{204..220}`
 owners did not recover the refill debt. Reopen only with generated
 refill-budget ownership.
+The current follow-up closes the first refill-recovery ladder for that same
+entry60 signal. A low-only 4-VBlank scheduler guard fixed hidden refill
+(`5 -> 2`) but regressed W1-low to `1811/1472/1446`, blocking `40`, and due
+`6`; pairing entry60 with `{229..241}` left the bare hidden-refill failure
+intact; guard plus `{229..241}` held loop/target flat but regressed blocking
+`33 -> 39`; guard plus `{160..176}` was worse at `1817/1478/1447`,
+blocking `46`. Entry60 now needs a generated per-frame refill/visible-budget
+owner, not another scalar slack guard or static read row.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -271,12 +279,12 @@ and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66 payload-o
 11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms.
 12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed and D4-only frame94 was inert.
 13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
-14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved.
-15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping the `160..176` loop/blocking signal.
-16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds.
+14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding is closed after the entry60 follow-up.
+15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{160..176}` plus entry60/guard is closed.
+16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}` proves simple static recovery rows are not enough.
 17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
 18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, and entry66 are banked exact-flat, entry60 is closed until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
+19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, and entry66 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}` recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
 20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
 21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
 22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
