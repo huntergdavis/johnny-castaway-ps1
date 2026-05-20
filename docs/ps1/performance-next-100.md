@@ -112,9 +112,13 @@ The next broad `379..403` row repeats that result: raw reduces loop reads
 and refill `20`; slack8 is safe but exact-flat. The smaller `379..395` slice
 gets closer but still fails: raw/slack4 reduce reads `44 -> 42` with overrun
 flat at `31`, but blocking/refill regress `43/13 -> 44/14`; slack8 skips to
-exact-flat. This makes the remaining W1-high late-cluster path generated
-ownership or a paired render/work reduction, not another coarse static/slack
-row. The
+exact-flat. The next smaller `395..411` row is promoted as same-speed
+CD-pressure work: W1-high remains exact-flat at `1808/1472/1441`, overrun
+`31`, blocking/refill `43/13`, and due `7`, while loop reads/read time improve
+`44/204 -> 42/201`; the five-yellow canary stays exact-flat. This leaves the
+refreshed W1-high queue at the early `92..116` cluster and late `411..423`
+single-read row; larger late-cluster work still needs generated ownership or
+paired render/work reduction. The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,

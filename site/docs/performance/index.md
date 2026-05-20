@@ -324,7 +324,8 @@ sectors `198..244` resident and retargets the second slice from `411..435` to
 `1475/1433 -> 1471/1440`, blocking/refill `76/15 -> 56/13`,
 reads/read time `55/229 -> 42/205`, and due `15 -> 10`. The current
 prepare-first scheduler row moves high to `1472/1441`, keeps overrun/refill
-flat at `31/13`, and cuts blocking/due to `43/7`.
+flat at `31/13`, cuts blocking/due to `43/7`, and the same-speed
+`{395..411}` read group lowers loop reads/read time `44/204 -> 42/201`.
 Low now replaces the old `197..243` plus `410..434` split with one
 retained `238..344` CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds `{91,107}` as the first post-boundary read group and a

@@ -6,7 +6,7 @@
 **Last updated:** 2026-05-20 (`perf/allocator-era-under-green-20260517` after
 the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion, the same-speed
 `{355..371}` read-work row, the W1-high frame56/`{178..194}` CD-pressure
-promotion plus `{423..439}` and `{404..416}`, W1-high prepare-first scheduler
+promotion plus `{423..439}`, `{404..416}`, and `{395..411}`, W1-high prepare-first scheduler
 ownership, the VISITOR3-high 80 KiB clean-relief window
 promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus `{185..197}`
 same-speed CD-pressure row; all 63 scenes
@@ -322,13 +322,15 @@ again to `24/147`.
 Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, adds `{149,165}`, encodes frame `92` as D4, and now adds
-`{423,439}` plus `{404,416}` as same-speed CD-work rows. The D4/read-owner track improves the
+`{423,439}`, `{404,416}`, and `{395,411}` as same-speed CD-work rows. The D4/read-owner track improves the
 allocator-era row `1475/1433 -> 1471/1440`, overrun `42 -> 31`,
 blocking/refill `76/15 -> 56/13`, loop reads/read time `55/229 -> 45/209`,
 and due `15 -> 10`; `{423,439}` plus `{404,416}` lower loop reads/read time
 again `42/205 -> 41/200`, and the newest prepare-first scheduler row moves the
 current row to `1472/1441` while cutting blocking/due `56/10 -> 43/7` and
-keeping overrun/refill flat at `31/13`. BUILDING4 low now carries the v971 local-LZ entry270
+keeping overrun/refill flat at `31/13`; the newest `{395,411}` row then keeps
+the same timing exact-flat while reducing loop reads/read time `44/204 -> 42/201`.
+BUILDING4 low now carries the v971 local-LZ entry270
 follow-up on top of entry30/entry33, cutting active payload
 `807263 -> 799277` and improving to `2851/2815`, overrun `36`, and refill
 `35`. The visible-speed guarded read-group pass improves BUILDING2 high active
@@ -350,7 +352,7 @@ clean80 green promotion, the VISITOR3 high `64 KiB` clean-strip cap, the
 BUILDING4 low `24 KiB` stream-window green promotion, the W1-low frame132
 payload trim, the W1-low `{378..390}` read-group promotion, and the W1-low
 same-speed `{355..371}` read-work row, the W1-high frame56/`{178..194}`
-CD-pressure promotion plus `{423..439}` and `{404..416}`, W1-high prepare-first
+CD-pressure promotion plus `{423..439}`, `{404..416}`, and `{395..411}`, W1-high prepare-first
 scheduler ownership, the VISITOR3-high 80 KiB clean-relief
 window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
 `{185..197}` same-speed CD work, the public battle card is now `+0.2387%` over target / `99.7644%`
@@ -494,7 +496,7 @@ Milestone releases:
   BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/43/5`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 663590`, WALKSTUF1 high is
-  `1472/1441` with blocking/read time `43`/`204`, loop reads `44`, and rows/spans/pixels
+  `1472/1441` with blocking/read time `43`/`201`, loop reads `42`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is `1470/1446` with loop
   reads/read time `24`/`147`, rows/spans/pixels `16257/114798/633876`, and active payload
   `788773`, VISITOR3 high is

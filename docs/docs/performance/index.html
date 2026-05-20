@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4969 words
+          ~19 min read · 4981 words
         </p>
 
       <hr class="rule" />
@@ -454,7 +454,8 @@ sectors <code class="language-plaintext highlighter-rouge">198..244</code> resid
 <code class="language-plaintext highlighter-rouge">1475/1433 -&gt; 1471/1440</code>, blocking/refill <code class="language-plaintext highlighter-rouge">76/15 -&gt; 56/13</code>,
 reads/read time <code class="language-plaintext highlighter-rouge">55/229 -&gt; 42/205</code>, and due <code class="language-plaintext highlighter-rouge">15 -&gt; 10</code>. The current
 prepare-first scheduler row moves high to <code class="language-plaintext highlighter-rouge">1472/1441</code>, keeps overrun/refill
-flat at <code class="language-plaintext highlighter-rouge">31/13</code>, and cuts blocking/due to <code class="language-plaintext highlighter-rouge">43/7</code>.
+flat at <code class="language-plaintext highlighter-rouge">31/13</code>, cuts blocking/due to <code class="language-plaintext highlighter-rouge">43/7</code>, and the same-speed
+<code class="language-plaintext highlighter-rouge">{395..411}</code> read group lowers loop reads/read time <code class="language-plaintext highlighter-rouge">44/204 -&gt; 42/201</code>.
 Low now replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus <code class="language-plaintext highlighter-rouge">410..434</code> split with one
 retained <code class="language-plaintext highlighter-rouge">238..344</code> CACHE setup segment after low-only 48 KiB clean-rect
 chunking, then adds <code class="language-plaintext highlighter-rouge">{91,107}</code> as the first post-boundary read group and a
