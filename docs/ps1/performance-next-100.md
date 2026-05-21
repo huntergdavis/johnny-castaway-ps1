@@ -77,7 +77,14 @@ all `126` timing-bearing rows. The raw signed optimization matrix is about
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low entry `109..112` fixed-layout clip keeps file
+`0` red. The latest W1-high entries `183..191` previous-visible cleanup pocket
+keeps file size, offsets, LBA `24891`, sectors `750`, and the `233472` byte
+PS-EXE bucket fixed while dropping selected active payload `844162 -> 840654`,
+cleanup spans `2211 -> 885`, cleanup pixels `6670 -> 2265`, selected restore
+bytes `13340 -> 4530`, runtime restore bytes `509592 -> 500782`, and upload
+bytes `17182720 -> 17171200`; the five-yellow canary stays exact-flat, so this
+is work-volume headroom rather than a VBlank speed win. The prior VISITOR3-low
+entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
 fixed while shrinking selected active payload `8170 -> 6004`; the five-yellow
 canary stays exact-flat, so this is data-shape headroom rather than a VBlank
@@ -93,7 +100,7 @@ stacking on `16..32` and `72..88` and moving VISITOR3-low
 `1343/1070/1039 -> 1342/1069/1039`, cutting overrun `31 -> 30`,
 blocking/read time `70/93 -> 68/91`, and loop reads `15 -> 14` with due
 misses flat at `11`.
-The latest W1-high entries `127..131` fixed-layout screen clip keeps file size,
+The prior W1-high entries `127..131` fixed-layout screen clip keeps file size,
 offsets, LBA `24891`, sectors `750`, and the `233472` byte PS-EXE bucket fixed
 while shrinking selected active payload `24097 -> 21512` and removing `625`
 cleanup plus `3511` draw pixels; the five-yellow canary stays exact-flat, so
@@ -800,10 +807,11 @@ generated deadline/refill metadata or a larger fixed-layout data-shape swing.
     is now in place and `58..61` is promoted as exact-flat headroom; continue
     only with cleanup-only or proven phase-safe subsets, not `62..67` or the
     `128..147` split family.
-16. **W1-high late-sector non-CD work reduction.** Static `372..388` and
-    `379..395` owners are closed; reduce restore/upload/parser work around
-    frames `183..191` first, then retry only through no-hot-C generated
-    ownership.
+16. **W1-high late-sector non-CD work reduction.** Entries `183..191` are now
+    compacted with previous-visible cleanup as exact-flat work headroom. Static
+    `372..388` and `379..395` owners remain closed; retry this pocket only
+    through no-hot-C generated ownership that keeps blocking/refill at or below
+    `43/13`.
 17. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
     metadata is code-size-neutral; previous fresh-owner C hooks were inert and
     bloated hot code.

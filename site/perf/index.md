@@ -142,12 +142,14 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 `{91,107}` first-boundary read group, and WALKSTUF1 high now
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
-prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
-retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low entry
-`109..112` fixed-layout clip keeps the five-yellow canary exact-flat while
-shrinking selected active payload `8170 -> 6004`; the broad full-pack clip and
-paired `{46..58}` read row are closed as phase-negative. The prior
-VISITOR3-low `88..104` read-group row stacks on `16..32` and `72..88` and
+prepare-first scheduler ownership, carries same-speed `{395..411}` plus
+retargeted `{411..423}` CD-pressure work, and now compacts entries `183..191`
+with previous-visible cleanup to drop runtime restore bytes `509592 -> 500782`
+and upload bytes `17182720 -> 17171200` while keeping the five-yellow canary
+exact-flat. The prior VISITOR3-low entry `109..112` fixed-layout clip keeps the
+five-yellow canary exact-flat while shrinking selected active payload
+`8170 -> 6004`; the broad full-pack clip and paired `{46..58}` read row are
+closed as phase-negative. The prior VISITOR3-low `88..104` read-group row stacks on `16..32` and `72..88` and
 moves VISITOR3-low `1343/1070/1039 -> 1342/1069/1039`, cuts overrun `31 -> 30`,
 blocking `70 -> 68`, loop reads `15 -> 14`, and read time `93 -> 91` with due
 misses flat at `11`; the prior frame135 gap-D4 row kept
@@ -189,8 +191,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2465%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7571%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T15:05:41` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3low-entry109-112-clip`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T15:50:04` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-prev-visible-183-191`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -200,7 +202,17 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-low fixed-layout canonicalization track:
+Latest W1-high fixed-layout cleanup track:
+`w1high-prev-visible-183-191-five-yellow-current` compacts entries `183..191`
+in `WALKSTUF1.FG2` with previous-visible cleanup while preserving file size,
+offsets, LBA `24891`, sectors `750`, and the `233472` byte PS-EXE bucket. The
+selected active payload drops `844162 -> 840654`, cleanup spans
+`2211 -> 885`, cleanup pixels `6670 -> 2265`, runtime restore bytes
+`509592 -> 500782`, and upload bytes `17182720 -> 17171200`; BUILDING2 high,
+VISITOR3 high/low, and WALKSTUF1 high/low stay exact-flat. The public speed
+rollup remains unchanged.
+
+Prior VISITOR3-low fixed-layout canonicalization track:
 `v3low-entry109-112-clip-five-yellow-current` clips entries `109..112`
 in `VIST3LOW.FG2` while preserving file size, offsets, LBA `23379`, sectors
 `760`, and the `233472` byte PS-EXE bucket. The selected active payload
@@ -1488,8 +1500,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:05:41</td>
-      <td>v3low-entry109-112-clip</td>
+      <td>2026-05-21T15:50:04</td>
+      <td>w1high-prev-visible-183-191</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2720,8 +2732,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:05:41</td>
-      <td>v3low-entry109-112-clip</td>
+      <td>2026-05-21T15:50:04</td>
+      <td>w1high-prev-visible-183-191</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2734,8 +2746,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:05:41</td>
-      <td>v3low-entry109-112-clip</td>
+      <td>2026-05-21T15:50:04</td>
+      <td>w1high-prev-visible-183-191</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2860,8 +2872,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:05:41</td>
-      <td>v3low-entry109-112-clip</td>
+      <td>2026-05-21T15:50:04</td>
+      <td>w1high-prev-visible-183-191</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2874,8 +2886,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:05:41</td>
-      <td>v3low-entry109-112-clip</td>
+      <td>2026-05-21T15:50:04</td>
+      <td>w1high-prev-visible-183-191</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
