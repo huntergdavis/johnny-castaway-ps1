@@ -55,7 +55,8 @@ BUILDING2 high entries `92`/`94`/`95` payload trim plus `{185..197}` CD work,
 followed by the WALKSTUF1 low entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 payload-only trims, then the
 B2-high setup-resident duplicate alias for entries `141` and `142`,
 W1-high prepare-before-window scheduler ownership, and the B2-high entry38
-setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47` retained segment:
+setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47`
+speed row plus `42..49` same-speed CD-pressure slide:
 `+0.2371%` public average over target / `99.7659%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4798%` / `100.4962%`. Since the compact full-matrix baseline was
@@ -69,10 +70,10 @@ extends the high-tide second setup segment through relative sector `229`, then
 adds a third low-tide retained setup segment at relative sectors `206..230` and
 relocates high frame `139`'s raw payload into the already retained `203..229`
 gap, then adds a third high-tide retained setup segment at relative sectors
-`228..262`, then moves high frames `56` and `57` raw into that paid gap, merges high setup coverage into `203..262`, pays the early retained setup edge `40..47`, and
+`228..262`, then moves high frames `56` and `57` raw into that paid gap, merges high setup coverage into `203..262`, pays the early retained setup edge `40..47`, slides it to `42..49` as same-speed CD-pressure work, and
 caps tight-slack speculative refills at `56 KiB`:
 high improves `1232/1033 -> 1070/1046`, blocking `478 -> 35`, reads
-`137 -> 5`, and due `137 -> 2`; low improves `1231/1040 -> 1065/1039`,
+`137 -> 4`, and due `137 -> 2`; low improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
@@ -393,7 +394,19 @@ improves low again `1475/1443 -> 1473/1444`, overrun `32 -> 29`,
 blocking/read time `48/200 -> 43/195`, refill `12 -> 11`, reads `39 -> 36`,
 and due `6 -> 5`.
 
-Latest promoted VISITOR3 high setup-edge merge: merge terminal coverage into
+Latest promoted VISITOR3 high same-speed setup-edge slide: slide the early
+retained setup edge from `40..47` to `42..49` after the setup-edge merge.
+Focused proof stays exact-flat at `1391/1070/1046`, overrun `24`, blocking
+`35`, hidden refill `0`, and due `2`, while reducing loop reads/read time
+`5/61 -> 4/59` and hidden CD VBlanks `26 -> 24`. The five-yellow canary at
+`scratch/ps1-perf-iterate/visitor3-high-setupseg42-49-canary/20260520-171420-3186250/summary.json`
+keeps VISITOR3 low, BUILDING2 high, and WALKSTUF1 high/low exact-flat. The
+left neighbor `41..48` is timing-flat but no better than the prior read count,
+and the right neighbor `43..50` regresses to `1398/1077/1042`, overrun `35`,
+blocking `44`, and refill `10`. This is a CD-pressure baseline, not a VBlank
+speed win; public/raw rollups and bands remain unchanged.
+
+Prior promoted VISITOR3 high setup-edge merge: merge terminal coverage into
 retained `203..262` and spend the largest allocator-safe spare retained edge on
 `40..47`. Focused proof improves `1388/1071/1045 -> 1391/1070/1046`, overrun
 `26 -> 24`, hidden refill `1 -> 0`, loop reads `7 -> 5`, and due stays `2`
@@ -404,7 +417,7 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 
 Current allocator-era big-swing queue after closing the W1-low static table
 lane, banking the W1-high frame56/`{178..194}`, `{423..439}`, and `{404..416}` CD-pressure
-rows, promoting the VISITOR3 high 80 KiB clean-relief window and setup-edge `40..47` retained segment, and banking the
+rows, promoting the VISITOR3 high 80 KiB clean-relief window, setup-edge `40..47` speed row, and setup-edge `42..49` CD-pressure slide, and banking the
 B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
 `141`/`142`/`38` setup-alias cleanups, and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
 
@@ -415,7 +428,7 @@ B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
 7. Try VISITOR3-low static-upload/restore trimming only with a clean-rect allocation budget; the W1-low restore-minus-current probe and W1-high entry55 draw-tail collapse both exhausted CACHE before `JCPERF2`.
-8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal `203..262`, early `40..47`, or 80 KiB relief-window budgets.
+8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal `203..262`, early `42..49`, or 80 KiB relief-window budgets.
 9. Try VISITOR3-high clean/upload ownership for the remaining tiny-read profile; the scalar early `40..52` fresh/direct group is closed because it moved saved reads into visible blocking/refill debt.
 10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
 11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms, and the `walkstuf1` slack-5 early-prepare owner is exact-flat with hot-code growth.

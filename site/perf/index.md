@@ -126,8 +126,10 @@ widens high to an 80 KiB knee while moving low tide further into yellow with a
 VISITOR3 high pass moves frames `56` and `57` raw into the retained `228..262`
 gap and caps tight speculative refills at `56 KiB`, improving high to
 `1075/1043` without hidden-refill debt; the high-only clean-strip retune caps
-clean slices at `64 KiB`, and the newest clean-relief window retune widens
-high from `68 KiB` to `80 KiB`, then pays the early retained setup edge `40..47` after merging terminal setup coverage into `203..262`, to move the row to `1070/1046`.
+clean slices at `64 KiB`, the clean-relief window retune widens high from
+`68 KiB` to `80 KiB`, then the setup-edge pass pays early `40..47` and the
+latest same-speed slide moves that edge to `42..49`, keeping `1070/1046`
+while reducing loop reads/read time `5/61 -> 4/59`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
@@ -170,8 +172,8 @@ Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2371%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7659%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3-high setup-edge canary `2026-05-20T15:25:44` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; the current five-yellow canary rows use `v3high-setup40-47`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3-high setup-edge canary `2026-05-20T17:14:20` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; the current five-yellow canary rows use `v3high-setup42-49`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -290,11 +292,12 @@ through relative sector `229`, and relocates high frame `139`'s raw payload
 into that paid setup gap, then adds a third high retained setup segment at
 relative sectors `228..262`, then moves high frames `56` and `57` raw into
 that retained gap with a `56 KiB` tight-refill cap, merges terminal setup
-coverage into `203..262`, and pays the early retained setup edge `40..47`.
+coverage into `203..262`, pays the early retained setup edge `40..47`, then
+slides that edge to `42..49` as same-speed CD-pressure work.
 High improves `1232/1033 -> 1070/1046`, overrun `199 -> 24`, blocking
-`478 -> 35`, reads `137 -> 5`, and due `137 -> 2`; the latest high-only
+`478 -> 35`, reads `137 -> 4`, and due `137 -> 2`; the latest high-only
 follow-up caps clean strips at `64 KiB`, widens the clean-relief window from
-`68 KiB` to `80 KiB`, and adds the `40..47` setup edge, and the latest low-tide follow-up adds a third
+`68 KiB` to `80 KiB`, adds the `40..47` setup edge, slides it to `42..49`, and the latest low-tide follow-up adds a third
 retained setup segment for sectors `206..230`, then extends it to `206..232`
 and relocates frame `138` raw into the paid gap, improving low
 `1088/1038 -> 1065/1039`, overrun `50 -> 26`, blocking `104 -> 75`,
@@ -625,7 +628,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The current
-  five-yellow canary rows use `v3high-setup40-47`;
+  five-yellow canary rows use `v3high-setup42-49`;
   prior BUILDING2 high source/data work used `b2high-alias38`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
@@ -1263,8 +1266,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -2495,8 +2498,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.8%</td>
       <td>1070/1046</td>
@@ -2509,8 +2512,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1065/1039</td>
@@ -2635,8 +2638,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2649,8 +2652,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
