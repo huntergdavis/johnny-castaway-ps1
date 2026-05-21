@@ -463,6 +463,17 @@ generated path must be frame-index/deadline/refill-budget metadata emitted
 outside the hot foreground scheduler, or B2-high must first get a pack/render
 reduction that creates real slack before the owner row fires.
 
+Latest rejected BUILDING2 high entry89 trim: the isolated preserve-offset
+draw-tail trim for entry `89` / source frame `107` removed `4510` active bytes
+and collapsed the entry from `5 -> 3` sectors while keeping file size, pack LBA,
+runtime source, and the `233472` byte PS-EXE bucket fixed. It still failed the
+focused gate: B2-high regressed `1621/1347/1313 -> 1622/1349/1312`, overrun
+`34 -> 37`, blocking `39 -> 42`, hidden refill stayed `16`, and the only win
+was loop reads `40 -> 39`. Artifact:
+`scratch/ps1-perf-iterate/building2-high-trim-entry89-current/20260520-174210-3342501/summary.json`.
+Close entry89/source frame107 as a standalone trim; entry90 remains the only
+untested isolated member of the current `89..91` sector-collapse split.
+
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
 `1075/1044` to `1071/1045` with overrun `31 -> 26`, blocking `45 -> 35`,
