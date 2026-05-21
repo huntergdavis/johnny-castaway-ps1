@@ -142,6 +142,18 @@ but regressed to `1070/1041`, overrun `29`, blocking `79`; `{92..108}` also
 saved one read but still regressed to `1067/1041`, blocking `76`. VISITOR3 low
 needs generated deadline/refill ownership or pack/render byte reduction, not a
 hand-authored low-tide append table.
+The latest VISITOR3-low frame133 D4 data-shape swing is closed as well.
+Encoding frame `133` against decoded frame `132` shrank the payload
+`17069 -> 14188` bytes and `9 -> 7` sectors, but the normal staged path exposed
+that staged previous-frame deltas are consumed without decode, so the first
+forms tripped at frame133. The code-correct staged-decode debug form proved
+correctness but regressed low to `1070/1040`, blocking `79`, reads `19`, and
+crossed the PS-EXE bucket. The smaller binary alternative, forcing frames
+`132/133` through on-demand decode, stayed in the `233472` byte bucket and
+passed correctness but still failed timing at `1372/1068/1039`, overrun `29`,
+blocking `77`, reads `19`, with `foregroundPilotPlay +76`. Close frame133 D4
+unless a no-hot-C predecoded/staged-delta path or a row-reference codec removes
+the decode/scheduler cost.
 The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
