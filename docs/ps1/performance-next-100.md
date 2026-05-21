@@ -77,7 +77,17 @@ all `126` timing-bearing rows. The raw signed optimization matrix is about
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low `88..104` read-group pass keeps pack LBA
+`0` red. The latest VISITOR3-low entry `109..112` fixed-layout clip keeps file
+size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
+fixed while shrinking selected active payload `8170 -> 6004`; the five-yellow
+canary stays exact-flat, so this is data-shape headroom rather than a VBlank
+speed win. The broad VISITOR3-low full-pack clip is closed as phase-negative
+because it shrank active payload `422946 -> 400970` but regressed VISITOR3-low
+to `1071/1039`, overrun `32`, blocking `76`, and refill `2`. Pairing the
+entry `109..112` split with raw `{46..58}` is also closed because it saved one
+read and cut blocking `68 -> 66` but regressed loop/target/overrun to
+`1072/1038/34`.
+The prior VISITOR3-low `88..104` read-group pass keeps pack LBA
 `23379`, sectors `760`, and the `233472` byte PS-EXE bucket fixed while
 stacking on `16..32` and `72..88` and moving VISITOR3-low
 `1343/1070/1039 -> 1342/1069/1039`, cutting overrun `31 -> 30`,
@@ -951,10 +961,15 @@ The structurally different tight-cluster `{248..264}` row also regressed to
 `1344/1071/1039`, overrun `33`, blocking `81`;
 `scratch/ps1-perf-iterate/v3low-rg248-264-current/20260521-024300-2217007/summary.json`.
 Keep `16..32`, `72..88`, and `88..104` as the accepted VISITOR3-low read-group baseline.
-The next VISITOR3-low queue starts from the refreshed planner's `32..56`,
-`52..76`, `46..58`, and terminal `239..255` families, but those should be
-treated as generated deadline/refill or custom data-shape work first rather
-than another raw scalar table row.
+The latest entry `109..112` fixed-layout clip is promoted only as mid-payload
+headroom: it shrinks selected active payload `8170 -> 6004` and keeps the
+five-yellow canary exact-flat, but the broad full-pack clip regresses
+VISITOR3-low to `1071/1039`, overrun `32`, blocking `76`, refill `2`, and the
+paired `{46..58}` read group regresses loop/target/overrun to `1072/1038/34`
+despite saving one read. The next VISITOR3-low queue should stop treating
+`46..58` as a raw table row and move to no-hot-C generated deadline/refill,
+terminal `239..255` ownership, or row-reference/setup-dictionary data-shape
+work.
 
 Latest rejected W1-high fresh-owner generated probes: the post-screen-clip
 baseline tested C-side frame/slack-gated fresh-window ownership for the late
