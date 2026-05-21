@@ -659,6 +659,15 @@ same blocking/refill regression. Close local sector alignment in the
 `109..132` pocket until generated deadline/refill ownership can keep the saved
 read hidden.
 
+Latest rejected prepare-first scheduler swing: broadening the accepted
+WALKSTUF1 prepare-before-window-refill rule to VISITOR3 and BUILDING2 was not
+safe. The B2+V3 form regressed B2-high `1341/1313 -> 1345/1311`, blocking
+`47 -> 55`, read time `345 -> 353`, and CD reserve `24 -> 30`. The VISITOR3-only
+form isolated B2 back to exact-flat but was inert on VISITOR3-high
+(`1082/1045`) and VISITOR3-low (`1071/1039`). Keep this scheduler policy
+WALKSTUF1-only; the remaining yellow rows need per-frame/generated
+deadline-refill ownership, not a scene-family-wide prepare-first rule.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
