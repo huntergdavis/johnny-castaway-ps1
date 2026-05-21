@@ -424,7 +424,7 @@ B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
 1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, raw `{287..311}` was exact-flat, and the prepared-frame-idle generated-owner probe crossed the PS-EXE bucket while regressing loop/blocking/refill.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident and has per-frame deadline/refill ownership; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, full playback-order repack, setup-preserving repack, tail-only repack, the `3..43` setup-edge extension, and the paired `38`/`41` setup-edge alias are closed. Single entry38 is now banked exact-flat.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
-4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence, restore-minus-current is now a no-op, and local-LZ on entries `89..91` regressed despite sector savings.
+4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence, restore-minus-current is now a no-op, and local-LZ plus isolated preserve-offset draw-tail trims on entries `89..91` regressed despite sector savings.
 5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
 6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
 7. Try VISITOR3-low static-upload/restore trimming only with a clean-rect allocation budget; the W1-low restore-minus-current probe and W1-high entry55 draw-tail collapse both exhausted CACHE before `JCPERF2`.
@@ -473,6 +473,18 @@ was loop reads `40 -> 39`. Artifact:
 `scratch/ps1-perf-iterate/building2-high-trim-entry89-current/20260520-174210-3342501/summary.json`.
 Close entry89/source frame107 as a standalone trim; entry90 remains the only
 untested isolated member of the current `89..91` sector-collapse split.
+
+Latest rejected BUILDING2 high entry90 trim: the remaining isolated
+preserve-offset draw-tail trim in the `89..91` split removed `4080` active
+bytes from entry `90` / source frame `109` and collapsed the entry from `5 -> 3`
+sectors with file size, pack LBA, runtime source, and the `233472` byte PS-EXE
+bucket fixed. It reproduced the entry89 failure profile: B2-high regressed
+`1621/1347/1313 -> 1622/1349/1312`, overrun `34 -> 37`, blocking `39 -> 42`,
+hidden refill stayed `16`, and loop reads improved only `40 -> 39`. Artifact:
+`scratch/ps1-perf-iterate/building2-high-trim-entry90-current/20260520-174621-3366150/summary.json`.
+Close the current `89..91` draw-tail sector-collapse split under strict B2-high
+gates; the next B2 data-shape path needs generated deadline/refill ownership or
+non-CD render/upload reduction first.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
