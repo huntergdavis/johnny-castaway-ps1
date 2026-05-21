@@ -43,7 +43,11 @@ rows stay exact-flat. The latest VISITOR3-high entry `62` cleanup-only pass
 keeps file size, offsets, entry table sizes, LBA, and the PS-EXE bucket fixed
 while reducing entry restore bytes `2724 -> 596`, runtime restore bytes
 `56312 -> 54184`, and upload bytes `18038400 -> 18012160`; all five yellow
-rows stay exact-flat. The latest code-headroom pass caches the active
+rows stay exact-flat. The latest W1-low entry `90..99` fixed-layout
+canonicalization pass keeps file size, offsets, LBA, and the PS-EXE bucket
+fixed while shrinking the active cluster `47579 -> 44511` bytes and total
+low-pack active payload `755808 -> 752740`; all five yellow rows stay
+exact-flat. The latest code-headroom pass caches the active
 foreground scene ID once per scene start, keeping the five yellow rows
 exact-flat while shrinking the tracked hot foreground scheduler symbols by
 `172` bytes in the same `233472` byte PS-EXE bucket. MARY1/2/3 and SUZY1/2 are

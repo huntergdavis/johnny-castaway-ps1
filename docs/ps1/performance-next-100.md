@@ -787,8 +787,13 @@ or a paired data-shape change that does not tighten target cadence.
 21. **W1-low `129..153` / `153..177` generated refill owner.** Static rows have
     real loop-speed signal but still spend hidden refill after the frame `87..99`
     slack pass; retry only with explicit generated refill/no-hot-C ownership.
-22. **W1-low sector-split data shape for frames `90..99`.** Preserve early ramp
-    locality and avoid the failed setup-prime relocation pattern.
+22. **W1-low sector-split data shape for frames `90..99`.** First fixed-layout
+    canonicalization pass is promoted for entries `90`, `91`, `92`, `94`,
+    `95`, `96`, `98`, and `99`: offsets/LBA/file size stay fixed, no pixels are
+    removed, and active cluster bytes drop `47579 -> 44511` while W1-low stays
+    exact-flat at `1470/1446`. The remaining green-conversion work still needs
+    generated deadline/refill ownership or a larger sector-split format; avoid
+    setup-prime relocation patterns that evict early ramp locality.
 23. **Cross-row fixed-layout code-headroom pass.** Bank exact-flat hot-code
     shrink before adding generated metadata, so new owners do not cross the
     PS-EXE bucket or shift foreground LBAs.
