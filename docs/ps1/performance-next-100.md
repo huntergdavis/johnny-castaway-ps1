@@ -705,6 +705,16 @@ reads (`44 -> 42`), but the firing form regresses `1341/1313 -> 1342/1312`,
 blocking `47 -> 48`, and refill `14 -> 16`; slack-4/5 do not fire. Keep the
 accepted `315..327` row.
 
+Latest rejected VISITOR3 high retained-gap raw-copy swing: duplicating early
+entries `62`, `61..62`, and `61..64` into the unused retained `203..262`
+segment gap at offset `505191` removes the sector-40 active read without
+changing file size, LBA, source code, setup bytes, or PS-EXE bucket, but all
+three variants land on the same phase-negative profile: VISITOR3 high regresses
+`1082/1045 -> 1083/1044`, overrun `37 -> 39`, and blocking `34 -> 35` while
+loop reads improve `4 -> 3`. Close raw retained-gap duplication for this early
+edge; the remaining sector-40 relief needs generated deadline/refill ownership
+or a paired data-shape change that does not tighten target cadence.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
@@ -717,8 +727,8 @@ accepted `315..327` row.
    W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
 4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` and the fourth `40..43` segment proved is real, but only
-   through budgeted ownership; no more retained setup expansion or hand table
-   rows.
+   through budgeted ownership; no more retained setup expansion, retained-gap
+   raw copies, or hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that avoids hot
    previous-frame decode predicates.
