@@ -83,6 +83,14 @@ stacking on `16..32` and `72..88` and moving VISITOR3-low
 `1343/1070/1039 -> 1342/1069/1039`, cutting overrun `31 -> 30`,
 blocking/read time `70/93 -> 68/91`, and loop reads `15 -> 14` with due
 misses flat at `11`.
+The latest W1-high entry `53` fixed-layout screen clip keeps file size, offsets,
+LBA `24891`, sectors `750`, and the `233472` byte PS-EXE bucket fixed while
+shrinking that entry `3893 -> 2309` bytes and removing `8969` offscreen cleanup
+pixels plus `1945` offscreen draw pixels; the five-yellow canary stays
+exact-flat, so this is work-volume headroom rather than a VBlank speed win.
+The broad W1-high `43..56` clip is closed as phase-negative because it saved two
+reads (`41 -> 39`) but regressed W1-high to `1474/1439`, overrun `35`, and
+blocking/refill `47/16`.
 The prior frame135 D4 pass kept pack footprint fixed while moving frame `135`'s
 `14246` byte previous-frame delta payload into the early D4 gap at offset
 `204452`; it improved VISITOR3-low `1071/1039 -> 1070/1039`, overrun
@@ -3214,7 +3222,7 @@ host proof before any emulator time.
 | 35 | WALKSTUF1 low | Generate a no-runtime payload reorder that preserves the accepted early ramp and moves only frames whose new sector is still forward from the previous read head. | Reject if any moved frame creates a backward seek or changes setup-prime coverage. |
 | 36 | WALKSTUF1 low | Split late-cluster frames into tiny header/metadata entries plus bulk row data already resident in a setup-owned sidecar. | Host pack proof must show no hot decode branch and no PS-EXE growth. |
 | 37 | WALKSTUF1 high | Port the low-tide planner from idea 33 but target the high `295..319` suffix and accepted high read-group split points. | Planner-only proof first; reject if predicted blocking stays above `81`. |
-| 38 | WALKSTUF1 high | Try no-decode row-span canonicalization on the `84..108` and `238..262` high clusters, but forbid adding draw pixels. | Host transform must reduce spans/bytes while preserving exact pixels and D4 gates. |
+| 38 | WALKSTUF1 high | Entry `53` from the `84..108` family is promoted as fixed-layout screen-clip headroom, while the broad `43..56` clip is closed as phase-negative. Continue only with narrower cleanup islands or generated ownership; do not retry the whole `84..108` sector family as a plain pack clip. | Host transform must reduce spans/bytes while preserving exact pixels and D4 gates, and any read-count win must keep blocking/refill flat. |
 | 39 | BUILDING2 high | Search for duplicate payload groups that can be physically copied forward into playback order without aliases or backward seeks. | Host CD-head replay must show fewer reverse seeks before PS1 timing. |
 | 40 | BUILDING2 high | Build a frame-local row coalescer for frames `101..109` that removes headers without drawing extra pixels, unlike gap1. | Gate only if it saves a sector and keeps cleanup/draw pixel counts unchanged. |
 | 41 | BUILDING2 high | Generate deadline ownership for `202..226`, but only from a pre-scene metadata blob so `foregroundPilotPlay` does not grow. | Metadata hit count must be nonzero in logs and blocking must stay `<=54`. |

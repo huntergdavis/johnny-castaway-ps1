@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/w1low-entry90-99-clip-five-yellow-current/20260521-140538-1873641`
+- Source artifact root: `scratch/ps1-perf-iterate/w1high-entry53-clip-five-yellow-current/20260521-143049-2014915`
 - Candidate rows: `47`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -32,8 +32,8 @@ lanes instead of another hand-authored sector range.
 | 1 | `visitor3` | `low` | 1069/1039 | 68 | `52..76` (24s) | 2 | `risky:short-visible-gap` | `no` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
 | 2 | `visitor3` | `low` | 1069/1039 | 68 | `32..48` (16s) | 1 | `risky:short-visible-gap` | `no` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
 | 3 | `visitor3` | `low` | 1069/1039 | 68 | `58..74` (16s) | 1 | `risky:short-visible-gap` | `no` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
-| 4 | `visitor3` | `low` | 1069/1039 | 68 | `39..63` (24s) | 2 | `risky:overread` | `high-risk-scheduler` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
-| 5 | `visitor3` | `low` | 1069/1039 | 68 | `46..70` (24s) | 2 | `risky:overread` | `high-risk-scheduler` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 4 | `visitor3` | `low` | 1069/1039 | 68 | `46..70` (24s) | 2 | `risky:overread` | `high-risk-scheduler` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 5 | `visitor3` | `low` | 1069/1039 | 68 | `39..63` (24s) | 2 | `risky:overread` | `high-risk-scheduler` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
 | 6 | `visitor3` | `low` | 1069/1039 | 68 | `239..255` (16s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
 | 7 | `visitor3` | `low` | 1069/1039 | 68 | `1..17` (16s) | 1 | `risky:short-visible-gap` | `tight-first-gap` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
 | 8 | `visitor3` | `low` | 1069/1039 | 68 | `240..252` (12s) | 1 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
