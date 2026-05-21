@@ -10,28 +10,37 @@ pressure and visible-cadence risk. It does not change the PS1 binary.
 - Scheduler or guarded probes: `0`
 - Scheduler-owned only: `0`
 - Closed exact ranges from experiment log: `46`
+- Phase-trap rows: `46`
 - Deferred under-target rows: `0`
+- Top next lanes: `custom-terminal-data-shape-or-generated-deadline`=12, `frame-deadline-data-shape-or-render-reduction`=12, `no-decode-canonicalization-or-generated-owner`=12, `generated-deadline-or-sector-split-data-shape`=10
 
 Recent hand-authored table probes proved that nominal read-count wins can
 still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 `unsafe` rows as scheduler-owned retries, not standalone table changes.
+When direct standalone/guarded probes are exhausted, promote the listed
+next lanes above more scalar range retries.
+
+No open standalone or guarded direct-read probes remain in this
+artifact set. The next optimization pass should start from generated
+deadline ownership, custom data-shape, or pack-owned work reduction
+lanes instead of another hand-authored sector range.
 
 ## Top 12 Candidates
 
-| Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
-|---:|---|---|---:|---:|---|---:|---|---|
-| 1 | `building2` | `high` | 1347/1313 | 39 | `122..146` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 2 | `building2` | `high` | 1347/1313 | 39 | `95..119` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 3 | `building2` | `high` | 1347/1313 | 39 | `104..128` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 4 | `building2` | `high` | 1347/1313 | 39 | `117..141` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 5 | `building2` | `high` | 1347/1313 | 39 | `255..271` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 6 | `building2` | `high` | 1347/1313 | 39 | `249..265` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 7 | `building2` | `high` | 1347/1313 | 39 | `95..111` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 8 | `building2` | `high` | 1347/1313 | 39 | `140..156` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 9 | `building2` | `high` | 1347/1313 | 39 | `249..261` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 10 | `building2` | `high` | 1347/1313 | 39 | `174..186` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 11 | `building2` | `high` | 1347/1313 | 39 | `95..107` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 12 | `building2` | `high` | 1347/1313 | 39 | `140..152` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Phase Trap | Next Lane | Recommendation |
+|---:|---|---|---:|---:|---|---:|---|---|---|---|
+| 1 | `building2` | `high` | 1347/1313 | 39 | `122..146` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 2 | `building2` | `high` | 1347/1313 | 39 | `95..119` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 3 | `building2` | `high` | 1347/1313 | 39 | `104..128` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 4 | `building2` | `high` | 1347/1313 | 39 | `117..141` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 5 | `building2` | `high` | 1347/1313 | 39 | `255..271` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 6 | `building2` | `high` | 1347/1313 | 39 | `249..265` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 7 | `building2` | `high` | 1347/1313 | 39 | `95..111` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 8 | `building2` | `high` | 1347/1313 | 39 | `140..156` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 9 | `building2` | `high` | 1347/1313 | 39 | `249..261` (12s) | 1 | `balanced:validate-overlap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 10 | `building2` | `high` | 1347/1313 | 39 | `174..186` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 11 | `building2` | `high` | 1347/1313 | 39 | `95..107` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 12 | `building2` | `high` | 1347/1313 | 39 | `140..152` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
 
 ## CSV
 
@@ -50,5 +59,10 @@ The full row-level matrix is in
   already appears in a failed or rejected experiment row.
 - `recommendation=defer-under-target` means the source scene is already
   under its current active-loop target.
+- `phase_trap=yes` marks rows whose exact range is closed, whose visible
+  gap is too tight, or whose prior risk class says scheduler ownership
+  is required before the read can fire safely.
+- `next_lane` is the non-scalar lane to try before another local sector
+  table retry for that row.
 - `artifact` points back to the source read-plan JSON for full read
   segments, gaps, and coverage.

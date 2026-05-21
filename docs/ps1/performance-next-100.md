@@ -271,6 +271,12 @@ modeled `{204..220}` static recovery row produced the same profile:
 `32 -> 27`, refill `4 -> 13`, reads `24 -> 28`, and due `4 -> 2`.
 This preserves the visible/blocking signal but makes the target/refill trade
 worse than the current baseline, so entry60 remains generated-deadline-only.
+The priority tooling now marks all `46` current direct-read candidates as
+phase traps and surfaces the intended non-scalar lanes in both the under-green
+CSV and read-candidate matrix. The refreshed queue is therefore ordered around
+custom VISITOR3 terminal data shape / generated deadlines, BUILDING2
+frame-deadline data-shape or render reduction, and WALKSTUF1 no-decode
+canonicalization or generated owner work before any more scalar range retries.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,

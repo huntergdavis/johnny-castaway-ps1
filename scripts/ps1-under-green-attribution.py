@@ -152,6 +152,45 @@ def is_closed_candidate(
     )
 
 
+def candidate_phase_trap_reason(item: dict[str, Any], closed_by_log: bool) -> str:
+    if closed_by_log:
+        return "closed-exact-range"
+
+    cd_class = str(item.get("visible_cd_cost_class", ""))
+    risk_hint = str(item.get("visible_risk_hint", ""))
+    scheduler_class = str(item.get("scheduler_retry_class", ""))
+    internal_gap_class = str(item.get("internal_gap_slack_class", ""))
+    first_gap = item.get("min_prev_gap_s")
+
+    if cd_class.startswith("unsafe:"):
+        return "unsafe-visible-cost"
+    if scheduler_class.startswith("high-risk"):
+        return "high-risk-scheduler"
+    if risk_hint.startswith("high-risk"):
+        return "high-risk-visible-gap"
+    if internal_gap_class.startswith("tight"):
+        return "tight-internal-gap"
+    if isinstance(first_gap, (int, float)) and float(first_gap) <= 0.25:
+        return "tight-first-gap"
+    return ""
+
+
+def candidate_next_lane(scene: str, tide: str, reason: str) -> str:
+    if scene == "visitor3":
+        if tide == "low":
+            return "custom-terminal-data-shape-or-generated-deadline"
+        return "terminal-payload-placement-or-deadline-sidecar"
+    if scene == "building2":
+        return "frame-deadline-data-shape-or-render-reduction"
+    if scene == "walkstuf1":
+        if tide == "high":
+            return "no-decode-canonicalization-or-generated-owner"
+        return "generated-deadline-or-sector-split-data-shape"
+    if reason:
+        return "non-scalar-data-shape-or-generated-owner"
+    return "direct-read-probe"
+
+
 def scene_base_row(case: dict[str, Any], threshold_pct: float) -> dict[str, str]:
     sections = case.get("sections", {})
     timing = sections.get("timing", {}) if isinstance(sections, dict) else {}
@@ -188,9 +227,12 @@ def candidate_base_row(
     size: int,
     item: dict[str, Any],
     closed_by_log: bool,
+    scene: str,
+    tide: str,
 ) -> dict[str, str]:
     first_entry = item.get("first_entry")
     last_entry = item.get("last_entry")
+    trap_reason = candidate_phase_trap_reason(item, closed_by_log)
     return {
         "candidate_rank": str(rank),
         "candidate_size": str(size or ""),
@@ -213,6 +255,9 @@ def candidate_base_row(
         "candidate_internal_gap": str(item.get("internal_gap_slack_class", "")),
         "candidate_fireable": str(item.get("append_start_fireable", "")),
         "candidate_closed_by_log": "yes" if closed_by_log else "no",
+        "candidate_phase_trap": "yes" if trap_reason else "no",
+        "candidate_phase_trap_reason": trap_reason,
+        "candidate_next_lane": candidate_next_lane(scene, tide, trap_reason),
         "candidate_recommendation": (
             "closed-by-experiment-log"
             if closed_by_log
@@ -277,6 +322,9 @@ def main() -> int:
         "candidate_internal_gap",
         "candidate_fireable",
         "candidate_closed_by_log",
+        "candidate_phase_trap",
+        "candidate_phase_trap_reason",
+        "candidate_next_lane",
         "candidate_recommendation",
     ]
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
@@ -293,6 +341,7 @@ def main() -> int:
 
         base = scene_base_row(case, args.threshold_pct)
         scene = scene_from_label(base["label"], known_scenes)
+        tide = "low" if "-low" in base["label"] else "high"
         case_dir_value = case.get("case_dir")
         candidates: list[tuple[int, dict[str, Any]]] = []
         if isinstance(case_dir_value, str):
@@ -308,7 +357,7 @@ def main() -> int:
         for rank, (size, item) in enumerate(candidates[:max(1, args.top)], 1):
             closed_by_log = is_closed_candidate(scene, item, closed_ranges)
             row = dict(base)
-            row.update(candidate_base_row(rank, size, item, closed_by_log))
+            row.update(candidate_base_row(rank, size, item, closed_by_log, scene, tide))
             writer.writerow(row)
     return 0
 

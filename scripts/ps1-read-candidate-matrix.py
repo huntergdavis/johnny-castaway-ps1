@@ -56,6 +56,9 @@ CSV_FIELDS = [
     "group_overread_sectors",
     "runtime_current_group_fit",
     "prior_experiment_status",
+    "phase_trap",
+    "phase_trap_reason",
+    "next_lane",
     "recommendation",
     "artifact",
 ]
@@ -144,6 +147,48 @@ def recommendation(
     return "reject"
 
 
+def phase_trap_reason(
+    candidate: dict[str, Any],
+    *,
+    prior_experiment_status: str,
+) -> str:
+    cd_class = str(candidate.get("visible_cd_cost_class", ""))
+    risk_hint = str(candidate.get("visible_risk_hint", ""))
+    scheduler_class = str(candidate.get("scheduler_retry_class", ""))
+    first_gap = safe_float(candidate.get("first_prev_gap_s"))
+    internal_gap = safe_float(candidate.get("min_internal_gap_s"))
+
+    if prior_experiment_status:
+        return "closed-exact-range"
+    if cd_class.startswith("unsafe:"):
+        return "unsafe-visible-cost"
+    if scheduler_class.startswith("high-risk"):
+        return "high-risk-scheduler"
+    if risk_hint.startswith("high-risk"):
+        return "high-risk-visible-gap"
+    if internal_gap is not None and internal_gap <= 0.12:
+        return "tight-internal-gap"
+    if first_gap is not None and first_gap <= 0.25:
+        return "tight-first-gap"
+    return ""
+
+
+def next_lane(scene: str, tide: str, reason: str) -> str:
+    if scene == "visitor3":
+        if tide == "low":
+            return "custom-terminal-data-shape-or-generated-deadline"
+        return "terminal-payload-placement-or-deadline-sidecar"
+    if scene == "building2":
+        return "frame-deadline-data-shape-or-render-reduction"
+    if scene == "walkstuf1":
+        if tide == "high":
+            return "no-decode-canonicalization-or-generated-owner"
+        return "generated-deadline-or-sector-split-data-shape"
+    if reason:
+        return "non-scalar-data-shape-or-generated-owner"
+    return "direct-read-probe"
+
+
 def load_closed_ranges(path: Path | None) -> set[tuple[str, int, int]]:
     if path is None or not path.exists():
         return set()
@@ -152,7 +197,12 @@ def load_closed_ranges(path: Path | None) -> set[tuple[str, int, int]]:
     closed: set[tuple[str, int, int]] = set()
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.lower()
-        if "failed/no promotion" not in line and "rejected" not in line and "do not promote" not in line:
+        if (
+            "failed/no promotion" not in line
+            and "rejected" not in line
+            and "do not promote" not in line
+            and "close " not in line
+        ):
             continue
 
         for scene in known_scenes:
@@ -225,16 +275,23 @@ def iter_rows(root: Path, closed_ranges: set[tuple[str, int, int]]) -> list[dict
                     "group_overread_sectors": safe_int(candidate.get("group_overread_sectors")),
                     "runtime_current_group_fit": candidate.get("runtime_current_group_fit") is True,
                     "prior_experiment_status": prior_experiment_status,
-                    "recommendation": recommendation(
-                        candidate,
-                        overrun_vb=overrun_vb,
-                        prior_experiment_status=prior_experiment_status,
-                    ),
                     "artifact": rel(path),
                 }
+                trap_reason = phase_trap_reason(
+                    candidate,
+                    prior_experiment_status=prior_experiment_status,
+                )
+                row["phase_trap"] = "yes" if trap_reason else "no"
+                row["phase_trap_reason"] = trap_reason
+                row["next_lane"] = next_lane(scene_name, str(row["tide"]), trap_reason)
+                row["recommendation"] = recommendation(
+                    candidate,
+                    overrun_vb=overrun_vb,
+                    prior_experiment_status=prior_experiment_status,
+                )
                 rows.append(row)
 
-    def sort_key(row: dict[str, Any]) -> tuple[int, int, int, int, int, int]:
+    def sort_key(row: dict[str, Any]) -> tuple[int, int, int, int, int, int, int]:
         rec_order = {
             "standalone-probe": 0,
             "scheduler-or-guarded-probe": 1,
@@ -244,6 +301,7 @@ def iter_rows(root: Path, closed_ranges: set[tuple[str, int, int]]) -> list[dict
         }.get(str(row["recommendation"]), 5)
         return (
             rec_order,
+            1 if row["phase_trap"] == "yes" else 0,
             -safe_int(row["overrun_vb"]),
             -safe_int(row["blocking_vb"]),
             -safe_int(row["estimated_saved_reads"]),
@@ -277,8 +335,20 @@ def fmt(value: Any) -> str:
 def write_md(path: Path, root: Path, rows: list[dict[str, Any]], limit: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rec_counts: dict[str, int] = {}
+    phase_trap_count = 0
+    lane_counts: dict[str, int] = {}
     for row in rows:
         rec_counts[str(row["recommendation"])] = rec_counts.get(str(row["recommendation"]), 0) + 1
+        if row["phase_trap"] == "yes":
+            phase_trap_count += 1
+        lane = str(row["next_lane"])
+        lane_counts[lane] = lane_counts.get(lane, 0) + 1
+    direct_probe_count = (
+        rec_counts.get("standalone-probe", 0)
+        + rec_counts.get("scheduler-or-guarded-probe", 0)
+    )
+    top_lanes = sorted(lane_counts.items(), key=lambda pair: (-pair[1], pair[0]))[:5]
+    lane_summary = ", ".join(f"`{lane}`={count}" for lane, count in top_lanes) or "`none`"
 
     lines = [
         "# PS1 Foreground Read Candidate Matrix",
@@ -293,22 +363,38 @@ def write_md(path: Path, root: Path, rows: list[dict[str, Any]], limit: int) -> 
         f"- Scheduler or guarded probes: `{rec_counts.get('scheduler-or-guarded-probe', 0)}`",
         f"- Scheduler-owned only: `{rec_counts.get('scheduler-owned-only', 0)}`",
         f"- Closed exact ranges from experiment log: `{rec_counts.get('closed-by-experiment-log', 0)}`",
+        f"- Phase-trap rows: `{phase_trap_count}`",
         f"- Deferred under-target rows: `{rec_counts.get('defer-under-target', 0)}`",
+        f"- Top next lanes: {lane_summary}",
         "",
         "Recent hand-authored table probes proved that nominal read-count wins can",
         "still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and",
         "`unsafe` rows as scheduler-owned retries, not standalone table changes.",
+        "When direct standalone/guarded probes are exhausted, promote the listed",
+        "next lanes above more scalar range retries.",
         "",
+    ]
+
+    if rows and direct_probe_count == 0:
+        lines.extend([
+            "No open standalone or guarded direct-read probes remain in this",
+            "artifact set. The next optimization pass should start from generated",
+            "deadline ownership, custom data-shape, or pack-owned work reduction",
+            "lanes instead of another hand-authored sector range.",
+            "",
+        ])
+
+    lines.extend([
         f"## Top {min(limit, len(rows))} Candidates",
         "",
-        "| Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |",
-        "|---:|---|---|---:|---:|---|---:|---|---|",
-    ]
+        "| Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Phase Trap | Next Lane | Recommendation |",
+        "|---:|---|---|---:|---:|---|---:|---|---|---|---|",
+    ])
 
     for row in rows[:limit]:
         lines.append(
             "| {rank} | `{scene}` | `{tide}` | {loop}/{target} | {blocking} | "
-            "`{start}..{end}` ({size}s) | {saved} | `{cost}` | `{rec}` |".format(
+            "`{start}..{end}` ({size}s) | {saved} | `{cost}` | `{trap}` | `{lane}` | `{rec}` |".format(
                 rank=row["rank"],
                 scene=row["scene"],
                 tide=row["tide"],
@@ -320,6 +406,8 @@ def write_md(path: Path, root: Path, rows: list[dict[str, Any]], limit: int) -> 
                 size=row["candidate_size_sectors"],
                 saved=row["estimated_saved_reads"],
                 cost=row["visible_cd_cost_class"],
+                trap=row["phase_trap_reason"] or "no",
+                lane=row["next_lane"],
                 rec=row["recommendation"],
             )
         )
@@ -343,6 +431,11 @@ def write_md(path: Path, root: Path, rows: list[dict[str, Any]], limit: int) -> 
         "  already appears in a failed or rejected experiment row.",
         "- `recommendation=defer-under-target` means the source scene is already",
         "  under its current active-loop target.",
+        "- `phase_trap=yes` marks rows whose exact range is closed, whose visible",
+        "  gap is too tight, or whose prior risk class says scheduler ownership",
+        "  is required before the read can fire safely.",
+        "- `next_lane` is the non-scalar lane to try before another local sector",
+        "  table retry for that row.",
         "- `artifact` points back to the source read-plan JSON for full read",
         "  segments, gaps, and coverage.",
         "",
