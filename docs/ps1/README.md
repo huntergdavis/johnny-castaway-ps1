@@ -39,6 +39,10 @@ enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 read-work. The latest VISITOR3-low read-group stack now adds `88..104` on top
 of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
 `68`, loop reads/read time `14/91`, and due `11` while the other four yellow
+rows stay exact-flat. The latest VISITOR3-high entry `62` cleanup-only pass
+keeps file size, offsets, entry table sizes, LBA, and the PS-EXE bucket fixed
+while reducing entry restore bytes `2724 -> 596`, runtime restore bytes
+`56312 -> 54184`, and upload bytes `18038400 -> 18012160`; all five yellow
 rows stay exact-flat. The latest code-headroom pass caches the active
 foreground scene ID once per scene start, keeping the five yellow rows
 exact-flat while shrinking the tracked hot foreground scheduler symbols by

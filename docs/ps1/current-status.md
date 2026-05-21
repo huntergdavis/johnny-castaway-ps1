@@ -4,7 +4,7 @@
 
 
 **Last updated:** 2026-05-21 (`perf/allocator-era-under-green-20260517` after
-the VISITOR3-low `88..104`, `72..88`, and `16..32` read-group promotions, the VISITOR3-low frame `135`
+the VISITOR3-high entry `62` cleanup-only headroom pass, the VISITOR3-low `88..104`, `72..88`, and `16..32` read-group promotions, the VISITOR3-low frame `135`
 gap-placed D4 promotion, the W1-low frame
 `87..99` fixed-layout cleanup-slack promotion, the W1-high cleanup-only
 fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout
@@ -366,7 +366,8 @@ window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
 W1-high and VISITOR3-low fixed-layout cleanup headroom passes, the W1-low
 frame `87..99` cleanup-slack promotion, the VISITOR3-low frame `135`
 gap-placed D4 speed promotion, and the VISITOR3-low `88..104`, `72..88`, plus `16..32` read-group
-speed promotion, the public battle card is now
+speed promotion, plus the VISITOR3-high entry `62` cleanup-only headroom pass,
+the public battle card is now
 `+0.2465%` over target / `99.7571%` target speed; the raw signed optimization
 rollup is about `-0.4704%` / `100.4875%`.
 Since the compact full-matrix baseline was about `17.4%` over target /

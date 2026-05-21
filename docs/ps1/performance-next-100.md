@@ -721,9 +721,14 @@ loop reads improve `4 -> 3`. Close raw retained-gap duplication for this early
 edge; the remaining sector-40 relief needs generated deadline/refill ownership
 or a paired data-shape change that does not tighten target cadence.
 
-1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
-   minus-62 cleanup family into smaller sector-preserving subfamilies and prove
-   exact-flat timing before combining with any read owner.
+1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
+   fixed-layout cleanup-only headroom pass: the five-yellow canary stays
+   exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
+   bytes drop `56312 -> 54184`, and upload bytes drop `18038400 -> 18012160`.
+   Do not pair entry-`62` cleanup with retained-gap relocation; that combined
+   form is already logged phase-negative. Continue V3-high with generated
+   deadline/refill ownership or a larger data-shape swing that does not move
+   the entry into the retained gap.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the

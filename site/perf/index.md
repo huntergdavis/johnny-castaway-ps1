@@ -186,8 +186,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2465%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7571%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T12:42:19` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3low-rg88-104`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T13:49:13` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3high-entry62-clean-only`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -197,7 +197,16 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-low `88..104` read-group track:
+Latest VISITOR3-high cleanup-headroom track:
+`v3high-entry62-clean-only-five-yellow-current` rewrites only entry `62` /
+source frame `80` with previous-visible cleanup while preserving pack
+footprint, offsets, entry table sizes, LBA `22619`, sectors `760`, and the
+`233472` byte PS-EXE bucket. Entry restore bytes drop `2724 -> 596`, runtime
+restore bytes drop `56312 -> 54184`, and upload bytes drop
+`18038400 -> 18012160`; BUILDING2 high, VISITOR3 high/low, and WALKSTUF1
+high/low stay exact-flat. The public speed rollup remains unchanged.
+
+Prior VISITOR3-low `88..104` read-group track:
 `v3low-rg88-104-five-yellow-current` adds a low-tide-only VISITOR3 retained
 read group for relative sectors `88..104` on top of `16..32` and `72..88`, building on the frame135 gap-D4
 baseline while preserving pack footprint, LBA `23379`, sectors `760`, and the
@@ -1442,8 +1451,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2674,8 +2683,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2688,8 +2697,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2814,8 +2823,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2828,8 +2837,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

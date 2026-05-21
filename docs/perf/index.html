@@ -310,11 +310,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T12:42:19</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T13:49:13</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-rg88-104</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3high-entry62-clean-only</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -330,7 +330,16 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest VISITOR3-low <code class="language-plaintext highlighter-rouge">88..104</code> read-group track:
+<p>Latest VISITOR3-high cleanup-headroom track:
+<code class="language-plaintext highlighter-rouge">v3high-entry62-clean-only-five-yellow-current</code> rewrites only entry <code class="language-plaintext highlighter-rouge">62</code> /
+source frame <code class="language-plaintext highlighter-rouge">80</code> with previous-visible cleanup while preserving pack
+footprint, offsets, entry table sizes, LBA <code class="language-plaintext highlighter-rouge">22619</code>, sectors <code class="language-plaintext highlighter-rouge">760</code>, and the
+<code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. Entry restore bytes drop <code class="language-plaintext highlighter-rouge">2724 -&gt; 596</code>, runtime
+restore bytes drop <code class="language-plaintext highlighter-rouge">56312 -&gt; 54184</code>, and upload bytes drop
+<code class="language-plaintext highlighter-rouge">18038400 -&gt; 18012160</code>; BUILDING2 high, VISITOR3 high/low, and WALKSTUF1
+high/low stay exact-flat. The public speed rollup remains unchanged.</p>
+
+<p>Prior VISITOR3-low <code class="language-plaintext highlighter-rouge">88..104</code> read-group track:
 <code class="language-plaintext highlighter-rouge">v3low-rg88-104-five-yellow-current</code> adds a low-tide-only VISITOR3 retained
 read group for relative sectors <code class="language-plaintext highlighter-rouge">88..104</code> on top of <code class="language-plaintext highlighter-rouge">16..32</code> and <code class="language-plaintext highlighter-rouge">72..88</code>, building on the frame135 gap-D4
 baseline while preserving pack footprint, LBA <code class="language-plaintext highlighter-rouge">23379</code>, sectors <code class="language-plaintext highlighter-rouge">760</code>, and the
@@ -1577,8 +1586,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2809,8 +2818,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2823,8 +2832,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2949,8 +2958,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2963,8 +2972,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T12:42:19</td>
-      <td>v3low-rg88-104</td>
+      <td>2026-05-21T13:49:13</td>
+      <td>v3high-entry62-clean-only</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
