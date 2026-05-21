@@ -498,6 +498,17 @@ Close `{86..98}` as a hand-authored read group. VISITOR3 low still needs
 frame/deadline/refill ownership or pack/render-byte slack before grouped reads
 are viable.
 
+Latest rejected WALKSTUF1 high D4 payload swing: frames `181`, `183`, `185`,
+and `187` delta-compress against the prior frame and save `11465` active bytes
+with fixed pack size, pack LBA, and PS-EXE bucket. The focused gate still
+regressed W1-high `1808/1472/1441 -> 1809/1473/1441`, overrun `31 -> 32`,
+blocking `43 -> 56`, and loop reads `41 -> 42`, while hidden refill improved
+only `13 -> 10`. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-d4-181-187-current/20260520-180155-3453957/summary.json`.
+Close this combined D4 cluster as a standalone speed path; retry only as
+single-frame canaries or with deadline-owned reads that keep the delta decode
+off the visible blocking path.
+
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
 `1075/1044` to `1071/1045` with overrun `31 -> 26`, blocking `45 -> 35`,
