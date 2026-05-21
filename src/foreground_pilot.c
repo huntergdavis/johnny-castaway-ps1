@@ -580,6 +580,10 @@ static const struct TFgPilotReadGroup kVisitor5HighReadGroups12[] = {
     {30, 46, 0}
 };
 
+static const struct TFgPilotReadGroup kVisitor3LowReadGroups16[] = {
+    {16, 32, 0}
+};
+
 static const struct TFgPilotReadGroup kWalkstuf1HighReadGroups12[] = {
     {78, 91, 0},
     {149, 165, 0},
@@ -3801,6 +3805,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             (uint8)(sizeof(kWalkstuf1HighReadGroups12) /
                                     sizeof(kWalkstuf1HighReadGroups12[0]));
                     }
+                } else if (islandState.lowTide &&
+                           gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual &&
+                           fgSceneEquals(sceneName, "visitor3")) {
+                    streamReadGroups = kVisitor3LowReadGroups16;
+                    streamReadGroupCount =
+                        (uint8)(sizeof(kVisitor3LowReadGroups16) /
+                                sizeof(kVisitor3LowReadGroups16[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual &&
                            fgSceneEquals(sceneName, "visitor5")) {

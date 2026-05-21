@@ -143,10 +143,14 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
-retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low frame135
-gap-D4 row keeps file size, LBA, sectors, and the PS-EXE bucket fixed while
-improving VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`,
-blocking `80 -> 78`, and loop read time `106 -> 104`; the prior
+retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low `16..32`
+read-group row builds on the frame135 gap-D4 baseline and improves
+VISITOR3-low `1342/1070/1039 -> 1339/1066/1035`, keeps overrun flat at
+`31`, cuts blocking `78 -> 73`, loop reads `18 -> 17`, read time
+`104 -> 96`, and due misses `14 -> 13`; the prior frame135 gap-D4 row kept
+file size, LBA, sectors, and the PS-EXE bucket fixed while improving
+VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking
+`80 -> 78`, and loop read time `106 -> 104`; the prior
 previous-visible cleanup row already dropped runtime restore bytes
 `467962 -> 64632`, max restore bytes `293544 -> 2962`, upload bytes
 `18113920 -> 17494400`, and dirty rows `28303 -> 27335`.
@@ -180,10 +184,10 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2472%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7564%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T10:55:30` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; VISITOR3-low uses `v3low-delta135-gap`; other current five-yellow timing rows use `w1low-slack-frames87-99`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2474%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7563%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T11:29:51` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; VISITOR3-low uses `v3low-rg16-32`; other current five-yellow timing rows use `w1low-slack-frames87-99`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -193,14 +197,23 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-low frame135 gap-D4 track:
+Latest VISITOR3-low `16..32` read-group track:
+`v3low-rg16-32-five-yellow-current` adds a low-tide-only VISITOR3 retained
+read group for relative sectors `16..32`, building on the frame135 gap-D4
+baseline while preserving pack footprint, LBA `23379`, sectors `760`, and the
+`233472` byte PS-EXE bucket. VISITOR3-low improves
+`1342/1070/1039 -> 1339/1066/1035`, keeps overrun flat at `31`, cuts blocking
+`78 -> 73`, loop reads `18 -> 17`, read time `104 -> 96`, and due misses
+`14 -> 13`; BUILDING2 high, VISITOR3 high, and WALKSTUF1 high/low stay
+exact-flat.
+
+Prior VISITOR3-low frame135 gap-D4 track:
 `v3low-delta135-gap-five-yellow-noreq-current` encodes frame `135` as a
 previous-frame D4 delta against frame `134` and moves the `14246` byte payload
 into the existing early D4 gap at offset `204452`, while preserving pack
-footprint, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket.
-VISITOR3-low improves `1071/1039 -> 1070/1039`, overrun `32 -> 31`,
-blocking `80 -> 78`, and loop read time `106 -> 104`; BUILDING2 high,
-VISITOR3 high, and WALKSTUF1 high/low stay exact-flat.
+footprint, LBA, sectors, and the PS-EXE bucket. It improved VISITOR3-low
+`1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking `80 -> 78`, and loop
+read time `106 -> 104`.
 
 Prior W1-low fixed-layout cleanup-slack track:
 `w1low-slack-frames87-99-five-yellow-current` combines exact-entry
@@ -2675,14 +2688,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T10:55:30</td>
-      <td>v3low-delta135-gap</td>
+      <td>2026-05-21T11:28:19</td>
+      <td>v3low-rg16-32</td>
       <td>3.0%</td>
       <td class="spd-yellow">97.1%</td>
-      <td>1070/1039</td>
-      <td>78</td>
+      <td>1066/1035</td>
+      <td>73</td>
       <td>0</td>
-      <td>14</td>
+      <td>13</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">

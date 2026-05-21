@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the VISITOR3-low frame 135 gap-placed D4 promotion, the W1-low frame 87..99 fixed-layout cleanup-slack promotion, the W1-high cleanup-only fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout previous-visible cleanup headroom pass, the BUILDING2-high trim-draw-tail speed and work-headroom promotions, the W1-low setup/{113..129} + {355..371} CD-pressure promotions, W1-low fresh-owner 160..176, and the hot foreground scene-ID source-headr...
+the VISITOR3-low 16..32 read-group promotion, the VISITOR3-low frame 135 gap-placed D4 promotion, the W1-low frame 87..99 fixed-layout cleanup-slack promotion, the W1-high cleanup-only fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout previous-visible cleanup headroom pass, the BUILDING2-high trim-draw-tail speed and work-headroom promotions, the W1-low setup/{113..129} + {355..371} CD-pressure promotions, W1-low fresh-owner 160..176...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 862 |
-| Approx. words | 9630 |
+| Lines | 864 |
+| Approx. words | 9643 |
 | Code fences | 1 |
 
 ## Outline
