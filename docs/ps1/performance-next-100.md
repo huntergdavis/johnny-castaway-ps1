@@ -647,25 +647,21 @@ rows `27898 -> 27872`, and loop read time `146 -> 145`. The paired static
 `129..153` owner still has the visible loop signal but remains closed because
 it regresses hidden refill `3 -> 10`.
 
-1. **VISITOR3 high fixed-layout early-sector cleanup.** Reduce the sector
-   `36..42` parser/restore burden without shrinking table size or moving the
-   read seam, then retry early ownership. It is now the worst canonical row at
-   `1082/1045` / `96.580%` and has no hidden refill debt, so data-shape slack is
-   the best near-term big swing.
-2. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
+1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
-3. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
+2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
    PS-EXE bucket.
-4. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
+3. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
    savings into blocking/refill (`V3-high` direct-stage, W1-high `372..388`,
    W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
-5. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
-   setup `40..49` proved is real, but only through budgeted ownership; no more
-   retained setup expansion or hand table rows.
-6. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
+4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
+   setup `40..49` and the fourth `40..43` segment proved is real, but only
+   through budgeted ownership; no more retained setup expansion or hand table
+   rows.
+5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that avoids hot
    previous-frame decode predicates.
 7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
