@@ -159,6 +159,17 @@ counters and cut loop reads `40 -> 38` but regressed B2-high to
 `1630/1350/1311`, overrun `39`, blocking `45`, and prefetch overrun `19`.
 Do not retry additive B2-high retained setup without first reducing clean
 snapshot/cache residency or adding generated deadline/refill ownership.
+The allocator-split retry for the same `122..146` early window is closed too.
+All-in-TRANSIENT setup residency failed before `JCPERF2` with
+`JCBSOD-FATAL TRANSIENT region+libc both exhausted: req=196608 have=165016`.
+Keeping the accepted `3..35` plus `202..242` setup slices in CACHE and adding
+only `122..146` as a TRANSIENT-owned third slice completed, but it saved reads
+`40 -> 35` while regressing B2-high `1621/1347/1313 -> 1636/1350/1312`,
+overrun `34 -> 38`, blocking `39 -> 44`, prefetch overrun `16 -> 18`, and
+grew `foregroundPilotPlay` by `72` bytes. Close additive B2-high `122..146`
+residency in both CACHE and split allocator forms; future work needs generated
+deadline/refill ownership or render/pack work reduction before this cluster is
+worth retrying.
 The guarded `249..261` follow-up is closed too: slack9, slack10, and slack12
 were all exact-flat at `1621/1347/1313`, overrun `34`, blocking/refill `39/16`,
 and reads `40`; lower guards already regress. This confirms the safe/firing
