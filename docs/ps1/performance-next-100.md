@@ -83,7 +83,13 @@ PS-EXE bucket fixed while dropping selected active payload `844162 -> 840654`,
 cleanup spans `2211 -> 885`, cleanup pixels `6670 -> 2265`, selected restore
 bytes `13340 -> 4530`, runtime restore bytes `509592 -> 500782`, and upload
 bytes `17182720 -> 17171200`; the five-yellow canary stays exact-flat, so this
-is work-volume headroom rather than a VBlank speed win. The prior VISITOR3-low
+is work-volume headroom rather than a VBlank speed win. Post-headroom static
+read-group retests still close `372..388` and `379..395`: both saved reads
+`41 -> 39`, but `372..388` regressed W1-high to `1477/1442`, overrun `35`,
+blocking/refill `47/17`, and `379..395` regressed to `1474/1442`, overrun
+`32`, blocking/refill `44/14`. The next late W1-high attempt must be
+generated/no-hot-C deadline ownership or a larger data-shape swing that keeps
+blocking/refill at or below `43/13`. The prior VISITOR3-low
 entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
 fixed while shrinking selected active payload `8170 -> 6004`; the five-yellow
@@ -237,6 +243,9 @@ lowering loop reads/read time `42/201 -> 41/198`. The refreshed direct
 read-table queue has no standalone/guarded safe promotion left; the top
 remaining W1-high scalar item is `379..391`, scheduler-owned-only, so larger
 W1-high work now needs generated ownership or paired render/work reduction.
+After the entries `183..191` cleanup-pocket promotion, direct retests of
+`372..388` and `379..395` still save reads but regress visible/refill cadence,
+so those static rows stay closed on the current baseline.
 The
 latest VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
