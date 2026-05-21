@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-21:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2505%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7533%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:29:17` |
-| Stats version | mixed; current five-yellow timing rows are stamped `visitor3-screen-clip-headroom`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.3%` (`0.2498%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7539%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:45:50` |
+| Stats version | mixed; current five-yellow timing rows are stamped `b2high-screen-clip-preserve-entry`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -112,7 +112,20 @@ payload drops `461631 -> 437785`, cleanup restore bytes drop
 bytes drop `18785280 -> 18038400`. VISITOR3 low, BUILDING2 high, and
 WALKSTUF1 high/low stayed flat in the five-yellow canary.
 
-Latest promoted BUILDING2 high previous-visible cleanup note: `BUILDING2.FG2`
+Latest promoted BUILDING2 high preserve-entry-size screen-clip note:
+`BUILDING2.FG2` now clips screen-invisible cleanup/draw span work while keeping
+each changed entry's table `dataSize`, offsets, pack footprint, and LBA fixed.
+Transform summary:
+`scratch/screen-clip-preserve-entry-current/BUILDING2.summary.json`; focused
+proof:
+`scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-current/20260521-014404-1879677/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-five-yellow-current/20260521-014550-1889928/summary.json`.
+B2 high improves `1343/1311 -> 1343/1312`, overrun `32 -> 31`, blocking
+`51 -> 50`, and refill overrun `18 -> 17`; VISITOR3 high/low and WALKSTUF1
+high/low stayed exact-flat.
+
+Prior promoted BUILDING2 high previous-visible cleanup note: `BUILDING2.FG2`
 now clips cleanup spans to pixels that were visible in the previous parseable
 frame across the high-tide pack while preserving the fixed pack footprint and
 LBA. Transform summary:

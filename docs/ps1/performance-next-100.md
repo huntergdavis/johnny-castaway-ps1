@@ -61,14 +61,20 @@ speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
 previous-visible late-cleanup compaction, and the BUILDING2 high
 previous-visible cleanup-speed promotion, then the VISITOR3 high
 previous-visible cleanup-headroom pass with entry `62` excluded, followed by
-the VISITOR3 high offscreen cleanup screen-clip headroom pass:
-`+0.2505%` public average over target / `99.7533%` public target speed across
+the VISITOR3 high offscreen cleanup screen-clip headroom pass, and the
+BUILDING2 high preserve-entry-size screen-clip promotion:
+`+0.2498%` public average over target / `99.7539%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4664%` / `100.4837%`. Since the compact full-matrix baseline was
+`-0.4671%` / `100.4843%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3 high screen-clip headroom pass keeps the
+`0` red. The latest BUILDING2 high preserve-entry-size screen-clip pass keeps
+pack footprint, LBA, offsets, and table `dataSize` fixed while clipping `25`
+entries, dropping logical active payload `574094 -> 520974`, removing `1982`
+cleanup pixels and `40166` draw pixels, and improving B2-high
+`1343/1311 -> 1343/1312`, overrun `32 -> 31`, blocking `51 -> 50`, and refill
+overrun `18 -> 17`. The prior VISITOR3 high screen-clip headroom pass keeps the
 five-yellow canary exact-flat while changing entries `101` and `116`, dropping
 active high-pack payload `437785 -> 436469`, and removing `7393` offscreen
 cleanup pixels with fixed pack footprint/LBA. The prior VISITOR3 high
@@ -267,9 +273,9 @@ cleanup pixels `24946 -> 287`, and cleanup restore bytes `49892 -> 574`.
 The refreshed five-yellow canary stays exact-flat at W1-low `1809/1470/1446`,
 overrun `24`, blocking/refill `32/4`, loop reads/read time `24/146`, and due
 `4`.
-The current BUILDING2 high previous-visible cleanup promotion applies the same
+The prior BUILDING2 high previous-visible cleanup promotion applies the same
 compaction family to the whole high-tide pack after the W1-low subset proved
-the tool path. Unlike the first broad probe, the current baseline accepts it
+the tool path. Unlike the first broad probe, that baseline accepted it
 under the speed-prioritized gate: B2-high improves `1357/1307 -> 1343/1311`,
 overrun `50 -> 32`, and target speed `96.315% -> 97.617%` while active
 payload drops `663590 -> 574094`, cleanup restore bytes `439186 -> 80522`,
@@ -279,6 +285,14 @@ runtime restore bytes `438988 -> 116648`, and upload bytes
 VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat in the canonical
 five-yellow canary. Artifact:
 `scratch/ps1-perf-iterate/building2-high-prev-visible-cleanup-promote-five-yellow/20260521-000235-1299970/summary.json`.
+The current BUILDING2 high preserve-entry-size screen-clip promotion keeps the
+previous-visible cleanup row's table `dataSize`, file size, LBA, and CD phase
+fixed while clipping screen-invisible compact spans inside the payload. It
+changes `25` entries, removes `40166` draw pixels and `1982` cleanup pixels,
+and improves B2-high `1343/1311 -> 1343/1312`, overrun `32 -> 31`,
+blocking/refill `51/18 -> 50/17`, and target speed `97.617% -> 97.692%`.
+Artifact:
+`scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-five-yellow-current/20260521-014550-1889928/summary.json`.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
@@ -412,7 +426,7 @@ clean-relief window until generated ownership or pack shape changes the due
 cluster.
 The
 under-green canary refresh now stamps W1 high/low at `1472/1441` and
-`1470/1446`, B2 high/low at `1343/1311` and `1327/1318`, and B4 high/low at
+`1470/1446`, B2 high/low at `1343/1312` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -2154,9 +2168,10 @@ reducing loop reads/read time `45/199 -> 40/189`; `{287..311}` was exact-flat
 without a key win and `{249..261}` regressed visible CD pressure.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
 `{158..174}`, guarded `271..287`, `315..327`, `{185..197}`, and the
-previous-visible cleanup promotion, moving B2-high to `1343/1311` while
-cutting restore/upload work and leaving current active CD pressure at
-blocking/refill `51/18`, reads/read time `44/196`, and due `7`.
+previous-visible cleanup plus preserve-entry-size screen-clip promotions,
+moving B2-high to `1343/1312` while cutting restore/upload work and leaving
+current active CD pressure at blocking/refill `50/17`, reads/read time
+`44/196`, and due `7`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for

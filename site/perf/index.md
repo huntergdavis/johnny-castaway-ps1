@@ -174,10 +174,10 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.3%` (`0.2505%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7533%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:29:17` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `visitor3-screen-clip-headroom`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2498%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7539%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:45:50` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-screen-clip-preserve-entry`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -196,7 +196,16 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 `fgRuntimeTryPrefetchWindow -12`). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.
 
-Latest VISITOR3 high screen-clip headroom track:
+Latest BUILDING2 high preserve-entry-size screen-clip track:
+`b2high-screen-clip-preserve-entry-five-yellow-current` clips screen-invisible
+cleanup/draw span work while keeping each changed entry's table `dataSize`,
+offset, file size, and LBA unchanged. B2-high improves `1343/1311 -> 1343/1312`,
+overrun `32 -> 31`, blocking `51 -> 50`, refill overrun `18 -> 17`, and target
+speed `97.617% -> 97.692%`; logical active payload drops `574094 -> 520974`,
+with `1982` cleanup pixels and `40166` draw pixels removed. VISITOR3 high/low
+and WALKSTUF1 high/low stay flat in the canonical five-yellow canary.
+
+Prior VISITOR3 high screen-clip headroom track:
 `visitor3-screen-clip-five-yellow-current` clips offscreen cleanup spans after
 the previous-visible cleanup baseline for entries `101` and `116` in
 `VISITOR3.FG2`. VISITOR3 high stays `1082/1045`, overrun `37`, and blocking
@@ -215,7 +224,7 @@ restore bytes drop `471382 -> 56312`, and upload bytes drop
 `18785280 -> 18038400`. VISITOR3 low, BUILDING2 high, and WALKSTUF1 high/low
 stay flat in the canonical five-yellow canary.
 
-Latest BUILDING2 high cleanup-speed track:
+Prior BUILDING2 high cleanup-speed track:
 `building2-high-prev-visible-cleanup-promote-five-yellow` clips cleanup spans
 to the previous visible frame across `BUILDING2.FG2` while preserving pack
 footprint and LBA. B2-high improves `1357/1307 -> 1343/1311`, overrun
@@ -282,7 +291,10 @@ duplicate entry `38` at setup-edge entry `35`. The latest previous-visible
 cleanup promotion then improves B2-high to `1343/1311`, overrun `32`, and
 target speed `97.617%`, while reducing active payload `663590 -> 574094`,
 runtime restore bytes `438988 -> 116648`, and upload bytes
-`26753280 -> 24341120`; pack/executable layout stays fixed.
+`26753280 -> 24341120`; pack/executable layout stays fixed. The current
+preserve-entry-size screen-clip follow-up keeps that table size and LBA fixed
+while improving B2-high again to `1343/1312`, overrun `31`, target speed
+`97.692%`, and blocking/refill `50/17`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -639,11 +651,11 @@ Latest promoted BUILDING2 note: allocator-safe targeted setup slices cache
 relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, then the
 read-group passes replace the tail row with `83..95`, add `{158..174}`, guarded
 `271..287`, `315..327`, and `{185..197}`, then the entries `92`/`94`/`95`
-payload trim reduces active payload `669408 -> 663590`. The current
-previous-visible cleanup pass reduces active payload again to `574094` and
-moves B2-high to `1343/1311`, overrun `32`, blocking/refill `51/18`,
-reads/read time `44/196`, and due `7`, while still avoiding the full-buffer
-clean-rect allocation failure.
+payload trim reduces active payload `669408 -> 663590`. The previous-visible
+cleanup pass reduces active payload again to `574094`, and the current
+preserve-entry-size screen-clip follow-up improves B2-high to `1343/1312`,
+overrun `31`, blocking/refill `50/17`, reads/read time `44/196`, and due `7`,
+while still avoiding the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
 sectors `112..128` and `226..262` during setup with a low-only `80 KiB` clean
@@ -1322,13 +1334,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:29:17</td>
-      <td>visitor3-screen-clip-headroom</td>
+      <td>2026-05-21T01:45:50</td>
+      <td>b2high-screen-clip-preserve-entry</td>
       <td>2.4%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1343/1311</td>
-      <td>51</td>
-      <td>18</td>
+      <td class="spd-yellow">97.7%</td>
+      <td>1343/1312</td>
+      <td>50</td>
+      <td>17</td>
       <td>7</td>
       <td></td>
     </tr>
@@ -2554,8 +2566,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:29:17</td>
-      <td>visitor3-screen-clip-headroom</td>
+      <td>2026-05-21T01:45:50</td>
+      <td>b2high-screen-clip-preserve-entry</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2568,8 +2580,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T01:29:17</td>
-      <td>visitor3-screen-clip-headroom</td>
+      <td>2026-05-21T01:45:50</td>
+      <td>b2high-screen-clip-preserve-entry</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2694,8 +2706,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:29:17</td>
-      <td>visitor3-screen-clip-headroom</td>
+      <td>2026-05-21T01:45:50</td>
+      <td>b2high-screen-clip-preserve-entry</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2708,8 +2720,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T01:29:17</td>
-      <td>visitor3-screen-clip-headroom</td>
+      <td>2026-05-21T01:45:50</td>
+      <td>b2high-screen-clip-preserve-entry</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

@@ -171,6 +171,7 @@ def convert(
     *,
     pad_to_input_size: bool,
     preserve_offsets: bool,
+    preserve_entry_sizes: bool,
     copy_unparseable: bool,
     selected_frames: set[int] | None,
     summary_path: Path | None,
@@ -222,6 +223,7 @@ def convert(
         "preserve_offsets": preserve_offsets,
         "old_size": len(data),
         "new_size": len(data),
+        "preserve_entry_sizes": preserve_entry_sizes,
         "changed_entries": 0,
         "old_payload_bytes": 0,
         "new_payload_bytes": 0,
@@ -259,9 +261,10 @@ def convert(
                 continue
             out[old_offset:old_offset + len(new_payload)] = new_payload
             out[old_offset + len(new_payload):old_offset + old_size] = b"\0" * (old_size - len(new_payload))
+            table_size = old_size if preserve_entry_sizes else len(new_payload)
             struct.pack_into(ENTRY, out, table_offset + index * ENTRY_SIZE,
                              source_frame, x, y, width, height, hold_vblanks,
-                             old_offset, len(new_payload))
+                             old_offset, table_size)
             summary["changed_entries"] = int(summary["changed_entries"]) + 1
             summary["cleanup_removed_pixels"] = int(summary["cleanup_removed_pixels"]) + stats["cleanup_removed_pixels"]
             summary["draw_removed_pixels"] = int(summary["draw_removed_pixels"]) + stats["draw_removed_pixels"]
@@ -360,6 +363,11 @@ def main() -> None:
     parser.add_argument("--in-place", action="store_true")
     parser.add_argument("--pad-to-input-size", action="store_true")
     parser.add_argument("--preserve-offsets", action="store_true")
+    parser.add_argument(
+        "--preserve-entry-sizes",
+        action="store_true",
+        help="with --preserve-offsets, keep each changed entry's dataSize unchanged",
+    )
     parser.add_argument("--copy-unparseable", action="store_true")
     parser.add_argument("--frames", help="comma-separated entry or source frame numbers to rewrite")
     parser.add_argument("--summary", type=Path)
@@ -367,6 +375,8 @@ def main() -> None:
 
     if args.in_place == bool(args.output_fgp3):
         raise SystemExit("pass either --in-place or an output path")
+    if args.preserve_entry_sizes and not args.preserve_offsets:
+        raise SystemExit("--preserve-entry-sizes requires --preserve-offsets")
     selected_frames = parse_frames(args.frames)
     if args.in_place:
         with tempfile.NamedTemporaryFile(prefix=f"{args.input_fgp3.name}.",
@@ -375,14 +385,18 @@ def main() -> None:
             tmp_path = Path(tmp.name)
         try:
             convert(args.input_fgp3, tmp_path, pad_to_input_size=args.pad_to_input_size,
-                    preserve_offsets=args.preserve_offsets, copy_unparseable=args.copy_unparseable,
+                    preserve_offsets=args.preserve_offsets,
+                    preserve_entry_sizes=args.preserve_entry_sizes,
+                    copy_unparseable=args.copy_unparseable,
                     selected_frames=selected_frames, summary_path=args.summary)
             shutil.move(str(tmp_path), str(args.input_fgp3))
         finally:
             tmp_path.unlink(missing_ok=True)
     else:
         convert(args.input_fgp3, args.output_fgp3, pad_to_input_size=args.pad_to_input_size,
-                preserve_offsets=args.preserve_offsets, copy_unparseable=args.copy_unparseable,
+                preserve_offsets=args.preserve_offsets,
+                preserve_entry_sizes=args.preserve_entry_sizes,
+                copy_unparseable=args.copy_unparseable,
                 selected_frames=selected_frames, summary_path=args.summary)
 
 
