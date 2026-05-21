@@ -695,17 +695,21 @@ Close the current `89..91` draw-tail sector-collapse split under strict B2-high
 gates; the next B2 data-shape path needs generated deadline/refill ownership or
 non-CD render/upload reduction first.
 
-Latest rejected VISITOR3 low read-group probe: the current read-plan's only
-low-risk saved-read candidate, `{86..98}`, was current-window-compatible and
-modeled as a scheduler-owned candidate with one saved read. The focused source
-probe did save that read (`18 -> 17`) but regressed VISITOR3 low
-`1369/1065/1039 -> 1374/1070/1041`, overrun `26 -> 29`, blocking `75 -> 79`,
-and due stayed `14`, with hot foreground symbols shifted by `+60` bytes.
-Artifact:
-`scratch/ps1-perf-iterate/visitor3-low-rg86-98-current/20260520-175126-3395181/summary.json`.
-Close `{86..98}` as a hand-authored read group. VISITOR3 low still needs
-frame/deadline/refill ownership or pack/render-byte slack before grouped reads
-are viable.
+Latest rejected VISITOR3 low read-group probes: after the preserve-entry-size
+screen-clip baseline, the refreshed planner still found real CD-shape signals,
+but every hand-authored C table spent them in visible blocking. `{86..98}`
+saved one read but regressed VISITOR3 low to `1346/1073/1039`, overrun `34`,
+blocking `84`, and hidden refill `1`;
+`scratch/ps1-perf-iterate/v3low-rg86-98-current/20260521-023807-2188632/summary.json`.
+The low-visible-risk `{92..108}` form kept loop `1071` but regressed
+scene/overrun/blocking `1343/32/80 -> 1344/33/81`;
+`scratch/ps1-perf-iterate/v3low-rg92-108-current/20260521-024103-2205546/summary.json`.
+The structurally different tight-cluster `{248..264}` row also regressed to
+`1344/1071/1039`, overrun `33`, blocking `81`;
+`scratch/ps1-perf-iterate/v3low-rg248-264-current/20260521-024300-2217007/summary.json`.
+Close VISITOR3 low hand-authored read groups on this baseline. VISITOR3 low
+still needs no-hot-C generated frame/deadline/refill ownership or custom
+terminal data shape before grouped reads are viable.
 
 Latest rejected WALKSTUF1 high D4 payload swing: frames `181`, `183`, `185`,
 and `187` delta-compress against the prior frame and save `11465` active bytes
