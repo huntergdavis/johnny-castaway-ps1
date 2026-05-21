@@ -35,7 +35,7 @@ release:
   # release; the matrix row that backs this lives at
   # docs/ps1/research/perf-matrix-latest/. Stored as a string so a
   # trailing zero (e.g. "99.50") doesn't get coerced.
-  perf_target_speed_pct: "99.7"
+  perf_target_speed_pct: "99.8"
   # SHA-256 of the disc-image artifacts on the tagged GitHub release.
   # Surfaced on /play/#verify so downloaders can verify mirror integrity.
   # Compute on each release tag via:

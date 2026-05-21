@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4754 words
+          ~19 min read · 4758 words
         </p>
 
       <hr class="rule" />
@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2615%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7430%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4554%</code> / <code class="language-plaintext highlighter-rouge">100.4734%</code>.</p>
+the public average is <strong>+0.3% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2505%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7533%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4664%</code> / <code class="language-plaintext highlighter-rouge">100.4837%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -473,10 +473,11 @@ inside the new CACHE allocator budget.</p>
 at relative sectors <code class="language-plaintext highlighter-rouge">3..35</code> and <code class="language-plaintext highlighter-rouge">202..242</code>, then replaces the tail read group
 with <code class="language-plaintext highlighter-rouge">83..95</code>, adds <code class="language-plaintext highlighter-rouge">{158..174}</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, <code class="language-plaintext highlighter-rouge">315..327</code>, and
 <code class="language-plaintext highlighter-rouge">{185..197}</code>, and trims entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> as a same-speed payload
-baseline. The current row is <code class="language-plaintext highlighter-rouge">1347/1313</code>, overrun <code class="language-plaintext highlighter-rouge">34</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, refill
-overrun <code class="language-plaintext highlighter-rouge">16</code>, reads/read time <code class="language-plaintext highlighter-rouge">40/189</code>, and due <code class="language-plaintext highlighter-rouge">5</code>; active payload drops
-<code class="language-plaintext highlighter-rouge">669408 -&gt; 663590</code> without moving the pack layout, and the row avoids the
-allocator-era clean-rect failure seen with full setup buffers.</p>
+baseline. The current previous-visible cleanup promotion moves the row to
+<code class="language-plaintext highlighter-rouge">1343/1311</code>, overrun <code class="language-plaintext highlighter-rouge">32</code>, blocking/refill <code class="language-plaintext highlighter-rouge">51/18</code>, reads/read time <code class="language-plaintext highlighter-rouge">44/196</code>,
+and due <code class="language-plaintext highlighter-rouge">7</code>; active payload drops <code class="language-plaintext highlighter-rouge">669408 -&gt; 574094</code>, runtime restore bytes
+drop <code class="language-plaintext highlighter-rouge">438988 -&gt; 116648</code>, and the row avoids the allocator-era clean-rect
+failure seen with full setup buffers.</p>
 
 <p>The latest BUILDING2 low allocator baseline adds setup-resident <code class="language-plaintext highlighter-rouge">112..128</code>
 and <code class="language-plaintext highlighter-rouge">226..262</code> slices, low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip shaping, a slack-5 low
@@ -788,7 +789,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.6% / 97.5% (1347/1313); due 5; blk 39</td>
+      <td>+2.4% / 97.6% (1343/1311); due 7; blk 51</td>
       <td>+0.7% / 99.3% (1327/1318); due 9; blk 47</td>
     </tr>
     <tr>
@@ -1109,7 +1110,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2615% over target / 99.7430% target speed, with several
+public average is now +0.2505% over target / 99.7533% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

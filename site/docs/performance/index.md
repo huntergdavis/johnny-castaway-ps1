@@ -313,9 +313,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.3% over target / 99.7% target speed** (`0.2615%`
-exact public over target / `99.7430%` exact public target speed); the raw
-signed optimization matrix is about `-0.4554%` / `100.4734%`.
+the public average is **+0.3% over target / 99.8% target speed** (`0.2505%`
+exact public over target / `99.7533%` exact public target speed); the raw
+signed optimization matrix is about `-0.4664%` / `100.4837%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -343,10 +343,11 @@ The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
 at relative sectors `3..35` and `202..242`, then replaces the tail read group
 with `83..95`, adds `{158..174}`, guarded `271..287`, `315..327`, and
 `{185..197}`, and trims entries `92`/`94`/`95` as a same-speed payload
-baseline. The current row is `1347/1313`, overrun `34`, blocking `39`, refill
-overrun `16`, reads/read time `40/189`, and due `5`; active payload drops
-`669408 -> 663590` without moving the pack layout, and the row avoids the
-allocator-era clean-rect failure seen with full setup buffers.
+baseline. The current previous-visible cleanup promotion moves the row to
+`1343/1311`, overrun `32`, blocking/refill `51/18`, reads/read time `44/196`,
+and due `7`; active payload drops `669408 -> 574094`, runtime restore bytes
+drop `438988 -> 116648`, and the row avoids the allocator-era clean-rect
+failure seen with full setup buffers.
 
 The latest BUILDING2 low allocator baseline adds setup-resident `112..128`
 and `226..262` slices, low-only `80 KiB` clean-strip shaping, a slack-5 low
@@ -658,7 +659,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+2.6% / 97.5% (1347/1313); due 5; blk 39</td>
+      <td>+2.4% / 97.6% (1343/1311); due 7; blk 51</td>
       <td>+0.7% / 99.3% (1327/1318); due 9; blk 47</td>
     </tr>
     <tr>
@@ -977,7 +978,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2615% over target / 99.7430% target speed, with several
+  public average is now +0.2505% over target / 99.7533% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

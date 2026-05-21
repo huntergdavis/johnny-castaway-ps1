@@ -58,9 +58,10 @@ and `{378..390}` read-group promotions, plus the VISITOR3 high frame56/57
 raw-gap tight-refill, high-only clean64, 80 KiB clean-relief window, and
 setup-edge `40..47`
 promotions, plus the BUILDING2 low `226..262` + clean80 setup segment, plus
-the BUILDING4 low `24 KiB` stream-window green promotion, is
-**+0.2615% over target / 99.7430% target speed**, with roughly **17.14
-percentage points** of over-target gap closed and about **12.64 target-speed
+the BUILDING4 low `24 KiB` stream-window green promotion, and the BUILDING2
+high previous-visible cleanup-speed promotion, is
+**+0.2505% over target / 99.7533% target speed**, with roughly **17.15
+percentage points** of over-target gap closed and about **12.65 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
@@ -76,8 +77,8 @@ and pays a separate TRANSIENT `344..350` edge, then trims frame132 to move to
 `1470/1445` and adds `{378..390}` to move to `1470/1446`; WALKSTUF1 high retargets its second retained slice to
 `286..344` plus `{149,165}` and frame92 D4, then adds prepare-first scheduler
 ownership to reach `1472/1441` with blocking/due `43/7`; BUILDING2 low now primes `112..128` and
-`226..262` during setup with clean80/slack5 shaping, moving to green at `1327/1318`; BUILDING2 high now measures `1347/1313`
-with blocking/read/due down to `39/45/5`; BUILDING4 low now uses the gap-8
+`226..262` during setup with clean80/slack5 shaping, moving to green at `1327/1318`; BUILDING2 high now measures `1343/1311`
+after the previous-visible cleanup promotion cuts restore/upload work; BUILDING4 low now uses the gap-8
 dirty-upload band merge retune plus a `24 KiB` stream window to reach green at
 `2847/2820`; and VISITOR3 low now
 moves frame `138` raw data into the retained `206..232` segment to reach

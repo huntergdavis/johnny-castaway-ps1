@@ -185,7 +185,7 @@
 <aside class="status-strip" aria-label="Project status">
   <span><strong>Latest:</strong> <a href="./releases/">v0.8.16-ps1</a> <small>· <time datetime="2026-05-17">2026-05-17</time></small></span>
   <a class="pill pill--ok" href="./scenes/">63 / 63 scenes validated</a>
-  <a class="pill pill--ok" href="./perf/">99.7% target speed</a>
+  <a class="pill pill--ok" href="./perf/">99.8% target speed</a>
   <a class="pill pill--info" href="./docs/build/">PSn00bSDK 0.24</a>
   <a class="pill pill--info" href="./play/#emulator">DuckStation</a>
   <a class="pill pill--info" href="./docs/holidays/">36 holidays</a>
@@ -222,7 +222,7 @@ on-PS1 packs, <a href="./releases/#v085-ps1--full-126-row-headless-performance-m
 matrix, <a href="./releases/#v086-ps1--walkstuf1--visitor3-setup-segment-compaction-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.6</code></a> lands the WALKSTUF1 / VISITOR3 setup-segment
 compaction follow-through, <a href="./releases/#v087-ps1--deterministic-bootmode-scene-selection--scene-explorer-preview-stability"><code class="language-plaintext highlighter-rouge">v0.8.7</code></a> hardens deterministic
 scene booting plus Scene Explorer preview loading, <a href="./releases/#v088-ps1--visitor5-high-retained-read-promotion"><code class="language-plaintext highlighter-rouge">v0.8.8</code></a> promotes VISITOR5 high into green, <a href="./releases/#v089-ps1--walkstuf1-low-in-place-payload-reductions"><code class="language-plaintext highlighter-rouge">v0.8.9</code></a> promotes VISITOR5 low plus the first W1-low in-place payload lane, <a href="./releases/#v0810-ps1--walkstuf1-low-no-shift-payload-follow-through"><code class="language-plaintext highlighter-rouge">v0.8.10</code></a> carries that no-shift WALKSTUF1 low baseline through frame <code class="language-plaintext highlighter-rouge">76</code> with active payload <code class="language-plaintext highlighter-rouge">879801 -&gt; 801103</code>, <a href="./releases/#v0811-ps1--lazy-stream-buffer-release-regression-fix"><code class="language-plaintext highlighter-rouge">v0.8.11</code></a> restores lazy stream allocation after the release-merge heap pin briefly broke W1-low clean-rect allocation, and <a href="./releases/#v0812-ps1--walkstuf1-low-frame77frame130-payload-trims"><code class="language-plaintext highlighter-rouge">v0.8.12</code></a> extends the W1-low no-shift lane through frames <code class="language-plaintext highlighter-rouge">77</code> and <code class="language-plaintext highlighter-rouge">130</code> with active payload <code class="language-plaintext highlighter-rouge">879801 -&gt; 799694</code> — the public battle card now averages
-<a href="./docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.7%</code> target speed</a>
+<a href="./docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.8%</code> target speed</a>
 across the timing-bearing rows (public-capped; the
 optimization-side raw signed average is past target). The two
 ledgers live separately: the
@@ -274,7 +274,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./perf/">Headless-perf battle card</a>
-    <p>The other bar: 126 scene/tide variants timed against target frame budget. Sortable headers, color-coded Target Speed (≥99% green, ≥95% yellow, ≥90% orange, &lt;90% red). Currently averaging 99.7% target speed.</p>
+    <p>The other bar: 126 scene/tide variants timed against target frame budget. Sortable headers, color-coded Target Speed (≥99% green, ≥95% yellow, ≥90% orange, &lt;90% red). Currently averaging 99.8% target speed.</p>
   </li>
   <li>
     <a href="./archaeology/">The full story</a>
@@ -414,7 +414,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/from-87-to-99-5/">From 87 to 99.7: the post-validation performance loop</a>
       <span class="summary">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</span>
-      <span class="summary devlog-read-time">~10 min read · 2596 words</span>
+      <span class="summary devlog-read-time">~10 min read · 2606 words</span>
     </div>
   </li>
 

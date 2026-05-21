@@ -23,15 +23,17 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2615%` over
-target / `99.7430%` target speed; the raw signed optimization matrix is
-about `-0.4554%` / `100.4734%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2505%` over
+target / `99.7533%` target speed; the raw signed optimization matrix is
+about `-0.4664%` / `100.4837%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
+PS-EXE bucket stays fixed. The latest BUILDING2 high previous-visible cleanup
+promotion improves B2-high to `1343/1311` while reducing restore/upload work
+without moving the pack footprint. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
@@ -42,11 +44,11 @@ The accepted BUILDING2 low setup-segment promotions prime relative sectors
 low-only `80 KiB` clean-strip cap, raise the low window slack to `5`, and add
 `{141,153}`, improving low to `1327/1318`, overrun `9`, blocking `47`,
 reads `27`, refill `0`, and due `9`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
-of the allocator-safe setup slices, holding `1347/1313` while cutting blocking
-to `39`, reads/read time to `40/189`, and due to `5`; the entries `92`/`94`/`95`
-payload trim cuts B2-high active payload `669408 -> 663590`, and `{185..197}`
-plus `{158..174}` bank same-speed CD-pressure work with exact-flat five-yellow
-timing. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
+of the allocator-safe setup slices, then the previous-visible cleanup promotion
+moves it to `1343/1311`, overrun `32`, blocking/refill `51/18`, and due `7`;
+the entries `92`/`94`/`95` payload trim plus cleanup pass cut B2-high active
+payload `669408 -> 574094`, and `{185..197}` plus `{158..174}` bank same-speed
+CD-pressure work under the new baseline. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
 `2847/2820`, overrun `27`, blocking/read time `32`/`252`, and prefetch overrun
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
 The newest WALKSTUF1
@@ -90,13 +92,13 @@ the frame132 payload trim plus `{378..390}` read group. BUILDING2 low now keeps 
 relative sectors `112..128` and `226..262` during setup, with the allocator-era
 matrix at `1327/1318`, overrun `9`, blocking/refill `47/0`,
 reads `27`, and due `9`. BUILDING2 high currently measures
-`1347/1313`, overrun `34`, blocking `39`, refill overrun `16`, and due misses
-`5`; the allocator-safe setup slices plus the `83..95`, `{158..174}`, guarded
-`271..287`, `315..327`, and `{185..197}` scheduler rows keep reads/read time at
-`40/189`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`1343/1311`, overrun `32`, blocking `51`, refill overrun `18`, and due misses
+`7`; the allocator-safe setup slices plus the `83..95`, `{158..174}`, guarded
+`271..287`, `315..327`, `{185..197}`, and previous-visible cleanup promotion leave reads/read time at
+`44/196`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims plus the entries `92`/`94`/`95` follow-up reduce active payload
-`674798 -> 663590` without moving pack layout.
+`674798 -> 663590`; the new cleanup pass drops it further to `574094` without moving pack layout.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

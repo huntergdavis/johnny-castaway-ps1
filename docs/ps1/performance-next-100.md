@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-20
+Date: 2026-05-21
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -57,13 +57,14 @@ B2-high setup-resident duplicate alias for entries `141` and `142`,
 W1-high prepare-before-window scheduler ownership, and the B2-high entry38
 setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47`
 speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
-`160..176`, the hot foreground scene-ID code-headroom pass, and the W1-low
-previous-visible late-cleanup compaction:
-`+0.2615%` public average over target / `99.7430%` public target speed across
+`160..176`, the hot foreground scene-ID code-headroom pass, the W1-low
+previous-visible late-cleanup compaction, and the BUILDING2 high
+previous-visible cleanup-speed promotion:
+`+0.2505%` public average over target / `99.7533%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4554%` / `100.4734%`. Since the compact full-matrix baseline was
+`-0.4664%` / `100.4837%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.14` public over-target points and added about `12.64` public
+removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -254,6 +255,18 @@ cleanup pixels `24946 -> 287`, and cleanup restore bytes `49892 -> 574`.
 The refreshed five-yellow canary stays exact-flat at W1-low `1809/1470/1446`,
 overrun `24`, blocking/refill `32/4`, loop reads/read time `24/146`, and due
 `4`.
+The current BUILDING2 high previous-visible cleanup promotion applies the same
+compaction family to the whole high-tide pack after the W1-low subset proved
+the tool path. Unlike the first broad probe, the current baseline accepts it
+under the speed-prioritized gate: B2-high improves `1357/1307 -> 1343/1311`,
+overrun `50 -> 32`, and target speed `96.315% -> 97.617%` while active
+payload drops `663590 -> 574094`, cleanup restore bytes `439186 -> 80522`,
+runtime restore bytes `438988 -> 116648`, and upload bytes
+`26753280 -> 24341120`. The tradeoff is small CD pressure growth
+(`blocking/refill 49/26 -> 51/18`, loop reads `40 -> 44`, due `5 -> 7`);
+VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat in the canonical
+five-yellow canary. Artifact:
+`scratch/ps1-perf-iterate/building2-high-prev-visible-cleanup-promote-five-yellow/20260521-000235-1299970/summary.json`.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
@@ -294,13 +307,13 @@ and emit JSON summaries, the scan found zero same-offset shrinkable entries in
 were already unparseable/no-op or would grow. Keep the hardened scanner for
 future data-shape work, but do not spend emulator time on another current-pack
 restore-minus-current pass without a new transform family.
-The broad previous-visible cleanup family is closed as a standalone broad-pack
-transform for the current five-yellow set. It removed large cleanup byte volume
-but shifted target/refill/visible cadence in B2-high, VISITOR3 high/low, and
-W1-high; W1-low broad also regressed hidden refill. The narrowed W1-low late
-subset is promoted because it stays exact-flat while removing late cleanup work.
-Future previous-visible retries should be frame-subset canaries only, not whole
-pack sweeps.
+The broad previous-visible cleanup family is no longer closed globally. The
+B2-high whole-pack form is promoted on the current baseline because it converts
+large cleanup/upload work into a real loop/target/overrun win, while VISITOR3
+high/low and W1-high broad forms remain phase-negative and W1-low remains
+limited to the accepted late subset. Future previous-visible retries should be
+scene-specific canaries with explicit loop/target/restore accounting, not blind
+whole-pack sweeps.
 The local-LZ sector-collapse swing is also closed as a standalone yellow-row
 speed path. W1-high entry `55` saved two sectors but regressed loop/blocking and
 hidden refill; B2-high entries `89..91` saved six modeled sectors but regressed
@@ -387,7 +400,7 @@ clean-relief window until generated ownership or pack shape changes the due
 cluster.
 The
 under-green canary refresh now stamps W1 high/low at `1472/1441` and
-`1470/1446`, B2 high/low at `1347/1313` and `1327/1318`, and B4 high/low at
+`1470/1446`, B2 high/low at `1343/1311` and `1327/1318`, and B4 high/low at
 `2843/2816` and `2847/2820`; BUILDING4 high and low are now green at `99.05%`.
 BUILDING2 high's latest guarded `271..287` read-group promotion improves
 loop/overrun/blocking/read-time/due to `1347/34/41/203/6` with the accepted
@@ -493,7 +506,13 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 Current allocator-era big-swing queue after closing the scalar grouped-read,
 single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
 
-1. **Generated deadline/refill owner metadata sidecar.** Build a no-hot-C or
+1. **BUILDING2 frame-deadline data-shape / render-reduction pass.** The
+   current read matrix has no safe standalone direct-read rows; B2-high's top
+   remaining candidates (`310..322`, `135..159`, `318..334`, `310..326`) are
+   scheduler-owned only. The next big swing should keep the cleanup/render win
+   and remove either frame-deadline restore/upload work or create generated
+   ownership that cannot fire into visible blocking.
+2. **Generated deadline/refill owner metadata sidecar.** Build a no-hot-C or
    code-size-neutral generator that emits per-scene append-start, deadline, and
    refill-budget metadata, then gates reads by frame/deadline ownership instead
    of static sector ranges. First targets: B2-high `249..261` / `287..311`,
@@ -502,31 +521,31 @@ single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
    promoted `160..176` owner pocket. Static ranges repeatedly saved reads but
    moved cost into visible blocking/refill, so the next promotion must prove
    ownership before firing.
-2. **VISITOR3 custom terminal data shape.** Replace more scalar V3-low/high
+3. **VISITOR3 custom terminal data shape.** Replace more scalar V3-low/high
    retries with a pixel-perfect row-reference or setup-dictionary codec for the
    terminal frames that still drive due misses. The simple `134..136` sector
    alignment and early static read groups are closed; the next swing must reduce
    terminal bytes or reads without changing physical cadence blindly.
-3. **WALKSTUF1 no-decode pack canonicalization.** Attack W1-high and W1-low
+4. **WALKSTUF1 no-decode pack canonicalization.** Attack W1-high and W1-low
    with pack-side row-span/offset canonicalization that preserves pixels and
    avoids D4 runtime decode. W1-high D4 frames `181/183/185/187` saved bytes but
    moved cost into visible blocking; W1-low isolated preserve-offset trims are
    exact-flat but too small. Favor sector-boundary changes only when a canary
    proves no target/refill debt.
-4. **BUILDING2 high frame/deadline-owned data-shape.** Keep B2-high focused on
+5. **BUILDING2 high frame/deadline-owned data-shape.** Keep B2-high focused on
    generated ownership plus selective no-decode relocation. Blanket duplicate
    aliasing and isolated entries `89..91` regressed despite byte savings, while
    held-slack and prefetch-only gates proved too coarse.
-5. **Render/restore work reduction with static pack ownership.** Revisit clean
+6. **Render/restore work reduction with static pack ownership.** Revisit clean
    restore/upload cuts only when the data is generated or pack-owned, not a hot
    runtime cache. The remaining yellow rows still have enough restore/upload
    work that a real static-background or sprite-local restore reduction could
    pay off without touching CD phase.
-6. **Code-headroom/source-headroom promotions.** Promote exact-flat hot-code
+7. **Code-headroom/source-headroom promotions.** Promote exact-flat hot-code
    shrink and work-volume rows even without speed wins when they keep pack LBAs
    fixed and do not change timing. This compounds by making future generated
    owner/data-shape code less likely to cross the PS-EXE bucket.
-7. **Allocator-aware sidecar validation.** Every sidecar or setup-residency
+8. **Allocator-aware sidecar validation.** Every sidecar or setup-residency
    retry must pass the current allocator-era clean-rect/CACHE/TRANSIENT shape.
    Additive retained setup failed structurally in W1-low and B2-high, so memory
    viability is now a first-class gate, not a follow-up check.
@@ -2122,9 +2141,10 @@ rows add `{185..197}` and `{158..174}` and keep B2-high speed exact-flat while
 reducing loop reads/read time `45/199 -> 40/189`; `{287..311}` was exact-flat
 without a key win and `{249..261}` regressed visible CD pressure.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
-`{158..174}`, guarded `271..287`, `315..327`, and `{185..197}`, keeping B2-high at `1347/1313`
-while lowering active CD pressure to blocking/refill `39/16`, reads/read time
-`40/189`, and due `5`.
+`{158..174}`, guarded `271..287`, `315..327`, `{185..197}`, and the
+previous-visible cleanup promotion, moving B2-high to `1343/1311` while
+cutting restore/upload work and leaving current active CD pressure at
+blocking/refill `51/18`, reads/read time `44/196`, and due `7`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for
