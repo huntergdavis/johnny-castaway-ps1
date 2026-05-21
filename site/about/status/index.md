@@ -28,13 +28,18 @@ target / `99.7557%` target speed; the raw signed optimization matrix is
 about `-0.4689%` / `100.4860%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest source-headroom pass caches
-the active foreground scene ID in hot scheduler paths, keeps the five-yellow
-canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
-headroom pass trims entries `74` and `78..82`, drops active payload
-`548293 -> 539990`, and keeps the five-yellow canary exact-flat while
-preserving file size and pack LBA. The prior BUILDING2-high no-decode
+measured inside the allocator budget. The latest W1-high exact-entry
+preserve-entry-size screen-clip pass trims entries `58..61`, drops subset
+logical active payload `17164 -> 9896`, removes `4995` cleanup pixels plus
+`6052` draw pixels, and keeps the five-yellow canary exact-flat while
+preserving file size, entry sizes, pack LBA, and the PS-EXE bucket. The prior
+source-headroom pass caches the active foreground scene ID in hot scheduler
+paths, keeps the five-yellow canary exact-flat, and shrinks tracked foreground
+scheduler symbols while the PS-EXE bucket stays fixed. The prior
+BUILDING2-high no-decode trim-draw-tail headroom pass trims entries `74` and
+`78..82`, drops active payload `548293 -> 539990`, and keeps the five-yellow
+canary exact-flat while preserving file size and pack LBA. The prior
+BUILDING2-high no-decode
 trim-draw-tail speed promotion improves B2-high to `1341/1313`. The prior
 VISITOR3-low preserve-entry-size screen-clip promotion keeps
 VISITOR3-low at `1071/1039` while preserving entry sizes and pack LBA. The
@@ -71,7 +76,8 @@ loop reads/read time at `41/198` after keeping relative sectors
 `198..244`, extending the second slice to `286..344`, adding `{149,165}`,
 encoding frame `92` as previous-frame D4, adding `{423,439}`, `{404,416}`,
 `{395,411}`, and retargeted `{411,423}`,
-and letting high tide use prepare-before-window scheduler ownership; low replaces the old `197..243` plus
+letting high tide use prepare-before-window scheduler ownership, and clipping
+exact entries `58..61` as layout-neutral W1-high parser/render headroom; low replaces the old `197..243` plus
 `410..434` split with a single `238..344` retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to

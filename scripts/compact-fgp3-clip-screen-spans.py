@@ -174,6 +174,7 @@ def convert(
     preserve_entry_sizes: bool,
     copy_unparseable: bool,
     selected_frames: set[int] | None,
+    frames_mode: str,
     summary_path: Path | None,
 ) -> dict:
     data = input_path.read_bytes()
@@ -231,6 +232,7 @@ def convert(
         "cleanup_removed_pixels": 0,
         "draw_removed_pixels": 0,
         "copied_unparseable_entries": 0,
+        "frames_mode": frames_mode,
         "changed_entry_details": [],
     }
 
@@ -238,7 +240,7 @@ def convert(
         out = bytearray(data)
         for index, entry in enumerate(old_entries):
             source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
-            if selected_frames is not None and index not in selected_frames and source_frame not in selected_frames:
+            if not should_rewrite_entry(index, source_frame, selected_frames, frames_mode):
                 continue
             if old_size == 0 or width == 0 or height == 0:
                 continue
@@ -292,7 +294,7 @@ def convert(
             old_payload = data[old_offset:old_offset + old_size]
             summary["old_payload_bytes"] = int(summary["old_payload_bytes"]) + old_size
             try:
-                if selected_frames is None or index in selected_frames or source_frame in selected_frames:
+                if should_rewrite_entry(index, source_frame, selected_frames, frames_mode):
                     new_payload, stats = clip_payload(old_payload, x, y)
                 else:
                     new_payload, stats = old_payload, {"cleanup_removed_pixels": 0, "draw_removed_pixels": 0}
@@ -356,6 +358,21 @@ def parse_frames(raw: str | None) -> set[int] | None:
     return out
 
 
+def should_rewrite_entry(
+    entry_index: int,
+    source_frame: int,
+    selected_frames: set[int] | None,
+    frames_mode: str,
+) -> bool:
+    if selected_frames is None:
+        return True
+    if frames_mode == "entry":
+        return entry_index in selected_frames
+    if frames_mode == "source":
+        return source_frame in selected_frames
+    return entry_index in selected_frames or source_frame in selected_frames
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input_fgp3", type=Path)
@@ -370,6 +387,12 @@ def main() -> None:
     )
     parser.add_argument("--copy-unparseable", action="store_true")
     parser.add_argument("--frames", help="comma-separated entry or source frame numbers to rewrite")
+    parser.add_argument(
+        "--frames-mode",
+        choices=("either", "entry", "source"),
+        default="either",
+        help="interpret --frames as entry indices, source frame numbers, or either match",
+    )
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
 
@@ -388,7 +411,8 @@ def main() -> None:
                     preserve_offsets=args.preserve_offsets,
                     preserve_entry_sizes=args.preserve_entry_sizes,
                     copy_unparseable=args.copy_unparseable,
-                    selected_frames=selected_frames, summary_path=args.summary)
+                    selected_frames=selected_frames, frames_mode=args.frames_mode,
+                    summary_path=args.summary)
             shutil.move(str(tmp_path), str(args.input_fgp3))
         finally:
             tmp_path.unlink(missing_ok=True)
@@ -397,7 +421,8 @@ def main() -> None:
                 preserve_offsets=args.preserve_offsets,
                 preserve_entry_sizes=args.preserve_entry_sizes,
                 copy_unparseable=args.copy_unparseable,
-                selected_frames=selected_frames, summary_path=args.summary)
+                selected_frames=selected_frames, frames_mode=args.frames_mode,
+                summary_path=args.summary)
 
 
 if __name__ == "__main__":

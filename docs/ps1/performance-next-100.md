@@ -66,17 +66,23 @@ high preserve-entry-size screen-clip promotion, the W1-low
 preserve-entry-size screen-clip headroom promotion, and the VISITOR3-low
 preserve-entry-size screen-clip headroom promotion, followed by the W1-high
 cleanup-only preserve-entry-size screen-clip subset and the BUILDING2-high
-no-decode trim-draw-tail subset:
+no-decode trim-draw-tail subset, and the W1-high exact-entry
+preserve-entry-size screen-clip subset:
 `+0.2480%` public average over target / `99.7557%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4689%` / `100.4860%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest BUILDING2-high no-decode trim-draw-tail headroom subset
-preserves file size and LBA while trimming entries `74` and `78..82`, dropping
-active payload `548293 -> 539990`, and keeping all five under-green rows
-exact-flat. The prior BUILDING2-high trim-draw-tail speed subset trimmed
+`0` red. The latest W1-high exact-entry preserve-entry-size screen-clip subset
+preserves file size, entry sizes, LBA, and the PS-EXE bucket while clipping
+entries `58..61`, dropping subset logical active payload `17164 -> 9896`,
+removing `4995` cleanup pixels and `6052` draw pixels, and keeping all five
+under-green rows exact-flat. The prior BUILDING2-high no-decode
+trim-draw-tail headroom subset preserves file size and LBA while trimming
+entries `74` and `78..82`, dropping active payload `548293 -> 539990`, and
+keeping all five under-green rows exact-flat. The prior BUILDING2-high
+trim-draw-tail speed subset trimmed
 entries `67`, `69`, `70`, `71`, and `72`, dropping active payload
 `574094 -> 548293` and improving B2-high `1343/1312 -> 1341/1313`, overrun
 `31 -> 28`, blocking `50 -> 47`, and refill `17 -> 14`. The prior W1-high
@@ -342,6 +348,19 @@ subset logical active payload `20365 -> 19645` while the five-yellow canary
 stays exact-flat: B2-high `1343/1312`, VISITOR3 high/low `1082/1045` and
 `1071/1039`, W1-high `1472/1441`, and W1-low `1470/1446`. Artifact:
 `scratch/ps1-perf-iterate/w1high-screen-clip-preserve-entry-204-211-five-yellow-current/20260521-030142-2325843/summary.json`.
+The latest W1-high exact-entry selection pass is promoted as another
+layout-neutral work-headroom row. `compact-fgp3-clip-screen-spans.py` now has
+`--frames-mode entry|source|either`, which prevents source-frame collisions
+from widening targeted entry-index probes. The accepted exact-entry subset
+clips entries `58..61`, keeps table `dataSize`, offsets, file size, LBA, and
+the `233472` byte PS-EXE bucket fixed, drops subset logical active payload
+`17164 -> 9896`, and removes `4995` cleanup pixels plus `6052` draw pixels.
+The five-yellow canary stays exact-flat at B2-high `1341/1313`, VISITOR3
+high/low `1082/1045` and `1071/1039`, W1-high `1472/1441`, and W1-low
+`1470/1446`. Artifact:
+`scratch/ps1-perf-iterate/w1high-screen-clip-preserve-entry-index58-61-five-yellow-current/20260521-052204-3122940/summary.json`.
+The exact `58..67` and `62..67` subsets, the late `128..147` split family, and
+W1-high `{268..280}` scalar read row remain phase-negative on this baseline.
 The current broad W1-low preserve-entry-size screen-clip pass is promoted as
 work/refill headroom. It changes `63` entries with fixed physical layout,
 reduces logical active payload `755808 -> 712808`, removes `73798` cleanup
@@ -592,8 +611,8 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 
 Current allocator-era big-swing queue after closing the scalar grouped-read,
 single-frame D4, duplicate-alias, isolated trim, sequential-Setloc, wider
-VISITOR3 setup-edge, W1-high mid screen-clip, B2 `{90..102}`, and W1-low
-min-slack-2 lanes:
+VISITOR3 setup-edge, W1-high exact/mid screen-clip, W1-high `{268..280}`, B2
+`{90..102}`, and W1-low min-slack-2 lanes:
 
 1. **Generated deadline/refill owner metadata sidecar.** Emit per-scene
    append-start, frame-deadline, refill-budget, and skip-reason metadata from
@@ -637,9 +656,10 @@ min-slack-2 lanes:
     the same strict focused gate.
 15. **BUILDING2 high duplicate alias cleanup.** Continue only exact duplicate
     setup-edge aliases; do not retry the broad runtime duplicate cache.
-16. **W1-high exact entry-index screen-clip tooling.** Add entry-index-only
-    selection so subsets can exclude known traps `55`/`56`; the current script's
-    source-or-entry matching made the `58..67` probe too broad.
+16. **W1-high next cleanup-only screen-clip island.** Entry-index-only tooling
+    is now in place and `58..61` is promoted as exact-flat headroom; continue
+    only with cleanup-only or proven phase-safe subsets, not `62..67` or the
+    `128..147` split family.
 17. **W1-high `372..388` generated owner.** Raw rows save reads but need a
     no-refill-debt guard; test through metadata and hit counters.
 18. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner

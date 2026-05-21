@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~11 min read · 2927 words
+          ~11 min read · 2980 words
         </p>
 
       <hr class="rule" />
@@ -135,13 +135,18 @@ target / <code class="language-plaintext highlighter-rouge">99.7557%</code> targ
 about <code class="language-plaintext highlighter-rouge">-0.4689%</code> / <code class="language-plaintext highlighter-rouge">100.4860%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest source-headroom pass caches
-the active foreground scene ID in hot scheduler paths, keeps the five-yellow
-canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
-headroom pass trims entries <code class="language-plaintext highlighter-rouge">74</code> and <code class="language-plaintext highlighter-rouge">78..82</code>, drops active payload
-<code class="language-plaintext highlighter-rouge">548293 -&gt; 539990</code>, and keeps the five-yellow canary exact-flat while
-preserving file size and pack LBA. The prior BUILDING2-high no-decode
+measured inside the allocator budget. The latest W1-high exact-entry
+preserve-entry-size screen-clip pass trims entries <code class="language-plaintext highlighter-rouge">58..61</code>, drops subset
+logical active payload <code class="language-plaintext highlighter-rouge">17164 -&gt; 9896</code>, removes <code class="language-plaintext highlighter-rouge">4995</code> cleanup pixels plus
+<code class="language-plaintext highlighter-rouge">6052</code> draw pixels, and keeps the five-yellow canary exact-flat while
+preserving file size, entry sizes, pack LBA, and the PS-EXE bucket. The prior
+source-headroom pass caches the active foreground scene ID in hot scheduler
+paths, keeps the five-yellow canary exact-flat, and shrinks tracked foreground
+scheduler symbols while the PS-EXE bucket stays fixed. The prior
+BUILDING2-high no-decode trim-draw-tail headroom pass trims entries <code class="language-plaintext highlighter-rouge">74</code> and
+<code class="language-plaintext highlighter-rouge">78..82</code>, drops active payload <code class="language-plaintext highlighter-rouge">548293 -&gt; 539990</code>, and keeps the five-yellow
+canary exact-flat while preserving file size and pack LBA. The prior
+BUILDING2-high no-decode
 trim-draw-tail speed promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1341/1313</code>. The prior
 VISITOR3-low preserve-entry-size screen-clip promotion keeps
 VISITOR3-low at <code class="language-plaintext highlighter-rouge">1071/1039</code> while preserving entry sizes and pack LBA. The
@@ -178,7 +183,8 @@ loop reads/read time at <code class="language-plaintext highlighter-rouge">41/19
 <code class="language-plaintext highlighter-rouge">198..244</code>, extending the second slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adding <code class="language-plaintext highlighter-rouge">{149,165}</code>,
 encoding frame <code class="language-plaintext highlighter-rouge">92</code> as previous-frame D4, adding <code class="language-plaintext highlighter-rouge">{423,439}</code>, <code class="language-plaintext highlighter-rouge">{404,416}</code>,
 <code class="language-plaintext highlighter-rouge">{395,411}</code>, and retargeted <code class="language-plaintext highlighter-rouge">{411,423}</code>,
-and letting high tide use prepare-before-window scheduler ownership; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
+letting high tide use prepare-before-window scheduler ownership, and clipping
+exact entries <code class="language-plaintext highlighter-rouge">58..61</code> as layout-neutral W1-high parser/render headroom; low replaces the old <code class="language-plaintext highlighter-rouge">197..243</code> plus
 <code class="language-plaintext highlighter-rouge">410..434</code> split with a single <code class="language-plaintext highlighter-rouge">238..344</code> retained CACHE setup segment after
 low-only 48 KiB clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to

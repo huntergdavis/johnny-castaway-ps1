@@ -143,7 +143,11 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
-retargeted `{411..423}` CD-pressure work.
+retargeted `{411..423}` CD-pressure work. The newest W1-high exact-entry
+screen-clip headroom row then clips entries `58..61` only, preserving entry
+sizes, file size, LBA, and the PS-EXE bucket while removing `4995` cleanup
+pixels, `6052` draw pixels, and `7268` logical payload bytes with exact-flat
+five-yellow timing.
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
@@ -152,8 +156,8 @@ cut its active row to `2847/2820` and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should target VISITOR3 high/low data-shape or
-scheduler ownership first, then BUILDING2 high generated ownership and the
-residual WALKSTUF1 rows.
+scheduler ownership first, then BUILDING2 high generated ownership and
+generated W1-high/W1-low ownership that does not spend blocking/refill debt.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -176,8 +180,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T04:00:10` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-trimdraw74-78-82`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T05:22:04` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-screen-clip-entry58-61`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -1377,8 +1381,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T04:00:10</td>
-      <td>b2high-trimdraw74-78-82</td>
+      <td>2026-05-21T05:22:04</td>
+      <td>w1high-screen-clip-entry58-61</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2609,8 +2613,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T04:00:10</td>
-      <td>b2high-trimdraw74-78-82</td>
+      <td>2026-05-21T05:22:04</td>
+      <td>w1high-screen-clip-entry58-61</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2623,8 +2627,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T04:00:10</td>
-      <td>b2high-trimdraw74-78-82</td>
+      <td>2026-05-21T05:22:04</td>
+      <td>w1high-screen-clip-entry58-61</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2749,8 +2753,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T04:00:10</td>
-      <td>b2high-trimdraw74-78-82</td>
+      <td>2026-05-21T05:22:04</td>
+      <td>w1high-screen-clip-entry58-61</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2763,8 +2767,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T04:00:10</td>
-      <td>b2high-trimdraw74-78-82</td>
+      <td>2026-05-21T05:22:04</td>
+      <td>w1high-screen-clip-entry58-61</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

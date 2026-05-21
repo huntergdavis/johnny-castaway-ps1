@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T04:00:10` |
-| Stats version | mixed; current five-yellow timing rows are stamped `b2high-trimdraw74-78-82`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T05:22:04` |
+| Stats version | mixed; current five-yellow timing rows are stamped `w1high-screen-clip-entry58-61`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,22 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3 high previous-visible cleanup note: `VISITOR3.FG2`
+Latest promoted W1-high exact-entry preserve-entry-size screen-clip note:
+`WALKSTUF1.FG2` now clips exact entries `58..61` with entry-index-only tooling,
+keeping each changed entry's table `dataSize`, offsets, pack footprint, and
+LBA fixed. Transform summary:
+`scratch/w1high-screen-clip-entry-exact-current/split-58-61/summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/w1high-screen-clip-preserve-entry-index58-61-current/20260521-050657-3035698/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/w1high-screen-clip-preserve-entry-index58-61-five-yellow-current/20260521-052204-3122940/summary.json`.
+W1-high stays `1472/1441`, overrun `31`, blocking `43`, and refill `13`,
+while subset logical active payload drops `17164 -> 9896` and `4995` cleanup
+pixels plus `6052` draw pixels are removed. The broader `58..67`,
+`62..67`, `128..147`, `128..136`, `137..147`, and W1-high `{268..280}` read
+row probes remain closed on this baseline.
+
+Prior promoted VISITOR3 high previous-visible cleanup note: `VISITOR3.FG2`
 now clips cleanup spans to pixels that were visible in the previous parseable
 frame for every timing-safe changed entry except isolated regressing entry
 `62`. Canonical transform summary:
