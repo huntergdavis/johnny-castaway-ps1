@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T05:58:28` |
-| Stats version | mixed; current five-yellow timing rows are stamped `visitor3-low-prev-visible-preserve-entry`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T06:21:32` |
+| Stats version | mixed; current five-yellow timing rows are stamped `w1high-cleanup-only-14-147`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,24 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3-low fixed-layout previous-visible cleanup note:
+Latest promoted W1-high cleanup-only fixed-layout screen-clip note:
+`WALKSTUF1.FG2` now clips exact cleanup-only entries `14`, `23`, `43`, `45`,
+`47`, `49`, `51`, `54`, `56`, `57`, `67`, `137`, and `147`, keeping each
+changed entry's table `dataSize`, offsets, pack footprint, LBA, and the
+PS-EXE bucket fixed. Transform summary:
+`scratch/w1high-screen-clip-next-current/cleanup-only-14-147-summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/w1high-cleanup-only-14-147-current/20260521-061905-3448475/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/w1high-cleanup-only-14-147-five-yellow-current/20260521-062132-3462283/summary.json`.
+W1-high stays `1472/1441`, overrun `31`, blocking `43`, and refill `13`,
+while the changed subset drops logical active payload `29339 -> 27643`,
+removes `18160` cleanup pixels with `0` draw pixels removed, runtime restore
+bytes drop `525020 -> 510842`, max restore bytes drop `12684 -> 7712`, upload
+bytes drop `17185920 -> 17182720`, and dirty rows drop `26853 -> 26848`.
+BUILDING2 high, VISITOR3 high/low, and WALKSTUF1 low stay exact-flat.
+
+Prior promoted VISITOR3-low fixed-layout previous-visible cleanup note:
 `VIST3LOW.FG2` now clips cleanup spans to pixels visible in the previous
 parseable frame while keeping each changed entry's table `dataSize`, offsets,
 pack footprint, and LBA fixed. Transform summary:

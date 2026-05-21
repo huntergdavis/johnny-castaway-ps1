@@ -67,21 +67,29 @@ preserve-entry-size screen-clip headroom promotion, and the VISITOR3-low
 preserve-entry-size screen-clip headroom promotion, followed by the W1-high
 cleanup-only preserve-entry-size screen-clip subset and the BUILDING2-high
 no-decode trim-draw-tail subset, the W1-high exact-entry preserve-entry-size
-screen-clip subset, and the VISITOR3-low fixed-layout previous-visible cleanup
-headroom pass:
+screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
+headroom pass, and the W1-high cleanup-only fixed-layout screen-clip headroom
+pass:
 `+0.2480%` public average over target / `99.7557%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4689%` / `100.4860%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low fixed-layout previous-visible cleanup pass
-keeps file size, offsets, entry sizes, LBA, and the PS-EXE bucket fixed while
-changing `94` low-pack entries, dropping logical active payload
-`425729 -> 405835`, cleanup restore bytes `456786 -> 53456`, runtime restore
-bytes `467962 -> 64632`, max restore bytes `293544 -> 2962`, upload bytes
-`18113920 -> 17494400`, and dirty rows `28303 -> 27335` with exact-flat
-five-yellow timing. The prior W1-high exact-entry preserve-entry-size screen-clip subset
+`0` red. The latest W1-high cleanup-only fixed-layout screen-clip pass keeps
+file size, offsets, entry sizes, LBA, and the PS-EXE bucket fixed while
+clipping exact entries `14`, `23`, `43`, `45`, `47`, `49`, `51`, `54`, `56`,
+`57`, `67`, `137`, and `147`, dropping subset logical active payload
+`29339 -> 27643`, removing `18160` cleanup pixels with no draw-span removal,
+reducing runtime restore bytes `525020 -> 510842`, max restore bytes
+`12684 -> 7712`, upload bytes `17185920 -> 17182720`, and dirty rows
+`26853 -> 26848` with exact-flat five-yellow timing. The prior VISITOR3-low
+fixed-layout previous-visible cleanup pass keeps file size, offsets, entry
+sizes, LBA, and the PS-EXE bucket fixed while changing `94` low-pack entries,
+dropping logical active payload `425729 -> 405835`, cleanup restore bytes
+`456786 -> 53456`, runtime restore bytes `467962 -> 64632`, max restore bytes
+`293544 -> 2962`, upload bytes `18113920 -> 17494400`, and dirty rows
+`28303 -> 27335` with exact-flat five-yellow timing. The prior W1-high exact-entry preserve-entry-size screen-clip subset
 preserves file size, entry sizes, LBA, and the PS-EXE bucket while clipping
 entries `58..61`, dropping subset logical active payload `17164 -> 9896`,
 removing `4995` cleanup pixels and `6052` draw pixels, and keeping all five

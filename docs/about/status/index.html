@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3045 words
+          ~12 min read · 3126 words
         </p>
 
       <hr class="rule" />
@@ -135,13 +135,20 @@ target / <code class="language-plaintext highlighter-rouge">99.7557%</code> targ
 about <code class="language-plaintext highlighter-rouge">-0.4689%</code> / <code class="language-plaintext highlighter-rouge">100.4860%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low fixed-layout
-previous-visible cleanup pass keeps file size, offsets, entry sizes, pack LBA,
-and the PS-EXE bucket fixed while changing <code class="language-plaintext highlighter-rouge">94</code> low-pack entries; logical
-active payload drops <code class="language-plaintext highlighter-rouge">425729 -&gt; 405835</code>, cleanup restore bytes drop
-<code class="language-plaintext highlighter-rouge">456786 -&gt; 53456</code>, runtime restore bytes drop <code class="language-plaintext highlighter-rouge">467962 -&gt; 64632</code>, max restore
-bytes drop <code class="language-plaintext highlighter-rouge">293544 -&gt; 2962</code>, upload bytes drop <code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and
-the five-yellow canary stays exact-flat. The prior W1-high exact-entry
+measured inside the allocator budget. The latest W1-high cleanup-only
+fixed-layout screen-clip pass keeps file size, offsets, entry sizes, pack LBA,
+and the PS-EXE bucket fixed while clipping exact entries <code class="language-plaintext highlighter-rouge">14</code>, <code class="language-plaintext highlighter-rouge">23</code>, <code class="language-plaintext highlighter-rouge">43</code>,
+<code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">51</code>, <code class="language-plaintext highlighter-rouge">54</code>, <code class="language-plaintext highlighter-rouge">56</code>, <code class="language-plaintext highlighter-rouge">57</code>, <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">137</code>, and <code class="language-plaintext highlighter-rouge">147</code>; subset
+logical active payload drops <code class="language-plaintext highlighter-rouge">29339 -&gt; 27643</code>, <code class="language-plaintext highlighter-rouge">18160</code> cleanup pixels are
+removed with no draw-span removal, runtime restore bytes drop
+<code class="language-plaintext highlighter-rouge">525020 -&gt; 510842</code>, max restore bytes drop <code class="language-plaintext highlighter-rouge">12684 -&gt; 7712</code>, upload bytes drop
+<code class="language-plaintext highlighter-rouge">17185920 -&gt; 17182720</code>, and the five-yellow canary stays exact-flat. The prior
+VISITOR3-low fixed-layout previous-visible cleanup pass keeps file size,
+offsets, entry sizes, pack LBA, and the PS-EXE bucket fixed while changing
+<code class="language-plaintext highlighter-rouge">94</code> low-pack entries; logical active payload drops <code class="language-plaintext highlighter-rouge">425729 -&gt; 405835</code>,
+cleanup restore bytes drop <code class="language-plaintext highlighter-rouge">456786 -&gt; 53456</code>, runtime restore bytes drop
+<code class="language-plaintext highlighter-rouge">467962 -&gt; 64632</code>, max restore bytes drop <code class="language-plaintext highlighter-rouge">293544 -&gt; 2962</code>, upload bytes drop
+<code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and the five-yellow canary stays exact-flat. The prior W1-high exact-entry
 preserve-entry-size screen-clip pass trims entries <code class="language-plaintext highlighter-rouge">58..61</code>, drops subset
 logical active payload <code class="language-plaintext highlighter-rouge">17164 -&gt; 9896</code>, removes <code class="language-plaintext highlighter-rouge">4995</code> cleanup pixels plus
 <code class="language-plaintext highlighter-rouge">6052</code> draw pixels, and keeps the five-yellow canary exact-flat while

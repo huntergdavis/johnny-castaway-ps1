@@ -304,11 +304,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T05:58:28</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T06:21:32</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">visitor3-low-prev-visible-preserve-entry</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1high-cleanup-only-14-147</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -324,7 +324,21 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest VISITOR3-low fixed-layout cleanup track:
+<p>Latest W1-high cleanup-only fixed-layout screen-clip track:
+<code class="language-plaintext highlighter-rouge">w1high-cleanup-only-14-147-five-yellow-current</code> clips exact cleanup-only
+entries <code class="language-plaintext highlighter-rouge">14</code>, <code class="language-plaintext highlighter-rouge">23</code>, <code class="language-plaintext highlighter-rouge">43</code>, <code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">51</code>, <code class="language-plaintext highlighter-rouge">54</code>, <code class="language-plaintext highlighter-rouge">56</code>, <code class="language-plaintext highlighter-rouge">57</code>, <code class="language-plaintext highlighter-rouge">67</code>,
+<code class="language-plaintext highlighter-rouge">137</code>, and <code class="language-plaintext highlighter-rouge">147</code> in <code class="language-plaintext highlighter-rouge">WALKSTUF1.FG2</code> while preserving each changed entry’s
+table <code class="language-plaintext highlighter-rouge">dataSize</code>, offsets, file size, pack LBA, and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE
+bucket. W1-high stays exact-flat at <code class="language-plaintext highlighter-rouge">1472/1441</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking <code class="language-plaintext highlighter-rouge">43</code>,
+and refill <code class="language-plaintext highlighter-rouge">13</code>, while the changed subset drops logical active payload
+<code class="language-plaintext highlighter-rouge">29339 -&gt; 27643</code>, removes <code class="language-plaintext highlighter-rouge">18160</code> cleanup pixels with <code class="language-plaintext highlighter-rouge">0</code> draw pixels removed,
+runtime restore bytes drop <code class="language-plaintext highlighter-rouge">525020 -&gt; 510842</code>, max restore bytes drop
+<code class="language-plaintext highlighter-rouge">12684 -&gt; 7712</code>, upload bytes drop <code class="language-plaintext highlighter-rouge">17185920 -&gt; 17182720</code>, and dirty rows drop
+<code class="language-plaintext highlighter-rouge">26853 -&gt; 26848</code>. BUILDING2 high, VISITOR3 high/low, and WALKSTUF1 low stay
+flat in the canonical five-yellow canary. This banks restore/upload headroom,
+not a VBlank speed win.</p>
+
+<p>Prior VISITOR3-low fixed-layout cleanup track:
 <code class="language-plaintext highlighter-rouge">visitor3-low-prev-visible-preserve-five-yellow-current</code> applies
 previous-visible cleanup compaction to <code class="language-plaintext highlighter-rouge">VIST3LOW.FG2</code> while preserving every
 changed entry’s table <code class="language-plaintext highlighter-rouge">dataSize</code>, offsets, file size, and LBA. VISITOR3-low
@@ -1528,8 +1542,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:58:28</td>
-      <td>visitor3-low-prev-visible-preserve-entry</td>
+      <td>2026-05-21T06:21:32</td>
+      <td>w1high-cleanup-only-14-147</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2760,8 +2774,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:58:28</td>
-      <td>visitor3-low-prev-visible-preserve-entry</td>
+      <td>2026-05-21T06:21:32</td>
+      <td>w1high-cleanup-only-14-147</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2774,8 +2788,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T05:58:28</td>
-      <td>visitor3-low-prev-visible-preserve-entry</td>
+      <td>2026-05-21T06:21:32</td>
+      <td>w1high-cleanup-only-14-147</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2900,8 +2914,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:58:28</td>
-      <td>visitor3-low-prev-visible-preserve-entry</td>
+      <td>2026-05-21T06:21:32</td>
+      <td>w1high-cleanup-only-14-147</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2914,8 +2928,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T05:58:28</td>
-      <td>visitor3-low-prev-visible-preserve-entry</td>
+      <td>2026-05-21T06:21:32</td>
+      <td>w1high-cleanup-only-14-147</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

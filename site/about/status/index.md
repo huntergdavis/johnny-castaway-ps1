@@ -28,13 +28,20 @@ target / `99.7557%` target speed; the raw signed optimization matrix is
 about `-0.4689%` / `100.4860%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low fixed-layout
-previous-visible cleanup pass keeps file size, offsets, entry sizes, pack LBA,
-and the PS-EXE bucket fixed while changing `94` low-pack entries; logical
-active payload drops `425729 -> 405835`, cleanup restore bytes drop
-`456786 -> 53456`, runtime restore bytes drop `467962 -> 64632`, max restore
-bytes drop `293544 -> 2962`, upload bytes drop `18113920 -> 17494400`, and
-the five-yellow canary stays exact-flat. The prior W1-high exact-entry
+measured inside the allocator budget. The latest W1-high cleanup-only
+fixed-layout screen-clip pass keeps file size, offsets, entry sizes, pack LBA,
+and the PS-EXE bucket fixed while clipping exact entries `14`, `23`, `43`,
+`45`, `47`, `49`, `51`, `54`, `56`, `57`, `67`, `137`, and `147`; subset
+logical active payload drops `29339 -> 27643`, `18160` cleanup pixels are
+removed with no draw-span removal, runtime restore bytes drop
+`525020 -> 510842`, max restore bytes drop `12684 -> 7712`, upload bytes drop
+`17185920 -> 17182720`, and the five-yellow canary stays exact-flat. The prior
+VISITOR3-low fixed-layout previous-visible cleanup pass keeps file size,
+offsets, entry sizes, pack LBA, and the PS-EXE bucket fixed while changing
+`94` low-pack entries; logical active payload drops `425729 -> 405835`,
+cleanup restore bytes drop `456786 -> 53456`, runtime restore bytes drop
+`467962 -> 64632`, max restore bytes drop `293544 -> 2962`, upload bytes drop
+`18113920 -> 17494400`, and the five-yellow canary stays exact-flat. The prior W1-high exact-entry
 preserve-entry-size screen-clip pass trims entries `58..61`, drops subset
 logical active payload `17164 -> 9896`, removes `4995` cleanup pixels plus
 `6052` draw pixels, and keeps the five-yellow canary exact-flat while
