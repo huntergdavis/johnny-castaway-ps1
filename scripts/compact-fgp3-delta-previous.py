@@ -113,6 +113,50 @@ def encode_delta(base: bytes, target: bytes, min_match: int) -> tuple[bytes, dic
     return bytes(out), stats
 
 
+def decode_delta_payload(encoded: bytes, base: bytes) -> bytes:
+    if (
+        len(encoded) < 8 or
+        struct.unpack_from("<H", encoded, 0)[0] != DELTA_SENTINEL or
+        encoded[2] != ord("D") or
+        encoded[3] != ord("4")
+    ):
+        return encoded
+
+    expanded_size, command_count = struct.unpack_from("<HH", encoded, 4)
+    read_offset = 8
+    out = bytearray()
+    for _ in range(command_count):
+        if read_offset >= len(encoded):
+            raise ValueError("delta command extends beyond payload")
+        opcode = encoded[read_offset]
+        read_offset += 1
+        if opcode == CMD_COPY:
+            if read_offset + 4 > len(encoded):
+                raise ValueError("delta copy command truncated")
+            base_offset, length = struct.unpack_from("<HH", encoded, read_offset)
+            read_offset += 4
+            if base_offset + length > len(base):
+                raise ValueError("delta copy range extends beyond base")
+            out += base[base_offset:base_offset + length]
+        elif opcode == CMD_LITERAL:
+            if read_offset + 2 > len(encoded):
+                raise ValueError("delta literal command truncated")
+            (length,) = struct.unpack_from("<H", encoded, read_offset)
+            read_offset += 2
+            if read_offset + length > len(encoded):
+                raise ValueError("delta literal range extends beyond payload")
+            out += encoded[read_offset:read_offset + length]
+            read_offset += length
+        else:
+            raise ValueError(f"unknown delta opcode: {opcode}")
+
+    if len(out) != expanded_size:
+        raise ValueError(
+            f"delta expanded size mismatch: {len(out)} != {expanded_size}"
+        )
+    return bytes(out)
+
+
 def parse_index_offset(raw: str) -> tuple[int, int]:
     try:
         index_raw, offset_raw = raw.split(":", 1)
@@ -197,23 +241,37 @@ def convert(args: argparse.Namespace) -> dict:
         index: data[entry.data_offset:entry.data_offset + entry.data_size]
         for index, entry in enumerate(entries)
     }
+    decoded_payloads: dict[int, bytes] = {}
+    for index in range(frame_count):
+        if index == 0:
+            decoded_payloads[index] = payloads[index]
+        else:
+            try:
+                decoded_payloads[index] = decode_delta_payload(
+                    payloads[index], decoded_payloads[index - 1]
+                )
+            except ValueError as exc:
+                raise SystemExit(f"could not decode frame {index}: {exc}") from exc
 
     delta_stats: dict[str, dict] = {}
     for index in args.delta_frame:
         if index <= 0 or index >= frame_count:
             raise SystemExit(f"delta frame out of range: {index}")
-        base = payloads[index - 1]
-        target = payloads[index]
+        base = decoded_payloads[index - 1]
+        target = decoded_payloads[index]
+        old_payload_size = len(payloads[index])
         encoded, stats = encode_delta(base, target, args.min_match)
-        if len(encoded) >= len(target) and not args.allow_larger:
+        if len(encoded) >= old_payload_size and not args.allow_larger:
             raise SystemExit(
-                f"delta frame {index} is not smaller: {len(encoded)} >= {len(target)}"
+                f"delta frame {index} is not smaller: {len(encoded)} >= {old_payload_size}"
             )
         payloads[index] = encoded
         entries[index].data_size = len(encoded)
+        decoded_payloads[index] = target
         delta_stats[str(index)] = stats | {
-            "old_bytes": len(target),
-            "saved_bytes": len(target) - len(encoded),
+            "old_bytes": old_payload_size,
+            "saved_bytes": old_payload_size - len(encoded),
+            "expanded_old_bytes": len(target),
             "base_frame": index - 1,
         }
 

@@ -277,6 +277,15 @@ PS-EXE bucket fixed, but forcing only frame `134` through on-demand decode still
 regresses VISITOR3 low to `1372/1068/1039`, overrun `29`, blocking `78`, reads
 `19`, and grows `foregroundPilotPlay` by `36` bytes. The isolated terminal D4
 byte savings are not enough without a scheduler-neutral decode path.
+Frame `136` is now closed as a standalone terminal D4 too, after fixing
+`compact-fgp3-delta-previous.py` to encode against decoded D4 bases instead of
+the compressed previous payload. The corrected frame `136` D4 saves `2824`
+stored bytes (`16890 -> 14066`) and is pixel-valid, but gap placement regresses
+VISITOR3-low to `1343/1070/1039`, overrun `31`, blocking `69`, reads/due
+`15/12`, while in-place D4 is worse at `1345/1072/1039`, overrun `33`,
+blocking `71`. Keep the tool fix; do not promote frame `136` without a
+row-reference/setup-dictionary format that preserves the current `14/11`
+read/due shape.
 The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
@@ -787,8 +796,9 @@ generated deadline/refill metadata or a larger fixed-layout data-shape swing.
    raw copies, hot frame-specific direct-stage predicates, min-slack retunes, or
    hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
-   with a staged-safe row-reference or setup-dictionary payload that avoids hot
-   previous-frame decode predicates.
+   with a staged-safe row-reference or setup-dictionary payload that preserves
+   read/due cadence; standalone frame `133`, `134`, and `136` D4 variants are
+   now closed.
 7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
    explicit due/blocking/refill budgets rather than another static low-tide
    table.
