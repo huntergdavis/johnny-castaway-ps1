@@ -421,7 +421,7 @@ rows, promoting the VISITOR3 high 80 KiB clean-relief window, setup-edge `40..47
 B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
 `141`/`142`/`38` setup-alias cleanups, and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
 
-1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, and raw `{287..311}` was exact-flat.
+1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, raw `{287..311}` was exact-flat, and the prepared-frame-idle generated-owner probe crossed the PS-EXE bucket while regressing loop/blocking/refill.
 2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident and has per-frame deadline/refill ownership; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, full playback-order repack, setup-preserving repack, tail-only repack, the `3..43` setup-edge extension, and the paired `38`/`41` setup-edge alias are closed. Single entry38 is now banked exact-flat.
 3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
 4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence, restore-minus-current is now a no-op, and local-LZ on entries `89..91` regressed despite sector savings.
@@ -447,6 +447,21 @@ B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
 24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
 25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
 26. If clean-rect restore scanning is revisited, make it generated/pack-owned or code-size-neutral first; the runtime row-owner cache crossed the PS-EXE sector bucket and regressed B2-high before showing CPU savings.
+
+Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
+B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,
+`{255..271}`, and `{287..311}` fired only while a prepared frame was already
+waiting and no immediate payload read was needed. This was intentionally
+different from static groups and visible due fills, but it still failed the
+focused gate: B2-high regressed `1621/1347/1313 -> 1625/1352/1309`, overrun
+`34 -> 43`, blocking `39 -> 45`, hidden refill `16 -> 20`, while loop reads
+stayed `40`. The helper also shifted `BUILDING2.FG2` LBA `6189 -> 6190` and
+crossed the PS-EXE sector bucket `233472 -> 235520`. Artifact:
+`scratch/ps1-perf-iterate/building2-high-owned-append-current/20260520-173726-3315756/summary.json`.
+Close prepared-frame-idle runtime ownership for B2-high. The remaining
+generated path must be frame-index/deadline/refill-budget metadata emitted
+outside the hot foreground scheduler, or B2-high must first get a pack/render
+reduction that creates real slack before the owner row fires.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
