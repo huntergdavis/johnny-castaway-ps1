@@ -523,8 +523,13 @@ W1-high `1808/1472/1441 -> 1813/1477/1441`, overrun `31 -> 36`, blocking
 `43 -> 47`, reads/due `41/7 -> 42/8`, with only refill improving `13 -> 11`.
 Artifact:
 `scratch/ps1-perf-iterate/walkstuf1-high-d4-frame183-current/20260520-181306-3518065/summary.json`.
-Continue the split with frame `185`; do not recombine W1-high D4 deltas until a
-single frame produces a strict win.
+Frame `185` closes the split: it shrinks `4483 -> 2626` bytes, but regresses
+W1-high `1808/1472/1441 -> 1811/1475/1441`, overrun `31 -> 34`, blocking
+`43 -> 45`, reads/due `41/7 -> 42/8`, with only refill improving `13 -> 11`.
+Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-d4-frame185-current/20260520-181557-3534550/summary.json`.
+Close hand-added W1-high D4 for this cluster; move to no-decode payload shrink,
+clean/upload/restore reduction, or generated deadline ownership.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
