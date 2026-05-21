@@ -433,7 +433,11 @@ raw and slack8 saved reads but regressed target/refill/visible blocking, while
 slack32 was exact-flat/inert. The follow-up `153..177` retained-group probe is
 also closed:
 raw and slack8 improved loop/blocking but regressed hidden refill and target,
-while slack32 was exact-flat/inert. The smaller `147..171`, `153..169`,
+while slack32 was exact-flat/inert. The follow-up `153..177` fresh metadata
+owner after the scene-ID code-headroom pass is closed too: it improved loop
+`1470 -> 1468` but tightened target `1446 -> 1444`, regressed blocking
+`32 -> 33`, regressed refill `4 -> 8`, and grew `fgRuntimeFillWindowForEntry`
+by `40` bytes. The smaller `147..171`, `153..169`,
 `142..154`, `136..148`, and `147..163` rows are now closed too. Raw/static
 forms either regressed target/refill/visible blocking or went exact-flat under
 high slack guards, so the W1-low static retained-read table lane is exhausted.
