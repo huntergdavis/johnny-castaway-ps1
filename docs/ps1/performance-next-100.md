@@ -277,6 +277,14 @@ CSV and read-candidate matrix. The refreshed queue is therefore ordered around
 custom VISITOR3 terminal data shape / generated deadlines, BUILDING2
 frame-deadline data-shape or render reduction, and WALKSTUF1 no-decode
 canonicalization or generated owner work before any more scalar range retries.
+The latest VISITOR3-low retained-setup tail swing is also closed. Extending the
+accepted `206..232` segment to `206..241` would cover the frame133 terminal
+payload but exhausts TRANSIENT before `JCPERF2` (`req=176128`, `have=168956`).
+The memory-neutral swap to `215..241` completed but regressed low tide from
+`1369/1065/1039` to `1371/1067/1038`, overrun `26 -> 29`, blocking
+`75 -> 79`, and did not improve any key metric. Keep the accepted `206..232`
+coverage; VISITOR3 low now needs generated deadline/refill ownership or a
+custom terminal row-reference shape, not another retained setup slide.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
@@ -2861,7 +2869,7 @@ by itself.
 | 65 | WALKSTUF1 high | Reuse the W1-low generated-owner design for the remaining high `74..86`, `84..108`/`92..108`, `352..368`, and late suffix pockets instead of adding more hot C read rows. | Must keep `foregroundPilotPlay` size and addresses within the hot-symbol drift budget. |
 | 66 | WALKSTUF1 high | Done by `walkstuf1-high-prepare-first-current`: selective prepare-before-window ownership for W1-high only, reusing the accepted W1-low ordering shape without applying it to B2/V3. | Promoted despite loop/target both shifting `1471/1440 -> 1472/1441` because overrun/refill stayed flat at `31/13`, blocking improved `56 -> 43`, due misses improved `10 -> 7`, and the five-yellow canary stayed flat outside W1-high. |
 | 67 | WALKSTUF1 high | Pack-side no-decode trim around frame92's neighbors now that frame92 D4 is accepted. | Host proof must keep the D4 predicate table unchanged and save at least one sector boundary. |
-| 68 | VISITOR3 low | Replace static low append rows with generated per-frame deadlines that preserve accepted setup clusters `150..177`, `206..232`, and `281..305`. Whole-pack frame-order relocation and `18..32 KiB` clean-relief window sweeps are now closed on the current baseline. | Dry-run log must show fewer due reads without changing setup residency, growing the clean-relief window, or adding hidden refill. |
+| 68 | VISITOR3 low | Replace static low append rows with generated per-frame deadlines that preserve accepted setup clusters `150..177`, `206..232`, and `281..305`. Whole-pack frame-order relocation, `18..32 KiB` clean-relief window sweeps, and retained tail slides to `206..241` / `215..241` are now closed on the current baseline. | Dry-run log must show fewer due reads without changing setup residency, growing the clean-relief window, or adding hidden refill. |
 | 69 | VISITOR3 low | Build a custom row-reference codec using the paid `206..232` setup segment as a dictionary for frames `134..136`. | Pixel replay must be exact and command count must be below failed D4 variants. |
 | 70 | VISITOR3 low | Closed by `visitor3-low-align135-136-current` and `visitor3-low-align134-136-current`: simple no-decode terminal sector alignment changed modeled read shape but did not improve timing, and the wider alignment regressed loop/blocking. | Do not retry byte-for-byte terminal boundary moves around `248..272`; move this pocket to custom row-reference data shape or generated deadline ownership. |
 | 71 | VISITOR3 high | Create a generated terminal-frame deadline sidecar for `133..139`; scalar high append rows are closed. | Require high blocking `<45`, refill `<=3`, and due `<=3` before canaries. |
