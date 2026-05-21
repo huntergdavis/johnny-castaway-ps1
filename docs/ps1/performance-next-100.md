@@ -56,7 +56,8 @@ followed by the WALKSTUF1 low entry65, entry39, entry55, entry56, entry59, entry
 B2-high setup-resident duplicate alias for entries `141` and `142`,
 W1-high prepare-before-window scheduler ownership, and the B2-high entry38
 setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47`
-speed row plus `42..49` same-speed CD-pressure slide:
+speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
+`160..176`, and the hot foreground scene-ID code-headroom pass:
 `+0.2371%` public average over target / `99.7659%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4798%` / `100.4962%`. Since the compact full-matrix baseline was
@@ -514,7 +515,18 @@ single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
    identity before spending emulator time on another local range. Hand-authored
    tables are demoted unless this attribution proves a new ownership class.
 
-Latest promoted code-headroom row: lowering `GR_UPLOAD_BAND_MERGE_GAP` from
+Latest promoted code-headroom row: caching the active foreground scene ID
+removes repeated hot-path scene-name compares from the scheduler while keeping
+the five-yellow canary exact-flat. The proof
+`scratch/ps1-perf-iterate/hot-scene-id-five-yellow-current/20260520-215337-573156/summary.json`
+keeps B2-high, VISITOR3 high/low, and WALKSTUF1 high/low timing, CD pressure,
+pack LBAs, and the `233472` byte PS-EXE bucket fixed, while shrinking
+`foregroundPilotPlay` by `84` bytes, `fgRuntimeLoadSceneFrame` by `52`,
+`fgRuntimeFillWindowForEntry` by `24`, and `fgRuntimeTryPrefetchWindow` by
+`12`. This is not a speed win, but it is now the hot-code headroom baseline for
+generated-owner and custom data-shape work.
+
+Prior promoted code-headroom row: lowering `GR_UPLOAD_BAND_MERGE_GAP` from
 `8` to `0` keeps the focused W1-high/low proof and five-yellow canary
 exact-flat while shrinking `grDrawBackground` by `36` bytes and leaving the
 PS-EXE bucket and pack LBAs fixed. This is not counted as a speed win, but it

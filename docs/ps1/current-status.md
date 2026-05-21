@@ -9,9 +9,10 @@ the WALKSTUF1 low setup/`{113..129}` CD-pressure promotion, the same-speed
 promotion plus `{423..439}`, `{404..416}`, `{395..411}`, and retargeted `{411..423}`, W1-high prepare-first scheduler
 ownership, the VISITOR3-high 80 KiB clean-relief window
 promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus `{185..197}`
-same-speed CD-pressure row; all 63 scenes
+same-speed CD-pressure row, W1-low fresh-owner `160..176`, and the hot
+foreground scene-ID source-headroom pass; all 63 scenes
 remain validated, all 126 high/low rows are timing-bearing, and the public
-headless battle card is `+0.2387%` over target / `99.7644%` target speed).
+headless battle card is `+0.2371%` over target / `99.7659%` target speed).
 
 ## Overall
 
@@ -318,7 +319,8 @@ main setup residency to `244..350`, keeps a split `179..185` edge, and adds
 `{113,129}` to hold `1470/1446` while improving scene `1812 -> 1809`,
 blocking/refill `34/6 -> 33/5`, and reads/read time `30/159 -> 26/150`; the
 same-speed `{355,371}` follow-up keeps timing flat and lowers reads/read time
-again to `24/146`.
+again to `24/146`; the fresh-owner `160..176` pocket then keeps speed and read
+time flat while lowering blocking/refill to `32/4`.
 Setup stays inside the canary allowance. WALKSTUF1 high keeps the `198..244`
 setup slice and retargets the second retained slice from `411..435` to
 `286..344`, adds `{149,165}`, encodes frame `92` as D4, and now adds
@@ -357,12 +359,14 @@ same-speed `{355..371}` read-work row, the W1-high frame56/`{178..194}`
 CD-pressure promotion plus `{423..439}`, `{404..416}`, `{395..411}`, and retargeted `{411..423}`, W1-high prepare-first
 scheduler ownership, the VISITOR3-high 80 KiB clean-relief
 window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
-`{185..197}` and `{158..174}` same-speed CD work, the public battle card is now `+0.2387%` over target / `99.7644%`
-target speed; the raw signed optimization rollup is about `-0.4782%` /
-`100.4948%`.
+`{185..197}` and `{158..174}` same-speed CD work, W1-low fresh-owner
+`160..176`, and the hot foreground scene-ID cache source-headroom pass, the
+public battle card is now `+0.2371%` over target / `99.7659%`
+target speed; the raw signed optimization rollup is about `-0.4798%` /
+`100.4962%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.16`
-public over-target points and added about `12.66` public target-speed points.
+public over-target points and added about `12.67` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -494,7 +498,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2387%` / `99.7644%` with `121` green, `5` yellow, and `0` orange rows;
+  The public battle card is `+0.2371%` / `99.7659%` with `121` green, `5` yellow, and `0` orange rows;
   BUILDING2 high currently measures `1347/1313` with blocking/read/due `39/40/5`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now drops runtime rows/spans/pixels
   `18144/110717/468636 -> 18030/105645/446246` and active payload `674798 -> 663590`, WALKSTUF1 high is

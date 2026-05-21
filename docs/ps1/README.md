@@ -36,7 +36,10 @@ same-speed `{395..411}` and retargeted `{411..423}` CD work, and WALKSTUF1 low `
 `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 `179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
-read-work. MARY1/2/3 and SUZY1/2 are
+read-work. The latest code-headroom pass caches the active foreground scene ID
+once per scene start, keeping the five yellow rows exact-flat while shrinking
+the tracked hot foreground scheduler symbols by `172` bytes in the same
+`233472` byte PS-EXE bucket. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
 only an asset/reference naming source.
 
@@ -62,8 +65,8 @@ segment, adds the `{91,107}` first-boundary read group, pays the small
 pack, adds `{378..390}`, then retargets setup to `244..350` plus split
 `179..185` with `{113..129}` and adds `{355..371}` as same-speed read-work.
 Low now measures `1470/1446` at `98.367%` target speed with overrun `24`,
-blocking/refill `33/5`, loop reads/read time `24/146`, and due `4`, while
-active payload is `782698` without changing pack size or sectors.
+blocking/refill `32/4`, loop reads/read time `24/146`, and due `4`, while
+active payload is `764658` without changing pack size or sectors.
 
 The latest BUILDING2 high allocator-era baseline keeps retained groups
 `60..72`, `206..230`, `226..242`, `83..95`, `{158..174}`, guarded `271..287`,

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance battle card — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-20" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-21" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -212,8 +212,10 @@ widens high to an 80 KiB knee while moving low tide further into yellow with a
 VISITOR3 high pass moves frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw into the retained <code class="language-plaintext highlighter-rouge">228..262</code>
 gap and caps tight speculative refills at <code class="language-plaintext highlighter-rouge">56 KiB</code>, improving high to
 <code class="language-plaintext highlighter-rouge">1075/1043</code> without hidden-refill debt; the high-only clean-strip retune caps
-clean slices at <code class="language-plaintext highlighter-rouge">64 KiB</code>, and the newest clean-relief window retune widens
-high from <code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>, then pays the early retained setup edge <code class="language-plaintext highlighter-rouge">40..47</code> after merging terminal setup coverage into <code class="language-plaintext highlighter-rouge">203..262</code>, to move the row to <code class="language-plaintext highlighter-rouge">1070/1046</code>.
+clean slices at <code class="language-plaintext highlighter-rouge">64 KiB</code>, the clean-relief window retune widens high from
+<code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>, then the setup-edge pass pays early <code class="language-plaintext highlighter-rouge">40..47</code> and the
+latest same-speed slide moves that edge to <code class="language-plaintext highlighter-rouge">42..49</code>, keeping <code class="language-plaintext highlighter-rouge">1070/1046</code>
+while reducing loop reads/read time <code class="language-plaintext highlighter-rouge">5/61 -&gt; 4/59</code>.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, and <code class="language-plaintext highlighter-rouge">315..327</code> read
 groups plus a same-speed entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> payload trim, WALKSTUF1
@@ -294,11 +296,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; VISITOR3-high setup-edge canary <code class="language-plaintext highlighter-rouge">2026-05-20T15:25:44</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; scene-ID code-headroom canary <code class="language-plaintext highlighter-rouge">2026-05-20T21:53:37</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; the current five-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3high-setup40-47</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3high-setup42-49</code> plus W1-low <code class="language-plaintext highlighter-rouge">w1low-owner160-176</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -313,6 +315,15 @@ preserving pack LBA/sectors and the <code class="language-plaintext highlighter-
 active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 112093</code>. Both tides are now green at <code class="language-plaintext highlighter-rouge">1948/1945</code>,
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
+
+<p>Latest source-headroom track: <code class="language-plaintext highlighter-rouge">hot-scene-id-five-yellow-current</code> caches the
+active foreground scene ID once per scene start and replaces repeated hot
+scheduler scene-name compares with byte ID checks. The five-yellow canary stays
+exact-flat, pack LBAs and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket stay fixed, and hot
+tracked foreground symbols shrink (<code class="language-plaintext highlighter-rouge">foregroundPilotPlay -84</code>,
+<code class="language-plaintext highlighter-rouge">fgRuntimeLoadSceneFrame -52</code>, <code class="language-plaintext highlighter-rouge">fgRuntimeFillWindowForEntry -24</code>,
+<code class="language-plaintext highlighter-rouge">fgRuntimeTryPrefetchWindow -12</code>). This does not change the public speed
+rollup; it banks code headroom for generated-owner and custom data-shape work.</p>
 
 <p>Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
@@ -392,8 +403,8 @@ keeps the accepted frame132 payload baseline, <code class="language-plaintext hi
 <code class="language-plaintext highlighter-rouge">244..350</code>/<code class="language-plaintext highlighter-rouge">179..185</code> setup retarget plus <code class="language-plaintext highlighter-rouge">{113..129}</code>, then adds
 <code class="language-plaintext highlighter-rouge">{355..371}</code> as same-speed work-volume. It keeps file size/LBA/sectors fixed
 and holds target speed at <code class="language-plaintext highlighter-rouge">98.367%</code> with scene/loop/target <code class="language-plaintext highlighter-rouge">1809/1470/1446</code>,
-overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill <code class="language-plaintext highlighter-rouge">33/5</code>, due <code class="language-plaintext highlighter-rouge">4</code>, and loop reads/read time
-<code class="language-plaintext highlighter-rouge">26/150 -&gt; 24/147</code>. The prior frame132 payload trim moved
+overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill <code class="language-plaintext highlighter-rouge">32/4</code>, due <code class="language-plaintext highlighter-rouge">4</code>, and loop reads/read time
+<code class="language-plaintext highlighter-rouge">24/146</code> after the fresh-owner <code class="language-plaintext highlighter-rouge">160..176</code> follow-up. The prior frame132 payload trim moved
 <code class="language-plaintext highlighter-rouge">1473/1447 -&gt; 1470/1445</code>; the <code class="language-plaintext highlighter-rouge">{378..390}</code> speed row moved
 <code class="language-plaintext highlighter-rouge">1470/1445 -&gt; 1470/1446</code>, overrun <code class="language-plaintext highlighter-rouge">25 -&gt; 24</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">35/7 -&gt; 34/6</code>, and reads/read time <code class="language-plaintext highlighter-rouge">31/163 -&gt; 30/159</code>. The current
@@ -423,11 +434,12 @@ through relative sector <code class="language-plaintext highlighter-rouge">229</
 into that paid setup gap, then adds a third high retained setup segment at
 relative sectors <code class="language-plaintext highlighter-rouge">228..262</code>, then moves high frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw into
 that retained gap with a <code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill cap, merges terminal setup
-coverage into <code class="language-plaintext highlighter-rouge">203..262</code>, and pays the early retained setup edge <code class="language-plaintext highlighter-rouge">40..47</code>.
+coverage into <code class="language-plaintext highlighter-rouge">203..262</code>, pays the early retained setup edge <code class="language-plaintext highlighter-rouge">40..47</code>, then
+slides that edge to <code class="language-plaintext highlighter-rouge">42..49</code> as same-speed CD-pressure work.
 High improves <code class="language-plaintext highlighter-rouge">1232/1033 -&gt; 1070/1046</code>, overrun <code class="language-plaintext highlighter-rouge">199 -&gt; 24</code>, blocking
-<code class="language-plaintext highlighter-rouge">478 -&gt; 35</code>, reads <code class="language-plaintext highlighter-rouge">137 -&gt; 5</code>, and due <code class="language-plaintext highlighter-rouge">137 -&gt; 2</code>; the latest high-only
+<code class="language-plaintext highlighter-rouge">478 -&gt; 35</code>, reads <code class="language-plaintext highlighter-rouge">137 -&gt; 4</code>, and due <code class="language-plaintext highlighter-rouge">137 -&gt; 2</code>; the latest high-only
 follow-up caps clean strips at <code class="language-plaintext highlighter-rouge">64 KiB</code>, widens the clean-relief window from
-<code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>, and adds the <code class="language-plaintext highlighter-rouge">40..47</code> setup edge, and the latest low-tide follow-up adds a third
+<code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>, adds the <code class="language-plaintext highlighter-rouge">40..47</code> setup edge, slides it to <code class="language-plaintext highlighter-rouge">42..49</code>, and the latest low-tide follow-up adds a third
 retained setup segment for sectors <code class="language-plaintext highlighter-rouge">206..230</code>, then extends it to <code class="language-plaintext highlighter-rouge">206..232</code>
 and relocates frame <code class="language-plaintext highlighter-rouge">138</code> raw into the paid gap, improving low
 <code class="language-plaintext highlighter-rouge">1088/1038 -&gt; 1065/1039</code>, overrun <code class="language-plaintext highlighter-rouge">50 -&gt; 26</code>, blocking <code class="language-plaintext highlighter-rouge">104 -&gt; 75</code>,
@@ -759,7 +771,7 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The current
-five-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3high-setup40-47</code>;
+five-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3high-setup42-49</code>;
 prior BUILDING2 high source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
@@ -1398,8 +1410,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.6%</td>
       <td class="spd-yellow">97.5%</td>
       <td>1347/1313</td>
@@ -2630,8 +2642,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.8%</td>
       <td>1070/1046</td>
@@ -2644,8 +2656,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.5%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1065/1039</td>
@@ -2770,8 +2782,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T17:14:20</td>
+      <td>v3high-setup42-49</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2784,13 +2796,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T15:25:44</td>
-      <td>v3high-setup40-47</td>
+      <td>2026-05-20T20:06:39</td>
+      <td>w1low-owner160-176</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
-      <td>33</td>
-      <td>5</td>
+      <td>32</td>
+      <td>4</td>
       <td>4</td>
       <td></td>
     </tr>

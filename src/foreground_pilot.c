@@ -319,7 +319,18 @@ enum {
         if (gFgRuntime.active && gFgRuntime.mode == FG_RUNTIME_SCENE_PACK) \
             gFgRuntime.frameRendered = 1; \
     } while (0)
+
+enum {
+    FG_SCENE_UNKNOWN = 0,
+    FG_SCENE_BUILDING2,
+    FG_SCENE_BUILDING6,
+    FG_SCENE_MARY3,
+    FG_SCENE_VISITOR3,
+    FG_SCENE_WALKSTUF1
+};
+
 static struct TFgPilotRuntime gFgRuntime = {0};
+static uint8 gFgRuntimeSceneId = FG_SCENE_UNKNOWN;
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
 #endif
@@ -353,6 +364,7 @@ static void fgReleaseStreamBuffers(void);
 static void fgReleaseStreamBuffersHard(void);
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void);
 static void fgInitVisiblePipeline(void);
+static uint8 fgSceneIdForName(const char *sceneName);
 
 /* Public accessor for walk_pilot — returns the slot holding
  * BACKGRND.PSB sprites (used for behind-tree trunk + leaf cover-up
@@ -921,14 +933,14 @@ fgDecodeLocalLzPayload(uint8 *data,
 
 static int fgRuntimeUsesPreviousFrameDelta(uint16 frameIndex)
 {
-    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3")) {
+    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3) {
         if (islandState.lowTide)
             return frameIndex == 129 || frameIndex == 132 || frameIndex == 137;
         return frameIndex == 132 || frameIndex == 137;
     }
-    if (!islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "walkstuf1"))
+    if (!islandState.lowTide && gFgRuntimeSceneId == FG_SCENE_WALKSTUF1)
         return frameIndex == 92;
-    if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
+    if (islandState.lowTide && gFgRuntimeSceneId == FG_SCENE_BUILDING2)
         return frameIndex == 71 || frameIndex == 77;
     return 0;
 }
@@ -1136,17 +1148,32 @@ static int fgSceneEquals(const char *a, const char *b)
     return a && b && strcmp(a, b) == 0;
 }
 
+static uint8 fgSceneIdForName(const char *sceneName)
+{
+    if (fgSceneEquals(sceneName, "building2"))
+        return FG_SCENE_BUILDING2;
+    if (fgSceneEquals(sceneName, "building6"))
+        return FG_SCENE_BUILDING6;
+    if (fgSceneEquals(sceneName, "mary3"))
+        return FG_SCENE_MARY3;
+    if (fgSceneEquals(sceneName, "visitor3"))
+        return FG_SCENE_VISITOR3;
+    if (fgSceneEquals(sceneName, "walkstuf1"))
+        return FG_SCENE_WALKSTUF1;
+    return FG_SCENE_UNKNOWN;
+}
+
 static uint16 fgRuntimeWindowMinSlackVBlanks(void)
 {
-    if (fgSceneEquals(gFgRuntime.sceneName, "mary3"))
+    if (gFgRuntimeSceneId == FG_SCENE_MARY3)
         return FG_MARY3_WINDOW_MIN_SLACK_VBLANKS;
-    if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
+    if (islandState.lowTide && gFgRuntimeSceneId == FG_SCENE_BUILDING2)
         return FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS;
-    if (fgSceneEquals(gFgRuntime.sceneName, "building6"))
+    if (gFgRuntimeSceneId == FG_SCENE_BUILDING6)
         return FG_BUILDING6_WINDOW_MIN_SLACK_VBLANKS;
-    if (!islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
+    if (!islandState.lowTide && gFgRuntimeSceneId == FG_SCENE_VISITOR3)
         return FG_VISITOR3_HIGH_WINDOW_MIN_SLACK_VBLANKS;
-    if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "visitor3"))
+    if (islandState.lowTide && gFgRuntimeSceneId == FG_SCENE_VISITOR3)
         return FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS;
     return FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;
 }
@@ -1174,7 +1201,7 @@ static int fgRuntimeShouldDirectStageEntry(uint16 frameIndex,
      * direct stage can take 4 VBlanks. Pull it into the earlier slack slot. */
     if (!islandState.lowTide &&
         frameIndex == 132 &&
-        fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+        gFgRuntimeSceneId == FG_SCENE_VISITOR3 &&
         slackVBlanks > minSlack)
         return 1;
 
@@ -1697,6 +1724,7 @@ static void fgRuntimeReset(void)
         gFgRuntime.soundEvents = NULL;
     }
     memset(&gFgRuntime, 0, sizeof(gFgRuntime));
+    gFgRuntimeSceneId = FG_SCENE_UNKNOWN;
     fgTelemetryUpdate();
 }
 
@@ -2163,7 +2191,7 @@ static int fgRuntimeWalkstuf1LowFreshOwner(uint32 *ioWindowStart,
     /* The W1-low 160..176 cluster has a long validation gap; broader
      * neighboring clusters saved reads but stole visible/refill cadence. */
     if (!islandState.lowTide ||
-        !fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") ||
+        gFgRuntimeSceneId != FG_SCENE_WALKSTUF1 ||
         ownerFrameIndex < 101 ||
         ownerFrameIndex > 111)
         return 0;
@@ -2232,7 +2260,7 @@ static uint32 fgRuntimeTrimReadEndBeforeResidentSegment(uint32 windowStart,
     uint32 trimEnd = readEnd;
     uint32 payloadEnd = entryEnd;
 
-    if (!fgSceneEquals(gFgRuntime.sceneName, "visitor3") || islandState.lowTide)
+    if (gFgRuntimeSceneId != FG_SCENE_VISITOR3 || islandState.lowTide)
         return readEnd;
 
     if (gFgRuntime.setupSegmentPrimed &&
@@ -2395,7 +2423,7 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
         return 0;
     if (countAsPrefetch &&
         !islandState.lowTide &&
-        fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+        gFgRuntimeSceneId == FG_SCENE_VISITOR3 &&
         slackVBlanks > 0 &&
         slackVBlanks <= FG_VISITOR3_HIGH_TIGHT_WINDOW_SLACK_VBLANKS &&
         readBytes > FG_VISITOR3_HIGH_TIGHT_WINDOW_BYTES) {
@@ -3082,7 +3110,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
-    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 &&
         slackVBlanks < FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS) {
         if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
@@ -3146,7 +3174,7 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
         return 0;
     }
 
-    if (fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
+    if (gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
         slackVBlanks <= (uint16)(islandState.lowTide ?
             FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS :
             FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS + 1)) {
@@ -3560,6 +3588,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
     if (fgSceneEquals(sceneName, "testcard")) {
         gFgRuntime.active = 1;
         gFgRuntime.mode = FG_RUNTIME_TESTCARD;
+        gFgRuntimeSceneId = fgSceneIdForName(sceneName);
         strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
         gFgRuntime.holdFrames = kFgPilotProbeHoldFrames;
         gFgRuntime.sceneClockTick = fgReadTickCounter();
@@ -3954,6 +3983,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.soundEventCursor = 0;
             gFgRuntime.active = 1;
             gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
+            gFgRuntimeSceneId = fgSceneIdForName(sceneName);
             strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
             gFgRuntime.displayVBlanks = 1;
             gFgRuntime.holdFrames = 0;
@@ -4569,7 +4599,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                  * preparing first can reduce due-path blocking more than the
                  * skipped speculative window refill costs. */
                 if (windowWouldRead &&
-                    fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") &&
+                    gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
                     fgRuntimeCanPrepareStagedFrame()) {
                     didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,
                                                                        perfDetail);

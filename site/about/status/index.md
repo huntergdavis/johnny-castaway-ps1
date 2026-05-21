@@ -28,7 +28,10 @@ target / `99.7659%` target speed; the raw signed optimization matrix is
 about `-0.4798%` / `100.4962%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
+measured inside the allocator budget. The latest source-headroom pass caches
+the active foreground scene ID in hot scheduler paths, keeps the five-yellow
+canary exact-flat, and shrinks tracked foreground scheduler symbols while the
+PS-EXE bucket stays fixed. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
@@ -59,7 +62,8 @@ low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to
 `244..350` plus split `179..185`, adds `{113,129}`, and then adds
 `{355,371}` as same-speed read-work. It now measures `1470/1446`,
-blocking/refill/due `33/5/4`, with loop reads/read time at `24/146`.
+blocking/refill/due `32/4/4` after the fresh-owner `160..176` pocket, with
+loop reads/read time at `24/146`.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high

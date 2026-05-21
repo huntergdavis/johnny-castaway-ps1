@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-20" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-21" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2736 words
+          ~11 min read · 2772 words
         </p>
 
       <hr class="rule" />
@@ -135,7 +135,10 @@ target / <code class="language-plaintext highlighter-rouge">99.7659%</code> targ
 about <code class="language-plaintext highlighter-rouge">-0.4798%</code> / <code class="language-plaintext highlighter-rouge">100.4962%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
+measured inside the allocator budget. The latest source-headroom pass caches
+the active foreground scene ID in hot scheduler paths, keeps the five-yellow
+canary exact-flat, and shrinks tracked foreground scheduler symbols while the
+PS-EXE bucket stays fixed. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and
@@ -166,7 +169,8 @@ low-only 48 KiB clean-rect chunking, then adds the <code class="language-plainte
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to
 <code class="language-plaintext highlighter-rouge">244..350</code> plus split <code class="language-plaintext highlighter-rouge">179..185</code>, adds <code class="language-plaintext highlighter-rouge">{113,129}</code>, and then adds
 <code class="language-plaintext highlighter-rouge">{355,371}</code> as same-speed read-work. It now measures <code class="language-plaintext highlighter-rouge">1470/1446</code>,
-blocking/refill/due <code class="language-plaintext highlighter-rouge">33/5/4</code>, with loop reads/read time at <code class="language-plaintext highlighter-rouge">24/146</code>.
+blocking/refill/due <code class="language-plaintext highlighter-rouge">32/4/4</code> after the fresh-owner <code class="language-plaintext highlighter-rouge">160..176</code> pocket, with
+loop reads/read time at <code class="language-plaintext highlighter-rouge">24/146</code>.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny
 stage1 prefetch frame buffer plus bounded clean-relief stream windows: high
