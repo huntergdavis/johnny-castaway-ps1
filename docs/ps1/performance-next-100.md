@@ -509,6 +509,14 @@ Close this combined D4 cluster as a standalone speed path; retry only as
 single-frame canaries or with deadline-owned reads that keep the delta decode
 off the visible blocking path.
 
+The first binary split is also closed: frame `187` alone shrinks `4764 -> 731`
+bytes, saving `4033` active bytes, but the focused gate stayed exact-flat at
+W1-high `1808/1472/1441`, overrun `31`, blocking/refill `43/13`, reads/due
+`41/7`, so `--require-improvement` rejected it. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-d4-frame187-current/20260520-180605-3477710/summary.json`.
+Continue the split with frames `181`, `183`, and `185` one at a time; do not
+recombine W1-high D4 deltas until a single frame produces a strict win.
+
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
 `1075/1044` to `1071/1045` with overrun `31 -> 26`, blocking `45 -> 35`,
