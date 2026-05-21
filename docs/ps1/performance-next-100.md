@@ -679,6 +679,14 @@ broad active payload drops `755808 -> 708532` and improves blocking/due
 `17`. Keep broad WALKSTUF1 previous-visible closed until a generated phase-tax
 scorer can select much narrower subsets with explicit refill gates.
 
+Latest rejected BUILDING2 high `109..133` preserve-entry clipping swing:
+entry-index clipping was a no-op, and source-frame clipping only canonicalized
+trailing zero payload inside preserved entry slots. The source-frame transform
+reduced selected payload `93962 -> 86412` across entries `90`, `91`, `101`, and
+`102`, but focused timing stayed exact-flat at `1341/1313`, blocking/refill
+`47/14`, reads `44`, and due misses `7`. Close this as a standalone pack-only
+lane; keep `109..133` only for generated deadline/refill ownership.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
@@ -710,8 +718,9 @@ scorer can select much narrower subsets with explicit refill gates.
     Closed for nearby sector-alignment copies on this baseline; only retry with
     generated deadline/refill ownership or a new harmless-eviction proof.
 12. **BUILDING2 high entry-local preserve-entry clipping near `109..133`.**
-    Exclude closed `89..91` and target only parser/restore bytes adjacent to
-    the active candidate.
+    Closed as standalone pack-only work: entry-index clipping is inert and
+    source-frame canonicalization is timing-flat. Reopen only if paired with
+    generated ownership in the same strict gate.
 13. **BUILDING2 high paired data-shape plus generated row proof.** Promote
     neither half alone; require the data-shape slack and row fire to pass in
     the same strict focused gate.
