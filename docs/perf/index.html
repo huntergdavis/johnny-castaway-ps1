@@ -166,7 +166,7 @@ are uncorrelated.</p>
 <p>The reference manual for the perf work is at
 <a href="../docs/performance/">/docs/performance/</a>;
 the retrospective on the optimization loop that moved this matrix
-from the compact baseline to its current public-capped <code class="language-plaintext highlighter-rouge">99.8%</code>
+from the compact baseline to its current public-capped <code class="language-plaintext highlighter-rouge">99.7%</code>
 target-speed average is at
 <a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.
 A scene can be timed here without being visually certified.</p>
@@ -288,19 +288,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2371%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2615%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7659%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.7%</code> (<code class="language-plaintext highlighter-rouge">99.7430%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; scene-ID code-headroom canary <code class="language-plaintext highlighter-rouge">2026-05-20T21:53:37</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-20T23:15:18</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3high-setup42-49</code> plus W1-low <code class="language-plaintext highlighter-rouge">w1low-owner160-176</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1low-prev-visible-refresh</code> plus W1-low <code class="language-plaintext highlighter-rouge">w1low-prev-visible-cleanup-late-subset</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -324,6 +324,15 @@ tracked foreground symbols shrink (<code class="language-plaintext highlighter-r
 <code class="language-plaintext highlighter-rouge">fgRuntimeLoadSceneFrame -52</code>, <code class="language-plaintext highlighter-rouge">fgRuntimeFillWindowForEntry -24</code>,
 <code class="language-plaintext highlighter-rouge">fgRuntimeTryPrefetchWindow -12</code>). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.</p>
+
+<p>Latest W1-low cleanup-headroom track:
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-prev-visible-cleanup-late-subset</code> teaches the compaction tool to
+preserve cleanup only where the previous parseable frame drew visible
+foreground, then applies it to late low-tide frames <code class="language-plaintext highlighter-rouge">194</code>, <code class="language-plaintext highlighter-rouge">196</code>, <code class="language-plaintext highlighter-rouge">198</code>, <code class="language-plaintext highlighter-rouge">200</code>,
+<code class="language-plaintext highlighter-rouge">202</code>, <code class="language-plaintext highlighter-rouge">206</code>, <code class="language-plaintext highlighter-rouge">208</code>, and <code class="language-plaintext highlighter-rouge">210</code>. The pack footprint and LBA stay fixed, active
+low-pack payload drops <code class="language-plaintext highlighter-rouge">764658 -&gt; 755808</code>, late cleanup spans drop
+<code class="language-plaintext highlighter-rouge">2611 -&gt; 173</code>, cleanup pixels drop <code class="language-plaintext highlighter-rouge">24946 -&gt; 287</code>, and restore bytes drop
+<code class="language-plaintext highlighter-rouge">49892 -&gt; 574</code>; the refreshed five-yellow canary stays exact-flat.</p>
 
 <p>Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
@@ -408,9 +417,10 @@ overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/r
 <code class="language-plaintext highlighter-rouge">1473/1447 -&gt; 1470/1445</code>; the <code class="language-plaintext highlighter-rouge">{378..390}</code> speed row moved
 <code class="language-plaintext highlighter-rouge">1470/1445 -&gt; 1470/1446</code>, overrun <code class="language-plaintext highlighter-rouge">25 -&gt; 24</code>, blocking/refill
 <code class="language-plaintext highlighter-rouge">35/7 -&gt; 34/6</code>, and reads/read time <code class="language-plaintext highlighter-rouge">31/163 -&gt; 30/159</code>. The current
-entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 preserve-offset payload trims keep the five-yellow
-canary exact-flat while reducing active low-pack payload
-<code class="language-plaintext highlighter-rouge">788773 -&gt; 764658</code>. The broader retargeted non-preserve trim was rejected
+entry65, entry39, entry55, entry56, entry59, entry63, entry66, entry85,
+and previous-visible late-cleanup trims keep the five-yellow canary exact-flat
+while reducing active low-pack payload <code class="language-plaintext highlighter-rouge">788773 -&gt; 755808</code>. The broader
+retargeted non-preserve trim was rejected
 because hidden refill regressed <code class="language-plaintext highlighter-rouge">7 -&gt; 10</code>.</p>
 
 <p>Current B4-low dirty-upload speed track: the renderer now merges dirty upload
@@ -1410,13 +1420,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.6%</td>
-      <td class="spd-yellow">97.5%</td>
-      <td>1347/1313</td>
-      <td>39</td>
-      <td>16</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.8%</td>
+      <td class="spd-yellow">96.3%</td>
+      <td>1357/1307</td>
+      <td>49</td>
+      <td>26</td>
       <td>5</td>
       <td></td>
     </tr>
@@ -2642,12 +2652,12 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.3%</td>
-      <td class="spd-yellow">97.8%</td>
-      <td>1070/1046</td>
-      <td>35</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.5%</td>
+      <td class="spd-yellow">96.6%</td>
+      <td>1082/1045</td>
+      <td>34</td>
       <td>0</td>
       <td>2</td>
       <td></td>
@@ -2656,12 +2666,12 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.5%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1065/1039</td>
-      <td>75</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.1%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1071/1039</td>
+      <td>80</td>
       <td>0</td>
       <td>14</td>
       <td></td>
@@ -2782,8 +2792,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2796,8 +2806,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T20:06:39</td>
-      <td>w1low-owner160-176</td>
+      <td>2026-05-20T23:15:18</td>
+      <td>w1low-prev-visible-cleanup-late-subset</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
@@ -2877,7 +2887,7 @@ reference manual: what each column means, how <code class="language-plaintext hi
   <li><a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>
 — retrospective on which experiments moved the matrix from the
 compact baseline (<code class="language-plaintext highlighter-rouge">+17.4%</code> over target) to its current public-capped
-<code class="language-plaintext highlighter-rouge">99.8%</code> target speed.</li>
+<code class="language-plaintext highlighter-rouge">99.7%</code> target speed.</li>
   <li><a href="../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>
 — the v0.8.1 stability follow-on that kept this matrix’s mean
 untouched while fixing a clean-rect pressure freeze the per-commit

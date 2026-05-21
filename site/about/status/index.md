@@ -23,9 +23,9 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2371%` over
-target / `99.7659%` target speed; the raw signed optimization matrix is
-about `-0.4798%` / `100.4962%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2615%` over
+target / `99.7430%` target speed; the raw signed optimization matrix is
+about `-0.4554%` / `100.4734%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches

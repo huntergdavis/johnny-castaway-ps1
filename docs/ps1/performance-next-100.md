@@ -57,12 +57,13 @@ B2-high setup-resident duplicate alias for entries `141` and `142`,
 W1-high prepare-before-window scheduler ownership, and the B2-high entry38
 setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47`
 speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
-`160..176`, and the hot foreground scene-ID code-headroom pass:
-`+0.2371%` public average over target / `99.7659%` public target speed across
+`160..176`, the hot foreground scene-ID code-headroom pass, and the W1-low
+previous-visible late-cleanup compaction:
+`+0.2615%` public average over target / `99.7430%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4798%` / `100.4962%`. Since the compact full-matrix baseline was
+`-0.4554%` / `100.4734%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.16` public over-target points and added about `12.67` public
+removed about `17.14` public over-target points and added about `12.64` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
 `0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
@@ -246,6 +247,13 @@ The follow-up W1-low entry85/source frame148 preserve-offset trim keeps the
 same five-yellow canary exact-flat and drops active low-pack payload again
 `765161 -> 764658` (`503` more bytes), bringing the current W1-low payload
 lane to `24115` bytes removed from the pre-entry65 baseline.
+The promoted previous-visible late-cleanup subset then trims entries
+`194/196/198/200/202/206/208/210` without moving the pack footprint or LBA:
+active payload drops `764658 -> 755808`, cleanup spans `2611 -> 173`,
+cleanup pixels `24946 -> 287`, and cleanup restore bytes `49892 -> 574`.
+The refreshed five-yellow canary stays exact-flat at W1-low `1809/1470/1446`,
+overrun `24`, blocking/refill `32/4`, loop reads/read time `24/146`, and due
+`4`.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
@@ -286,6 +294,13 @@ and emit JSON summaries, the scan found zero same-offset shrinkable entries in
 were already unparseable/no-op or would grow. Keep the hardened scanner for
 future data-shape work, but do not spend emulator time on another current-pack
 restore-minus-current pass without a new transform family.
+The broad previous-visible cleanup family is closed as a standalone broad-pack
+transform for the current five-yellow set. It removed large cleanup byte volume
+but shifted target/refill/visible cadence in B2-high, VISITOR3 high/low, and
+W1-high; W1-low broad also regressed hidden refill. The narrowed W1-low late
+subset is promoted because it stays exact-flat while removing late cleanup work.
+Future previous-visible retries should be frame-subset canaries only, not whole
+pack sweeps.
 The local-LZ sector-collapse swing is also closed as a standalone yellow-row
 speed path. W1-high entry `55` saved two sectors but regressed loop/blocking and
 hidden refill; B2-high entries `89..91` saved six modeled sectors but regressed
@@ -418,8 +433,9 @@ entry59/source frame78, entry63/source frame91, entry66/source frame100, and
 entry85/source frame148
 preserve-offset trims keep
 every speed-bearing metric exact-flat while reducing active payload another
-`24115` bytes to `764658`, so they are banked as payload work only and do not
-change the public rollup or speed totals. The follow-up raw/min-slack
+`24115` bytes to `764658`; the later previous-visible cleanup subset reduces
+it again to `755808`, so they are banked as payload/restore work only and do
+not change speed totals. The follow-up raw/min-slack
 `160..176` static owner probe is closed: raw and slack8 moved loop/blocking but
 regressed hidden refill, while slack32 was exact-flat/inert. The fresh owner
 form is now promoted only for the narrower `160..176` cluster: W1-low stays

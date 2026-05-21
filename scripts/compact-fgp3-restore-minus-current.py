@@ -25,6 +25,7 @@ ENTRY = "<HhhHHHII"
 HEADER_SIZE = struct.calcsize(HEADER)
 ENTRY_SIZE = struct.calcsize(ENTRY)
 DELTA_SENTINEL = 0xFFFE
+LOCAL_LZ_SENTINEL = 0xFFFD
 
 
 @dataclass
@@ -178,6 +179,30 @@ def subtract_intervals(
     return out
 
 
+def intersect_intervals(
+    cleanup_spans: list[tuple[int, int]],
+    allowed_intervals: list[tuple[int, int]],
+) -> list[tuple[int, int]]:
+    allowed = merge_intervals(allowed_intervals)
+    if not allowed:
+        return []
+
+    out: list[tuple[int, int]] = []
+    for rel_x, pixel_count in cleanup_spans:
+        start = rel_x
+        end = rel_x + pixel_count
+        for allowed_start, allowed_end in allowed:
+            if allowed_end <= start:
+                continue
+            if allowed_start >= end:
+                break
+            clipped_start = max(start, allowed_start)
+            clipped_end = min(end, allowed_end)
+            if clipped_start < clipped_end:
+                out.append((clipped_start, clipped_end - clipped_start))
+    return out
+
+
 def encode_cleanup_rows(rows: list[Row]) -> bytes:
     active_rows = [row for row in rows if row.spans]
     out = bytearray()
@@ -191,21 +216,42 @@ def encode_cleanup_rows(rows: list[Row]) -> bytes:
     return bytes(out)
 
 
-def compact_payload(payload: bytes) -> tuple[bytes, PayloadStats, PayloadStats]:
-    if len(payload) >= 2 and read_u16(payload, 0) == DELTA_SENTINEL:
-        return payload, PayloadStats(), PayloadStats()
-
+def parse_payload_model(
+    payload: bytes,
+) -> tuple[list[Row], dict[int, list[tuple[int, int]]], int]:
+    if len(payload) >= 2 and read_u16(payload, 0) in (DELTA_SENTINEL, LOCAL_LZ_SENTINEL):
+        raise ValueError("encoded payload")
     cleanup_rows, draw_offset = parse_cleanup_rows(payload, 0, len(payload))
     draw_by_y, _end = parse_draw_intervals(payload, draw_offset, len(payload))
+    return cleanup_rows, draw_by_y, draw_offset
+
+
+def payload_draw_intervals(payload: bytes) -> dict[int, list[tuple[int, int]]] | None:
+    try:
+        _cleanup_rows, draw_by_y, _draw_offset = parse_payload_model(payload)
+    except ValueError:
+        return None
+    return draw_by_y
+
+
+def compact_payload(
+    payload: bytes,
+    previous_draw_by_y: dict[int, list[tuple[int, int]]] | None = None,
+) -> tuple[bytes, PayloadStats, PayloadStats, dict[int, list[tuple[int, int]]] | None]:
+    if len(payload) >= 2 and read_u16(payload, 0) in (DELTA_SENTINEL, LOCAL_LZ_SENTINEL):
+        return payload, PayloadStats(), PayloadStats(), None
+
+    cleanup_rows, draw_by_y, draw_offset = parse_payload_model(payload)
 
     old_stats = summarize_rows(cleanup_rows)
     new_rows: list[Row] = []
     for row in cleanup_rows:
-        new_rows.append(
-            Row(row.rel_y, subtract_intervals(row.spans, draw_by_y.get(row.rel_y, [])))
-        )
+        spans = subtract_intervals(row.spans, draw_by_y.get(row.rel_y, []))
+        if previous_draw_by_y is not None:
+            spans = intersect_intervals(spans, previous_draw_by_y.get(row.rel_y, []))
+        new_rows.append(Row(row.rel_y, spans))
     new_stats = summarize_rows(new_rows)
-    return encode_cleanup_rows(new_rows) + payload[draw_offset:], old_stats, new_stats
+    return encode_cleanup_rows(new_rows) + payload[draw_offset:], old_stats, new_stats, draw_by_y
 
 
 def convert(
@@ -216,6 +262,7 @@ def convert(
     selected_frames: set[int] | None,
     preserve_offsets: bool,
     summary_path: Path | None,
+    previous_visible: bool,
 ) -> None:
     data = input_path.read_bytes()
     if len(data) < HEADER_SIZE:
@@ -267,6 +314,7 @@ def convert(
         old_stats = PayloadStats()
         new_stats = PayloadStats()
         changed_entry_details: list[dict[str, int | dict[str, int]]] = []
+        previous_draw_by_y: dict[int, list[tuple[int, int]]] | None = None
 
         for index, entry in enumerate(old_entries):
             source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
@@ -279,10 +327,15 @@ def convert(
 
             if selected_frames is not None and index not in selected_frames:
                 new_payload_bytes += old_size
+                if previous_visible:
+                    previous_draw_by_y = payload_draw_intervals(old_payload)
                 continue
 
             try:
-                compact, entry_old_stats, entry_new_stats = compact_payload(old_payload)
+                compact, entry_old_stats, entry_new_stats, draw_by_y = compact_payload(
+                    old_payload,
+                    previous_draw_by_y if previous_visible else None,
+                )
             except ValueError as exc:
                 if not copy_unparseable:
                     raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
@@ -290,6 +343,8 @@ def convert(
                 copied_unparseable_entries += 1
                 if len(copied_unparseable_samples) < 8:
                     copied_unparseable_samples.append(f"{index}:{exc}")
+                if previous_visible:
+                    previous_draw_by_y = None
                 continue
 
             if len(compact) > old_size:
@@ -304,11 +359,15 @@ def convert(
                 copied_grown_entries += 1
                 if len(copied_grown_samples) < 8:
                     copied_grown_samples.append(f"{index}:{old_size}->{len(compact)}")
+                if previous_visible:
+                    previous_draw_by_y = draw_by_y
                 continue
 
             new_payload_bytes += len(compact)
             add_stats(old_stats, entry_old_stats)
             add_stats(new_stats, entry_new_stats)
+            if previous_visible:
+                previous_draw_by_y = draw_by_y
             if compact == old_payload:
                 continue
 
@@ -371,6 +430,7 @@ def convert(
                         "input": str(input_path),
                         "output": str(output_path),
                         "preserve_offsets": True,
+                        "previous_visible": previous_visible,
                         "old_bytes": len(data),
                         "new_bytes": len(out),
                         "old_active_payload": old_payload_bytes,
@@ -409,6 +469,7 @@ def convert(
     saved_bytes = 0
     copied_unparseable_entries = 0
     copied_unparseable_samples: list[str] = []
+    previous_draw_by_y: dict[int, list[tuple[int, int]]] | None = None
     for index, entry in enumerate(old_entries):
         source_frame, x, y, width, height, hold_vblanks, old_offset, old_size = entry
         if old_size == 0:
@@ -419,9 +480,14 @@ def convert(
         old_payload = data[old_offset:old_offset + old_size]
         if selected_frames is not None and index not in selected_frames:
             compact = old_payload
+            if previous_visible:
+                previous_draw_by_y = payload_draw_intervals(old_payload)
         else:
             try:
-                compact, entry_old_stats, entry_new_stats = compact_payload(old_payload)
+                compact, entry_old_stats, entry_new_stats, draw_by_y = compact_payload(
+                    old_payload,
+                    previous_draw_by_y if previous_visible else None,
+                )
             except ValueError as exc:
                 if not copy_unparseable:
                     raise SystemExit(f"entry {index} payload parse failed: {exc}") from exc
@@ -431,9 +497,13 @@ def convert(
                 copied_unparseable_entries += 1
                 if len(copied_unparseable_samples) < 8:
                     copied_unparseable_samples.append(f"{index}:{exc}")
+                if previous_visible:
+                    previous_draw_by_y = None
             else:
                 add_stats(old_stats, entry_old_stats)
                 add_stats(new_stats, entry_new_stats)
+                if previous_visible:
+                    previous_draw_by_y = draw_by_y
                 if compact != old_payload:
                     changed_entries += 1
                     saved_bytes += old_size - len(compact)
@@ -502,6 +572,7 @@ def convert(
                     "input": str(input_path),
                     "output": str(output_path),
                     "preserve_offsets": False,
+                    "previous_visible": previous_visible,
                     "old_bytes": len(data),
                     "new_bytes": len(out),
                     "old_active_payload": old_payload_bytes,
@@ -542,6 +613,14 @@ def main() -> None:
         action="store_true",
         help="Rewrite entries in place, update only their sizes, and zero the old tails.",
     )
+    parser.add_argument(
+        "--previous-visible",
+        action="store_true",
+        help=(
+            "After subtracting same-frame draw coverage, keep cleanup only where "
+            "the previous parseable frame actually drew visible foreground."
+        ),
+    )
     parser.add_argument("--summary", type=Path, help="Write a JSON transform summary.")
     args = parser.parse_args()
 
@@ -578,6 +657,7 @@ def main() -> None:
                 selected_frames,
                 args.preserve_offsets,
                 args.summary,
+                args.previous_visible,
             )
             shutil.move(temp_path, args.input_fgp3)
         finally:
@@ -593,6 +673,7 @@ def main() -> None:
             selected_frames,
             args.preserve_offsets,
             args.summary,
+            args.previous_visible,
         )
 
 

@@ -170,10 +170,10 @@ Current battle-card rollup as of <time datetime="2026-05-20">2026-05-20</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2371%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7659%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; scene-ID code-headroom canary `2026-05-20T21:53:37` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3high-setup42-49` plus W1-low `w1low-owner160-176`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.3%` (`0.2615%` exact, public-capped) |
+| Timing-bearing average target speed | `99.7%` (`99.7430%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-20T23:15:18` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1low-prev-visible-refresh` plus W1-low `w1low-prev-visible-cleanup-late-subset`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -191,6 +191,15 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 `fgRuntimeLoadSceneFrame -52`, `fgRuntimeFillWindowForEntry -24`,
 `fgRuntimeTryPrefetchWindow -12`). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.
+
+Latest W1-low cleanup-headroom track:
+`walkstuf1-low-prev-visible-cleanup-late-subset` teaches the compaction tool to
+preserve cleanup only where the previous parseable frame drew visible
+foreground, then applies it to late low-tide frames `194`, `196`, `198`, `200`,
+`202`, `206`, `208`, and `210`. The pack footprint and LBA stay fixed, active
+low-pack payload drops `764658 -> 755808`, late cleanup spans drop
+`2611 -> 173`, cleanup pixels drop `24946 -> 287`, and restore bytes drop
+`49892 -> 574`; the refreshed five-yellow canary stays exact-flat.
 
 Current W1 allocator-era speed track: targeted setup segments replace the
 old full-scene setup buffers with CACHE slices that fit the new allocator.
@@ -275,9 +284,10 @@ overrun `24`, blocking/refill `32/4`, due `4`, and loop reads/read time
 `1473/1447 -> 1470/1445`; the `{378..390}` speed row moved
 `1470/1445 -> 1470/1446`, overrun `25 -> 24`, blocking/refill
 `35/7 -> 34/6`, and reads/read time `31/163 -> 30/159`. The current
-entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 preserve-offset payload trims keep the five-yellow
-canary exact-flat while reducing active low-pack payload
-`788773 -> 764658`. The broader retargeted non-preserve trim was rejected
+entry65, entry39, entry55, entry56, entry59, entry63, entry66, entry85,
+and previous-visible late-cleanup trims keep the five-yellow canary exact-flat
+while reducing active low-pack payload `788773 -> 755808`. The broader
+retargeted non-preserve trim was rejected
 because hidden refill regressed `7 -> 10`.
 
 Current B4-low dirty-upload speed track: the renderer now merges dirty upload
@@ -1275,13 +1285,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.6%</td>
-      <td class="spd-yellow">97.5%</td>
-      <td>1347/1313</td>
-      <td>39</td>
-      <td>16</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.8%</td>
+      <td class="spd-yellow">96.3%</td>
+      <td>1357/1307</td>
+      <td>49</td>
+      <td>26</td>
       <td>5</td>
       <td></td>
     </tr>
@@ -2507,12 +2517,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.3%</td>
-      <td class="spd-yellow">97.8%</td>
-      <td>1070/1046</td>
-      <td>35</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.5%</td>
+      <td class="spd-yellow">96.6%</td>
+      <td>1082/1045</td>
+      <td>34</td>
       <td>0</td>
       <td>2</td>
       <td></td>
@@ -2521,12 +2531,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
-      <td>2.5%</td>
-      <td class="spd-yellow">97.6%</td>
-      <td>1065/1039</td>
-      <td>75</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
+      <td>3.1%</td>
+      <td class="spd-yellow">97.0%</td>
+      <td>1071/1039</td>
+      <td>80</td>
       <td>0</td>
       <td>14</td>
       <td></td>
@@ -2647,8 +2657,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-20T17:14:20</td>
-      <td>v3high-setup42-49</td>
+      <td>2026-05-20T23:07:38</td>
+      <td>w1low-prev-visible-refresh</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2661,8 +2671,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-20T20:06:39</td>
-      <td>w1low-owner160-176</td>
+      <td>2026-05-20T23:15:18</td>
+      <td>w1low-prev-visible-cleanup-late-subset</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
