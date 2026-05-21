@@ -518,8 +518,13 @@ Frame `181` is also closed: it shrinks `4708 -> 1484` bytes and improves
 scene/loop/overrun/refill `1808/1472/31/13 -> 1807/1471/29/9`, but regresses
 blocking `43 -> 54`, loop reads `41 -> 43`, and due misses `7 -> 10`. Artifact:
 `scratch/ps1-perf-iterate/walkstuf1-high-d4-frame181-current/20260520-181012-3501246/summary.json`.
-Continue the split with frames `183` and `185` one at a time; do not recombine
-W1-high D4 deltas until a single frame produces a strict win.
+Frame `183` is closed too: it shrinks `4602 -> 2251` bytes, but regresses
+W1-high `1808/1472/1441 -> 1813/1477/1441`, overrun `31 -> 36`, blocking
+`43 -> 47`, reads/due `41/7 -> 42/8`, with only refill improving `13 -> 11`.
+Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-d4-frame183-current/20260520-181306-3518065/summary.json`.
+Continue the split with frame `185`; do not recombine W1-high D4 deltas until a
+single frame produces a strict win.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
