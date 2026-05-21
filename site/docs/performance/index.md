@@ -334,7 +334,9 @@ split TRANSIENT `344..350` setup edge, improving the current row
 reads/read time `50/230 -> 31/163`, and due `10 -> 4`; the later
 `{378..390}`, `244..350`/`179..185` plus `{113..129}`, and `{355..371}`
 passes keep the row at `1470/1446`, improve blocking/refill to `33/5`, and
-lower reads/read time to `24/146`. Both W1 rows stay yellow while staying
+lower reads/read time to `24/146`. The newest fresh-owner `160..176` pocket
+keeps speed and reads flat while lowering W1-low blocking/refill again to
+`32/4`. Both W1 rows stay yellow while staying
 inside the new CACHE allocator budget.
 
 The latest BUILDING2 high allocator baseline keeps targeted CACHE slices
@@ -942,7 +944,8 @@ Next plausible wins, in priority order:
    read tables now repeatedly save reads while shifting cost into visible
    blocking or hidden refill, so the next CD swing is a generated sidecar that
    owns append-start, frame deadline, and refill budget before any grouped read
-   fires.
+   fires. W1-low `160..176` is the first narrow fresh-owner pocket to promote;
+   broader neighboring W1-low ranges still need real generated ownership.
 2. **VISITOR3 terminal data shape.** VISITOR3 high/low still need a different
    data representation, not another scalar range. The next candidate is a
    pixel-perfect row-reference or setup-dictionary terminal-frame codec after
@@ -958,8 +961,9 @@ Next plausible wins, in priority order:
 5. **Render/restore and source-headroom compounding.** Exact-flat code shrink
    remains promotable when it keeps pack LBAs fixed. The latest dirty upload
    band merge retune keeps the five-yellow canary exact-flat while shrinking
-   `grDrawBackground` by `36` bytes, giving future generated-owner and
-   data-shape code more PS-EXE bucket headroom.
+   `grDrawBackground` by `36` bytes, and W1-low `160..176` cuts blocking/refill
+   `33/5 -> 32/4` without changing speed, giving future generated-owner and
+   data-shape work a cleaner baseline.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the

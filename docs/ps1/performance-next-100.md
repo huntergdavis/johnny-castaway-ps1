@@ -369,11 +369,15 @@ preserve-offset trims keep
 every speed-bearing metric exact-flat while reducing active payload another
 `24115` bytes to `764658`, so they are banked as payload work only and do not
 change the public rollup or speed totals. The follow-up raw/min-slack
-`160..176` owner probe is closed: raw and slack8 moved loop/blocking but
-regressed hidden refill, while slack32 was exact-flat/inert. The refreshed
-read-candidate matrix now has no standalone or scheduler/guarded direct rows.
-The follow-up direct-stage owner lane also closed `129..153`, `160..176`, and
-`355..379`. The distinct retained-group `{129..153}` form is now closed too:
+`160..176` static owner probe is closed: raw and slack8 moved loop/blocking but
+regressed hidden refill, while slack32 was exact-flat/inert. The fresh owner
+form is now promoted only for the narrower `160..176` cluster: W1-low stays
+`1809/1470/1446`, overrun `24`, loop reads/read time `24/146`, and due `4`,
+while blocking improves `33 -> 32` and refill improves `5 -> 4`. The broad
+fresh-owner `129..153` lane is closed; it improved blocking/due only by taking
+target/refill debt (`1446 -> 1444`, refill `5 -> 14`), and slack8/slack12 were
+worse. The follow-up direct-stage owner lane also closed `129..153`, prior
+`160..176` forms, and `355..379`. The distinct retained-group `{129..153}` form is now closed too:
 raw and slack8 saved reads but regressed target/refill/visible blocking, while
 slack32 was exact-flat/inert. The follow-up `153..177` retained-group probe is
 also closed:
@@ -423,8 +427,9 @@ single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
    refill-budget metadata, then gates reads by frame/deadline ownership instead
    of static sector ranges. First targets: B2-high `249..261` / `287..311`,
    VISITOR3-low terminal/early clusters, VISITOR3-high `103..127`, W1-high
-   late `365..389`, and W1-low `142..177`. Static ranges repeatedly saved reads
-   but moved cost into visible blocking/refill, so the next promotion must prove
+   late `365..389`, and W1-low `142..160` / `153..177` follow-ups around the
+   promoted `160..176` owner pocket. Static ranges repeatedly saved reads but
+   moved cost into visible blocking/refill, so the next promotion must prove
    ownership before firing.
 2. **VISITOR3 custom terminal data shape.** Replace more scalar V3-low/high
    retries with a pixel-perfect row-reference or setup-dictionary codec for the
@@ -468,6 +473,17 @@ render/data-shape swings above. Artifacts:
 `scratch/ps1-perf-iterate/upload-band-gap0-walkstuf1-current/20260520-192341-3919459/summary.json`
 and
 `scratch/ps1-perf-iterate/upload-band-gap0-five-yellow-current/20260520-192708-3939015/summary.json`.
+
+Latest promoted W1-low fresh owner pocket: the generated-owner lane now keeps
+only the `160..176` fresh-window cluster, gated to real prefetch slack and
+frames `101..111`. It keeps W1-low at `1809/1470/1446` and the same
+`24/146` loop reads/read time, while cutting blocking/refill `33/5 -> 32/4`.
+The five-yellow canary shows VISITOR3 high/low, B2-high, and W1-high
+exact-flat; pack LBAs and the `233472` byte PS-EXE bucket stay fixed.
+Artifacts:
+`scratch/ps1-perf-iterate/walkstuf1-low-owner160-176-fresh-current/20260520-200456-4153242/summary.json`
+and
+`scratch/ps1-perf-iterate/walkstuf1-low-owner160-176-fresh-five-yellow-current/20260520-200639-4163023/summary.json`.
 
 Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
 B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,

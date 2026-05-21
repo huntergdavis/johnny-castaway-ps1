@@ -4,19 +4,19 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/building2-high-rg158-174-current-canary/20260520-110609-1092385`
-- Candidate rows: `52`
+- Source artifact root: `scratch/ps1-perf-iterate/walkstuf1-low-owner160-176-fresh-five-yellow-current/20260520-200639-4163023`
+- Candidate rows: `46`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
 - Scheduler-owned only: `0`
-- Closed exact ranges from experiment log: `52`
+- Closed exact ranges from experiment log: `46`
 - Deferred under-target rows: `0`
 
 Recent hand-authored table probes proved that nominal read-count wins can
 still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 `unsafe` rows as scheduler-owned retries, not standalone table changes.
 
-## Top 40 Candidates
+## Top 12 Candidates
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|
@@ -32,34 +32,6 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 10 | `building2` | `high` | 1347/1313 | 39 | `174..186` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 11 | `building2` | `high` | 1347/1313 | 39 | `95..107` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 12 | `building2` | `high` | 1347/1313 | 39 | `140..152` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 13 | `walkstuf1` | `high` | 1472/1441 | 43 | `84..108` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 14 | `walkstuf1` | `high` | 1472/1441 | 43 | `365..389` (24s) | 3 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 15 | `walkstuf1` | `high` | 1472/1441 | 43 | `74..98` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 16 | `walkstuf1` | `high` | 1472/1441 | 43 | `92..116` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 17 | `walkstuf1` | `high` | 1472/1441 | 43 | `372..388` (16s) | 2 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 18 | `walkstuf1` | `high` | 1472/1441 | 43 | `379..395` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 19 | `walkstuf1` | `high` | 1472/1441 | 43 | `80..92` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 20 | `walkstuf1` | `high` | 1472/1441 | 43 | `92..108` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 21 | `walkstuf1` | `high` | 1472/1441 | 43 | `84..100` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 22 | `walkstuf1` | `high` | 1472/1441 | 43 | `268..280` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 23 | `walkstuf1` | `high` | 1472/1441 | 43 | `74..86` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 24 | `walkstuf1` | `high` | 1472/1441 | 43 | `379..391` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 25 | `visitor3` | `low` | 1065/1039 | 75 | `248..272` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 26 | `visitor3` | `low` | 1065/1039 | 75 | `240..264` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 27 | `visitor3` | `low` | 1065/1039 | 75 | `239..263` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 28 | `visitor3` | `low` | 1065/1039 | 75 | `248..264` (16s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 29 | `visitor3` | `low` | 1065/1039 | 75 | `9..33` (24s) | 2 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 30 | `visitor3` | `low` | 1065/1039 | 75 | `256..268` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 31 | `visitor3` | `low` | 1065/1039 | 75 | `256..272` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 32 | `visitor3` | `low` | 1065/1039 | 75 | `239..251` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 33 | `visitor3` | `low` | 1065/1039 | 75 | `248..260` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 34 | `visitor3` | `low` | 1065/1039 | 75 | `92..108` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 35 | `visitor3` | `low` | 1065/1039 | 75 | `86..98` (12s) | 1 | `risky:short-visible-gap` | `closed-by-experiment-log` |
-| 36 | `visitor3` | `low` | 1065/1039 | 75 | `9..25` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 37 | `visitor3` | `high` | 1071/1045 | 35 | `40..52` (12s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 38 | `visitor3` | `high` | 1071/1045 | 35 | `40..56` (16s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 39 | `visitor3` | `high` | 1071/1045 | 35 | `40..64` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 40 | `visitor3` | `high` | 1071/1045 | 35 | `40..46` (6s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 
 ## CSV
 

@@ -2146,6 +2146,46 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
     return targetEnd;
 }
 
+static int fgRuntimeWalkstuf1LowFreshOwner(uint32 *ioWindowStart,
+                                           uint32 *ioReadEnd,
+                                           uint16 slackVBlanks,
+                                           uint16 ownerFrameIndex)
+{
+    uint16 entryStartSector;
+    uint32 candidateStart;
+    uint32 candidateEnd;
+
+    if (ioWindowStart == NULL ||
+        ioReadEnd == NULL ||
+        (*ioWindowStart & 2047UL) != 0)
+        return 0;
+
+    /* The W1-low 160..176 cluster has a long validation gap; broader
+     * neighboring clusters saved reads but stole visible/refill cadence. */
+    if (!islandState.lowTide ||
+        !fgSceneEquals(gFgRuntime.sceneName, "walkstuf1") ||
+        ownerFrameIndex < 101 ||
+        ownerFrameIndex > 111)
+        return 0;
+    if (slackVBlanks == 0)
+        return 0;
+
+    entryStartSector = (uint16)(*ioWindowStart >> 11);
+    if (entryStartSector < 160 || entryStartSector >= 176)
+        return 0;
+
+    candidateStart = 160UL * FG_CD_SECTOR_SIZE;
+    candidateEnd = 176UL * FG_CD_SECTOR_SIZE;
+    if (candidateEnd > *ioReadEnd &&
+        candidateEnd - candidateStart <= gFgRuntime.streamWindowSize) {
+        *ioWindowStart = candidateStart;
+        *ioReadEnd = candidateEnd;
+        return 1;
+    }
+
+    return 0;
+}
+
 static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
 {
     uint32 windowStart;
@@ -2334,6 +2374,7 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
 }
 
 static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
+                                       uint16 ownerFrameIndex,
                                        uint16 slackVBlanks,
                                        uint8 countAsPrefetch,
                                        uint16 *outElapsedVBlanks)
@@ -2366,6 +2407,11 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
             readBytes = tightReadEnd - windowStart;
     }
     readEnd = windowStart + readBytes;
+    fgRuntimeWalkstuf1LowFreshOwner(&windowStart,
+                                    &readEnd,
+                                    slackVBlanks,
+                                    ownerFrameIndex);
+    readBytes = readEnd - windowStart;
     if (readEnd > (uint32)gFgRuntime.packCdFile.size)
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
     readEnd = fgRuntimeTrimReadEndBeforeResidentSegment(windowStart,
@@ -2405,7 +2451,7 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     return 1;
 }
 
-static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(void)
+static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(uint16 *outFrameIndex)
 {
     uint16 frameIndex;
 
@@ -2417,6 +2463,8 @@ static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(void)
         const struct TFgPilotEntry *entry =
             fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
         if (fgEntryHasPayload(entry)) {
+            if (outFrameIndex != NULL)
+                *outFrameIndex = frameIndex;
             return entry;
         }
         frameIndex++;
@@ -2490,7 +2538,7 @@ static int fgRuntimePrimeNextFrameForSetup(void)
 
     if (fgRuntimeEntryFitsWindow(entry)) {
         if (!fgRuntimeWindowContainsEntry(entry) &&
-            !fgRuntimeFillWindowForEntry(entry, 0, 0, NULL)) {
+            !fgRuntimeFillWindowForEntry(entry, nextFrameIndex, 0, 0, NULL)) {
             return -1;
         }
         if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0))
@@ -3014,7 +3062,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 }
                 return 1;
             }
-            if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
+            if (!fgRuntimeFillWindowForEntry(entry, nextFrameIndex, slackVBlanks, 1, &elapsedVBlanks)) {
                 if (ps1PerfEnabled)
                     ps1PerfMarkTripwire();
                 gFgRuntime.active = 0;
@@ -3076,9 +3124,10 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
 {
     uint16 slackVBlanks;
+    uint16 entryFrameIndex = 0;
     const struct TFgPilotEntry *entry;
 
-    entry = fgRuntimeNextPayloadEntry();
+    entry = fgRuntimeNextPayloadEntry(&entryFrameIndex);
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
@@ -3119,7 +3168,7 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     if (ps1PerfEnabled)
         ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
 
-    if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, outElapsedVBlanks)) {
+    if (!fgRuntimeFillWindowForEntry(entry, entryFrameIndex, slackVBlanks, 1, outElapsedVBlanks)) {
         if (ps1PerfEnabled)
             ps1PerfMarkTripwire();
         gFgRuntime.active = 0;
@@ -3132,7 +3181,7 @@ static int fgRuntimeWindowPrefetchWouldRead(void)
 {
     const struct TFgPilotEntry *entry;
 
-    entry = fgRuntimeNextPayloadEntry();
+    entry = fgRuntimeNextPayloadEntry(NULL);
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
@@ -3219,7 +3268,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                          1)) {
             /* Loaded from the retained setup/window cache. */
         } else if (fgRuntimeEntryFitsWindow(&loadedEntry)) {
-            if (!fgRuntimeFillWindowForEntry(&loadedEntry, 0, 0, NULL) ||
+            if (!fgRuntimeFillWindowForEntry(&loadedEntry, frameIndex, 0, 0, NULL) ||
                 !fgRuntimeCopyEntryFromWindow(&loadedEntry,
                                               loadBuffer,
                                               0)) {
