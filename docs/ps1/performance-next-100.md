@@ -73,11 +73,14 @@ all `126` timing-bearing rows. The raw signed optimization matrix is about
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest BUILDING2-high no-decode trim-draw-tail subset preserves
-file size and LBA while trimming entries `67`, `69`, `70`, `71`, and `72`,
-dropping active payload `574094 -> 548293` and improving B2-high
-`1343/1312 -> 1341/1313`, overrun `31 -> 28`, blocking `50 -> 47`, and
-refill `17 -> 14`. The prior W1-high preserve-entry-size screen-clip subset
+`0` red. The latest BUILDING2-high no-decode trim-draw-tail headroom subset
+preserves file size and LBA while trimming entries `74` and `78..82`, dropping
+active payload `548293 -> 539990`, and keeping all five under-green rows
+exact-flat. The prior BUILDING2-high trim-draw-tail speed subset trimmed
+entries `67`, `69`, `70`, `71`, and `72`, dropping active payload
+`574094 -> 548293` and improving B2-high `1343/1312 -> 1341/1313`, overrun
+`31 -> 28`, blocking `50 -> 47`, and refill `17 -> 14`. The prior W1-high
+preserve-entry-size screen-clip subset
 keeps pack footprint, LBA, offsets, and table `dataSize` fixed while clipping
 cleanup-only entries `204..211`, dropping subset logical active payload
 `20365 -> 19645`, removing `12368` cleanup pixels, and keeping W1-high
@@ -316,13 +319,16 @@ and improves B2-high `1343/1311 -> 1343/1312`, overrun `32 -> 31`,
 blocking/refill `51/18 -> 50/17`, and target speed `97.617% -> 97.692%`.
 Artifact:
 `scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-five-yellow-current/20260521-014550-1889928/summary.json`.
-The latest BUILDING2 high no-decode trim-draw-tail subset then trims entries
-`67`, `69`, `70`, `71`, and `72` without moving the `1303332` byte pack
+The next BUILDING2 high no-decode trim-draw-tail speed subset then trims
+entries `67`, `69`, `70`, `71`, and `72` without moving the `1303332` byte pack
 footprint or LBA. It cuts active payload `574094 -> 548293` and improves
 B2-high `1343/1312 -> 1341/1313`, overrun `31 -> 28`, blocking/refill
 `50/17 -> 47/14`, and target speed `97.692% -> 97.912%`; VISITOR3 high/low
-and WALKSTUF1 high/low stay flat in the five-yellow canary. Artifact:
-`scratch/ps1-perf-iterate/building2-high-trimdraw67-72-five-yellow-current/20260521-032804-2475674/summary.json`.
+and WALKSTUF1 high/low stay flat in the five-yellow canary. The latest
+follow-up trim-draw-tail headroom subset then trims entries `74` and `78..82`,
+cuts active payload `548293 -> 539990`, preserves file size/LBA, and keeps
+B2-high, VISITOR3 high/low, and WALKSTUF1 high/low exact-flat. Artifact:
+`scratch/ps1-perf-iterate/building2-high-trimdraw74-78-82-five-yellow-current/20260521-040010-2659168/summary.json`.
 The first broad W1-high preserve-entry-size retry is closed as log-only. It
 reduced logical active payload `848331 -> 777722` and improved visible
 scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
@@ -696,6 +702,21 @@ and
 Close those direct B2 rows on this baseline. The remaining B2-high gap needs
 no-hot-C generated frame/deadline/refill ownership or pack/render slack, not
 another scalar table row.
+
+Latest promoted BUILDING2 high trim-tail headroom split: after the `67..72`
+speed subset, the broader `74..82` draw-tail pass was binary-split. Entries
+`74` and `78..82` are safe as a work-headroom subset: they cut active payload
+`548293 -> 539990` with fixed pack footprint/LBA and keep the five-yellow
+canary exact-flat at B2-high `1341/1313`, VISITOR3 high/low `1082/1045` and
+`1071/1039`, and WALKSTUF1 high/low `1472/1441` and `1470/1446`.
+Artifacts:
+`scratch/ps1-perf-iterate/building2-high-trimdraw74-78-82-current/20260521-035820-2648570/summary.json`
+and
+`scratch/ps1-perf-iterate/building2-high-trimdraw74-78-82-five-yellow-current/20260521-040010-2659168/summary.json`.
+The broad `74..82` shape and isolated entries `76` and `77` are closed as
+phase-negative: broad and entry `76` tightened target/refill to
+`1341/1311`, overrun `30`, blocking/refill `49/16`, while entry `77`
+regressed loop/scene to `1344/1586`, overrun `31`, and blocking `49`.
 
 Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
 B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,

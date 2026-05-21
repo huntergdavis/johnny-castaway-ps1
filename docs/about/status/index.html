@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~11 min read · 2897 words
+          ~11 min read · 2927 words
         </p>
 
       <hr class="rule" />
@@ -139,8 +139,11 @@ measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
 PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
-promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1341/1313</code> while preserving file size and pack
-LBA. The prior VISITOR3-low preserve-entry-size screen-clip promotion keeps
+headroom pass trims entries <code class="language-plaintext highlighter-rouge">74</code> and <code class="language-plaintext highlighter-rouge">78..82</code>, drops active payload
+<code class="language-plaintext highlighter-rouge">548293 -&gt; 539990</code>, and keeps the five-yellow canary exact-flat while
+preserving file size and pack LBA. The prior BUILDING2-high no-decode
+trim-draw-tail speed promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1341/1313</code>. The prior
+VISITOR3-low preserve-entry-size screen-clip promotion keeps
 VISITOR3-low at <code class="language-plaintext highlighter-rouge">1071/1039</code> while preserving entry sizes and pack LBA. The
 latest W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at <code class="language-plaintext highlighter-rouge">1470/1446</code> while improving hidden refill <code class="language-plaintext highlighter-rouge">4 -&gt; 3</code>
@@ -163,8 +166,8 @@ low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-
 reads <code class="language-plaintext highlighter-rouge">27</code>, refill <code class="language-plaintext highlighter-rouge">0</code>, and due <code class="language-plaintext highlighter-rouge">9</code>. BUILDING2 high now layers guarded <code class="language-plaintext highlighter-rouge">271..287</code> plus <code class="language-plaintext highlighter-rouge">315..327</code> rows on top
 of the allocator-safe setup slices, then the previous-visible cleanup promotion
 moves it to <code class="language-plaintext highlighter-rouge">1343/1312</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking/refill <code class="language-plaintext highlighter-rouge">50/17</code>, and due <code class="language-plaintext highlighter-rouge">7</code>;
-the entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> payload trim plus cleanup pass cut B2-high active
-payload <code class="language-plaintext highlighter-rouge">669408 -&gt; 574094</code>, and <code class="language-plaintext highlighter-rouge">{185..197}</code> plus <code class="language-plaintext highlighter-rouge">{158..174}</code> bank same-speed
+the entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> payload trim plus cleanup and no-decode trim-tail
+passes cut B2-high active payload <code class="language-plaintext highlighter-rouge">669408 -&gt; 539990</code>, and <code class="language-plaintext highlighter-rouge">{185..197}</code> plus <code class="language-plaintext highlighter-rouge">{158..174}</code> bank same-speed
 CD-pressure work under the new baseline. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the <code class="language-plaintext highlighter-rouge">24 KiB</code> stream-window promotion at
 <code class="language-plaintext highlighter-rouge">2847/2820</code>, overrun <code class="language-plaintext highlighter-rouge">27</code>, blocking/read time <code class="language-plaintext highlighter-rouge">32</code>/<code class="language-plaintext highlighter-rouge">252</code>, and prefetch overrun
 <code class="language-plaintext highlighter-rouge">27</code>, cutting active payload <code class="language-plaintext highlighter-rouge">807263 -&gt; 799277</code> while preserving pack layout.
@@ -210,13 +213,14 @@ the frame132 payload trim plus <code class="language-plaintext highlighter-rouge
 relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during setup, with the allocator-era
 matrix at <code class="language-plaintext highlighter-rouge">1327/1318</code>, overrun <code class="language-plaintext highlighter-rouge">9</code>, blocking/refill <code class="language-plaintext highlighter-rouge">47/0</code>,
 reads <code class="language-plaintext highlighter-rouge">27</code>, and due <code class="language-plaintext highlighter-rouge">9</code>. BUILDING2 high currently measures
-<code class="language-plaintext highlighter-rouge">1343/1312</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking <code class="language-plaintext highlighter-rouge">50</code>, refill overrun <code class="language-plaintext highlighter-rouge">17</code>, and due misses
+<code class="language-plaintext highlighter-rouge">1341/1313</code>, overrun <code class="language-plaintext highlighter-rouge">28</code>, blocking <code class="language-plaintext highlighter-rouge">47</code>, refill overrun <code class="language-plaintext highlighter-rouge">14</code>, and due misses
 <code class="language-plaintext highlighter-rouge">7</code>; the allocator-safe setup slices plus the <code class="language-plaintext highlighter-rouge">83..95</code>, <code class="language-plaintext highlighter-rouge">{158..174}</code>, guarded
 <code class="language-plaintext highlighter-rouge">271..287</code>, <code class="language-plaintext highlighter-rouge">315..327</code>, <code class="language-plaintext highlighter-rouge">{185..197}</code>, and previous-visible cleanup promotion leave reads/read time at
-<code class="language-plaintext highlighter-rouge">44/196</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+<code class="language-plaintext highlighter-rouge">44/194</code>, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 <code class="language-plaintext highlighter-rouge">18030/105645/446246</code>, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims plus the entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> follow-up reduce active payload
-<code class="language-plaintext highlighter-rouge">674798 -&gt; 663590</code>; the new cleanup pass drops it further to <code class="language-plaintext highlighter-rouge">574094</code> without moving pack layout.
+<code class="language-plaintext highlighter-rouge">674798 -&gt; 663590</code>; the cleanup and no-decode trim-tail passes drop it further
+to <code class="language-plaintext highlighter-rouge">539990</code> without moving pack layout.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in

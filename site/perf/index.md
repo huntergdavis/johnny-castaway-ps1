@@ -176,8 +176,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T03:28:04` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-trimdraw67-72`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T04:00:10` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-trimdraw74-78-82`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -197,12 +197,14 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 rollup; it banks code headroom for generated-owner and custom data-shape work.
 
 Latest BUILDING2-high no-decode trim-draw-tail track:
-`building2-high-trimdraw67-72-five-yellow-current` trims entries `67`, `69`,
-`70`, `71`, and `72` while preserving file size and LBA. Active payload drops
-`574094 -> 548293`; B2-high improves `1343/1312 -> 1341/1313`, overrun
-`31 -> 28`, blocking/refill `50/17 -> 47/14`, and target speed
-`97.692% -> 97.912%`. VISITOR3 high/low and WALKSTUF1 high/low stay flat in
-the canonical five-yellow canary.
+`building2-high-trimdraw74-78-82-five-yellow-current` follows the `67`, `69`,
+`70`, `71`, and `72` speed subset with a safe work-headroom subset on entries
+`74` and `78..82`. The speed subset improved B2-high `1343/1312 -> 1341/1313`,
+overrun `31 -> 28`, blocking/refill `50/17 -> 47/14`, and target speed
+`97.692% -> 97.912%`; the follow-up keeps those timing metrics exact-flat
+while preserving file size/LBA and dropping active payload `548293 -> 539990`.
+VISITOR3 high/low and WALKSTUF1 high/low stay flat in the canonical
+five-yellow canary.
 
 Prior W1-high preserve-entry-size screen-clip track:
 `w1high-screen-clip-preserve-entry-204-211-current` clips cleanup-only entries
@@ -692,10 +694,11 @@ relative sectors `3..35` and `202..242` in MEM_REGION_CACHE, then the
 read-group passes replace the tail row with `83..95`, add `{158..174}`, guarded
 `271..287`, `315..327`, and `{185..197}`, then the entries `92`/`94`/`95`
 payload trim reduces active payload `669408 -> 663590`. The previous-visible
-cleanup pass reduces active payload again to `574094`, and the current
-preserve-entry-size screen-clip follow-up improves B2-high to `1343/1312`,
-overrun `31`, blocking/refill `50/17`, reads/read time `44/196`, and due `7`,
-while still avoiding the full-buffer clean-rect allocation failure.
+cleanup pass reduces active payload again to `574094`, the preserve-entry-size
+screen-clip follow-up improves B2-high to `1343/1312`, and the no-decode
+trim-tail subsets reduce active payload to `539990` while B2-high stays
+`1341/1313`, overrun `28`, blocking/refill `47/14`, reads/read time `44/194`,
+and due `7`, still avoiding the full-buffer clean-rect allocation failure.
 BUILDING2 low keeps the v626 slack-8 `218..229` retained-read row, v660
 offscreen draw-span clip, and v739 dead draw-tail trim, then primes relative
 sectors `112..128` and `226..262` during setup with a low-only `80 KiB` clean
@@ -1374,8 +1377,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:28:04</td>
-      <td>b2high-trimdraw67-72</td>
+      <td>2026-05-21T04:00:10</td>
+      <td>b2high-trimdraw74-78-82</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2606,8 +2609,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:28:04</td>
-      <td>b2high-trimdraw67-72</td>
+      <td>2026-05-21T04:00:10</td>
+      <td>b2high-trimdraw74-78-82</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2620,8 +2623,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T03:28:04</td>
-      <td>b2high-trimdraw67-72</td>
+      <td>2026-05-21T04:00:10</td>
+      <td>b2high-trimdraw74-78-82</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2746,8 +2749,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:28:04</td>
-      <td>b2high-trimdraw67-72</td>
+      <td>2026-05-21T04:00:10</td>
+      <td>b2high-trimdraw74-78-82</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2760,8 +2763,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T03:28:04</td>
-      <td>b2high-trimdraw67-72</td>
+      <td>2026-05-21T04:00:10</td>
+      <td>b2high-trimdraw74-78-82</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

@@ -32,8 +32,11 @@ measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
 PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
-promotion improves B2-high to `1341/1313` while preserving file size and pack
-LBA. The prior VISITOR3-low preserve-entry-size screen-clip promotion keeps
+headroom pass trims entries `74` and `78..82`, drops active payload
+`548293 -> 539990`, and keeps the five-yellow canary exact-flat while
+preserving file size and pack LBA. The prior BUILDING2-high no-decode
+trim-draw-tail speed promotion improves B2-high to `1341/1313`. The prior
+VISITOR3-low preserve-entry-size screen-clip promotion keeps
 VISITOR3-low at `1071/1039` while preserving entry sizes and pack LBA. The
 latest W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at `1470/1446` while improving hidden refill `4 -> 3`
@@ -56,8 +59,8 @@ low-only `80 KiB` clean-strip cap, raise the low window slack to `5`, and add
 reads `27`, refill `0`, and due `9`. BUILDING2 high now layers guarded `271..287` plus `315..327` rows on top
 of the allocator-safe setup slices, then the previous-visible cleanup promotion
 moves it to `1343/1312`, overrun `31`, blocking/refill `50/17`, and due `7`;
-the entries `92`/`94`/`95` payload trim plus cleanup pass cut B2-high active
-payload `669408 -> 574094`, and `{185..197}` plus `{158..174}` bank same-speed
+the entries `92`/`94`/`95` payload trim plus cleanup and no-decode trim-tail
+passes cut B2-high active payload `669408 -> 539990`, and `{185..197}` plus `{158..174}` bank same-speed
 CD-pressure work under the new baseline. BUILDING4 low now carries the v971 local-LZ entry270 follow-up, the gap-8 dirty-upload band merge retune, and the `24 KiB` stream-window promotion at
 `2847/2820`, overrun `27`, blocking/read time `32`/`252`, and prefetch overrun
 `27`, cutting active payload `807263 -> 799277` while preserving pack layout.
@@ -103,13 +106,14 @@ the frame132 payload trim plus `{378..390}` read group. BUILDING2 low now keeps 
 relative sectors `112..128` and `226..262` during setup, with the allocator-era
 matrix at `1327/1318`, overrun `9`, blocking/refill `47/0`,
 reads `27`, and due `9`. BUILDING2 high currently measures
-`1343/1312`, overrun `31`, blocking `50`, refill overrun `17`, and due misses
+`1341/1313`, overrun `28`, blocking `47`, refill overrun `14`, and due misses
 `7`; the allocator-safe setup slices plus the `83..95`, `{158..174}`, guarded
 `271..287`, `315..327`, `{185..197}`, and previous-visible cleanup promotion leave reads/read time at
-`44/196`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
+`44/194`, and same-speed offscreen clips now reduce its runtime rows/spans/pixels to
 `18030/105645/446246`, and the v877/v879/v880 preserve-offset frame172/frame171/frame96
 trims plus the entries `92`/`94`/`95` follow-up reduce active payload
-`674798 -> 663590`; the new cleanup pass drops it further to `574094` without moving pack layout.
+`674798 -> 663590`; the cleanup and no-decode trim-tail passes drop it further
+to `539990` without moving pack layout.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
