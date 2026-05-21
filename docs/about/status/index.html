@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~11 min read · 2806 words
+          ~11 min read · 2832 words
         </p>
 
       <hr class="rule" />
@@ -138,9 +138,12 @@ VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2 high previous-visible cleanup
-promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1343/1311</code> while reducing restore/upload work
-without moving the pack footprint. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
+PS-EXE bucket stays fixed. The latest VISITOR3 high screen-clip headroom pass
+clips offscreen cleanup spans in entries <code class="language-plaintext highlighter-rouge">101</code> and <code class="language-plaintext highlighter-rouge">116</code>, dropping active
+payload <code class="language-plaintext highlighter-rouge">437785 -&gt; 436469</code> with exact-flat five-yellow timing. The latest
+BUILDING2 high previous-visible cleanup promotion improves B2-high to
+<code class="language-plaintext highlighter-rouge">1343/1311</code> while reducing restore/upload work without moving the pack
+footprint. Release gates now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
 <code class="language-plaintext highlighter-rouge">memAlloc</code> call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries <code class="language-plaintext highlighter-rouge">1</code>
 and <code class="language-plaintext highlighter-rouge">50</code> behind a scene-local local-LZ sentinel, preserving pack footprint and

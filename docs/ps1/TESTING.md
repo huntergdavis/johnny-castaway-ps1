@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2505%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7533%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T00:40:59` |
-| Stats version | mixed; current five-yellow timing rows are stamped `visitor3-prev-visible-minus62-cleanup`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:29:17` |
+| Stats version | mixed; current five-yellow timing rows are stamped `visitor3-screen-clip-headroom`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /

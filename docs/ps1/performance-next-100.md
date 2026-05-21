@@ -60,15 +60,20 @@ speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
 `160..176`, the hot foreground scene-ID code-headroom pass, the W1-low
 previous-visible late-cleanup compaction, and the BUILDING2 high
 previous-visible cleanup-speed promotion, then the VISITOR3 high
-previous-visible cleanup-headroom pass with entry `62` excluded:
+previous-visible cleanup-headroom pass with entry `62` excluded, followed by
+the VISITOR3 high offscreen cleanup screen-clip headroom pass:
 `+0.2505%` public average over target / `99.7533%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4664%` / `100.4837%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3 high cleanup-headroom pass keeps timing flat at
-`1082/1045`, overrun `37`, and blocking `34` while changing `106` entries,
+`0` red. The latest VISITOR3 high screen-clip headroom pass keeps the
+five-yellow canary exact-flat while changing entries `101` and `116`, dropping
+active high-pack payload `437785 -> 436469`, and removing `7393` offscreen
+cleanup pixels with fixed pack footprint/LBA. The prior VISITOR3 high
+cleanup-headroom pass keeps timing flat at `1082/1045`, overrun `37`, and
+blocking `34` while changing `106` entries,
 dropping active payload `461631 -> 437785`, cleanup restore bytes
 `542088 -> 36092`, runtime restore bytes `471382 -> 56312`, and upload bytes
 `18785280 -> 18038400`; entry `62` is closed as phase-negative because the

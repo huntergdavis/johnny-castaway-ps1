@@ -31,9 +31,12 @@ VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2 high previous-visible cleanup
-promotion improves B2-high to `1343/1311` while reducing restore/upload work
-without moving the pack footprint. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
+PS-EXE bucket stays fixed. The latest VISITOR3 high screen-clip headroom pass
+clips offscreen cleanup spans in entries `101` and `116`, dropping active
+payload `437785 -> 436469` with exact-flat five-yellow timing. The latest
+BUILDING2 high previous-visible cleanup promotion improves B2-high to
+`1343/1311` while reducing restore/upload work without moving the pack
+footprint. Release gates now require a nearby `MEM_REGION_RATIONALE` for every
 `memAlloc` call site.
 The prior accepted JOHNNY1 pack promotion compresses full-frame entries `1`
 and `50` behind a scene-local local-LZ sentinel, preserving pack footprint and
