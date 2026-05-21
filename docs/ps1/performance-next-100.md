@@ -264,6 +264,13 @@ but refill-negative entry60 profile (`1470/1446 -> 1468/1445`, blocking
 `33 -> 28`, refill `5 -> 10`). Local-LZ may still be useful on rows with more
 slack, but these current yellow candidates need generated deadline/refill
 ownership or a preceding render/restore reduction before retrying.
+The allocator-era W1-low entry60 local-LZ retest is now closed under the newer
+`160..176` fresh-owner baseline. The raw `L4` frame60 form and the strongest
+modeled `{204..220}` static recovery row produced the same profile:
+`1809/1470/1446 -> 1807/1468/1443`, overrun `24 -> 25`, blocking
+`32 -> 27`, refill `4 -> 13`, reads `24 -> 28`, and due `4 -> 2`.
+This preserves the visible/blocking signal but makes the target/refill trade
+worse than the current baseline, so entry60 remains generated-deadline-only.
 The latest B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
