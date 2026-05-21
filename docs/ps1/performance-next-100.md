@@ -741,6 +741,15 @@ loop reads improve `4 -> 3`. Close raw retained-gap duplication for this early
 edge; the remaining sector-40 relief needs generated deadline/refill ownership
 or a paired data-shape change that does not tighten target cadence.
 
+Latest rejected VISITOR3 high scalar direct-stage/min-slack swing: frame `62`
+and frames `60..62` direct-stage predicates stayed exact-flat at
+`1372/1082/1045` while growing hot `foregroundPilotPlay` by `8` and `36`
+bytes. Lowering the high-tide window min-slack from `4` to `3` was actively
+negative (`1082/1045 -> 1085/1044`, overrun `37 -> 41`, blocking `34 -> 35`,
+refill `0 -> 19`) and did not reduce reads. Close frame-specific direct-stage
+and min-slack scalar probes for this early edge; continue only with no-hot-C
+generated deadline/refill metadata or a larger fixed-layout data-shape swing.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
@@ -759,7 +768,8 @@ or a paired data-shape change that does not tighten target cadence.
 4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` and the fourth `40..43` segment proved is real, but only
    through budgeted ownership; no more retained setup expansion, retained-gap
-   raw copies, or hand table rows.
+   raw copies, hot frame-specific direct-stage predicates, min-slack retunes, or
+   hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that avoids hot
    previous-frame decode predicates.
