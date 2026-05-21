@@ -486,6 +486,18 @@ Close the current `89..91` draw-tail sector-collapse split under strict B2-high
 gates; the next B2 data-shape path needs generated deadline/refill ownership or
 non-CD render/upload reduction first.
 
+Latest rejected VISITOR3 low read-group probe: the current read-plan's only
+low-risk saved-read candidate, `{86..98}`, was current-window-compatible and
+modeled as a scheduler-owned candidate with one saved read. The focused source
+probe did save that read (`18 -> 17`) but regressed VISITOR3 low
+`1369/1065/1039 -> 1374/1070/1041`, overrun `26 -> 29`, blocking `75 -> 79`,
+and due stayed `14`, with hot foreground symbols shifted by `+60` bytes.
+Artifact:
+`scratch/ps1-perf-iterate/visitor3-low-rg86-98-current/20260520-175126-3395181/summary.json`.
+Close `{86..98}` as a hand-authored read group. VISITOR3 low still needs
+frame/deadline/refill ownership or pack/render-byte slack before grouped reads
+are viable.
+
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
 `1075/1044` to `1071/1045` with overrun `31 -> 26`, blocking `45 -> 35`,
