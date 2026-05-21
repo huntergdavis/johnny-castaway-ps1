@@ -931,9 +931,17 @@ blocking/refill `50/17`, loop reads `44`, and due `7`;
 `scratch/ps1-perf-iterate/building2-high-rg249-265-current/20260521-024913-2253177/summary.json`
 and
 `scratch/ps1-perf-iterate/building2-high-rg318-334-current/20260521-025120-2265625/summary.json`.
-Close those direct B2 rows on this baseline. The remaining B2-high gap needs
-no-hot-C generated frame/deadline/refill ownership or pack/render slack, not
-another scalar table row.
+The follow-up `295..319` broad late-cluster retry is closed too: the direct row
+stayed exact-flat at `1583/1341/1313`, overrun `28`, blocking/refill `47/14`,
+reads/due `44/7`, and the narrow fresh-window owner for the same sector range
+also stayed exact-flat while growing `fgRuntimeFillWindowForEntry` by `88`
+bytes. Artifacts:
+`scratch/ps1-perf-iterate/b2high-rg295-319-current/20260521-165124-2804642/summary.json`
+and
+`scratch/ps1-perf-iterate/b2high-rg295-319-fresh-current/20260521-165411-2820413/summary.json`.
+Close those direct/fresh B2 rows on this baseline. The remaining B2-high gap
+needs no-hot-C generated frame/deadline/refill ownership or pack/render slack,
+not another scalar table row or hot C owner.
 
 Latest promoted BUILDING2 high trim-tail headroom split: after the `67..72`
 speed subset, the broader `74..82` draw-tail pass was binary-split. Entries
