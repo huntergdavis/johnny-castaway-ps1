@@ -154,6 +154,12 @@ passed correctness but still failed timing at `1372/1068/1039`, overrun `29`,
 blocking `77`, reads `19`, with `foregroundPilotPlay +76`. Close frame133 D4
 unless a no-hot-C predecoded/staged-delta path or a row-reference codec removes
 the decode/scheduler cost.
+Frame `134` is closed in the same family. Encoding it against raw frame `133`
+shrinks `17001 -> 14202` bytes and keeps the pack LBA plus the `233472` byte
+PS-EXE bucket fixed, but forcing only frame `134` through on-demand decode still
+regresses VISITOR3 low to `1372/1068/1039`, overrun `29`, blocking `78`, reads
+`19`, and grows `foregroundPilotPlay` by `36` bytes. The isolated terminal D4
+byte savings are not enough without a scheduler-neutral decode path.
 The latest BUILDING2 high payload trim then cuts entries `92`, `94`, and `95`
 from `8834 -> 6370`, `8873 -> 6939`, and `10247 -> 8827` bytes, reducing
 active payload `669408 -> 663590` while the five-yellow canary stays exact-flat
