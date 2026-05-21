@@ -694,6 +694,12 @@ it. Slack-3 and slack-4 both save one loop read and one due miss (`44/7 ->
 slack-5 is exact-flat and does not fire. Keep this cluster closed until paired
 data-shape slack or generated no-hot-C ownership can place it earlier.
 
+Latest rejected BUILDING2 high `310..326` group-boundary swing: replacing the
+accepted `315..327` group with `310..326` keeps table size stable and saves two
+reads (`44 -> 42`), but the firing form regresses `1341/1313 -> 1342/1312`,
+blocking `47 -> 48`, and refill `14 -> 16`; slack-4/5 do not fire. Keep the
+accepted `315..327` row.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
