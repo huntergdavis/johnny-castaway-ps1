@@ -647,6 +647,18 @@ rows `27898 -> 27872`, and loop read time `146 -> 145`. The paired static
 `129..153` owner still has the visible loop signal but remains closed because
 it regresses hidden refill `3 -> 10`.
 
+Latest rejected BUILDING2 high `81..86` no-decode relocation: nearby
+sector-aligned copies preserved file size, pack LBA, setup windows, and payload
+bytes, but all strict focused gates were phase-negative. The broad `81..86` and
+sector-saving-only `81/82/83/85` variants modeled four fewer entry sector
+crossings and saved one loop read (`44 -> 43`) while regressing B2-high to
+`1344/1313`, overrun `31`, blocking `50`, and refill `15`. Entry `81` alone
+was also negative (`target 1313 -> 1312`, blocking/refill `47/14 -> 48/15`),
+and entries `82/83/85` saved a read but tightened target to `1311` with the
+same blocking/refill regression. Close local sector alignment in the
+`109..132` pocket until generated deadline/refill ownership can keep the saved
+read hidden.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
@@ -675,7 +687,8 @@ it regresses hidden refill `3 -> 10`.
     are closed, but this remains a plausible generated-deadline cluster if it
     can avoid visible blocking.
 11. **BUILDING2 high selective no-decode relocation for entries `81..86`.**
-    Avoid whole-tail frame-order repacking and preserve accepted setup windows.
+    Closed for nearby sector-alignment copies on this baseline; only retry with
+    generated deadline/refill ownership or a new harmless-eviction proof.
 12. **BUILDING2 high entry-local preserve-entry clipping near `109..133`.**
     Exclude closed `89..91` and target only parser/restore bytes adjacent to
     the active candidate.
