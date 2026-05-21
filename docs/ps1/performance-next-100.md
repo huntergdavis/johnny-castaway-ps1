@@ -996,7 +996,10 @@ paired `{46..58}` read group regresses loop/target/overrun to `1072/1038/34`
 despite saving one read. The next VISITOR3-low queue should stop treating
 `46..58` as a raw table row and move to no-hot-C generated deadline/refill,
 terminal `239..255` ownership, or row-reference/setup-dictionary data-shape
-work.
+work. A current-baseline direct-table sweep of `{52..76}`, `{32..56}`, and
+`{239..251}` also stayed exact-flat at `1342/1069/1039`, overrun `30`,
+blocking/refill `68/0`, reads/due `14/11`, while only adding `+4` bytes to
+`foregroundPilotPlay`; close those rows as static table probes.
 
 Latest rejected W1-high fresh-owner generated probes: the post-screen-clip
 baseline tested C-side frame/slack-gated fresh-window ownership for the late
