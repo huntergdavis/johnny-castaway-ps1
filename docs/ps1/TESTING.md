@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.3%` (`0.2498%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7539%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:45:50` |
-| Stats version | mixed; current five-yellow timing rows are stamped `b2high-screen-clip-preserve-entry`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T02:11:56` |
+| Stats version | mixed; current five-yellow timing rows are stamped `w1low-screen-clip-preserve-entry`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -112,7 +112,20 @@ payload drops `461631 -> 437785`, cleanup restore bytes drop
 bytes drop `18785280 -> 18038400`. VISITOR3 low, BUILDING2 high, and
 WALKSTUF1 high/low stayed flat in the five-yellow canary.
 
-Latest promoted BUILDING2 high preserve-entry-size screen-clip note:
+Latest promoted W1-low preserve-entry-size screen-clip note: `WALK1LOW.FG2`
+now clips screen-invisible cleanup/draw span work while keeping each changed
+entry's table `dataSize`, offsets, pack footprint, and LBA fixed. Transform
+summary:
+`scratch/screen-clip-preserve-entry-w1low-current/WALK1LOW.summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/w1low-screen-clip-preserve-entry-current/20260521-021011-2028691/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/w1low-screen-clip-preserve-entry-five-yellow-current/20260521-021156-2038863/summary.json`.
+W1-low stays `1470/1446`, overrun `24`, and blocking `32`, while hidden refill
+improves `4 -> 3`; BUILDING2 high, VISITOR3 high/low, and WALKSTUF1 high stay
+exact-flat.
+
+Prior promoted BUILDING2 high preserve-entry-size screen-clip note:
 `BUILDING2.FG2` now clips screen-invisible cleanup/draw span work while keeping
 each changed entry's table `dataSize`, offsets, pack footprint, and LBA fixed.
 Transform summary:

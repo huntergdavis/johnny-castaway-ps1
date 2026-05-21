@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~11 min read · 2830 words
+          ~11 min read · 2863 words
         </p>
 
       <hr class="rule" />
@@ -138,9 +138,12 @@ VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2 high preserve-entry-size
-screen-clip promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1343/1312</code> while preserving
-entry sizes and pack LBA. The latest VISITOR3 high screen-clip headroom pass
+PS-EXE bucket stays fixed. The latest W1-low preserve-entry-size screen-clip
+promotion keeps W1-low at <code class="language-plaintext highlighter-rouge">1470/1446</code> while improving hidden refill <code class="language-plaintext highlighter-rouge">4 -&gt; 3</code>
+and preserving entry sizes and pack LBA. The latest BUILDING2 high
+preserve-entry-size screen-clip promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1343/1312</code>
+while preserving entry sizes and pack LBA. The latest VISITOR3 high
+screen-clip headroom pass
 clips offscreen cleanup spans in entries <code class="language-plaintext highlighter-rouge">101</code> and <code class="language-plaintext highlighter-rouge">116</code>, dropping active
 payload <code class="language-plaintext highlighter-rouge">437785 -&gt; 436469</code> with exact-flat five-yellow timing. Release gates
 now require a nearby <code class="language-plaintext highlighter-rouge">MEM_REGION_RATIONALE</code> for every
@@ -173,8 +176,9 @@ and letting high tide use prepare-before-window scheduler ownership; low replace
 low-only 48 KiB clean-rect chunking, then adds the <code class="language-plaintext highlighter-rouge">{91,107}</code> first-boundary
 read group and a split TRANSIENT <code class="language-plaintext highlighter-rouge">344..350</code> setup edge, retargets setup to
 <code class="language-plaintext highlighter-rouge">244..350</code> plus split <code class="language-plaintext highlighter-rouge">179..185</code>, adds <code class="language-plaintext highlighter-rouge">{113,129}</code>, and then adds
-<code class="language-plaintext highlighter-rouge">{355,371}</code> as same-speed read-work. It now measures <code class="language-plaintext highlighter-rouge">1470/1446</code>,
-blocking/refill/due <code class="language-plaintext highlighter-rouge">32/4/4</code> after the fresh-owner <code class="language-plaintext highlighter-rouge">160..176</code> pocket, with
+<code class="language-plaintext highlighter-rouge">{355,371}</code> as same-speed read-work, then applies the preserve-entry-size
+screen-clip pass for hidden-refill headroom. It now measures <code class="language-plaintext highlighter-rouge">1470/1446</code>,
+blocking/refill/due <code class="language-plaintext highlighter-rouge">32/3/4</code> after the fresh-owner <code class="language-plaintext highlighter-rouge">160..176</code> pocket, with
 loop reads/read time at <code class="language-plaintext highlighter-rouge">24/146</code>.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny

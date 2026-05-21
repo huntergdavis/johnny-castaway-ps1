@@ -31,9 +31,12 @@ VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest BUILDING2 high preserve-entry-size
-screen-clip promotion improves B2-high to `1343/1312` while preserving
-entry sizes and pack LBA. The latest VISITOR3 high screen-clip headroom pass
+PS-EXE bucket stays fixed. The latest W1-low preserve-entry-size screen-clip
+promotion keeps W1-low at `1470/1446` while improving hidden refill `4 -> 3`
+and preserving entry sizes and pack LBA. The latest BUILDING2 high
+preserve-entry-size screen-clip promotion improves B2-high to `1343/1312`
+while preserving entry sizes and pack LBA. The latest VISITOR3 high
+screen-clip headroom pass
 clips offscreen cleanup spans in entries `101` and `116`, dropping active
 payload `437785 -> 436469` with exact-flat five-yellow timing. Release gates
 now require a nearby `MEM_REGION_RATIONALE` for every
@@ -66,8 +69,9 @@ and letting high tide use prepare-before-window scheduler ownership; low replace
 low-only 48 KiB clean-rect chunking, then adds the `{91,107}` first-boundary
 read group and a split TRANSIENT `344..350` setup edge, retargets setup to
 `244..350` plus split `179..185`, adds `{113,129}`, and then adds
-`{355,371}` as same-speed read-work. It now measures `1470/1446`,
-blocking/refill/due `32/4/4` after the fresh-owner `160..176` pocket, with
+`{355,371}` as same-speed read-work, then applies the preserve-entry-size
+screen-clip pass for hidden-refill headroom. It now measures `1470/1446`,
+blocking/refill/due `32/3/4` after the fresh-owner `160..176` pocket, with
 loop reads/read time at `24/146`.
 Both paths keep pack LBA/sectors and the PS-EXE bucket fixed while
 reducing CD pressure. VISITOR3 now keeps only its tiny

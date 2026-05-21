@@ -176,8 +176,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2498%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7539%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T01:45:50` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-screen-clip-preserve-entry`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T02:11:56` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1low-screen-clip-preserve-entry`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -196,7 +196,16 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 `fgRuntimeTryPrefetchWindow -12`). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.
 
-Latest BUILDING2 high preserve-entry-size screen-clip track:
+Latest W1-low preserve-entry-size screen-clip track:
+`w1low-screen-clip-preserve-entry-five-yellow-current` clips
+screen-invisible cleanup/draw span work while keeping each changed entry's
+table `dataSize`, offset, file size, and LBA unchanged. W1-low stays
+`1470/1446`, overrun `24`, and blocking `32`, while hidden refill improves
+`4 -> 3`; logical active payload drops `755808 -> 712808`, with `73798`
+cleanup pixels and `39618` draw pixels removed. BUILDING2 high, VISITOR3
+high/low, and WALKSTUF1 high stay flat in the canonical five-yellow canary.
+
+Prior BUILDING2 high preserve-entry-size screen-clip track:
 `b2high-screen-clip-preserve-entry-five-yellow-current` clips screen-invisible
 cleanup/draw span work while keeping each changed entry's table `dataSize`,
 offset, file size, and LBA unchanged. B2-high improves `1343/1311 -> 1343/1312`,
@@ -234,7 +243,7 @@ restore bytes drop `438988 -> 116648`, and upload bytes drop
 `26753280 -> 24341120`. VISITOR3 high/low and WALKSTUF1 high/low stay
 exact-flat in the canonical five-yellow canary.
 
-Latest W1-low cleanup-headroom track:
+Prior W1-low cleanup-headroom track:
 `walkstuf1-low-prev-visible-cleanup-late-subset` teaches the compaction tool to
 preserve cleanup only where the previous parseable frame drew visible
 foreground, then applies it to late low-tide frames `194`, `196`, `198`, `200`,
@@ -328,7 +337,9 @@ keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
 `{355..371}` as same-speed work-volume. It keeps file size/LBA/sectors fixed
 and holds target speed at `98.367%` with scene/loop/target `1809/1470/1446`,
 overrun `24`, blocking/refill `32/4`, due `4`, and loop reads/read time
-`24/146` after the fresh-owner `160..176` follow-up. The prior frame132 payload trim moved
+`24/146` after the fresh-owner `160..176` follow-up. The preserve-entry-size
+screen-clip follow-up keeps speed flat while improving hidden refill to `3`.
+The prior frame132 payload trim moved
 `1473/1447 -> 1470/1445`; the `{378..390}` speed row moved
 `1470/1445 -> 1470/1446`, overrun `25 -> 24`, blocking/refill
 `35/7 -> 34/6`, and reads/read time `31/163 -> 30/159`. The current
@@ -1334,8 +1345,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:45:50</td>
-      <td>b2high-screen-clip-preserve-entry</td>
+      <td>2026-05-21T02:11:56</td>
+      <td>w1low-screen-clip-preserve-entry</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1343/1312</td>
@@ -2566,8 +2577,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:45:50</td>
-      <td>b2high-screen-clip-preserve-entry</td>
+      <td>2026-05-21T02:11:56</td>
+      <td>w1low-screen-clip-preserve-entry</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2580,8 +2591,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T01:45:50</td>
-      <td>b2high-screen-clip-preserve-entry</td>
+      <td>2026-05-21T02:11:56</td>
+      <td>w1low-screen-clip-preserve-entry</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2706,8 +2717,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T01:45:50</td>
-      <td>b2high-screen-clip-preserve-entry</td>
+      <td>2026-05-21T02:11:56</td>
+      <td>w1low-screen-clip-preserve-entry</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2720,13 +2731,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T01:45:50</td>
-      <td>b2high-screen-clip-preserve-entry</td>
+      <td>2026-05-21T02:11:56</td>
+      <td>w1low-screen-clip-preserve-entry</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
       <td>32</td>
-      <td>4</td>
+      <td>3</td>
       <td>4</td>
       <td></td>
     </tr>

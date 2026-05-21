@@ -61,15 +61,21 @@ speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
 previous-visible late-cleanup compaction, and the BUILDING2 high
 previous-visible cleanup-speed promotion, then the VISITOR3 high
 previous-visible cleanup-headroom pass with entry `62` excluded, followed by
-the VISITOR3 high offscreen cleanup screen-clip headroom pass, and the
-BUILDING2 high preserve-entry-size screen-clip promotion:
+the VISITOR3 high offscreen cleanup screen-clip headroom pass, the BUILDING2
+high preserve-entry-size screen-clip promotion, and the W1-low
+preserve-entry-size screen-clip headroom promotion:
 `+0.2498%` public average over target / `99.7539%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4671%` / `100.4843%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest BUILDING2 high preserve-entry-size screen-clip pass keeps
+`0` red. The latest W1-low preserve-entry-size screen-clip pass keeps pack
+footprint, LBA, offsets, and table `dataSize` fixed while clipping `63`
+entries, dropping logical active payload `755808 -> 712808`, removing `73798`
+cleanup pixels and `39618` draw pixels, and improving hidden refill `4 -> 3`
+while W1-low stays `1470/1446`, overrun `24`, and blocking `32`. The prior
+BUILDING2 high preserve-entry-size screen-clip pass keeps
 pack footprint, LBA, offsets, and table `dataSize` fixed while clipping `25`
 entries, dropping logical active payload `574094 -> 520974`, removing `1982`
 cleanup pixels and `40166` draw pixels, and improving B2-high
@@ -299,6 +305,12 @@ scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
 blocking/refill `43/13 -> 44/14`; paired `{372..388}` and `{272..284}` read
 groups did not recover the debt. Reopen as narrower frame subsets or with
 generated deadline/refill ownership, not as another broad clip.
+The current broad W1-low preserve-entry-size screen-clip pass is promoted as
+work/refill headroom. It changes `63` entries with fixed physical layout,
+reduces logical active payload `755808 -> 712808`, removes `73798` cleanup
+pixels and `39618` draw pixels, and keeps W1-low `1470/1446`, overrun `24`,
+blocking `32`, and due `4` while improving hidden refill `4 -> 3`. Artifact:
+`scratch/ps1-perf-iterate/w1low-screen-clip-preserve-entry-five-yellow-current/20260521-021156-2038863/summary.json`.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
