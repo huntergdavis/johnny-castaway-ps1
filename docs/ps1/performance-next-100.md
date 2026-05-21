@@ -591,55 +591,77 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 `40..46` passed but was inferior (`1071/1044`, overrun `27`, reads `4`).
 
 Current allocator-era big-swing queue after closing the scalar grouped-read,
-single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
+single-frame D4, duplicate-alias, isolated trim, sequential-Setloc, wider
+VISITOR3 setup-edge, W1-high mid screen-clip, B2 `{90..102}`, and W1-low
+min-slack-2 lanes:
 
-1. **BUILDING2 frame-deadline data-shape / render-reduction pass.** The
-   current read matrix has no safe standalone direct-read rows; B2-high's top
-   remaining candidates (`310..322`, `135..159`, `318..334`, `310..326`) are
-   scheduler-owned only. The next big swing should keep the cleanup/render win
-   and remove either frame-deadline restore/upload work or create generated
-   ownership that cannot fire into visible blocking.
-2. **Generated deadline/refill owner metadata sidecar.** Build a no-hot-C or
-   code-size-neutral generator that emits per-scene append-start, deadline, and
-   refill-budget metadata, then gates reads by frame/deadline ownership instead
-   of static sector ranges. First targets: B2-high `249..261` / `287..311`,
-   VISITOR3-low terminal/early clusters, VISITOR3-high `103..127`, W1-high
-   late `365..389`, and W1-low `142..160` / `153..177` follow-ups around the
-   promoted `160..176` owner pocket. Static ranges repeatedly saved reads but
-   moved cost into visible blocking/refill, so the next promotion must prove
-   ownership before firing.
-3. **VISITOR3 custom terminal data shape.** Replace more scalar V3-low/high
-   retries with a pixel-perfect row-reference or setup-dictionary codec for the
-   terminal frames that still drive due misses. The simple `134..136` sector
-   alignment and early static read groups are closed; the next swing must reduce
-   terminal bytes or reads without changing physical cadence blindly.
-4. **WALKSTUF1 no-decode pack canonicalization.** Attack W1-high and W1-low
-   with pack-side row-span/offset canonicalization that preserves pixels and
-   avoids D4 runtime decode. W1-high D4 frames `181/183/185/187` saved bytes but
-   moved cost into visible blocking; W1-low isolated preserve-offset trims are
-   exact-flat but too small. Favor sector-boundary changes only when a canary
-   proves no target/refill debt.
-5. **BUILDING2 high frame/deadline-owned data-shape.** Keep B2-high focused on
-   generated ownership plus selective no-decode relocation. Blanket duplicate
-   aliasing and isolated entries `89..91` regressed despite byte savings, while
-   held-slack and prefetch-only gates proved too coarse.
-6. **Render/restore work reduction with static pack ownership.** Revisit clean
-   restore/upload cuts only when the data is generated or pack-owned, not a hot
-   runtime cache. The remaining yellow rows still have enough restore/upload
-   work that a real static-background or sprite-local restore reduction could
-   pay off without touching CD phase.
-7. **Code-headroom/source-headroom promotions.** Promote exact-flat hot-code
-   shrink and work-volume rows even without speed wins when they keep pack LBAs
-   fixed and do not change timing. This compounds by making future generated
-   owner/data-shape code less likely to cross the PS-EXE bucket.
-8. **Allocator-aware sidecar validation.** Every sidecar or setup-residency
-   retry must pass the current allocator-era clean-rect/CACHE/TRANSIENT shape.
-   Additive retained setup failed structurally in W1-low and B2-high, so memory
-   viability is now a first-class gate, not a follow-up check.
-8. **Measured attribution before more scalar guesses.** Add or reuse per-row
-   attribution for dirty upload, restore, frame index, CD wait, and group-hit
-   identity before spending emulator time on another local range. Hand-authored
-   tables are demoted unless this attribution proves a new ownership class.
+1. **Generated deadline/refill owner metadata sidecar.** Emit per-scene
+   append-start, frame-deadline, refill-budget, and skip-reason metadata from
+   the read-plan artifacts, then keep the runtime hot path table-driven instead
+   of adding scene-specific C branches.
+2. **Generated owner hit-counter mode.** Before timing gates, log owner fires,
+   duplicate skips, slack skips, and refill-budget skips so failed rows explain
+   whether the problem is no-hit, wrong seam, or visible/refill debt.
+3. **Generated owner phase-tax scorer.** Penalize candidates already proven to
+   trade read savings into blocking/refill so the CSV stops resurfacing closed
+   scalar ranges as top items.
+4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
+   setup `40..49` proved is real, but only through budgeted ownership; no more
+   retained setup expansion or hand table rows.
+5. **VISITOR3 high entry `62` data-shape isolation.** Reduce the sector `36..42`
+   parser/restore burden without shrinking table size or moving the read seam,
+   then retry early ownership.
+6. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
+   minus-62 cleanup family into smaller sector-preserving subfamilies and prove
+   exact-flat timing before combining with any read owner.
+7. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
+   with a staged-safe row-reference or setup-dictionary payload that avoids hot
+   previous-frame decode predicates.
+8. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
+   explicit due/blocking/refill budgets rather than another static low-tide
+   table.
+9. **VISITOR3 low terminal gap placement.** Move or alias terminal payloads
+   only if startup ramp locality and the retained setup windows stay intact.
+10. **BUILDING2 high `109..133` generated owner.** This emerged after the
+    failed `{90..102}` row; test it only with budgeted fire/no-fire metadata.
+11. **BUILDING2 high `249..265` generated owner.** The raw/additive scalar rows
+    are closed, but this remains a plausible generated-deadline cluster if it
+    can avoid visible blocking.
+12. **BUILDING2 high selective no-decode relocation for entries `81..86`.**
+    Avoid whole-tail frame-order repacking and preserve accepted setup windows.
+13. **BUILDING2 high entry-local preserve-entry clipping near `109..133`.**
+    Exclude closed `89..91` and target only parser/restore bytes adjacent to
+    the active candidate.
+14. **BUILDING2 high paired data-shape plus generated row proof.** Promote
+    neither half alone; require the data-shape slack and row fire to pass in
+    the same strict focused gate.
+15. **BUILDING2 high duplicate alias cleanup.** Continue only exact duplicate
+    setup-edge aliases; do not retry the broad runtime duplicate cache.
+16. **W1-high exact entry-index screen-clip tooling.** Add entry-index-only
+    selection so subsets can exclude known traps `55`/`56`; the current script's
+    source-or-entry matching made the `58..67` probe too broad.
+17. **W1-high `372..388` generated owner.** Raw rows save reads but need a
+    no-refill-debt guard; test through metadata and hit counters.
+18. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
+    metadata is code-size-neutral; previous fresh-owner C hooks were inert and
+    bloated hot code.
+19. **W1-high cleanup-only pack canonicalization after `204..211`.** Favor
+    no-sector-change cleanup-only frames and exact-flat five-yellow canaries.
+20. **W1-high setup-resident ownership with allocator accounting.** Any new
+    retained slice must prove CACHE/TRANSIENT clean-rect headroom before a
+    timing run.
+21. **W1-low `193..217` generated owner.** Min-slack-2 proved slack `3` is too
+    expensive; retry only with a strict refill budget.
+22. **W1-low `129..153` / `136..160` generated owner.** Static rows are closed;
+    use per-frame fire windows or skip.
+23. **W1-low sector-split data shape for frames `90..99`.** Preserve early ramp
+    locality and avoid the failed setup-prime relocation pattern.
+24. **Cross-row fixed-layout code-headroom pass.** Bank exact-flat hot-code
+    shrink before adding generated metadata, so new owners do not cross the
+    PS-EXE bucket or shift foreground LBAs.
+25. **Allocator-aware generated sidecar validation.** Treat CACHE/TRANSIENT
+    fit, clean-rect chunking, and setup residency as first-class gates before
+    emulator timing, not as follow-up debugging.
 
 Latest promoted code-headroom row: caching the active foreground scene ID
 removes repeated hot-path scene-name compares from the scheduler while keeping
