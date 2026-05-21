@@ -579,12 +579,24 @@ def get(section, key, default=0):
     value = sections.get(section, {}).get(key, default)
     return value if isinstance(value, int) else default
 
-def expected_scene_from_boot(boot_text):
+def expected_config_from_boot(boot_text):
     parts = boot_text.split()
+    expected = {}
     for idx, token in enumerate(parts):
         if token == "fgpilot" and idx + 1 < len(parts):
-            return parts[idx + 1].lower()
-    return None
+            expected["scene"] = parts[idx + 1].lower()
+        elif token in ("lowtide", "night", "holiday", "raft-stage") and idx + 1 < len(parts):
+            try:
+                key = "raft" if token == "raft-stage" else token
+                expected[key] = int(parts[idx + 1])
+            except ValueError:
+                pass
+        elif token == "island-pos" and idx + 2 < len(parts):
+            try:
+                expected["pos"] = f"{int(parts[idx + 1])},{int(parts[idx + 2])}"
+            except ValueError:
+                pass
+    return expected
 
 failures = []
 warnings = []
@@ -623,13 +635,22 @@ upload_bytes = get("gfx", "upload_bytes", 0)
 restore_bytes = get("gfx", "restore_bytes", 0)
 compose_pixels = get("gfx", "compose_pixels", get("frame", "pixels", 0))
 
-expected_scene_name = expected_scene_from_boot(boot)
+expected_config = expected_config_from_boot(boot)
+expected_scene_name = expected_config.get("scene")
 scene_name = str(sections.get("scene", {}).get("scene", "")).lower()
 if expected_scene_name and sections:
     if scene_name != expected_scene_name:
         failures.append(f"scene_mismatch expected={expected_scene_name} actual={scene_name or '?'}")
     if any(line.startswith("JCPICK ") for line in tty_lines):
         failures.append("explicit_scene_fell_through_to_picker")
+    scene_section = sections.get("scene", {})
+    for key in ("lowtide", "night", "holiday", "raft", "pos"):
+        if key not in expected_config:
+            continue
+        actual = scene_section.get(key)
+        expected = expected_config[key]
+        if str(actual) != str(expected):
+            failures.append(f"scene_option_mismatch {key}: expected={expected} actual={actual}")
 scene_entries = get("scene", "entries", 0)
 loop_start = get("timing", "loop_start", 0)
 advances = get("timing", "advances", 0)
@@ -669,9 +690,19 @@ if get("render", "present_wait_vb", 0) > 0:
     suggestions.append("present: present_wait_vb is nonzero")
 
 fingerprint = {
+    "case": {
+        "scene": scene_name or expected_scene_name,
+        "lowtide": sections.get("scene", {}).get("lowtide", expected_config.get("lowtide")),
+        "night": sections.get("scene", {}).get("night", expected_config.get("night")),
+        "holiday": sections.get("scene", {}).get("holiday", expected_config.get("holiday")),
+        "raft": sections.get("scene", {}).get("raft", expected_config.get("raft")),
+        "pos": sections.get("scene", {}).get("pos", expected_config.get("pos")),
+    },
     "metrics": {
+        "scene_vb": get("timing", "scene_vb", 0),
         "loop_vb": loop_vb,
         "target_vb": target_vb,
+        "setup_vb": get("setup", "setup_vb", 0),
         "blocking_vb": blocking_vb,
         "prefetch_overrun_vb": get("prefetch", "overrun_vb", 0),
         "loop_reads": get("cd", "loop_reads", 0),
@@ -706,7 +737,7 @@ summary = {
     "log_file": str(log_path.resolve()),
     "sections": sections,
     "expected": {
-        "scene": expected_scene_name,
+        **expected_config,
     },
     "build": {
         "ps_exe": {
@@ -1282,10 +1313,37 @@ def hot_symbols(case):
     symbols = path_value(case, ("build", "map", "symbols"))
     return symbols if isinstance(symbols, dict) else {}
 
+def case_identity_from_case(case):
+    sections = case.get("sections", {})
+    scene = sections.get("scene", {}) if isinstance(sections, dict) else {}
+    expected = case.get("expected", {})
+    expected = expected if isinstance(expected, dict) else {}
+    identity = {
+        "scene": scene.get("scene", expected.get("scene")),
+        "lowtide": scene.get("lowtide", expected.get("lowtide")),
+        "night": scene.get("night", expected.get("night")),
+        "holiday": scene.get("holiday", expected.get("holiday")),
+        "raft": scene.get("raft", expected.get("raft")),
+        "pos": scene.get("pos", expected.get("pos")),
+    }
+    normalized = {}
+    for key, value in identity.items():
+        if value is None or value == "":
+            continue
+        if key == "scene":
+            normalized[key] = str(value).lower()
+        else:
+            normalized[key] = value
+    return normalized
+
 def synthesize_fingerprint(case):
     existing = case.get("fingerprint")
     if isinstance(existing, dict):
-        return existing
+        if "case" in existing:
+            return existing
+        merged = dict(existing)
+        merged["case"] = case_identity_from_case(case)
+        return merged
     sections = case.get("sections", {})
     timing = sections.get("timing", {})
     setup = sections.get("setup", {})
@@ -1298,6 +1356,7 @@ def synthesize_fingerprint(case):
     build_map = build.get("map", {})
     symbols = hot_symbols(case)
     return {
+        "case": case_identity_from_case(case),
         "metrics": {
             "scene_vb": timing.get("scene_vb"),
             "loop_vb": timing.get("loop_vb"),
@@ -1328,7 +1387,7 @@ def run_git(case):
 
 def fingerprint_deltas(current, previous):
     deltas = {}
-    for section in ("metrics", "layout", "hot_symbol_sizes"):
+    for section in ("case", "metrics", "layout", "hot_symbol_sizes"):
         section_deltas = {}
         current_section = current.get(section, {})
         previous_section = previous.get(section, {})
@@ -1383,9 +1442,26 @@ for case in cases:
             warnings.append("baseline missing run.git metadata; stale-baseline commit check is unavailable")
         case["baseline_fingerprint_comparison"] = fingerprint
         comparisons = []
+        case_identity = []
         work_identity = []
         layout_identity = []
         symbol_layout = []
+        current_case = current_fingerprint.get("case", {})
+        previous_case = previous_fingerprint.get("case", {})
+        if isinstance(current_case, dict) and isinstance(previous_case, dict):
+            for key in sorted(set(current_case) | set(previous_case)):
+                current = current_case.get(key)
+                previous = previous_case.get(key)
+                if current == previous:
+                    continue
+                case_identity.append({
+                    "field": f"case.{key}",
+                    "baseline": previous,
+                    "current": current,
+                })
+                failures.append(
+                    f"case identity {key}: baseline={previous} current={current}"
+                )
         for section, key in compare_fields:
             current = field(case, section, key)
             previous = field(base, section, key)
@@ -1443,6 +1519,8 @@ for case in cases:
             if current != previous and not allow_layout_change:
                 failures.append(f"layout identity {name}: baseline={previous} current={current}")
         case["baseline_comparison"] = comparisons
+        if case_identity:
+            case["case_identity_comparison"] = case_identity
         if work_identity:
             case["work_identity_comparison"] = work_identity
         if layout_identity:

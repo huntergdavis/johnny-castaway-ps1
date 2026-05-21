@@ -140,8 +140,10 @@ relocates high frame `139`'s raw payload into the already retained `203..229`
 gap, then adds a third high-tide retained setup segment at relative sectors
 `228..262`, then moves high frames `56` and `57` raw into that paid gap, merges high setup coverage into `203..262`, pays the early retained setup edge `40..47`, slides it to `42..49` as same-speed CD-pressure work, and
 caps tight-slack speculative refills at `56 KiB`:
-high improves `1232/1033 -> 1070/1046`, blocking `478 -> 35`, reads
-`137 -> 4`, and due `137 -> 2`; low improves `1231/1040 -> 1065/1039`,
+high reaches `1070/1046`, blocking `478 -> 35`, reads `137 -> 4`, and due
+`137 -> 2` in the setup-edge raft-stage-4 pressure canary, but the canonical
+under-green matrix row is `1082/1045` at raft-stage 0 / island `0,0`; low
+improves `1231/1040 -> 1065/1039`,
 blocking `438 -> 75`, reads `126 -> 18`, and due `126 -> 14`. WALKSTUF1 low
 then replaces its split `197..243` plus `410..434` setup residency with one
 retained `238..344` segment after low-only 48 KiB clean-rect chunking, then
@@ -614,6 +616,12 @@ left neighbor `41..48` is timing-flat but no better than the prior read count,
 and the right neighbor `43..50` regresses to `1398/1077/1042`, overrun `35`,
 blocking `44`, and refill `10`. This is a CD-pressure baseline, not a VBlank
 speed win; public/raw rollups and bands remain unchanged.
+
+Regression-audit note: that `1070/1046` setup-edge proof was run with
+`raft-stage 4` and island position `-154,54`. The canonical under-green
+VISITOR3-high row uses `raft-stage 0` and island position `0,0`, where the
+current matrix baseline is `1082/1045`; do not compare these two cases as a
+speed regression.
 
 Prior promoted VISITOR3 high setup-edge merge: merge terminal coverage into
 retained `203..262` and spend the largest allocator-safe spare retained edge on
