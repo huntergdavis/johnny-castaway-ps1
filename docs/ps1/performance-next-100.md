@@ -657,6 +657,21 @@ Close B2-high `249..261` hot scheduler ownership on this baseline. The next
 B2-high swing should reduce pack/render work or use no-hot-C generated
 deadline/refill metadata, not another C-side append owner.
 
+Latest rejected BUILDING2 high direct read-table sweep: after the
+preserve-entry-size screen-clip baseline, replacing the accepted `{315..327}`
+tail row with `{310..322}` kept scene/loop flat but gave back pressure wins
+(`31/50/17 -> 32/51/18` overrun/blocking/refill);
+`scratch/ps1-perf-iterate/building2-high-rg310-322-replace315-current/20260521-024703-2240496/summary.json`.
+The two low-visible-risk additive rows `{249..265}` and `{318..334}` were safe
+but inert: B2-high stayed `1585/1343/1312`, overrun `31`,
+blocking/refill `50/17`, loop reads `44`, and due `7`;
+`scratch/ps1-perf-iterate/building2-high-rg249-265-current/20260521-024913-2253177/summary.json`
+and
+`scratch/ps1-perf-iterate/building2-high-rg318-334-current/20260521-025120-2265625/summary.json`.
+Close those direct B2 rows on this baseline. The remaining B2-high gap needs
+no-hot-C generated frame/deadline/refill ownership or pack/render slack, not
+another scalar table row.
+
 Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
 B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,
 `{255..271}`, and `{287..311}` fired only while a prepared frame was already
