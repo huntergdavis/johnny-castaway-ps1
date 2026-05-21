@@ -739,6 +739,21 @@ Close VISITOR3 low hand-authored read groups on this baseline. VISITOR3 low
 still needs no-hot-C generated frame/deadline/refill ownership or custom
 terminal data shape before grouped reads are viable.
 
+Latest rejected W1-high fresh-owner generated probes: the post-screen-clip
+baseline tested C-side frame/slack-gated fresh-window ownership for the late
+`365..389` pocket and then the stronger early `84..108` pocket. Both focused
+gates stayed exact-flat at W1-high `1808/1472/1441`, overrun `31`,
+blocking/refill `43/13`, loop reads `41`, and due `7`, so
+`--require-improvement` rejected them; the code also grew
+`fgRuntimeFillWindowForEntry` by `136` bytes for late-only and `260` bytes for
+early+late. Artifacts:
+`scratch/ps1-perf-iterate/walkstuf1-high-owner365-389-fresh-current/20260521-031835-2421477/summary.json`
+and
+`scratch/ps1-perf-iterate/walkstuf1-high-owner84-108-fresh-current/20260521-032033-2432928/summary.json`.
+Close simple W1-high fresh-owner hooks for those pockets on this baseline; the
+next generated-owner swing needs an owner-hit counter plus no-hot-C metadata or
+a deeper append/deadline owner, not more hot C branches around fresh windows.
+
 Latest rejected WALKSTUF1 high D4 payload swing: frames `181`, `183`, `185`,
 and `187` delta-compress against the prior frame and save `11465` active bytes
 with fixed pack size, pack LBA, and PS-EXE bucket. The focused gate still
