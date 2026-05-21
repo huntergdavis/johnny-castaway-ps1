@@ -166,6 +166,13 @@ or prior data-shape reduction. A prefetch-only generated-owner probe for the
 same row is also closed: it regressed B2-high to `1631/1357/1314`, overrun
 `43`, blocking `55`, due `8`, and reads `42` while only improving prefetch
 overrun `16 -> 14`.
+The broad B2-high group-slack gate is closed as well. Raising all current
+B2-high read groups to `minSlackVBlanks=6` kept the visible timing exact-flat
+at `1621/1347/1313`, but regressed pressure instead of relieving it:
+blocking `39 -> 41`, loop reads `40 -> 42`, and due `5 -> 6`, with hidden
+refill still `16`. The accepted read groups are not the remaining refill owner
+by themselves; B2-high now needs generated frame/deadline ownership or a prior
+data-shape/render-byte reduction before more scalar slack gating.
 The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
 W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
 `24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
