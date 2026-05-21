@@ -483,6 +483,17 @@ blocking and due misses (`1809/1470/1446 -> 1811/1472/1446`, blocking
 `33 -> 40`, due `4 -> 6`). Entry60 should not be retried with scalar prepare
 or min-slack controls; it needs generated frame/deadline/refill ownership or a
 new render/data-shape reduction that creates slack first.
+The current W1-low generated-style owner retry closes the `129..153` C-side
+fresh-owner path on top of the cleanup-slack and W1-high late-cleanup baseline.
+Converting fresh owners to a table and adding frames `87..96` owning sectors
+`129..153` with slack `4` saved loop reads `24 -> 22`, but regressed W1-low to
+`1811/1472/1445`, overrun `27`, blocking/refill `39/10`. Tightening the same
+owner to slack `8` was worse at `1815/1476/1443`, overrun `33`,
+blocking/refill `40/14`, and reads `28`. This keeps the read signal real but
+confirms the C-side generated-owner shape still spends the signal as
+visible/refill phase debt. Retry `129..153` only with offline no-hot-C
+deadline/refill metadata or a preceding data-shape/render reduction that
+changes the phase before the owner fires.
 The preserve-offset restore-minus-current rescan is now closed for the current
 five-yellow set. After hardening the transformer to copy unparseable payloads
 and emit JSON summaries, the scan found zero same-offset shrinkable entries in
