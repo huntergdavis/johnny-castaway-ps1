@@ -415,38 +415,59 @@ BUILDING2 high, and WALKSTUF1 high/low exact-flat. The `36..48` shape is
 closed as structural allocator pressure (`req=178176 have=168956`), and
 `40..46` passed but was inferior (`1071/1044`, overrun `27`, reads `4`).
 
-Current allocator-era big-swing queue after closing the W1-low static table
-lane, banking the W1-high frame56/`{178..194}`, `{423..439}`, and `{404..416}` CD-pressure
-rows, promoting the VISITOR3 high 80 KiB clean-relief window, setup-edge `40..47` speed row, and setup-edge `42..49` CD-pressure slide, and banking the
-B2-high `{185..197}`/`{158..174}` CD-pressure rows, the B2-high entries
-`141`/`142`/`38` setup-alias cleanups, and the W1-low entry65/entry39/entry55/entry56/entry59/entry63/entry66/entry85 payload-only trims:
+Current allocator-era big-swing queue after closing the scalar grouped-read,
+single-frame D4, duplicate-alias, isolated trim, and sequential-Setloc lanes:
 
-1. Generate BUILDING2-high append-start/deadline ownership for the `287..311` and hot `122..146` families rather than another static table row; raw `{249..261}` regressed, slack8 `{249..261}` also regressed, guarded slack9/10/12 `{249..261}` was inert, prefetch-only `{249..261}` regressed, raw `{287..311}` was exact-flat, and the prepared-frame-idle generated-owner probe crossed the PS-EXE bucket while regressing loop/blocking/refill.
-2. Try BUILDING2-high no-decode payload boundary relocation only when it stays setup-resident and has per-frame deadline/refill ownership; high-tide D4 decode, first-frame setup/upload variants, the entries `90..95` setup-swap, backward hot duplicate aliases, full playback-order repack, setup-preserving repack, tail-only repack, the `3..43` setup-edge extension, and the paired `38`/`41` setup-edge alias are closed. Single entry38 is now banked exact-flat.
-3. Add a BUILDING2-high refill-budget owner gate that rejects candidate work when it would tighten `target_vb` or increase hidden refill, rather than using only held-slack thresholds; broad prepare-before-window and `{249..261,8}` both prove held slack alone is insufficient.
-4. Reduce B2-high static upload/restore rows before another retained setup segment, because additive `122..146` setup coverage and the later `86/90/104/135/151..242` setup-residency ladder hit the clean-rect/CACHE cliff; the memory-safe `185..242` form regressed active cadence, restore-minus-current is now a no-op, and local-LZ plus isolated preserve-offset draw-tail trims on entries `89..91` regressed despite sector savings.
-5. Generate VISITOR3-low deadline ownership for the early `1..30` cluster while preserving all three accepted retained segments.
-6. Reduce VISITOR3-low clean/setup memory first, then retry a fourth tiny retained segment for the early cluster if TRANSIENT headroom appears.
-7. Try VISITOR3-low static-upload/restore trimming only with a clean-rect allocation budget; the W1-low restore-minus-current probe and W1-high entry55 draw-tail collapse both exhausted CACHE before `JCPERF2`.
-8. Generate VISITOR3-high deadline ownership for the active `103..127` window without stealing the terminal `203..262`, early `42..49`, or 80 KiB relief-window budgets.
-9. Try VISITOR3-high clean/upload ownership for the remaining tiny-read profile; the scalar early `40..52` fresh/direct group is closed because it moved saved reads into visible blocking/refill debt.
-10. Test VISITOR3-high no-decode boundary relocation for frame129/nearby D4 candidates instead of same-offset D4-only transforms.
-11. Generate W1-high deadline-owned read metadata only if it is code-size-neutral and budget-aware; `345..361`, `84..108`, and `92..108` are closed as hand-table/direct-stage forms, and the `walkstuf1` slack-5 early-prepare owner is exact-flat with hot-code growth.
-12. Test W1-high static-upload/restore reduction before more read-group rows, because scalar grouped appends are closed, D4-only frame94 was inert, restore-minus-current has no current shrink, and local-LZ entry55 regressed cadence.
-13. Run W1-high fixed-sector preserve-offset payload trims as work-volume canaries, but only promote exact-flat rows and do not count them as speed wins.
-14. Generate W1-low per-entry deadline/refill-budget metadata for the early-mid `142..177` pocket and only fire reads when target/refill slack is preserved; scalar 4-VBlank guarding, entry60 recovery rows, and broad low-tide no-direct-stage ownership are closed.
-15. Generate W1-low owner rows from observed append starts instead of physical sector ranges, so the scheduler can skip overread while keeping any `160..176` signal; static `{129..153}` and `{160..176}` plus entry60/guard are closed.
-16. Add a W1-low refill-budget gate that rejects candidate work when it would tighten `target_vb`, increase hidden refill, or trade hidden refill for visible blocking; entry60 plus `{229..241}`, slack-5 prepare, and the minSlack4 floor prove simple static/scalar recovery rows are not enough.
-17. Try a W1-low per-frame dirty-upload cap below the current clean-rect chunking knee, focused on the active-loop rows that still report `633` upload chunks.
-18. Split W1-low clean-rect restore into a static background band plus sprite-local restores to attack the remaining `532170` restore bytes without touching CD phase.
-19. Continue preserve-offset W1-low payload trims only on fixed-sector/non-empty candidates near the active early-mid read boundaries; entry65, entry39, entry55, entry56, entry59, entry63, entry66, and entry85 are banked exact-flat, entry60 is closed through scalar guard/`{199..211}`/`{204..220}`/`{229..241}`/`{160..176}`/window-growth/slack-5-prepare/minSlack4/local-LZ recovery attempts until generated refill-budget ownership exists, and sector-collapse candidates still require strict canaries.
-20. Test W1-low frame/data relocation that moves bytes into already paid setup coverage while preserving physical read starts for current accepted groups.
-21. Add per-yellow-row perf logging for dirty upload bytes, restore bytes, frame index, and CD wait in the same row so the next swing is selected by measured active-loop work.
-22. Add an automated preserve-offset trim scanner that rejects candidates if modeled sector starts or current accepted read groups change.
-23. Add an automated generated-owner scanner that simulates target/refill slack before emitting a temporary owner row for one yellow scene.
-24. Test a scene-local static-background restore cache for the five yellow rows only, keeping background audio/global heap outside the reset.
-25. Re-run the five-yellow baseline after every generated-owner promotion so the next queue uses current CD/read/restore attribution instead of stale candidate ranks.
-26. If clean-rect restore scanning is revisited, make it generated/pack-owned or code-size-neutral first; the runtime row-owner cache crossed the PS-EXE sector bucket and regressed B2-high before showing CPU savings.
+1. **Generated deadline/refill owner metadata sidecar.** Build a no-hot-C or
+   code-size-neutral generator that emits per-scene append-start, deadline, and
+   refill-budget metadata, then gates reads by frame/deadline ownership instead
+   of static sector ranges. First targets: B2-high `249..261` / `287..311`,
+   VISITOR3-low terminal/early clusters, VISITOR3-high `103..127`, W1-high
+   late `365..389`, and W1-low `142..177`. Static ranges repeatedly saved reads
+   but moved cost into visible blocking/refill, so the next promotion must prove
+   ownership before firing.
+2. **VISITOR3 custom terminal data shape.** Replace more scalar V3-low/high
+   retries with a pixel-perfect row-reference or setup-dictionary codec for the
+   terminal frames that still drive due misses. The simple `134..136` sector
+   alignment and early static read groups are closed; the next swing must reduce
+   terminal bytes or reads without changing physical cadence blindly.
+3. **WALKSTUF1 no-decode pack canonicalization.** Attack W1-high and W1-low
+   with pack-side row-span/offset canonicalization that preserves pixels and
+   avoids D4 runtime decode. W1-high D4 frames `181/183/185/187` saved bytes but
+   moved cost into visible blocking; W1-low isolated preserve-offset trims are
+   exact-flat but too small. Favor sector-boundary changes only when a canary
+   proves no target/refill debt.
+4. **BUILDING2 high frame/deadline-owned data-shape.** Keep B2-high focused on
+   generated ownership plus selective no-decode relocation. Blanket duplicate
+   aliasing and isolated entries `89..91` regressed despite byte savings, while
+   held-slack and prefetch-only gates proved too coarse.
+5. **Render/restore work reduction with static pack ownership.** Revisit clean
+   restore/upload cuts only when the data is generated or pack-owned, not a hot
+   runtime cache. The remaining yellow rows still have enough restore/upload
+   work that a real static-background or sprite-local restore reduction could
+   pay off without touching CD phase.
+6. **Code-headroom/source-headroom promotions.** Promote exact-flat hot-code
+   shrink and work-volume rows even without speed wins when they keep pack LBAs
+   fixed and do not change timing. This compounds by making future generated
+   owner/data-shape code less likely to cross the PS-EXE bucket.
+7. **Allocator-aware sidecar validation.** Every sidecar or setup-residency
+   retry must pass the current allocator-era clean-rect/CACHE/TRANSIENT shape.
+   Additive retained setup failed structurally in W1-low and B2-high, so memory
+   viability is now a first-class gate, not a follow-up check.
+8. **Measured attribution before more scalar guesses.** Add or reuse per-row
+   attribution for dirty upload, restore, frame index, CD wait, and group-hit
+   identity before spending emulator time on another local range. Hand-authored
+   tables are demoted unless this attribution proves a new ownership class.
+
+Latest promoted code-headroom row: lowering `GR_UPLOAD_BAND_MERGE_GAP` from
+`8` to `0` keeps the focused W1-high/low proof and five-yellow canary
+exact-flat while shrinking `grDrawBackground` by `36` bytes and leaving the
+PS-EXE bucket and pack LBAs fixed. This is not counted as a speed win, but it
+is now the default source-headroom baseline for the generated-owner and
+render/data-shape swings above. Artifacts:
+`scratch/ps1-perf-iterate/upload-band-gap0-walkstuf1-current/20260520-192341-3919459/summary.json`
+and
+`scratch/ps1-perf-iterate/upload-band-gap0-five-yellow-current/20260520-192708-3939015/summary.json`.
 
 Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
 B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,

@@ -937,57 +937,29 @@ small prefetch buffer live when full setup-prime/window buffers no longer fit.
 
 Next plausible wins, in priority order:
 
-1. **Generated read grouping or setup/data-shape work.** VISITOR3 high/low
-   remain the biggest gaps after the allocator-era clean-relief promotions
-   (`+40/+35` VBlanks), followed by WALKSTUF1 low (`+38`), BUILDING4 low
-   (`+37`), BUILDING2 high and WALKSTUF1 high (`+34` each), and BUILDING2 low
-   (`+23`).
-   VISITOR3's
-   local C read-table rows are exhausted, so the next CD-shape pass needs
-   generated scheduler ownership, selective preprocessing, or further pack
-   data-shape work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
-   same-layout append because `2111224` bytes of payload plus rect metadata
-   exceed the current `970076` bytes of VISITOR3 high-pack slack. The
-   budgeted analyzer target keeps this same-footprint lane alive with `78`
-   selected frames, `968904` payload+rect bytes, and `4232112` modeled upload
-   bytes saved before runtime implementation. The empty-hold no-op recast is
-   closed because the current packs expose `0` zero-visual-work entries. The
-   packed-draw metadata probes prove a real VISITOR3 byte-reduction signal:
-   the v4 draw-tail trim plus VISITOR3 stage guard is now promoted, while the
-   v7 runtime decoder shape remains rejected because it perturbs BUILDING2 and
-   BUILDING4 canaries. A layout-neutral packed-delta retry keeps LBAs and the
-   PS-EXE bucket fixed, but its function-scoped PAL4 span `-Os` trade regresses
-   VISITOR3 high while improving low tide, so that C-side shape is closed too. An entry-origin
-   recentering size gate also saves `0` bytes on current VISITOR3 high/low
-   FGP3/v4 payloads, so that zero-runtime-code coordinate-shift lane is closed
-   before emulator time.
-2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
-   present-prep experiments regressed because they stole CD prefetch slack;
-   the next scheduler needs separate render-prep and CD-prefetch budgets.
-3. **X-aware dirty upload and rect-pressure control.** The FISHING 1 canary
-   still restores 251 KB and uploads 8.5 MB; larger scenes carry more upload
-   pressure.
-4. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
-   bytes, but dense scenes still pay per-span/per-pixel runtime costs.
-5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
-   now green after the guarded prefetch-preserve pass, and BUILDING6 moved out
-   of the current under-99 focus set after compact-pack promotion. The remaining
-   hard rows are VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high, and
-   BUILDING4 low. Hand-authored read groups and scalar window changes have
-   repeatedly shifted cadence instead of safely removing work. The latest
-   WALKSTUF1 low v747..v876 pass keeps the row exact-flat except for the v859
-   one-VBlank target/overrun win while shrinking the no-shift frame list
-   through frame `107` in-place (`879801 -> 790322` active payload), and v760
-   restores the bounded CD fast-poll runtime to `60/272` read time, so W1-low
-   now has a safe no-shift payload lane but still needs another sector/read
-   timing conversion. The
-   BUILDING4 low v387 pass closes the local `178..202` append group and
-   `40/48 KiB` stream-window growth: reads fell, but visible blocking and loop
-   overrun rose sharply. The newer v746 in-place frame291 shrink proves
-   no-shift payload reduction is safe, cutting active payload `855284 -> 849109`
-   while staying exact-flat, so that row now needs sector-changing no-shift
-   byte reduction, generated deadline ownership, or selective preprocessing
-   rather than larger raw fresh fills.
+1. **Generated deadline/refill owner metadata.** The remaining yellow rows are
+   BUILDING2 high, VISITOR3 high/low, and WALKSTUF1 high/low. Hand-authored
+   read tables now repeatedly save reads while shifting cost into visible
+   blocking or hidden refill, so the next CD swing is a generated sidecar that
+   owns append-start, frame deadline, and refill budget before any grouped read
+   fires.
+2. **VISITOR3 terminal data shape.** VISITOR3 high/low still need a different
+   data representation, not another scalar range. The next candidate is a
+   pixel-perfect row-reference or setup-dictionary terminal-frame codec after
+   simple alignment and early read groups closed.
+3. **WALKSTUF1 no-decode pack canonicalization.** W1-high D4 byte wins moved
+   work into visible blocking, and W1-low isolated trims are exact-flat. The
+   next W1 swing should shrink or canonicalize pack rows without adding runtime
+   decode cost or changing sector cadence unless the canary proves it.
+4. **BUILDING2 frame/deadline-owned data-shape.** B2-high duplicate aliasing,
+   isolated entry trims, broad slack gates, and prefetch-only ownership all
+   failed. Future B2 work needs generated per-frame ownership or a selective
+   no-decode relocation that preserves the accepted cadence.
+5. **Render/restore and source-headroom compounding.** Exact-flat code shrink
+   remains promotable when it keeps pack LBAs fixed. The latest dirty upload
+   band merge retune keeps the five-yellow canary exact-flat while shrinking
+   `grDrawBackground` by `36` bytes, giving future generated-owner and
+   data-shape code more PS-EXE bucket headroom.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
