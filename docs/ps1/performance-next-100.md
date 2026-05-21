@@ -514,8 +514,12 @@ bytes, saving `4033` active bytes, but the focused gate stayed exact-flat at
 W1-high `1808/1472/1441`, overrun `31`, blocking/refill `43/13`, reads/due
 `41/7`, so `--require-improvement` rejected it. Artifact:
 `scratch/ps1-perf-iterate/walkstuf1-high-d4-frame187-current/20260520-180605-3477710/summary.json`.
-Continue the split with frames `181`, `183`, and `185` one at a time; do not
-recombine W1-high D4 deltas until a single frame produces a strict win.
+Frame `181` is also closed: it shrinks `4708 -> 1484` bytes and improves
+scene/loop/overrun/refill `1808/1472/31/13 -> 1807/1471/29/9`, but regresses
+blocking `43 -> 54`, loop reads `41 -> 43`, and due misses `7 -> 10`. Artifact:
+`scratch/ps1-perf-iterate/walkstuf1-high-d4-frame181-current/20260520-181012-3501246/summary.json`.
+Continue the split with frames `183` and `185` one at a time; do not recombine
+W1-high D4 deltas until a single frame produces a strict win.
 
 Latest promoted VISITOR3 high window-size retune: the 80 KiB clean-relief
 stream window passes the focused and five-yellow gates, moving V3 high from
