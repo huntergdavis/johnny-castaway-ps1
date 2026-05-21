@@ -31,7 +31,9 @@ VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest W1-low preserve-entry-size screen-clip
+PS-EXE bucket stays fixed. The latest VISITOR3-low preserve-entry-size
+screen-clip promotion keeps VISITOR3-low at `1071/1039` while preserving
+entry sizes and pack LBA. The latest W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at `1470/1446` while improving hidden refill `4 -> 3`
 and preserving entry sizes and pack LBA. The latest BUILDING2 high
 preserve-entry-size screen-clip promotion improves B2-high to `1343/1312`

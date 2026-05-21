@@ -62,7 +62,8 @@ previous-visible late-cleanup compaction, and the BUILDING2 high
 previous-visible cleanup-speed promotion, then the VISITOR3 high
 previous-visible cleanup-headroom pass with entry `62` excluded, followed by
 the VISITOR3 high offscreen cleanup screen-clip headroom pass, the BUILDING2
-high preserve-entry-size screen-clip promotion, and the W1-low
+high preserve-entry-size screen-clip promotion, the W1-low
+preserve-entry-size screen-clip headroom promotion, and the VISITOR3-low
 preserve-entry-size screen-clip headroom promotion:
 `+0.2498%` public average over target / `99.7539%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
@@ -70,7 +71,12 @@ all `126` timing-bearing rows. The raw signed optimization matrix is about
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest W1-low preserve-entry-size screen-clip pass keeps pack
+`0` red. The latest VISITOR3-low preserve-entry-size screen-clip pass keeps
+pack footprint, LBA, offsets, and table `dataSize` fixed while clipping `10`
+entries, dropping logical active payload `425729 -> 423647`, removing `38366`
+cleanup pixels and `2139` draw pixels, and keeping VISITOR3-low exact-flat at
+`1071/1039`, overrun `32`, and blocking `80`. The prior W1-low
+preserve-entry-size screen-clip pass keeps pack
 footprint, LBA, offsets, and table `dataSize` fixed while clipping `63`
 entries, dropping logical active payload `755808 -> 712808`, removing `73798`
 cleanup pixels and `39618` draw pixels, and improving hidden refill `4 -> 3`
@@ -311,6 +317,12 @@ reduces logical active payload `755808 -> 712808`, removes `73798` cleanup
 pixels and `39618` draw pixels, and keeps W1-low `1470/1446`, overrun `24`,
 blocking `32`, and due `4` while improving hidden refill `4 -> 3`. Artifact:
 `scratch/ps1-perf-iterate/w1low-screen-clip-preserve-entry-five-yellow-current/20260521-021156-2038863/summary.json`.
+The current broad VISITOR3-low preserve-entry-size screen-clip pass is promoted
+as work headroom. It changes `10` entries with fixed physical layout, reduces
+logical active payload `425729 -> 423647`, removes `38366` cleanup pixels and
+`2139` draw pixels, and keeps VISITOR3-low `1071/1039`, overrun `32`,
+blocking `80`, and due `14` exact-flat. Artifact:
+`scratch/ps1-perf-iterate/v3low-screen-clip-preserve-entry-five-yellow-current/20260521-022705-2125132/summary.json`.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
