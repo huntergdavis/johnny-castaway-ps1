@@ -687,6 +687,13 @@ reduced selected payload `93962 -> 86412` across entries `90`, `91`, `101`, and
 `47/14`, reads `44`, and due misses `7`. Close this as a standalone pack-only
 lane; keep `109..133` only for generated deadline/refill ownership.
 
+Latest rejected BUILDING2 high `249..265` generated-owner swing: the narrow
+fresh-owner hook has a real CD signal, but the scheduler cannot currently hide
+it. Slack-3 and slack-4 both save one loop read and one due miss (`44/7 ->
+43/6`) while regressing timing `1341/1313 -> 1344/1314` and refill `14 -> 18`;
+slack-5 is exact-flat and does not fire. Keep this cluster closed until paired
+data-shape slack or generated no-hot-C ownership can place it earlier.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
@@ -712,8 +719,9 @@ lane; keep `109..133` only for generated deadline/refill ownership.
 9. **BUILDING2 high `109..133` generated owner.** This emerged after the
     failed `{90..102}` row; test it only with budgeted fire/no-fire metadata.
 10. **BUILDING2 high `249..265` generated owner.** The raw/additive scalar rows
-    are closed, but this remains a plausible generated-deadline cluster if it
-    can avoid visible blocking.
+    and fresh-owner slack-3/4/5 rows are closed; reopen only with paired
+    data-shape slack or a generated no-hot-C scheduler that can place it earlier
+    than the current visible/refill-debt slot.
 11. **BUILDING2 high selective no-decode relocation for entries `81..86`.**
     Closed for nearby sector-alignment copies on this baseline; only retry with
     generated deadline/refill ownership or a new harmless-eviction proof.
