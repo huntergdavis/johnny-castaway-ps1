@@ -635,24 +635,26 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 Current allocator-era big-swing queue after closing the scalar grouped-read,
 single-frame D4, duplicate-alias, isolated trim, sequential-Setloc, wider
 VISITOR3 setup-edge, W1-high exact/mid screen-clip, W1-high `{268..280}`, B2
-`{90..102}`, and W1-low min-slack-2 lanes:
+`{90..102}`, W1-low min-slack-2, and the generic C-side read-owner sidecar
+lanes:
 
-1. **Generated deadline/refill owner metadata sidecar.** Emit per-scene
-   append-start, frame-deadline, refill-budget, and skip-reason metadata from
-   the read-plan artifacts, then keep the runtime hot path table-driven instead
-   of adding scene-specific C branches.
-2. **Generated owner hit-counter mode.** Before timing gates, log owner fires,
-   duplicate skips, slack skips, and refill-budget skips so failed rows explain
-   whether the problem is no-hit, wrong seam, or visible/refill debt.
-3. **Generated owner phase-tax scorer.** Penalize candidates already proven to
-   trade read savings into blocking/refill so the CSV stops resurfacing closed
-   scalar ranges as top items.
-4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
+1. **W1-low `129..153` refill-slack data shape.** This was the only rejected
+   sidecar probe with real loop-speed signal (`1470 -> 1468`), but it spent
+   hidden refill (`3 -> 10`). Create fixed-layout render/restore slack in
+   frames `87..99`, then retry the owner only if refill stays at or below `3`.
+2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
+   frame-deadline, refill-budget, and skip-reason metadata from read-plan
+   artifacts, but consume it without growing hot foreground code or shifting the
+   PS-EXE bucket.
+3. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
+   savings into blocking/refill (`V3-high` direct-stage, W1-high `372..388`,
+   W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
+4. **VISITOR3 high fixed-layout early-sector cleanup.** Reduce the sector
+   `36..42` parser/restore burden without shrinking table size or moving the
+   read seam, then retry early ownership.
+5. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` proved is real, but only through budgeted ownership; no more
    retained setup expansion or hand table rows.
-5. **VISITOR3 high entry `62` data-shape isolation.** Reduce the sector `36..42`
-   parser/restore burden without shrinking table size or moving the read seam,
-   then retry early ownership.
 6. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
@@ -683,8 +685,10 @@ VISITOR3 setup-edge, W1-high exact/mid screen-clip, W1-high `{268..280}`, B2
     is now in place and `58..61` is promoted as exact-flat headroom; continue
     only with cleanup-only or proven phase-safe subsets, not `62..67` or the
     `128..147` split family.
-17. **W1-high `372..388` generated owner.** Raw rows save reads but need a
-    no-refill-debt guard; test through metadata and hit counters.
+17. **W1-high late-sector non-CD work reduction.** Static `372..388` and
+    `379..395` owners are closed; reduce restore/upload/parser work around
+    frames `183..191` first, then retry only through no-hot-C generated
+    ownership.
 18. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
     metadata is code-size-neutral; previous fresh-owner C hooks were inert and
     bloated hot code.
@@ -695,8 +699,9 @@ VISITOR3 setup-edge, W1-high exact/mid screen-clip, W1-high `{268..280}`, B2
     timing run.
 21. **W1-low `193..217` generated owner.** Min-slack-2 proved slack `3` is too
     expensive; retry only with a strict refill budget.
-22. **W1-low `129..153` / `136..160` generated owner.** Static rows are closed;
-    use per-frame fire windows or skip.
+22. **W1-low `153..177` follow-up only after slack.** Static `153..177` has the
+    same speed/refill tradeoff as `129..153`; keep it behind the frame `87..99`
+    slack pass, not ahead of it.
 23. **W1-low sector-split data shape for frames `90..99`.** Preserve early ramp
     locality and avoid the failed setup-prime relocation pattern.
 24. **Cross-row fixed-layout code-headroom pass.** Bank exact-flat hot-code
