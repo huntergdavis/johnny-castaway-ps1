@@ -293,6 +293,12 @@ and improves B2-high `1343/1311 -> 1343/1312`, overrun `32 -> 31`,
 blocking/refill `51/18 -> 50/17`, and target speed `97.617% -> 97.692%`.
 Artifact:
 `scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-five-yellow-current/20260521-014550-1889928/summary.json`.
+The first broad W1-high preserve-entry-size retry is closed as log-only. It
+reduced logical active payload `848331 -> 777722` and improved visible
+scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
+blocking/refill `43/13 -> 44/14`; paired `{372..388}` and `{272..284}` read
+groups did not recover the debt. Reopen as narrower frame subsets or with
+generated deadline/refill ownership, not as another broad clip.
 The next larger W1-low entry60/source frame81 preserve-offset trim is closed
 as log-only on this baseline: it improved visible scene/loop/blocking
 (`1809/1470 -> 1807/1468`, blocking `33 -> 28`) but regressed hidden refill
