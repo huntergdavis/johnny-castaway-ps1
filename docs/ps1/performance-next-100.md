@@ -668,6 +668,17 @@ form isolated B2 back to exact-flat but was inert on VISITOR3-high
 WALKSTUF1-only; the remaining yellow rows need per-frame/generated
 deadline-refill ownership, not a scene-family-wide prepare-first rule.
 
+Latest rejected WALKSTUF1 broad previous-visible cleanup swing: fixed-layout
+previous-visible cleanup removes large restore work, but the broad shapes are
+phase-negative. W1-high broad active payload drops `848331 -> 770715` and
+cleanup restore bytes `568916 -> 86382`, but focused timing regresses
+`1472/1441 -> 1475/1437`, blocking `43 -> 50`, and refill `13 -> 21`. W1-low
+broad active payload drops `755808 -> 708532` and improves blocking/due
+`32/4 -> 31/2`, but target tightens `1446 -> 1443` and refill regresses
+`3 -> 16`; the late-only `100..215` split repeats the same failure with refill
+`17`. Keep broad WALKSTUF1 previous-visible closed until a generated phase-tax
+scorer can select much narrower subsets with explicit refill gates.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
    minus-62 cleanup family into smaller sector-preserving subfamilies and prove
    exact-flat timing before combining with any read owner.
