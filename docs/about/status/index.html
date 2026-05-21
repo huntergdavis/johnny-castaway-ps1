@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~11 min read · 2880 words
+          ~11 min read · 2897 words
         </p>
 
       <hr class="rule" />
@@ -130,17 +130,19 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2498%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7539%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4671%</code> / <code class="language-plaintext highlighter-rouge">100.4843%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2480%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7557%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4689%</code> / <code class="language-plaintext highlighter-rouge">100.4860%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest VISITOR3-low preserve-entry-size
-screen-clip promotion keeps VISITOR3-low at <code class="language-plaintext highlighter-rouge">1071/1039</code> while preserving
-entry sizes and pack LBA. The latest W1-low preserve-entry-size screen-clip
+PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
+promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1341/1313</code> while preserving file size and pack
+LBA. The prior VISITOR3-low preserve-entry-size screen-clip promotion keeps
+VISITOR3-low at <code class="language-plaintext highlighter-rouge">1071/1039</code> while preserving entry sizes and pack LBA. The
+latest W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at <code class="language-plaintext highlighter-rouge">1470/1446</code> while improving hidden refill <code class="language-plaintext highlighter-rouge">4 -&gt; 3</code>
 and preserving entry sizes and pack LBA. The latest BUILDING2 high
 preserve-entry-size screen-clip promotion improves B2-high to <code class="language-plaintext highlighter-rouge">1343/1312</code>

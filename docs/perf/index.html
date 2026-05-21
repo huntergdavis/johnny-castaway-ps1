@@ -237,9 +237,9 @@ uses a gap-8 dirty-upload band merge retune plus a <code class="language-plainte
 cut its active row to <code class="language-plaintext highlighter-rouge">2847/2820</code> and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs.
-The remaining performance work should target BUILDING2 high generated
-ownership first, then VISITOR3 low/high data-shape or scheduler ownership and
-the residual WALKSTUF1 rows.</p>
+The remaining performance work should target VISITOR3 high/low data-shape or
+scheduler ownership first, then BUILDING2 high generated ownership and the
+residual WALKSTUF1 rows.</p>
 
 <p>All 126 rows now carry active-loop timing. <a href="../scenes/suzy1/"><code class="language-plaintext highlighter-rouge">SUZY 1</code></a>
 needs a longer <code class="language-plaintext highlighter-rouge">12000</code>-frame matrix budget because its valid
@@ -292,19 +292,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.3%</code> (<code class="language-plaintext highlighter-rouge">0.2498%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2480%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7539%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7557%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T03:01:42</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T03:28:04</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1high-screen-clip-preserve-entry-204-211</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">b2high-trimdraw67-72</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -329,7 +329,15 @@ tracked foreground symbols shrink (<code class="language-plaintext highlighter-r
 <code class="language-plaintext highlighter-rouge">fgRuntimeTryPrefetchWindow -12</code>). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.</p>
 
-<p>Latest W1-high preserve-entry-size screen-clip track:
+<p>Latest BUILDING2-high no-decode trim-draw-tail track:
+<code class="language-plaintext highlighter-rouge">building2-high-trimdraw67-72-five-yellow-current</code> trims entries <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">69</code>,
+<code class="language-plaintext highlighter-rouge">70</code>, <code class="language-plaintext highlighter-rouge">71</code>, and <code class="language-plaintext highlighter-rouge">72</code> while preserving file size and LBA. Active payload drops
+<code class="language-plaintext highlighter-rouge">574094 -&gt; 548293</code>; B2-high improves <code class="language-plaintext highlighter-rouge">1343/1312 -&gt; 1341/1313</code>, overrun
+<code class="language-plaintext highlighter-rouge">31 -&gt; 28</code>, blocking/refill <code class="language-plaintext highlighter-rouge">50/17 -&gt; 47/14</code>, and target speed
+<code class="language-plaintext highlighter-rouge">97.692% -&gt; 97.912%</code>. VISITOR3 high/low and WALKSTUF1 high/low stay flat in
+the canonical five-yellow canary.</p>
+
+<p>Prior W1-high preserve-entry-size screen-clip track:
 <code class="language-plaintext highlighter-rouge">w1high-screen-clip-preserve-entry-204-211-current</code> clips cleanup-only entries
 <code class="language-plaintext highlighter-rouge">204..211</code> while keeping each changed entry’s table <code class="language-plaintext highlighter-rouge">dataSize</code>, offset, file
 size, and LBA unchanged. W1-high stays <code class="language-plaintext highlighter-rouge">1472/1441</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking
@@ -454,7 +462,10 @@ runtime restore bytes <code class="language-plaintext highlighter-rouge">438988 
 <code class="language-plaintext highlighter-rouge">26753280 -&gt; 24341120</code>; pack/executable layout stays fixed. The current
 preserve-entry-size screen-clip follow-up keeps that table size and LBA fixed
 while improving B2-high again to <code class="language-plaintext highlighter-rouge">1343/1312</code>, overrun <code class="language-plaintext highlighter-rouge">31</code>, target speed
-<code class="language-plaintext highlighter-rouge">97.692%</code>, and blocking/refill <code class="language-plaintext highlighter-rouge">50/17</code>.</p>
+<code class="language-plaintext highlighter-rouge">97.692%</code>, and blocking/refill <code class="language-plaintext highlighter-rouge">50/17</code>. The latest no-decode trim-draw-tail
+subset trims entries <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">69</code>, <code class="language-plaintext highlighter-rouge">70</code>, <code class="language-plaintext highlighter-rouge">71</code>, and <code class="language-plaintext highlighter-rouge">72</code>, improving B2-high again
+to <code class="language-plaintext highlighter-rouge">1341/1313</code>, overrun <code class="language-plaintext highlighter-rouge">28</code>, target speed <code class="language-plaintext highlighter-rouge">97.912%</code>, and blocking/refill
+<code class="language-plaintext highlighter-rouge">47/14</code>.</p>
 
 <p>Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during setup, caps low clean strips
@@ -1498,13 +1509,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:01:42</td>
-      <td>w1high-screen-clip-preserve-entry-204-211</td>
-      <td>2.4%</td>
-      <td class="spd-yellow">97.7%</td>
-      <td>1343/1312</td>
-      <td>50</td>
-      <td>17</td>
+      <td>2026-05-21T03:28:04</td>
+      <td>b2high-trimdraw67-72</td>
+      <td>2.1%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>1341/1313</td>
+      <td>47</td>
+      <td>14</td>
       <td>7</td>
       <td></td>
     </tr>
@@ -2730,8 +2741,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:01:42</td>
-      <td>w1high-screen-clip-preserve-entry-204-211</td>
+      <td>2026-05-21T03:28:04</td>
+      <td>b2high-trimdraw67-72</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2744,8 +2755,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T03:01:42</td>
-      <td>w1high-screen-clip-preserve-entry-204-211</td>
+      <td>2026-05-21T03:28:04</td>
+      <td>b2high-trimdraw67-72</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2870,8 +2881,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T03:01:42</td>
-      <td>w1high-screen-clip-preserve-entry-204-211</td>
+      <td>2026-05-21T03:28:04</td>
+      <td>b2high-trimdraw67-72</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2884,8 +2895,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T03:01:42</td>
-      <td>w1high-screen-clip-preserve-entry-204-211</td>
+      <td>2026-05-21T03:28:04</td>
+      <td>b2high-trimdraw67-72</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

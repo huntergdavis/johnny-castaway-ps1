@@ -65,15 +65,20 @@ the VISITOR3 high offscreen cleanup screen-clip headroom pass, the BUILDING2
 high preserve-entry-size screen-clip promotion, the W1-low
 preserve-entry-size screen-clip headroom promotion, and the VISITOR3-low
 preserve-entry-size screen-clip headroom promotion, followed by the W1-high
-cleanup-only preserve-entry-size screen-clip subset:
-`+0.2498%` public average over target / `99.7539%` public target speed across
+cleanup-only preserve-entry-size screen-clip subset and the BUILDING2-high
+no-decode trim-draw-tail subset:
+`+0.2480%` public average over target / `99.7557%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4671%` / `100.4843%`. Since the compact full-matrix baseline was
+`-0.4689%` / `100.4860%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.15` public over-target points and added about `12.65` public
+removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest W1-high preserve-entry-size screen-clip subset keeps
-pack footprint, LBA, offsets, and table `dataSize` fixed while clipping
+`0` red. The latest BUILDING2-high no-decode trim-draw-tail subset preserves
+file size and LBA while trimming entries `67`, `69`, `70`, `71`, and `72`,
+dropping active payload `574094 -> 548293` and improving B2-high
+`1343/1312 -> 1341/1313`, overrun `31 -> 28`, blocking `50 -> 47`, and
+refill `17 -> 14`. The prior W1-high preserve-entry-size screen-clip subset
+keeps pack footprint, LBA, offsets, and table `dataSize` fixed while clipping
 cleanup-only entries `204..211`, dropping subset logical active payload
 `20365 -> 19645`, removing `12368` cleanup pixels, and keeping W1-high
 exact-flat at `1472/1441`, overrun `31`, blocking `43`, and refill `13`.
@@ -311,6 +316,13 @@ and improves B2-high `1343/1311 -> 1343/1312`, overrun `32 -> 31`,
 blocking/refill `51/18 -> 50/17`, and target speed `97.617% -> 97.692%`.
 Artifact:
 `scratch/ps1-perf-iterate/b2high-screen-clip-preserve-entry-five-yellow-current/20260521-014550-1889928/summary.json`.
+The latest BUILDING2 high no-decode trim-draw-tail subset then trims entries
+`67`, `69`, `70`, `71`, and `72` without moving the `1303332` byte pack
+footprint or LBA. It cuts active payload `574094 -> 548293` and improves
+B2-high `1343/1312 -> 1341/1313`, overrun `31 -> 28`, blocking/refill
+`50/17 -> 47/14`, and target speed `97.692% -> 97.912%`; VISITOR3 high/low
+and WALKSTUF1 high/low stay flat in the five-yellow canary. Artifact:
+`scratch/ps1-perf-iterate/building2-high-trimdraw67-72-five-yellow-current/20260521-032804-2475674/summary.json`.
 The first broad W1-high preserve-entry-size retry is closed as log-only. It
 reduced logical active payload `848331 -> 777722` and improved visible
 scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
@@ -2245,10 +2257,10 @@ reducing loop reads/read time `45/199 -> 40/189`; `{287..311}` was exact-flat
 without a key win and `{249..261}` regressed visible CD pressure.
 The allocator-era speed row now layers targeted setup slices with `83..95`,
 `{158..174}`, guarded `271..287`, `315..327`, `{185..197}`, and the
-previous-visible cleanup plus preserve-entry-size screen-clip promotions,
-moving B2-high to `1343/1312` while cutting restore/upload work and leaving
-current active CD pressure at blocking/refill `50/17`, reads/read time
-`44/196`, and due `7`.
+previous-visible cleanup plus preserve-entry-size screen-clip promotions, and
+the early no-decode trim-draw-tail subset, moving B2-high to `1341/1313` while
+cutting restore/upload/parser work and leaving current active CD pressure at
+blocking/refill `47/14`, reads/read time `44/194`, and due `7`.
 The v704 frame `88` follow-up was a host no-op (`0` frames changed), so the
 direct boundary lane now stops at frame `89` unless a different transform
 finds new removable work. The later v894 preserve-offset entry-size retry for
@@ -2257,9 +2269,9 @@ loop read but regressed scene/loop/target `1602/1351/1311 -> 1605/1354/1310`,
 overrun `40 -> 44`, and refill `18 -> 20`, so do not retry post-hot
 sector-changing entry shrinks without generated deadline ownership.
 
-Latest rejected BUILDING2 high draw-tail sector-collapse swing: the current
-preserve-offset trim scanner still finds `12084` removable bytes across 11
-entries, mostly entries `89..91`, but the broad trim regressed B2-high from
+Prior rejected BUILDING2 high draw-tail sector-collapse swing: the older
+preserve-offset trim scanner found `12084` removable bytes across 11
+entries, mostly entries `89..91`, but that broad trim regressed B2-high from
 `1621/1347/1313`, overrun `34`, blocking/refill `39/16`, reads `43`, to
 `1622/1349/1313`, overrun `36`, blocking/refill `41/15`, reads `41`.
 Isolating entry `91` still regressed the same strict counters while reducing

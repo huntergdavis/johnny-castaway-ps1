@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-21:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.3%` (`0.2498%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7539%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T02:27:05` |
-| Stats version | mixed; current five-yellow timing rows are stamped `v3low-screen-clip-preserve-entry`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T03:28:04` |
+| Stats version | mixed; current five-yellow timing rows are stamped `b2high-trimdraw67-72`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /

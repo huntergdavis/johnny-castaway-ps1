@@ -23,17 +23,19 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2498%` over
-target / `99.7539%` target speed; the raw signed optimization matrix is
-about `-0.4671%` / `100.4843%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2480%` over
+target / `99.7557%` target speed; the raw signed optimization matrix is
+about `-0.4689%` / `100.4860%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
 measured inside the allocator budget. The latest source-headroom pass caches
 the active foreground scene ID in hot scheduler paths, keeps the five-yellow
 canary exact-flat, and shrinks tracked foreground scheduler symbols while the
-PS-EXE bucket stays fixed. The latest VISITOR3-low preserve-entry-size
-screen-clip promotion keeps VISITOR3-low at `1071/1039` while preserving
-entry sizes and pack LBA. The latest W1-low preserve-entry-size screen-clip
+PS-EXE bucket stays fixed. The latest BUILDING2-high no-decode trim-draw-tail
+promotion improves B2-high to `1341/1313` while preserving file size and pack
+LBA. The prior VISITOR3-low preserve-entry-size screen-clip promotion keeps
+VISITOR3-low at `1071/1039` while preserving entry sizes and pack LBA. The
+latest W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at `1470/1446` while improving hidden refill `4 -> 3`
 and preserving entry sizes and pack LBA. The latest BUILDING2 high
 preserve-entry-size screen-clip promotion improves B2-high to `1343/1312`
