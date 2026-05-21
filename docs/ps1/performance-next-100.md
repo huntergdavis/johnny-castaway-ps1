@@ -485,6 +485,21 @@ Artifacts:
 and
 `scratch/ps1-perf-iterate/walkstuf1-low-owner160-176-fresh-five-yellow-current/20260520-200639-4163023/summary.json`.
 
+Latest rejected narrow BUILDING2 high generated-owner retry: a fresh-window
+owner for the modeled low-risk `249..261` cluster was inert because the
+opportunity is an append seam, not a fresh read. Moving the same owner into the
+append-extension path fired but failed: B2-high regressed
+`1621/1347/1313 -> 1625/1352/1309`, overrun `34 -> 43`, blocking
+`39 -> 45`, hidden refill `16 -> 20`, and loop reads stayed `40`; the
+perf-embedded build also crossed the PS-EXE sector bucket
+`233472 -> 235520`. Artifacts:
+`scratch/ps1-perf-iterate/building2-high-fresh249-261-current/20260520-202900-94475/summary.json`
+and
+`scratch/ps1-perf-iterate/building2-high-owner249-261-current/20260520-203213-113320/summary.json`.
+Close B2-high `249..261` hot scheduler ownership on this baseline. The next
+B2-high swing should reduce pack/render work or use no-hot-C generated
+deadline/refill metadata, not another C-side append owner.
+
 Latest rejected BUILDING2 high prepared-idle generated-owner probe: a
 B2-high-only owner table for `{95..119}`, `{122..146}`, `{249..265}`,
 `{255..271}`, and `{287..311}` fired only while a prepared frame was already
