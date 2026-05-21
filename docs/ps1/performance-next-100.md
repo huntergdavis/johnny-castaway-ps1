@@ -64,14 +64,20 @@ previous-visible cleanup-headroom pass with entry `62` excluded, followed by
 the VISITOR3 high offscreen cleanup screen-clip headroom pass, the BUILDING2
 high preserve-entry-size screen-clip promotion, the W1-low
 preserve-entry-size screen-clip headroom promotion, and the VISITOR3-low
-preserve-entry-size screen-clip headroom promotion:
+preserve-entry-size screen-clip headroom promotion, followed by the W1-high
+cleanup-only preserve-entry-size screen-clip subset:
 `+0.2498%` public average over target / `99.7539%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4671%` / `100.4843%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low preserve-entry-size screen-clip pass keeps
+`0` red. The latest W1-high preserve-entry-size screen-clip subset keeps
+pack footprint, LBA, offsets, and table `dataSize` fixed while clipping
+cleanup-only entries `204..211`, dropping subset logical active payload
+`20365 -> 19645`, removing `12368` cleanup pixels, and keeping W1-high
+exact-flat at `1472/1441`, overrun `31`, blocking `43`, and refill `13`.
+The prior VISITOR3-low preserve-entry-size screen-clip pass keeps
 pack footprint, LBA, offsets, and table `dataSize` fixed while clipping `10`
 entries, dropping logical active payload `425729 -> 423647`, removing `38366`
 cleanup pixels and `2139` draw pixels, and keeping VISITOR3-low exact-flat at
@@ -311,6 +317,13 @@ scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
 blocking/refill `43/13 -> 44/14`; paired `{372..388}` and `{272..284}` read
 groups did not recover the debt. Reopen as narrower frame subsets or with
 generated deadline/refill ownership, not as another broad clip.
+The narrowed cleanup-only W1-high subset `204..211` is now promoted as
+work-headroom. It keeps table `dataSize`, offsets, file size, LBA, and the
+`233472` byte PS-EXE bucket fixed, removes `12368` cleanup pixels, and drops
+subset logical active payload `20365 -> 19645` while the five-yellow canary
+stays exact-flat: B2-high `1343/1312`, VISITOR3 high/low `1082/1045` and
+`1071/1039`, W1-high `1472/1441`, and W1-low `1470/1446`. Artifact:
+`scratch/ps1-perf-iterate/w1high-screen-clip-preserve-entry-204-211-five-yellow-current/20260521-030142-2325843/summary.json`.
 The current broad W1-low preserve-entry-size screen-clip pass is promoted as
 work/refill headroom. It changes `63` entries with fixed physical layout,
 reduces logical active payload `755808 -> 712808`, removes `73798` cleanup
