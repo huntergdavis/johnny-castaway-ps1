@@ -143,11 +143,11 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
-retargeted `{411..423}` CD-pressure work. The newest W1-high exact-entry
-screen-clip headroom row then clips entries `58..61` only, preserving entry
-sizes, file size, LBA, and the PS-EXE bucket while removing `4995` cleanup
-pixels, `6052` draw pixels, and `7268` logical payload bytes with exact-flat
-five-yellow timing.
+retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low fixed-layout
+previous-visible cleanup row then keeps entry sizes, file size, LBA, and the
+PS-EXE bucket fixed while dropping runtime restore bytes `467962 -> 64632`,
+max restore bytes `293544 -> 2962`, upload bytes `18113920 -> 17494400`, and
+dirty rows `28303 -> 27335` with exact-flat five-yellow timing.
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
@@ -180,8 +180,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T05:22:04` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-screen-clip-entry58-61`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T05:58:28` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `visitor3-low-prev-visible-preserve-entry`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -191,7 +191,19 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest source-headroom track: `hot-scene-id-five-yellow-current` caches the
+Latest VISITOR3-low fixed-layout cleanup track:
+`visitor3-low-prev-visible-preserve-five-yellow-current` applies
+previous-visible cleanup compaction to `VIST3LOW.FG2` while preserving every
+changed entry's table `dataSize`, offsets, file size, and LBA. VISITOR3-low
+stays exact-flat at `1071/1039`, overrun `32`, blocking `80`, and refill `0`,
+while logical active payload drops `425729 -> 405835`, cleanup restore bytes
+drop `456786 -> 53456`, runtime restore bytes drop `467962 -> 64632`, max
+restore bytes drop `293544 -> 2962`, upload bytes drop
+`18113920 -> 17494400`, and dirty rows drop `28303 -> 27335`. BUILDING2 high,
+VISITOR3 high, and WALKSTUF1 high/low stay flat in the canonical five-yellow
+canary. This banks render/restore/upload headroom, not a VBlank speed win.
+
+Prior source-headroom track: `hot-scene-id-five-yellow-current` caches the
 active foreground scene ID once per scene start and replaces repeated hot
 scheduler scene-name compares with byte ID checks. The five-yellow canary stays
 exact-flat, pack LBAs and the `233472` byte PS-EXE bucket stay fixed, and hot
@@ -200,7 +212,7 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 `fgRuntimeTryPrefetchWindow -12`). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.
 
-Latest BUILDING2-high no-decode trim-draw-tail track:
+Prior BUILDING2-high no-decode trim-draw-tail track:
 `building2-high-trimdraw74-78-82-five-yellow-current` follows the `67`, `69`,
 `70`, `71`, and `72` speed subset with a safe work-headroom subset on entries
 `74` and `78..82`. The speed subset improved B2-high `1343/1312 -> 1341/1313`,
@@ -1381,8 +1393,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:22:04</td>
-      <td>w1high-screen-clip-entry58-61</td>
+      <td>2026-05-21T05:58:28</td>
+      <td>visitor3-low-prev-visible-preserve-entry</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2613,8 +2625,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:22:04</td>
-      <td>w1high-screen-clip-entry58-61</td>
+      <td>2026-05-21T05:58:28</td>
+      <td>visitor3-low-prev-visible-preserve-entry</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2627,8 +2639,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T05:22:04</td>
-      <td>w1high-screen-clip-entry58-61</td>
+      <td>2026-05-21T05:58:28</td>
+      <td>visitor3-low-prev-visible-preserve-entry</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2753,8 +2765,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T05:22:04</td>
-      <td>w1high-screen-clip-entry58-61</td>
+      <td>2026-05-21T05:58:28</td>
+      <td>visitor3-low-prev-visible-preserve-entry</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2767,8 +2779,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T05:22:04</td>
-      <td>w1high-screen-clip-entry58-61</td>
+      <td>2026-05-21T05:58:28</td>
+      <td>visitor3-low-prev-visible-preserve-entry</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

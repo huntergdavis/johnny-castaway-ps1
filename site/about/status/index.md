@@ -28,7 +28,13 @@ target / `99.7557%` target speed; the raw signed optimization matrix is
 about `-0.4689%` / `100.4860%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest W1-high exact-entry
+measured inside the allocator budget. The latest VISITOR3-low fixed-layout
+previous-visible cleanup pass keeps file size, offsets, entry sizes, pack LBA,
+and the PS-EXE bucket fixed while changing `94` low-pack entries; logical
+active payload drops `425729 -> 405835`, cleanup restore bytes drop
+`456786 -> 53456`, runtime restore bytes drop `467962 -> 64632`, max restore
+bytes drop `293544 -> 2962`, upload bytes drop `18113920 -> 17494400`, and
+the five-yellow canary stays exact-flat. The prior W1-high exact-entry
 preserve-entry-size screen-clip pass trims entries `58..61`, drops subset
 logical active payload `17164 -> 9896`, removes `4995` cleanup pixels plus
 `6052` draw pixels, and keeps the five-yellow canary exact-flat while
@@ -43,11 +49,11 @@ BUILDING2-high no-decode
 trim-draw-tail speed promotion improves B2-high to `1341/1313`. The prior
 VISITOR3-low preserve-entry-size screen-clip promotion keeps
 VISITOR3-low at `1071/1039` while preserving entry sizes and pack LBA. The
-latest W1-low preserve-entry-size screen-clip
+prior W1-low preserve-entry-size screen-clip
 promotion keeps W1-low at `1470/1446` while improving hidden refill `4 -> 3`
-and preserving entry sizes and pack LBA. The latest BUILDING2 high
+and preserving entry sizes and pack LBA. The prior BUILDING2 high
 preserve-entry-size screen-clip promotion improves B2-high to `1343/1312`
-while preserving entry sizes and pack LBA. The latest VISITOR3 high
+while preserving entry sizes and pack LBA. The prior VISITOR3 high
 screen-clip headroom pass
 clips offscreen cleanup spans in entries `101` and `116`, dropping active
 payload `437785 -> 436469` with exact-flat five-yellow timing. Release gates

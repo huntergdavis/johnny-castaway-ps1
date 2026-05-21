@@ -261,6 +261,7 @@ def convert(
     copy_unparseable: bool,
     selected_frames: set[int] | None,
     preserve_offsets: bool,
+    preserve_entry_sizes: bool,
     summary_path: Path | None,
     previous_visible: bool,
 ) -> None:
@@ -394,6 +395,7 @@ def convert(
             out[old_offset:old_offset + len(compact)] = compact
             if entry_saved_bytes:
                 out[old_offset + len(compact):old_offset + old_size] = b"\0" * entry_saved_bytes
+            table_size = old_size if preserve_entry_sizes else len(compact)
             struct.pack_into(
                 ENTRY,
                 out,
@@ -405,7 +407,7 @@ def convert(
                 height,
                 hold_vblanks,
                 old_offset,
-                len(compact),
+                table_size,
             )
 
         output_path.write_bytes(out)
@@ -417,7 +419,8 @@ def convert(
             f"restore_bytes {old_stats.restore_bytes} -> {new_stats.restore_bytes}, "
             f"changed_entries={changed_entries}, saved_bytes={saved_bytes}, "
             f"copied_unparseable_entries={copied_unparseable_entries}, "
-            f"copied_grown_entries={copied_grown_entries}, preserve_offsets=1"
+            f"copied_grown_entries={copied_grown_entries}, preserve_offsets=1, "
+            f"preserve_entry_sizes={int(preserve_entry_sizes)}"
         )
         if copied_unparseable_samples:
             print("copied_unparseable_samples=" + "; ".join(copied_unparseable_samples))
@@ -430,6 +433,7 @@ def convert(
                         "input": str(input_path),
                         "output": str(output_path),
                         "preserve_offsets": True,
+                        "preserve_entry_sizes": preserve_entry_sizes,
                         "previous_visible": previous_visible,
                         "old_bytes": len(data),
                         "new_bytes": len(out),
@@ -572,6 +576,7 @@ def convert(
                     "input": str(input_path),
                     "output": str(output_path),
                     "preserve_offsets": False,
+                    "preserve_entry_sizes": False,
                     "previous_visible": previous_visible,
                     "old_bytes": len(data),
                     "new_bytes": len(out),
@@ -614,6 +619,11 @@ def main() -> None:
         help="Rewrite entries in place, update only their sizes, and zero the old tails.",
     )
     parser.add_argument(
+        "--preserve-entry-sizes",
+        action="store_true",
+        help="with --preserve-offsets, keep each changed entry's dataSize unchanged",
+    )
+    parser.add_argument(
         "--previous-visible",
         action="store_true",
         help=(
@@ -626,6 +636,8 @@ def main() -> None:
 
     if args.in_place == bool(args.output_fgp3):
         raise SystemExit("pass either --in-place or an output path")
+    if args.preserve_entry_sizes and not args.preserve_offsets:
+        raise SystemExit("--preserve-entry-sizes requires --preserve-offsets")
     selected_frames: set[int] | None = None
     if args.frames:
         selected_frames = set()
@@ -656,6 +668,7 @@ def main() -> None:
                 args.copy_unparseable,
                 selected_frames,
                 args.preserve_offsets,
+                args.preserve_entry_sizes,
                 args.summary,
                 args.previous_visible,
             )
@@ -672,6 +685,7 @@ def main() -> None:
             args.copy_unparseable,
             selected_frames,
             args.preserve_offsets,
+            args.preserve_entry_sizes,
             args.summary,
             args.previous_visible,
         )
