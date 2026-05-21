@@ -173,6 +173,12 @@ blocking `39 -> 41`, loop reads `40 -> 42`, and due `5 -> 6`, with hidden
 refill still `16`. The accepted read groups are not the remaining refill owner
 by themselves; B2-high now needs generated frame/deadline ownership or a prior
 data-shape/render-byte reduction before more scalar slack gating.
+The nearby `{145..161}` scalar row is also closed. Although the refreshed read
+plan modeled two saved reads and high visible safety, the focused proof
+regressed B2-high to `1626/1353/1311`, overrun `42`, blocking `45`, and
+hidden refill `21`, with loop reads still `40`. Do not retry the `145..161`
+cluster as another static row; use generated per-frame ownership or reduce
+pack/render work first.
 The follow-up W1-low entry65/source frame96 preserve-offset trim is payload-only:
 W1-low remains `1809/1470/1446`, overrun `24`, blocking/refill `33/5`, reads/due
 `24/4`, and pack LBA/PS-EXE bucket stay fixed, while active low-pack payload
