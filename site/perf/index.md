@@ -129,7 +129,11 @@ gap and caps tight speculative refills at `56 KiB`, improving high to
 clean slices at `64 KiB`, the clean-relief window retune widens high from
 `68 KiB` to `80 KiB`, then the setup-edge pass pays early `40..47` and the
 latest same-speed slide moves that edge to `42..49`, keeping `1070/1046`
-while reducing loop reads/read time `5/61 -> 4/59`.
+while reducing loop reads/read time `5/61 -> 4/59`. The latest VISITOR3
+cleanup-headroom pass then clips previous-visible cleanup for every safe
+high-tide changed entry except phase-negative entry `62`, keeping the row
+flat at `1082/1045` while dropping runtime restore bytes
+`471382 -> 56312` and upload bytes `18785280 -> 18038400`.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
@@ -172,8 +176,8 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.3%` (`0.2505%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7533%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T00:02:35` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2-prev-visible-cleanup`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T00:40:59` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `visitor3-prev-visible-minus62-cleanup`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -191,6 +195,16 @@ tracked foreground symbols shrink (`foregroundPilotPlay -84`,
 `fgRuntimeLoadSceneFrame -52`, `fgRuntimeFillWindowForEntry -24`,
 `fgRuntimeTryPrefetchWindow -12`). This does not change the public speed
 rollup; it banks code headroom for generated-owner and custom data-shape work.
+
+Latest VISITOR3 high cleanup-headroom track:
+`visitor3-prev-visible-minus62-promote-five-yellow` clips cleanup spans to the
+previous visible frame across every timing-safe `VISITOR3.FG2` high-tide entry
+while excluding isolated regressing entry `62`. VISITOR3 high stays
+`1082/1045`, overrun `37`, and blocking `34`; active high-pack payload drops
+`461631 -> 437785`, cleanup restore bytes drop `542088 -> 36092`, runtime
+restore bytes drop `471382 -> 56312`, and upload bytes drop
+`18785280 -> 18038400`. VISITOR3 low, BUILDING2 high, and WALKSTUF1 high/low
+stay flat in the canonical five-yellow canary.
 
 Latest BUILDING2 high cleanup-speed track:
 `building2-high-prev-visible-cleanup-promote-five-yellow` clips cleanup spans
@@ -1299,8 +1313,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T00:02:35</td>
-      <td>b2-prev-visible-cleanup</td>
+      <td>2026-05-21T00:40:59</td>
+      <td>visitor3-prev-visible-minus62-cleanup</td>
       <td>2.4%</td>
       <td class="spd-yellow">97.6%</td>
       <td>1343/1311</td>
@@ -2531,8 +2545,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T00:02:35</td>
-      <td>b2-prev-visible-cleanup</td>
+      <td>2026-05-21T00:40:59</td>
+      <td>visitor3-prev-visible-minus62-cleanup</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2545,8 +2559,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T00:02:35</td>
-      <td>b2-prev-visible-cleanup</td>
+      <td>2026-05-21T00:40:59</td>
+      <td>visitor3-prev-visible-minus62-cleanup</td>
       <td>3.1%</td>
       <td class="spd-yellow">97.0%</td>
       <td>1071/1039</td>
@@ -2671,8 +2685,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T00:02:35</td>
-      <td>b2-prev-visible-cleanup</td>
+      <td>2026-05-21T00:40:59</td>
+      <td>visitor3-prev-visible-minus62-cleanup</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2685,8 +2699,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T00:02:35</td>
-      <td>b2-prev-visible-cleanup</td>
+      <td>2026-05-21T00:40:59</td>
+      <td>visitor3-prev-visible-minus62-cleanup</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

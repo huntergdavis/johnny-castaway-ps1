@@ -59,14 +59,21 @@ setup-edge duplicate alias, and the VISITOR3-high setup-edge `40..47`
 speed row plus `42..49` same-speed CD-pressure slide, W1-low fresh-owner
 `160..176`, the hot foreground scene-ID code-headroom pass, the W1-low
 previous-visible late-cleanup compaction, and the BUILDING2 high
-previous-visible cleanup-speed promotion:
+previous-visible cleanup-speed promotion, then the VISITOR3 high
+previous-visible cleanup-headroom pass with entry `62` excluded:
 `+0.2505%` public average over target / `99.7533%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4664%` / `100.4837%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.65` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest promoted checkpoint keeps VISITOR3's tiny stage1 prefetch
+`0` red. The latest VISITOR3 high cleanup-headroom pass keeps timing flat at
+`1082/1045`, overrun `37`, and blocking `34` while changing `106` entries,
+dropping active payload `461631 -> 437785`, cleanup restore bytes
+`542088 -> 36092`, runtime restore bytes `471382 -> 56312`, and upload bytes
+`18785280 -> 18038400`; entry `62` is closed as phase-negative because the
+sector reduction regressed the row to `1083/1044`, overrun `39`, blocking
+`35`. The latest promoted speed checkpoint keeps VISITOR3's tiny stage1 prefetch
 frame buffer alive under clean-memory relief, keeps the bounded clean-relief
 stream windows, trims high-tide terminal reads before resident setup data, and
 extends the high-tide second setup segment through relative sector `229`, then
