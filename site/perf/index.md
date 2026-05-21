@@ -143,11 +143,11 @@ low now uses one retained `238..344` setup segment plus a split TRANSIENT
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed `{395..411}` plus
-retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low `16..32`
-read-group row builds on the frame135 gap-D4 baseline and improves
-VISITOR3-low `1342/1070/1039 -> 1339/1066/1035`, keeps overrun flat at
-`31`, cuts blocking `78 -> 73`, loop reads `18 -> 17`, read time
-`104 -> 96`, and due misses `14 -> 13`; the prior frame135 gap-D4 row kept
+retargeted `{411..423}` CD-pressure work. The newest VISITOR3-low `72..88`
+read-group row stacks on `16..32` and moves VISITOR3-low
+`1339/1066/1035 -> 1343/1070/1039`, keeps overrun flat at `31`, cuts blocking
+`73 -> 70`, loop reads `17 -> 15`, read time `96 -> 93`, and due misses
+`13 -> 11`; the prior frame135 gap-D4 row kept
 file size, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking
 `80 -> 78`, and loop read time `106 -> 104`; the prior
@@ -184,10 +184,10 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2474%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7563%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T11:29:51` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; VISITOR3-low uses `v3low-rg16-32`; other current five-yellow timing rows use `w1low-slack-frames87-99`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2472%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7564%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T12:27:55` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3low-rg72-88`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -197,14 +197,14 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-low `16..32` read-group track:
-`v3low-rg16-32-five-yellow-current` adds a low-tide-only VISITOR3 retained
-read group for relative sectors `16..32`, building on the frame135 gap-D4
+Latest VISITOR3-low `72..88` read-group track:
+`v3low-rg72-88-five-yellow-current` adds a low-tide-only VISITOR3 retained
+read group for relative sectors `72..88` on top of `16..32`, building on the frame135 gap-D4
 baseline while preserving pack footprint, LBA `23379`, sectors `760`, and the
-`233472` byte PS-EXE bucket. VISITOR3-low improves
-`1342/1070/1039 -> 1339/1066/1035`, keeps overrun flat at `31`, cuts blocking
-`78 -> 73`, loop reads `18 -> 17`, read time `104 -> 96`, and due misses
-`14 -> 13`; BUILDING2 high, VISITOR3 high, and WALKSTUF1 high/low stay
+`233472` byte PS-EXE bucket. VISITOR3-low moves
+`1339/1066/1035 -> 1343/1070/1039`, keeps overrun flat at `31`, cuts blocking
+`73 -> 70`, loop reads `17 -> 15`, read time `96 -> 93`, and due misses
+`13 -> 11`; BUILDING2 high, VISITOR3 high, and WALKSTUF1 high/low stay
 exact-flat.
 
 Prior VISITOR3-low frame135 gap-D4 track:
@@ -1442,8 +1442,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2674,8 +2674,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2688,14 +2688,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T11:28:19</td>
-      <td>v3low-rg16-32</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>3.0%</td>
       <td class="spd-yellow">97.1%</td>
-      <td>1066/1035</td>
-      <td>73</td>
+      <td>1070/1039</td>
+      <td>70</td>
       <td>0</td>
-      <td>13</td>
+      <td>11</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">
@@ -2814,8 +2814,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2828,8 +2828,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

@@ -70,17 +70,18 @@ no-decode trim-draw-tail subset, the W1-high exact-entry preserve-entry-size
 screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
 headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
-VISITOR3-low `16..32` read-group speed promotion:
-`+0.2474%` public average over target / `99.7563%` public target speed across
+VISITOR3-low `72..88` and `16..32` read-group speed promotions:
+`+0.2472%` public average over target / `99.7564%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4695%` / `100.4867%`. Since the compact full-matrix baseline was
+`-0.4697%` / `100.4867%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low `16..32` read-group pass keeps pack LBA
+`0` red. The latest VISITOR3-low `72..88` read-group pass keeps pack LBA
 `23379`, sectors `760`, and the `233472` byte PS-EXE bucket fixed while
-improving VISITOR3-low `1342/1070/1039 -> 1339/1066/1035`, keeping overrun
-flat at `31`, and cutting blocking/read time/due `78/104/14 -> 73/96/13`.
+stacking on `16..32` and moving VISITOR3-low
+`1339/1066/1035 -> 1343/1070/1039`, keeping overrun flat at `31`, and cutting
+blocking/read time/due `73/96/13 -> 70/93/11`.
 The prior frame135 D4 pass kept pack footprint fixed while moving frame `135`'s
 `14246` byte previous-frame delta payload into the early D4 gap at offset
 `204452`; it improved VISITOR3-low `1071/1039 -> 1070/1039`, overrun
@@ -905,16 +906,18 @@ gates; the next B2 data-shape path needs generated deadline/refill ownership or
 non-CD render/upload reduction first.
 
 Latest VISITOR3 low read-group outcome: after the frame135 gap-D4 data-shape
-baseline, the small `16..32` table row finally converted one modeled CD-shape
-signal without taxing the other yellow rows. It improved VISITOR3-low
-`1342/1070/1039 -> 1339/1066/1035`, kept overrun flat at `31`, cut blocking
-`78 -> 73`, reads/read time `18/104 -> 17/96`, and due `14 -> 13`;
-focused artifact
-`scratch/ps1-perf-iterate/v3low-rg16-32-current/20260521-112819-993312/summary.json`;
+baseline and the accepted `16..32` row, the `72..88` table row converted the
+next mid-pack CD-shape signal without taxing the other yellow rows. It moves
+VISITOR3-low `1339/1066/1035 -> 1343/1070/1039`, keeps overrun flat at `31`,
+cuts blocking `73 -> 70`, reads/read time `17/96 -> 15/93`, and due
+`13 -> 11`; focused artifact
+`scratch/ps1-perf-iterate/v3low-rg72-88-current/20260521-122612-1311583/summary.json`;
 five-yellow canary
-`scratch/ps1-perf-iterate/v3low-rg16-32-five-yellow-current/20260521-112951-1002166/summary.json`.
-The remaining older hand-authored VISITOR3-low rows stay closed unless the
-newer baseline changes their cadence: `{86..98}` saved one read but regressed
+`scratch/ps1-perf-iterate/v3low-rg72-88-five-yellow-current/20260521-122755-1321634/summary.json`.
+The broad `{65..89}` row stayed exact-flat and inert on the `16..32` baseline,
+while narrower `{65..81}` saved reads but regressed loop/blocking; both are
+closed in direct-table form. Older hand-authored VISITOR3-low rows stay closed
+unless the newer baseline changes their cadence: `{86..98}` saved one read but regressed
 VISITOR3 low to `1346/1073/1039`, overrun `34`, blocking `84`, and hidden
 refill `1`;
 `scratch/ps1-perf-iterate/v3low-rg86-98-current/20260521-023807-2188632/summary.json`.
@@ -924,11 +927,11 @@ scene/overrun/blocking `1343/32/80 -> 1344/33/81`;
 The structurally different tight-cluster `{248..264}` row also regressed to
 `1344/1071/1039`, overrun `33`, blocking `81`;
 `scratch/ps1-perf-iterate/v3low-rg248-264-current/20260521-024300-2217007/summary.json`.
-Keep `16..32` as the accepted VISITOR3-low read-group baseline. The next
-VISITOR3-low queue starts from the refreshed planner's `65..89`, `32..56`,
-`92..116`, and terminal `239..255` families, but those should be treated as
-generated deadline/refill or custom data-shape work first rather than another
-raw scalar table row.
+Keep `16..32` plus `72..88` as the accepted VISITOR3-low read-group baseline.
+The next VISITOR3-low queue starts from the refreshed planner's `46..58`,
+`88..104`, `95..107`, and terminal `239..255` families, but those should be
+treated as generated deadline/refill or custom data-shape work first rather
+than another raw scalar table row.
 
 Latest rejected W1-high fresh-owner generated probes: the post-screen-clip
 baseline tested C-side frame/slack-gated fresh-window ownership for the late

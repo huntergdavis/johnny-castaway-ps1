@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3216 words
+          ~12 min read · 3222 words
         </p>
 
       <hr class="rule" />
@@ -130,15 +130,16 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2474%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7563%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4695%</code> / <code class="language-plaintext highlighter-rouge">100.4867%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2472%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7564%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4697%</code> / <code class="language-plaintext highlighter-rouge">100.4867%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low <code class="language-plaintext highlighter-rouge">16..32</code>
-read-group promotion improves VISITOR3-low <code class="language-plaintext highlighter-rouge">1342/1070/1039 -&gt; 1339/1066/1035</code>,
-keeps overrun flat at <code class="language-plaintext highlighter-rouge">31</code>, cuts blocking <code class="language-plaintext highlighter-rouge">78 -&gt; 73</code>, loop reads <code class="language-plaintext highlighter-rouge">18 -&gt; 17</code>,
-read time <code class="language-plaintext highlighter-rouge">104 -&gt; 96</code>, and due misses <code class="language-plaintext highlighter-rouge">14 -&gt; 13</code>; the other four under-green
+measured inside the allocator budget. The latest VISITOR3-low <code class="language-plaintext highlighter-rouge">72..88</code>
+read-group promotion stacks on <code class="language-plaintext highlighter-rouge">16..32</code> and moves VISITOR3-low
+<code class="language-plaintext highlighter-rouge">1339/1066/1035 -&gt; 1343/1070/1039</code>, keeps overrun flat at <code class="language-plaintext highlighter-rouge">31</code>, cuts blocking
+<code class="language-plaintext highlighter-rouge">73 -&gt; 70</code>, loop reads <code class="language-plaintext highlighter-rouge">17 -&gt; 15</code>, read time <code class="language-plaintext highlighter-rouge">96 -&gt; 93</code>, and due misses
+<code class="language-plaintext highlighter-rouge">13 -&gt; 11</code>; the other four under-green
 canary rows stay exact-flat. The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>, blocking
@@ -224,8 +225,8 @@ High measures <code class="language-plaintext highlighter-rouge">1070/1046</code
 <code class="language-plaintext highlighter-rouge">35</code>, reads/due <code class="language-plaintext highlighter-rouge">5/2</code>; low uses a
 <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment extended to
 <code class="language-plaintext highlighter-rouge">206..232</code>, with frame <code class="language-plaintext highlighter-rouge">138</code> raw relocated into that paid gap, then adds
-the <code class="language-plaintext highlighter-rouge">16..32</code> retained read-group row. It now measures <code class="language-plaintext highlighter-rouge">1066/1035</code>,
-overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking <code class="language-plaintext highlighter-rouge">73</code>, reads/due <code class="language-plaintext highlighter-rouge">17/13</code>. Both rows moved out of red and the orange band is now empty
+the <code class="language-plaintext highlighter-rouge">16..32</code> and <code class="language-plaintext highlighter-rouge">72..88</code> retained read-group rows. It now measures <code class="language-plaintext highlighter-rouge">1070/1039</code>,
+overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking <code class="language-plaintext highlighter-rouge">70</code>, reads/due <code class="language-plaintext highlighter-rouge">15/11</code>. Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors <code class="language-plaintext highlighter-rouge">264..288</code> during setup,
 improving <code class="language-plaintext highlighter-rouge">2847/2816 -&gt; 2843/2816</code>, overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 27</code>, blocking/refill

@@ -23,15 +23,16 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2474%` over
-target / `99.7563%` target speed; the raw signed optimization matrix is
-about `-0.4695%` / `100.4867%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2472%` over
+target / `99.7564%` target speed; the raw signed optimization matrix is
+about `-0.4697%` / `100.4867%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low `16..32`
-read-group promotion improves VISITOR3-low `1342/1070/1039 -> 1339/1066/1035`,
-keeps overrun flat at `31`, cuts blocking `78 -> 73`, loop reads `18 -> 17`,
-read time `104 -> 96`, and due misses `14 -> 13`; the other four under-green
+measured inside the allocator budget. The latest VISITOR3-low `72..88`
+read-group promotion stacks on `16..32` and moves VISITOR3-low
+`1339/1066/1035 -> 1343/1070/1039`, keeps overrun flat at `31`, cuts blocking
+`73 -> 70`, loop reads `17 -> 15`, read time `96 -> 93`, and due misses
+`13 -> 11`; the other four under-green
 canary rows stay exact-flat. The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking
@@ -117,8 +118,8 @@ High measures `1070/1046`, overrun `24`, blocking
 `35`, reads/due `5/2`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, then adds
-the `16..32` retained read-group row. It now measures `1066/1035`,
-overrun `31`, blocking `73`, reads/due `17/13`. Both rows moved out of red and the orange band is now empty
+the `16..32` and `72..88` retained read-group rows. It now measures `1070/1039`,
+overrun `31`, blocking `70`, reads/due `15/11`. Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
 improving `2847/2816 -> 2843/2816`, overrun `31 -> 27`, blocking/refill

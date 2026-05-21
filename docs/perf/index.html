@@ -229,11 +229,11 @@ low now uses one retained <code class="language-plaintext highlighter-rouge">238
 keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adds
 <code class="language-plaintext highlighter-rouge">{149,165}</code>, encodes frame <code class="language-plaintext highlighter-rouge">92</code> as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed <code class="language-plaintext highlighter-rouge">{395..411}</code> plus
-retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> CD-pressure work. The newest VISITOR3-low <code class="language-plaintext highlighter-rouge">16..32</code>
-read-group row builds on the frame135 gap-D4 baseline and improves
-VISITOR3-low <code class="language-plaintext highlighter-rouge">1342/1070/1039 -&gt; 1339/1066/1035</code>, keeps overrun flat at
-<code class="language-plaintext highlighter-rouge">31</code>, cuts blocking <code class="language-plaintext highlighter-rouge">78 -&gt; 73</code>, loop reads <code class="language-plaintext highlighter-rouge">18 -&gt; 17</code>, read time
-<code class="language-plaintext highlighter-rouge">104 -&gt; 96</code>, and due misses <code class="language-plaintext highlighter-rouge">14 -&gt; 13</code>; the prior frame135 gap-D4 row kept
+retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> CD-pressure work. The newest VISITOR3-low <code class="language-plaintext highlighter-rouge">72..88</code>
+read-group row stacks on <code class="language-plaintext highlighter-rouge">16..32</code> and moves VISITOR3-low
+<code class="language-plaintext highlighter-rouge">1339/1066/1035 -&gt; 1343/1070/1039</code>, keeps overrun flat at <code class="language-plaintext highlighter-rouge">31</code>, cuts blocking
+<code class="language-plaintext highlighter-rouge">73 -&gt; 70</code>, loop reads <code class="language-plaintext highlighter-rouge">17 -&gt; 15</code>, read time <code class="language-plaintext highlighter-rouge">96 -&gt; 93</code>, and due misses
+<code class="language-plaintext highlighter-rouge">13 -&gt; 11</code>; the prior frame135 gap-D4 row kept
 file size, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>, blocking
 <code class="language-plaintext highlighter-rouge">80 -&gt; 78</code>, and loop read time <code class="language-plaintext highlighter-rouge">106 -&gt; 104</code>; the prior
@@ -302,19 +302,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2474%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2472%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7563%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7564%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T11:29:51</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T12:27:55</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; VISITOR3-low uses <code class="language-plaintext highlighter-rouge">v3low-rg16-32</code>; other current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1low-slack-frames87-99</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-rg72-88</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -330,14 +330,14 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest VISITOR3-low <code class="language-plaintext highlighter-rouge">16..32</code> read-group track:
-<code class="language-plaintext highlighter-rouge">v3low-rg16-32-five-yellow-current</code> adds a low-tide-only VISITOR3 retained
-read group for relative sectors <code class="language-plaintext highlighter-rouge">16..32</code>, building on the frame135 gap-D4
+<p>Latest VISITOR3-low <code class="language-plaintext highlighter-rouge">72..88</code> read-group track:
+<code class="language-plaintext highlighter-rouge">v3low-rg72-88-five-yellow-current</code> adds a low-tide-only VISITOR3 retained
+read group for relative sectors <code class="language-plaintext highlighter-rouge">72..88</code> on top of <code class="language-plaintext highlighter-rouge">16..32</code>, building on the frame135 gap-D4
 baseline while preserving pack footprint, LBA <code class="language-plaintext highlighter-rouge">23379</code>, sectors <code class="language-plaintext highlighter-rouge">760</code>, and the
-<code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. VISITOR3-low improves
-<code class="language-plaintext highlighter-rouge">1342/1070/1039 -&gt; 1339/1066/1035</code>, keeps overrun flat at <code class="language-plaintext highlighter-rouge">31</code>, cuts blocking
-<code class="language-plaintext highlighter-rouge">78 -&gt; 73</code>, loop reads <code class="language-plaintext highlighter-rouge">18 -&gt; 17</code>, read time <code class="language-plaintext highlighter-rouge">104 -&gt; 96</code>, and due misses
-<code class="language-plaintext highlighter-rouge">14 -&gt; 13</code>; BUILDING2 high, VISITOR3 high, and WALKSTUF1 high/low stay
+<code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. VISITOR3-low moves
+<code class="language-plaintext highlighter-rouge">1339/1066/1035 -&gt; 1343/1070/1039</code>, keeps overrun flat at <code class="language-plaintext highlighter-rouge">31</code>, cuts blocking
+<code class="language-plaintext highlighter-rouge">73 -&gt; 70</code>, loop reads <code class="language-plaintext highlighter-rouge">17 -&gt; 15</code>, read time <code class="language-plaintext highlighter-rouge">96 -&gt; 93</code>, and due misses
+<code class="language-plaintext highlighter-rouge">13 -&gt; 11</code>; BUILDING2 high, VISITOR3 high, and WALKSTUF1 high/low stay
 exact-flat.</p>
 
 <p>Prior VISITOR3-low frame135 gap-D4 track:
@@ -1577,8 +1577,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2809,8 +2809,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>3.5%</td>
       <td class="spd-yellow">96.6%</td>
       <td>1082/1045</td>
@@ -2823,14 +2823,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T11:28:19</td>
-      <td>v3low-rg16-32</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>3.0%</td>
       <td class="spd-yellow">97.1%</td>
-      <td>1066/1035</td>
-      <td>73</td>
+      <td>1070/1039</td>
+      <td>70</td>
       <td>0</td>
-      <td>13</td>
+      <td>11</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">
@@ -2949,8 +2949,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2963,8 +2963,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
+      <td>2026-05-21T12:27:55</td>
+      <td>v3low-rg72-88</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
