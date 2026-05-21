@@ -229,11 +229,13 @@ low now uses one retained <code class="language-plaintext highlighter-rouge">238
 keeps <code class="language-plaintext highlighter-rouge">198..244</code>, extends its second retained slice to <code class="language-plaintext highlighter-rouge">286..344</code>, adds
 <code class="language-plaintext highlighter-rouge">{149,165}</code>, encodes frame <code class="language-plaintext highlighter-rouge">92</code> as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, and carries same-speed <code class="language-plaintext highlighter-rouge">{395..411}</code> plus
-retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> CD-pressure work. The newest VISITOR3-low fixed-layout
-previous-visible cleanup row then keeps entry sizes, file size, LBA, and the
-PS-EXE bucket fixed while dropping runtime restore bytes <code class="language-plaintext highlighter-rouge">467962 -&gt; 64632</code>,
-max restore bytes <code class="language-plaintext highlighter-rouge">293544 -&gt; 2962</code>, upload bytes <code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and
-dirty rows <code class="language-plaintext highlighter-rouge">28303 -&gt; 27335</code> with exact-flat five-yellow timing.
+retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> CD-pressure work. The newest VISITOR3-low frame135
+gap-D4 row keeps file size, LBA, sectors, and the PS-EXE bucket fixed while
+improving VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>,
+blocking <code class="language-plaintext highlighter-rouge">80 -&gt; 78</code>, and loop read time <code class="language-plaintext highlighter-rouge">106 -&gt; 104</code>; the prior
+previous-visible cleanup row already dropped runtime restore bytes
+<code class="language-plaintext highlighter-rouge">467962 -&gt; 64632</code>, max restore bytes <code class="language-plaintext highlighter-rouge">293544 -&gt; 2962</code>, upload bytes
+<code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and dirty rows <code class="language-plaintext highlighter-rouge">28303 -&gt; 27335</code>.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during
 setup with a low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip cap, slack-5 window guard, and
 <code class="language-plaintext highlighter-rouge">{141,153}</code> read row, moving that row into green. BUILDING4 low now
@@ -296,19 +298,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2480%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2472%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7557%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7564%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T08:57:03</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T10:55:30</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1low-slack-frames87-99</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; VISITOR3-low uses <code class="language-plaintext highlighter-rouge">v3low-delta135-gap</code>; other current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1low-slack-frames87-99</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -324,7 +326,16 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest W1-low fixed-layout cleanup-slack track:
+<p>Latest VISITOR3-low frame135 gap-D4 track:
+<code class="language-plaintext highlighter-rouge">v3low-delta135-gap-five-yellow-noreq-current</code> encodes frame <code class="language-plaintext highlighter-rouge">135</code> as a
+previous-frame D4 delta against frame <code class="language-plaintext highlighter-rouge">134</code> and moves the <code class="language-plaintext highlighter-rouge">14246</code> byte payload
+into the existing early D4 gap at offset <code class="language-plaintext highlighter-rouge">204452</code>, while preserving pack
+footprint, LBA <code class="language-plaintext highlighter-rouge">23379</code>, sectors <code class="language-plaintext highlighter-rouge">760</code>, and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket.
+VISITOR3-low improves <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>,
+blocking <code class="language-plaintext highlighter-rouge">80 -&gt; 78</code>, and loop read time <code class="language-plaintext highlighter-rouge">106 -&gt; 104</code>; BUILDING2 high,
+VISITOR3 high, and WALKSTUF1 high/low stay exact-flat.</p>
+
+<p>Prior W1-low fixed-layout cleanup-slack track:
 <code class="language-plaintext highlighter-rouge">w1low-slack-frames87-99-five-yellow-current</code> combines exact-entry
 screen-span clipping with previous-visible cleanup in <code class="language-plaintext highlighter-rouge">WALK1LOW.FG2</code> while
 preserving each changed entry’s table <code class="language-plaintext highlighter-rouge">dataSize</code>, offsets, file size, pack LBA,
@@ -2799,12 +2810,12 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T08:57:03</td>
-      <td>w1low-slack-frames87-99</td>
-      <td>3.1%</td>
-      <td class="spd-yellow">97.0%</td>
-      <td>1071/1039</td>
-      <td>80</td>
+      <td>2026-05-21T10:55:30</td>
+      <td>v3low-delta135-gap</td>
+      <td>3.0%</td>
+      <td class="spd-yellow">97.1%</td>
+      <td>1070/1039</td>
+      <td>78</td>
       <td>0</td>
       <td>14</td>
       <td></td>

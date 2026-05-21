@@ -61,7 +61,7 @@ v238 high frame-127/frame-130 resident-copy compaction, and the v248 low
 frame-114/frame-117 no-op residual compaction, the v327 low resident-slot
 swap, and the v338 low tail pack-only compaction, `visitor3` high
 and low now run around
-[`97.1%` and `97.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+[`96.6%` and `97.1%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 instead of sitting in the red/orange bands.
 
 Two of those experiment-version steps map cleanly to public release

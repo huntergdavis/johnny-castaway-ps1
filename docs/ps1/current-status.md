@@ -4,14 +4,15 @@
 
 
 **Last updated:** 2026-05-21 (`perf/allocator-era-under-green-20260517` after
-the W1-low frame `87..99` fixed-layout cleanup-slack promotion, the W1-high
-cleanup-only fixed-layout screen-clip headroom pass, the VISITOR3-low
-fixed-layout previous-visible cleanup headroom pass, the BUILDING2-high
+the VISITOR3-low frame `135` gap-placed D4 promotion, the W1-low frame
+`87..99` fixed-layout cleanup-slack promotion, the W1-high cleanup-only
+fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout
+previous-visible cleanup headroom pass, the BUILDING2-high
 trim-draw-tail speed and work-headroom promotions, the W1-low
 setup/`{113..129}` + `{355..371}` CD-pressure promotions, W1-low fresh-owner
 `160..176`, and the hot foreground scene-ID source-headroom pass; all 63
 scenes remain validated, all 126 high/low rows are timing-bearing, and the
-public headless battle card is `+0.2480%` over target / `99.7557%` target
+public headless battle card is `+0.2472%` over target / `99.7564%` target
 speed).
 
 ## Overall
@@ -361,10 +362,11 @@ scheduler ownership, the VISITOR3-high 80 KiB clean-relief
 window promotion, and the BUILDING2-high entries `92`/`94`/`95` trim plus
 `{185..197}` and `{158..174}` same-speed CD work, W1-low fresh-owner
 `160..176`, the hot foreground scene-ID cache source-headroom pass, the
-W1-high and VISITOR3-low fixed-layout cleanup headroom passes, and the W1-low
-frame `87..99` cleanup-slack promotion, the public battle card is now
-`+0.2480%` over target / `99.7557%` target speed; the raw signed optimization
-rollup is about `-0.4687%` / `100.4860%`.
+W1-high and VISITOR3-low fixed-layout cleanup headroom passes, the W1-low
+frame `87..99` cleanup-slack promotion, and the VISITOR3-low frame `135`
+gap-placed D4 speed promotion, the public battle card is now
+`+0.2472%` over target / `99.7564%` target speed; the raw signed optimization
+rollup is about `-0.4697%` / `100.4867%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.15`
 public over-target points and added about `12.66` public target-speed points.
@@ -499,7 +501,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2480%` / `99.7557%` with `121` green, `5` yellow, and `0` orange rows;
+  The public battle card is `+0.2472%` / `99.7564%` with `121` green, `5` yellow, and `0` orange rows;
   BUILDING2 high currently measures `1341/1313` with blocking/read/due `47/44/7`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, and trim-tail work to
   active payload `539990`, WALKSTUF1 high is
@@ -508,7 +510,7 @@ Milestone releases:
   reads/read time `24`/`145`, rows/spans/pixels `16257/114798/633876`, and active payload
   `751288` after the frame `87..99` cleanup-slack bank, VISITOR3 high is
   `1082/1045` with blocking/read count `34`/`4`,
-  VISITOR3 low is `1071/1039` with blocking/read count `80`/`18`, JOHNNY1 high/low are
+  VISITOR3 low is `1070/1039` with blocking/read count `78`/`18`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is
   green at `2847/2820` with blocking/read time `32`/`252`, and VISITOR5 high/low are
   now green at `1101/1096` and `1102/1097`.

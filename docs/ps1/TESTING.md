@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-21:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T08:57:03` |
-| Stats version | mixed; current five-yellow timing rows are stamped `w1low-slack-frames87-99`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2472%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7564%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T10:55:30` |
+| Stats version | mixed; current VISITOR3-low row is stamped `v3low-delta135-gap`; other current five-yellow timing rows are stamped `w1low-slack-frames87-99`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,20 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted W1-low frame `87..99` fixed-layout cleanup-slack note:
+Latest promoted VISITOR3-low frame `135` gap-D4 note:
+`VIST3LOW.FG2` now encodes frame `135` as a previous-frame D4 delta against
+frame `134` and places the `14246` byte payload into the existing early D4
+gap at offset `204452`, keeping pack footprint, LBA `23379`, sectors `760`,
+and the PS-EXE bucket fixed. Transform summary:
+`scratch/v3low-delta135-gap-current/summary.json`; focused proof:
+`scratch/ps1-perf-iterate/v3low-delta135-gap-current/20260521-104619-756680/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/v3low-delta135-gap-five-yellow-noreq-current/20260521-105530-808737/summary.json`.
+VISITOR3-low improves `1071/1039 -> 1070/1039`, overrun `32 -> 31`,
+blocking `80 -> 78`, and loop read time `106 -> 104`; BUILDING2 high,
+VISITOR3 high, and WALKSTUF1 high/low stay exact-flat.
+
+Prior promoted W1-low frame `87..99` fixed-layout cleanup-slack note:
 `WALK1LOW.FG2` now combines exact-entry screen-span clipping with
 previous-visible cleanup in preserve-offset, preserve-entry-size,
 pad-to-input-size mode, keeping pack footprint, LBA, and the PS-EXE bucket

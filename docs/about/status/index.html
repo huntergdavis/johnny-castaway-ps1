@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3126 words
+          ~12 min read · 3163 words
         </p>
 
       <hr class="rule" />
@@ -130,12 +130,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2480%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7557%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4689%</code> / <code class="language-plaintext highlighter-rouge">100.4860%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2472%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7564%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4697%</code> / <code class="language-plaintext highlighter-rouge">100.4867%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest W1-high cleanup-only
+measured inside the allocator budget. The latest VISITOR3-low frame135 gap-D4
+promotion keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while
+improving VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>,
+blocking <code class="language-plaintext highlighter-rouge">80 -&gt; 78</code>, and loop read time <code class="language-plaintext highlighter-rouge">106 -&gt; 104</code>. The prior W1-high cleanup-only
 fixed-layout screen-clip pass keeps file size, offsets, entry sizes, pack LBA,
 and the PS-EXE bucket fixed while clipping exact entries <code class="language-plaintext highlighter-rouge">14</code>, <code class="language-plaintext highlighter-rouge">23</code>, <code class="language-plaintext highlighter-rouge">43</code>,
 <code class="language-plaintext highlighter-rouge">45</code>, <code class="language-plaintext highlighter-rouge">47</code>, <code class="language-plaintext highlighter-rouge">49</code>, <code class="language-plaintext highlighter-rouge">51</code>, <code class="language-plaintext highlighter-rouge">54</code>, <code class="language-plaintext highlighter-rouge">56</code>, <code class="language-plaintext highlighter-rouge">57</code>, <code class="language-plaintext highlighter-rouge">67</code>, <code class="language-plaintext highlighter-rouge">137</code>, and <code class="language-plaintext highlighter-rouge">147</code>; subset

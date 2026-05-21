@@ -4,13 +4,13 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/w1low-slack-frames87-99-five-yellow-current/20260521-085703-140832`
+- Source artifact root: `scratch/ps1-perf-iterate/v3low-delta135-gap-five-yellow-noreq-current/20260521-105530-808737`
 - Candidate rows: `47`
 - Standalone probes: `0`
-- Scheduler or guarded probes: `0`
-- Scheduler-owned only: `0`
-- Closed exact ranges from experiment log: `47`
-- Phase-trap rows: `47`
+- Scheduler or guarded probes: `1`
+- Scheduler-owned only: `4`
+- Closed exact ranges from experiment log: `42`
+- Phase-trap rows: `45`
 - Deferred under-target rows: `0`
 - Top next lanes: `frame-deadline-data-shape-or-render-reduction`=13, `custom-terminal-data-shape-or-generated-deadline`=12, `no-decode-canonicalization-or-generated-owner`=12, `generated-deadline-or-sector-split-data-shape`=10
 
@@ -20,27 +20,22 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 When direct standalone/guarded probes are exhausted, promote the listed
 next lanes above more scalar range retries.
 
-No open standalone or guarded direct-read probes remain in this
-artifact set. The next optimization pass should start from generated
-deadline ownership, custom data-shape, or pack-owned work reduction
-lanes instead of another hand-authored sector range.
-
 ## Top 40 Candidates
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Phase Trap | Next Lane | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|---|---|
-| 1 | `visitor3` | `low` | 1071/1039 | 80 | `248..272` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 2 | `visitor3` | `low` | 1071/1039 | 80 | `240..264` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 3 | `visitor3` | `low` | 1071/1039 | 80 | `239..263` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 4 | `visitor3` | `low` | 1071/1039 | 80 | `248..264` (16s) | 3 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 5 | `visitor3` | `low` | 1071/1039 | 80 | `9..33` (24s) | 2 | `balanced:validate-overlap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 6 | `visitor3` | `low` | 1071/1039 | 80 | `256..268` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 7 | `visitor3` | `low` | 1071/1039 | 80 | `256..272` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 8 | `visitor3` | `low` | 1071/1039 | 80 | `239..251` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 9 | `visitor3` | `low` | 1071/1039 | 80 | `248..260` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 10 | `visitor3` | `low` | 1071/1039 | 80 | `92..108` (16s) | 1 | `balanced:validate-overlap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 11 | `visitor3` | `low` | 1071/1039 | 80 | `86..98` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 12 | `visitor3` | `low` | 1071/1039 | 80 | `9..25` (16s) | 1 | `balanced:validate-overlap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 1 | `visitor3` | `low` | 1070/1039 | 78 | `16..32` (16s) | 1 | `balanced:validate-overlap` | `no` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-or-guarded-probe` |
+| 2 | `visitor3` | `low` | 1070/1039 | 78 | `16..40` (24s) | 2 | `risky:short-visible-gap` | `no` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 3 | `visitor3` | `low` | 1070/1039 | 78 | `86..110` (24s) | 3 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 4 | `visitor3` | `low` | 1070/1039 | 78 | `239..255` (16s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 5 | `visitor3` | `low` | 1070/1039 | 78 | `98..110` (12s) | 1 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `custom-terminal-data-shape-or-generated-deadline` | `scheduler-owned-only` |
+| 6 | `visitor3` | `low` | 1070/1039 | 78 | `92..108` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 7 | `visitor3` | `low` | 1070/1039 | 78 | `9..33` (24s) | 2 | `balanced:validate-overlap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 8 | `visitor3` | `low` | 1070/1039 | 78 | `23..47` (24s) | 2 | `risky:short-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 9 | `visitor3` | `low` | 1070/1039 | 78 | `239..251` (12s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 10 | `visitor3` | `low` | 1070/1039 | 78 | `86..98` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 11 | `visitor3` | `low` | 1070/1039 | 78 | `9..25` (16s) | 1 | `balanced:validate-overlap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
+| 12 | `visitor3` | `low` | 1070/1039 | 78 | `256..268` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
 | 13 | `walkstuf1` | `high` | 1472/1441 | 43 | `84..108` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `no-decode-canonicalization-or-generated-owner` | `closed-by-experiment-log` |
 | 14 | `walkstuf1` | `high` | 1472/1441 | 43 | `365..389` (24s) | 3 | `risky:short-visible-gap` | `closed-exact-range` | `no-decode-canonicalization-or-generated-owner` | `closed-by-experiment-log` |
 | 15 | `walkstuf1` | `high` | 1472/1441 | 43 | `74..98` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-exact-range` | `no-decode-canonicalization-or-generated-owner` | `closed-by-experiment-log` |

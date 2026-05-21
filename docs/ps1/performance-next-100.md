@@ -68,15 +68,20 @@ preserve-entry-size screen-clip headroom promotion, followed by the W1-high
 cleanup-only preserve-entry-size screen-clip subset and the BUILDING2-high
 no-decode trim-draw-tail subset, the W1-high exact-entry preserve-entry-size
 screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
-headroom pass, and the W1-high cleanup-only fixed-layout screen-clip headroom
-pass:
-`+0.2480%` public average over target / `99.7557%` public target speed across
+headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
+pass, and the VISITOR3-low frame135 gap-placed D4 speed promotion:
+`+0.2472%` public average over target / `99.7564%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4689%` / `100.4860%`. Since the compact full-matrix baseline was
+`-0.4697%` / `100.4867%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.15` public over-target points and added about `12.66` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest W1-high cleanup-only fixed-layout screen-clip pass keeps
+`0` red. The latest VISITOR3-low frame135 D4 pass keeps pack footprint, pack
+LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket fixed while
+moving frame `135`'s `14246` byte previous-frame delta payload into the early
+D4 gap at offset `204452`; VISITOR3-low improves `1071/1039 -> 1070/1039`,
+overrun `32 -> 31`, blocking `80 -> 78`, and loop read time `106 -> 104`.
+The prior W1-high cleanup-only fixed-layout screen-clip pass keeps
 file size, offsets, entry sizes, LBA, and the PS-EXE bucket fixed while
 clipping exact entries `14`, `23`, `43`, `45`, `47`, `49`, `51`, `54`, `56`,
 `57`, `67`, `137`, and `147`, dropping subset logical active payload

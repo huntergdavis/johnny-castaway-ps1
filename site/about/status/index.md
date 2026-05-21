@@ -23,12 +23,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2480%` over
-target / `99.7557%` target speed; the raw signed optimization matrix is
-about `-0.4689%` / `100.4860%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2472%` over
+target / `99.7564%` target speed; the raw signed optimization matrix is
+about `-0.4697%` / `100.4867%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest W1-high cleanup-only
+measured inside the allocator budget. The latest VISITOR3-low frame135 gap-D4
+promotion keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while
+improving VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`,
+blocking `80 -> 78`, and loop read time `106 -> 104`. The prior W1-high cleanup-only
 fixed-layout screen-clip pass keeps file size, offsets, entry sizes, pack LBA,
 and the PS-EXE bucket fixed while clipping exact entries `14`, `23`, `43`,
 `45`, `47`, `49`, `51`, `54`, `56`, `57`, `67`, `137`, and `147`; subset
