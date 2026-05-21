@@ -408,6 +408,10 @@ follow-up trim-draw-tail headroom subset then trims entries `74` and `78..82`,
 cuts active payload `548293 -> 539990`, preserves file size/LBA, and keeps
 B2-high, VISITOR3 high/low, and WALKSTUF1 high/low exact-flat. Artifact:
 `scratch/ps1-perf-iterate/building2-high-trimdraw74-78-82-five-yellow-current/20260521-040010-2659168/summary.json`.
+The adjacent `76`/`77` pocket is now closed: the pair trims `6910` bytes but
+regresses target/refill to `1341/1311`, overrun `30`, blocking/refill `49/16`;
+`76` alone repeats that regression, and `77` alone regresses loop/overrun to
+`1344/31`.
 The first broad W1-high preserve-entry-size retry is closed as log-only. It
 reduced logical active payload `848331 -> 777722` and improved visible
 scene/loop `1808/1472 -> 1806/1470`, but failed the no-regression gate on
