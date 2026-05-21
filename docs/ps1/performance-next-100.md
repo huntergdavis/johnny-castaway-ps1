@@ -635,79 +635,86 @@ closed as structural allocator pressure (`req=178176 have=168956`), and
 Current allocator-era big-swing queue after closing the scalar grouped-read,
 single-frame D4, duplicate-alias, isolated trim, sequential-Setloc, wider
 VISITOR3 setup-edge, W1-high exact/mid screen-clip, W1-high `{268..280}`, B2
-`{90..102}`, W1-low min-slack-2, and the generic C-side read-owner sidecar
-lanes:
+`{90..102}`, W1-low min-slack-2, the generic C-side read-owner sidecar lanes,
+and the W1-low frame `87..99` fixed-layout cleanup-slack promotion:
 
-1. **W1-low `129..153` refill-slack data shape.** This was the only rejected
-   sidecar probe with real loop-speed signal (`1470 -> 1468`), but it spent
-   hidden refill (`3 -> 10`). Create fixed-layout render/restore slack in
-   frames `87..99`, then retry the owner only if refill stays at or below `3`.
-2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
+Latest promoted W1-low cleanup-slack row: frames `87..99` now keep file size,
+offsets, entry sizes, LBA, and the PS-EXE bucket fixed while reducing selected
+active payload `755808 -> 751288`, cleanup spans `3322 -> 1605`, cleanup
+pixels `12700 -> 7209`, cleanup restore bytes `25400 -> 14418`, runtime
+restore bytes `439090 -> 430052`, upload bytes `17854720 -> 17838080`, dirty
+rows `27898 -> 27872`, and loop read time `146 -> 145`. The paired static
+`129..153` owner still has the visible loop signal but remains closed because
+it regresses hidden refill `3 -> 10`.
+
+1. **VISITOR3 high fixed-layout early-sector cleanup.** Reduce the sector
+   `36..42` parser/restore burden without shrinking table size or moving the
+   read seam, then retry early ownership. It is now the worst canonical row at
+   `1082/1045` / `96.580%` and has no hidden refill debt, so data-shape slack is
+   the best near-term big swing.
+2. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
+   minus-62 cleanup family into smaller sector-preserving subfamilies and prove
+   exact-flat timing before combining with any read owner.
+3. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
    PS-EXE bucket.
-3. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
+4. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
    savings into blocking/refill (`V3-high` direct-stage, W1-high `372..388`,
    W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
-4. **VISITOR3 high fixed-layout early-sector cleanup.** Reduce the sector
-   `36..42` parser/restore burden without shrinking table size or moving the
-   read seam, then retry early ownership.
 5. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` proved is real, but only through budgeted ownership; no more
    retained setup expansion or hand table rows.
-6. **VISITOR3 high no-extra-setup cleanup split.** Split the previous-visible
-   minus-62 cleanup family into smaller sector-preserving subfamilies and prove
-   exact-flat timing before combining with any read owner.
-7. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
+6. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that avoids hot
    previous-frame decode predicates.
-8. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
+7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
    explicit due/blocking/refill budgets rather than another static low-tide
    table.
-9. **VISITOR3 low terminal gap placement.** Move or alias terminal payloads
+8. **VISITOR3 low terminal gap placement.** Move or alias terminal payloads
    only if startup ramp locality and the retained setup windows stay intact.
-10. **BUILDING2 high `109..133` generated owner.** This emerged after the
+9. **BUILDING2 high `109..133` generated owner.** This emerged after the
     failed `{90..102}` row; test it only with budgeted fire/no-fire metadata.
-11. **BUILDING2 high `249..265` generated owner.** The raw/additive scalar rows
+10. **BUILDING2 high `249..265` generated owner.** The raw/additive scalar rows
     are closed, but this remains a plausible generated-deadline cluster if it
     can avoid visible blocking.
-12. **BUILDING2 high selective no-decode relocation for entries `81..86`.**
+11. **BUILDING2 high selective no-decode relocation for entries `81..86`.**
     Avoid whole-tail frame-order repacking and preserve accepted setup windows.
-13. **BUILDING2 high entry-local preserve-entry clipping near `109..133`.**
+12. **BUILDING2 high entry-local preserve-entry clipping near `109..133`.**
     Exclude closed `89..91` and target only parser/restore bytes adjacent to
     the active candidate.
-14. **BUILDING2 high paired data-shape plus generated row proof.** Promote
+13. **BUILDING2 high paired data-shape plus generated row proof.** Promote
     neither half alone; require the data-shape slack and row fire to pass in
     the same strict focused gate.
-15. **BUILDING2 high duplicate alias cleanup.** Continue only exact duplicate
+14. **BUILDING2 high duplicate alias cleanup.** Continue only exact duplicate
     setup-edge aliases; do not retry the broad runtime duplicate cache.
-16. **W1-high next cleanup-only screen-clip island.** Entry-index-only tooling
+15. **W1-high next cleanup-only screen-clip island.** Entry-index-only tooling
     is now in place and `58..61` is promoted as exact-flat headroom; continue
     only with cleanup-only or proven phase-safe subsets, not `62..67` or the
     `128..147` split family.
-17. **W1-high late-sector non-CD work reduction.** Static `372..388` and
+16. **W1-high late-sector non-CD work reduction.** Static `372..388` and
     `379..395` owners are closed; reduce restore/upload/parser work around
     frames `183..191` first, then retry only through no-hot-C generated
     ownership.
-18. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
+17. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
     metadata is code-size-neutral; previous fresh-owner C hooks were inert and
     bloated hot code.
-19. **W1-high cleanup-only pack canonicalization after `204..211`.** Favor
+18. **W1-high cleanup-only pack canonicalization after `204..211`.** Favor
     no-sector-change cleanup-only frames and exact-flat five-yellow canaries.
-20. **W1-high setup-resident ownership with allocator accounting.** Any new
+19. **W1-high setup-resident ownership with allocator accounting.** Any new
     retained slice must prove CACHE/TRANSIENT clean-rect headroom before a
     timing run.
-21. **W1-low `193..217` generated owner.** Min-slack-2 proved slack `3` is too
+20. **W1-low `193..217` generated owner.** Min-slack-2 proved slack `3` is too
     expensive; retry only with a strict refill budget.
-22. **W1-low `153..177` follow-up only after slack.** Static `153..177` has the
-    same speed/refill tradeoff as `129..153`; keep it behind the frame `87..99`
-    slack pass, not ahead of it.
-23. **W1-low sector-split data shape for frames `90..99`.** Preserve early ramp
+21. **W1-low `129..153` / `153..177` generated refill owner.** Static rows have
+    real loop-speed signal but still spend hidden refill after the frame `87..99`
+    slack pass; retry only with explicit generated refill/no-hot-C ownership.
+22. **W1-low sector-split data shape for frames `90..99`.** Preserve early ramp
     locality and avoid the failed setup-prime relocation pattern.
-24. **Cross-row fixed-layout code-headroom pass.** Bank exact-flat hot-code
+23. **Cross-row fixed-layout code-headroom pass.** Bank exact-flat hot-code
     shrink before adding generated metadata, so new owners do not cross the
     PS-EXE bucket or shift foreground LBAs.
-25. **Allocator-aware generated sidecar validation.** Treat CACHE/TRANSIENT
+24. **Allocator-aware generated sidecar validation.** Treat CACHE/TRANSIENT
     fit, clean-rect chunking, and setup residency as first-class gates before
     emulator timing, not as follow-up debugging.
 

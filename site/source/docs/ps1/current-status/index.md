@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1 low setup/{113..129} CD-pressure promotion, the same-speed {355..371} read-work row, the W1-high frame56/{178..194} CD-pressure promotion plus {423..439}, {404..416}, {395..411}, and retargeted {411..423}, W1-high prepare-first scheduler ownership, the VISITOR3-high 80 KiB clean-relief window promotion, and the BUILDING2-high entries 92/94/95 trim plus {185..197} same-speed CD-pressure row, W1-low fresh-owner 160..176, and the hot foregrou...
+the W1-low frame 87..99 fixed-layout cleanup-slack promotion, the W1-high cleanup-only fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout previous-visible cleanup headroom pass, the BUILDING2-high trim-draw-tail speed and work-headroom promotions, the W1-low setup/{113..129} + {355..371} CD-pressure promotions, W1-low fresh-owner 160..176, and the hot foreground scene-ID source-headroom pass; all 63 scenes remain validated, all 126 hi...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 859 |
-| Approx. words | 9616 |
+| Lines | 860 |
+| Approx. words | 9615 |
 | Code fences | 1 |
 
 ## Outline

@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2480%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7557%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T06:21:32` |
-| Stats version | mixed; current five-yellow timing rows are stamped `w1high-cleanup-only-14-147`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T08:57:03` |
+| Stats version | mixed; current five-yellow timing rows are stamped `w1low-slack-frames87-99`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,26 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted W1-high cleanup-only fixed-layout screen-clip note:
+Latest promoted W1-low frame `87..99` fixed-layout cleanup-slack note:
+`WALK1LOW.FG2` now combines exact-entry screen-span clipping with
+previous-visible cleanup in preserve-offset, preserve-entry-size,
+pad-to-input-size mode, keeping pack footprint, LBA, and the PS-EXE bucket
+fixed. Transform summaries:
+`scratch/w1low-slack-frames87-99-current/clip-summary.json` and
+`scratch/w1low-slack-frames87-99-current/prev-visible-summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/w1low-slack-frames87-99-current/20260521-085216-113461/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/w1low-slack-frames87-99-five-yellow-current/20260521-085703-140832/summary.json`.
+W1-low stays `1470/1446`, overrun `24`, blocking `32`, and refill `3`,
+while selected-entry active payload drops `755808 -> 751288`, cleanup spans
+`3322 -> 1605`, cleanup pixels `12700 -> 7209`, cleanup restore bytes
+`25400 -> 14418`, runtime restore bytes `439090 -> 430052`, upload bytes
+`17854720 -> 17838080`, dirty rows `27898 -> 27872`, and loop read time
+`146 -> 145`. BUILDING2 high, VISITOR3 high/low, and WALKSTUF1 high stay
+exact-flat.
+
+Prior promoted W1-high cleanup-only fixed-layout screen-clip note:
 `WALKSTUF1.FG2` now clips exact cleanup-only entries `14`, `23`, `43`, `45`,
 `47`, `49`, `51`, `54`, `56`, `57`, `67`, `137`, and `147`, keeping each
 changed entry's table `dataSize`, offsets, pack footprint, LBA, and the
