@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2371% public over target / 99.7659% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2465% public over target / 99.7571% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,9 +23,9 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2371%` over target /
-`99.7659%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4798%` / `100.4962%`; bands are `121`
+loading, and the current battle card is `+0.2465%` over target /
+`99.7571%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4704%` / `100.4875%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
 include VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
@@ -36,10 +36,13 @@ same-speed `{395..411}` and retargeted `{411..423}` CD work, and WALKSTUF1 low `
 `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 `179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
-read-work. The latest code-headroom pass caches the active foreground scene ID
-once per scene start, keeping the five yellow rows exact-flat while shrinking
-the tracked hot foreground scheduler symbols by `172` bytes in the same
-`233472` byte PS-EXE bucket. MARY1/2/3 and SUZY1/2 are
+read-work. The latest VISITOR3-low read-group stack now adds `88..104` on top
+of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
+`68`, loop reads/read time `14/91`, and due `11` while the other four yellow
+rows stay exact-flat. The latest code-headroom pass caches the active
+foreground scene ID once per scene start, keeping the five yellow rows
+exact-flat while shrinking the tracked hot foreground scheduler symbols by
+`172` bytes in the same `233472` byte PS-EXE bucket. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
 only an asset/reference naming source.
 

@@ -59,9 +59,10 @@ raw-gap tight-refill, high-only clean64, 80 KiB clean-relief window, and
 setup-edge `40..47`
 promotions, plus the BUILDING2 low `226..262` + clean80 setup segment, plus
 the BUILDING4 low `24 KiB` stream-window green promotion, and the BUILDING2
-high previous-visible cleanup-speed promotion, is
-**+0.2472% over target / 99.7564% target speed**, with roughly **17.15
-percentage points** of over-target gap closed and about **12.65 target-speed
+high previous-visible cleanup-speed promotion and VISITOR3-low `88..104`
+read-group follow-up, is
+**+0.2465% over target / 99.7571% target speed**, with roughly **17.15
+percentage points** of over-target gap closed and about **12.66 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both

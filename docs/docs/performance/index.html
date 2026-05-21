@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4773 words
+          ~19 min read · 4774 words
         </p>
 
       <hr class="rule" />
@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.3% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2472%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7564%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4697%</code> / <code class="language-plaintext highlighter-rouge">100.4867%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2465%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7571%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4704%</code> / <code class="language-plaintext highlighter-rouge">100.4875%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -509,9 +509,9 @@ raw-gap relocation, the frame56/57 tight56 raw-gap pass, the high-only
 early <code class="language-plaintext highlighter-rouge">40..47</code> retained setup edge at <code class="language-plaintext highlighter-rouge">1070/1046</code>, while
 low now uses a <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment
 extended to <code class="language-plaintext highlighter-rouge">206..232</code>, with frame <code class="language-plaintext highlighter-rouge">138</code> raw relocated into that paid gap,
-the later frame135 gap-D4 data-shape pass, and the newest <code class="language-plaintext highlighter-rouge">16..32</code> plus
-<code class="language-plaintext highlighter-rouge">72..88</code> retained read groups. The current canonical row is <code class="language-plaintext highlighter-rouge">1070/1039</code>,
-overrun <code class="language-plaintext highlighter-rouge">31</code>, blocking/read/due <code class="language-plaintext highlighter-rouge">70/15/11</code>, without hidden prefetch debt.</p>
+the later frame135 gap-D4 data-shape pass, and the newest <code class="language-plaintext highlighter-rouge">16..32</code>, <code class="language-plaintext highlighter-rouge">72..88</code>,
+and <code class="language-plaintext highlighter-rouge">88..104</code> retained read groups. The current canonical row is <code class="language-plaintext highlighter-rouge">1069/1039</code>,
+overrun <code class="language-plaintext highlighter-rouge">30</code>, blocking/read/due <code class="language-plaintext highlighter-rouge">68/14/11</code>, without hidden prefetch debt.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -1110,7 +1110,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2472% over target / 99.7564% target speed, with several
+public average is now +0.2465% over target / 99.7571% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

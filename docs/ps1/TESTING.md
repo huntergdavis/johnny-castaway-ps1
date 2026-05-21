@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-21:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2472%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7564%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T12:27:55` |
-| Stats version | mixed; current five-yellow timing rows are stamped `v3low-rg72-88`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2465%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7571%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T12:42:19` |
+| Stats version | mixed; current five-yellow timing rows are stamped `v3low-rg88-104`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,17 +94,22 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3-low `72..88` read-group note:
+Latest promoted VISITOR3-low `88..104` read-group note:
 `foreground_pilot.c` now gives low-tide VISITOR3 scene-local retained read
-groups for relative sectors `16..32` and `72..88`, building on the frame `135`
-gap-D4 data-shape baseline. Focused proof:
-`scratch/ps1-perf-iterate/v3low-rg72-88-current/20260521-122612-1311583/summary.json`;
+groups for relative sectors `16..32`, `72..88`, and `88..104`, building on
+the frame `135` gap-D4 data-shape baseline. Focused proof:
+`scratch/ps1-perf-iterate/v3low-rg88-104-current/20260521-124046-1393347/summary.json`;
 five-yellow no-regression canary:
-`scratch/ps1-perf-iterate/v3low-rg72-88-five-yellow-current/20260521-122755-1321634/summary.json`.
-VISITOR3-low moves `1339/1066/1035 -> 1343/1070/1039`, keeps overrun
-flat at `31`, cuts blocking `73 -> 70`, loop reads `17 -> 15`, loop read
-time `96 -> 93`, and due misses `13 -> 11`; BUILDING2 high, VISITOR3 high,
+`scratch/ps1-perf-iterate/v3low-rg88-104-five-yellow-current/20260521-124219-1402518/summary.json`.
+VISITOR3-low moves `1343/1070/1039 -> 1342/1069/1039`, cuts overrun
+`31 -> 30`, blocking `70 -> 68`, loop reads `15 -> 14`, and loop read
+time `93 -> 91`, with due misses flat at `11`; BUILDING2 high, VISITOR3 high,
 and WALKSTUF1 high/low stay exact-flat.
+
+Prior promoted VISITOR3-low `72..88` read-group note:
+`foreground_pilot.c` added relative sectors `72..88` on top of `16..32`,
+moving VISITOR3-low `1339/1066/1035 -> 1343/1070/1039`, keeping overrun flat
+at `31`, and cutting blocking/read time/due `73/96/13 -> 70/93/11`.
 
 Prior promoted VISITOR3-low frame `135` gap-D4 note:
 `VIST3LOW.FG2` encodes frame `135` as a previous-frame D4 delta against frame
