@@ -935,6 +935,16 @@ not caused by the entry `109..112` clip; this seam needs generated
 deadline/refill ownership or a paired data-shape/phase change, not another raw
 table row.
 
+The first terminal row-reference swing is also closed as a standalone
+data-shape. Encoding VISITOR3-low frame `136` against frame `134` is extremely
+byte-positive (`16890 -> 1177`, `3` commands, `15713` saved bytes) and stayed
+pixel-correct with the PS-EXE bucket fixed, but placement controls still failed
+the gate. In-place and post-frame-129 gap placement regressed to
+`1344/1071/1039`, blocking `72`; post-frame-135 gap placement recovered loop
+and overrun exactly at `1342/1069/1039`, but blocking still rose `68 -> 70`.
+Future terminal row-reference work must preserve `14/11` reads/due through
+generated deadline/refill ownership, not just shrink or relocate frame `136`.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -995,8 +1005,9 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
    hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that preserves
-   read/due cadence; standalone, combined, staged-predecode, and no-scratch D4
-   variants for frames `133`, `134`, and `136` are now closed.
+   read/due cadence; standalone, combined, staged-predecode, no-scratch, and
+   two-back base-`134` D4 variants for frames `133`, `134`, and `136` are now
+   closed.
 7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
    explicit due/blocking/refill budgets rather than another static low-tide
    table.
