@@ -141,7 +141,14 @@ overrun/blocking to `1064/1043`, overrun `21`, blocking `43`, reads/due
 cleared refill only by regressing to `1067/1041`, blocking `55`. Keep the
 accepted `55..79` phase-0 slack-4 CACHE segment as the baseline. Reopen this
 lane only with CACHE/clean-rect compaction, a smaller row-reference/no-decode
-shape, or generated narrow ownership for the single phase-1 hidden refill. The prior VISITOR3-low
+shape, or generated narrow ownership for the single phase-1 hidden refill. The
+post-segment4 early append replacement `{16..40}` is closed too. Replacing the
+accepted `{16..32}` row preserved pack LBA and the PS-EXE bucket and reduced
+blocking `50 -> 48`, but it changed the active read shape badly enough to
+regress VISITOR3-low to `1353/1068/1043`, overrun `25`, reads `24`, with no
+hidden refill. Keep `{16..32}` as the accepted early append; future `16..40`
+coverage needs generated refill/deadline ownership or a no-decode data shape,
+not a wider grouped-append row. The prior VISITOR3-low
 frame134 D4 headroom pass encodes frame
 `134` against the previous decoded frame while keeping pack LBA, pack sectors,
 file size, and the `233472` byte PS-EXE bucket fixed. Frame `134` shrinks
