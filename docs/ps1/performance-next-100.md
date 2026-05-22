@@ -602,6 +602,12 @@ and reads/due `15/12`. The remaining VISITOR3-low lane should therefore be
 generated deadline/refill ownership for the existing cadence, or a no-decode
 relocation/data-shape that changes read boundaries without alternate decode
 pressure.
+The VISITOR3-low `46..58` generated-deadline-lite sweep is also closed.
+Adding the group with min-slack `6`, `5`, or `4` keeps the canonical row
+exact-flat at `1342/1069/1039`, overrun `30`, blocking `68`, refill `0`,
+and reads/due `14/11`; the unguarded version remains phase-negative. The
+next V3-low scheduler attempt needs a new ownership primitive, not another
+grouped-append slack cutoff.
 The recent B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
