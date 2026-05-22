@@ -98,7 +98,14 @@ TRANSIENT (`req=206848`, `have=168956`). The phase-1 CACHE split cut reads to
 `17` but tightened target to `1039` and added one hidden refill VBlank; phase
 `2` improved loop/overrun/blocking to `1064/20/46` but also had one hidden
 refill VBlank; phase `3`, phase `2` with slack `5`, and phase `2` with
-tight-slack skip guards are closed as regressions. The prior VISITOR3-low
+tight-slack skip guards are closed as regressions. The immediate post-residency
+frame136 D4 retry is also closed: both the in-place and post-frame134-gap forms
+saved `2824` stored bytes and preserved pack LBA/sectors plus the `233472`
+byte PS-EXE bucket, but both regressed VISITOR3-low from `1350/1065/1041`,
+overrun `24`, blocking `50`, reads/due `18/8`, to `1353/1068/1041`,
+overrun `27`, blocking `54`, reads/due `19/9`. Keep frame136 D4 closed on this
+baseline; the terminal lane needs row-reference/setup-dictionary/no-decode
+shape or generated refill ownership, not another D4 placement. The prior VISITOR3-low
 frame134 D4 headroom pass encodes frame
 `134` against the previous decoded frame while keeping pack LBA, pack sectors,
 file size, and the `233472` byte PS-EXE bucket fixed. Frame `134` shrinks
