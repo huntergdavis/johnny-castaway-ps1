@@ -886,6 +886,20 @@ the `233472` byte PS-EXE bucket fixed but regressed VISITOR3-low: combined and
 generated deadline/refill ownership with explicit phase budgets or after a
 data-shape reduction changes the read cadence.
 
+The wider VISITOR3-low `32..56` ownership family is closed too. Static
+`{32..56}` and `{52..76}` rows, fresh-owner proxies for owner frames `54..73`,
+and a sector-only fresh-owner proxy all stayed exact-flat at `1069/1039`,
+overrun `30`, blocking `68`, with only hot-code/table overhead. Broad lookahead
+regressed to `1071/1035`, overrun `36`, blocking `84`, and shifted both pack
+LBA and PS-EXE bucket. Constrained lookahead and slack-6/8 variants showed only
+`blocking 68 -> 67` while moving loop/target to `1070/1040` and still failed
+layout identity. The final narrow direct `32..56` lookahead probe regressed
+hard to `1098/1031`, overrun `67`, blocking `113`, prefetch overrun `31`, and
+crossed the `233472 -> 235520` byte PS-EXE bucket. Do not retry this cluster
+through hot C scheduling; it needs no-hot-C generated deadline metadata,
+no-decode relocation/aliasing, or a cheaper row-reference/setup-dictionary
+codec.
+
 Current-baseline VISITOR3-low terminal D4 retries for frames `134` and `136`
 are closed again after the decoder inline headroom passes. The combined retry
 saved `2799` bytes on frame `134` and `2824` bytes on frame `136`, but
@@ -1181,7 +1195,12 @@ terminal `239..255` ownership, or row-reference/setup-dictionary data-shape
 work. A current-baseline direct-table sweep of `{52..76}`, `{32..56}`, and
 `{239..251}` also stayed exact-flat at `1342/1069/1039`, overrun `30`,
 blocking/refill `68/0`, reads/due `14/11`, while only adding `+4` bytes to
-`foregroundPilotPlay`; close those rows as static table probes.
+`foregroundPilotPlay`; close those rows as static table probes. Follow-up
+fresh-owner and lookahead ownership around `32..56` is now closed as well:
+proxies stayed inert, generic lookahead regressed blocking/refill/layout, and
+the narrow direct lookahead regressed to `1098/1031`, overrun `67`, blocking
+`113`, and crossed the PS-EXE bucket. Keep future VISITOR3-low work out of
+local hot-C `32..56` scheduling.
 
 Latest rejected W1-high fresh-owner generated probes: the post-screen-clip
 baseline tested C-side frame/slack-gated fresh-window ownership for the late
