@@ -90,7 +90,17 @@ sectors, and the `233472` byte PS-EXE bucket fixed. The four-yellow canary at
 moves VISITOR3 low `1338/1065/1040 -> 1339/1065/1041`, overrun `25 -> 24`,
 and target speed `97.653% -> 97.746%`; VISITOR3 high, WALKSTUF1 high, and
 BUILDING2 high stay exact-flat. Phase `2`, `3`, and `4` are rejected because
-they regress loop, target, blocking, or hidden refill. The prior VISITOR3-low
+they regress loop, target, blocking, or hidden refill. The latest W1-high
+compact/retained-residency transfer from the W1-low green recipe is closed:
+full draw-tail compaction saved `14398` active bytes and reduced reads
+`41 -> 39`, but regressed W1-high to `1819/1482/1442`, overrun `40`,
+blocking/refill `57/14`. Retargeting retained setup to the new compact-layout
+clusters lowered full scene time but collapsed target cadence and raised loop
+reads; preserving the old slices and adding `74..98` exhausted CACHE at the
+clean-rect allocation even with the `64 KiB` pairing. Artifact root:
+`scratch/ps1-perf-iterate/w1high-trimdraw-compact-current-20260522/`.
+Future W1-high work should not retry full physical compaction or additive
+retained slices without no-hot-C generated refill/deadline ownership. The prior VISITOR3-low
 slack-knee speed pass lowers
 `FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS` from `5` to `4` while keeping
 pack LBA, pack sectors, and the `233472` byte PS-EXE bucket fixed. The
