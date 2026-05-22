@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3244 words
+          ~12 min read · 3247 words
         </p>
 
       <hr class="rule" />
@@ -130,16 +130,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2240%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7786%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4929%</code> / <code class="language-plaintext highlighter-rouge">100.5089%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2233%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7793%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4936%</code> / <code class="language-plaintext highlighter-rouge">100.5097%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low slack-knee
-promotion moves VISITOR3 low <code class="language-plaintext highlighter-rouge">1342/1069/1039 -&gt; 1338/1065/1040</code>, cuts overrun
-<code class="language-plaintext highlighter-rouge">30 -&gt; 25</code>, blocking <code class="language-plaintext highlighter-rouge">68 -&gt; 55</code>, and improves target speed
-<code class="language-plaintext highlighter-rouge">97.194% -&gt; 97.653%</code> while VISITOR3 high, WALKSTUF1 high, and BUILDING2 high
-stay exact-flat.
+measured inside the allocator budget. The latest VISITOR3-low phase-retime
+promotion moves VISITOR3 low <code class="language-plaintext highlighter-rouge">1338/1065/1040 -&gt; 1339/1065/1041</code>, cuts overrun
+<code class="language-plaintext highlighter-rouge">25 -&gt; 24</code>, and improves target speed <code class="language-plaintext highlighter-rouge">97.653% -&gt; 97.746%</code> while VISITOR3
+high, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
 The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
 summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
 <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while
@@ -230,8 +229,8 @@ High measures <code class="language-plaintext highlighter-rouge">1070/1046</code
 <code class="language-plaintext highlighter-rouge">16 KiB</code> slack-5 window plus a third retained setup segment extended to
 <code class="language-plaintext highlighter-rouge">206..232</code>, with frame <code class="language-plaintext highlighter-rouge">138</code> raw relocated into that paid gap, then adds
 the <code class="language-plaintext highlighter-rouge">16..32</code>, <code class="language-plaintext highlighter-rouge">72..88</code>, and <code class="language-plaintext highlighter-rouge">88..104</code> retained read-group rows plus the
-four-VBlank slack-knee guard. It now measures <code class="language-plaintext highlighter-rouge">1065/1040</code>, overrun <code class="language-plaintext highlighter-rouge">25</code>,
-blocking <code class="language-plaintext highlighter-rouge">55</code>, reads/due <code class="language-plaintext highlighter-rouge">26/10</code>.
+four-VBlank slack-knee guard, then adds a one-VBlank low-tide phase offset. It
+now measures <code class="language-plaintext highlighter-rouge">1065/1041</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking <code class="language-plaintext highlighter-rouge">55</code>, reads/due <code class="language-plaintext highlighter-rouge">28/10</code>.
 Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors <code class="language-plaintext highlighter-rouge">264..288</code> during setup,

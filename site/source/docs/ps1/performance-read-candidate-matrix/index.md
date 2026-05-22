@@ -22,7 +22,7 @@ This host-side report aggregates the current foreground-read-plan.json artifacts
 |---|---:|
 | Source path | `docs/ps1/performance-read-candidate-matrix.md` |
 | Lines | 97 |
-| Approx. words | 939 |
+| Approx. words | 937 |
 | Code fences | 0 |
 
 ## Outline

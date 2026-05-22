@@ -213,6 +213,7 @@ enum {
 #define FG_BUILDING2_HIGH_PHASE_VBLANKS 1
 #define FG_WALKSTUF1_HIGH_PHASE_VBLANKS 1
 #define FG_WALKSTUF1_LOW_PHASE_VBLANKS 1
+#define FG_VISITOR3_LOW_PHASE_VBLANKS 1
 #define FG_BUILDING2_LOW_SETUP_SEGMENT_START (112UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_LOW_SETUP_SEGMENT_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_LOW_SETUP_SEGMENT2_START (226UL * FG_CD_SECTOR_SIZE)
@@ -4556,6 +4557,19 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         VSync(0);
         VSync(0);
         VSync(0);
+#if FG_VISITOR3_LOW_PHASE_VBLANKS >= 1
+    } else if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && islandState.lowTide) {
+        VSync(0);
+#if FG_VISITOR3_LOW_PHASE_VBLANKS >= 2
+        VSync(0);
+#endif
+#if FG_VISITOR3_LOW_PHASE_VBLANKS >= 3
+        VSync(0);
+#endif
+#if FG_VISITOR3_LOW_PHASE_VBLANKS >= 4
+        VSync(0);
+#endif
+#endif
     } else if (gFgRuntimeSceneId == FG_SCENE_BUILDING2 && !islandState.lowTide) {
 #if FG_BUILDING2_HIGH_PHASE_VBLANKS >= 1
         VSync(0);

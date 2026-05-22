@@ -75,15 +75,23 @@ and the D4/local-LZ decoder inline code-headroom passes, followed by the
 VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
 BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
 `89..91` fixed-layout trim, the W1-high one-VBlank phase retime, the
-W1-low compact trim/retarget phase promotion, and the VISITOR3-low
-slack-knee speed promotion:
-`+0.2240%` public average over target / `99.7786%` public target speed across
+W1-low compact trim/retarget phase promotion, the VISITOR3-low slack-knee
+speed promotion, and the VISITOR3-low one-VBlank phase retime:
+`+0.2233%` public average over target / `99.7793%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4929%` / `100.5089%`. Since the compact full-matrix baseline was
+`-0.4936%` / `100.5097%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.18` public over-target points and added about `12.68` public
 target-speed points. Bands are now `122` green, `4` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low slack-knee speed pass lowers
+`0` red. The latest VISITOR3-low phase-retime pass adds one low-tide phase
+VBlank after the accepted slack-knee baseline while keeping pack LBA, pack
+sectors, and the `233472` byte PS-EXE bucket fixed. The four-yellow canary at
+`scratch/ps1-perf-iterate/v3low-phase1-four-yellow-norequire-current-20260522/20260522-064859-3374469/summary.json`
+moves VISITOR3 low `1338/1065/1040 -> 1339/1065/1041`, overrun `25 -> 24`,
+and target speed `97.653% -> 97.746%`; VISITOR3 high, WALKSTUF1 high, and
+BUILDING2 high stay exact-flat. Phase `2`, `3`, and `4` are rejected because
+they regress loop, target, blocking, or hidden refill. The prior VISITOR3-low
+slack-knee speed pass lowers
 `FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS` from `5` to `4` while keeping
 pack LBA, pack sectors, and the `233472` byte PS-EXE bucket fixed. The
 four-yellow canary at
