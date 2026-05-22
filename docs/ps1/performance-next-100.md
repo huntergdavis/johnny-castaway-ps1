@@ -919,6 +919,14 @@ rescue the terminal D4 shape: frame `134` alone still regressed to
 any ordinary previous-frame D4 path; the next data-shape attempt must be a
 cheaper row-reference/setup-dictionary codec or a true no-decode relocation.
 
+The no-scratch staged-D4 follow-up for frame `134` is closed. Decoding directly
+from the retained stream-window source showed a one-VBlank signal only in the
+overlarge helper form that shifted PS-EXE/LBA identity (`233472 -> 235520`,
+`VIST3LOW.FG2` LBA `23379 -> 23380`). The layout-clean lean form regressed to
+`1070/1039`, overrun `31`, blocking `68`. Treat ordinary D4 for frame `134` as
+exhausted; the next terminal attempt must change the representation, not just
+where the D4 decoder runs.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -978,8 +986,8 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
    hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that preserves
-   read/due cadence; standalone, combined, and staged-predecode D4 variants for
-   frames `133`, `134`, and `136` are now closed.
+   read/due cadence; standalone, combined, staged-predecode, and no-scratch D4
+   variants for frames `133`, `134`, and `136` are now closed.
 7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
    explicit due/blocking/refill budgets rather than another static low-tide
    table.
