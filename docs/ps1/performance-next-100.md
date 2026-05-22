@@ -1187,6 +1187,23 @@ Artifact:
 Close early W1-high entry55/source frame65 sector-collapse trimming; these
 visually empty tail bytes are phase-bearing unless a generated owner can absorb
 the shifted cadence.
+Latest rejected W1-high broad fixed-layout screen-clip swing: the all-entry
+probe removed `66440` logical payload bytes, `30907` cleanup pixels, and
+`59773` draw pixels with fixed file size, offsets, LBA, and PS-EXE bucket. It
+did reduce loop/scene by one VBlank (`1472 -> 1471`, `1808 -> 1807`), but
+tightened target `1441 -> 1439`, so overrun regressed `31 -> 32`. The late
+`132..147` split removed `27077` bytes but only regressed blocking `43 -> 44`;
+the early `0..22` split was exact-flat; the no-tail split repeated the one
+loop-VBlank win while regressing overrun, blocking, and refill
+`31/43/13 -> 32/44/14`. Artifacts:
+`scratch/ps1-perf-iterate/w1high-all-screenclip-current/20260521-170911-2905279/summary.json`,
+`scratch/ps1-perf-iterate/w1high-tail132-147-screenclip-current/20260521-171132-2918590/summary.json`,
+`scratch/ps1-perf-iterate/w1high-early0-22-screenclip-current/20260521-171326-2929649/summary.json`,
+and
+`scratch/ps1-perf-iterate/w1high-no-tail-screenclip-current/20260521-171529-2941370/summary.json`.
+Close broad W1-high screen clipping as a direct speed path on this baseline;
+keep future W1-high clipping to small cleanup-only/exact-entry headroom unless
+generated deadline/refill ownership changes the phase.
 Latest rejected WALKSTUF1 early-prepare scheduler swing: allowing `walkstuf1`
 to prepare staged visual work at slack `5` as well as slack `4` kept both
 remaining W1 yellow rows exact-flat (`1808/1472/1441` high and
