@@ -127,7 +127,21 @@ WALKSTUF1-high blocking `43 -> 44` while leaving VISITOR3-low, VISITOR3-high,
 and BUILDING2-high exact-flat. Do not use heartbeat removal as generic
 headroom unless it is paired with a W1-high-safe code-size/layout offset; the
 VISITOR3-low phase-2 path still needs actual slack/data-shape or generated
-ownership, not this code-headroom route. The prior VISITOR3-low
+ownership, not this code-headroom route. The corrected fourth-segment read-plan
+also closes the direct VISITOR3-low segment4 widening lane. Full `32..79`
+CACHE coverage and the `44..79` expansion failed before `JCPERF2` because the
+extra setup buffer starved later clean-rect CACHE allocation (`req=90880`,
+`have=74372` or `98948`, depending on range). Replacing the accepted `55..79`
+slice with `32..56` regressed to `1354/1066/1039`, overrun `27`, with one
+hidden refill VBlank. The narrower `48..79` expansion had useful CD-pressure
+shape (`blocking 50 -> 45`, reads/due `18/8 -> 17/7`) but regressed loop and
+target to `1066/1040`. The strongest `48..79` phase-1 form cut loop/target/
+overrun/blocking to `1064/1043`, overrun `21`, blocking `43`, reads/due
+`16/7`, but it added setup/scene debt and one hidden refill VBlank; slack `5`
+cleared refill only by regressing to `1067/1041`, blocking `55`. Keep the
+accepted `55..79` phase-0 slack-4 CACHE segment as the baseline. Reopen this
+lane only with CACHE/clean-rect compaction, a smaller row-reference/no-decode
+shape, or generated narrow ownership for the single phase-1 hidden refill. The prior VISITOR3-low
 frame134 D4 headroom pass encodes frame
 `134` against the previous decoded frame while keeping pack LBA, pack sectors,
 file size, and the `233472` byte PS-EXE bucket fixed. Frame `134` shrinks
