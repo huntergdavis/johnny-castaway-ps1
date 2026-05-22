@@ -849,6 +849,14 @@ key improvement. Close direct compact-compositor `O2` and branch-split variants
 on this baseline; retry compact compose work only after a code-headroom pass or
 with a bucket-neutral micro-change.
 
+Post-retime retest of the same compact compositor `O2` toggle is also closed:
+against the `v3high-seg48-55-exact-clean-phase3` five-yellow baseline it kept
+the PS-EXE bucket fixed but regressed B2-high `1341/1313 -> 1348/1312`,
+W1-high `1472/1441 -> 1476/1439`, and V3-high blocking `32 -> 35`.
+W1-low's loop signal `1470 -> 1465` came with hidden refill `3 -> 10`, so this
+standalone codegen toggle is still phase-negative and should not be retried
+without a layout-pinned split or a real compact data-shape reduction.
+
 Latest rejected aligned CD read code-shape swing: removing the scoped `Os`
 override from `ps1_streamReadAlignedFromCdFileInto()` let the helper inline
 into `ps1_streamReadAlignedIntoFile`, moving that symbol `-448` and growing it
@@ -5902,7 +5910,7 @@ pre-v0.8.0 row.
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | `grDrawBackground()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `504` bytes and the ELF grew by `568` bytes. |
 | `grUpdateDisplay()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `40` bytes and the ELF grew by `168` bytes. |
-| Compact FGP3/v4 compositor scoped `O2` | Do not promote or retry as a standalone compiler toggle. The v409 probe removed `optimize("Os")` from `grCompositePacked4CompactTemporalResidualToBackground()` and kept WALKSTUF1 low's pack LBA plus the `217088` byte EXE bucket fixed, but regressed low from `1484/1431`, blocking `72`, refill `22`, reads/due `67/12` to `1486/1428`, blocking `81`, refill `27`, reads/due `69/13`. Keep the compositor scoped to `-Os`; revisit only with a split/layout-pinned rewrite or a generated data-shape change that reduces compositor work enough to dominate codegen phase drift. |
+| Compact FGP3/v4 compositor scoped `O2` | Do not promote or retry as a standalone compiler toggle. The v409 probe removed `optimize("Os")` from `grCompositePacked4CompactTemporalResidualToBackground()` and kept WALKSTUF1 low's pack LBA plus the `217088` byte EXE bucket fixed, but regressed low from `1484/1431`, blocking `72`, refill `22`, reads/due `67/12` to `1486/1428`, blocking `81`, refill `27`, reads/due `69/13`. The post-retime five-yellow retest also regressed B2-high and W1-high while turning W1-low's loop signal into hidden refill debt. Keep the compositor scoped to `-Os`; revisit only with a split/layout-pinned rewrite or a generated data-shape change that reduces compositor work enough to dominate codegen phase drift. |
 | `foreground_pilot.c` whole-TU `O2` | Do not retry as a whole-TU flag. It grew the PS-EXE by one sector, grew `foregroundPilotPlay 0x252c -> 0x3114`, and failed before `JCPERF2` on repeated `fishing1-high` runs. Retry foreground codegen only as function-scoped, split-TU, or layout-padded probes. |
 | `jc_reborn.c` whole-TU `O2` | Do not promote alone; the four-case gate stayed exact-flat, PS-EXE stayed flat, ELF grew by `4188` bytes, and hot symbols shifted by `+1300` bytes. Retry only through function-scoped or split cold/boot code shapes. |
 | `resource.c` whole-TU `O2` | Do not promote alone; the four-case gate stayed exact-flat, PS-EXE stayed flat, ELF grew by `1584` bytes, and foreground hot symbols shifted by `+240` bytes. Retry only through function-scoped lookup helpers or cold/resource split shapes. |
