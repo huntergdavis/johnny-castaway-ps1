@@ -869,6 +869,15 @@ Keep V3-low setup residency at `281..305`, `150..177`, and `206..232`;
 terminal residency needs new memory budget or a smaller codec, not stolen
 setup segments.
 
+Latest rejected VISITOR3-low active-cluster local-LZ swing: compressing frames
+`72`, `73`, `74`, `86`, and `92` collapsed three two-sector payloads but
+regressed V3-low to `1077/1036`, overrun `41`. Single-frame retries for
+frames `73` and `86` proved the smallest useful version still fails strict
+phase: both cut blocking `68 -> 67` and kept loop flat at `1069`, but target
+shifted to `1038`, so overrun moved `30 -> 31`. Close local-LZ one-sector
+collapses for this row; V3-low needs no-decode alias/relocation, a cheaper
+row-reference codec, or generated deadline ownership.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore

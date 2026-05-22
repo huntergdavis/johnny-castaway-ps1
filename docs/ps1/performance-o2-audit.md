@@ -5,9 +5,9 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-22T02:04:04+00:00` |
+| Generated at | `2026-05-22T02:13:30+00:00` |
 | Branch | `perf/allocator-era-under-green-20260517` |
-| Commit | `f1313c6e69` |
+| Commit | `fe0c3eef53` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `233472` |
