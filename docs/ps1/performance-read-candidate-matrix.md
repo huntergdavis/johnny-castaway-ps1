@@ -4,13 +4,13 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248`
+- Source artifact root: `scratch/ps1-perf-iterate/b2high-entry89-91-trim-five-yellow-current/20260522-021605-1811133`
 - Candidate rows: `54`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
 - Scheduler-owned only: `5`
 - Closed exact ranges from experiment log: `49`
-- Phase-trap rows: `54`
+- Phase-trap rows: `53`
 - Deferred under-target rows: `0`
 - Top next lanes: `frame-deadline-data-shape-or-render-reduction`=13, `custom-terminal-data-shape-or-generated-deadline`=12, `no-decode-canonicalization-or-generated-owner`=12, `generated-deadline-or-sector-split-data-shape`=10, `terminal-payload-placement-or-deadline-sidecar`=7
 
@@ -29,7 +29,7 @@ lanes instead of another hand-authored sector range.
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Phase Trap | Next Lane | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|---|---|
-| 1 | `visitor3` | `high` | 1067/1045 | 32 | `55..61` (6s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `terminal-payload-placement-or-deadline-sidecar` | `scheduler-owned-only` |
+| 1 | `building2` | `high` | 1340/1314 | 45 | `295..319` (24s) | 3 | `risky:short-visible-gap` | `no` | `frame-deadline-data-shape-or-render-reduction` | `scheduler-owned-only` |
 | 2 | `visitor3` | `high` | 1067/1045 | 32 | `55..67` (12s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `terminal-payload-placement-or-deadline-sidecar` | `scheduler-owned-only` |
 | 3 | `visitor3` | `high` | 1067/1045 | 32 | `55..71` (16s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `terminal-payload-placement-or-deadline-sidecar` | `scheduler-owned-only` |
 | 4 | `visitor3` | `high` | 1067/1045 | 32 | `55..79` (24s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `terminal-payload-placement-or-deadline-sidecar` | `scheduler-owned-only` |
@@ -58,17 +58,17 @@ lanes instead of another hand-authored sector range.
 | 27 | `visitor3` | `low` | 1069/1039 | 68 | `58..74` (16s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
 | 28 | `visitor3` | `low` | 1069/1039 | 68 | `256..268` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
 | 29 | `visitor3` | `low` | 1069/1039 | 68 | `240..252` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `custom-terminal-data-shape-or-generated-deadline` | `closed-by-experiment-log` |
-| 30 | `building2` | `high` | 1340/1314 | 45 | `135..159` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 30 | `building2` | `high` | 1340/1314 | 45 | `117..141` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
 | 31 | `building2` | `high` | 1340/1314 | 45 | `90..114` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 32 | `building2` | `high` | 1340/1314 | 45 | `122..146` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 33 | `building2` | `high` | 1340/1314 | 45 | `104..128` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 34 | `building2` | `high` | 1340/1314 | 45 | `249..265` (16s) | 2 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 35 | `building2` | `high` | 1340/1314 | 45 | `318..334` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 36 | `building2` | `high` | 1340/1314 | 45 | `310..326` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 37 | `building2` | `high` | 1340/1314 | 45 | `82..98` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 38 | `building2` | `high` | 1340/1314 | 45 | `249..261` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 39 | `building2` | `high` | 1340/1314 | 45 | `90..96` (6s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
-| 40 | `building2` | `high` | 1340/1314 | 45 | `310..322` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 32 | `building2` | `high` | 1340/1314 | 45 | `104..128` (24s) | 4 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 33 | `building2` | `high` | 1340/1314 | 45 | `249..265` (16s) | 2 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 34 | `building2` | `high` | 1340/1314 | 45 | `318..334` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 35 | `building2` | `high` | 1340/1314 | 45 | `310..326` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 36 | `building2` | `high` | 1340/1314 | 45 | `82..98` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 37 | `building2` | `high` | 1340/1314 | 45 | `249..261` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 38 | `building2` | `high` | 1340/1314 | 45 | `90..96` (6s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 39 | `building2` | `high` | 1340/1314 | 45 | `310..322` (12s) | 1 | `risky:short-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
+| 40 | `building2` | `high` | 1340/1314 | 45 | `318..330` (12s) | 1 | `unsafe:tight-visible-gap` | `closed-exact-range` | `frame-deadline-data-shape-or-render-reduction` | `closed-by-experiment-log` |
 
 ## CSV
 

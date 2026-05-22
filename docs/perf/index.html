@@ -264,7 +264,7 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
 
 <h2 id="rollup">Rollup</h2>
 
-<p>Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:</p>
+<p>Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:</p>
 
 <table>
   <thead>
@@ -316,11 +316,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T23:38:13</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T02:16:05</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">b2high-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">b2high-entry89-91-trim</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -336,7 +336,15 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest BUILDING2-high phase-retime track:
+<p>Latest BUILDING2-high fixed-layout trim track:
+<code class="language-plaintext highlighter-rouge">b2high-entry89-91-trim-five-yellow-current</code> trims draw tails for entries
+<code class="language-plaintext highlighter-rouge">89..91</code> without moving offsets, file size, LBA/sectors, or the <code class="language-plaintext highlighter-rouge">233472</code> byte
+PS-EXE bucket. It keeps BUILDING2 high exact-flat at <code class="language-plaintext highlighter-rouge">1583/1340/1314</code>, overrun
+<code class="language-plaintext highlighter-rouge">26</code>, blocking/refill <code class="language-plaintext highlighter-rouge">45/12</code>, and due <code class="language-plaintext highlighter-rouge">7</code>, while active payload drops
+<code class="language-plaintext highlighter-rouge">539990 -&gt; 527960</code> and loop reads/read time improve <code class="language-plaintext highlighter-rouge">44/192 -&gt; 42/186</code>.
+VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat.</p>
+
+<p>Prior BUILDING2-high phase-retime track:
 <code class="language-plaintext highlighter-rouge">b2high-phase1-five-yellow-noreq-current</code> adds one B2-high-only VBlank before
 the measured loop. It keeps <code class="language-plaintext highlighter-rouge">BUILDING2.FG2</code> at LBA <code class="language-plaintext highlighter-rouge">6189</code>, keeps the <code class="language-plaintext highlighter-rouge">233472</code>
 byte PS-EXE bucket fixed, and improves BUILDING2 high from <code class="language-plaintext highlighter-rouge">1583/1341/1313</code> to
@@ -1656,8 +1664,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T23:38:13</td>
-      <td>b2high-phase1</td>
+      <td>2026-05-22T02:16:05</td>
+      <td>b2high-entry89-91-trim</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2888,8 +2896,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T23:38:13</td>
-      <td>b2high-phase1</td>
+      <td>2026-05-22T02:16:05</td>
+      <td>b2high-entry89-91-trim</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2902,8 +2910,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T23:38:13</td>
-      <td>b2high-phase1</td>
+      <td>2026-05-22T02:16:05</td>
+      <td>b2high-entry89-91-trim</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -3028,8 +3036,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T23:38:13</td>
-      <td>b2high-phase1</td>
+      <td>2026-05-22T02:16:05</td>
+      <td>b2high-entry89-91-trim</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -3042,8 +3050,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T23:38:13</td>
-      <td>b2high-phase1</td>
+      <td>2026-05-22T02:16:05</td>
+      <td>b2high-entry89-91-trim</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

@@ -72,15 +72,25 @@ headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
 VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
 and the D4/local-LZ decoder inline code-headroom passes, followed by the
-VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion and the
-BUILDING2-high one-VBlank phase retime:
+VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
+BUILDING2-high one-VBlank phase retime, and the BUILDING2-high entries
+`89..91` fixed-layout trim:
 `+0.2340%` public average over target / `99.7691%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4829%` / `100.4994%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.17` public over-target points and added about `12.67` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest BUILDING2-high phase promotion adds one B2-high-only
+`0` red. The latest BUILDING2-high entries `89..91` trim keeps offsets, pack
+size, LBA/sectors, and the `233472` byte PS-EXE bucket fixed while active
+payload drops `539990 -> 527960`. The five-yellow canary at
+`scratch/ps1-perf-iterate/b2high-entry89-91-trim-five-yellow-current/20260522-021605-1811133/summary.json`
+keeps BUILDING2-high timing exact-flat at `1583/1340/1314`, overrun `26`,
+blocking/refill `45/12`, and due `7`, while improving loop reads/read time
+`44/192 -> 42/186`; VISITOR3 high/low and WALKSTUF1 high/low stay
+exact-flat. The paired post-trim scalar read rows `{90..96}` and `{249..265}`
+are closed because `{90..96}` regressed B2-high and `{249..265}` added no
+speed win. The prior BUILDING2-high phase promotion adds one B2-high-only
 VBlank before the measured loop. The five-yellow canary at
 `scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248/summary.json`
 keeps pack LBAs and the `233472` byte PS-EXE bucket fixed while BUILDING2-high
@@ -1276,7 +1286,7 @@ generated path must be frame-index/deadline/refill-budget metadata emitted
 outside the hot foreground scheduler, or B2-high must first get a pack/render
 reduction that creates real slack before the owner row fires.
 
-Latest rejected BUILDING2 high entry89 trim: the isolated preserve-offset
+Prior older-baseline rejected BUILDING2 high entry89 trim: the isolated preserve-offset
 draw-tail trim for entry `89` / source frame `107` removed `4510` active bytes
 and collapsed the entry from `5 -> 3` sectors while keeping file size, pack LBA,
 runtime source, and the `233472` byte PS-EXE bucket fixed. It still failed the
@@ -1284,10 +1294,12 @@ focused gate: B2-high regressed `1621/1347/1313 -> 1622/1349/1312`, overrun
 `34 -> 37`, blocking `39 -> 42`, hidden refill stayed `16`, and the only win
 was loop reads `40 -> 39`. Artifact:
 `scratch/ps1-perf-iterate/building2-high-trim-entry89-current/20260520-174210-3342501/summary.json`.
-Close entry89/source frame107 as a standalone trim; entry90 remains the only
-untested isolated member of the current `89..91` sector-collapse split.
+This failure belongs to the older pre-phase-retime baseline. The current
+phase-retimed baseline promotes the combined fixed-layout `89..91` trim as
+same-speed CD-pressure headroom; keep the old isolated-entry failure only as a
+warning that this family is cadence-sensitive.
 
-Latest rejected BUILDING2 high entry90 trim: the remaining isolated
+Prior older-baseline rejected BUILDING2 high entry90 trim: the remaining isolated
 preserve-offset draw-tail trim in the `89..91` split removed `4080` active
 bytes from entry `90` / source frame `109` and collapsed the entry from `5 -> 3`
 sectors with file size, pack LBA, runtime source, and the `233472` byte PS-EXE
@@ -1295,9 +1307,10 @@ bucket fixed. It reproduced the entry89 failure profile: B2-high regressed
 `1621/1347/1313 -> 1622/1349/1312`, overrun `34 -> 37`, blocking `39 -> 42`,
 hidden refill stayed `16`, and loop reads improved only `40 -> 39`. Artifact:
 `scratch/ps1-perf-iterate/building2-high-trim-entry90-current/20260520-174621-3366150/summary.json`.
-Close the current `89..91` draw-tail sector-collapse split under strict B2-high
-gates; the next B2 data-shape path needs generated deadline/refill ownership or
-non-CD render/upload reduction first.
+This failure also belongs to the older pre-phase-retime baseline. The current
+accepted combined `89..91` trim keeps timing flat and improves loop reads/read
+time, but post-trim scalar read rows remain closed; the next B2 speed path still
+needs generated deadline/refill ownership or non-CD render/upload reduction.
 
 Latest VISITOR3 low read-group outcome: after the frame135 gap-D4 data-shape
 baseline and the accepted `16..32` plus `72..88` rows, the `88..104` table row
@@ -2912,9 +2925,11 @@ only one read. Artifacts:
 `scratch/ps1-perf-iterate/building2-high-trimdrawtails-current/20260520-010146-1859565/summary.json`
 and
 `scratch/ps1-perf-iterate/building2-high-trimdrawtails-entry91-current/20260520-010330-1869410/summary.json`.
-Close B2-high entries `89..91` under draw-tail sector-collapse; the next
-B2-high path needs generated deadline ownership or upload/restore elimination,
-not another no-decode tail shrink that changes cadence.
+This old broad failure is superseded by the current focused `89..91` promotion
+on the later phase-retimed baseline. The lesson still stands for broader
+no-decode tail shrinkage: after banking the `89..91` headroom, the next
+B2-high speed path needs generated deadline ownership or upload/restore
+elimination, not another broad tail shrink that changes cadence.
 
 Latest rejected BUILDING2 high frame71 setup-gap D4 swing: frame `71` can be
 encoded as a previous-frame D4 payload (`6656 -> 13` bytes) and physically

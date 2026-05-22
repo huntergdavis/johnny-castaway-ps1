@@ -27,7 +27,8 @@ loading, and the current battle card is `+0.2340%` over target /
 `99.7691%` target speed across all 126 timing-bearing rows. The raw signed
 optimization matrix is about `-0.4829%` / `100.4994%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
+include the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
 setup residency, BUILDING4 low gap-8 dirty-upload merge plus the `24 KiB`
@@ -36,9 +37,10 @@ same-speed `{395..411}` and retargeted `{411..423}` CD work, and WALKSTUF1 low `
 `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 `179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
-read-work, plus the BUILDING2-high one-VBlank phase retime that moves that row
-to `1340/1314`, overrun `26`, blocking/refill `45/12`, and target speed
-`98.060%`. The current VISITOR3-low read-group stack adds `88..104` on top
+read-work, plus the BUILDING2-high one-VBlank phase retime and entries
+`89..91` pack trim that leave that row at `1340/1314`, overrun `26`,
+blocking/refill `45/12`, target speed `98.060%`, and loop reads/read time
+`42/186`. The current VISITOR3-low read-group stack adds `88..104` on top
 of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
 `68`, loop reads/read time `14/91`, and due `11` while the other four yellow
 rows stay exact-flat. The recent VISITOR3-high entry `62` cleanup-only pass
@@ -85,10 +87,10 @@ The latest BUILDING2 high allocator-era baseline keeps retained groups
 `60..72`, `206..230`, `226..242`, `83..95`, `{158..174}`, guarded `271..287`,
 `315..327`, and `{185..197}`, layers the previous-visible cleanup,
 screen-clip, trim-tail, duplicate-alias, and safe draw-tail headroom passes,
-then adds a one-VBlank high-tide phase retime. It measures `1340/1314` at
-`98.060%` target speed, overrun `26`, blocking/refill `45/12`, loop reads/read
-time `44/192`, and due `7`, with pack LBA/sectors and the `233472` byte PS-EXE
-bucket fixed.
+then adds a one-VBlank high-tide phase retime and fixed-layout entry `89..91`
+tail trim. It measures `1340/1314` at `98.060%` target speed, overrun `26`,
+blocking/refill `45/12`, loop reads/read time `42/186`, and due `7`, with pack
+LBA/sectors and the `233472` byte PS-EXE bucket fixed.
 
 The latest BUILDING2 low baseline keeps the v626 `218..229` slack8 retained
 row, v660 offscreen low-tide draw-span clip, and dead draw-tail payload trim,

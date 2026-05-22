@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/).
 
-Current battle-card rollup as of 2026-05-21:
+Current battle-card rollup as of 2026-05-22:
 
 | Metric | Value |
 |---|---:|
@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-21:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2340%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7691%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T23:38:13` |
-| Stats version | mixed; current five-yellow timing rows are stamped `b2high-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T02:16:05` |
+| Stats version | mixed; current five-yellow timing rows are stamped `b2high-entry89-91-trim`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,21 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted BUILDING2-high phase-1 retime note:
+Latest promoted BUILDING2-high entries `89..91` trim note:
+`BUILDING2.FG2` now trims draw tails for entries `89`, `90`, and `91` while
+preserving offsets, file size, pack LBA/sectors, and the PS-EXE bucket.
+Transform summary:
+`scratch/b2high-entry89-91-trim-current/summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/b2high-entry89-91-trim-current/20260522-021021-1777308/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/b2high-entry89-91-trim-five-yellow-current/20260522-021605-1811133/summary.json`.
+BUILDING2-high stays exact-flat at `1583/1340/1314`, overrun `26`,
+blocking/refill `45/12`, and due `7`, while active payload drops
+`539990 -> 527960` and loop reads/read time improve `44/192 -> 42/186`;
+VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat.
+
+Prior promoted BUILDING2-high phase-1 retime note:
 `foreground_pilot.c` now applies one B2-high-only VBlank before the measured
 loop. Focused proof:
 `scratch/ps1-perf-iterate/b2high-phase1-current/20260521-232306-825992/summary.json`;

@@ -2808,3 +2808,18 @@ both `53 KiB` and `55 KiB` cut read count dramatically, but visible timing
 collapsed (`1531` and `1539` loop VBlanks with blocking `115` and `108`). Keep
 the accepted `54 KiB` high window and treat further high-side progress as a
 scheduler-ownership or pack-shape problem, not a scalar window-size problem.
+
+The VISITOR3 high phase4/no-fallthrough rescue path is now narrowed to a true
+generated refill/deadline owner. Adding high-tide read groups around `40..46`
+and `55..61` on top of phase4/no-fallthrough made loop reads look attractive
+but worsened hidden refill and visible cadence; a blunt min-slack-5 guard removed
+refill by starving the row. Do not spend more time on raw phase4, high-table
+rows, or global slack for this scene unless a generator owns the exact refill.
+
+BUILDING2 high entries `89..91` are now trimmed in the fixed-layout pack as
+same-speed CD-pressure headroom. The pass drops active payload
+`539990 -> 527960`, keeps `1340/1314`, overrun `26`, and blocking/refill
+`45/12` exact-flat, and improves loop reads/read time `44/192 -> 42/186`.
+Post-trim scalar rows `{90..96}` and `{249..265}` are closed; the next B2-high
+swing needs generated deadline ownership or another pack/render data-shape
+change that also moves visible cadence.
