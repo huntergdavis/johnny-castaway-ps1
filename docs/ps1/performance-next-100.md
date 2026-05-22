@@ -1221,6 +1221,26 @@ again improved due ownership (`due 4 -> 2`) but regressed target/refill:
 `scratch/ps1-perf-iterate/walkstuf1-low-no-direct-stage-current/20260520-114656-1322913/summary.json`.
 Keep direct-stage enabled until a generated owner can make this decision per
 frame with an explicit refill budget.
+Latest rejected W1-low fixed-layout transform sweep: the broad preserve-offset
+draw-tail trim still has a large byte signal (`44452` logical bytes across
+`62` entries), but collapsing those entry sectors regressed W1-low from
+`1470/1446`, overrun `24`, blocking/refill `32/3`, to `1476/1443`, overrun
+`33`, blocking/refill `40/14`. The entry-size-preserving transparent-tail
+variant stayed exact-flat with no runtime counter improvement, and the late
+`134..140` sector-collapse split removed `16054` bytes but was exact-flat with
+no key improvement. The broad previous-visible cleanup pass removed `48526`
+logical bytes and cut cleanup pixels `175825 -> 43536` / restore bytes
+`351650 -> 87072`, but it only traded pressure: blocking improved `32 -> 31`
+and due `4 -> 2` while target tightened `1446 -> 1443`, refill rose `3 -> 16`,
+and overrun regressed `24 -> 27`. Artifacts:
+`scratch/ps1-perf-iterate/w1low-trim-preserve-all-current/20260521-171927-2963995/summary.json`,
+`scratch/ps1-perf-iterate/w1low-screenclip-preserve-all-current/20260521-172126-2975409/summary.json`,
+`scratch/ps1-perf-iterate/w1low-trim134-140-current/20260521-172339-2988019/summary.json`,
+and
+`scratch/ps1-perf-iterate/w1low-prevvisible-preserve-all-current/20260521-172531-2998806/summary.json`.
+Close broad W1-low trim/previous-visible cleanup on this baseline; future
+W1-low green conversion needs generated deadline/refill ownership or a paired
+data-shape change that budgets hidden refill explicitly.
 Latest rejected VISITOR3 high active-window setup swing: adding `103..127` on
 top of the accepted `203..262` and `277..293` setup coverage in CACHE exceeded
 the allocator/clean-rect budget before `JCPERF2`; dropping the high-tide
