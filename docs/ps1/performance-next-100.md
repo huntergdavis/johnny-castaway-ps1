@@ -1069,6 +1069,16 @@ five-yellow canary keeps all other yellow rows exact-flat. V3-high is now the
 fourth yellow row by target speed, so the next big swing should start with the
 current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
 
+The follow-up VISITOR3-high setup-segment extension family is closed. Retargeting
+the same seven-sector segment from `48..55` to `55..62` improved read count but
+regressed blocking `32 -> 34`; expanding to `48..61` by shrinking `203..262`
+regressed to `1076/1043`, blocking `43`, refill `10`; paying from `277..293`
+regressed to `1088/1043`, blocking `59`, refill `7`, due `3`; and the full
+extension did not emit `JCPERF2` before timeout. The existing retained segments
+are all cadence-bearing, so V3-high `55..61` now requires generated
+deadline/refill ownership or no-decode payload/layout work, not another setup
+residency trade.
+
 1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
    current candidate matrix has no standalone safe sector rows left; start with
    custom terminal data-shape or generated deadline ownership for the terminal
