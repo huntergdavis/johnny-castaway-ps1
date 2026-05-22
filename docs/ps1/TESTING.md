@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-22:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2149%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7875%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry `58..61` tail/phase promotion gate `2026-05-22T13:44:41` |
-| Stats version | mixed; current four-yellow timing rows are stamped `w1high-entry58-61-tail-phase3`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high early offscreen clip headroom gate `2026-05-22T15:29:24`; prior W1-high entry `58..61` tail/phase promotion gate `2026-05-22T13:44:41` |
+| Stats version | mixed; current W1-high headroom row is stamped `w1high-early-clip-headroom`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,17 +94,19 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1-high tail/phase speed note:
-`WALKSTUF1.FG2` trims fixed-offset entry tails for entries `58..61` and
-raises the W1-high phase offset to `3`, preserving file size, LBA/sectors,
-and the PS-EXE bucket. Transform summary:
-`scratch/w1high-entry58-61-tail-current-20260522/summary.json`; strict
-four-yellow proof:
-`scratch/ps1-perf-iterate/w1high-entry58-61-tail-phase3-four-yellow-canonical-current-20260522/20260522-134441-1556405/summary.json`.
-W1-high improves `1808/1471/1441 -> 1808/1469/1440`, overrun `30 -> 29`,
-blocking/refill `43/13 -> 42/12`, target speed `97.961% -> 98.026%`, and
-active payload drops `840654 -> 833386`. BUILDING2 high and VISITOR3 high/low
-stay exact-flat.
+Latest promoted WALKSTUF1-high pack/render headroom note:
+`WALKSTUF1.FG2` clips offscreen spans in fixed-offset entries `0`, `1`, `3`,
+`5`, `6`, `8`, `10`, `11`, `12`, `19`, `21`, and `22` after the entry `58..61`
+tail/phase speed promotion, preserving file size, table entry sizes,
+LBA/sectors, and the PS-EXE bucket. Transform summary:
+`scratch/w1high-early-clip-current-20260522/summary.json`; strict four-yellow
+proof:
+`scratch/ps1-perf-iterate/w1high-early-clip-four-yellow-current-20260522/20260522-152924-2144020/summary.json`.
+W1-high timing stays exact-flat at `1808/1469/1440`, overrun `29`,
+blocking/refill `42/12`, target speed `98.026%`, while selected logical payload
+drops `63458 -> 44478` and runtime work drops rows/spans/pixels
+`16712/127281/714231 -> 16641/124973/692712`. BUILDING2 high and VISITOR3
+high/low stay exact-flat.
 
 Prior promoted BUILDING2-high compact speed note:
 `BUILDING2.FG2` is physically compacted and padded back to the original file

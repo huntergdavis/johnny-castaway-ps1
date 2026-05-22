@@ -21,8 +21,8 @@ scene-playback (fgpilot) path. Everything else in this document is secondary too
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/TESTING.md` |
-| Lines | 987 |
-| Approx. words | 6878 |
+| Lines | 989 |
+| Approx. words | 6919 |
 | Code fences | 8 |
 
 ## Outline

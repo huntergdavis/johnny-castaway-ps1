@@ -141,7 +141,16 @@ also exhausted CACHE before `JCPERF2`; clean80 alone was exact-flat; and the
 early `{80..92}` / `{92..108}` read-group forms saved reads but regressed
 loop or blocking/refill. Treat W1 static C/table/setup swings as exhausted
 until a no-hot-C generated deadline path or new render/data-shape slack exists;
-the next practical big swing is VISITOR3 high. The prior VISITOR3-low
+the newest W1-high early screen-clip pass now banks render/parser headroom
+without changing speed: entries `0`, `1`, `3`, `5`, `6`, `8`, `10`, `11`,
+`12`, `19`, `21`, and `22` drop selected logical payload `63458 -> 44478`,
+remove `13030` cleanup pixels and `21519` draw pixels, and pass the strict
+four-yellow canary exact-flat at
+`scratch/ps1-perf-iterate/w1high-early-clip-four-yellow-current-20260522/20260522-152924-2144020/summary.json`.
+The paired `{92..108}` retry still regressed blocking/refill to `43/13`, so
+this is headroom rather than a converted speed win. The next practical big
+swing is VISITOR3 high unless W1-high gets a larger active-loop render/deadline
+reduction or generated no-hot-C ownership. The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
 overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus
@@ -1345,9 +1354,10 @@ phase/slack pairing.
 14. **BUILDING2 high duplicate alias cleanup.** Continue only exact duplicate
     setup-edge aliases; do not retry the broad runtime duplicate cache.
 15. **W1-high next cleanup-only screen-clip island.** Entry-index-only tooling
-    is now in place and `58..61` is promoted as exact-flat headroom; continue
-    only with cleanup-only or proven phase-safe subsets, not `62..67` or the
-    `128..147` split family.
+    is now in place and the early entries `0`, `1`, `3`, `5`, `6`, `8`,
+    `10`, `11`, `12`, `19`, `21`, and `22` are promoted as exact-flat
+    headroom. Continue only with cleanup-only or proven phase-safe subsets,
+    not `62..67` or the `128..147` split family.
 16. **W1-high late-sector non-CD work reduction.** Entries `183..191` are now
     compacted with previous-visible cleanup as exact-flat work headroom. Static
     `372..388`, `379..395`, and `358..374` owners/read groups remain closed;
