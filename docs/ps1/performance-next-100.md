@@ -119,6 +119,13 @@ symbol, grows `fgRuntimeLoadSceneFrame` by another `352` bytes, moves most
 tracked hot foreground symbols another `-476` bytes, and moves
 `foregroundPilotPlay` another `-124` bytes. This is code-headroom only and
 does not change public/raw speed rollups or bands.
+The first post-headroom B2-high direct-row retry is closed: additive
+`{249..265}` and `{318..334}` stayed exact-flat with no key improvement, while
+table-size-stable `{315..327} -> {310..326}` saved reads/due (`44/7 -> 42/6`)
+but regressed B2-high to `1584/1342/1312`, overrun `30`, blocking/refill
+`48/16`. The decoder headroom did not make these static B2 rows safe; the next
+B2 attempt still needs generated deadline/refill ownership or pack/render work
+reduction rather than another hand-authored read table.
 The prior VISITOR3-low
 entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
