@@ -5,18 +5,18 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-22T01:04:12+00:00` |
+| Generated at | `2026-05-22T01:16:09+00:00` |
 | Branch | `perf/allocator-era-under-green-20260517` |
-| Commit | `ea5b5a2beb` |
+| Commit | `4af70c09a4` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `233472` |
 | PS-EXE sector bucket bytes | `233472` |
-| ELF bytes | `1027984` |
-| Map bytes | `62803` |
+| ELF bytes | `1027664` |
+| Map bytes | `62721` |
 | Translation units at `-O2` | `10` |
 | Translation units at `-Os` | `18` |
-| Function-scoped optimize attributes | `8` |
+| Function-scoped optimize attributes | `7` |
 | Candidate CSV | [`docs/ps1/performance-o2-audit.csv`](performance-o2-audit.csv) |
 
 ## Immediate Probe Order
@@ -25,7 +25,6 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 80 | translation_unit | `src/generated/pack_header_metrics.c` | -Os | 0 | 0 | Review TU optimization flag |
 | 80 | translation_unit | `src/mem_region.c` | -Os | 0 | 3564 | Review TU optimization flag |
-| 90 | function | `fgDecodeLocalLzPayload` | optimize("Os") | 476 | 25844 | Review manually |
 | 90 | function | `grCompositePacked4CompactTemporalResidualToBackground` | optimize("Os") | 476 | 33420 | Review manually |
 | 90 | function | `grCompositeToBackground` | optimize("Os") | 1456 | 33420 | Review manually |
 | 90 | function | `grCompositeToBackgroundFlip` | optimize("Os") | 1596 | 33420 | Review manually |
@@ -34,11 +33,12 @@
 | 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 448 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 740 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
-| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 25844 | Keep whole TU at -Os; historical default-O2 retest rejected |
+| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 25720 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/island.c` | -Os | 0 | 612 | Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected |
 | 90 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 9100 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 
 ## Function-Scoped Flags
 
@@ -46,7 +46,6 @@
 | --- | --- | --- |
 | `src/cdrom_ps1.c:1014` | `ps1_streamReadFromCdFile` | `optimize("Os")` |
 | `src/cdrom_ps1.c:1321` | `ps1_streamReadAlignedFromCdFileInto` | `optimize("Os")` |
-| `src/foreground_pilot.c:875` | `fgDecodeLocalLzPayload` | `optimize("Os")` |
 | `src/graphics_ps1.c:860` | `grUpdateDisplay` | `optimize("Os")` |
 | `src/graphics_ps1.c:1625` | `grCompositeToBackground` | `optimize("Os")` |
 | `src/graphics_ps1.c:2234` | `grCompositePacked4CompactTemporalResidualToBackground` | `optimize("Os")` |
@@ -60,7 +59,7 @@
 | `src/calcpath.c` | -O2 | 10224 | -O2 |
 | `src/cdrom_ps1.c` | -O2 | 164240 | -O2 |
 | `src/events_ps1.c` | -Os | 36988 | -O2 -Os |
-| `src/foreground_pilot.c` | -Os | 191052 | -O2 -Os |
+| `src/foreground_pilot.c` | -Os | 190504 | -O2 -Os |
 | `src/generated/pack_header_metrics.c` | -Os | 7112 | -O2 -Os |
 | `src/graphics_ps1.c` | -O2 | 322308 | -O2 |
 | `src/holidays.c` | -Os | 25440 | -O2 -Os |

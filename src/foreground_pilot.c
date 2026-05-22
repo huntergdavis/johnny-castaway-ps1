@@ -872,7 +872,7 @@ fgDecodeFrameDelta(uint8 *data,
     return 1;
 }
 
-static int __attribute__((optimize("Os")))
+static int
 fgDecodeLocalLzPayload(uint8 *data,
                        struct TFgPilotEntry *entry)
 {

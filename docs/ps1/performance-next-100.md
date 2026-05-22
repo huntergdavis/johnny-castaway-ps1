@@ -71,7 +71,7 @@ screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
 headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
 VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
-and the D4 decoder inline code-headroom pass:
+and the D4/local-LZ decoder inline code-headroom passes:
 `+0.2465%` public average over target / `99.7571%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4704%` / `100.4875%`. Since the compact full-matrix baseline was
@@ -108,6 +108,17 @@ This is code-headroom only; it does not change the public/raw speed rollups or
 bands. The paired noinline `O2` decoder variant is closed because it stayed
 exact-flat while growing `fgDecodeFrameDelta` by `20` bytes and shifting hot
 symbols by `+20` with no timing or work-volume win.
+The follow-up local-LZ decoder codegen pass removes the standalone
+`fgDecodeLocalLzPayload()` function-scoped `Os` guard and also lets the
+foreground `-Os` TU inline it into `fgRuntimeLoadSceneFrame()`. The
+five-yellow canary at
+`scratch/ps1-perf-iterate/local-lz-inline-five-yellow-current/20260521-180839-3241177/summary.json`
+stays exact-flat for all five under-green rows, keeps all pack LBAs and the
+`233472` byte PS-EXE bucket fixed, removes the standalone `0x1dc` local-LZ
+symbol, grows `fgRuntimeLoadSceneFrame` by another `352` bytes, moves most
+tracked hot foreground symbols another `-476` bytes, and moves
+`foregroundPilotPlay` another `-124` bytes. This is code-headroom only and
+does not change public/raw speed rollups or bands.
 The prior VISITOR3-low
 entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
