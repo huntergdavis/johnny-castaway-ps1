@@ -93,7 +93,11 @@ keeps VISITOR3 low exact-flat at `1339/1065/1041`, overrun `24`,
 blocking/refill `55/0`, reads/due `28/10`; VISITOR3 high, WALKSTUF1 high, and
 BUILDING2 high also stay exact-flat. Frame `136` and the combined `134`/`136`
 D4 form are closed because they regress VISITOR3-low to `1068/1041`, overrun
-`27`, blocking `59`, reads/due `29/11`. The prior VISITOR3-low phase-retime
+`27`, blocking `59`, reads/due `29/11`. The follow-up frame136 D4 placement
+into the new post-frame134 gap is also closed with the same regression, so the
+remaining terminal lane needs a different representation or generated
+deadline/refill metadata rather than another simple D4 relocation. The prior
+VISITOR3-low phase-retime
 pass adds one low-tide phase VBlank after the accepted slack-knee baseline
 while keeping pack LBA, pack sectors, and the `233472` byte PS-EXE bucket
 fixed. The four-yellow canary at
