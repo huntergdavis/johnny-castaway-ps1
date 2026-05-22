@@ -980,6 +980,14 @@ read-candidate matrix should treat those ranges as requiring a non-table
 generated deadline/refill primitive or pack/data-shape work; the existing
 grouped-append table path cannot move the key metrics.
 
+The final open VISITOR3-low terminal table row is closed too. Adding
+`{240..252}` through the same grouped-append table path stayed exact-flat at
+`1342/1069/1039`, overrun `30`, blocking/refill `68/0`, reads/due `14/11`,
+with fixed pack LBA and PS-EXE bucket; it only shifted the table/code symbols
+by `+4` bytes. Treat all current V3-low scheduler-owned direct rows as closed;
+remaining V3-low work must be custom terminal payload/data shape or non-table
+generated deadline/refill ownership.
+
 The first terminal row-reference swing is also closed as a standalone
 data-shape. Encoding VISITOR3-low frame `136` against frame `134` is extremely
 byte-positive (`16890 -> 1177`, `3` commands, `15713` saved bytes) and stayed
