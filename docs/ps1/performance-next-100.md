@@ -877,6 +877,15 @@ no measured benefit. Close V3-low early `32..80` hot-C ownership; the remaining
 low-tide VISITOR3 path needs terminal row-reference/setup-dictionary data shape
 or genuinely no-hot-C generated deadline metadata.
 
+Current-baseline no-hot-branch read-group retests for `32..48` and `58..74`
+are also closed. Adding both rows, then isolating each row, kept pack LBA and
+the `233472` byte PS-EXE bucket fixed but regressed VISITOR3-low: combined and
+`32..48` alone landed at `1074/1040`, overrun `34`, blocking `72`, while
+`58..74` alone landed at `1070/1038`, overrun `32`, blocking `75`, reads/due
+`15/12`. Treat these as phase-negative static metadata rows; retry only as
+generated deadline/refill ownership with explicit phase budgets or after a
+data-shape reduction changes the read cadence.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -919,9 +928,9 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
 
 1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
    current candidate matrix has no standalone safe sector rows left; start with
-   custom terminal data-shape or generated deadline ownership for `32..48`,
-   `58..74`, and the terminal cluster, preserving read/due cadence and avoiding
-   another hot hand-authored table branch.
+   custom terminal data-shape or generated deadline ownership for the terminal
+   cluster plus explicitly budgeted `32..48` / `58..74` ownership, preserving
+   read/due cadence and avoiding another static table-row retry.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
@@ -1145,6 +1154,11 @@ The structurally different tight-cluster `{248..264}` row also regressed to
 `1344/1071/1039`, overrun `33`, blocking `81`;
 `scratch/ps1-perf-iterate/v3low-rg248-264-current/20260521-024300-2217007/summary.json`.
 Keep `16..32`, `72..88`, and `88..104` as the accepted VISITOR3-low read-group baseline.
+The current-baseline direct read-group retest for `32..48` and `58..74` is
+closed: combined and `32..48` alone both regressed to `1074/1040`, blocking
+`72`, and `58..74` alone regressed to `1070/1038`, blocking `75`, reads/due
+`15/12`. Do not add these as raw table rows; use generated deadline/refill
+metadata or a data-shape change before retrying their sectors.
 The latest entry `109..112` fixed-layout clip is promoted only as mid-payload
 headroom: it shrinks selected active payload `8170 -> 6004` and keeps the
 five-yellow canary exact-flat, but the broad full-pack clip regresses
