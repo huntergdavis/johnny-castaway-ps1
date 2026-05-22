@@ -78,13 +78,15 @@ BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
 W1-low compact trim/retarget phase promotion, the VISITOR3-low slack-knee
 speed promotion, the VISITOR3-low one-VBlank phase retime, the
 VISITOR3-low additive `55..79` CACHE setup-residency headroom pass, the
-BUILDING2-high safe-tail payload headroom pass, and the BUILDING2-high
-fixed-footprint physical compaction speed pass:
-`+0.2155%` public average over target / `99.7870%` public target speed across
+BUILDING2-high safe-tail payload headroom pass, the BUILDING2-high
+fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
+`58..61` tail/phase speed promotion, and the W1-high early, active-loop, and
+frame138 clip headroom passes:
+`+0.2149%` public average over target / `99.7875%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5014%` / `100.5173%`. Since the compact full-matrix baseline was
+`-0.5020%` / `100.5178%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.18` public over-target points and added about `12.69` public
+removed about `17.19` public over-target points and added about `12.69` public
 target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
 `0` red. The latest VISITOR3-low additive residency pass keeps the accepted
 `281..305`, `150..177`, and `206..232` retained setup slices intact while
@@ -146,15 +148,19 @@ changing speed. The early entries `0`, `1`, `3`, `5`, `6`, `8`, `10`, `11`,
 `12`, `19`, `21`, and `22` drop selected logical payload `63458 -> 44478`,
 remove `13030` cleanup pixels and `21519` draw pixels; the active-loop entries
 `35`, `37`, `39`, and `41` add another `26856 -> 23537` selected-payload
-reduction plus `688` cleanup and `4706` draw pixels removed. The strict
+reduction plus `688` cleanup and `4706` draw pixels removed; entry `138` /
+source frame `246` adds `3804 -> 223` selected-payload reduction and removes
+`6773` draw pixels. The strict
 four-yellow canary stays exact-flat at
-`scratch/ps1-perf-iterate/w1high-clip35-41-four-yellow-current-20260522/20260522-154945-2260110/summary.json`.
-The paired `{80..92}` and `{92..108}` retries still fail: `{80..92}` saves two
-reads but regresses to `1812/1473/1440`, blocking/refill `45/13`, while
-`{92..108}` saves three reads but regresses blocking/refill to `43/13`. This is
-headroom rather than a converted speed win. The next practical big swing is
-VISITOR3 high unless W1-high gets a larger active-loop render/deadline reduction
-or generated no-hot-C ownership. The prior VISITOR3-low
+`scratch/ps1-perf-iterate/w1high-clip138-four-yellow-current-20260522/20260522-160920-2372995/summary.json`.
+The paired `{80..92}`, `{92..108}`, and entry138 plus `{268..280}` retries
+still fail: `{80..92}` saves two reads but regresses to `1812/1473/1440`,
+blocking/refill `45/13`; `{92..108}` saves three reads but regresses
+blocking/refill to `43/13`; and `{268..280}` saves reads but regresses to
+`1811/1472/1439`, blocking/refill `49/15`. This is headroom rather than a
+converted speed win. The next W1-high render swing should split-test remaining
+singletons from the `132..146` cluster or move to generated no-hot-C ownership.
+The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
 overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus
@@ -1019,17 +1025,18 @@ broad active payload drops `755808 -> 708532` and improves blocking/due
 `17`. Keep broad WALKSTUF1 previous-visible closed until a generated phase-tax
 scorer can select much narrower subsets with explicit refill gates.
 
-Latest rejected WALKSTUF1 high late screen-clip split: entries `132..146`
-saved substantial fixed-layout payload (`26867` bytes in the broad form), but
-the speed-bearing forms are all phase-negative. `132..146` and `132..136`
-save two reads yet regress to `1475/1440`, overrun `35`, blocking/refill
-`47/15`. `138..146` and `138..140` keep loop/target exact-flat but add one
-blocking/refill VBlank (`44/14`). `141..146` and `144..146` preserve
-blocking/refill but tighten target to `1440`, raising overrun to `32`.
-`141..143` is exact-flat and pack-only, so it fails the strict improvement
-gate. Close raw late screen clipping as a W1-high speed path; the next W1-high
-attempt must be generated deadline/refill metadata or a phase-scored transform
-that explicitly protects `1472/1441`, blocking/refill `43/13`, and reads/due
+Latest split WALKSTUF1 high late screen-clip result: the broad `132..146`
+cluster has real fixed-layout payload savings, but most speed-bearing forms are
+phase-negative. `132..146` fails by adding one blocking VBlank, `132..136`
+also fails blocking `42 -> 43`, and `138..146` tightens target `1440 -> 1439`.
+The singleton entry `138` / source frame `246` is promoted as exact-flat
+headroom: selected logical payload drops `3804 -> 223`, `6773` draw pixels are
+removed, and the strict four-yellow canary stays exact-flat at
+`1808/1469/1440`, blocking/refill `42/12`, reads/due `41/7`. Entry138 plus the
+`{268..280}` read-row conversion is closed because it regresses to
+`1811/1472/1439`, blocking/refill `49/15`. Keep singleton 138; continue only
+with narrower singleton splits or generated deadline/refill metadata that
+explicitly protects `1469/1440`, blocking/refill `42/12`, and reads/due
 `41/7`.
 
 Latest rejected BUILDING2 high `109..133` preserve-entry clipping swing:
