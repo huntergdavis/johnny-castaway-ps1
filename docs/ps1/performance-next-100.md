@@ -1001,6 +1001,18 @@ pack LBAs and the `233472` byte PS-EXE bucket. Phase 2, 3, and 4 are closed:
 they regressed B2-high to `1345/1313`, `1344/1313`, and `1343/1313`
 respectively with blocking/refill no better than `50/16`.
 
+Current-baseline W1-high early tail collapse is closed too. The broad entries
+`43..57` trim saves `5936` bytes and entry `55` alone saves `4714` bytes,
+shrinking that payload from four sectors to one, but both convert the read
+win into visible/refill debt: W1-high moves from `1808/1472/1441`, overrun
+`31`, blocking/refill `43/13`, reads `41`, to `1807/1471/1438`, overrun
+`33`, blocking/refill `45/15`, reads `39`. Pairing entry `55` with W1-high
+pre-loop phase ballast still fails: phase 1 reaches `1470/1438`, overrun
+`32`, but blocking/refill stay `45/15`; phase 2 worsens blocking to `46`.
+Do not retry early W1-high sector-collapse tails without generated
+deadline/refill ownership or placement-aware repacking that preserves the
+current `1472/1441` cadence and `43/13` CD pressure.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
