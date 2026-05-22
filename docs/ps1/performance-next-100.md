@@ -92,7 +92,16 @@ moves VISITOR3 low `1342/1069/1039 -> 1338/1065/1040`, overrun `30 -> 25`,
 blocking `68 -> 55`, and target speed `97.194% -> 97.653%`; VISITOR3 high,
 WALKSTUF1 high, and BUILDING2 high stay exact-flat. The more aggressive
 three-VBlank guard is rejected because it regressed VISITOR3 low to
-`1354/1081/1039` with refill overrun `24`. The prior W1-low trim/retarget
+`1354/1081/1039` with refill overrun `24`. The follow-up VISITOR3-low
+generated-owner sweep is also closed: static `{65..89}` and fresh/due owners
+for `32..48`, `46..58`, and `65..89` stayed exact-flat unless direct-stage was
+denied; broad direct-stage denial saved reads/due (`26/10 -> 18/6`) but
+regressed to `1072/1039`, overrun `33`, refill `13`, and the narrower
+`32..48`/`46..58` form regressed to `1070/1037`, overrun `33`, blocking/refill
+`63/6`. The next VISITOR3-low swing should not be more inline hot-C owner
+predicates; it needs pack-side row-reference/setup-dictionary/no-decode shape
+or generated metadata consumed outside `fgRuntimeFillWindowForEntry()`. The
+prior W1-low trim/retarget
 phase pass keeps offsets, pack size,
 LBA/sectors, and the `233472` byte PS-EXE bucket fixed while the canary at
 `scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`
@@ -1134,12 +1143,13 @@ blocking/refill `37/4`. V3-high setup residency is effectively at the memory
 and phase boundary; the next V3-high attempt needs generated refill ownership
 or a non-resident/no-decode data shape.
 
-1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
-   current candidate matrix has no standalone safe sector rows left; start with
-   custom terminal data-shape or generated deadline ownership for the terminal
-   cluster plus explicitly budgeted `32..48`, `46..58`, and `58..74`
-   ownership, preserving read/due cadence and avoiding another static table-row
-   or D4 retry.
+1. **VISITOR3 low terminal row-reference/no-hot-C deadline swing.** The
+   current candidate matrix has no standalone safe sector rows left, and inline
+   generated owner/direct-stage-denial probes for `32..48`, `46..58`, and
+   `65..89` are now closed as refill-negative. Start with a custom terminal
+   row-reference/setup-dictionary/no-decode data shape, or generated deadline
+   metadata consumed outside the hot fill/load functions, while preserving the
+   current read/due cadence.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
