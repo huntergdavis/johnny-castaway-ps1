@@ -130,7 +130,12 @@ closed on this baseline: `192 KiB` clean chunks exhaust CACHE, `128 KiB`
 chunks regress to `1347/1310`, entry `77` plus phase `0` regresses to
 `1342/1312`, and phase `0` alone regresses to `1341/1313`. The next
 under-green priority is now WALKSTUF1 high, then VISITOR3 high, then VISITOR3
-low. The prior VISITOR3-low
+low, but the latest W1-high post-promotion non-tail probes are closed:
+clean64, additive `358..374`, and same-size `358..374` replacement all
+regress to `1811/1472/1438`, overrun `34`, blocking/refill `47/17`. Treat W1
+static C/table swings as exhausted until a no-hot-C generated deadline path or
+new render/data-shape slack exists; the next practical big swing is VISITOR3
+high. The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
 overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus
@@ -1339,12 +1344,13 @@ phase/slack pairing.
     `128..147` split family.
 16. **W1-high late-sector non-CD work reduction.** Entries `183..191` are now
     compacted with previous-visible cleanup as exact-flat work headroom. Static
-    `372..388` and `379..395` owners remain closed; retry this pocket only
-    through no-hot-C generated ownership that keeps blocking/refill at or below
-    `43/13`.
+    `372..388`, `379..395`, and `358..374` owners/read groups remain closed;
+    retry this pocket only through no-hot-C generated ownership that keeps
+    blocking/refill at or below `42/12`.
 17. **W1-high `80..92` / `84..108` generated owner.** Revisit only after owner
     metadata is code-size-neutral; previous fresh-owner C hooks were inert and
-    bloated hot code.
+    bloated hot code, and the latest clean-cap/read-group probes show W1-high
+    is spending hot C/table changes as target/refill debt.
 18. **W1-high cleanup-only pack canonicalization after `204..211`.** Favor
     no-sector-change cleanup-only frames and exact-flat five-yellow canaries.
 19. **W1-high generated late-cluster owner, not setup residency.** The
