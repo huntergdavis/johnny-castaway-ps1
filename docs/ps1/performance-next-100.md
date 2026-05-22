@@ -578,7 +578,7 @@ modeled `{204..220}` static recovery row produced the same profile:
 `32 -> 27`, refill `4 -> 13`, reads `24 -> 28`, and due `4 -> 2`.
 This preserves the visible/blocking signal but makes the target/refill trade
 worse than the current baseline, so entry60 remains generated-deadline-only.
-The priority tooling now marks all `46` current direct-read candidates as
+The priority tooling now marks all `54` current direct-read candidates as
 phase traps and surfaces the intended non-scalar lanes in both the under-green
 CSV and read-candidate matrix. The refreshed queue is therefore ordered around
 custom VISITOR3 terminal data shape / generated deadlines, BUILDING2
@@ -592,7 +592,17 @@ The memory-neutral swap to `215..241` completed but regressed low tide from
 `75 -> 79`, and did not improve any key metric. Keep the accepted `206..232`
 coverage; VISITOR3 low now needs generated deadline/refill ownership or a
 custom terminal row-reference shape, not another retained setup slide.
-The latest B2-high setup-resident duplicate alias points entries `141` and `142`
+The VISITOR3-low alternate-buffer terminal row-reference swing is closed on the
+current baseline as well. Frame `134` encoded against frame `132` shrank
+`17001 -> 930` bytes and stayed layout-clean, but the canonical exact-boot run
+was exact-flat at `1342/1069/1039`, overrun `30`, blocking `68`, reads/due
+`14/11`. Pairing frame `136` against frame `134` added another `16890 -> 829`
+byte shrink but regressed low to `1344/1071/1039`, overrun `32`, blocking `72`,
+and reads/due `15/12`. The remaining VISITOR3-low lane should therefore be
+generated deadline/refill ownership for the existing cadence, or a no-decode
+relocation/data-shape that changes read boundaries without alternate decode
+pressure.
+The recent B2-high setup-resident duplicate alias points entries `141` and `142`
 at already-retained duplicate payloads for entries `116` and `118`. The
 five-yellow canary stays exact-flat at B2-high `1621/1347/1313`, overrun `34`,
 blocking/refill `39/16`, reads/due `43/5`, fixed pack LBA, and the same
