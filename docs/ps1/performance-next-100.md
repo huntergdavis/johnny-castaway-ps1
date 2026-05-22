@@ -1086,6 +1086,13 @@ tight-window caps at `48 KiB` and `40 KiB` are inert, global slack-5 starves the
 row, fallthrough/window-only guards still leave refill `2`, and phase 5
 regresses loop/blocking. Reopen phase 4 only with a stage-side generated refill
 owner that keeps the `1064/1044`, blocking `31` shape and clears refill to zero.
+The follow-up phase4/no-fallthrough terminal bridge is also closed: additive
+`48..59` setup coverage exhausts TRANSIENT before `JCPERF2` (`req=176128`,
+`have=168956`), while the allocation-neutral one-sector trade
+`203..261` + `48..56` completes but regresses to `1068/1042`, overrun `26`,
+blocking/refill `37/4`. V3-high setup residency is effectively at the memory
+and phase boundary; the next V3-high attempt needs generated refill ownership
+or a non-resident/no-decode data shape.
 
 1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
    current candidate matrix has no standalone safe sector rows left; start with
