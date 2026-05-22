@@ -59,6 +59,13 @@ the tracked foreground hot symbols shrink (`foregroundPilotPlay -84`,
 rollup, but it lowers code-size pressure for the next generated-owner and
 custom data-shape swings.
 
+The broad five-yellow prepare-first scheduler generalization is closed as a
+failed big swing: VISITOR3 high/low and WALKSTUF1 high/low stayed exact-flat,
+but B2-high regressed `1341/1313 -> 1345/1311` with blocking/refill
+`47/14 -> 55/21`. The accepted WALKSTUF1-specific prepare-first rule remains,
+but the remaining scheduler work needs generated deadline/refill ownership or
+scene-specific data-shape changes rather than a broader hot C predicate.
+
 The v0.8.13 checkpoint also extended BUILDING2 high preserve-offset payload trims through `building2-high-frame100-inplace-v926`: entry `172` / source frame `231` shrinks `1831 -> 851` bytes, entry `171` / source frame `228` shrinks `1980 -> 1025` bytes, entry `96` / source frame `119` shrinks `8781 -> 7944` bytes, entry `170` / source frame `226` shrinks `1683 -> 1186` bytes, entry `97` / source frame `121` shrinks `8718 -> 8258` bytes, entry `98` / source frame `123` shrinks `8876 -> 8637` bytes, entry `174` / source frame `239` shrinks `1625 -> 1460` bytes, entry `99` / source frame `126` shrinks `8843 -> 8728` bytes, entry `168` / source frame `219` shrinks `1372 -> 1266` bytes, entry `169` / source frame `223` shrinks `1820 -> 1495` bytes, entry `173` / source frame `235` shrinks `1765 -> 1134` bytes, and entry `100` / source frame `129` shrinks `8701 -> 8621` bytes. The current B2-high work-volume baseline then trims entries `92`, `94`, and `95` (`8834 -> 6370`, `8873 -> 6939`, `10247 -> 8827`) without moving pack offsets, aliases duplicate entries `141`/`142` to setup-resident payloads and entry `38` to setup-edge duplicate entry `35`, trims early draw tails in entries `67`/`69`/`70`/`71`/`72`, and banks safe follow-up tail trims in entries `74` and `78..82`. Active payload now drops to `539990`, and the current B2-high speed baseline layers the allocator-era setup slices with the `83..95`, guarded `271..287`, and `315..327` scheduler rows plus the previous-visible and screen-clip promotions.
 
 Recent releases:

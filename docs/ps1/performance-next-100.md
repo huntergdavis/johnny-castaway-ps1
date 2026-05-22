@@ -89,7 +89,12 @@ read-group retests still close `372..388` and `379..395`: both saved reads
 blocking/refill `47/17`, and `379..395` regressed to `1474/1442`, overrun
 `32`, blocking/refill `44/14`. The next late W1-high attempt must be
 generated/no-hot-C deadline ownership or a larger data-shape swing that keeps
-blocking/refill at or below `43/13`. The prior VISITOR3-low
+blocking/refill at or below `43/13`. A broad five-yellow prepare-first
+scheduler swing is also closed: VISITOR3 high/low and WALKSTUF1 high/low
+stayed exact-flat, but B2-high regressed `1341/1313 -> 1345/1311` with
+blocking/refill `47/14 -> 55/21`, so the accepted WALKSTUF1-specific
+prepare-before-window rule should not be generalized through hot C predicates.
+The prior VISITOR3-low
 entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
 fixed while shrinking selected active payload `8170 -> 6004`; the five-yellow
