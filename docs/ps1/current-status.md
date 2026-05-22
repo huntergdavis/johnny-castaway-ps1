@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
-the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed
-promotion, the W1-low compact trim/retarget phase green promotion, the W1-high
-and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
+the BUILDING2-high safe-tail payload headroom pass, the VISITOR3-low one-VBlank
+phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact
+trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
 code-headroom passes, and the `JCPERF2`-only perf-reporting code-headroom
 pass; all 63 scenes remain validated, all 126 high/low rows are

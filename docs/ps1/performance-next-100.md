@@ -76,8 +76,9 @@ VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
 BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
 `89..91` fixed-layout trim, the W1-high one-VBlank phase retime, the
 W1-low compact trim/retarget phase promotion, the VISITOR3-low slack-knee
-speed promotion, the VISITOR3-low one-VBlank phase retime, and the
-VISITOR3-low additive `55..79` CACHE setup-residency headroom pass:
+speed promotion, the VISITOR3-low one-VBlank phase retime, the
+VISITOR3-low additive `55..79` CACHE setup-residency headroom pass, and the
+BUILDING2-high safe-tail payload headroom pass:
 `+0.2233%` public average over target / `99.7793%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4936%` / `100.5097%`. Since the compact full-matrix baseline was
@@ -114,7 +115,21 @@ speed/blocking signal (`1064/1044`, overrun `20`, blocking `46`) but still
 failed the strict hidden-refill gate with `prefetch_overrun_vb=1`, again with
 `group_hits=0`. Treat phase `2` as a real but invalid signal that needs true
 generated refill/deadline ownership or row-reference/setup-dictionary/no-decode
-data shape; do not spend more time on terminal table ballast. The prior VISITOR3-low
+data shape; do not spend more time on terminal table ballast. The current
+BUILDING2-high safe-tail trim is promoted as headroom only: entries `101..104`,
+`141`, `175..177`, and `333` shrink in place while `BUILDING2.FG2` keeps file
+size `1303332`, LBA `6189`, sectors `637`, and the `233472` byte PS-EXE bucket
+fixed. Focused proof:
+`scratch/ps1-perf-iterate/b2high-trim-safe-tail-current-20260522/20260522-112706-773172/summary.json`.
+B2-high stays exact-flat at `1583/1340/1314`, overrun `26`,
+blocking/refill `45/12`, reads/due `42/7`, while active payload drops
+`527960 -> 527884` and max payload drops `8752 -> 8733`. Treat this as the new
+B2-high payload baseline, not a speed win. The attempted B2-high clean-cap and
+phase-0 big swings are closed on this baseline: `192 KiB` clean chunks exhaust
+CACHE, `128 KiB` chunks regress to `1347/1310`, entry `77` plus phase `0`
+regresses to `1342/1312`, and phase `0` alone regresses to `1341/1313`. The next
+B2-high speed swing needs generated deadline/refill ownership or a larger
+render/data-shape reduction before retrying entry `77` or clean-cap sizing. The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
 overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus

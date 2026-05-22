@@ -196,8 +196,8 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2233%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7793%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T08:35:27`; prior frame134 D4 canary `2026-05-22T07:46:44`; prior four-yellow phase-retime canary `2026-05-22T06:48:59` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow timing rows use `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T08:35:27`; B2-high focused headroom refresh `2026-05-22T11:27:06`; prior frame134 D4 canary `2026-05-22T07:46:44`; prior four-yellow phase-retime canary `2026-05-22T06:48:59` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current B2-high row uses `b2high-trim-safe-tail-current`; the other current four-yellow timing rows use `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -206,6 +206,14 @@ preserving pack LBA/sectors and the `217088` byte PS-EXE bucket while cutting
 active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
+
+Latest BUILDING2-high safe-tail headroom track:
+`b2high-trim-safe-tail-current` trims entries `101..104`, `141`, `175..177`,
+and `333` while preserving offsets, file size, LBA `6189`, sectors `637`, and
+the `233472` byte PS-EXE bucket. Active payload drops `527960 -> 527884` and
+max payload drops `8752 -> 8733`; B2-high stays exact-flat at
+`1583/1340/1314`, overrun `26`, blocking/refill `45/12`, reads/due `42/7`.
+This is headroom only, so the public speed rollup remains unchanged.
 
 Latest VISITOR3-low setup-residency track:
 `v3low-seg4-add55-79-cache-phase0` keeps the accepted low-tide retained
@@ -1604,8 +1612,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T08:35:27</td>
-      <td>v3low-seg4-add55-79-cache-phase0</td>
+      <td>2026-05-22T11:27:06</td>
+      <td>b2high-trim-safe-tail-current</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
