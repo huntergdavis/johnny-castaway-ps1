@@ -4,7 +4,7 @@
 
 
 **Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1-high early offscreen clip headroom pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
+the WALKSTUF1-high active-loop and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
 phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact
 trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
@@ -507,7 +507,7 @@ Milestone releases:
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, trim-tail work, safe-tail trims, and fixed-footprint physical compaction to
   active payload `520974`, WALKSTUF1 high is
   `1469/1440` with blocking/refill `42`/`12`, loop reads/read time `41`/`202`, and rows/spans/pixels
-  `16641/124973/692712` plus active payload `833386` after the entry `58..61` tail-trim/phase-3 speed pass and early offscreen clip headroom pass, WALKSTUF1 low is now green at `1461/1447`
+  `16641/124649/688006` plus active payload `833386` after the entry `58..61` tail-trim/phase-3 speed pass and active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
   with blocking/refill `31`/`2`, loop reads/read time `22`/`117`, and active payload
   `708288` after the compact trim/retarget phase pass, VISITOR3 high is
   `1067/1045` with blocking/read count `32`/`12`,

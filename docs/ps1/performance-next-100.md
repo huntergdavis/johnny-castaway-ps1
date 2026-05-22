@@ -141,16 +141,20 @@ also exhausted CACHE before `JCPERF2`; clean80 alone was exact-flat; and the
 early `{80..92}` / `{92..108}` read-group forms saved reads but regressed
 loop or blocking/refill. Treat W1 static C/table/setup swings as exhausted
 until a no-hot-C generated deadline path or new render/data-shape slack exists;
-the newest W1-high early screen-clip pass now banks render/parser headroom
-without changing speed: entries `0`, `1`, `3`, `5`, `6`, `8`, `10`, `11`,
+the newest W1-high screen-clip passes now bank render/parser headroom without
+changing speed. The early entries `0`, `1`, `3`, `5`, `6`, `8`, `10`, `11`,
 `12`, `19`, `21`, and `22` drop selected logical payload `63458 -> 44478`,
-remove `13030` cleanup pixels and `21519` draw pixels, and pass the strict
-four-yellow canary exact-flat at
-`scratch/ps1-perf-iterate/w1high-early-clip-four-yellow-current-20260522/20260522-152924-2144020/summary.json`.
-The paired `{92..108}` retry still regressed blocking/refill to `43/13`, so
-this is headroom rather than a converted speed win. The next practical big
-swing is VISITOR3 high unless W1-high gets a larger active-loop render/deadline
-reduction or generated no-hot-C ownership. The prior VISITOR3-low
+remove `13030` cleanup pixels and `21519` draw pixels; the active-loop entries
+`35`, `37`, `39`, and `41` add another `26856 -> 23537` selected-payload
+reduction plus `688` cleanup and `4706` draw pixels removed. The strict
+four-yellow canary stays exact-flat at
+`scratch/ps1-perf-iterate/w1high-clip35-41-four-yellow-current-20260522/20260522-154945-2260110/summary.json`.
+The paired `{80..92}` and `{92..108}` retries still fail: `{80..92}` saves two
+reads but regresses to `1812/1473/1440`, blocking/refill `45/13`, while
+`{92..108}` saves three reads but regresses blocking/refill to `43/13`. This is
+headroom rather than a converted speed win. The next practical big swing is
+VISITOR3 high unless W1-high gets a larger active-loop render/deadline reduction
+or generated no-hot-C ownership. The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
 overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus
@@ -1355,9 +1359,10 @@ phase/slack pairing.
     setup-edge aliases; do not retry the broad runtime duplicate cache.
 15. **W1-high next cleanup-only screen-clip island.** Entry-index-only tooling
     is now in place and the early entries `0`, `1`, `3`, `5`, `6`, `8`,
-    `10`, `11`, `12`, `19`, `21`, and `22` are promoted as exact-flat
-    headroom. Continue only with cleanup-only or proven phase-safe subsets,
-    not `62..67` or the `128..147` split family.
+    `10`, `11`, `12`, `19`, `21`, and `22` plus active-loop entries `35`,
+    `37`, `39`, and `41` are promoted as exact-flat headroom. Continue only
+    with cleanup-only or proven phase-safe subsets, not `62..67` or the
+    `128..147` split family.
 16. **W1-high late-sector non-CD work reduction.** Entries `183..191` are now
     compacted with previous-visible cleanup as exact-flat work headroom. Static
     `372..388`, `379..395`, and `358..374` owners/read groups remain closed;
