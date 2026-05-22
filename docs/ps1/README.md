@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2334% public over target / 99.7696% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2279% public over target / 99.7750% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2334%` over target /
-`99.7696%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4835%` / `100.4999%`; bands are `121`
-green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+loading, and the current battle card is `+0.2279%` over target /
+`99.7750%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4890%` / `100.5053%`; bands are `122`
+green, `4` yellow, `0` orange, and `0` red. The latest allocator-era wins
+include the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -43,17 +43,21 @@ blocking/refill `45/12`, target speed `98.060%`, and loop reads/read time
 `42/186`. W1-high now measures `1471/1441`, overrun `30`, target speed
 `97.961%`, blocking/refill `43/13`, and reads/due `41/7`. The current VISITOR3-low read-group stack adds `88..104` on top
 of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
-`68`, loop reads/read time `14/91`, and due `11` while the other four yellow
-rows stay exact-flat. The recent VISITOR3-high entry `62` cleanup-only pass
+`68`, loop reads/read time `14/91`, and due `11`. The newest W1-low trim/retarget pass keeps `WALK1LOW.FG2`
+file size/LBA/sectors fixed, drops active payload `752740 -> 708288`, moves
+setup coverage to `179..283` plus `154..160`, adds one low-tide phase VBlank
+and a one-VBlank low-tide window-slack guard, and improves W1-low to
+`1461/1447`, overrun `14`, blocking/refill `31/2`, reads/due `22/6`, and
+target speed `99.042%` while the other four yellow rows stay exact-flat. The recent VISITOR3-high entry `62` cleanup-only pass
 keeps file size, offsets, entry table sizes, LBA, and the PS-EXE bucket fixed
 while reducing entry restore bytes `2724 -> 596`, runtime restore bytes
-`56312 -> 54184`, and upload bytes `18038400 -> 18012160`; all five yellow
-rows stay exact-flat. The recent W1-low entry `90..99` fixed-layout
+`56312 -> 54184`, and upload bytes `18038400 -> 18012160`; the then-five
+yellow rows stayed exact-flat. The recent W1-low entry `90..99` fixed-layout
 canonicalization pass keeps file size, offsets, LBA, and the PS-EXE bucket
 fixed while shrinking the active cluster `47579 -> 44511` bytes and total
-low-pack active payload `755808 -> 752740`; all five yellow rows stay
+low-pack active payload `755808 -> 752740`; the then-five yellow rows stayed
 exact-flat. The recent code-headroom pass caches the active
-foreground scene ID once per scene start, keeping the five yellow rows
+foreground scene ID once per scene start, keeping those rows
 exact-flat while shrinking the tracked hot foreground scheduler symbols by
 `172` bytes in the same `233472` byte PS-EXE bucket. MARY1/2/3 and SUZY1/2 are
 measured and green; SUZY3 is not a standalone Johnny Castaway scene route,
@@ -70,19 +74,23 @@ The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 `286..344` resident, carries the `{149,165}` read group, and encodes frame
 `92` as previous-frame D4, then layers the frame56/source67 trim, `{178,194}`,
 `{423,439}`, `{404,416}`, `{395,411}`, retargeted `{411,423}`, and high-tide prepare-before-window scheduler
-ownership. It measures `1472/1441` at `97.894%` target speed, overrun `31`,
-blocking/refill `43/13`, loop reads/read time `41/198`, and due `7`,
+ownership, then applies the high-tide one-VBlank phase retime. It measures
+`1471/1441` at `97.961%` target speed, overrun `30`,
+blocking/refill `43/13`, loop reads/read time `41/199`, and due `7`,
 with pack LBA/sectors and the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
 shrinks, replaces the old split tail residency with a CACHE `238..344` setup
 segment, adds the `{91,107}` first-boundary read group, pays the small
 `344..350` edge from TRANSIENT, trims frame132's draw tail in the compacted low
-pack, adds `{378..390}`, then retargets setup to `244..350` plus split
-`179..185` with `{113..129}` and adds `{355..371}` as same-speed read-work.
-Low now measures `1470/1446` at `98.367%` target speed with overrun `24`,
-blocking/refill `32/3`, loop reads/read time `24/146`, and due `4`, while
-active payload is `764658` without changing pack size or sectors.
+pack, adds `{378..390}`, retargets setup to `244..350` plus split
+`179..185` with `{113..129}`, and adds `{355..371}` as same-speed read-work.
+The current speed promotion then compacts `WALK1LOW.FG2` again (`752740 -> 708288`
+active payload), slides setup coverage to `179..283` plus `154..160`, adds a
+one-VBlank low-tide phase offset, and raises the low-tide window slack by one
+VBlank. Low now measures `1461/1447` at `99.042%` target speed with overrun
+`14`, blocking/refill `31/2`, loop reads/read time `22/117`, and due `6`, while
+pack size, LBA/sectors, and the PS-EXE bucket stay fixed.
 
 The latest BUILDING2 high allocator-era baseline keeps retained groups
 `60..72`, `206..230`, `226..242`, `83..95`, `{158..174}`, guarded `271..287`,

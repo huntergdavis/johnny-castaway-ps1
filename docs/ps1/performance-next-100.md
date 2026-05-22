@@ -73,22 +73,22 @@ pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
 VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
 and the D4/local-LZ decoder inline code-headroom passes, followed by the
 VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
-BUILDING2-high one-VBlank phase retime, and the BUILDING2-high entries
-`89..91` fixed-layout trim, then the W1-high one-VBlank phase retime:
-`+0.2334%` public average over target / `99.7696%` public target speed across
+BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
+`89..91` fixed-layout trim, the W1-high one-VBlank phase retime, and the
+W1-low compact trim/retarget phase promotion:
+`+0.2279%` public average over target / `99.7750%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4835%` / `100.4999%`. Since the compact full-matrix baseline was
+`-0.4890%` / `100.5053%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.17` public over-target points and added about `12.67` public
-target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest W1-high phase pass keeps offsets, pack size,
-LBA/sectors, and the `233472` byte PS-EXE bucket fixed while the five-yellow
-canary at
-`scratch/ps1-perf-iterate/w1high-phase1-five-yellow-current/20260522-025932-2058533/summary.json`
-moves W1-high `1808/1472/1441 -> 1808/1471/1441`, overrun `31 -> 30`, target
-speed `97.894% -> 97.961%`, with blocking/refill, reads, and due flat at
-`43/13`, `41`, and `7`; VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 low
-stay exact-flat. The prior BUILDING2-high entries `89..91` trim keeps offsets,
+target-speed points. Bands are now `122` green, `4` yellow, `0` orange, and
+`0` red. The latest W1-low trim/retarget phase pass keeps offsets, pack size,
+LBA/sectors, and the `233472` byte PS-EXE bucket fixed while the canary at
+`scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`
+moves W1-low `1809/1470/1446 -> 1801/1461/1447`, overrun `24 -> 14`, target
+speed `98.367% -> 99.042%`, blocking/refill `32/3 -> 31/2`, and reads
+`24 -> 22`; VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high stay
+exact-flat. The prior BUILDING2-high entries `89..91` trim keeps offsets,
 pack size, LBA/sectors, and the `233472` byte PS-EXE bucket fixed while active
 payload drops `539990 -> 527960` and loop reads/read time improve
 `44/192 -> 42/186`. The paired post-trim scalar read rows `{90..96}` and `{249..265}`

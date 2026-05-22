@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">121 (96.0%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">5 (4.0%) ≥ 95%</span>
+  <span class="spd-key spd-green">122 (96.8%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">4 (3.2%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -138,9 +138,10 @@ BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 now layers a one-VBlank phase retime over the small scheduler wins from the
 `83..95`, guarded `271..287`, and `315..327` read
 groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
-low now uses one retained `238..344` setup segment plus a split TRANSIENT
-`344..350` setup edge after low-only 48 KiB clean-rect chunking and the
-`{91,107}` first-boundary read group, and WALKSTUF1 high now
+low now compacts active payload `752740 -> 708288`, retargets setup to
+`179..283` plus `154..160`, adds a one-VBlank low-tide phase offset, raises
+the low-tide window guard by one VBlank, and moves into green at
+`1461/1447` / `99.042%`. WALKSTUF1 high now
 keeps `198..244`, extends its second retained slice to `286..344`, adds
 `{149,165}`, encodes frame `92` as a previous-frame D4 delta, uses
 prepare-first scheduler ownership, carries same-speed `{395..411}` plus
@@ -168,8 +169,8 @@ cut its active row to `2847/2820` and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
 The remaining performance work should target VISITOR3 high/low data-shape or
-scheduler ownership first, then BUILDING2 high generated ownership and
-generated W1-high/W1-low ownership that does not spend blocking/refill debt.
+scheduler ownership first, then BUILDING2 high and WALKSTUF1 high generated
+ownership that does not spend blocking/refill debt.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -190,10 +191,10 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2334%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7696%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T02:59:32` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2279%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7750%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T04:53:05` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -203,7 +204,18 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest WALKSTUF1-high phase-retime track:
+Latest WALKSTUF1-low compact trim/retarget phase track:
+`w1low-trim-main179-phase1` compacts `WALK1LOW.FG2` while preserving file
+size, LBA `25641`, sectors `750`, and the `233472` byte PS-EXE bucket. Active
+payload drops `752740 -> 708288`; setup coverage moves to `179..283` plus
+`154..160`; W1-low gets one low-tide phase VBlank and a one-VBlank low-tide
+window-slack guard. The accepted canary improves W1-low from
+`1809/1470/1446` to `1801/1461/1447`, cutting overrun `24 -> 14`,
+blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and moving target speed
+`98.367% -> 99.042%`. VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high
+stay exact-flat; the public distribution is now `122` green / `4` yellow.
+
+Prior WALKSTUF1-high phase-retime track:
 `w1high-phase1-five-yellow-current` adds one W1-high-only VBlank before the
 measured loop. It keeps all pack LBAs and the `233472` byte PS-EXE bucket fixed
 while improving W1-high from `1808/1472/1441` to `1808/1471/1441`, cutting
@@ -462,12 +474,14 @@ clean-rect chunking, adds the `{91,107}` first-boundary read group, and then
 adds a separate TRANSIENT `344..350` setup edge. The follow-up row trims
 frame132, adds `{378..390}`, then retargets setup to `244..350` with a split
 `179..185` edge plus `{113..129}`, and adds `{355..371}` as same-speed
-read-work. The combined row improves
-`1479/1435 -> 1470/1446`, overrun `44 -> 24`,
-blocking/refill `65/18 -> 33/5`, loop reads/read time `50/230 -> 24/146`,
-and due `10 -> 4`.
-Both W1 rows remain yellow, with high now at `97.894%` and low at `98.367%`
-target speed.
+read-work. The accepted compact trim/retarget phase follow-up then lowers
+active payload `752740 -> 708288`, slides setup coverage to `179..283` plus
+`154..160`, adds one low-tide phase VBlank, and raises the low-tide window
+guard by one VBlank. The combined current row improves
+`1479/1435 -> 1461/1447`, overrun `44 -> 14`,
+blocking/refill `65/18 -> 31/2`, loop reads/read time `50/230 -> 22/117`,
+and moves W1-low into green at `99.042%` target speed.
+W1-high remains yellow at `97.961%` target speed.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
 sectors `3..35` and `202..242` keep the focused allocator run measured without
@@ -529,10 +543,13 @@ Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
 `244..350`/`179..185` setup retarget plus `{113..129}`, then adds
 `{355..371}` as same-speed work-volume. It keeps file size/LBA/sectors fixed
-and holds target speed at `98.367%` with scene/loop/target `1809/1470/1446`,
+and held target speed at `98.367%` with scene/loop/target `1809/1470/1446`,
 overrun `24`, blocking/refill `32/4`, due `4`, and loop reads/read time
 `24/146` after the fresh-owner `160..176` follow-up. The preserve-entry-size
-screen-clip follow-up keeps speed flat while improving hidden refill to `3`.
+screen-clip follow-up kept speed flat while improving hidden refill to `3`.
+The latest compact trim/retarget phase promotion builds on that baseline and
+moves W1-low to `1801/1461/1447`, overrun `14`, blocking/refill `31/2`,
+reads/read time `22/117`, due `6`, and target speed `99.042%`.
 The prior frame132 payload trim moved
 `1473/1447 -> 1470/1445`; the `{378..390}` speed row moved
 `1470/1445 -> 1470/1446`, overrun `25 -> 24`, blocking/refill
@@ -902,7 +919,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The current
-  five-yellow canary rows use `v3high-setup42-49`;
+  five-yellow canary rows use `w1low-trim-main179-phase1`;
   prior BUILDING2 high source/data work used `b2high-alias38`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
   Older rows retain their per-row version stamps,
@@ -1540,8 +1557,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:59:32</td>
-      <td>w1high-phase1</td>
+      <td>2026-05-22T04:53:05</td>
+      <td>w1low-trim-main179-phase1</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2772,8 +2789,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:59:32</td>
-      <td>w1high-phase1</td>
+      <td>2026-05-22T04:53:05</td>
+      <td>w1low-trim-main179-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2786,8 +2803,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T02:59:32</td>
-      <td>w1high-phase1</td>
+      <td>2026-05-22T04:53:05</td>
+      <td>w1low-trim-main179-phase1</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2912,8 +2929,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:59:32</td>
-      <td>w1high-phase1</td>
+      <td>2026-05-22T04:53:05</td>
+      <td>w1low-trim-main179-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1471/1441</td>
@@ -2926,14 +2943,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T02:59:32</td>
-      <td>w1high-phase1</td>
-      <td>1.7%</td>
-      <td class="spd-yellow">98.4%</td>
-      <td>1470/1446</td>
-      <td>32</td>
-      <td>3</td>
-      <td>4</td>
+      <td>2026-05-22T04:53:05</td>
+      <td>w1low-trim-main179-phase1</td>
+      <td>1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>1461/1447</td>
+      <td>31</td>
+      <td>2</td>
+      <td>6</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf2-high">

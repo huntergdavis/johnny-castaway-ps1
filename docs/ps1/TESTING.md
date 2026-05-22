@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-22:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2334%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7696%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T02:59:32` |
-| Stats version | mixed; current five-yellow timing rows are stamped `w1high-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2279%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7750%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T04:53:05` |
+| Stats version | mixed; current five-yellow timing rows are stamped `w1low-trim-main179-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,22 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted W1-high phase-1 retime note:
+Latest promoted W1-low compact trim/retarget phase note:
+`WALK1LOW.FG2` is compacted again with fixed file size/LBA/sectors, and
+`foreground_pilot.c` retargets low-tide setup to `179..283` plus `154..160`,
+adds one low-tide phase VBlank, and raises the low-tide window guard by one
+VBlank. Transform summary:
+`scratch/w1low-trim-retarget-current-20260522/summary.json`; focused proof:
+`scratch/ps1-perf-iterate/w1low-trim-retarget-main179-phase1-windowmin4-current-20260522/20260522-044334-2657522/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`.
+W1-low improves `1809/1470/1446 -> 1801/1461/1447`, cuts overrun
+`24 -> 14`, moves target speed `98.367% -> 99.042%`, reduces
+blocking/refill `32/3 -> 31/2`, and lowers reads `24 -> 22`; due misses rise
+`4 -> 6` but the row moves into green with no visual/layout drift. VISITOR3
+high/low, BUILDING2 high, and WALKSTUF1 high stay exact-flat.
+
+Prior promoted W1-high phase-1 retime note:
 `foreground_pilot.c` now applies one W1-high-only VBlank before the measured
 loop. Focused proof:
 `scratch/ps1-perf-iterate/w1high-phase1-current/20260522-025213-2016065/summary.json`;

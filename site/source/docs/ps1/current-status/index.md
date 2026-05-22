@@ -22,7 +22,7 @@ the W1-low entry 90..99 fixed-layout canonicalization pass, the VISITOR3-high en
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 866 |
-| Approx. words | 9684 |
+| Approx. words | 9686 |
 | Code fences | 1 |
 
 ## Outline
