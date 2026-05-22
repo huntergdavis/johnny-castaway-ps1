@@ -927,6 +927,14 @@ overlarge helper form that shifted PS-EXE/LBA identity (`233472 -> 235520`,
 exhausted; the next terminal attempt must change the representation, not just
 where the D4 decoder runs.
 
+The exact VISITOR3-low `{46..58}` static row is now closed as a standalone
+current-baseline probe too. It kept layout identity fixed and lowered blocking
+`68 -> 66`, but regressed the row from `1342/1069/1039` to `1345/1072/1038`,
+overrun `30 -> 34`. This confirms the earlier paired `{46..58}` failure was
+not caused by the entry `109..112` clip; this seam needs generated
+deadline/refill ownership or a paired data-shape/phase change, not another raw
+table row.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -970,8 +978,9 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
 1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
    current candidate matrix has no standalone safe sector rows left; start with
    custom terminal data-shape or generated deadline ownership for the terminal
-   cluster plus explicitly budgeted `32..48` / `58..74` ownership, preserving
-   read/due cadence and avoiding another static table-row or D4 retry.
+   cluster plus explicitly budgeted `32..48`, `46..58`, and `58..74`
+   ownership, preserving read/due cadence and avoiding another static table-row
+   or D4 retry.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
