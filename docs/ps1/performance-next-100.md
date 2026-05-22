@@ -878,14 +878,24 @@ shifted to `1038`, so overrun moved `30 -> 31`. Close local-LZ one-sector
 collapses for this row; V3-low needs no-decode alias/relocation, a cheaper
 row-reference codec, or generated deadline ownership.
 
-1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
-   fixed-layout cleanup-only headroom pass: the five-yellow canary stays
-   exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
-   bytes drop `56312 -> 54184`, and upload bytes drop `18038400 -> 18012160`.
-   Do not pair entry-`62` cleanup with retained-gap relocation; that combined
-   form is already logged phase-negative. Continue V3-high with generated
-   deadline/refill ownership or a larger data-shape swing that does not move
-   the entry into the retained gap.
+Latest rejected VISITOR3-high clean-relief stream-window expansion: retesting
+`88 KiB` and `96 KiB` after the decoder code-headroom passes did not convert
+the row. With the accepted `64 KiB` clean cap, both larger windows exhausted
+CACHE before `JCPERF2`; a `48 KiB` clean cap exceeded the eight-rect split
+limit. The completing `56 KiB` clean-cap forms saved one loop read (`4 -> 3`)
+but spent it as cadence debt: `96 KiB/56 KiB` regressed V3-high to
+`1090/1042`, overrun `48`, blocking/refill `44/2`, and `88 KiB/56 KiB`
+regressed to `1086/1042`, overrun `44`, blocking/refill `41/1`. Keep the
+accepted `80 KiB` stream window plus `64 KiB` clean cap; the next V3-high big
+swing is CACHE scratch ownership or generated/data-shape work, not another raw
+window-size or split-size retune.
+
+1. **VISITOR3 high CACHE scratch provenance and relief reordering.** Trace the
+   live `cdrom_sectorBuffer` and `cdrom_read_result`-sized CACHE allocations
+   before high-tide clean capture, identify their owners, and free/reorder them
+   before clean-rect allocation if pixels and CD phase stay identical. Only
+   retry `88 KiB`/`96 KiB` windows after that headroom exists; pure window
+   growth is now logged closed.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
