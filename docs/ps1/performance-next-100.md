@@ -958,6 +958,15 @@ and overrun exactly at `1342/1069/1039`, but blocking still rose `68 -> 70`.
 Future terminal row-reference work must preserve `14/11` reads/due through
 generated deadline/refill ownership, not just shrink or relocate frame `136`.
 
+Simple VISITOR3-low pre-loop phase ballast is closed. Sweeping one through
+four low-tide VSyncs before `ps1PerfMarkLoopStart()` did not reproduce the
+accepted VISITOR3-high retime behavior: phase-1 regressed to `1071/1039`,
+phase-2 to `1075/1039` with blocking `73`, phase-3 to `1074/1039` with
+blocking `71`, and phase-4 was loop-exact at `1069/1039` but only added scene
+time. Do not retry raw low-tide phase ballast; V3-low still needs a terminal
+representation or generated deadline/refill ownership that keeps `14/11`
+reads/due and blocking `68` or better.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
