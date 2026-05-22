@@ -44,13 +44,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.16-ps1`** — memory-region allocator stability release |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; refreshed public-capped average is **+0.2279% over target / 99.7750% target speed** after the W1-low compact trim/retarget phase promotion moved WALKSTUF1 low into green, plus the W1-high one-VBlank phase retime, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass, the BUILDING2-high one-VBlank phase retime, the VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the local-LZ and D4 decoder inline code-headroom passes, the W1-high entries `183..191` fixed-layout previous-visible cleanup headroom pass, the VISITOR3-low fixed-layout cleanup/canonicalization passes, the WALKSTUF1 and BUILDING2 screen-clip/data-shape headroom passes, the VISITOR3-low D4/read-group speed promotions, and the allocator-era retained setup/CD-pressure promotions. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; refreshed public-capped average is **+0.2240% over target / 99.7786% target speed** after the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase promotion moved WALKSTUF1 low into green, plus the W1-high one-VBlank phase retime, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass, the BUILDING2-high one-VBlank phase retime, the VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the local-LZ and D4 decoder inline code-headroom passes, the W1-high entries `183..191` fixed-layout previous-visible cleanup headroom pass, the VISITOR3-low fixed-layout cleanup/canonicalization passes, the WALKSTUF1 and BUILDING2 screen-clip/data-shape headroom passes, the VISITOR3-low D4/read-group speed promotions, and the allocator-era retained setup/CD-pressure promotions. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current mainline builds on `v0.8.16-ps1` with the memory-region allocator promoted: BOOT allocations seal after startup, CACHE allocations use free-list/LRU reuse for long-lived resource data, and TRANSIENT scene allocations can be wiped between major scene loads instead of relying on a fragmented general heap.
 
-The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest five-yellow canary refresh is `scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`. Public rollup is `+0.2279%` over target / `99.7750%` target speed and raw signed rollup is about `-0.4890%` / `100.5053%`; bands are `122` green, `4` yellow, `0` orange, and `0` red. That is about `17.17` public over-target points removed and `12.67` public target-speed points added since the compact full-matrix baseline.
+The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest four-yellow canary refresh is `scratch/ps1-perf-iterate/v3low-minslack4-four-yellow-norequire-current-20260522/20260522-060115-3102659/summary.json`. Public rollup is `+0.2240%` over target / `99.7786%` target speed and raw signed rollup is about `-0.4929%` / `100.5089%`; bands are `122` green, `4` yellow, `0` orange, and `0` red. That is about `17.18` public over-target points removed and `12.68` public target-speed points added since the compact full-matrix baseline.
 
 The newest code-headroom promotion makes `JCPERF2` the default perf summary
 path and compiles the legacy `JCPERF` summary behind
@@ -60,7 +60,7 @@ bucket, foreground LBAs, and all four current under-green timing rows stay
 exact-flat. This does not change the public speed rollup; it banks code and
 layout headroom for the remaining generated-owner/data-shape swings.
 
-The newest speed promotion applies the W1-low compact trim/retarget phase pass. `WALK1LOW.FG2` keeps file size, LBA, sectors, and the PS-EXE bucket fixed while active payload drops `752740 -> 708288`; the low-tide setup slices move to `179..283` plus `154..160`, W1-low gets one pre-loop phase VBlank, and the low-tide window guard adds one slack VBlank. The five-yellow canary keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high exact-flat while WALKSTUF1 low improves `1809/1470/1446 -> 1801/1461/1447`, overrun `24 -> 14`, blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and target speed `98.367% -> 99.042%`. The current under-green queue is VISITOR3 low, VISITOR3 high, WALKSTUF1 high, and BUILDING2 high.
+The newest speed promotion lowers the VISITOR3-low dual-segment window guard from five to four VBlanks. The four-yellow canary keeps VISITOR3 high, WALKSTUF1 high, and BUILDING2 high exact-flat while VISITOR3 low improves `1342/1069/1039 -> 1338/1065/1040`, overrun `30 -> 25`, blocking `68 -> 55`, and target speed `97.194% -> 97.653%`; pack LBA and the `233472` byte PS-EXE bucket stay fixed. The more aggressive three-VBlank guard is logged closed because it cut blocking but regressed VISITOR3 low to `1354/1081/1039` with refill overrun `24`. The current under-green queue remains VISITOR3 low, VISITOR3 high, WALKSTUF1 high, and BUILDING2 high.
 
 A prior code-headroom pass caches the active foreground scene ID so hot
 scheduler paths no longer repeat scene-name string compares. The five-yellow
@@ -97,7 +97,18 @@ The v0.8.13 checkpoint also extended BUILDING2 high preserve-offset payload trim
 
 Recent releases:
 
-- Current perf-reporting code-headroom promotion - PS1 perf summaries now emit
+- Current VISITOR3-low slack-knee speed promotion - `foreground_pilot.c`
+  lowers `FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS` from `5` to `4`.
+  The accepted four-yellow canary at
+  `scratch/ps1-perf-iterate/v3low-minslack4-four-yellow-norequire-current-20260522/20260522-060115-3102659/summary.json`
+  improves VISITOR3 low `1342/1069/1039 -> 1338/1065/1040`, overrun
+  `30 -> 25`, blocking `68 -> 55`, and target speed `97.194% -> 97.653%`
+  while VISITOR3 high, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
+  Public rollup improves to `+0.2240%` over target / `99.7786%` target speed;
+  raw signed rollup is about `-0.4929%` / `100.5089%`, with bands unchanged
+  at `122` green / `4` yellow. The three-VBlank variant is rejected because it
+  regressed VISITOR3 low to `1081/1039` with refill overrun `24`.
+- Prior perf-reporting code-headroom promotion - PS1 perf summaries now emit
   the canonical `JCPERF2` line by default while the legacy `JCPERF` line is
   compile-gated behind `PS1_PERF_LEGACY_TRACE=1`. The four-yellow canary at
   `scratch/ps1-perf-iterate/perf-nolegacy-headroom-four-yellow-current-20260522/20260522-053213-2936568/summary.json`
@@ -105,7 +116,7 @@ Recent releases:
   stable pack LBAs and the `233472` byte PS-EXE bucket. `ps1PerfEndScene`
   shrinks to `0xf4` bytes, so this banks code headroom without changing the
   public/raw speed rollups or the `122` green / `4` yellow distribution.
-- Current WALKSTUF1-low compact trim/retarget phase promotion - W1-low now uses
+- Prior WALKSTUF1-low compact trim/retarget phase promotion - W1-low now uses
   the compacted `WALK1LOW.FG2` active payload (`752740 -> 708288`) with setup
   coverage retargeted to `179..283` plus `154..160`, a one-VBlank low-tide
   phase offset, and a one-VBlank low-tide window-slack guard. Pack

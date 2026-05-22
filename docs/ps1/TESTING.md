@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-22:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2279%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7750%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T04:53:05` |
-| Stats version | mixed; current five-yellow timing rows are stamped `w1low-trim-main179-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2240%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7786%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T06:01:15` |
+| Stats version | mixed; current four-yellow timing rows are stamped `v3low-minslack4`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,19 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted W1-low compact trim/retarget phase note:
+Latest promoted VISITOR3-low slack-knee note:
+`foreground_pilot.c` now lowers the VISITOR3-low dual-segment window guard
+from five to four VBlanks. Focused proof:
+`scratch/ps1-perf-iterate/v3low-minslack4-current-20260522/20260522-055111-3044147/summary.json`;
+four-yellow no-regression canary:
+`scratch/ps1-perf-iterate/v3low-minslack4-four-yellow-norequire-current-20260522/20260522-060115-3102659/summary.json`.
+VISITOR3 low improves `1342/1069/1039 -> 1338/1065/1040`, cuts overrun
+`30 -> 25`, reduces blocking `68 -> 55`, and moves target speed
+`97.194% -> 97.653%`; VISITOR3 high, WALKSTUF1 high, and BUILDING2 high stay
+exact-flat. The three-VBlank variant is closed because it regressed VISITOR3
+low to `1354/1081/1039` with refill overrun `24`.
+
+Prior promoted W1-low compact trim/retarget phase note:
 `WALK1LOW.FG2` is compacted again with fixed file size/LBA/sectors, and
 `foreground_pilot.c` retargets low-tide setup to `179..283` plus `154..160`,
 adds one low-tide phase VBlank, and raises the low-tide window guard by one

@@ -309,19 +309,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2279%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2240%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7750%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7786%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T04:53:05</code>; four-yellow perf-reporting headroom canary <code class="language-plaintext highlighter-rouge">2026-05-22T05:32:13</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed four-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T06:01:15</code>; prior four-yellow perf-reporting headroom canary <code class="language-plaintext highlighter-rouge">2026-05-22T05:32:13</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-minslack4</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -337,7 +337,18 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest WALKSTUF1-low compact trim/retarget phase track:
+<p>Latest VISITOR3-low slack-knee speed track:
+<code class="language-plaintext highlighter-rouge">v3low-minslack4</code> lowers the VISITOR3-low dual-segment window guard from five
+to four VBlanks while preserving pack LBA <code class="language-plaintext highlighter-rouge">23379</code>, the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE
+bucket, and the accepted <code class="language-plaintext highlighter-rouge">16..32</code>, <code class="language-plaintext highlighter-rouge">72..88</code>, and <code class="language-plaintext highlighter-rouge">88..104</code> retained read-group
+shape. The four-yellow canary improves VISITOR3 low from <code class="language-plaintext highlighter-rouge">1342/1069/1039</code> to
+<code class="language-plaintext highlighter-rouge">1338/1065/1040</code>, cutting overrun <code class="language-plaintext highlighter-rouge">30 -&gt; 25</code>, blocking <code class="language-plaintext highlighter-rouge">68 -&gt; 55</code>, due misses
+<code class="language-plaintext highlighter-rouge">11 -&gt; 10</code>, and moving target speed <code class="language-plaintext highlighter-rouge">97.194% -&gt; 97.653%</code>. VISITOR3 high,
+WALKSTUF1 high, and BUILDING2 high stay exact-flat. The more aggressive
+three-VBlank guard is rejected because it regresses VISITOR3 low to
+<code class="language-plaintext highlighter-rouge">1354/1081/1039</code> with hidden refill overrun.</p>
+
+<p>Prior WALKSTUF1-low compact trim/retarget phase track:
 <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code> compacts <code class="language-plaintext highlighter-rouge">WALK1LOW.FG2</code> while preserving file
 size, LBA <code class="language-plaintext highlighter-rouge">25641</code>, sectors <code class="language-plaintext highlighter-rouge">750</code>, and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. Active
 payload drops <code class="language-plaintext highlighter-rouge">752740 -&gt; 708288</code>; setup coverage moves to <code class="language-plaintext highlighter-rouge">179..283</code> plus
@@ -1062,7 +1073,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The current
-five-yellow canary rows use <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>;
+four-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3low-minslack4</code>;
+prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>;
 prior BUILDING2 high source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
 Older rows retain their per-row version stamps,
@@ -1701,8 +1713,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T04:53:05</td>
-      <td>w1low-trim-main179-phase1</td>
+      <td>2026-05-22T06:01:15</td>
+      <td>v3low-minslack4</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2933,8 +2945,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T04:53:05</td>
-      <td>w1low-trim-main179-phase1</td>
+      <td>2026-05-22T06:01:15</td>
+      <td>v3low-minslack4</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2947,14 +2959,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T04:53:05</td>
-      <td>w1low-trim-main179-phase1</td>
-      <td>2.9%</td>
-      <td class="spd-yellow">97.2%</td>
-      <td>1069/1039</td>
-      <td>68</td>
+      <td>2026-05-22T06:01:15</td>
+      <td>v3low-minslack4</td>
+      <td>2.4%</td>
+      <td class="spd-yellow">97.7%</td>
+      <td>1065/1040</td>
+      <td>55</td>
       <td>0</td>
-      <td>11</td>
+      <td>10</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">
@@ -3073,10 +3085,10 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T04:53:05</td>
-      <td>w1low-trim-main179-phase1</td>
+      <td>2026-05-22T06:01:15</td>
+      <td>v3low-minslack4</td>
       <td>2.1%</td>
-      <td class="spd-yellow">97.9%</td>
+      <td class="spd-yellow">98.0%</td>
       <td>1471/1441</td>
       <td>43</td>
       <td>13</td>

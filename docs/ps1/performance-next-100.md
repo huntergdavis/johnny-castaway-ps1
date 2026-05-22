@@ -74,15 +74,26 @@ VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
 and the D4/local-LZ decoder inline code-headroom passes, followed by the
 VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
 BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
-`89..91` fixed-layout trim, the W1-high one-VBlank phase retime, and the
-W1-low compact trim/retarget phase promotion:
-`+0.2279%` public average over target / `99.7750%` public target speed across
+`89..91` fixed-layout trim, the W1-high one-VBlank phase retime, the
+W1-low compact trim/retarget phase promotion, and the VISITOR3-low
+slack-knee speed promotion:
+`+0.2240%` public average over target / `99.7786%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4890%` / `100.5053%`. Since the compact full-matrix baseline was
+`-0.4929%` / `100.5089%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.17` public over-target points and added about `12.67` public
+removed about `17.18` public over-target points and added about `12.68` public
 target-speed points. Bands are now `122` green, `4` yellow, `0` orange, and
-`0` red. The latest W1-low trim/retarget phase pass keeps offsets, pack size,
+`0` red. The latest VISITOR3-low slack-knee speed pass lowers
+`FG_VISITOR3_LOW_DUAL_SEGMENT_MIN_SLACK_VBLANKS` from `5` to `4` while keeping
+pack LBA, pack sectors, and the `233472` byte PS-EXE bucket fixed. The
+four-yellow canary at
+`scratch/ps1-perf-iterate/v3low-minslack4-four-yellow-norequire-current-20260522/20260522-060115-3102659/summary.json`
+moves VISITOR3 low `1342/1069/1039 -> 1338/1065/1040`, overrun `30 -> 25`,
+blocking `68 -> 55`, and target speed `97.194% -> 97.653%`; VISITOR3 high,
+WALKSTUF1 high, and BUILDING2 high stay exact-flat. The more aggressive
+three-VBlank guard is rejected because it regressed VISITOR3 low to
+`1354/1081/1039` with refill overrun `24`. The prior W1-low trim/retarget
+phase pass keeps offsets, pack size,
 LBA/sectors, and the `233472` byte PS-EXE bucket fixed while the canary at
 `scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`
 moves W1-low `1809/1470/1446 -> 1801/1461/1447`, overrun `24 -> 14`, target

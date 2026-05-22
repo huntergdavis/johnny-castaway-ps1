@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2279% public over target / 99.7750% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2240% public over target / 99.7786% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2279%` over target /
-`99.7750%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4890%` / `100.5053%`; bands are `122`
+loading, and the current battle card is `+0.2240%` over target /
+`99.7786%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4929%` / `100.5089%`; bands are `122`
 green, `4` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -41,9 +41,11 @@ read-work, plus the W1-high one-VBlank phase retime and the BUILDING2-high one-V
 `89..91` pack trim that leave that row at `1340/1314`, overrun `26`,
 blocking/refill `45/12`, target speed `98.060%`, and loop reads/read time
 `42/186`. W1-high now measures `1471/1441`, overrun `30`, target speed
-`97.961%`, blocking/refill `43/13`, and reads/due `41/7`. The current VISITOR3-low read-group stack adds `88..104` on top
-of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
-`68`, loop reads/read time `14/91`, and due `11`. The newest W1-low trim/retarget pass keeps `WALK1LOW.FG2`
+`97.961%`, blocking/refill `43/13`, and reads/due `41/7`. The current
+VISITOR3-low stack adds the four-VBlank slack-knee guard on top of the
+`16..32`, `72..88`, and `88..104` retained read groups, moving low to
+`1065/1040`, overrun `25`, blocking `55`, loop reads/due `26/10`, and target
+speed `97.653%`. The newest W1-low trim/retarget pass keeps `WALK1LOW.FG2`
 file size/LBA/sectors fixed, drops active payload `752740 -> 708288`, moves
 setup coverage to `179..283` plus `154..160`, adds one low-tide phase VBlank
 and a one-VBlank low-tide window-slack guard, and improves W1-low to
@@ -56,7 +58,10 @@ yellow rows stayed exact-flat. The newest code-headroom pass keeps `JCPERF2`
 as the default scene-end perf summary, compiles legacy `JCPERF` behind
 `PS1_PERF_LEGACY_TRACE=1`, scopes `ps1PerfEndScene()` to `-Os`, and keeps the
 four current under-green rows exact-flat while shrinking that reporting symbol
-to `0xf4` bytes inside the same `233472` byte PS-EXE bucket. The recent W1-low entry `90..99` fixed-layout
+to `0xf4` bytes inside the same `233472` byte PS-EXE bucket. The newest speed
+pass lowers the VISITOR3-low dual-segment window guard to four VBlanks and
+moves VISITOR3 low to `1065/1040`, overrun `25`, blocking `55`, and target
+speed `97.653%`; the other three under-green rows stay exact-flat. The recent W1-low entry `90..99` fixed-layout
 canonicalization pass keeps file size, offsets, LBA, and the PS-EXE bucket
 fixed while shrinking the active cluster `47579 -> 44511` bytes and total
 low-pack active payload `755808 -> 752740`; the then-five yellow rows stayed

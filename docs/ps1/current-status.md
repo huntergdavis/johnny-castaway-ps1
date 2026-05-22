@@ -4,13 +4,13 @@
 
 
 **Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
-the W1-low compact trim/retarget phase green promotion, the W1-high and
-BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
-segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
-code-headroom passes, and the latest `JCPERF2`-only perf-reporting
-code-headroom pass; all 63 scenes remain validated, all 126 high/low rows are
-timing-bearing, and the public headless battle card is `+0.2279%` over target
-/ `99.7750%` target speed).
+the VISITOR3-low slack-knee speed promotion, the W1-low compact
+trim/retarget phase green promotion, the W1-high and BUILDING2-high
+one-VBlank phase promotions, the VISITOR3-high segment3/exact-clean speed
+promotion, the D4/local-LZ decoder inline code-headroom passes, and the
+`JCPERF2`-only perf-reporting code-headroom pass; all 63 scenes remain
+validated, all 126 high/low rows are timing-bearing, and the public headless
+battle card is `+0.2240%` over target / `99.7786%` target speed).
 
 ## Overall
 
@@ -501,16 +501,16 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The current public battle card is `+0.2279%` / `99.7750%` with `122` green, `4` yellow, and `0` orange rows;
-  BUILDING2 high currently measures `1340/1314` with blocking/read/due `45/44/7`, BUILDING2 low now measures
+  The current public battle card is `+0.2240%` / `99.7786%` with `122` green, `4` yellow, and `0` orange rows;
+  BUILDING2 high currently measures `1340/1314` with blocking/read/due `45/42/7`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, and trim-tail work to
   active payload `539990`, WALKSTUF1 high is
-  `1472/1441` with blocking/read time `43`/`198`, loop reads `41`, and rows/spans/pixels
+  `1471/1441` with blocking/read time `43`/`199`, loop reads `41`, and rows/spans/pixels
   `16859/129919/731016` plus active payload `859666`, WALKSTUF1 low is now green at `1461/1447`
   with blocking/refill `31`/`2`, loop reads/read time `22`/`117`, and active payload
   `708288` after the compact trim/retarget phase pass, VISITOR3 high is
   `1067/1045` with blocking/read count `32`/`12`,
-  VISITOR3 low is `1069/1039` with blocking/read count `68`/`14`, JOHNNY1 high/low are
+  VISITOR3 low is `1065/1040` with blocking/read count `55`/`26`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is
   green at `2847/2820` with blocking/read time `32`/`252`, and VISITOR5 high/low are
   now green at `1101/1096` and `1102/1097`.

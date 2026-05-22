@@ -315,9 +315,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.2279%`
-exact public over target / `99.7750%` exact public target speed); the raw
-signed optimization matrix is about `-0.4890%` / `100.5053%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.2240%`
+exact public over target / `99.7786%` exact public target speed); the raw
+signed optimization matrix is about `-0.4929%` / `100.5089%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -381,9 +381,10 @@ raw-gap relocation, the frame56/57 tight56 raw-gap pass, the high-only
 early `40..47` retained setup edge at `1070/1046`, while
 low now uses a `16 KiB` slack-5 window plus a third retained setup segment
 extended to `206..232`, with frame `138` raw relocated into that paid gap,
-the later frame135 gap-D4 data-shape pass, and the newest `16..32`, `72..88`,
-and `88..104` retained read groups. The current canonical row is `1069/1039`,
-overrun `30`, blocking/read/due `68/14/11`, without hidden prefetch debt.
+the later frame135 gap-D4 data-shape pass, the newest `16..32`, `72..88`, and
+`88..104` retained read groups, and the four-VBlank dual-segment slack-knee
+guard. The current canonical row is `1065/1040`, overrun `25`,
+blocking/read/due `55/26/10`, without hidden prefetch debt.
 
 ## Scene Battle Card
 
@@ -980,7 +981,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.2279% over target / 99.7750% target speed, with four
+  public average is now +0.2240% over target / 99.7786% target speed, with four
   remaining CD-/data-shape-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

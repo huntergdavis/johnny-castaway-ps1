@@ -23,16 +23,16 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2279%` over
-target / `99.7750%` target speed; the raw signed optimization matrix is
-about `-0.4890%` / `100.5053%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2240%` over
+target / `99.7786%` target speed; the raw signed optimization matrix is
+about `-0.4929%` / `100.5089%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest W1-low compact trim/retarget
-phase promotion moves WALKSTUF1 low `1809/1470/1446 -> 1801/1461/1447`, cuts
-overrun `24 -> 14`, improves target speed `98.367% -> 99.042%`, and keeps
-file size/LBA/sectors plus the `233472` byte PS-EXE bucket fixed while
-VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
+measured inside the allocator budget. The latest VISITOR3-low slack-knee
+promotion moves VISITOR3 low `1342/1069/1039 -> 1338/1065/1040`, cuts overrun
+`30 -> 25`, blocking `68 -> 55`, and improves target speed
+`97.194% -> 97.653%` while VISITOR3 high, WALKSTUF1 high, and BUILDING2 high
+stay exact-flat.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while
@@ -122,8 +122,9 @@ High measures `1070/1046`, overrun `24`, blocking
 `35`, reads/due `5/2`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, then adds
-the `16..32`, `72..88`, and `88..104` retained read-group rows. It now
-measures `1069/1039`, overrun `30`, blocking `68`, reads/due `14/11`.
+the `16..32`, `72..88`, and `88..104` retained read-group rows plus the
+four-VBlank slack-knee guard. It now measures `1065/1040`, overrun `25`,
+blocking `55`, reads/due `26/10`.
 Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
