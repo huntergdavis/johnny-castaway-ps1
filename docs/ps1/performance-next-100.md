@@ -972,6 +972,14 @@ not caused by the entry `109..112` clip; this seam needs generated
 deadline/refill ownership or a paired data-shape/phase change, not another raw
 table row.
 
+The remaining open VISITOR3-low hand-authored read-group rows are closed on
+the B2 phase-retime baseline as well. `{46..70}`, `{39..63}`, and `{1..17}`
+all stay exact-flat at `1342/1069/1039`, overrun `30`, blocking/refill `68/0`,
+and reads/due `14/11`, while only shifting hot symbols by `+4` bytes. The
+read-candidate matrix should treat those ranges as requiring a non-table
+generated deadline/refill primitive or pack/data-shape work; the existing
+grouped-append table path cannot move the key metrics.
+
 The first terminal row-reference swing is also closed as a standalone
 data-shape. Encoding VISITOR3-low frame `136` against frame `134` is extremely
 byte-positive (`16890 -> 1177`, `3` commands, `15713` saved bytes) and stayed
