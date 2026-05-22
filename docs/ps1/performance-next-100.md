@@ -1316,9 +1316,11 @@ or a non-resident/no-decode data shape.
     bloated hot code.
 18. **W1-high cleanup-only pack canonicalization after `204..211`.** Favor
     no-sector-change cleanup-only frames and exact-flat five-yellow canaries.
-19. **W1-high setup-resident ownership with allocator accounting.** Any new
-    retained slice must prove CACHE/TRANSIENT clean-rect headroom before a
-    timing run.
+19. **W1-high generated late-cluster owner, not setup residency.** The
+    allocator-accounted `372..388` retained setup swing is now closed in both
+    CACHE and split-TRANSIENT forms: each hit the clean-rect CACHE cliff before
+    `JCPERF2`. Reopen this pocket only through no-hot-C generated
+    deadline/refill ownership or a phase-safe data-shape/render-work reduction.
 20. **W1-low `193..217` generated owner.** Min-slack-2 proved slack `3` is too
     expensive; retry only with a strict refill budget.
 21. **W1-low `129..153` / `153..177` generated refill owner.** Static rows have
