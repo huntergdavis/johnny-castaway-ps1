@@ -1079,6 +1079,14 @@ are all cadence-bearing, so V3-high `55..61` now requires generated
 deadline/refill ownership or no-decode payload/layout work, not another setup
 residency trade.
 
+VISITOR3-high phase offsets beyond the accepted three-VBlank retime are closed
+as standalone toggles. Phase 4 is the useful signal (`1067/1045 -> 1064/1043`,
+overrun `22 -> 21`, reads `12 -> 9`), but it creates hidden refill `0 -> 3`;
+tight-window caps at `48 KiB` and `40 KiB` are inert, global slack-5 starves the
+row, fallthrough/window-only guards still leave refill `2`, and phase 5
+regresses loop/blocking. Reopen phase 4 only with a stage-side generated refill
+owner that keeps the `1064/1044`, blocking `31` shape and clears refill to zero.
+
 1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
    current candidate matrix has no standalone safe sector rows left; start with
    custom terminal data-shape or generated deadline ownership for the terminal
