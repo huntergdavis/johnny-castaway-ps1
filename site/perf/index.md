@@ -111,8 +111,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Current target speed distribution">
   Target Speed distribution in the current matrix:
-  <span class="spd-key spd-green">122 (96.8%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">4 (3.2%) ≥ 95%</span>
+  <span class="spd-key spd-green">123 (97.6%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">3 (2.4%) ≥ 95%</span>
   <span class="spd-key spd-orange">0 (0.0%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -147,8 +147,9 @@ keeps `198..244`, extends its second retained slice to `286..344`, adds
 prepare-first scheduler ownership, carries same-speed `{395..411}` plus
 retargeted `{411..423}` CD-pressure work, and now compacts entries `183..191`
 with previous-visible cleanup to drop runtime restore bytes `509592 -> 500782`
-and upload bytes `17182720 -> 17171200` while keeping the five-yellow canary
-exact-flat. The prior VISITOR3-low entry `109..112` fixed-layout clip keeps the
+and upload bytes `17182720 -> 17171200`; the latest entry `58..61` tail trim
+plus phase-3 retime improves high to `1469/1440` / `98.026%` while keeping
+BUILDING2 high and VISITOR3 high/low exact-flat. The prior VISITOR3-low entry `109..112` fixed-layout clip keeps the
 five-yellow canary exact-flat while shrinking selected active payload
 `8170 -> 6004`; the broad full-pack clip and paired `{46..58}` read row are
 closed as phase-negative. The prior VISITOR3-low `88..104` read-group row stacks on `16..32` and `72..88` and
@@ -171,9 +172,9 @@ uses a gap-8 dirty-upload band merge retune plus a `24 KiB` stream window to
 cut its active row to `2847/2820` and move green.
 That is the new allocator baseline rather than a visual
 regression: the R34 allocator matrix still records `126/126` PASS with 0 BSODs.
-The remaining performance work should target VISITOR3 high/low data-shape or
-scheduler ownership first, then BUILDING2 high and WALKSTUF1 high generated
-ownership that does not spend blocking/refill debt.
+The remaining performance work should target WALKSTUF1 high first, then
+VISITOR3 high/low data-shape or scheduler ownership that does not spend
+blocking/refill debt.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -194,10 +195,10 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2155%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7870%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high compact four-yellow promotion gate `2026-05-22T11:50:40`; prior four-yellow canary `2026-05-22T08:35:27`; prior B2-high safe-tail headroom refresh `2026-05-22T11:27:06` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow rows use `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2149%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7875%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry `58..61` tail/phase promotion gate `2026-05-22T13:44:41`; prior B2-high compact four-yellow promotion gate `2026-05-22T11:50:40`; prior B2-high safe-tail headroom refresh `2026-05-22T11:27:06` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow rows use `w1high-entry58-61-tail-phase3`; prior B2-high compact rows used `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -207,7 +208,17 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest BUILDING2-high compact speed track:
+Latest WALKSTUF1-high tail/phase speed track:
+`w1high-entry58-61-tail-phase3` trims fixed-offset entry tails for
+`WALKSTUF1.FG2` entries `58..61` and raises the W1-high phase offset to `3`.
+It preserves the `1535263` byte pack footprint, LBA `24891`, sectors `750`,
+and the `233472` byte PS-EXE bucket. Active payload drops `840654 -> 833386`;
+W1-high improves `1808/1471/1441 -> 1808/1469/1440`, overrun `30 -> 29`,
+blocking/refill `43/13 -> 42/12`, and target speed `97.961% -> 98.026%`.
+BUILDING2 high and VISITOR3 high/low stay exact-flat under canonical boot
+variants.
+
+Prior BUILDING2-high compact speed track:
 `b2high-compact-current` physically compacts `BUILDING2.FG2`, pads back to
 the original `1303332` byte footprint, and keeps LBA `6189`, sectors `637`,
 and the `233472` byte PS-EXE bucket fixed. The compacted layout trims entries
@@ -535,7 +546,8 @@ guard by one VBlank. The combined current row improves
 `1479/1435 -> 1461/1447`, overrun `44 -> 14`,
 blocking/refill `65/18 -> 31/2`, loop reads/read time `50/230 -> 22/117`,
 and moves W1-low into green at `99.042%` target speed.
-W1-high remains yellow at `97.961%` target speed.
+W1-high remains yellow but now sits at `98.026%` after the entry `58..61`
+tail/phase-3 speed pass.
 
 Current B2-high allocator-era speed track: targeted CACHE slices at relative
 sectors `3..35` and `202..242` keep the focused allocator run measured without
@@ -593,7 +605,10 @@ holding overrun `31` and cutting blocking/due to `43/7`; the newest
 same-speed `{411..423}` replacement keeps timing exact-flat and lowers loop
 reads/read time `42/201 -> 41/198`. The latest standalone W1-high phase retime
 then improves the current row to `1808/1471/1441`, overrun `30`, target speed
-`97.961%`, with blocking/refill flat at `43/13`.
+`97.961%`, with blocking/refill flat at `43/13`; the current entry `58..61`
+tail trim plus phase `3` promotion then improves W1-high again to
+`1808/1469/1440`, overrun `29`, target speed `98.026%`, and blocking/refill
+`42/12`.
 
 Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
@@ -900,8 +915,9 @@ retargets the second slice from `411..435` to `286..344`, adds `{149,165}`,
 and now encodes frame `92` as D4, improving the current row
 `1475/1433 -> 1471/1440`, overrun `42 -> 31`, blocking `76 -> 57`, prefetch
 overrun `15 -> 13`, and due `15 -> 10`; the current prepare-first scheduler
-row plus `{395..411}` and retargeted `{411..423}` is `1472/1441`, overrun
-`31`, blocking/refill/due `43/13/7`, and loop reads/read time `41/198`.
+row plus `{395..411}` and retargeted `{411..423}`, followed by entry `58..61`
+tail trim plus phase `3`, is `1469/1440`, overrun `29`,
+blocking/refill/due `42/12/7`, and loop reads/read time `41/202`.
 Low caches `197..243` and `410..434`, improving `1507/1426 -> 1477/1434`,
 blocking/refill `142/26 -> 58/16`, reads/read time `75/353 -> 51/236`, and due
 `25 -> 9`. The latest low retarget replaces those two slices with one
@@ -1616,8 +1632,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T11:50:40</td>
-      <td>b2high-compact-current</td>
+      <td>2026-05-22T13:44:41</td>
+      <td>w1high-entry58-61-tail-phase3</td>
       <td>1.0%</td>
       <td class="spd-green">99.0%</td>
       <td>1330/1317</td>
@@ -2848,8 +2864,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T11:50:40</td>
-      <td>b2high-compact-current</td>
+      <td>2026-05-22T13:44:41</td>
+      <td>w1high-entry58-61-tail-phase3</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2862,8 +2878,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T11:50:40</td>
-      <td>b2high-compact-current</td>
+      <td>2026-05-22T13:44:41</td>
+      <td>w1high-entry58-61-tail-phase3</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
@@ -2988,13 +3004,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T11:50:40</td>
-      <td>b2high-compact-current</td>
-      <td>2.1%</td>
+      <td>2026-05-22T13:44:41</td>
+      <td>w1high-entry58-61-tail-phase3</td>
+      <td>2.0%</td>
       <td class="spd-yellow">98.0%</td>
-      <td>1471/1441</td>
-      <td>43</td>
-      <td>13</td>
+      <td>1469/1440</td>
+      <td>42</td>
+      <td>12</td>
       <td>7</td>
       <td></td>
     </tr>
