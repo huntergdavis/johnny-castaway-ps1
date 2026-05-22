@@ -798,7 +798,7 @@ static uint32 fgReadU32(const uint8 *p)
            ((uint32)p[3] << 24);
 }
 
-static int __attribute__((noinline, optimize("Os")))
+static int
 fgDecodeFrameDelta(uint8 *data,
                    struct TFgPilotEntry *entry,
                    const uint8 *baseData,

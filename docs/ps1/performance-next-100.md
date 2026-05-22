@@ -70,7 +70,8 @@ no-decode trim-draw-tail subset, the W1-high exact-entry preserve-entry-size
 screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
 headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
-VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions:
+VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
+and the D4 decoder inline code-headroom pass:
 `+0.2465%` public average over target / `99.7571%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4704%` / `100.4875%`. Since the compact full-matrix baseline was
@@ -94,6 +95,19 @@ scheduler swing is also closed: VISITOR3 high/low and WALKSTUF1 high/low
 stayed exact-flat, but B2-high regressed `1341/1313 -> 1345/1311` with
 blocking/refill `47/14 -> 55/21`, so the accepted WALKSTUF1-specific
 prepare-before-window rule should not be generalized through hot C predicates.
+The latest D4 decoder codegen pass removes the standalone
+`fgDecodeFrameDelta()` function-scoped `noinline`/`Os` guard and lets the
+current `-Os` foreground TU inline it into `fgRuntimeLoadSceneFrame()`. The
+five-yellow canary at
+`scratch/ps1-perf-iterate/d4-decoder-inline-five-yellow-current/20260521-175610-3170981/summary.json`
+stays exact-flat for all five under-green rows, keeps all pack LBAs and the
+`233472` byte PS-EXE bucket fixed, removes the standalone `0x20c` decoder
+symbol, grows `fgRuntimeLoadSceneFrame` by `416` bytes, moves most tracked hot
+foreground symbols `-524` bytes, and moves `foregroundPilotPlay` `-108` bytes.
+This is code-headroom only; it does not change the public/raw speed rollups or
+bands. The paired noinline `O2` decoder variant is closed because it stayed
+exact-flat while growing `fgDecodeFrameDelta` by `20` bytes and shifting hot
+symbols by `+20` with no timing or work-volume win.
 The prior VISITOR3-low
 entry `109..112` fixed-layout clip keeps file
 size, offsets, LBA `23379`, sectors `760`, and the `233472` byte PS-EXE bucket
