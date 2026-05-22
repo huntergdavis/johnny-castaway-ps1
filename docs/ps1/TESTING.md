@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-22:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2233%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7793%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T06:48:59` |
-| Stats version | mixed; current four-yellow timing rows are stamped `v3low-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T07:46:44` |
+| Stats version | mixed; current four-yellow timing rows are stamped `v3low-d4-frame134-headroom`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,21 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3-low phase-retime note:
+Latest promoted VISITOR3-low frame134 D4 headroom note:
+`VIST3LOW.FG2` now encodes low-tide frame `134` as a previous-frame D4 delta,
+and `foreground_pilot.c` marks that frame for previous-delta runtime decode.
+Transform summary:
+`scratch/v3low-d4-frame134-after-phase-current-20260522/summary.json`;
+focused proof:
+`scratch/ps1-perf-iterate/v3low-d4-frame134-after-phase-current-20260522/20260522-074109-3667663/summary.json`;
+four-yellow no-regression canary:
+`scratch/ps1-perf-iterate/v3low-d4-frame134-four-yellow-current-20260522/20260522-074644-3700705/summary.json`.
+Frame `134` shrinks `17001 -> 14202` bytes while VISITOR3 low stays
+exact-flat at `1339/1065/1041`, overrun `24`; VISITOR3 high, WALKSTUF1 high,
+and BUILDING2 high also stay exact-flat. Frame `136` and combined `134+136`
+D4 are closed because they regress VISITOR3-low timing.
+
+Prior promoted VISITOR3-low phase-retime note:
 `foreground_pilot.c` now adds one low-tide VISITOR3 phase VBlank after the
 four-VBlank slack-knee baseline. Focused proof:
 `scratch/ps1-perf-iterate/v3low-phase1-after-minslack4-current-20260522/20260522-064215-3335118/summary.json`;

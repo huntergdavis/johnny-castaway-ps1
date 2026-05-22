@@ -246,7 +246,10 @@ VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 
 <code class="language-plaintext highlighter-rouge">80 -&gt; 78</code>, and loop read time <code class="language-plaintext highlighter-rouge">106 -&gt; 104</code>; the prior
 previous-visible cleanup row already dropped runtime restore bytes
 <code class="language-plaintext highlighter-rouge">467962 -&gt; 64632</code>, max restore bytes <code class="language-plaintext highlighter-rouge">293544 -&gt; 2962</code>, upload bytes
-<code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and dirty rows <code class="language-plaintext highlighter-rouge">28303 -&gt; 27335</code>.
+<code class="language-plaintext highlighter-rouge">18113920 -&gt; 17494400</code>, and dirty rows <code class="language-plaintext highlighter-rouge">28303 -&gt; 27335</code>. The latest
+VISITOR3-low frame134 D4 headroom pass shrinks that terminal payload
+<code class="language-plaintext highlighter-rouge">17001 -&gt; 14202</code> bytes while keeping the four-yellow canary exact-flat; frame
+<code class="language-plaintext highlighter-rouge">136</code> D4 is closed as phase-negative.
 BUILDING2 low now primes relative sectors <code class="language-plaintext highlighter-rouge">112..128</code> and <code class="language-plaintext highlighter-rouge">226..262</code> during
 setup with a low-only <code class="language-plaintext highlighter-rouge">80 KiB</code> clean-strip cap, slack-5 window guard, and
 <code class="language-plaintext highlighter-rouge">{141,153}</code> read row, moving that row into green. BUILDING4 low now
@@ -317,11 +320,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed four-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T06:48:59</code>; prior four-yellow perf-reporting headroom canary <code class="language-plaintext highlighter-rouge">2026-05-22T05:32:13</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed four-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T07:46:44</code>; prior four-yellow phase-retime canary <code class="language-plaintext highlighter-rouge">2026-05-22T06:48:59</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -337,7 +340,18 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest VISITOR3-low phase-retime speed track:
+<p>Latest VISITOR3-low frame134 D4 data-shape track:
+<code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code> encodes frame <code class="language-plaintext highlighter-rouge">134</code> against the previous decoded
+frame and marks that frame for previous-delta runtime decode. The payload
+shrinks <code class="language-plaintext highlighter-rouge">17001 -&gt; 14202</code> bytes, while file size, pack LBA <code class="language-plaintext highlighter-rouge">23379</code>, sectors,
+and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket stay fixed. The four-yellow canary keeps
+VISITOR3 low exact-flat at <code class="language-plaintext highlighter-rouge">1339/1065/1041</code>, overrun <code class="language-plaintext highlighter-rouge">24</code>, blocking/refill
+<code class="language-plaintext highlighter-rouge">55/0</code>, reads/due <code class="language-plaintext highlighter-rouge">28/10</code>; VISITOR3 high, WALKSTUF1 high, and BUILDING2 high
+also stay exact-flat. Frame <code class="language-plaintext highlighter-rouge">136</code> alone and combined <code class="language-plaintext highlighter-rouge">134+136</code> are rejected
+because they regress VISITOR3-low timing to <code class="language-plaintext highlighter-rouge">1068/1041</code>, overrun <code class="language-plaintext highlighter-rouge">27</code>,
+blocking <code class="language-plaintext highlighter-rouge">59</code>, reads/due <code class="language-plaintext highlighter-rouge">29/11</code>.</p>
+
+<p>Prior VISITOR3-low phase-retime speed track:
 <code class="language-plaintext highlighter-rouge">v3low-phase1</code> adds one low-tide phase VBlank after the accepted
 four-VBlank slack-knee baseline while preserving pack LBA <code class="language-plaintext highlighter-rouge">23379</code>, the
 <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket, and the accepted <code class="language-plaintext highlighter-rouge">16..32</code>, <code class="language-plaintext highlighter-rouge">72..88</code>, and
@@ -1072,7 +1086,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The current
-four-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3low-phase1</code>;
+four-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>;
+prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>;
 prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>;
 prior BUILDING2 high source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>;
 BUILDING4 high remains on <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>.
@@ -1712,8 +1727,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2944,8 +2959,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2958,8 +2973,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
@@ -3084,8 +3099,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.1%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1471/1441</td>

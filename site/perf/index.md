@@ -160,7 +160,10 @@ VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking
 `80 -> 78`, and loop read time `106 -> 104`; the prior
 previous-visible cleanup row already dropped runtime restore bytes
 `467962 -> 64632`, max restore bytes `293544 -> 2962`, upload bytes
-`18113920 -> 17494400`, and dirty rows `28303 -> 27335`.
+`18113920 -> 17494400`, and dirty rows `28303 -> 27335`. The latest
+VISITOR3-low frame134 D4 headroom pass shrinks that terminal payload
+`17001 -> 14202` bytes while keeping the four-yellow canary exact-flat; frame
+`136` D4 is closed as phase-negative.
 BUILDING2 low now primes relative sectors `112..128` and `226..262` during
 setup with a low-only `80 KiB` clean-strip cap, slack-5 window guard, and
 `{141,153}` read row, moving that row into green. BUILDING4 low now
@@ -193,8 +196,8 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2233%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7793%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T06:48:59`; prior four-yellow perf-reporting headroom canary `2026-05-22T05:32:13` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow timing rows use `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T07:46:44`; prior four-yellow phase-retime canary `2026-05-22T06:48:59` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow timing rows use `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -204,7 +207,18 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-low phase-retime speed track:
+Latest VISITOR3-low frame134 D4 data-shape track:
+`v3low-d4-frame134-headroom` encodes frame `134` against the previous decoded
+frame and marks that frame for previous-delta runtime decode. The payload
+shrinks `17001 -> 14202` bytes, while file size, pack LBA `23379`, sectors,
+and the `233472` byte PS-EXE bucket stay fixed. The four-yellow canary keeps
+VISITOR3 low exact-flat at `1339/1065/1041`, overrun `24`, blocking/refill
+`55/0`, reads/due `28/10`; VISITOR3 high, WALKSTUF1 high, and BUILDING2 high
+also stay exact-flat. Frame `136` alone and combined `134+136` are rejected
+because they regress VISITOR3-low timing to `1068/1041`, overrun `27`,
+blocking `59`, reads/due `29/11`.
+
+Prior VISITOR3-low phase-retime speed track:
 `v3low-phase1` adds one low-tide phase VBlank after the accepted
 four-VBlank slack-knee baseline while preserving pack LBA `23379`, the
 `233472` byte PS-EXE bucket, and the accepted `16..32`, `72..88`, and
@@ -938,7 +952,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The current
-  four-yellow canary rows use `v3low-phase1`;
+  four-yellow canary rows use `v3low-d4-frame134-headroom`;
+  prior VISITOR3-low phase-retime rows used `v3low-phase1`;
   prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`;
   prior BUILDING2 high source/data work used `b2high-alias38`;
   BUILDING4 high remains on `git:391a265e1+building4-high-setupseg264-288`.
@@ -1577,8 +1592,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2809,8 +2824,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2823,8 +2838,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
@@ -2949,8 +2964,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T06:48:59</td>
-      <td>v3low-phase1</td>
+      <td>2026-05-22T07:46:44</td>
+      <td>v3low-d4-frame134-headroom</td>
       <td>2.1%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1471/1441</td>

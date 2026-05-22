@@ -76,16 +76,27 @@ VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
 BUILDING2-high one-VBlank phase retime, the BUILDING2-high entries
 `89..91` fixed-layout trim, the W1-high one-VBlank phase retime, the
 W1-low compact trim/retarget phase promotion, the VISITOR3-low slack-knee
-speed promotion, and the VISITOR3-low one-VBlank phase retime:
+speed promotion, the VISITOR3-low one-VBlank phase retime, and the
+VISITOR3-low frame134 D4 data-shape headroom pass:
 `+0.2233%` public average over target / `99.7793%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.4936%` / `100.5097%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.18` public over-target points and added about `12.68` public
 target-speed points. Bands are now `122` green, `4` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low phase-retime pass adds one low-tide phase
-VBlank after the accepted slack-knee baseline while keeping pack LBA, pack
-sectors, and the `233472` byte PS-EXE bucket fixed. The four-yellow canary at
+`0` red. The latest VISITOR3-low frame134 D4 headroom pass encodes frame
+`134` against the previous decoded frame while keeping pack LBA, pack sectors,
+file size, and the `233472` byte PS-EXE bucket fixed. Frame `134` shrinks
+`17001 -> 14202` bytes, and the four-yellow canary at
+`scratch/ps1-perf-iterate/v3low-d4-frame134-four-yellow-current-20260522/20260522-074644-3700705/summary.json`
+keeps VISITOR3 low exact-flat at `1339/1065/1041`, overrun `24`,
+blocking/refill `55/0`, reads/due `28/10`; VISITOR3 high, WALKSTUF1 high, and
+BUILDING2 high also stay exact-flat. Frame `136` and the combined `134`/`136`
+D4 form are closed because they regress VISITOR3-low to `1068/1041`, overrun
+`27`, blocking `59`, reads/due `29/11`. The prior VISITOR3-low phase-retime
+pass adds one low-tide phase VBlank after the accepted slack-knee baseline
+while keeping pack LBA, pack sectors, and the `233472` byte PS-EXE bucket
+fixed. The four-yellow canary at
 `scratch/ps1-perf-iterate/v3low-phase1-four-yellow-norequire-current-20260522/20260522-064859-3374469/summary.json`
 moves VISITOR3 low `1338/1065/1040 -> 1339/1065/1041`, overrun `25 -> 24`,
 and target speed `97.653% -> 97.746%`; VISITOR3 high, WALKSTUF1 high, and
