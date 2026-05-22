@@ -911,6 +911,14 @@ frames `129`, `132`, `135`, and `137`; `134`/`136` need a cheaper
 row-reference/setup-dictionary representation, no-decode alias/relocation, or
 generated deadline/refill ownership.
 
+The staged-D4 predecode variant is closed too. Decoding frame `134` or `136`
+into the staging buffer immediately after prefetch/setup-prime copy did not
+rescue the terminal D4 shape: frame `134` alone still regressed to
+`1070/1039`, frame `136` alone to `1072/1039`, and the combined form to
+`1073/1039` with `15/12` reads/due. Do not retry terminal `134`/`136` through
+any ordinary previous-frame D4 path; the next data-shape attempt must be a
+cheaper row-reference/setup-dictionary codec or a true no-decode relocation.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -970,8 +978,8 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
    hand table rows.
 5. **VISITOR3 low terminal row-reference codec.** Replace terminal D4 retries
    with a staged-safe row-reference or setup-dictionary payload that preserves
-   read/due cadence; standalone frame `133`, `134`, and `136` D4 variants are
-   now closed.
+   read/due cadence; standalone, combined, and staged-predecode D4 variants for
+   frames `133`, `134`, and `136` are now closed.
 7. **VISITOR3 low `248..272` generated owner.** Own the terminal cluster with
    explicit due/blocking/refill budgets rather than another static low-tide
    table.
