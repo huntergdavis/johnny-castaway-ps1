@@ -115,6 +115,19 @@ failed the strict hidden-refill gate with `prefetch_overrun_vb=1`, again with
 `group_hits=0`. Treat phase `2` as a real but invalid signal that needs true
 generated refill/deadline ownership or row-reference/setup-dictionary/no-decode
 data shape; do not spend more time on terminal table ballast. The prior VISITOR3-low
+no-heartbeat code-headroom probe is also closed on this baseline. Removing the
+`JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
+overrun `24`, blocking/refill `50/0`, reads/due `18/8`, and no-heartbeat plus
+phase `2` preserved the tempting `1064/1044`, overrun `20`, blocking `46`
+signal, but it still had one hidden refill VBlank. Slack `5` cleared that
+hidden refill only by regressing to `1067/1040`, overrun `27`, blocking `59`,
+and the `{86..98}` read-row variant worsened to `1068/1041`, blocking `61`.
+Most importantly, the strict four-yellow no-heartbeat canary regressed
+WALKSTUF1-high blocking `43 -> 44` while leaving VISITOR3-low, VISITOR3-high,
+and BUILDING2-high exact-flat. Do not use heartbeat removal as generic
+headroom unless it is paired with a W1-high-safe code-size/layout offset; the
+VISITOR3-low phase-2 path still needs actual slack/data-shape or generated
+ownership, not this code-headroom route. The prior VISITOR3-low
 frame134 D4 headroom pass encodes frame
 `134` against the previous decoded frame while keeping pack LBA, pack sectors,
 file size, and the `233472` byte PS-EXE bucket fixed. Frame `134` shrinks
