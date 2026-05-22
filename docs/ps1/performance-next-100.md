@@ -1255,11 +1255,24 @@ blocking/refill `37/4`. V3-high setup residency is effectively at the memory
 and phase boundary; the next V3-high attempt needs generated refill ownership
 or a non-resident/no-decode data shape.
 
+The current-baseline VISITOR3-low entries `59..80` no-decode draw-tail trim is
+closed as a simple phase-paired speed path. The fixed-offset transform saved
+`3932` active bytes across `20` entries and crossed three entry sector-count
+boundaries, but trim alone tightened target cadence and added one hidden refill
+VBlank. Pairing with phase `1` produced a useful raw signal (`1064/1041`,
+overrun `23`, blocking `47`) but still had hidden refill `1`; phase `2` was
+stronger (`1064/1043`, overrun `21`, blocking `48`) but failed scene total and
+hidden refill `2`. Slack `5` cleared refill only by regressing loop/blocking.
+Treat this cluster as data-shape-positive but phase-taxed; it needs generated
+refill/deadline ownership or a no-code layout change, not another scalar
+phase/slack pairing.
+
 1. **VISITOR3 low terminal row-reference/no-hot-C deadline swing.** The
    current candidate matrix has no standalone safe sector rows left, and inline
    generated owner/direct-stage-denial probes for `32..48`, `46..58`,
-   `65..89`, and the post-segment4 `27..51` / `32..56` pocket are now closed
-   as inert or refill-negative. Start with a custom terminal
+   `65..89`, the post-segment4 `27..51` / `32..56` pocket, and the entries
+   `59..80` fixed-offset trim plus phase/slack family are now closed as inert
+   or refill-negative. Start with a custom terminal
    row-reference/setup-dictionary/no-decode data shape, or generated deadline
    metadata consumed outside the hot fill/load functions, while preserving the
    current read/due cadence and direct-stage timing.
@@ -1269,8 +1282,8 @@ or a non-resident/no-decode data shape.
    PS-EXE bucket.
 3. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
    savings into blocking/refill (`V3-high` direct-stage, V3-low `27..51` /
-   `32..56`, W1-high `372..388`, W1-low `136..160`) so the CSV stops
-   resurfacing closed scalar ranges.
+   `32..56`, V3-low entries `59..80` trim/phase, W1-high `372..388`,
+   W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
 4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` and the fourth `40..43` segment proved is real, but only
    through budgeted ownership; no more retained setup expansion, retained-gap
