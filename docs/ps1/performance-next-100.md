@@ -886,6 +886,17 @@ the `233472` byte PS-EXE bucket fixed but regressed VISITOR3-low: combined and
 generated deadline/refill ownership with explicit phase budgets or after a
 data-shape reduction changes the read cadence.
 
+Current-baseline VISITOR3-low terminal D4 retries for frames `134` and `136`
+are closed again after the decoder inline headroom passes. The combined retry
+saved `2799` bytes on frame `134` and `2824` bytes on frame `136`, but
+regressed V3-low to `1073/1039`, overrun `34`, blocking `72`, reads/due
+`15/12`. Isolating frame `134` still regressed loop/overrun to `1070/1039`
+and `31`; isolating frame `136` regressed to `1072/1039`, overrun `33`,
+blocking `72`, reads/due `15/12`. Keep accepted terminal D4 limited to
+frames `129`, `132`, `135`, and `137`; `134`/`136` need a cheaper
+row-reference/setup-dictionary representation, no-decode alias/relocation, or
+generated deadline/refill ownership.
+
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before
 `JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
@@ -930,7 +941,7 @@ current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
    current candidate matrix has no standalone safe sector rows left; start with
    custom terminal data-shape or generated deadline ownership for the terminal
    cluster plus explicitly budgeted `32..48` / `58..74` ownership, preserving
-   read/due cadence and avoiding another static table-row retry.
+   read/due cadence and avoiding another static table-row or D4 retry.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
