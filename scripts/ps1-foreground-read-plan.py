@@ -589,7 +589,7 @@ def parse_source_setup_policy() -> dict[str, Any]:
         scene_policy_key = scene_key.lower()
         for tide in ("HIGH", "LOW"):
             segments = []
-            for suffix in ("", "2", "3"):
+            for suffix in ("", "2", "3", "4"):
                 start = symbols.get(f"FG_{scene_key}_{tide}_SETUP_SEGMENT{suffix}_START")
                 size = symbols.get(f"FG_{scene_key}_{tide}_SETUP_SEGMENT{suffix}_BYTES")
                 if start is not None and size is not None and size > 0:
