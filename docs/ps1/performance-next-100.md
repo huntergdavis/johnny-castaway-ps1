@@ -1205,7 +1205,16 @@ or a non-resident/no-decode data shape.
     fit, clean-rect chunking, and setup residency as first-class gates before
     emulator timing, not as follow-up debugging.
 
-Latest promoted code-headroom row: caching the active foreground scene ID
+Latest promoted code-headroom row: making `JCPERF2` the default perf summary
+and compile-gating legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1` keeps the
+four-yellow canary exact-flat while `ps1PerfEndScene()` shrinks to `0xf4`
+bytes inside the same `233472` byte PS-EXE bucket. The proof
+`scratch/ps1-perf-iterate/perf-nolegacy-headroom-four-yellow-current-20260522/20260522-053213-2936568/summary.json`
+keeps VISITOR3 high/low, W1-high, and B2-high timing, CD pressure, pack LBAs,
+and work identity fixed. This is code/layout headroom for generated-owner and
+custom data-shape work, not a speed win.
+
+Prior promoted code-headroom row: caching the active foreground scene ID
 removes repeated hot-path scene-name compares from the scheduler while keeping
 the five-yellow canary exact-flat. The proof
 `scratch/ps1-perf-iterate/hot-scene-id-five-yellow-current/20260520-215337-573156/summary.json`
