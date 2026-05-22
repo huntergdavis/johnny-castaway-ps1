@@ -859,6 +859,16 @@ no measured benefit. Close V3-low early `32..80` hot-C ownership; the remaining
 low-tide VISITOR3 path needs terminal row-reference/setup-dictionary data shape
 or genuinely no-hot-C generated deadline metadata.
 
+Latest rejected VISITOR3-low setup-residency swing: expanding the existing
+`206..232` setup segment to `206..256` hit the allocator ceiling before
+`JCPERF2` (`req=206848 have=168956`). The two footprint-neutral swaps were
+both phase-negative: moving `281..305` to `237..261` regressed V3-low to
+`1076/1038`, blocking `84`, reads/due `17/14`; moving `206..232` to
+`232..258` regressed harder to `1084/1039`, blocking `85`, reads/due `16/13`.
+Keep V3-low setup residency at `281..305`, `150..177`, and `206..232`;
+terminal residency needs new memory budget or a smaller codec, not stolen
+setup segments.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
