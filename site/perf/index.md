@@ -129,11 +129,11 @@ gap and caps tight speculative refills at `56 KiB`, improving high to
 clean slices at `64 KiB`, the clean-relief window retune widens high from
 `68 KiB` to `80 KiB`, then the setup-edge pass pays early `40..47` and the
 latest same-speed slide moves that edge to `42..49`, keeping `1070/1046`
-while reducing loop reads/read time `5/61 -> 4/59`. The latest VISITOR3
-cleanup-headroom pass then clips previous-visible cleanup for every safe
-high-tide changed entry except phase-negative entry `62`, keeping the row
-flat at `1082/1045` while dropping runtime restore bytes
-`471382 -> 56312` and upload bytes `18785280 -> 18038400`.
+while reducing loop reads/read time `5/61 -> 4/59`. The latest VISITOR3-high
+speed pass retargets segment3 to `48..55`, switches high-tide clean capture to
+six exact rects, and adds a three-VBlank phase ballast; the canonical row now
+lands at `1067/1045`, overrun `22`, blocking/refill `32/0`, with fixed pack
+LBA and PS-EXE bucket.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
 groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
@@ -189,10 +189,10 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2465%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7571%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T15:50:04` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-prev-visible-183-191`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2352%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7679%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T20:39:21` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3high-seg48-55-clean-phase3`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -202,7 +202,17 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest W1-high fixed-layout cleanup track:
+Latest VISITOR3-high retained-segment/exact-clean track:
+`v3high-seg48-55-exact-clean-phase3-five-yellow-current` retargets the
+high-tide setup segment3 from relative sectors `42..49` to `48..55`, captures
+the clean background with six exact visible rects, and adds a V3-high-only
+three-VBlank phase ballast before the measured loop. It keeps `VISITOR3.FG2`
+at LBA `22619`, keeps the `233472` byte PS-EXE bucket fixed, and improves
+VISITOR3 high from `1372/1082/1045` to `1358/1067/1045`, cutting overrun
+`37 -> 22`, blocking `34 -> 32`, and scene time by `14` VBlanks. The other
+four under-green canary rows stay exact-flat.
+
+Prior W1-high fixed-layout cleanup track:
 `w1high-prev-visible-183-191-five-yellow-current` compacts entries `183..191`
 in `WALKSTUF1.FG2` with previous-visible cleanup while preserving file size,
 offsets, LBA `24891`, sectors `750`, and the `233472` byte PS-EXE bucket. The
@@ -1500,8 +1510,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2732,12 +2742,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
-      <td>3.5%</td>
-      <td class="spd-yellow">96.6%</td>
-      <td>1082/1045</td>
-      <td>34</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2.1%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>1067/1045</td>
+      <td>32</td>
       <td>0</td>
       <td>2</td>
       <td></td>
@@ -2746,8 +2756,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2872,8 +2882,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2886,8 +2896,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

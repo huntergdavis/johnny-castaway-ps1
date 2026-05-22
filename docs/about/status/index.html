@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-21" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-22" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3225 words
+          ~12 min read · 3211 words
         </p>
 
       <hr class="rule" />
@@ -130,16 +130,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2465%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7571%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4704%</code> / <code class="language-plaintext highlighter-rouge">100.4875%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2352%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7679%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4817%</code> / <code class="language-plaintext highlighter-rouge">100.4982%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low <code class="language-plaintext highlighter-rouge">88..104</code>
-read-group promotion stacks on <code class="language-plaintext highlighter-rouge">16..32</code> and <code class="language-plaintext highlighter-rouge">72..88</code> and moves VISITOR3-low
-<code class="language-plaintext highlighter-rouge">1343/1070/1039 -&gt; 1342/1069/1039</code>, cuts overrun <code class="language-plaintext highlighter-rouge">31 -&gt; 30</code>, blocking
-<code class="language-plaintext highlighter-rouge">70 -&gt; 68</code>, loop reads <code class="language-plaintext highlighter-rouge">15 -&gt; 14</code>, and read time <code class="language-plaintext highlighter-rouge">93 -&gt; 91</code> with due misses
-flat at <code class="language-plaintext highlighter-rouge">11</code>; the other four under-green
+measured inside the allocator budget. The latest VISITOR3-high segment3
+<code class="language-plaintext highlighter-rouge">48..55</code> exact-clean/phase3 promotion moves VISITOR3 high
+<code class="language-plaintext highlighter-rouge">1372/1082/1045 -&gt; 1358/1067/1045</code>, cuts overrun <code class="language-plaintext highlighter-rouge">37 -&gt; 22</code>, blocking
+<code class="language-plaintext highlighter-rouge">34 -&gt; 32</code>, and scene time by <code class="language-plaintext highlighter-rouge">14</code> VBlanks while the other four under-green
 canary rows stay exact-flat. The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>, blocking

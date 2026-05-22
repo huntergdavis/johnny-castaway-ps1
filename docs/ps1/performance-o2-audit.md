@@ -5,15 +5,15 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-22T02:37:41+00:00` |
+| Generated at | `2026-05-22T03:49:57+00:00` |
 | Branch | `perf/allocator-era-under-green-20260517` |
-| Commit | `7832aacf65` |
+| Commit | `a922ea2a17` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `233472` |
 | PS-EXE sector bucket bytes | `233472` |
-| ELF bytes | `1027664` |
-| Map bytes | `62721` |
+| ELF bytes | `1028956` |
+| Map bytes | `62909` |
 | Translation units at `-O2` | `10` |
 | Translation units at `-Os` | `18` |
 | Function-scoped optimize attributes | `7` |
@@ -33,7 +33,7 @@
 | 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 448 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 740 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
-| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 25720 | Keep whole TU at -Os; historical default-O2 retest rejected |
+| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 26060 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/island.c` | -Os | 0 | 612 | Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected |
 | 90 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 9100 | Keep whole TU at -Os; historical default-O2 retest rejected |
@@ -59,7 +59,7 @@
 | `src/calcpath.c` | -O2 | 10224 | -O2 |
 | `src/cdrom_ps1.c` | -O2 | 164240 | -O2 |
 | `src/events_ps1.c` | -Os | 36988 | -O2 -Os |
-| `src/foreground_pilot.c` | -Os | 190504 | -O2 -Os |
+| `src/foreground_pilot.c` | -Os | 192504 | -O2 -Os |
 | `src/generated/pack_header_metrics.c` | -Os | 7112 | -O2 -Os |
 | `src/graphics_ps1.c` | -O2 | 322308 | -O2 |
 | `src/holidays.c` | -Os | 25440 | -O2 -Os |

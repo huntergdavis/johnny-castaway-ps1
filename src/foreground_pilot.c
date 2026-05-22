@@ -232,7 +232,7 @@ enum {
 #define FG_VISITOR3_HIGH_SETUP_SEGMENT_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_HIGH_SETUP_SEGMENT2_START (203UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES (59UL * FG_CD_SECTOR_SIZE)
-#define FG_VISITOR3_HIGH_SETUP_SEGMENT3_START (42UL * FG_CD_SECTOR_SIZE)
+#define FG_VISITOR3_HIGH_SETUP_SEGMENT3_START (48UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_HIGH_SETUP_SEGMENT3_BYTES (7UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT_START (281UL * FG_CD_SECTOR_SIZE)
 #define FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES (24UL * FG_CD_SECTOR_SIZE)
@@ -358,6 +358,7 @@ static sint16 fgReadS16(const uint8 *p);
 static void fgBackdropPreloadBackgrndBmp(void);
 static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
+static int fgBackdropSaveVisitor3HighCleanBgRects(void);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 static void fgReleaseStreamBuffers(void);
@@ -2064,6 +2065,8 @@ static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
     (void)sceneName;
     (void)cleanBytes;
     (void)deferWalkCleanRecapture;
+    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide)
+        return fgBackdropSaveVisitor3HighCleanBgRects();
     return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
 }
 
@@ -4544,6 +4547,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * scene→walk→scene transition. */
     grForceFullRedrawNextFrame();
 
+    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
+        VSync(0);
+        VSync(0);
+        VSync(0);
+    }
+
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
     {
@@ -4768,6 +4777,29 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     fgBackdropRelease((blackBackdrop || sceneSpecificBackdrop) ? 0 : 1);
     fgHeapProbe("after_scene_cleanup", sceneName);
+}
+
+static int __attribute__((noinline, optimize("Os")))
+fgBackdropSaveVisitor3HighCleanBgRects(void)
+{
+    const sint16 dx = gFgSceneDrawOffsetX;
+    const sint16 dy = gFgSceneDrawOffsetY;
+    sint16 xs[6];
+    sint16 ys[6];
+    uint16 ws[6];
+    uint16 hs[6];
+
+    /* VISITOR3 high's header bbox overstates the visible ship/cleanup area.
+     * These rects cover the validated foreground extent plus the high-tide
+     * wave band while keeping every allocation below the 64 KiB clean cap. */
+    xs[0] = dx;                  ys[0] = (sint16)(dy + 97);  ws[0] = 522; hs[0] = 62;
+    xs[1] = dx;                  ys[1] = (sint16)(dy + 159); ws[1] = 522; hs[1] = 62;
+    xs[2] = dx;                  ys[2] = (sint16)(dy + 221); ws[2] = 522; hs[2] = 62;
+    xs[3] = dx;                  ys[3] = (sint16)(dy + 283); ws[3] = 522; hs[3] = 62;
+    xs[4] = dx;                  ys[4] = (sint16)(dy + 345); ws[4] = 522; hs[4] = 54;
+    xs[5] = (sint16)(dx + 522);  ys[5] = (sint16)(dy + 97);  ws[5] = 86;  hs[5] = 259;
+
+    return grSaveCleanBgRects(xs, ys, ws, hs, 6) > 0;
 }
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES

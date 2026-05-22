@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance work — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-21" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-22" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2465%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7571%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4704%</code> / <code class="language-plaintext highlighter-rouge">100.4875%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2352%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7679%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4817%</code> / <code class="language-plaintext highlighter-rouge">100.4982%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -1110,7 +1110,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2465% over target / 99.7571% target speed, with several
+public average is now +0.2352% over target / 99.7679% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

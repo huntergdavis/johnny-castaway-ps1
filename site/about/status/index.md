@@ -23,16 +23,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2465%` over
-target / `99.7571%` target speed; the raw signed optimization matrix is
-about `-0.4704%` / `100.4875%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2352%` over
+target / `99.7679%` target speed; the raw signed optimization matrix is
+about `-0.4817%` / `100.4982%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low `88..104`
-read-group promotion stacks on `16..32` and `72..88` and moves VISITOR3-low
-`1343/1070/1039 -> 1342/1069/1039`, cuts overrun `31 -> 30`, blocking
-`70 -> 68`, loop reads `15 -> 14`, and read time `93 -> 91` with due misses
-flat at `11`; the other four under-green
+measured inside the allocator budget. The latest VISITOR3-high segment3
+`48..55` exact-clean/phase3 promotion moves VISITOR3 high
+`1372/1082/1045 -> 1358/1067/1045`, cuts overrun `37 -> 22`, blocking
+`34 -> 32`, and scene time by `14` VBlanks while the other four under-green
 canary rows stay exact-flat. The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking

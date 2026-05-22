@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Performance battle card — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-21" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-22" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -215,11 +215,11 @@ gap and caps tight speculative refills at <code class="language-plaintext highli
 clean slices at <code class="language-plaintext highlighter-rouge">64 KiB</code>, the clean-relief window retune widens high from
 <code class="language-plaintext highlighter-rouge">68 KiB</code> to <code class="language-plaintext highlighter-rouge">80 KiB</code>, then the setup-edge pass pays early <code class="language-plaintext highlighter-rouge">40..47</code> and the
 latest same-speed slide moves that edge to <code class="language-plaintext highlighter-rouge">42..49</code>, keeping <code class="language-plaintext highlighter-rouge">1070/1046</code>
-while reducing loop reads/read time <code class="language-plaintext highlighter-rouge">5/61 -&gt; 4/59</code>. The latest VISITOR3
-cleanup-headroom pass then clips previous-visible cleanup for every safe
-high-tide changed entry except phase-negative entry <code class="language-plaintext highlighter-rouge">62</code>, keeping the row
-flat at <code class="language-plaintext highlighter-rouge">1082/1045</code> while dropping runtime restore bytes
-<code class="language-plaintext highlighter-rouge">471382 -&gt; 56312</code> and upload bytes <code class="language-plaintext highlighter-rouge">18785280 -&gt; 18038400</code>.
+while reducing loop reads/read time <code class="language-plaintext highlighter-rouge">5/61 -&gt; 4/59</code>. The latest VISITOR3-high
+speed pass retargets segment3 to <code class="language-plaintext highlighter-rouge">48..55</code>, switches high-tide clean capture to
+six exact rects, and adds a three-VBlank phase ballast; the canonical row now
+lands at <code class="language-plaintext highlighter-rouge">1067/1045</code>, overrun <code class="language-plaintext highlighter-rouge">22</code>, blocking/refill <code class="language-plaintext highlighter-rouge">32/0</code>, with fixed pack
+LBA and PS-EXE bucket.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 picked up small scheduler wins from the <code class="language-plaintext highlighter-rouge">83..95</code>, guarded <code class="language-plaintext highlighter-rouge">271..287</code>, and <code class="language-plaintext highlighter-rouge">315..327</code> read
 groups plus a same-speed entries <code class="language-plaintext highlighter-rouge">92</code>/<code class="language-plaintext highlighter-rouge">94</code>/<code class="language-plaintext highlighter-rouge">95</code> payload trim, WALKSTUF1
@@ -307,19 +307,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2465%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2352%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7571%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7679%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T15:50:04</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-21T20:39:21</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1high-prev-visible-183-191</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current five-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3high-seg48-55-clean-phase3</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -335,7 +335,17 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest W1-high fixed-layout cleanup track:
+<p>Latest VISITOR3-high retained-segment/exact-clean track:
+<code class="language-plaintext highlighter-rouge">v3high-seg48-55-exact-clean-phase3-five-yellow-current</code> retargets the
+high-tide setup segment3 from relative sectors <code class="language-plaintext highlighter-rouge">42..49</code> to <code class="language-plaintext highlighter-rouge">48..55</code>, captures
+the clean background with six exact visible rects, and adds a V3-high-only
+three-VBlank phase ballast before the measured loop. It keeps <code class="language-plaintext highlighter-rouge">VISITOR3.FG2</code>
+at LBA <code class="language-plaintext highlighter-rouge">22619</code>, keeps the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket fixed, and improves
+VISITOR3 high from <code class="language-plaintext highlighter-rouge">1372/1082/1045</code> to <code class="language-plaintext highlighter-rouge">1358/1067/1045</code>, cutting overrun
+<code class="language-plaintext highlighter-rouge">37 -&gt; 22</code>, blocking <code class="language-plaintext highlighter-rouge">34 -&gt; 32</code>, and scene time by <code class="language-plaintext highlighter-rouge">14</code> VBlanks. The other
+four under-green canary rows stay exact-flat.</p>
+
+<p>Prior W1-high fixed-layout cleanup track:
 <code class="language-plaintext highlighter-rouge">w1high-prev-visible-183-191-five-yellow-current</code> compacts entries <code class="language-plaintext highlighter-rouge">183..191</code>
 in <code class="language-plaintext highlighter-rouge">WALKSTUF1.FG2</code> with previous-visible cleanup while preserving file size,
 offsets, LBA <code class="language-plaintext highlighter-rouge">24891</code>, sectors <code class="language-plaintext highlighter-rouge">750</code>, and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. The
@@ -1635,8 +1645,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1341/1313</td>
@@ -2867,12 +2877,12 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
-      <td>3.5%</td>
-      <td class="spd-yellow">96.6%</td>
-      <td>1082/1045</td>
-      <td>34</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2.1%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>1067/1045</td>
+      <td>32</td>
       <td>0</td>
       <td>2</td>
       <td></td>
@@ -2881,8 +2891,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -3007,8 +3017,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -3021,8 +3031,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T15:50:04</td>
-      <td>w1high-prev-visible-183-191</td>
+      <td>2026-05-21T20:39:21</td>
+      <td>v3high-seg48-55-clean-phase3</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

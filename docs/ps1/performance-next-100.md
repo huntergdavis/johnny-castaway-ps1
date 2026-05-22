@@ -71,14 +71,24 @@ screen-clip subset, the VISITOR3-low fixed-layout previous-visible cleanup
 headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
 VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
-and the D4/local-LZ decoder inline code-headroom passes:
-`+0.2465%` public average over target / `99.7571%` public target speed across
+and the D4/local-LZ decoder inline code-headroom passes, followed by the
+VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion:
+`+0.2352%` public average over target / `99.7679%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4704%` / `100.4875%`. Since the compact full-matrix baseline was
+`-0.4817%` / `100.4982%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.15` public over-target points and added about `12.66` public
+removed about `17.16` public over-target points and added about `12.67` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest W1-high entries `183..191` previous-visible cleanup pocket
+`0` red. The latest VISITOR3-high retained-segment/exact-clean promotion
+retargets setup segment3 to relative sectors `48..55`, uses six exact clean
+background rects for the visible high-tide ship/wave area, and adds a
+V3-high-only three-VBlank phase ballast before the measured loop. The
+five-yellow canary at
+`scratch/ps1-perf-iterate/v3high-seg48-55-exact-clean-phase3-five-yellow-current/20260521-203921-4092186/summary.json`
+keeps pack LBAs and the `233472` byte PS-EXE bucket fixed while VISITOR3-high
+improves `1372/1082/1045 -> 1358/1067/1045`, cutting overrun `37 -> 22`,
+blocking/refill `34/0 -> 32/0`, and scene time by `14` VBlanks. The prior
+W1-high entries `183..191` previous-visible cleanup pocket
 keeps file size, offsets, LBA `24891`, sectors `750`, and the `233472` byte
 PS-EXE bucket fixed while dropping selected active payload `844162 -> 840654`,
 cleanup spans `2211 -> 885`, cleanup pixels `6670 -> 2265`, selected restore
@@ -886,16 +896,24 @@ limit. The completing `56 KiB` clean-cap forms saved one loop read (`4 -> 3`)
 but spent it as cadence debt: `96 KiB/56 KiB` regressed V3-high to
 `1090/1042`, overrun `48`, blocking/refill `44/2`, and `88 KiB/56 KiB`
 regressed to `1086/1042`, overrun `44`, blocking/refill `41/1`. Keep the
-accepted `80 KiB` stream window plus `64 KiB` clean cap; the next V3-high big
-swing is CACHE scratch ownership or generated/data-shape work, not another raw
-window-size or split-size retune.
+accepted `80 KiB` stream window plus `64 KiB` clean cap; the follow-up exact
+clean-capture/segment-retarget swing is the promoted V3-high path, not another
+raw window-size or split-size retune.
 
-1. **VISITOR3 high CACHE scratch provenance and relief reordering.** Trace the
-   live `cdrom_sectorBuffer` and `cdrom_read_result`-sized CACHE allocations
-   before high-tide clean capture, identify their owners, and free/reorder them
-   before clean-rect allocation if pixels and CD phase stay identical. Only
-   retry `88 KiB`/`96 KiB` windows after that headroom exists; pure window
-   growth is now logged closed.
+Latest promoted VISITOR3-high exact-clean/retained-segment swing: the accepted
+path moves segment3 from `42..49` to `48..55`, replaces the overstated bbox
+clean capture with six exact high-tide rects, and adds a V3-high-only
+three-VBlank phase ballast. Focused proof lands at `1358/1067/1045`, overrun
+`22`, blocking/refill `32/0`, reads/due `12/2`, and no prefetch overrun; the
+five-yellow canary keeps all other yellow rows exact-flat. V3-high is now the
+fourth yellow row by target speed, so the next big swing should start with the
+current read-candidate matrix's VISITOR3-low terminal/generated-deadline lane.
+
+1. **VISITOR3 low terminal row-reference/generated-deadline swing.** The
+   current candidate matrix has no standalone safe sector rows left; start with
+   custom terminal data-shape or generated deadline ownership for `32..48`,
+   `58..74`, and the terminal cluster, preserving read/due cadence and avoiding
+   another hot hand-authored table branch.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
