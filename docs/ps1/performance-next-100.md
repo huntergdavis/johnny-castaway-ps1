@@ -74,21 +74,24 @@ VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
 and the D4/local-LZ decoder inline code-headroom passes, followed by the
 VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the
 BUILDING2-high one-VBlank phase retime, and the BUILDING2-high entries
-`89..91` fixed-layout trim:
-`+0.2340%` public average over target / `99.7691%` public target speed across
+`89..91` fixed-layout trim, then the W1-high one-VBlank phase retime:
+`+0.2334%` public average over target / `99.7696%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4829%` / `100.4994%`. Since the compact full-matrix baseline was
+`-0.4835%` / `100.4999%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.17` public over-target points and added about `12.67` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest BUILDING2-high entries `89..91` trim keeps offsets, pack
-size, LBA/sectors, and the `233472` byte PS-EXE bucket fixed while active
-payload drops `539990 -> 527960`. The five-yellow canary at
-`scratch/ps1-perf-iterate/b2high-entry89-91-trim-five-yellow-current/20260522-021605-1811133/summary.json`
-keeps BUILDING2-high timing exact-flat at `1583/1340/1314`, overrun `26`,
-blocking/refill `45/12`, and due `7`, while improving loop reads/read time
-`44/192 -> 42/186`; VISITOR3 high/low and WALKSTUF1 high/low stay
-exact-flat. The paired post-trim scalar read rows `{90..96}` and `{249..265}`
+`0` red. The latest W1-high phase pass keeps offsets, pack size,
+LBA/sectors, and the `233472` byte PS-EXE bucket fixed while the five-yellow
+canary at
+`scratch/ps1-perf-iterate/w1high-phase1-five-yellow-current/20260522-025932-2058533/summary.json`
+moves W1-high `1808/1472/1441 -> 1808/1471/1441`, overrun `31 -> 30`, target
+speed `97.894% -> 97.961%`, with blocking/refill, reads, and due flat at
+`43/13`, `41`, and `7`; VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 low
+stay exact-flat. The prior BUILDING2-high entries `89..91` trim keeps offsets,
+pack size, LBA/sectors, and the `233472` byte PS-EXE bucket fixed while active
+payload drops `539990 -> 527960` and loop reads/read time improve
+`44/192 -> 42/186`. The paired post-trim scalar read rows `{90..96}` and `{249..265}`
 are closed because `{90..96}` regressed B2-high and `{249..265}` added no
 speed win. The next open matrix row, `295..319`, is also closed after table,
 fresh-owner, and direct-stage-deny probes: the table and owner-only forms were
@@ -1041,7 +1044,10 @@ pre-loop phase ballast still fails: phase 1 reaches `1470/1438`, overrun
 `32`, but blocking/refill stay `45/15`; phase 2 worsens blocking to `46`.
 Do not retry early W1-high sector-collapse tails without generated
 deadline/refill ownership or placement-aware repacking that preserves the
-current `1472/1441` cadence and `43/13` CD pressure.
+current `1471/1441` cadence and `43/13` CD pressure. Standalone W1-high
+phase 1 is now promoted, but phase 2 and W1-low phase 1 are closed: phase 2
+regressed W1-high overrun to `32`, and low-tide phase 1 regressed W1-low to
+`1477/1447`, overrun `30`, blocking/refill `33/6`.
 
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before

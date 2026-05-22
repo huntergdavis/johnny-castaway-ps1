@@ -2830,3 +2830,13 @@ signal but spent it as hidden refill (`45/42/7 -> 44/41/6`, refill
 `12 -> 15`). Do not retry this band with scalar ownership; only revisit after a
 separate render/restore reduction creates slack or a generated refill owner can
 explicitly budget the extra hidden work.
+
+WALKSTUF1 high standalone phase ballast now has one promotable notch. Phase 1
+keeps pack layout, all other under-green rows, and CD pressure fixed while
+moving W1-high from `1472/1441`, overrun `31`, to `1471/1441`, overrun `30`;
+blocking/refill stay `43/13`, and reads/due stay `41/7`. Phase 2 is closed
+because it regresses W1-high to `1472/1440`, overrun `32`, and W1-low phase 1
+is closed because it regresses low tide to `1477/1447`, overrun `30`,
+blocking/refill `33/6`. Future W1 work should use generated deadline/refill
+ownership, placement-aware data shape, or render/restore reduction rather than
+more scalar phase-only sweeps.

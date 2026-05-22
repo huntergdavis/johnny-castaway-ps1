@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3209 words
+          ~12 min read · 3205 words
         </p>
 
       <hr class="rule" />
@@ -130,15 +130,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2340%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7691%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.4829%</code> / <code class="language-plaintext highlighter-rouge">100.4994%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2334%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.7696%</code> target speed; the raw signed optimization matrix is
+about <code class="language-plaintext highlighter-rouge">-0.4835%</code> / <code class="language-plaintext highlighter-rouge">100.4999%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest BUILDING2-high one-VBlank
-phase promotion moves BUILDING2 high <code class="language-plaintext highlighter-rouge">1583/1341/1313 -&gt; 1583/1340/1314</code>,
-cuts overrun <code class="language-plaintext highlighter-rouge">28 -&gt; 26</code>, blocking/refill <code class="language-plaintext highlighter-rouge">47/14 -&gt; 45/12</code>, and read time
-<code class="language-plaintext highlighter-rouge">194 -&gt; 192</code> while VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat.
+measured inside the allocator budget. The latest W1-high one-VBlank phase
+promotion moves WALKSTUF1 high <code class="language-plaintext highlighter-rouge">1808/1472/1441 -&gt; 1808/1471/1441</code>, cuts overrun
+<code class="language-plaintext highlighter-rouge">31 -&gt; 30</code>, and keeps blocking/refill <code class="language-plaintext highlighter-rouge">43/13</code> while VISITOR3 high/low,
+BUILDING2 high, and WALKSTUF1 low stay exact-flat.
 The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>, blocking

@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2340% public over target / 99.7691% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2334% public over target / 99.7696% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2340%` over target /
-`99.7691%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.4829%` / `100.4994%`; bands are `121`
+loading, and the current battle card is `+0.2334%` over target /
+`99.7696%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.4835%` / `100.4999%`; bands are `121`
 green, `5` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -37,10 +37,11 @@ same-speed `{395..411}` and retargeted `{411..423}` CD work, and WALKSTUF1 low `
 `344..350` setup residency
 enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 `179..185` setup retargeting with `{113..129}` and same-speed `{355..371}`
-read-work, plus the BUILDING2-high one-VBlank phase retime and entries
+read-work, plus the W1-high one-VBlank phase retime and the BUILDING2-high one-VBlank phase retime and entries
 `89..91` pack trim that leave that row at `1340/1314`, overrun `26`,
 blocking/refill `45/12`, target speed `98.060%`, and loop reads/read time
-`42/186`. The current VISITOR3-low read-group stack adds `88..104` on top
+`42/186`. W1-high now measures `1471/1441`, overrun `30`, target speed
+`97.961%`, blocking/refill `43/13`, and reads/due `41/7`. The current VISITOR3-low read-group stack adds `88..104` on top
 of `16..32` and `72..88`, moving low to `1069/1039`, overrun `30`, blocking
 `68`, loop reads/read time `14/91`, and due `11` while the other four yellow
 rows stay exact-flat. The recent VISITOR3-high entry `62` cleanup-only pass

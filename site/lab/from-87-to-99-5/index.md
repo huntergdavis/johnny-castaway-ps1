@@ -61,7 +61,7 @@ promotions, plus the BUILDING2 low `226..262` + clean80 setup segment, plus
 the BUILDING4 low `24 KiB` stream-window green promotion, and the BUILDING2
 high previous-visible cleanup-speed promotion and VISITOR3-low `88..104`
 read-group follow-up, is
-**+0.2340% over target / 99.7691% target speed**, with roughly **17.17
+**+0.2334% over target / 99.7696% target speed**, with roughly **17.17
 percentage points** of over-target gap closed and about **12.67 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window

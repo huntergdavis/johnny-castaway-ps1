@@ -190,10 +190,10 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2340%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7691%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T02:16:05` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-entry89-91-trim`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2334%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7696%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T02:59:32` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1high-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -203,7 +203,16 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest BUILDING2-high fixed-layout trim track:
+Latest WALKSTUF1-high phase-retime track:
+`w1high-phase1-five-yellow-current` adds one W1-high-only VBlank before the
+measured loop. It keeps all pack LBAs and the `233472` byte PS-EXE bucket fixed
+while improving W1-high from `1808/1472/1441` to `1808/1471/1441`, cutting
+overrun `31 -> 30` and moving target speed `97.894% -> 97.961%`; blocking/refill,
+reads, and due stay `43/13`, `41`, and `7`. VISITOR3 high/low, BUILDING2 high,
+and WALKSTUF1 low stay exact-flat. Phase 2 and low-tide phase 1 are closed as
+regressions.
+
+Prior BUILDING2-high fixed-layout trim track:
 `b2high-entry89-91-trim-five-yellow-current` trims draw tails for entries
 `89..91` without moving offsets, file size, LBA/sectors, or the `233472` byte
 PS-EXE bucket. It keeps BUILDING2 high exact-flat at `1583/1340/1314`, overrun
@@ -512,7 +521,9 @@ lower loop reads/read time again `43/207 -> 41/200`. The prepare-first
 scheduler row trades both loop and target up by one VBlank to `1472/1441` while
 holding overrun `31` and cutting blocking/due to `43/7`; the newest
 same-speed `{411..423}` replacement keeps timing exact-flat and lowers loop
-reads/read time `42/201 -> 41/198`.
+reads/read time `42/201 -> 41/198`. The latest standalone W1-high phase retime
+then improves the current row to `1808/1471/1441`, overrun `30`, target speed
+`97.961%`, with blocking/refill flat at `43/13`.
 
 Current W1-low read-pressure speed track: `walkstuf1-low-rg355-371-current`
 keeps the accepted frame132 payload baseline, `{378..390}` speed row, and
@@ -1529,8 +1540,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:16:05</td>
-      <td>b2high-entry89-91-trim</td>
+      <td>2026-05-22T02:59:32</td>
+      <td>w1high-phase1</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2761,8 +2772,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:16:05</td>
-      <td>b2high-entry89-91-trim</td>
+      <td>2026-05-22T02:59:32</td>
+      <td>w1high-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2775,8 +2786,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T02:16:05</td>
-      <td>b2high-entry89-91-trim</td>
+      <td>2026-05-22T02:59:32</td>
+      <td>w1high-phase1</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2901,11 +2912,11 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T02:16:05</td>
-      <td>b2high-entry89-91-trim</td>
+      <td>2026-05-22T02:59:32</td>
+      <td>w1high-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
-      <td>1472/1441</td>
+      <td>1471/1441</td>
       <td>43</td>
       <td>13</td>
       <td>7</td>
@@ -2915,8 +2926,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T02:16:05</td>
-      <td>b2high-entry89-91-trim</td>
+      <td>2026-05-22T02:59:32</td>
+      <td>w1high-phase1</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>
