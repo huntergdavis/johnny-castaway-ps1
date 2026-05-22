@@ -849,6 +849,16 @@ and W1-low `1470/1446`; blocking/refill, reads/due, pack LBAs, and the
 scoped `Os`; this CD code-shape lane is closed unless paired with a scheduling
 or data-shape change that changes actual read pressure.
 
+Latest rejected VISITOR3-low front-cluster scheduler swing: static chained
+rows `32..56` / `56..80`, a scene-local fresh-window owner for the same range,
+and post-stage window fallthrough at both `8` and `6` remaining VBlanks all
+stayed exact-flat at `1342/1069/1039`, blocking `68`, refill `0`, reads/due
+`14/11`. The hot-code variants grew `fgRuntimeFillWindowForEntry` by `160`
+bytes, and the post-stage form also grew `foregroundPilotPlay` by `108`, with
+no measured benefit. Close V3-low early `32..80` hot-C ownership; the remaining
+low-tide VISITOR3 path needs terminal row-reference/setup-dictionary data shape
+or genuinely no-hot-C generated deadline metadata.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
