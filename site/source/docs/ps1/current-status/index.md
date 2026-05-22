@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the W1-low entry 90..99 fixed-layout canonicalization pass, the VISITOR3-high entry 62 cleanup-only headroom pass, the VISITOR3-low 88..104, 72..88, and 16..32 read-group promotions, the VISITOR3-low frame 135 gap-placed D4 promotion, the W1-low frame 87..99 fixed-layout cleanup-slack promotion, the W1-high cleanup-only fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout previous-visible cleanup headroom pass, the BUILDING2-high trim-d...
+the W1-low compact trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high segment3/exact-clean speed promotion, the D4/local-LZ decoder inline code-headroom passes, and the latest JCPERF2-only perf-reporting code-headroom pass; all 63 scenes remain validated, all 126 high/low rows are timing-bearing, and the public headless battle card is +0.2279% over target / 99.7750% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 866 |
-| Approx. words | 9686 |
+| Lines | 862 |
+| Approx. words | 9654 |
 | Code fences | 1 |
 
 ## Outline

@@ -124,7 +124,9 @@ on end without a person at the keyboard.</p>
 <p>For a while, <code class="language-plaintext highlighter-rouge">printf</code> was both the obvious tool and part of the problem. Too
 much unbounded TTY output could destabilize the runtime. That forced the
 project into visual debugging first. Later, bounded performance logs came
-back as <a href="../../docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> and <code class="language-plaintext highlighter-rouge">JCPERF2</code></a> lines with explicit levels:</p>
+back as <a href="../../docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF2</code></a> lines with
+explicit levels; the older <code class="language-plaintext highlighter-rouge">JCPERF</code> summary is still available for archaeology
+or compatibility by compiling with <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>:</p>
 
 <ul>
   <li>Summary logs for scene setup and teardown.</li>
@@ -204,7 +206,7 @@ discipline.</li>
   <li><a href="../../lab/dunking-bird/">Lab: dunking bird</a>
 — the parallel-agent infrastructure that keeps the loop
 productive between human review passes.</li>
-  <li><a href="../../docs/glossary/#jcperf">Glossary: JCPERF / JCPERF2</a>
+  <li><a href="../../docs/glossary/#jcperf">Glossary: JCPERF2 / legacy JCPERF</a>
 · <a href="../../docs/glossary/#scene-end">Glossary: scene-end</a>
 · <a href="../../docs/glossary/#soak-test">Glossary: soak-test</a></li>
 </ul>

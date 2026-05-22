@@ -414,7 +414,7 @@ scripts/check-character-screenshot.py  Overlay-backed character check
 - [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}) —
   the infrastructure-side companion to *regression as a lifestyle*:
   the Dockerized PSn00bSDK build, the parallel headless DuckStation
-  runs, the `JCPERF` / `JCPERF2` log parsing, and the rule that every
+  runs, the `JCPERF2` log parsing, and the rule that every
   accepted performance change becomes the next baseline. This page is
   the reference manual for the orchestration the essay walks through.
 

@@ -19,6 +19,9 @@ struct TTtmThread;
 #define PS1_PERF_SCHED_EVENT_COUNT 10
 #define PS1_PERF_SCHED_SLACK_BUCKET_COUNT 5
 #endif
+#ifndef PS1_PERF_LEGACY_TRACE
+#define PS1_PERF_LEGACY_TRACE 0
+#endif
 
 volatile uint8 ps1PerfEnabled = 0;
 volatile uint8 ps1PerfLevel = PS1_PERF_LEVEL_OFF;
@@ -1070,6 +1073,7 @@ void ps1PerfMarkFullFallback(void)
         gPs1Perf.fullFallbacks++;
 }
 
+#if PS1_PERF_LEGACY_TRACE
 static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
 {
     printf(
@@ -1117,6 +1121,7 @@ static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
         (unsigned int)gPs1Perf.maxUploadElapsedVBlanks
     );
 }
+#endif
 
 #if PS1_PERF_DEEP_TRACE
 static void ps1PerfPrintSchedBucket(const char *section, uint8 event)
@@ -1419,7 +1424,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
     );
 }
 
-void ps1PerfEndScene(const char *sceneName)
+void __attribute__((optimize("Os"))) ps1PerfEndScene(const char *sceneName)
 {
     uint32 totalSceneVBlanks;
     uint32 loopVBlanks = 0;
@@ -1443,7 +1448,9 @@ void ps1PerfEndScene(const char *sceneName)
         cleanupVBlanks = ps1PerfTickDiff(gPs1Perf.cleanupStartTick, gPs1Perf.sceneEndTick);
     totalSceneVBlanks = ps1PerfTickDiff(gPs1Perf.sceneStartTick, gPs1Perf.sceneEndTick);
 
+#if PS1_PERF_LEGACY_TRACE
     ps1PerfPrintLegacy(ps1PerfClampU16(totalSceneVBlanks));
+#endif
     ps1PerfPrintSchema2(totalSceneVBlanks, loopVBlanks, setupVBlanks, cleanupVBlanks);
 }
 

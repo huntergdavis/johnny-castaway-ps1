@@ -1,6 +1,6 @@
 # PS1 Performance Next 100
 
-Date: 2026-05-21
+Date: 2026-05-22
 
 Current accepted fishing1 high-tide canary baseline:
 
@@ -154,6 +154,15 @@ symbol, grows `fgRuntimeLoadSceneFrame` by another `352` bytes, moves most
 tracked hot foreground symbols another `-476` bytes, and moves
 `foregroundPilotPlay` another `-124` bytes. This is code-headroom only and
 does not change public/raw speed rollups or bands.
+The latest perf-reporting code-headroom pass makes `JCPERF2` the default
+scene-end summary and compiles the legacy `JCPERF` line behind
+`PS1_PERF_LEGACY_TRACE=1`, then scopes `ps1PerfEndScene()` to `-Os`. The
+four-yellow canary at
+`scratch/ps1-perf-iterate/perf-nolegacy-headroom-four-yellow-current-20260522/20260522-053213-2936568/summary.json`
+keeps VISITOR3 low/high, WALKSTUF1 high, and BUILDING2 high exact-flat with
+stable pack LBAs and the `233472` byte PS-EXE bucket; `ps1PerfEndScene`
+shrinks to `0xf4` bytes. This is code/layout headroom only, so the public/raw
+speed rollups and `122` green / `4` yellow bands remain unchanged.
 The first post-headroom B2-high direct-row retry is closed: additive
 `{249..265}` and `{318..334}` stayed exact-flat with no key improvement, while
 table-size-stable `{315..327} -> {310..326}` saved reads/due (`44/7 -> 42/6`)

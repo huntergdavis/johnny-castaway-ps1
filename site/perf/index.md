@@ -193,7 +193,7 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2279%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7750%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T04:53:05` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-22T04:53:05`; four-yellow perf-reporting headroom canary `2026-05-22T05:32:13` |
 | Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
@@ -214,6 +214,15 @@ window-slack guard. The accepted canary improves W1-low from
 blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and moving target speed
 `98.367% -> 99.042%`. VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high
 stay exact-flat; the public distribution is now `122` green / `4` yellow.
+
+Current perf-reporting code-headroom track:
+`perf-nolegacy-headroom-four-yellow-current-20260522` makes `JCPERF2` the
+default scene-end summary, compile-gates legacy `JCPERF` behind
+`PS1_PERF_LEGACY_TRACE=1`, and scopes `ps1PerfEndScene()` to `-Os`. The
+four-yellow canary keeps VISITOR3 low/high, WALKSTUF1 high, and BUILDING2 high
+exact-flat with stable pack LBAs and the `233472` byte PS-EXE bucket, while
+`ps1PerfEndScene` shrinks to `0xf4` bytes. This is code/layout headroom, not a
+VBlank speed win, so the public speed rollup remains unchanged.
 
 Prior WALKSTUF1-high phase-retime track:
 `w1high-phase1-five-yellow-current` adds one W1-high-only VBlank before the

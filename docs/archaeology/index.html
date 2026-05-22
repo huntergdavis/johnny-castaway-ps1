@@ -454,8 +454,9 @@ encoder in <code class="language-plaintext highlighter-rouge">scripts/wav2vag.py
 ADPCM nibble-pair order, SPU DMA 64-byte alignment, and ADSR1
 attack-rate orientation. Each of those was its own afternoon.</p>
 
-  <p><strong>Performance instrumentation.</strong> <code class="language-plaintext highlighter-rouge">ps1_perf.c</code> emits level-gated
-<code class="language-plaintext highlighter-rouge">JCPERF</code> / <code class="language-plaintext highlighter-rouge">JCPERF2</code> lines on the TTY. The level is set by
+  <p><strong>Performance instrumentation.</strong> <code class="language-plaintext highlighter-rouge">ps1_perf.c</code> emits the level-gated
+<code class="language-plaintext highlighter-rouge">JCPERF2</code> summary on the TTY by default; legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> is compile-gated
+behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>. The level is set by
 <code class="language-plaintext highlighter-rouge">ps1PerfSetLevel(OFF / SUMMARY / DETAIL / DEBUG)</code>. Per-frame state
 that used to require visual debugging now also has a text breadcrumb
 trail. The <a href="../docs/glossary/#telemetry-overlay">visual telemetry overlay</a> (5 panels) is still the right

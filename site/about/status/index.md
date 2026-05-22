@@ -33,6 +33,10 @@ phase promotion moves WALKSTUF1 low `1809/1470/1446 -> 1801/1461/1447`, cuts
 overrun `24 -> 14`, improves target speed `98.367% -> 99.042%`, and keeps
 file size/LBA/sectors plus the `233472` byte PS-EXE bucket fixed while
 VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
+The latest code-headroom pass makes `JCPERF2` the default scene-end perf
+summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
+`ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while
+that reporting symbol shrinks to `0xf4` bytes in the same PS-EXE bucket.
 The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low `1071/1039 -> 1070/1039`, overrun `32 -> 31`, blocking
@@ -169,7 +173,7 @@ done."
 | Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Twelve sub-screens: Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed. |
 | [Memcard]({{ '/docs/glossary/#memcard' | relative_url }}) persistence (`memcard.c`) | Working / expanding | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work. |
 | [Telemetry / debug overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) | Complete | Five-panel left-edge overlay; gated by `grPs1TelemetryEnabled` in `graphics_ps1.c` with row writes scattered through `src/ads.c` and helpers like `grPs1SetLastBmpTelemetry`. Off by default in release builds. Decoded out of captured frames by `scripts/decode-ps1-bars.py` into `telemetry.json` during [regtest]({{ '/docs/regtest/' | relative_url }}). The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state since text I/O can perturb timing. |
-| Perf instrumentation (`ps1_perf.c`) | Complete | Level-gated `JCPERF` / `JCPERF2` TTY lines. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Set via `ps1PerfSetLevel`. Off in normal operation; the user feeds `JCPERF` output to a perf-debug agent when chasing regressions. |
+| Perf instrumentation (`ps1_perf.c`) | Complete | Level-gated `JCPERF2` TTY summary by default; legacy `JCPERF` can be re-enabled with `PS1_PERF_LEGACY_TRACE=1`. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG` via `ps1PerfSetLevel`. Off in normal operation. |
 | TTY printf | Reliable | Restored 2026-04-25 on PSn00bSDK 0.24 + DuckStation through bounded `vprintf` plus DuckStation TTY/file logging. Gated BOOTMODE probes (`printf-test`, `logtest`). Must not be called per-frame -- text I/O alters timing. |
 | Regtest harness | Working | `config/ps1/regtest-scenes.txt` + `scripts/run-regtest.sh` drive a headless DuckStation pass. Source of truth for "boots and renders something." Not the source of truth for "looks right" -- that's still human signoff. |
 | Host capture pipeline | Working | `scripts/capture-host-scene.sh` runs the desktop build under controlled boot state; emits high/low PNG frames, `frame-meta.json`, `sound-events.jsonl`. `scripts/export-scene-foreground-pilot.sh` now defaults new scene bring-up to normal/far-left/far-right foreground-only multi-view stitching before compiling FG2. |

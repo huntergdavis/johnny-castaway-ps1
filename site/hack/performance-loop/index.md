@@ -21,7 +21,9 @@ on end without a person at the keyboard.
 For a while, `printf` was both the obvious tool and part of the problem. Too
 much unbounded TTY output could destabilize the runtime. That forced the
 project into visual debugging first. Later, bounded performance logs came
-back as [`JCPERF` and `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines with explicit levels:
+back as [`JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines with
+explicit levels; the older `JCPERF` summary is still available for archaeology
+or compatibility by compiling with `PS1_PERF_LEGACY_TRACE=1`:
 
 - Summary logs for scene setup and teardown.
 - Detail logs for frame behavior.
@@ -96,6 +98,6 @@ answer.
 - [Lab: dunking bird]({{ '/lab/dunking-bird/' | relative_url }})
   — the parallel-agent infrastructure that keeps the loop
   productive between human review passes.
-- [Glossary: JCPERF / JCPERF2]({{ '/docs/glossary/#jcperf' | relative_url }})
+- [Glossary: JCPERF2 / legacy JCPERF]({{ '/docs/glossary/#jcperf' | relative_url }})
   · [Glossary: scene-end]({{ '/docs/glossary/#scene-end' | relative_url }})
   · [Glossary: soak-test]({{ '/docs/glossary/#soak-test' | relative_url }})

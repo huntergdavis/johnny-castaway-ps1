@@ -58,7 +58,7 @@ This page is just about why it kept showing up on this project.
 
 Performance work on the PS1 port is unglamorous. Most of it is the same
 loop, run a thousand times: build, boot a headless DuckStation under
-Docker, run a scene to [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}), capture [`JCPERF` / `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines,
+Docker, run a scene to [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}), capture [`JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines,
 parse them, summarize, decide whether the change beat the baseline,
 record the result, change one thing, do it again. The loop is mostly
 deterministic, and most iterations are uninteresting.

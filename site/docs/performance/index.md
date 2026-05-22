@@ -62,8 +62,10 @@ gated so it adds zero cost when off.
 
 Three signal sources:
 
-- **TTY printf** at scene-start and [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) with structured [`JCPERF` /
-  `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) records. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
+- **TTY printf** at scene-start and [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) with structured
+  [`JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) records by
+  default. Legacy `JCPERF` output is compile-gated behind
+  `PS1_PERF_LEGACY_TRACE=1`. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
   on-demand records cross the TTY surface; per-frame text is forbidden in
   hot paths because it perturbs timing.
 - **`ps1_perf` module counters** for VBlank-level metrics: `loop_vb`,
@@ -205,7 +207,7 @@ cost structure.
   the Christmas decoration enough that this didn't reduce dirty work.
   Pure no-op, rejected.
 - **`vprintf` inline diagnostics.** Adding a CD-read histogram inline
-  with `JCPERF` regressed timing even with detail-gating. The act of
+  with the perf summary path regressed timing even with detail-gating. The act of
   having the code present changed binary shape enough to move
   scheduling phase. Reverted; histograms now live in post-processing.
 - **FG2 sound-event table in the metadata prefix.** Setup reads
@@ -1005,7 +1007,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - [The 24/7 build farm]({{ '/lab/build-farm/' | relative_url }})
   — the magazine treatment of the parallel Docker machinery that
   iterates the perf experiments this reference describes the
-  output of. Same JCPERF / JCPERF2 records, but framed as
+  output of. Same `JCPERF2` records, but framed as
   methodology for keeping a 126-row matrix moving.
 - [Hardware]({{ '/docs/hardware/' | relative_url }}) — what the
   optimizations are running against.
@@ -1037,7 +1039,7 @@ rollup, and the regtest runner.
   — the optimization plan and the 600+ experiment ledger.
 - [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c)
   · [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
-  — runtime: the JCPERF/JCPERF2 instrumentation and the FG2 dispatcher
+  — runtime: the `JCPERF2` instrumentation and the FG2 dispatcher
   whose per-frame budget the matrix measures.
 - [`scripts/ps1-perf-iterate.sh`]({{ site.github_url }}/blob/main/scripts/ps1-perf-iterate.sh)
   — the experiment gate every probe goes through (run → compare →

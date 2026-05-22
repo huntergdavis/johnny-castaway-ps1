@@ -317,7 +317,7 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T04:53:05</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed five-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T04:53:05</code>; four-yellow perf-reporting headroom canary <code class="language-plaintext highlighter-rouge">2026-05-22T05:32:13</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
@@ -347,6 +347,15 @@ window-slack guard. The accepted canary improves W1-low from
 blocking/refill <code class="language-plaintext highlighter-rouge">32/3 -&gt; 31/2</code>, reads <code class="language-plaintext highlighter-rouge">24 -&gt; 22</code>, and moving target speed
 <code class="language-plaintext highlighter-rouge">98.367% -&gt; 99.042%</code>. VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high
 stay exact-flat; the public distribution is now <code class="language-plaintext highlighter-rouge">122</code> green / <code class="language-plaintext highlighter-rouge">4</code> yellow.</p>
+
+<p>Current perf-reporting code-headroom track:
+<code class="language-plaintext highlighter-rouge">perf-nolegacy-headroom-four-yellow-current-20260522</code> makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the
+default scene-end summary, compile-gates legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind
+<code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>. The
+four-yellow canary keeps VISITOR3 low/high, WALKSTUF1 high, and BUILDING2 high
+exact-flat with stable pack LBAs and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket, while
+<code class="language-plaintext highlighter-rouge">ps1PerfEndScene</code> shrinks to <code class="language-plaintext highlighter-rouge">0xf4</code> bytes. This is code/layout headroom, not a
+VBlank speed win, so the public speed rollup remains unchanged.</p>
 
 <p>Prior WALKSTUF1-high phase-retime track:
 <code class="language-plaintext highlighter-rouge">w1high-phase1-five-yellow-current</code> adds one W1-high-only VBlank before the

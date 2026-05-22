@@ -52,7 +52,11 @@ target speed `99.042%` while the other four yellow rows stay exact-flat. The rec
 keeps file size, offsets, entry table sizes, LBA, and the PS-EXE bucket fixed
 while reducing entry restore bytes `2724 -> 596`, runtime restore bytes
 `56312 -> 54184`, and upload bytes `18038400 -> 18012160`; the then-five
-yellow rows stayed exact-flat. The recent W1-low entry `90..99` fixed-layout
+yellow rows stayed exact-flat. The newest code-headroom pass keeps `JCPERF2`
+as the default scene-end perf summary, compiles legacy `JCPERF` behind
+`PS1_PERF_LEGACY_TRACE=1`, scopes `ps1PerfEndScene()` to `-Os`, and keeps the
+four current under-green rows exact-flat while shrinking that reporting symbol
+to `0xf4` bytes inside the same `233472` byte PS-EXE bucket. The recent W1-low entry `90..99` fixed-layout
 canonicalization pass keeps file size, offsets, LBA, and the PS-EXE bucket
 fixed while shrinking the active cluster `47579 -> 44511` bytes and total
 low-pack active payload `755808 -> 752740`; the then-five yellow rows stayed

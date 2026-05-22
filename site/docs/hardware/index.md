@@ -185,8 +185,8 @@ DuckStation's TTY logging works reliably as of 2026-04-25 — the project can
 print from anywhere in the runtime and capture the output to a host log
 file. But text I/O changes timing. A `printf` in a per-frame hot path will
 move VBlank cadence enough to mask or invent the very bugs being debugged.
-The project uses TTY for one-shot snapshots ([`JCPAUSE`]({{ '/docs/glossary/#jcpause' | relative_url }}), [`JCPERF`]({{ '/docs/glossary/#jcperf' | relative_url }}),
-`JCPERF2`, [`JCPAD`]({{ '/docs/glossary/#jcspi-jcpad' | relative_url }}), `JCSPI`) and a colored on-framebuffer telemetry
+The project uses TTY for one-shot snapshots ([`JCPAUSE`]({{ '/docs/glossary/#jcpause' | relative_url }}), [`JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}),
+legacy `JCPERF` when compile-enabled, [`JCPAD`]({{ '/docs/glossary/#jcspi-jcpad' | relative_url }}), `JCSPI`) and a colored on-framebuffer telemetry
 overlay for steady-state visibility. See
 [Performance work]({{ '/docs/performance/' | relative_url }}) for how the
 perf module gates print levels.
@@ -198,7 +198,7 @@ without bounding the format buffer. Under sustained text output the stack
 would walk into BSS and the executable would crash several minutes into a
 session, sometimes silently. The proximate fix was to disable
 `debugMode` in release builds; the deeper fix was to replace `vprintf`
-with the bounded `JCPERF`/`JCPERF2` gated formatters in `src/ps1_perf.c`,
+with the bounded `JCPERF2` gated formatter in `src/ps1_perf.c`,
 which truncate inside a static buffer. The lesson, repeated across this
 project: standard C library functions assume a host-class environment,
 and the PS1 is not that.
@@ -258,5 +258,5 @@ specialized compositors, not a clock change — the clock isn't going up.
   [two-day SPI bug retrospective]({{ '/lab/two-day-spi-bug/' | relative_url }})
   walks through.
 - [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c) —
-  bounded `JCPERF`/`JCPERF2` gated formatters; the safe substitute
+  bounded `JCPERF2` gated formatter; the safe substitute
   for per-frame `printf()` in timing-sensitive paths.

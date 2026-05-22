@@ -338,8 +338,9 @@ encoder in `scripts/wav2vag.py` and the SPU upload path in
 ADPCM nibble-pair order, SPU DMA 64-byte alignment, and ADSR1
 attack-rate orientation. Each of those was its own afternoon.
 
-**Performance instrumentation.** `ps1_perf.c` emits level-gated
-`JCPERF` / `JCPERF2` lines on the TTY. The level is set by
+**Performance instrumentation.** `ps1_perf.c` emits the level-gated
+`JCPERF2` summary on the TTY by default; legacy `JCPERF` is compile-gated
+behind `PS1_PERF_LEGACY_TRACE=1`. The level is set by
 `ps1PerfSetLevel(OFF / SUMMARY / DETAIL / DEBUG)`. Per-frame state
 that used to require visual debugging now also has a text breadcrumb
 trail. The [visual telemetry overlay]({{ '/docs/glossary/#telemetry-overlay' | relative_url }}) (5 panels) is still the right

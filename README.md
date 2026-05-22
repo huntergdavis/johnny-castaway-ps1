@@ -52,7 +52,15 @@ The mainline shifted from "prove every scene" to **performance polish, stability
 
 The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest five-yellow canary refresh is `scratch/ps1-perf-iterate/w1low-trim-main179-phase1-five-yellow-norequire-current-20260522/20260522-045305-2712756/summary.json`. Public rollup is `+0.2279%` over target / `99.7750%` target speed and raw signed rollup is about `-0.4890%` / `100.5053%`; bands are `122` green, `4` yellow, `0` orange, and `0` red. That is about `17.17` public over-target points removed and `12.67` public target-speed points added since the compact full-matrix baseline.
 
-The newest promotion applies the W1-low compact trim/retarget phase pass. `WALK1LOW.FG2` keeps file size, LBA, sectors, and the PS-EXE bucket fixed while active payload drops `752740 -> 708288`; the low-tide setup slices move to `179..283` plus `154..160`, W1-low gets one pre-loop phase VBlank, and the low-tide window guard adds one slack VBlank. The five-yellow canary keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high exact-flat while WALKSTUF1 low improves `1809/1470/1446 -> 1801/1461/1447`, overrun `24 -> 14`, blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and target speed `98.367% -> 99.042%`. The current under-green queue is VISITOR3 low, VISITOR3 high, WALKSTUF1 high, and BUILDING2 high.
+The newest code-headroom promotion makes `JCPERF2` the default perf summary
+path and compiles the legacy `JCPERF` summary behind
+`PS1_PERF_LEGACY_TRACE=1`. `ps1PerfEndScene()` is now scoped to `-Os`, shrinking
+that scene-end reporting symbol to `0xf4` bytes while the `233472` byte PS-EXE
+bucket, foreground LBAs, and all four current under-green timing rows stay
+exact-flat. This does not change the public speed rollup; it banks code and
+layout headroom for the remaining generated-owner/data-shape swings.
+
+The newest speed promotion applies the W1-low compact trim/retarget phase pass. `WALK1LOW.FG2` keeps file size, LBA, sectors, and the PS-EXE bucket fixed while active payload drops `752740 -> 708288`; the low-tide setup slices move to `179..283` plus `154..160`, W1-low gets one pre-loop phase VBlank, and the low-tide window guard adds one slack VBlank. The five-yellow canary keeps VISITOR3 high/low, BUILDING2 high, and WALKSTUF1 high exact-flat while WALKSTUF1 low improves `1809/1470/1446 -> 1801/1461/1447`, overrun `24 -> 14`, blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and target speed `98.367% -> 99.042%`. The current under-green queue is VISITOR3 low, VISITOR3 high, WALKSTUF1 high, and BUILDING2 high.
 
 A prior code-headroom pass caches the active foreground scene ID so hot
 scheduler paths no longer repeat scene-name string compares. The five-yellow
@@ -89,6 +97,14 @@ The v0.8.13 checkpoint also extended BUILDING2 high preserve-offset payload trim
 
 Recent releases:
 
+- Current perf-reporting code-headroom promotion - PS1 perf summaries now emit
+  the canonical `JCPERF2` line by default while the legacy `JCPERF` line is
+  compile-gated behind `PS1_PERF_LEGACY_TRACE=1`. The four-yellow canary at
+  `scratch/ps1-perf-iterate/perf-nolegacy-headroom-four-yellow-current-20260522/20260522-053213-2936568/summary.json`
+  keeps VISITOR3 low/high, WALKSTUF1 high, and BUILDING2 high exact-flat with
+  stable pack LBAs and the `233472` byte PS-EXE bucket. `ps1PerfEndScene`
+  shrinks to `0xf4` bytes, so this banks code headroom without changing the
+  public/raw speed rollups or the `122` green / `4` yellow distribution.
 - Current WALKSTUF1-low compact trim/retarget phase promotion - W1-low now uses
   the compacted `WALK1LOW.FG2` active payload (`752740 -> 708288`) with setup
   coverage retargeted to `179..283` plus `154..160`, a one-VBlank low-tide

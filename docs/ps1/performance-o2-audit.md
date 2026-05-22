@@ -5,18 +5,18 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-22T03:49:57+00:00` |
+| Generated at | `2026-05-22T12:46:22+00:00` |
 | Branch | `perf/allocator-era-under-green-20260517` |
-| Commit | `a922ea2a17` |
+| Commit | `d972e9035c` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `233472` |
 | PS-EXE sector bucket bytes | `233472` |
-| ELF bytes | `1028956` |
-| Map bytes | `62909` |
+| ELF bytes | `1027920` |
+| Map bytes | `62981` |
 | Translation units at `-O2` | `10` |
 | Translation units at `-Os` | `18` |
-| Function-scoped optimize attributes | `7` |
+| Function-scoped optimize attributes | `8` |
 | Candidate CSV | [`docs/ps1/performance-o2-audit.csv`](performance-o2-audit.csv) |
 
 ## Immediate Probe Order
@@ -25,20 +25,20 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 80 | translation_unit | `src/generated/pack_header_metrics.c` | -Os | 0 | 0 | Review TU optimization flag |
 | 80 | translation_unit | `src/mem_region.c` | -Os | 0 | 3564 | Review TU optimization flag |
-| 90 | function | `grCompositePacked4CompactTemporalResidualToBackground` | optimize("Os") | 476 | 33420 | Review manually |
+| 90 | function | `grCompositePacked4CompactTemporalResidualToBackground` | optimize("Os") | 476 | 33420 | Keep scoped -Os; current five-yellow default-O2 retest rejected |
 | 90 | function | `grCompositeToBackground` | optimize("Os") | 1456 | 33420 | Review manually |
 | 90 | function | `grCompositeToBackgroundFlip` | optimize("Os") | 1596 | 33420 | Review manually |
 | 90 | function | `grDrawBackground` | optimize("Os") | 1300 | 33420 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `grUpdateDisplay` | optimize("Os") | 412 | 33420 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | function | `ps1PerfEndScene` | optimize("Os") | 244 | 6808 | Keep scoped -Os; current four-yellow code-headroom canary accepted |
 | 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 448 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 740 | 10984 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
-| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 26060 | Keep whole TU at -Os; historical default-O2 retest rejected |
+| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 26172 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/island.c` | -Os | 0 | 612 | Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected |
 | 90 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 9100 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
-| 90 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 
 ## Function-Scoped Flags
 
@@ -51,6 +51,7 @@
 | `src/graphics_ps1.c:2234` | `grCompositePacked4CompactTemporalResidualToBackground` | `optimize("Os")` |
 | `src/graphics_ps1.c:2769` | `grCompositeToBackgroundFlip` | `optimize("Os")` |
 | `src/graphics_ps1.c:4361` | `grDrawBackground` | `optimize("Os")` |
+| `src/ps1_perf.c:1427` | `ps1PerfEndScene` | `optimize("Os")` |
 
 ## Translation Unit Flags
 
@@ -59,7 +60,7 @@
 | `src/calcpath.c` | -O2 | 10224 | -O2 |
 | `src/cdrom_ps1.c` | -O2 | 164240 | -O2 |
 | `src/events_ps1.c` | -Os | 36988 | -O2 -Os |
-| `src/foreground_pilot.c` | -Os | 192504 | -O2 -Os |
+| `src/foreground_pilot.c` | -Os | 192644 | -O2 -Os |
 | `src/generated/pack_header_metrics.c` | -Os | 7112 | -O2 -Os |
 | `src/graphics_ps1.c` | -O2 | 322308 | -O2 |
 | `src/holidays.c` | -Os | 25440 | -O2 -Os |
@@ -72,7 +73,7 @@
 | `src/ps1_captions.c` | -Os | 28180 | -O2 -Os |
 | `src/ps1_debug.c` | -Os | 23364 | -O2 -Os |
 | `src/ps1_pad_script.c` | -Os | 11604 | -O2 -Os |
-| `src/ps1_perf.c` | -O2 | 60984 | -O2 |
+| `src/ps1_perf.c` | -O2 | 59600 | -O2 |
 | `src/ps1_stubs.c` | -Os | 16640 | -O2 -Os |
 | `src/resource.c` | -Os | 35128 | -O2 -Os |
 | `src/scene_freeplay.c` | -Os | 81724 | -O2 -Os |

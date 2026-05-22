@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3214 words
+          ~12 min read · 3247 words
         </p>
 
       <hr class="rule" />
@@ -140,6 +140,10 @@ phase promotion moves WALKSTUF1 low <code class="language-plaintext highlighter-
 overrun <code class="language-plaintext highlighter-rouge">24 -&gt; 14</code>, improves target speed <code class="language-plaintext highlighter-rouge">98.367% -&gt; 99.042%</code>, and keeps
 file size/LBA/sectors plus the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket fixed while
 VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
+The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
+summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
+<code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while
+that reporting symbol shrinks to <code class="language-plaintext highlighter-rouge">0xf4</code> bytes in the same PS-EXE bucket.
 The prior VISITOR3-low frame135 gap-D4 promotion
 keeps pack footprint, LBA, sectors, and the PS-EXE bucket fixed while improving
 VISITOR3-low <code class="language-plaintext highlighter-rouge">1071/1039 -&gt; 1070/1039</code>, overrun <code class="language-plaintext highlighter-rouge">32 -&gt; 31</code>, blocking
@@ -334,7 +338,7 @@ done.”</p>
     <tr>
       <td>Perf instrumentation (<code class="language-plaintext highlighter-rouge">ps1_perf.c</code>)</td>
       <td>Complete</td>
-      <td>Level-gated <code class="language-plaintext highlighter-rouge">JCPERF</code> / <code class="language-plaintext highlighter-rouge">JCPERF2</code> TTY lines. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Set via <code class="language-plaintext highlighter-rouge">ps1PerfSetLevel</code>. Off in normal operation; the user feeds <code class="language-plaintext highlighter-rouge">JCPERF</code> output to a perf-debug agent when chasing regressions.</td>
+      <td>Level-gated <code class="language-plaintext highlighter-rouge">JCPERF2</code> TTY summary by default; legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> can be re-enabled with <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code> via <code class="language-plaintext highlighter-rouge">ps1PerfSetLevel</code>. Off in normal operation.</td>
     </tr>
     <tr>
       <td>TTY printf</td>

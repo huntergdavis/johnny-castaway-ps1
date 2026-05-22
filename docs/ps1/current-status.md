@@ -3,18 +3,14 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-21 (`perf/allocator-era-under-green-20260517` after
-the W1-low entry `90..99` fixed-layout canonicalization pass, the VISITOR3-high entry `62` cleanup-only headroom pass, the VISITOR3-low `88..104`, `72..88`, and `16..32` read-group promotions, the VISITOR3-low frame `135`
-gap-placed D4 promotion, the W1-low frame
-`87..99` fixed-layout cleanup-slack promotion, the W1-high cleanup-only
-fixed-layout screen-clip headroom pass, the VISITOR3-low fixed-layout
-previous-visible cleanup headroom pass, the BUILDING2-high
-trim-draw-tail speed and work-headroom promotions, the W1-low
-setup/`{113..129}` + `{355..371}` CD-pressure promotions, W1-low fresh-owner
-`160..176`, and the hot foreground scene-ID source-headroom pass; all 63
-scenes remain validated, all 126 high/low rows are timing-bearing, and the
-public headless battle card is `+0.2465%` over target / `99.7571%` target
-speed).
+**Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
+the W1-low compact trim/retarget phase green promotion, the W1-high and
+BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
+segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
+code-headroom passes, and the latest `JCPERF2`-only perf-reporting
+code-headroom pass; all 63 scenes remain validated, all 126 high/low rows are
+timing-bearing, and the public headless battle card is `+0.2279%` over target
+/ `99.7750%` target speed).
 
 ## Overall
 
@@ -149,7 +145,7 @@ no pack/runtime rework was needed.
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
 | Telemetry / debug overlay | Complete |
-| Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF`/`JCPERF2` TTY lines (OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel`) |
+| Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF2` TTY summary by default; legacy `JCPERF` can be re-enabled at compile time with `PS1_PERF_LEGACY_TRACE=1`; levels remain OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel` |
 | Pause menu (`pause_menu.c`) | Complete — Start opens overlay; custom 8x8 font (FntFlush is empirically broken in scene-runtime context); POLY_F4 dim + panel quads |
 | User settings persistence (`memcard.c`) | Working / expanding — v6 saves persist holiday mode separately from manual holiday id; broader menu-option persistence remains future work |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |

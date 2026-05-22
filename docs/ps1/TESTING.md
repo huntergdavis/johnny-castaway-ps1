@@ -893,8 +893,10 @@ Rules:
 - Do not add per-frame `printf()` calls to scene playback, capture,
   compositor, sound, or perf measurement paths.
 - Use `perf-log` for bounded scene-level performance summaries. It prints
-  `JCPERF` lines at scene boundaries and keeps the framebuffer clean:
+  `JCPERF2` lines at scene boundaries by default and keeps the framebuffer clean:
   `./scripts/rebuild-and-let-run.sh fgpilot fishing1 perf-log noloop`.
+  Legacy `JCPERF` summaries are compile-gated behind
+  `PS1_PERF_LEGACY_TRACE=1`.
 - Keep long-run logs bounded. `rebuild-and-let-run.sh` enables TTY logging
   for the run and truncates the DuckStation log at 2 GiB by default; set
   `DUCKSTATION_LOG_MAX_BYTES=0` to disable that guard.

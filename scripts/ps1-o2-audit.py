@@ -58,6 +58,10 @@ CD_HELPERS = {
 }
 
 REJECTED_DEFAULT_O2_FUNCTIONS = {
+    "grCompositePacked4CompactTemporalResidualToBackground": (
+        "Keep scoped -Os; current five-yellow default-O2 retest rejected",
+        "Removing the scoped Os override stayed flat on VISITOR3-low but regressed B2-high and W1-high blocking/refill and converted small W1-low/V3-high loop wins into hidden refill/blocking debt.",
+    ),
     "grDrawBackground": (
         "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
         "The current retest grew the upload helper by 504 bytes and did not improve loop timing.",
@@ -73,6 +77,10 @@ REJECTED_DEFAULT_O2_FUNCTIONS = {
     "ps1_streamReadFromCdFile": (
         "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
         "The current retest grew the setup/unbuffered stream helper by 68 bytes and regressed FISHING1.",
+    ),
+    "ps1PerfEndScene": (
+        "Keep scoped -Os; current four-yellow code-headroom canary accepted",
+        "Scoped Os plus default JCPERF2-only reporting shrank scene-end perf code while keeping the PS-EXE bucket, pack LBAs, and all four under-green rows exact-flat.",
     ),
 }
 
@@ -206,7 +214,7 @@ def parse_function_attributes(source_root: Path) -> list[dict[str, object]]:
             match = ATTR_RE.search(line)
             if not match:
                 continue
-            signature = ""
+            signature = line[match.end() :].strip()
             for lookahead in range(index + 1, min(index + 8, len(lines))):
                 signature += " " + lines[lookahead].strip()
                 if "{" in lines[lookahead]:

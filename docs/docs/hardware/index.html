@@ -106,7 +106,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1887 words
+          ~7 min read · 1890 words
         </p>
 
       <hr class="rule" />
@@ -342,8 +342,8 @@ uploads aligned to 16-pixel boundaries.</p>
 print from anywhere in the runtime and capture the output to a host log
 file. But text I/O changes timing. A <code class="language-plaintext highlighter-rouge">printf</code> in a per-frame hot path will
 move VBlank cadence enough to mask or invent the very bugs being debugged.
-The project uses TTY for one-shot snapshots (<a href="../glossary/#jcpause"><code class="language-plaintext highlighter-rouge">JCPAUSE</code></a>, <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code></a>,
-<code class="language-plaintext highlighter-rouge">JCPERF2</code>, <a href="../glossary/#jcspi-jcpad"><code class="language-plaintext highlighter-rouge">JCPAD</code></a>, <code class="language-plaintext highlighter-rouge">JCSPI</code>) and a colored on-framebuffer telemetry
+The project uses TTY for one-shot snapshots (<a href="../glossary/#jcpause"><code class="language-plaintext highlighter-rouge">JCPAUSE</code></a>, <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF2</code></a>,
+legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> when compile-enabled, <a href="../glossary/#jcspi-jcpad"><code class="language-plaintext highlighter-rouge">JCPAD</code></a>, <code class="language-plaintext highlighter-rouge">JCSPI</code>) and a colored on-framebuffer telemetry
 overlay for steady-state visibility. See
 <a href="../performance/">Performance work</a> for how the
 perf module gates print levels.</p>
@@ -355,7 +355,7 @@ without bounding the format buffer. Under sustained text output the stack
 would walk into BSS and the executable would crash several minutes into a
 session, sometimes silently. The proximate fix was to disable
 <code class="language-plaintext highlighter-rouge">debugMode</code> in release builds; the deeper fix was to replace <code class="language-plaintext highlighter-rouge">vprintf</code>
-with the bounded <code class="language-plaintext highlighter-rouge">JCPERF</code>/<code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatters in <code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code>,
+with the bounded <code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatter in <code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code>,
 which truncate inside a static buffer. The lesson, repeated across this
 project: standard C library functions assume a host-class environment,
 and the PS1 is not that.</p>
@@ -418,7 +418,7 @@ for DuckStation parity). Carries the fix the
 <a href="../../lab/two-day-spi-bug/">two-day SPI bug retrospective</a>
 walks through.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a> —
-bounded <code class="language-plaintext highlighter-rouge">JCPERF</code>/<code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatters; the safe substitute
+bounded <code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatter; the safe substitute
 for per-frame <code class="language-plaintext highlighter-rouge">printf()</code> in timing-sensitive paths.</li>
 </ul>
 

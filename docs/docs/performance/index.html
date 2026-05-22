@@ -106,7 +106,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~19 min read · 4774 words
+          ~19 min read · 4782 words
         </p>
 
       <hr class="rule" />
@@ -180,8 +180,10 @@ gated so it adds zero cost when off.</p>
 <p>Three signal sources:</p>
 
 <ul>
-  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
-<code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
+  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured
+<a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records by
+default. Legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> output is compile-gated behind
+<code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
 on-demand records cross the TTY surface; per-frame text is forbidden in
 hot paths because it perturbs timing.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">ps1_perf</code> module counters</strong> for VBlank-level metrics: <code class="language-plaintext highlighter-rouge">loop_vb</code>,
@@ -325,7 +327,7 @@ overlaps. Logically sound, but the active fishing1 frames overlap
 the Christmas decoration enough that this didn’t reduce dirty work.
 Pure no-op, rejected.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">vprintf</code> inline diagnostics.</strong> Adding a CD-read histogram inline
-with <code class="language-plaintext highlighter-rouge">JCPERF</code> regressed timing even with detail-gating. The act of
+with the perf summary path regressed timing even with detail-gating. The act of
 having the code present changed binary shape enough to move
 scheduling phase. Reverted; histograms now live in post-processing.</li>
   <li><strong>FG2 sound-event table in the metadata prefix.</strong> Setup reads
@@ -1139,7 +1141,7 @@ experiments landed and which got rejected.</li>
   <li><a href="../../lab/build-farm/">The 24/7 build farm</a>
 — the magazine treatment of the parallel Docker machinery that
 iterates the perf experiments this reference describes the
-output of. Same JCPERF / JCPERF2 records, but framed as
+output of. Same <code class="language-plaintext highlighter-rouge">JCPERF2</code> records, but framed as
 methodology for keeping a 126-row matrix moving.</li>
   <li><a href="../hardware/">Hardware</a> — what the
 optimizations are running against.</li>
@@ -1173,7 +1175,7 @@ rollup, and the regtest runner.</p>
 — the optimization plan and the 600+ experiment ledger.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
-— runtime: the JCPERF/JCPERF2 instrumentation and the FG2 dispatcher
+— runtime: the <code class="language-plaintext highlighter-rouge">JCPERF2</code> instrumentation and the FG2 dispatcher
 whose per-frame budget the matrix measures.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a>
 — the experiment gate every probe goes through (run → compare →
