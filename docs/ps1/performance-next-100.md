@@ -839,6 +839,16 @@ key improvement. Close direct compact-compositor `O2` and branch-split variants
 on this baseline; retry compact compose work only after a code-headroom pass or
 with a bucket-neutral micro-change.
 
+Latest rejected aligned CD read code-shape swing: removing the scoped `Os`
+override from `ps1_streamReadAlignedFromCdFileInto()` let the helper inline
+into `ps1_streamReadAlignedIntoFile`, moving that symbol `-448` and growing it
+`+480`, but the five-yellow canary was exact-flat. V3-high stayed
+`1082/1045`, V3-low `1069/1039`, B2-high `1341/1313`, W1-high `1472/1441`,
+and W1-low `1470/1446`; blocking/refill, reads/due, pack LBAs, and the
+`233472` byte PS-EXE bucket were unchanged. Keep the aligned read helper on
+scoped `Os`; this CD code-shape lane is closed unless paired with a scheduling
+or data-shape change that changes actual read pressure.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
