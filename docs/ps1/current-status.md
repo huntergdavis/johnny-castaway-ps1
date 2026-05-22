@@ -505,8 +505,8 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The public battle card is `+0.2465%` / `99.7571%` with `121` green, `5` yellow, and `0` orange rows;
-  BUILDING2 high currently measures `1341/1313` with blocking/read/due `47/44/7`, BUILDING2 low now measures
+  The public battle card is `+0.2340%` / `99.7691%` with `121` green, `5` yellow, and `0` orange rows;
+  BUILDING2 high currently measures `1340/1314` with blocking/read/due `45/44/7`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, and trim-tail work to
   active payload `539990`, WALKSTUF1 high is
   `1472/1441` with blocking/read time `43`/`198`, loop reads `41`, and rows/spans/pixels

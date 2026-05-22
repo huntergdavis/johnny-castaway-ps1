@@ -72,14 +72,22 @@ headroom pass, the W1-high cleanup-only fixed-layout screen-clip headroom
 pass, the VISITOR3-low frame135 gap-placed D4 speed promotion, and the
 VISITOR3-low `88..104`, `72..88`, and `16..32` read-group speed promotions,
 and the D4/local-LZ decoder inline code-headroom passes, followed by the
-VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion:
-`+0.2352%` public average over target / `99.7679%` public target speed across
+VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion and the
+BUILDING2-high one-VBlank phase retime:
+`+0.2340%` public average over target / `99.7691%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.4817%` / `100.4982%`. Since the compact full-matrix baseline was
+`-0.4829%` / `100.4994%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.16` public over-target points and added about `12.67` public
+removed about `17.17` public over-target points and added about `12.67` public
 target-speed points. Bands are now `121` green, `5` yellow, `0` orange, and
-`0` red. The latest VISITOR3-high retained-segment/exact-clean promotion
+`0` red. The latest BUILDING2-high phase promotion adds one B2-high-only
+VBlank before the measured loop. The five-yellow canary at
+`scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248/summary.json`
+keeps pack LBAs and the `233472` byte PS-EXE bucket fixed while BUILDING2-high
+improves `1583/1341/1313 -> 1583/1340/1314`, cutting overrun `28 -> 26`,
+blocking/refill `47/14 -> 45/12`, and improving target speed
+`97.912% -> 98.060%`; VISITOR3 high/low and WALKSTUF1 high/low stay
+exact-flat. The prior VISITOR3-high retained-segment/exact-clean promotion
 retargets setup segment3 to relative sectors `48..55`, uses six exact clean
 background rects for the visible high-tide ship/wave area, and adds a
 V3-high-only three-VBlank phase ballast before the measured loop. The
@@ -294,7 +302,7 @@ After the entries `183..191` cleanup-pocket promotion, direct retests of
 `372..388` and `379..395` still save reads but regress visible/refill cadence,
 so those static rows stay closed on the current baseline.
 The
-latest VISITOR3 high clean-relief window retune then widens the high-tide
+recent VISITOR3 high clean-relief window retune then widens the high-tide
 stream window from `68 KiB` to `80 KiB` while keeping the `56 KiB`
 tight-refill cap, improving `1075/1044 -> 1071/1045`, overrun `31 -> 26`,
 blocking `45 -> 35`, hidden refill `3 -> 1`, and due `3 -> 2`;
@@ -306,7 +314,7 @@ but regressed to `1070/1041`, overrun `29`, blocking `79`; `{92..108}` also
 saved one read but still regressed to `1067/1041`, blocking `76`. VISITOR3 low
 needs generated deadline/refill ownership or pack/render byte reduction, not a
 hand-authored low-tide append table.
-The latest VISITOR3-low frame133 D4 data-shape swing is closed as well.
+The recent VISITOR3-low frame133 D4 data-shape swing is closed as well.
 Encoding frame `133` against decoded frame `132` shrank the payload
 `17069 -> 14188` bytes and `9 -> 7` sectors, but the normal staged path exposed
 that staged previous-frame deltas are consumed without decode, so the first
@@ -576,7 +584,7 @@ CSV and read-candidate matrix. The refreshed queue is therefore ordered around
 custom VISITOR3 terminal data shape / generated deadlines, BUILDING2
 frame-deadline data-shape or render reduction, and WALKSTUF1 no-decode
 canonicalization or generated owner work before any more scalar range retries.
-The latest VISITOR3-low retained-setup tail swing is also closed. Extending the
+The recent VISITOR3-low retained-setup tail swing is also closed. Extending the
 accepted `206..232` segment to `206..241` would cover the frame133 terminal
 payload but exhausts TRANSIENT before `JCPERF2` (`req=176128`, `have=168956`).
 The memory-neutral swap to `215..241` completed but regressed low tide from
@@ -966,6 +974,16 @@ blocking `71`, and phase-4 was loop-exact at `1069/1039` but only added scene
 time. Do not retry raw low-tide phase ballast; V3-low still needs a terminal
 representation or generated deadline/refill ownership that keeps `14/11`
 reads/due and blocking `68` or better.
+
+BUILDING2-high pre-loop phase ballast is promoted only at phase 1. A one-VBlank
+B2-high-only offset before `ps1PerfMarkLoopStart()` improves the focused row to
+`1583/1340/1314`, overrun `26`, blocking/refill `45/12`, and read time `192`.
+The five-yellow no-regression canary at
+`scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248/summary.json`
+keeps VISITOR3 high/low and WALKSTUF1 high/low exact-flat while preserving all
+pack LBAs and the `233472` byte PS-EXE bucket. Phase 2, 3, and 4 are closed:
+they regressed B2-high to `1345/1313`, `1344/1313`, and `1343/1313`
+respectively with blocking/refill no better than `50/16`.
 
 Latest rejected VISITOR3-low setup-residency swing: expanding the existing
 `206..232` setup segment to `206..256` hit the allocator ceiling before

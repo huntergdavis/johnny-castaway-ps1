@@ -129,13 +129,14 @@ gap and caps tight speculative refills at `56 KiB`, improving high to
 clean slices at `64 KiB`, the clean-relief window retune widens high from
 `68 KiB` to `80 KiB`, then the setup-edge pass pays early `40..47` and the
 latest same-speed slide moves that edge to `42..49`, keeping `1070/1046`
-while reducing loop reads/read time `5/61 -> 4/59`. The latest VISITOR3-high
+while reducing loop reads/read time `5/61 -> 4/59`. The recent VISITOR3-high
 speed pass retargets segment3 to `48..55`, switches high-tide clean capture to
 six exact rects, and adds a three-VBlank phase ballast; the canonical row now
 lands at `1067/1045`, overrun `22`, blocking/refill `32/0`, with fixed pack
 LBA and PS-EXE bucket.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
-picked up small scheduler wins from the `83..95`, guarded `271..287`, and `315..327` read
+now layers a one-VBlank phase retime over the small scheduler wins from the
+`83..95`, guarded `271..287`, and `315..327` read
 groups plus a same-speed entries `92`/`94`/`95` payload trim, WALKSTUF1
 low now uses one retained `238..344` setup segment plus a split TRANSIENT
 `344..350` setup edge after low-only 48 KiB clean-rect chunking and the
@@ -189,10 +190,10 @@ Current battle-card rollup as of <time datetime="2026-05-21">2026-05-21</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2352%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7679%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T20:39:21` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `v3high-seg48-55-clean-phase3`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2340%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7691%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T23:38:13` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current five-yellow timing rows use `b2high-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -202,7 +203,15 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest VISITOR3-high retained-segment/exact-clean track:
+Latest BUILDING2-high phase-retime track:
+`b2high-phase1-five-yellow-noreq-current` adds one B2-high-only VBlank before
+the measured loop. It keeps `BUILDING2.FG2` at LBA `6189`, keeps the `233472`
+byte PS-EXE bucket fixed, and improves BUILDING2 high from `1583/1341/1313` to
+`1583/1340/1314`, cutting overrun `28 -> 26`, blocking/refill
+`47/14 -> 45/12`, and read time `194 -> 192`. VISITOR3 high/low and WALKSTUF1
+high/low stay exact-flat.
+
+Prior VISITOR3-high retained-segment/exact-clean track:
 `v3high-seg48-55-exact-clean-phase3-five-yellow-current` retargets the
 high-tide setup segment3 from relative sectors `42..49` to `48..55`, captures
 the clean background with six exact visible rects, and adds a V3-high-only
@@ -467,7 +476,9 @@ while improving B2-high again to `1343/1312`, overrun `31`, target speed
 `97.692%`, and blocking/refill `50/17`. The latest no-decode trim-draw-tail
 subset trims entries `67`, `69`, `70`, `71`, and `72`, improving B2-high again
 to `1341/1313`, overrun `28`, target speed `97.912%`, and blocking/refill
-`47/14`.
+`47/14`. The latest phase-1 retime then improves B2-high again to
+`1340/1314`, overrun `26`, target speed `98.060%`, and blocking/refill
+`45/12`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -1510,13 +1521,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T20:39:21</td>
-      <td>v3high-seg48-55-clean-phase3</td>
-      <td>2.1%</td>
-      <td class="spd-yellow">97.9%</td>
-      <td>1341/1313</td>
-      <td>47</td>
-      <td>14</td>
+      <td>2026-05-21T23:38:13</td>
+      <td>b2high-phase1</td>
+      <td>2.0%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>1340/1314</td>
+      <td>45</td>
+      <td>12</td>
       <td>7</td>
       <td></td>
     </tr>
@@ -2742,8 +2753,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T20:39:21</td>
-      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2026-05-21T23:38:13</td>
+      <td>b2high-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2756,8 +2767,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T20:39:21</td>
-      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2026-05-21T23:38:13</td>
+      <td>b2high-phase1</td>
       <td>2.9%</td>
       <td class="spd-yellow">97.2%</td>
       <td>1069/1039</td>
@@ -2882,8 +2893,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-21T20:39:21</td>
-      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2026-05-21T23:38:13</td>
+      <td>b2high-phase1</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1472/1441</td>
@@ -2896,8 +2907,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-21T20:39:21</td>
-      <td>v3high-seg48-55-clean-phase3</td>
+      <td>2026-05-21T23:38:13</td>
+      <td>b2high-phase1</td>
       <td>1.7%</td>
       <td class="spd-yellow">98.4%</td>
       <td>1470/1446</td>

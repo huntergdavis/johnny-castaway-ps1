@@ -443,9 +443,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2352%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7679%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4817%</code> / <code class="language-plaintext highlighter-rouge">100.4982%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2340%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7691%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.4829%</code> / <code class="language-plaintext highlighter-rouge">100.4994%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -492,7 +492,7 @@ stream-window retune narrows the scene-local low-tide window to <code class="lan
 moving the row green at <code class="language-plaintext highlighter-rouge">2847/2820</code>, overrun <code class="language-plaintext highlighter-rouge">27</code>, blocking/refill <code class="language-plaintext highlighter-rouge">32/27</code>,
 read time <code class="language-plaintext highlighter-rouge">252</code>, and due <code class="language-plaintext highlighter-rouge">1</code>.</p>
 
-<p>The latest VISITOR3 high promotion merges the terminal retained setup coverage
+<p>The recent VISITOR3 high promotion merges the terminal retained setup coverage
 into relative sectors <code class="language-plaintext highlighter-rouge">203..262</code>, keeps frames <code class="language-plaintext highlighter-rouge">56</code> and <code class="language-plaintext highlighter-rouge">57</code> raw inside that
 paid gap with a <code class="language-plaintext highlighter-rouge">56 KiB</code> tight-refill cap, widens the clean-relief stream
 window to <code class="language-plaintext highlighter-rouge">80 KiB</code>, and pays the early retained setup edge <code class="language-plaintext highlighter-rouge">40..47</code>. It
@@ -1110,7 +1110,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2352% over target / 99.7679% target speed, with several
+public average is now +0.2340% over target / 99.7691% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

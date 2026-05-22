@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-21:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2465%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7571%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T12:42:19` |
-| Stats version | mixed; current five-yellow timing rows are stamped `v3low-rg88-104`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2340%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7691%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed five-yellow canary `2026-05-21T23:38:13` |
+| Stats version | mixed; current five-yellow timing rows are stamped `b2high-phase1`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,17 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3-low `88..104` read-group note:
+Latest promoted BUILDING2-high phase-1 retime note:
+`foreground_pilot.c` now applies one B2-high-only VBlank before the measured
+loop. Focused proof:
+`scratch/ps1-perf-iterate/b2high-phase1-current/20260521-232306-825992/summary.json`;
+five-yellow no-regression canary:
+`scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248/summary.json`.
+BUILDING2-high moves `1583/1341/1313 -> 1583/1340/1314`, cuts overrun
+`28 -> 26`, blocking/refill `47/14 -> 45/12`, and read time `194 -> 192`;
+VISITOR3 high/low and WALKSTUF1 high/low stay exact-flat.
+
+Prior promoted VISITOR3-low `88..104` read-group note:
 `foreground_pilot.c` now gives low-tide VISITOR3 scene-local retained read
 groups for relative sectors `16..32`, `72..88`, and `88..104`, building on
 the frame `135` gap-D4 data-shape baseline. Focused proof:
