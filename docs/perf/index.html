@@ -320,11 +320,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed four-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T07:46:44</code>; prior four-yellow phase-retime canary <code class="language-plaintext highlighter-rouge">2026-05-22T06:48:59</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; refreshed four-yellow canary <code class="language-plaintext highlighter-rouge">2026-05-22T08:35:27</code>; prior frame134 D4 canary <code class="language-plaintext highlighter-rouge">2026-05-22T07:46:44</code>; prior four-yellow phase-retime canary <code class="language-plaintext highlighter-rouge">2026-05-22T06:48:59</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>; prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -340,7 +340,18 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest VISITOR3-low frame134 D4 data-shape track:
+<p>Latest VISITOR3-low setup-residency track:
+<code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code> keeps the accepted low-tide retained
+setup slices <code class="language-plaintext highlighter-rouge">281..305</code>, <code class="language-plaintext highlighter-rouge">150..177</code>, and <code class="language-plaintext highlighter-rouge">206..232</code>, then adds a fourth
+VISITOR3-low-only setup slice for sectors <code class="language-plaintext highlighter-rouge">55..79</code> in the CACHE region. The
+source phase returns to <code class="language-plaintext highlighter-rouge">0</code> so timing stays exact-flat while loop reads drop
+<code class="language-plaintext highlighter-rouge">28 -&gt; 18</code>, visible blocking drops <code class="language-plaintext highlighter-rouge">55 -&gt; 50</code>, and due misses drop <code class="language-plaintext highlighter-rouge">10 -&gt; 8</code>.
+The focused VISITOR3-low proof and four-yellow canary keep pack LBA <code class="language-plaintext highlighter-rouge">23379</code>,
+the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket, and all four under-green rows pixel/timing
+valid; phase <code class="language-plaintext highlighter-rouge">2</code> remains rejected despite a speed signal because it introduces
+one hidden prefetch overrun.</p>
+
+<p>Prior VISITOR3-low frame134 D4 data-shape track:
 <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code> encodes frame <code class="language-plaintext highlighter-rouge">134</code> against the previous decoded
 frame and marks that frame for previous-delta runtime decode. The payload
 shrinks <code class="language-plaintext highlighter-rouge">17001 -&gt; 14202</code> bytes, while file size, pack LBA <code class="language-plaintext highlighter-rouge">23379</code>, sectors,
@@ -1086,7 +1097,8 @@ line.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The current
-four-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>;
+four-yellow canary rows use <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>;
+prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>;
 prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>;
 prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>;
 prior BUILDING2 high source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>;
@@ -1727,8 +1739,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T07:46:44</td>
-      <td>v3low-d4-frame134-headroom</td>
+      <td>2026-05-22T08:35:27</td>
+      <td>v3low-seg4-add55-79-cache-phase0</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.1%</td>
       <td>1340/1314</td>
@@ -2959,8 +2971,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T07:46:44</td>
-      <td>v3low-d4-frame134-headroom</td>
+      <td>2026-05-22T08:35:27</td>
+      <td>v3low-seg4-add55-79-cache-phase0</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2973,14 +2985,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T07:46:44</td>
-      <td>v3low-d4-frame134-headroom</td>
+      <td>2026-05-22T08:35:27</td>
+      <td>v3low-seg4-add55-79-cache-phase0</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
-      <td>55</td>
+      <td>50</td>
       <td>0</td>
-      <td>10</td>
+      <td>8</td>
       <td></td>
     </tr>
     <tr id="perf-visitor4-high">
@@ -3099,8 +3111,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T07:46:44</td>
-      <td>v3low-d4-frame134-headroom</td>
+      <td>2026-05-22T08:35:27</td>
+      <td>v3low-seg4-add55-79-cache-phase0</td>
       <td>2.1%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1471/1441</td>
