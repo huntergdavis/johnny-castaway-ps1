@@ -790,6 +790,18 @@ refill `0 -> 19`) and did not reduce reads. Close frame-specific direct-stage
 and min-slack scalar probes for this early edge; continue only with no-hot-C
 generated deadline/refill metadata or a larger fixed-layout data-shape swing.
 
+Latest rejected compact PAL4 compositor code-shape swing: removing the
+function-scoped `Os` override from
+`grCompositePacked4CompactTemporalResidualToBackground` kept VISITOR3-high
+loop time flat at `1372/1082` but tightened target `1045 -> 1044`, so overrun
+regressed `37 -> 38`. Splitting
+`grCompositePacked4CompactSpansToBackground` into a compact-only draw loop also
+stayed timing-flat at `1372/1082/1045`, but crossed the PS-EXE bucket
+`233472 -> 235520` and shifted `VISITOR3.FG2` LBA `22619 -> 22620` without a
+key improvement. Close direct compact-compositor `O2` and branch-split variants
+on this baseline; retry compact compose work only after a code-headroom pass or
+with a bucket-neutral micro-change.
+
 1. **VISITOR3 high no-extra-setup cleanup split.** Done for entry `62` as a
    fixed-layout cleanup-only headroom pass: the five-yellow canary stays
    exact-flat while entry restore bytes drop `2724 -> 596`, runtime restore
