@@ -797,6 +797,19 @@ broad active payload drops `755808 -> 708532` and improves blocking/due
 `17`. Keep broad WALKSTUF1 previous-visible closed until a generated phase-tax
 scorer can select much narrower subsets with explicit refill gates.
 
+Latest rejected WALKSTUF1 high late screen-clip split: entries `132..146`
+saved substantial fixed-layout payload (`26867` bytes in the broad form), but
+the speed-bearing forms are all phase-negative. `132..146` and `132..136`
+save two reads yet regress to `1475/1440`, overrun `35`, blocking/refill
+`47/15`. `138..146` and `138..140` keep loop/target exact-flat but add one
+blocking/refill VBlank (`44/14`). `141..146` and `144..146` preserve
+blocking/refill but tighten target to `1440`, raising overrun to `32`.
+`141..143` is exact-flat and pack-only, so it fails the strict improvement
+gate. Close raw late screen clipping as a W1-high speed path; the next W1-high
+attempt must be generated deadline/refill metadata or a phase-scored transform
+that explicitly protects `1472/1441`, blocking/refill `43/13`, and reads/due
+`41/7`.
+
 Latest rejected BUILDING2 high `109..133` preserve-entry clipping swing:
 entry-index clipping was a no-op, and source-frame clipping only canonicalized
 trailing zero payload inside preserved entry slots. The source-frame transform
