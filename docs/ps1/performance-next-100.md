@@ -90,7 +90,11 @@ blocking/refill `45/12`, and due `7`, while improving loop reads/read time
 `44/192 -> 42/186`; VISITOR3 high/low and WALKSTUF1 high/low stay
 exact-flat. The paired post-trim scalar read rows `{90..96}` and `{249..265}`
 are closed because `{90..96}` regressed B2-high and `{249..265}` added no
-speed win. The prior BUILDING2-high phase promotion adds one B2-high-only
+speed win. The next open matrix row, `295..319`, is also closed after table,
+fresh-owner, and direct-stage-deny probes: the table and owner-only forms were
+exact-flat, while direct-stage denial improved blocking/read/due
+`45/42/7 -> 44/41/6` but regressed hidden refill `12 -> 15` with no loop/target
+gain. The prior BUILDING2-high phase promotion adds one B2-high-only
 VBlank before the measured loop. The five-yellow canary at
 `scratch/ps1-perf-iterate/b2high-phase1-five-yellow-noreq-current/20260521-233813-912248/summary.json`
 keeps pack LBAs and the `233472` byte PS-EXE bucket fixed while BUILDING2-high

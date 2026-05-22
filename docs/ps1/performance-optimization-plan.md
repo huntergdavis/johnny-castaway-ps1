@@ -2823,3 +2823,10 @@ same-speed CD-pressure headroom. The pass drops active payload
 Post-trim scalar rows `{90..96}` and `{249..265}` are closed; the next B2-high
 swing needs generated deadline ownership or another pack/render data-shape
 change that also moves visible cadence.
+
+The post-trim top B2-high `295..319` row is closed too. Direct table and
+fresh-owner forms were inert, and direct-stage denial exposed a real read/due
+signal but spent it as hidden refill (`45/42/7 -> 44/41/6`, refill
+`12 -> 15`). Do not retry this band with scalar ownership; only revisit after a
+separate render/restore reduction creates slack or a generated refill owner can
+explicitly budget the extra hidden work.
