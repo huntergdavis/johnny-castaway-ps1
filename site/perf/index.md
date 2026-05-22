@@ -194,10 +194,10 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2233%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7793%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T08:35:27`; B2-high focused headroom refresh `2026-05-22T11:27:06`; prior frame134 D4 canary `2026-05-22T07:46:44`; prior four-yellow phase-retime canary `2026-05-22T06:48:59` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current B2-high row uses `b2high-trim-safe-tail-current`; the other current four-yellow timing rows use `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2155%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7870%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high compact four-yellow promotion gate `2026-05-22T11:50:40`; prior four-yellow canary `2026-05-22T08:35:27`; prior B2-high safe-tail headroom refresh `2026-05-22T11:27:06` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow rows use `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -207,13 +207,14 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest BUILDING2-high safe-tail headroom track:
-`b2high-trim-safe-tail-current` trims entries `101..104`, `141`, `175..177`,
-and `333` while preserving offsets, file size, LBA `6189`, sectors `637`, and
-the `233472` byte PS-EXE bucket. Active payload drops `527960 -> 527884` and
-max payload drops `8752 -> 8733`; B2-high stays exact-flat at
-`1583/1340/1314`, overrun `26`, blocking/refill `45/12`, reads/due `42/7`.
-This is headroom only, so the public speed rollup remains unchanged.
+Latest BUILDING2-high compact speed track:
+`b2high-compact-current` physically compacts `BUILDING2.FG2`, pads back to
+the original `1303332` byte footprint, and keeps LBA `6189`, sectors `637`,
+and the `233472` byte PS-EXE bucket fixed. The compacted layout trims entries
+`76`/`77`, drops active payload `527884 -> 520974`, and passes the strict
+four-yellow pixel/timing gate. B2-high improves `1583/1340/1314 ->
+1570/1330/1317`, overrun `26 -> 13`, blocking/refill `45/12 -> 32/12`,
+reads/due `42/7 -> 33/4`, and is now green at `99.023%` target speed.
 
 Latest VISITOR3-low setup-residency track:
 `v3low-seg4-add55-79-cache-phase0` keeps the accepted low-tide retained
@@ -256,7 +257,8 @@ window-slack guard. The accepted canary improves W1-low from
 `1809/1470/1446` to `1801/1461/1447`, cutting overrun `24 -> 14`,
 blocking/refill `32/3 -> 31/2`, reads `24 -> 22`, and moving target speed
 `98.367% -> 99.042%`. VISITOR3 high/low, WALKSTUF1 high, and BUILDING2 high
-stay exact-flat; the public distribution is now `122` green / `4` yellow.
+stayed exact-flat; that checkpoint moved the public distribution to
+`122` green / `4` yellow.
 
 Current perf-reporting code-headroom track:
 `perf-nolegacy-headroom-four-yellow-current-20260522` makes `JCPERF2` the
@@ -559,9 +561,11 @@ while improving B2-high again to `1343/1312`, overrun `31`, target speed
 `97.692%`, and blocking/refill `50/17`. The latest no-decode trim-draw-tail
 subset trims entries `67`, `69`, `70`, `71`, and `72`, improving B2-high again
 to `1341/1313`, overrun `28`, target speed `97.912%`, and blocking/refill
-`47/14`. The latest phase-1 retime then improves B2-high again to
+`47/14`. The phase-1 retime then improves B2-high again to
 `1340/1314`, overrun `26`, target speed `98.060%`, and blocking/refill
-`45/12`.
+`45/12`. The current fixed-footprint physical compaction pass moves B2-high
+into green at `1330/1317`, overrun `13`, target speed `99.023%`, and
+blocking/refill `32/12`.
 
 Current B2-low allocator-era speed track: targeted setup residency now primes
 relative sectors `112..128` and `226..262` during setup, caps low clean strips
@@ -1612,14 +1616,14 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T11:27:06</td>
-      <td>b2high-trim-safe-tail-current</td>
-      <td>2.0%</td>
-      <td class="spd-yellow">98.1%</td>
-      <td>1340/1314</td>
-      <td>45</td>
+      <td>2026-05-22T11:50:40</td>
+      <td>b2high-compact-current</td>
+      <td>1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>1330/1317</td>
+      <td>32</td>
       <td>12</td>
-      <td>7</td>
+      <td>4</td>
       <td></td>
     </tr>
     <tr id="perf-building2-low">
@@ -2844,8 +2848,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T08:35:27</td>
-      <td>v3low-seg4-add55-79-cache-phase0</td>
+      <td>2026-05-22T11:50:40</td>
+      <td>b2high-compact-current</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -2858,8 +2862,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T08:35:27</td>
-      <td>v3low-seg4-add55-79-cache-phase0</td>
+      <td>2026-05-22T11:50:40</td>
+      <td>b2high-compact-current</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
@@ -2984,8 +2988,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T08:35:27</td>
-      <td>v3low-seg4-add55-79-cache-phase0</td>
+      <td>2026-05-22T11:50:40</td>
+      <td>b2high-compact-current</td>
       <td>2.1%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1471/1441</td>

@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-22:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2233%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7793%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; refreshed four-yellow canary `2026-05-22T08:35:27`; B2-high focused headroom refresh `2026-05-22T11:27:06` |
-| Stats version | mixed; current B2-high row is stamped `b2high-trim-safe-tail-current`; the other current four-yellow timing rows are stamped `v3low-seg4-add55-79-cache-phase0`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2155%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7870%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; B2-high compact four-yellow promotion gate `2026-05-22T11:50:40` |
+| Stats version | mixed; current four-yellow timing rows are stamped `b2high-compact-current`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,18 +94,17 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted BUILDING2-high safe-tail payload note:
-`BUILDING2.FG2` trims entries `101..104`, `141`, `175..177`, and `333`
-while preserving offsets, file size, LBA/sectors, and the PS-EXE bucket.
-Transform summary:
-`scratch/b2high-trim-safe-tail-current-20260522/summary.json`;
-focused proof:
-`scratch/ps1-perf-iterate/b2high-trim-safe-tail-current-20260522/20260522-112706-773172/summary.json`.
-B2-high stays exact-flat at `1583/1340/1314`, overrun `26`,
-blocking/refill `45/12`, reads/due `42/7`, while active payload drops
-`527960 -> 527884` and max payload drops `8752 -> 8733`. The current
-under-green attribution CSV refresh uses the merged four-yellow root
-`scratch/ps1-perf-iterate/b2high-trim-safe-tail-merged-four-yellow-current-20260522/20260522-113530-merged/summary.json`.
+Latest promoted BUILDING2-high compact speed note:
+`BUILDING2.FG2` is physically compacted and padded back to the original file
+size, preserving LBA/sectors and the PS-EXE bucket while trimming entries
+`76`/`77` in the compacted payload layout. Transform summary:
+`scratch/b2high-compact-retarget-current-20260522/summary.json`; strict
+four-yellow proof:
+`scratch/ps1-perf-iterate/b2high-compact-four-yellow-current-20260522/20260522-115040-907307/summary.json`.
+B2-high improves `1583/1340/1314 -> 1570/1330/1317`, overrun `26 -> 13`,
+blocking/refill `45/12 -> 32/12`, reads/due `42/7 -> 33/4`, and active
+payload drops `527884 -> 520974`. The current under-green attribution CSV
+refresh uses the same four-yellow root.
 
 Latest promoted VISITOR3-low additive setup-residency note:
 `foreground_pilot.c` now retains a fourth low-tide VISITOR3 setup slice for

@@ -2816,13 +2816,13 @@ but worsened hidden refill and visible cadence; a blunt min-slack-5 guard remove
 refill by starving the row. Do not spend more time on raw phase4, high-table
 rows, or global slack for this scene unless a generator owns the exact refill.
 
-BUILDING2 high entries `89..91` are now trimmed in the fixed-layout pack as
-same-speed CD-pressure headroom. The pass drops active payload
-`539990 -> 527960`, keeps `1340/1314`, overrun `26`, and blocking/refill
-`45/12` exact-flat, and improves loop reads/read time `44/192 -> 42/186`.
-Post-trim scalar rows `{90..96}` and `{249..265}` are closed; the next B2-high
-swing needs generated deadline ownership or another pack/render data-shape
-change that also moves visible cadence.
+BUILDING2 high now has the fixed-footprint physical compaction speed pass on
+top of the prior `89..91` and safe-tail trims. The compact pass keeps file
+size, LBA/sectors, and the PS-EXE bucket fixed, drops active payload
+`527884 -> 520974`, and moves B2-high from `1340/1314`, overrun `26`,
+blocking/refill `45/12`, to `1330/1317`, overrun `13`, blocking/refill
+`32/12`. B2-high is now green; remaining under-green work should prioritize
+WALKSTUF1 high, then VISITOR3 high, then VISITOR3 low.
 
 The post-trim top B2-high `295..319` row is closed too. Direct table and
 fresh-owner forms were inert, and direct-stage denial exposed a real read/due
