@@ -1257,18 +1257,20 @@ or a non-resident/no-decode data shape.
 
 1. **VISITOR3 low terminal row-reference/no-hot-C deadline swing.** The
    current candidate matrix has no standalone safe sector rows left, and inline
-   generated owner/direct-stage-denial probes for `32..48`, `46..58`, and
-   `65..89` are now closed as refill-negative. Start with a custom terminal
+   generated owner/direct-stage-denial probes for `32..48`, `46..58`,
+   `65..89`, and the post-segment4 `27..51` / `32..56` pocket are now closed
+   as inert or refill-negative. Start with a custom terminal
    row-reference/setup-dictionary/no-decode data shape, or generated deadline
    metadata consumed outside the hot fill/load functions, while preserving the
-   current read/due cadence.
+   current read/due cadence and direct-stage timing.
 2. **No-hot-C generated deadline manifest.** Emit per-scene append-start,
    frame-deadline, refill-budget, and skip-reason metadata from read-plan
    artifacts, but consume it without growing hot foreground code or shifting the
    PS-EXE bucket.
 3. **Offline owner phase-tax scorer.** Penalize ranges now proven to trade read
-   savings into blocking/refill (`V3-high` direct-stage, W1-high `372..388`,
-   W1-low `136..160`) so the CSV stops resurfacing closed scalar ranges.
+   savings into blocking/refill (`V3-high` direct-stage, V3-low `27..51` /
+   `32..56`, W1-high `372..388`, W1-low `136..160`) so the CSV stops
+   resurfacing closed scalar ranges.
 4. **VISITOR3 high early `40..56` generated owner.** Retry the read relief that
    setup `40..49` and the fourth `40..43` segment proved is real, but only
    through budgeted ownership; no more retained setup expansion, retained-gap
