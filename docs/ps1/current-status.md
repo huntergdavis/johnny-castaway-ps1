@@ -4,7 +4,7 @@
 
 
 **Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1-high `{108..124}` same-speed CD-pressure pass, the WALKSTUF1-high `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
+the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high `{108..124}` same-speed CD-pressure pass, the WALKSTUF1-high `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
 phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact
 trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
@@ -511,7 +511,7 @@ Milestone releases:
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, trim-tail work, safe-tail trims, and fixed-footprint physical compaction to
   active payload `520974`, WALKSTUF1 high is
   `1469/1441` with blocking/refill `41`/`11`, loop reads/read time `36`/`191`, and rows/spans/pixels
-  `16547/120919/658340` after the `{108..124}` CD-pressure pass, entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, entry `58..61` tail-trim/phase-3 speed pass, and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
+  `16540/120651/654904` after the entry134 screen-clip headroom pass, `{108..124}` CD-pressure pass, entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, entry `58..61` tail-trim/phase-3 speed pass, and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
   with blocking/refill `31`/`2`, loop reads/read time `22`/`117`, and active payload
   `708288` after the compact trim/retarget phase pass, VISITOR3 high is
   `1067/1045` with blocking/read count `32`/`12`,

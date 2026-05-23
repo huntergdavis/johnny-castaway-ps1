@@ -83,7 +83,8 @@ fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
 `58..61` tail/phase speed promotion, the W1-high no-`144` mid-cluster,
 frame138, active-loop, and early offscreen clip headroom passes, and the
 W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
-promotion, and the W1-high `{108..124}` same-speed CD-pressure headroom pass:
+promotion, the W1-high `{108..124}` same-speed CD-pressure headroom pass, and
+the W1-high entry134 same-speed screen-clip headroom pass:
 `+0.2144%` public average over target / `99.7880%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.5025%` / `100.5184%`. Since the compact full-matrix baseline was
@@ -193,6 +194,19 @@ reads/VBlanks `31/151 -> 30/150`, and upload calls/rects/bytes
 because it tightens target/refill to overrun `30`, and stacking `{372..388}` on
 top is closed because it regresses W1-high to `1813/1474/1442`, overrun `32`,
 blocking/refill `45/15`.
+The accepted entry134/source-frame242 screen-clip follow-up is promoted as
+same-speed render/upload headroom: the strict four-row canary at
+`scratch/ps1-perf-iterate/w1high-clip134-four-yellow-current-20260522/20260522-183450-3194636/summary.json`
+keeps W1-high exact-flat at `1808/1469/1441`, overrun `28`,
+blocking/refill `41/11`, reads/due `36/6`, while selected payload drops
+`4397 -> 1938`, removing `507` cleanup pixels and `3436` draw pixels. Runtime
+rows/spans/pixels improve `16547/120919/658340 -> 16540/120651/654904`,
+restore bytes improve `458142 -> 457128`, and upload bytes improve
+`17175040 -> 17172480`; B2-high and VISITOR3 high/low stay exact-flat. Entry
+`144` remains closed because it regresses W1-high to `1814/1475/1438`,
+overrun `37`, blocking/refill `52/20`; entry134 plus `{124..148}` is closed
+because it regresses to `1814/1475/1437`, overrun `38`, blocking/refill
+`52/20`.
 The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,

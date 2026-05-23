@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-22:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2144%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7880%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
-| Stats version | mixed; current W1-high timing row is stamped `w1high-rg108-124`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
+| Stats version | mixed; current W1-high timing row is stamped `w1high-clip134-headroom`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,22 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1-high CD-pressure note:
+Latest promoted WALKSTUF1-high screen-clip headroom note:
+W1-high now clips entry `134` / source frame `242` in `WALKSTUF1.FG2` while
+preserving file size, offsets, entry table sizes, LBA/sectors, and the PS-EXE
+bucket. Transform summary:
+`scratch/w1high-clip134-four-yellow-current-20260522/summary.json`; strict
+four-row proof:
+`scratch/ps1-perf-iterate/w1high-clip134-four-yellow-current-20260522/20260522-183450-3194636/summary.json`.
+W1-high stays exact-flat at `1808/1469/1441`, overrun `28`,
+blocking/refill `41/11`, reads/due `36/6`, while selected payload drops
+`4397 -> 1938`, runtime rows/spans/pixels improve
+`16547/120919/658340 -> 16540/120651/654904`, restore bytes improve
+`458142 -> 457128`, and upload bytes improve `17175040 -> 17172480`.
+BUILDING2 high and VISITOR3 high/low stay exact-flat. Entry `144` is closed
+because it regressed W1-high to `1814/1475/1438`, blocking/refill `52/20`.
+
+Prior promoted WALKSTUF1-high CD-pressure note:
 W1-high now adds the `{108..124}` read group on top of the accepted
 `62..66` clip and `{92..108}`/`{272..284}` stack. Strict four-yellow proof:
 `scratch/ps1-perf-iterate/w1high-rg108-124-four-yellow-norequire-current-20260522/20260522-181237-3070338/summary.json`.

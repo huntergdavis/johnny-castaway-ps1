@@ -27,7 +27,7 @@ loading, and the current battle card is `+0.2144%` over target /
 `99.7880%` target speed across all 126 timing-bearing rows. The raw signed
 optimization matrix is about `-0.5025%` / `100.5184%`; bands are `123`
 green, `3` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the W1-high entry134 same-speed screen-clip headroom pass, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -86,10 +86,12 @@ The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 ownership, the high-tide one-VBlank phase retime, the entry `58..61`
 tail/phase-3 speed pass, the early/active/mid screen-span clip passes, the
 entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, and
-the `{108..124}` same-speed CD-pressure headroom pass. It measures
+the `{108..124}` same-speed CD-pressure headroom pass, then clips entry `134`
+as same-speed render/upload headroom. It measures
 `1469/1441` at `98.094%` target speed, overrun `28`,
 blocking/refill `41/11`, loop reads/read time `36/191`, and due `6`,
-with pack LBA/sectors and the PS-EXE bucket fixed.
+with runtime rows/spans/pixels now `16540/120651/654904` and pack LBA/sectors
+plus the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload
 shrinks, replaces the old split tail residency with a CACHE `238..344` setup
