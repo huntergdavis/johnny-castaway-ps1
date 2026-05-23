@@ -445,9 +445,9 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
 CSV row is <code class="language-plaintext highlighter-rouge">-0.4%</code> / <code class="language-plaintext highlighter-rouge">100.4%</code>. Across the 126 timing-bearing battle-card rows,
-the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2051%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.7970%</code> exact public target speed); the raw
-signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.5118%</code> / <code class="language-plaintext highlighter-rouge">100.5273%</code>.</p>
+the public average is <strong>+0.2% over target / 99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.2028%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.7992%</code> exact public target speed); the raw
+signed optimization matrix is about <code class="language-plaintext highlighter-rouge">-0.5141%</code> / <code class="language-plaintext highlighter-rouge">100.5295%</code>.</p>
 
 <p>The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -1114,7 +1114,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.2051% over target / 99.7970% target speed, with three
+public average is now +0.2028% over target / 99.7992% target speed, with three
 remaining CD-/data-shape-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

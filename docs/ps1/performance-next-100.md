@@ -86,24 +86,24 @@ W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
 promotion, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the
 W1-high entry134 same-speed screen-clip headroom pass, the W1-high
 frames `189..191` direct-stage headroom pass, the W1-high `372..388`
-fresh-owner retarget for owner frames `183..188`, and the W1-high `183..199`
-late-layout / `372..384` owner refill-headroom pass:
-`+0.2133%` public average over target / `99.7891%` public target speed across
+fresh-owner retarget for owner frames `183..188`, the W1-high `183..199`
+late-layout / `372..384` owner refill-headroom pass, the W1-high prep2
+`128..191` frame-gate promotion, and the VISITOR3-low phase1 / segment4
+`38..79` promotion:
+`+0.2028%` public average over target / `99.7992%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5037%` / `100.5195%`. Since the compact full-matrix baseline was
+`-0.5141%` / `100.5295%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.19` public over-target points and added about `12.69` public
+removed about `17.20` public over-target points and added about `12.70` public
 target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
-`0` red. The latest W1-high late-layout/owner refinement passed focused proof
-and the four-row no-regression canary at
-`scratch/ps1-perf-iterate/w1high-layout-owner372-384-four-yellow-norequire-current-20260522/20260522-232432-869167/summary.json`:
-W1-high remains `1807/1468/1442`, overrun `26`, blocking `39`, reads `40`,
-and due `6`, while hidden refill improves `10 -> 9`; BUILDING2 high and
-VISITOR3 high/low stay exact-flat. Direct-stage rescue variants still expose a
-useful but invalid `1806/1467/1443`, overrun `24`, refill `8` signal because
-they regress blocking/due to `42/7`. The next under-green priority remains
-W1-high first because it is closest to green, then VISITOR3 high, then VISITOR3
-low. The earlier VISITOR3-low additive residency
+`0` red. The latest VISITOR3-low phase/segment promotion passed focused proof
+and under-yellow canary at
+`scratch/ps1-perf-iterate/visitor3-low-phase1-seg4-38-79-under-yellow-canary-20260523/20260523-042947-2959812/summary.json`:
+VISITOR3-low improves `1380/1063/1043 -> 1386/1062/1045`, overrun
+`20 -> 17`, blocking/refill `46/1 -> 38/0`, reads/due `17/8 -> 12/6`, and
+read time `89 -> 72`; VISITOR3-high and W1-high stay exact-flat. The next
+under-green priority remains W1-high first because it is closest to green, then
+VISITOR3-low, then VISITOR3-high. The earlier VISITOR3-low additive residency
 pass keeps the accepted
 `281..305`, `150..177`, and `206..232` retained setup slices intact while
 adding sector range `55..79` in `MEM_REGION_CACHE`. It also resets the

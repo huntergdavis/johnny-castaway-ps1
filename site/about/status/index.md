@@ -23,16 +23,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2051%` over
-target / `99.7970%` target speed; the raw signed optimization matrix is
-about `-0.5118%` / `100.5273%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2028%` over
+target / `99.7992%` target speed; the raw signed optimization matrix is
+about `-0.5141%` / `100.5295%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion gates two-VBlank staged
-frame prepare to high-tide displayed frames `128..191` after the `185..191`
-direct-stage rescue and `383..399` transient setup slice, passing at
-`1466/1445`, overrun `21`, blocking/refill `35/5`, and reads/due `36/6` while
-VISITOR3 high/low remain exact-flat under the same canary.
+allocator budget. The latest VISITOR3-low promotion combines a one-VBlank
+phase retime with setup segment `38..79`, passing at `1062/1045`, overrun
+`17`, blocking/refill `38/0`, and reads/due `12/6` while VISITOR3-high and
+WALKSTUF1-high remain exact-flat under the same canary.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while
@@ -123,9 +122,9 @@ High now measures `1065/1046`, overrun `19`, blocking/refill
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, then adds
 the `16..32`, `72..88`, and `88..104` retained read-group rows plus the
-four-VBlank slack-knee guard, then adds a one-VBlank low-tide phase offset. It
-now measures `1063/1043`, overrun `20`, blocking/refill `46/1`, reads/due
-`17/8`.
+four-VBlank slack-knee guard, then adds a one-VBlank low-tide phase offset and
+widened setup segment `38..79`. It now measures `1062/1045`, overrun `17`,
+blocking/refill `38/0`, reads/due `12/6`.
 Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,
