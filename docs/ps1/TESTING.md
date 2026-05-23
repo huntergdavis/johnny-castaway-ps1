@@ -76,8 +76,8 @@ Current battle-card rollup as of 2026-05-23:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.1956%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.8062%` exact, public-capped) |
+| Timing-bearing average over target | `+0.2%` (`0.1906%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.8111%` exact, public-capped) |
 | Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame0 consume / phase4 under-yellow canary `2026-05-23T06:57:54`; prior VISITOR3-low phase1 / segment4 `38..79` under-yellow canary `2026-05-23T04:29:47`; prior W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32` |
 | Stats version | mixed; current WALKSTUF1-high and VISITOR3 high/low under-yellow rows are stamped `w1high-frame0-consume-phase4`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |

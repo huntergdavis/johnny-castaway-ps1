@@ -2722,6 +2722,35 @@ fgRuntimePresentAndConsumeFirstFrameForW1High(void)
     return 1;
 }
 
+static int __attribute__((noinline, optimize("Os")))
+fgRuntimePresentFirstFrameNoWait(void)
+{
+    grBeginResidualCleanBgFirstFrame();
+    grUpdateDisplay(NULL, NULL, NULL);
+    fgRuntimeMarkFrameRendered();
+    gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                           gFgRuntime.displayVBlanks);
+    gFgRuntime.frameIndex = 1;
+    gFgRuntime.frameVBlank = 0;
+    if (!fgRuntimeConsumeStagedFrame(gFgRuntime.frameIndex))
+        return 0;
+    return fgRuntimePrimeNextFrameForSetup() >= 0;
+}
+
+static int __attribute__((noinline, optimize("Os")))
+fgRuntimePresentNextStagedAndAdvance(void)
+{
+    grBeginResidualCleanBgFrame();
+    grUpdateDisplay(NULL, NULL, NULL);
+    gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                           gFgRuntime.displayVBlanks);
+    gFgRuntime.frameIndex++;
+    gFgRuntime.frameVBlank = 0;
+    if (!fgRuntimeConsumeStagedFrame(gFgRuntime.frameIndex))
+        return 0;
+    return fgRuntimePrimeNextFrameForSetup() >= 0;
+}
+
 static uint32 fgRuntimePackPayloadEndBytes(void)
 {
     uint16 i;
@@ -4781,8 +4810,26 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
         VSync(0);
+        VSync(0);
+        VSync(0);
+        VSync(0);
 #if FG_VISITOR3_LOW_PHASE_VBLANKS >= 1
     } else if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && islandState.lowTide) {
+        if (gFgRuntime.frameIndex == 0 &&
+            gFgRuntime.stagedFrameValid &&
+            gFgRuntime.stagedFrameIndex == 1 &&
+            !fgRuntimePresentFirstFrameNoWait()) {
+            if (ps1PerfEnabled) ps1PerfMarkTripwire();
+            gFgRuntime.active = 0;
+        }
+        if (gFgRuntime.active &&
+            gFgRuntime.frameIndex == 1 &&
+            gFgRuntime.stagedFrameValid &&
+            gFgRuntime.stagedFrameIndex == 2 &&
+            !fgRuntimePresentNextStagedAndAdvance()) {
+            if (ps1PerfEnabled) ps1PerfMarkTripwire();
+            gFgRuntime.active = 0;
+        }
         VSync(0);
 #if FG_VISITOR3_LOW_PHASE_VBLANKS >= 2
         VSync(0);

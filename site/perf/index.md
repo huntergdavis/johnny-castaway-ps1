@@ -221,8 +221,8 @@ Current battle-card rollup as of <time datetime="2026-05-23">2026-05-23</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.1956%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.8062%` exact, public-capped) |
+| Timing-bearing average over target | `+0.2%` (`0.1906%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.8111%` exact, public-capped) |
 | Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame0 consume / phase4 under-yellow canary `2026-05-23T06:57:54`; prior W1-high `200..215` previous-visible cleanup under-yellow canary `2026-05-23T05:18:30`; prior VISITOR3-low phase1 / segment4 `38..79` under-yellow canary `2026-05-23T04:29:47`; prior W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32` |
 | Stats version | full allocator refresh stamped `git:2b617cbc`; current under-yellow rows use `w1high-frame0-consume-phase4`; prior W1-high cleanup rows used `w1high-prevvis200-215-postv3`; prior VISITOR3-low used `v3low-phase1-seg4-38-79`; prior W1-high prep2 rows used `w1high-prep2-frame128-191`; prior W1-high `185..191` direct row used `w1high-direct185-191`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
@@ -2963,11 +2963,11 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-23T09:29:33</td>
-      <td>v3high-prephase1</td>
-      <td>1.5%</td>
-      <td class="spd-yellow">98.5%</td>
-      <td>1062/1046</td>
+      <td>2026-05-23T13:11:54</td>
+      <td>v3low-dp-v3h-phase4-layout-shift</td>
+      <td>1.6%</td>
+      <td class="spd-yellow">98.4%</td>
+      <td>1063/1046</td>
       <td>32</td>
       <td>0</td>
       <td>2</td>
@@ -2977,13 +2977,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-23T06:57:54</td>
-      <td>w1high-frame0-consume-phase4</td>
-      <td>1.6%</td>
-      <td class="spd-yellow">98.4%</td>
-      <td>1062/1045</td>
-      <td>38</td>
-      <td>0</td>
+      <td>2026-05-23T13:11:54</td>
+      <td>v3low-dp-v3h-phase4-layout-shift</td>
+      <td>0.8%</td>
+      <td class="spd-green">99.2%</td>
+      <td>1052/1044</td>
+      <td>40</td>
+      <td>1</td>
       <td>6</td>
       <td></td>
     </tr>
@@ -3103,13 +3103,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-23T12:13:50</td>
-      <td>w1h-double-preload-3wait</td>
-      <td>0.8%</td>
-      <td class="spd-green">99.2%</td>
-      <td>1457/1445</td>
-      <td>35</td>
-      <td>5</td>
+      <td>2026-05-23T13:11:54</td>
+      <td>v3low-dp-v3h-phase4-layout-shift</td>
+      <td>1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>1458/1444</td>
+      <td>36</td>
+      <td>6</td>
       <td>6</td>
       <td></td>
     </tr>

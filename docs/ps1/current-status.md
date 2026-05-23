@@ -10,8 +10,8 @@ trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank p
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
 code-headroom passes, and the `JCPERF2`-only perf-reporting code-headroom
 pass; all 63 scenes remain validated, all 126 high/low rows are
-timing-bearing, and the public headless battle card is `+0.1956%` over target
-/ `99.8062%` target speed).
+timing-bearing, and the public headless battle card is `+0.1906%` over target
+/ `99.8111%` target speed).
 
 ## Overall
 
@@ -370,8 +370,8 @@ gap-placed D4 speed promotion, and the VISITOR3-low `88..104`, `72..88`, plus `1
 speed promotion, plus the VISITOR3-high entry `62` cleanup-only headroom pass,
 the W1-low entry `90..99` fixed-layout canonicalization pass,
 the public battle card is now
-`+0.1956%` over target / `99.8062%` target speed; the raw signed optimization
-rollup is `-0.5213%` / `100.5366%`.
+`+0.1906%` over target / `99.8111%` target speed; the raw signed optimization
+rollup is `-0.5263%` / `100.5414%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.20`
 public over-target points and added about `12.70` public target-speed points.
@@ -506,7 +506,7 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The current public battle card is `+0.1956%` / `99.8062%` with `124` green, `2` yellow, and `0` orange rows;
+  The current public battle card is `+0.1906%` / `99.8111%` with `125` green, `1` yellow, and `0` orange rows;
   BUILDING2 high is now green at `1330/1317` with blocking/read/due `32/33/4`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, trim-tail work, safe-tail trims, and fixed-footprint physical compaction to
   active payload `520974`, WALKSTUF1 high is
