@@ -2717,6 +2717,7 @@ fgRuntimePresentAndConsumeFirstFrameForW1High(void)
         return 0;
     fgRuntimeWaitHeldVBlank();
     fgRuntimeWaitHeldVBlank();
+    fgRuntimeWaitHeldVBlank();
     gFgRuntime.sceneClockTick = fgReadTickCounter();
     return 1;
 }
