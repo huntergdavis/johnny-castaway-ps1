@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/visitor3-low-phase1-seg4-38-79-under-yellow-canary-20260523/20260523-042947-2959812`
+- Source artifact root: `scratch/ps1-perf-iterate/w1high-prevvis200-215-postv3-under-yellow-canary-raft4-20260523/20260523-051830-3296468`
 - Candidate rows: `32`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
