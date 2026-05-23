@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high segment3/exact-clean speed promotion, the D4/local-LZ decoder inline code-headroom pa...
+the WALKSTUF1-high 62..66 clip plus {92..108}/{272..284} read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high segment3/exa...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 866 |
-| Approx. words | 9729 |
+| Lines | 867 |
+| Approx. words | 9765 |
 | Code fences | 1 |
 
 ## Outline

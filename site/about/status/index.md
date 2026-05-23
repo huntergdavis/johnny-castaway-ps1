@@ -23,15 +23,16 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2149%` over
-target / `99.7875%` target speed; the raw signed optimization matrix is
-about `-0.5020%` / `100.5178%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2144%` over
+target / `99.7880%` target speed; the raw signed optimization matrix is
+about `-0.5025%` / `100.5184%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
-VISITOR3 clean-relief/setup-edge checkpoints keep the top allocator-era rows
-measured inside the allocator budget. The latest VISITOR3-low phase-retime
-promotion moves VISITOR3 low `1338/1065/1040 -> 1339/1065/1041`, cuts overrun
-`25 -> 24`, and improves target speed `97.653% -> 97.746%` while VISITOR3
-high, WALKSTUF1 high, and BUILDING2 high stay exact-flat.
+VISITOR3 checkpoints keep the top allocator-era rows measured inside the
+allocator budget. The latest WALKSTUF1-high promotion clips entries `62..66`
+and adds `{92..108}` plus `{272..284}` read groups, improving W1-high
+`1469/1440 -> 1469/1441`, overrun `29 -> 28`, blocking/refill `42/12 -> 41/11`,
+and reads/due `41/7 -> 37/6` while BUILDING2 high and VISITOR3 high/low stay
+exact-flat.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while

@@ -235,10 +235,11 @@ retargeted <code class="language-plaintext highlighter-rouge">{411..423}</code> 
 with previous-visible cleanup to drop runtime restore bytes <code class="language-plaintext highlighter-rouge">509592 -&gt; 500782</code>
 and upload bytes <code class="language-plaintext highlighter-rouge">17182720 -&gt; 17171200</code>; the latest entry <code class="language-plaintext highlighter-rouge">58..61</code> tail trim
 plus phase-3 retime improves high to <code class="language-plaintext highlighter-rouge">1469/1440</code> / <code class="language-plaintext highlighter-rouge">98.026%</code> while keeping
-BUILDING2 high and VISITOR3 high/low exact-flat. The current no-<code class="language-plaintext highlighter-rouge">144</code>
-mid-cluster, frame138, active-loop, and early offscreen clip headroom passes
-then reduce high runtime rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16547/121551/660244</code> without
-changing timing.
+BUILDING2 high and VISITOR3 high/low exact-flat. The current <code class="language-plaintext highlighter-rouge">62..66</code> screen
+clip plus <code class="language-plaintext highlighter-rouge">{92..108}</code>/<code class="language-plaintext highlighter-rouge">{272..284}</code> read-group promotion then improves high to
+<code class="language-plaintext highlighter-rouge">1469/1441</code> / <code class="language-plaintext highlighter-rouge">98.094%</code>, cuts overrun <code class="language-plaintext highlighter-rouge">29 -&gt; 28</code>, blocking/refill
+<code class="language-plaintext highlighter-rouge">42/12 -&gt; 41/11</code>, reads/due <code class="language-plaintext highlighter-rouge">41/7 -&gt; 37/6</code>, and reduces runtime
+rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16547/120919/658340</code>.
 The prior VISITOR3-low entry <code class="language-plaintext highlighter-rouge">109..112</code> fixed-layout clip keeps the
 five-yellow canary exact-flat while shrinking selected active payload
 <code class="language-plaintext highlighter-rouge">8170 -&gt; 6004</code>; the broad full-pack clip and paired <code class="language-plaintext highlighter-rouge">{46..58}</code> read row are
@@ -317,19 +318,19 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2149%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.2%</code> (<code class="language-plaintext highlighter-rouge">0.2144%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7875%</code> exact, public-capped)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7880%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high no-<code class="language-plaintext highlighter-rouge">144</code> mid-cluster clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:07:57</code>; prior W1-high frame138 clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T16:09:20</code>; prior W1-high active-loop clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T15:49:45</code>; prior W1-high early offscreen clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T15:29:24</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">62..66</code> clip plus <code class="language-plaintext highlighter-rouge">{92..108}</code>/<code class="language-plaintext highlighter-rouge">{272..284}</code> speed gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:37:49</code>; prior W1-high no-<code class="language-plaintext highlighter-rouge">144</code> mid-cluster clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:07:57</code>; prior W1-high frame138 clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T16:09:20</code>; prior W1-high active-loop clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T15:49:45</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current W1-high headroom row uses <code class="language-plaintext highlighter-rouge">w1high-clip132-146-no144-headroom</code>; current four-yellow timing rows otherwise use <code class="language-plaintext highlighter-rouge">w1high-entry58-61-tail-phase3</code>; prior B2-high compact rows used <code class="language-plaintext highlighter-rouge">b2high-compact-current</code>; prior VISITOR3-low additive setup rows used <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>; prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current W1-high timing row uses <code class="language-plaintext highlighter-rouge">w1high-clip62-66-rg92-108-rg272-284</code>; prior W1-high headroom row used <code class="language-plaintext highlighter-rouge">w1high-clip132-146-no144-headroom</code>; current four-yellow timing rows otherwise use <code class="language-plaintext highlighter-rouge">w1high-entry58-61-tail-phase3</code>; prior B2-high compact rows used <code class="language-plaintext highlighter-rouge">b2high-compact-current</code>; prior VISITOR3-low additive setup rows used <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>; prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -345,18 +346,17 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest WALKSTUF1-high pack/render headroom track:
-<code class="language-plaintext highlighter-rouge">w1high-clip132-146-no144-headroom</code> clips <code class="language-plaintext highlighter-rouge">WALKSTUF1.FG2</code> entries <code class="language-plaintext highlighter-rouge">132</code>,
-<code class="language-plaintext highlighter-rouge">133</code>, <code class="language-plaintext highlighter-rouge">135</code>, <code class="language-plaintext highlighter-rouge">136</code>, <code class="language-plaintext highlighter-rouge">139</code>, <code class="language-plaintext highlighter-rouge">140</code>, <code class="language-plaintext highlighter-rouge">141</code>, <code class="language-plaintext highlighter-rouge">142</code>, <code class="language-plaintext highlighter-rouge">143</code>, <code class="language-plaintext highlighter-rouge">145</code>, and <code class="language-plaintext highlighter-rouge">146</code>,
-excluding phase-negative entry <code class="language-plaintext highlighter-rouge">144</code>, on top of the prior entry <code class="language-plaintext highlighter-rouge">138</code>,
-active-loop, early offscreen, and entry <code class="language-plaintext highlighter-rouge">58..61</code> tail/phase promotions. It
-preserves the <code class="language-plaintext highlighter-rouge">1535263</code> byte pack footprint, LBA <code class="language-plaintext highlighter-rouge">24891</code>, sectors <code class="language-plaintext highlighter-rouge">750</code>, table
-entry sizes, and the <code class="language-plaintext highlighter-rouge">233472</code> byte PS-EXE bucket. The latest subset drops
-selected logical payload <code class="language-plaintext highlighter-rouge">45948 -&gt; 26217</code> and removes <code class="language-plaintext highlighter-rouge">12336</code> cleanup plus
-<code class="language-plaintext highlighter-rouge">20989</code> draw pixels. W1-high timing stays exact-flat at <code class="language-plaintext highlighter-rouge">1808/1469/1440</code>,
-overrun <code class="language-plaintext highlighter-rouge">29</code>, blocking/refill <code class="language-plaintext highlighter-rouge">42/12</code>, and target speed <code class="language-plaintext highlighter-rouge">98.026%</code>, while
-cumulative runtime work drops rows/spans/pixels <code class="language-plaintext highlighter-rouge">16712/127281/714231 -&gt;
-16547/121551/660244</code>. BUILDING2 high and VISITOR3 high/low stay exact-flat
+<p>Latest WALKSTUF1-high speed track:
+<code class="language-plaintext highlighter-rouge">w1high-clip62-66-rg92-108-rg272-284</code> clips <code class="language-plaintext highlighter-rouge">WALKSTUF1.FG2</code> entries <code class="language-plaintext highlighter-rouge">62..66</code>
+and adds the high-tide <code class="language-plaintext highlighter-rouge">{92..108}</code> plus <code class="language-plaintext highlighter-rouge">{272..284}</code> read groups on top of the
+prior no-<code class="language-plaintext highlighter-rouge">144</code> mid-cluster, entry <code class="language-plaintext highlighter-rouge">138</code>, active-loop, early offscreen, and
+entry <code class="language-plaintext highlighter-rouge">58..61</code> tail/phase promotions. It preserves the <code class="language-plaintext highlighter-rouge">1535263</code> byte pack
+footprint, LBA <code class="language-plaintext highlighter-rouge">24891</code>, sectors <code class="language-plaintext highlighter-rouge">750</code>, table entry sizes, and the <code class="language-plaintext highlighter-rouge">233472</code>
+byte PS-EXE bucket. The latest clip drops selected logical payload
+<code class="language-plaintext highlighter-rouge">23002 -&gt; 19866</code>, removes <code class="language-plaintext highlighter-rouge">3290</code> cleanup plus <code class="language-plaintext highlighter-rouge">1904</code> draw pixels, and improves
+W1-high <code class="language-plaintext highlighter-rouge">1808/1469/1440 -&gt; 1808/1469/1441</code>, overrun <code class="language-plaintext highlighter-rouge">29 -&gt; 28</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">42/12 -&gt; 41/11</code>, reads/due <code class="language-plaintext highlighter-rouge">41/7 -&gt; 37/6</code>, and target speed
+<code class="language-plaintext highlighter-rouge">98.026% -&gt; 98.094%</code>. BUILDING2 high and VISITOR3 high/low stay exact-flat
 under canonical boot variants.</p>
 
 <p>Prior BUILDING2-high compact speed track:
@@ -3147,14 +3147,14 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T17:07:57</td>
-      <td>w1high-clip132-146-no144-headroom</td>
-      <td>2.0%</td>
-      <td class="spd-yellow">98.0%</td>
-      <td>1469/1440</td>
-      <td>42</td>
-      <td>12</td>
-      <td>7</td>
+      <td>2026-05-22T17:37:49</td>
+      <td>w1high-clip62-66-rg92-108-rg272-284</td>
+      <td>1.9%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>1469/1441</td>
+      <td>41</td>
+      <td>11</td>
+      <td>6</td>
       <td></td>
     </tr>
     <tr id="perf-walkstuf1-low">

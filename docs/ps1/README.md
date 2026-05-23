@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2149% public over target / 99.7875% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2144% public over target / 99.7880% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2149%` over target /
-`99.7875%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.5020%` / `100.5178%`; bands are `123`
+loading, and the current battle card is `+0.2144%` over target /
+`99.7880%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.5025%` / `100.5184%`; bands are `123`
 green, `3` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -40,12 +40,12 @@ enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 read-work, plus the W1-high one-VBlank phase retime and the BUILDING2-high one-VBlank phase retime, entries
 `89..91`, safe-tail entries `101..104`, `141`, `175..177`, and `333`, and the compacted entries `76`/`77` pack trims that move that row to `1330/1317`, overrun `13`,
 blocking/refill `32/12`, target speed `99.023%`, loop reads/read time
-`33/149`, and active payload `520974`. W1-high now measures `1469/1440`, overrun `29`, target speed
-`98.026%`, blocking/refill `42/12`, and reads/due `41/7`. The current
+`33/149`, and active payload `520974`. W1-high now measures `1469/1441`, overrun `28`, target speed
+`98.094%`, blocking/refill `41/11`, and reads/due `37/6`. The current
 VISITOR3-low stack adds the four-VBlank slack-knee guard on top of the
 `16..32`, `72..88`, and `88..104` retained read groups, then adds a
 one-VBlank low-tide phase offset, moving low to `1065/1041`, overrun `24`,
-blocking `55`, loop reads/due `28/10`, and target speed `97.746%`. The newest W1-low trim/retarget pass keeps `WALK1LOW.FG2`
+blocking `50`, loop reads/due `18/8`, and target speed `97.746%`. The newest W1-low trim/retarget pass keeps `WALK1LOW.FG2`
 file size/LBA/sectors fixed, drops active payload `752740 -> 708288`, moves
 setup coverage to `179..283` plus `154..160`, adds one low-tide phase VBlank
 and a one-VBlank low-tide window-slack guard, and improves W1-low to
@@ -83,10 +83,11 @@ The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 `286..344` resident, carries the `{149,165}` read group, and encodes frame
 `92` as previous-frame D4, then layers the frame56/source67 trim, `{178,194}`,
 `{423,439}`, `{404,416}`, `{395,411}`, retargeted `{411,423}`, and high-tide prepare-before-window scheduler
-ownership, then applies the high-tide one-VBlank phase retime and the entry
-`58..61` tail/phase-3 speed pass. It measures
-`1469/1440` at `98.026%` target speed, overrun `29`,
-blocking/refill `42/12`, loop reads/read time `41/202`, and due `7`,
+ownership, the high-tide one-VBlank phase retime, the entry `58..61`
+tail/phase-3 speed pass, the early/active/mid screen-span clip passes, and the
+entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass. It measures
+`1469/1441` at `98.094%` target speed, overrun `28`,
+blocking/refill `41/11`, loop reads/read time `37/192`, and due `6`,
 with pack LBA/sectors and the PS-EXE bucket fixed.
 
 The latest WALKSTUF1 low allocator-era baseline keeps the no-shift payload

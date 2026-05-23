@@ -4,14 +4,14 @@
 
 
 **Last updated:** 2026-05-22 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
+the WALKSTUF1-high `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
 phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact
 trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
 code-headroom passes, and the `JCPERF2`-only perf-reporting code-headroom
 pass; all 63 scenes remain validated, all 126 high/low rows are
-timing-bearing, and the public headless battle card is `+0.2149%` over target
-/ `99.7875%` target speed).
+timing-bearing, and the public headless battle card is `+0.2144%` over target
+/ `99.7880%` target speed).
 
 ## Overall
 
@@ -294,12 +294,13 @@ late-tail draw reduction that dropped `39072` draw
 pixels, `4263` spans, `313` draw rows, `79` dirty rows, and `50560` upload
 bytes. The v665/v666/v668/v669/v672/v673/v674/v675/v678/v680/v684/v685/v686/v687/v688/v689/v690/v691/v692/v693/v694/v695/v696 follow-ups clip isolated low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame65/post-left-singleton/mid-right-ad/ae/af/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen clusters,
 also exact-flat, dropping runtime frame rows/spans/pixels from
-`17298/135025/785455 -> 16272/116912/650623`. The latest W1-high no-`144`
-mid-cluster follow-up now clips entries `132`, `133`, `135`, `136`, `139`,
-`140`, `141`, `142`, `143`, `145`, and `146` after the earlier
-frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 follow-up and is
-also exact-flat and drops high runtime rows/spans/pixels
-`16712/127281/714231 -> 16547/121551/660244`. BUILDING4 low v827 now carries
+`17298/135025/785455 -> 16272/116912/650623`. The latest W1-high speed
+follow-up clips entries `62..66` and adds `{92..108}` plus `{272..284}` read
+groups after the no-`144` mid-cluster/frame138/active-loop/early offscreen
+headroom passes. It improves high from `1469/1440` to `1469/1441`, overrun
+`29 -> 28`, blocking/refill `42/12 -> 41/11`, reads/due `41/7 -> 37/6`, and
+drops high runtime rows/spans/pixels `16547/121551/660244 ->
+16547/120919/658340`. BUILDING4 low v827 now carries
 the same-speed no-shift payload lane through frame `286`, keeping
 `3128/2853/2816`, blocking/refill `40/34`, read VBlanks `215`, and due `1`
 while dropping active payload `855284 -> 810226`; the current gap-8 dirty-upload
@@ -505,16 +506,16 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The current public battle card is `+0.2149%` / `99.7875%` with `123` green, `3` yellow, and `0` orange rows;
+  The current public battle card is `+0.2144%` / `99.7880%` with `123` green, `3` yellow, and `0` orange rows;
   BUILDING2 high is now green at `1330/1317` with blocking/read/due `32/33/4`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, trim-tail work, safe-tail trims, and fixed-footprint physical compaction to
   active payload `520974`, WALKSTUF1 high is
-  `1469/1440` with blocking/refill `42`/`12`, loop reads/read time `41`/`202`, and rows/spans/pixels
-  `16547/121551/660244` after the entry `58..61` tail-trim/phase-3 speed pass and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
+  `1469/1441` with blocking/refill `41`/`11`, loop reads/read time `37`/`192`, and rows/spans/pixels
+  `16547/120919/658340` after the entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, entry `58..61` tail-trim/phase-3 speed pass, and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
   with blocking/refill `31`/`2`, loop reads/read time `22`/`117`, and active payload
   `708288` after the compact trim/retarget phase pass, VISITOR3 high is
   `1067/1045` with blocking/read count `32`/`12`,
-  VISITOR3 low is `1065/1041` with blocking/read count `55`/`28`, JOHNNY1 high/low are
+  VISITOR3 low is `1065/1041` with blocking/read count `50`/`18`, JOHNNY1 high/low are
   green at `1948/1945`, BUILDING4 low is
   green at `2847/2820` with blocking/read time `32`/`252`, and VISITOR5 high/low are
   now green at `1101/1096` and `1102/1097`.

@@ -80,11 +80,13 @@ speed promotion, the VISITOR3-low one-VBlank phase retime, the
 VISITOR3-low additive `55..79` CACHE setup-residency headroom pass, the
 BUILDING2-high safe-tail payload headroom pass, the BUILDING2-high
 fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
-`58..61` tail/phase speed promotion, and the W1-high no-`144` mid-cluster,
-frame138, active-loop, and early offscreen clip headroom passes:
-`+0.2149%` public average over target / `99.7875%` public target speed across
+`58..61` tail/phase speed promotion, the W1-high no-`144` mid-cluster,
+frame138, active-loop, and early offscreen clip headroom passes, and the
+W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
+promotion:
+`+0.2144%` public average over target / `99.7880%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5020%` / `100.5178%`. Since the compact full-matrix baseline was
+`-0.5025%` / `100.5184%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.19` public over-target points and added about `12.69` public
 target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
@@ -131,8 +133,9 @@ green at `99.023%`. The attempted B2-high clean-cap and phase-0 big swings stay
 closed on this baseline: `192 KiB` clean chunks exhaust CACHE, `128 KiB`
 chunks regress to `1347/1310`, entry `77` plus phase `0` regresses to
 `1342/1312`, and phase `0` alone regresses to `1341/1313`. The next
-under-green priority is now WALKSTUF1 high, then VISITOR3 high, then VISITOR3
-low, but the latest W1-high post-promotion non-tail probes are closed:
+under-green priority is still WALKSTUF1 high, then VISITOR3 high, then
+VISITOR3 low, but the latest W1-high post-promotion non-tail probes before
+the accepted clip/read stack are closed:
 clean64, additive `358..374`, and same-size `358..374` replacement all
 regress to `1811/1472/1438`, overrun `34`, blocking/refill `47/17`. The
 follow-up W1-low recipe transfer is closed too: first-segment retarget
@@ -161,10 +164,24 @@ still fail: `{80..92}` saves two reads but regresses to `1812/1473/1440`,
 blocking/refill `45/13`; `{92..108}` saves three reads but regresses
 blocking/refill to `43/13`; and `{268..280}` saves reads but regresses to
 `1811/1472/1439`, blocking/refill `49/15`. The broader `144`-containing late
-clip sets are also closed because they tighten target `1440 -> 1439`. This is
-headroom rather than a converted speed win; the next W1-high swing should use
-the new render slack to retry generated/no-hot-C deadline ownership or a narrow
-read conversion, not another broad static C/setup row.
+clip sets are also closed because they tighten target `1440 -> 1439`. The
+accepted follow-up clips exact entries `62..66`, dropping selected logical
+payload `23002 -> 19866` and removing `3290` cleanup plus `1904` draw pixels.
+That render/parser headroom is enough to make additive `{92..108}` pass
+exact-flat and then additive `{272..284}` convert to speed: the strict
+four-yellow canary at
+`scratch/ps1-perf-iterate/w1high-clip62-66-rg92-108-rg272-284-four-yellow-current-20260522/20260522-173749-2874030/summary.json`
+keeps BUILDING2 high and VISITOR3 high/low exact-flat while W1-high improves
+`1808/1469/1440 -> 1808/1469/1441`, overrun `29 -> 28`, blocking/refill
+`42/12 -> 41/11`, reads/due `41/7 -> 37/6`, and runtime rows/spans/pixels
+`16547/121551/660244 -> 16547/120919/658340`. The paired `{268..280}`,
+`{372..388}`, and `{80..92}` retries remain closed on top of this stack:
+`{268..280}` regressed to `1472/1438`, blocking/refill `50/17`;
+`{372..388}` regressed to `1474/1441`, blocking/refill `45/15`; and
+`{80..92}` regressed to `1473/1439`, blocking/refill `44/14`. The next
+W1-high swing should target a different no-decode/render-data-shape pocket or
+generated/no-hot-C deadline ownership rather than stacking more broad scalar
+read rows.
 The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
