@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 367 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 368 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -37,6 +37,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/build-system/' | relative_url }}">PS1 Build System</a><p><code>docs/ps1/build-system.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/current-status/' | relative_url }}">PS1 Port — Current Status</a><p><code>docs/ps1/current-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/development-workflow/' | relative_url }}">PS1 Development Workflow</a><p><code>docs/ps1/development-workflow.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/final-under-99-speed-handoff/' | relative_url }}">Final Under-99 Speed Handoff</a><p><code>docs/ps1/final-under-99-speed-handoff.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/freeplay-mode-design/' | relative_url }}">Castaway Freeplay And Debug Mode</a><p><code>docs/ps1/freeplay-mode-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/hand-rolled-asm-feasibility/' | relative_url }}">Hand-Rolled MIPS Assembly — Feasibility Research</a><p><code>docs/ps1/hand-rolled-asm-feasibility.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/hardware-specs/' | relative_url }}">PlayStation 1 - Hardware Specifications</a><p><code>docs/ps1/hardware-specs.md</code></p></li>
