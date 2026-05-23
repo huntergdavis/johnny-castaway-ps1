@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-23:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2067%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7953%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
-| Stats version | mixed; current under-yellow timing rows are stamped `w1high-direct185-191`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2051%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7970%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
+| Stats version | mixed; current under-yellow timing rows are stamped `w1high-prep2-frame128-191`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,16 +94,17 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1-high direct-stage note:
-W1-high now direct-stages high-tide frames `185..191` after the `383..399`
-setup slice made that late cadence safe. Focused proof:
-`scratch/ps1-perf-iterate/w1high-direct185-191-promote-20260523/20260523-005414-1464762/summary.json`.
+Latest promoted WALKSTUF1-high prep2 frame-gate note:
+W1-high now allows two-VBlank staged-frame prepare only on high-tide displayed
+frames `128..191`, after the `185..191` direct-stage rescue and `383..399`
+setup slice made the late cadence safe. Focused proof:
+`scratch/ps1-perf-iterate/w1high-prep2-frame128-191-promote-20260523/20260523-022246-2068734/summary.json`.
 Canonical under-yellow proof:
-`scratch/ps1-perf-iterate/w1high-direct185-191-under-yellow-canary-20260523/20260523-005607-1475417/summary.json`.
-W1-high improves `1816/1467/1442 -> 1816/1467/1443`, overrun `25 -> 24`,
-with blocking/refill unchanged at `37/8`, reads/due `37/6`, and target speed
-`98.296% -> 98.364%`. VISITOR3 high/low remain valid in the same canary at
-`1065/1046` and `1063/1043`.
+`scratch/ps1-perf-iterate/w1high-prep2-frame128-191-under-yellow-canary-canonical-20260523/20260523-023044-2113401/summary.json`.
+W1-high improves `1816/1467/1443 -> 1815/1466/1445`, overrun `24 -> 21`,
+blocking/refill `37/8 -> 35/5`, reads `37 -> 36`, due misses stay `6`, and
+target speed improves `98.364% -> 98.568%`. VISITOR3 high/low remain exact-flat
+in the same canary at `1065/1046` and `1063/1043`.
 
 Prior promoted WALKSTUF1-high setup-slice note:
 W1-high adds a high-tide `383..399` setup slice in `MEM_REGION_TRANSIENT`

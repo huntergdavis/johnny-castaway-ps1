@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-the WALKSTUF1-high 183..199 late-layout / 372..384 owner refill-headroom pass, the WALKSTUF1-high 372..388 fresh-owner retarget speed pass, the WALKSTUF1-high frames 189..191 direct-stage headroom pass, the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high {108..124} same-speed CD-pressure pass, the WALKSTUF1-high 62..66 clip plus {92..108}/{272..284} read-group speed pass, the W1-high frame138, active-loop, and early offs...
+the WALKSTUF1-high prep2 frame-gate promotion, the WALKSTUF1-high 185..191 direct-stage rescue, the WALKSTUF1-high 383..399 transient setup-slice / clean-cap speed pass, the WALKSTUF1-high 183..199 late-layout / 372..384 owner refill-headroom pass, the WALKSTUF1-high 372..388 fresh-owner retarget speed pass, the WALKSTUF1-high frames 189..191 direct-stage headroom pass, the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high...
 
 ## File facts
 
@@ -22,7 +22,7 @@ the WALKSTUF1-high 183..199 late-layout / 372..384 owner refill-headroom pass, t
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 867 |
-| Approx. words | 9834 |
+| Approx. words | 9873 |
 | Code fences | 1 |
 
 ## Outline

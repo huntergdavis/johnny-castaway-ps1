@@ -304,7 +304,12 @@ enum {
      gFgRuntime.stagedFrameValid && \
      !gFgRuntime.preparedFrameValid && \
      gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) && \
-     fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS)
+     ((fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS) || \
+      (!islandState.lowTide && \
+       gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 && \
+       fgRuntimeHeldSlackBeforeWait() == 2 && \
+       gFgRuntime.frameIndex >= 128 && \
+       gFgRuntime.frameIndex <= 191)))
 #define fgRuntimeCanPresentPreparedOnNextVBlank() \
     (gFgRuntime.active && \
      gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
