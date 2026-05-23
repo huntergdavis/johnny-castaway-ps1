@@ -44,23 +44,25 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.8.16-ps1`** — memory-region allocator stability release |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
-| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; refreshed public-capped average is **+0.2149% over target / 99.7875% target speed** after the WALKSTUF1-high frame138, active-loop, and early offscreen clip headroom passes, the WALKSTUF1-high entry `58..61` tail-trim/phase-3 speed promotion, the BUILDING2-high fixed-footprint physical compaction speed promotion moved B2-high into green, the VISITOR3-low additive `55..79` CACHE setup-segment headroom pass, the VISITOR3-low frame134 D4 data-shape headroom pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase promotion moved WALKSTUF1 low into green, plus the W1-high one-VBlank phase retime, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass, the BUILDING2-high one-VBlank phase retime, the VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the local-LZ and D4 decoder inline code-headroom passes, the W1-high entries `183..191` fixed-layout previous-visible cleanup headroom pass, the VISITOR3-low fixed-layout cleanup/canonicalization passes, the WALKSTUF1 and BUILDING2 screen-clip/data-shape headroom passes, the VISITOR3-low D4/read-group speed promotions, and the allocator-era retained setup/CD-pressure promotions. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
+| Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing; refreshed public-capped average is **+0.2149% over target / 99.7875% target speed** after the WALKSTUF1-high no-`144` mid-cluster, frame138, active-loop, and early offscreen clip headroom passes, the WALKSTUF1-high entry `58..61` tail-trim/phase-3 speed promotion, the BUILDING2-high fixed-footprint physical compaction speed promotion moved B2-high into green, the VISITOR3-low additive `55..79` CACHE setup-segment headroom pass, the VISITOR3-low frame134 D4 data-shape headroom pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase promotion moved WALKSTUF1 low into green, plus the W1-high one-VBlank phase retime, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass, the BUILDING2-high one-VBlank phase retime, the VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the local-LZ and D4 decoder inline code-headroom passes, the W1-high entries `183..191` fixed-layout previous-visible cleanup headroom pass, the VISITOR3-low fixed-layout cleanup/canonicalization passes, the WALKSTUF1 and BUILDING2 screen-clip/data-shape headroom passes, the VISITOR3-low D4/read-group speed promotions, and the allocator-era retained setup/CD-pressure promotions. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
 The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current mainline builds on `v0.8.16-ps1` with the memory-region allocator promoted: BOOT allocations seal after startup, CACHE allocations use free-list/LRU reuse for long-lived resource data, and TRANSIENT scene allocations can be wiped between major scene loads instead of relying on a fragmented general heap.
 
-The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest four-yellow promotion gate is `scratch/ps1-perf-iterate/w1high-clip138-four-yellow-current-20260522/20260522-160920-2372995/summary.json`. Public rollup is `+0.2149%` over target / `99.7875%` target speed and raw signed rollup is about `-0.5020%` / `100.5178%`; bands are `123` green, `3` yellow, `0` orange, and `0` red. That is about `17.19` public over-target points removed and `12.69` public target-speed points added since the compact full-matrix baseline.
+The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest four-yellow promotion gate is `scratch/ps1-perf-iterate/w1high-clip132-146-no144-four-yellow-current-20260522/20260522-170757-2705075/summary.json`. Public rollup is `+0.2149%` over target / `99.7875%` target speed and raw signed rollup is about `-0.5020%` / `100.5178%`; bands are `123` green, `3` yellow, `0` orange, and `0` red. That is about `17.19` public over-target points removed and `12.69` public target-speed points added since the compact full-matrix baseline.
 
-The newest WALKSTUF1-high headroom promotion extends the active-loop and early
-offscreen clip baseline by clipping entry `138` / source frame `246` while
-preserving the `1535263` byte pack footprint, entry sizes, offsets, LBA
-`24891`, sectors `750`, and `233472` byte PS-EXE bucket. The latest subset
-drops selected logical payload `3804 -> 223`, removing `6773` draw pixels. The
-four-yellow canary keeps W1-high exact-flat at `1808/1469/1440`, overrun `29`,
+The newest WALKSTUF1-high headroom promotion extends the early, active-loop,
+and entry `138` clip baseline by clipping entries `132`, `133`, `135`, `136`,
+`139`, `140`, `141`, `142`, `143`, `145`, and `146`, deliberately excluding
+phase-negative entry `144`. It preserves the `1535263` byte pack footprint,
+entry sizes, offsets, LBA `24891`, sectors `750`, and `233472` byte PS-EXE
+bucket. The latest subset drops selected logical payload `45948 -> 26217`,
+removing `12336` cleanup pixels and `20989` draw pixels. The four-yellow
+canary keeps W1-high exact-flat at `1808/1469/1440`, overrun `29`,
 blocking/refill `42/12`, reads/due `41/7`, while cumulative post-tail clip
 headroom drops runtime rows/spans/pixels `16712/127281/714231 ->
-16613/124589/681233`; BUILDING2 high and VISITOR3 high/low stay exact-flat.
+16547/121551/660244`; BUILDING2 high and VISITOR3 high/low stay exact-flat.
 
 The newest WALKSTUF1-high speed promotion trims fixed-offset entry tails for
 entries `58..61` in `WALKSTUF1.FG2` and raises the high-tide phase offset to

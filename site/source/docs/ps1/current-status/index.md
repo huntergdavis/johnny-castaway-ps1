@@ -21,8 +21,8 @@ the WALKSTUF1-high frame138, active-loop, and early offscreen clip headroom pass
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 863 |
-| Approx. words | 9706 |
+| Lines | 866 |
+| Approx. words | 9729 |
 | Code fences | 1 |
 
 ## Outline

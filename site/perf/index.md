@@ -149,9 +149,10 @@ retargeted `{411..423}` CD-pressure work, and now compacts entries `183..191`
 with previous-visible cleanup to drop runtime restore bytes `509592 -> 500782`
 and upload bytes `17182720 -> 17171200`; the latest entry `58..61` tail trim
 plus phase-3 retime improves high to `1469/1440` / `98.026%` while keeping
-BUILDING2 high and VISITOR3 high/low exact-flat. The current frame138,
-active-loop, and early offscreen clip headroom passes then reduce high
-runtime rows/spans/pixels to `16613/124589/681233` without changing timing.
+BUILDING2 high and VISITOR3 high/low exact-flat. The current no-`144`
+mid-cluster, frame138, active-loop, and early offscreen clip headroom passes
+then reduce high runtime rows/spans/pixels to `16547/121551/660244` without
+changing timing.
 The prior VISITOR3-low entry `109..112` fixed-layout clip keeps the
 five-yellow canary exact-flat while shrinking selected active payload
 `8170 -> 6004`; the broad full-pack clip and paired `{46..58}` read row are
@@ -200,8 +201,8 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.2%` (`0.2149%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7875%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame138 clip headroom gate `2026-05-22T16:09:20`; prior W1-high active-loop clip headroom gate `2026-05-22T15:49:45`; prior W1-high early offscreen clip headroom gate `2026-05-22T15:29:24`; prior W1-high entry `58..61` tail/phase promotion gate `2026-05-22T13:44:41` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current W1-high headroom row uses `w1high-clip138-headroom`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; prior B2-high compact rows used `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20`; prior W1-high active-loop clip headroom gate `2026-05-22T15:49:45`; prior W1-high early offscreen clip headroom gate `2026-05-22T15:29:24` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current W1-high headroom row uses `w1high-clip132-146-no144-headroom`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; prior B2-high compact rows used `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -212,17 +213,18 @@ overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
 Latest WALKSTUF1-high pack/render headroom track:
-`w1high-clip138-headroom` clips `WALKSTUF1.FG2` entry `138` / source frame
-`246` on top of active-loop entries `35`, `37`, `39`, and `41`, the earlier
-entries `0`, `1`, `3`, `5`, `6`, `8`, `10`, `11`, `12`, `19`, `21`, and `22`
-offscreen clip, and the entry `58..61` tail/phase speed promotion. It preserves
-the `1535263` byte pack footprint, LBA `24891`, sectors `750`, table entry
-sizes, and the `233472` byte PS-EXE bucket. The latest subset drops selected
-logical payload `3804 -> 223` and removes `6773` draw pixels. W1-high timing
-stays exact-flat at `1808/1469/1440`, overrun `29`, blocking/refill `42/12`,
-and target speed `98.026%`, while cumulative runtime work drops
-rows/spans/pixels `16712/127281/714231 -> 16613/124589/681233`. BUILDING2 high
-and VISITOR3 high/low stay exact-flat under canonical boot variants.
+`w1high-clip132-146-no144-headroom` clips `WALKSTUF1.FG2` entries `132`,
+`133`, `135`, `136`, `139`, `140`, `141`, `142`, `143`, `145`, and `146`,
+excluding phase-negative entry `144`, on top of the prior entry `138`,
+active-loop, early offscreen, and entry `58..61` tail/phase promotions. It
+preserves the `1535263` byte pack footprint, LBA `24891`, sectors `750`, table
+entry sizes, and the `233472` byte PS-EXE bucket. The latest subset drops
+selected logical payload `45948 -> 26217` and removes `12336` cleanup plus
+`20989` draw pixels. W1-high timing stays exact-flat at `1808/1469/1440`,
+overrun `29`, blocking/refill `42/12`, and target speed `98.026%`, while
+cumulative runtime work drops rows/spans/pixels `16712/127281/714231 ->
+16547/121551/660244`. BUILDING2 high and VISITOR3 high/low stay exact-flat
+under canonical boot variants.
 
 Prior BUILDING2-high compact speed track:
 `b2high-compact-current` physically compacts `BUILDING2.FG2`, pads back to
@@ -3010,8 +3012,8 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T16:09:20</td>
-      <td>w1high-clip138-headroom</td>
+      <td>2026-05-22T17:07:57</td>
+      <td>w1high-clip132-146-no144-headroom</td>
       <td>2.0%</td>
       <td class="spd-yellow">98.0%</td>
       <td>1469/1440</td>

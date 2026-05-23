@@ -80,8 +80,8 @@ speed promotion, the VISITOR3-low one-VBlank phase retime, the
 VISITOR3-low additive `55..79` CACHE setup-residency headroom pass, the
 BUILDING2-high safe-tail payload headroom pass, the BUILDING2-high
 fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
-`58..61` tail/phase speed promotion, and the W1-high early, active-loop, and
-frame138 clip headroom passes:
+`58..61` tail/phase speed promotion, and the W1-high no-`144` mid-cluster,
+frame138, active-loop, and early offscreen clip headroom passes:
 `+0.2149%` public average over target / `99.7875%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.5020%` / `100.5178%`. Since the compact full-matrix baseline was
@@ -150,16 +150,21 @@ remove `13030` cleanup pixels and `21519` draw pixels; the active-loop entries
 `35`, `37`, `39`, and `41` add another `26856 -> 23537` selected-payload
 reduction plus `688` cleanup and `4706` draw pixels removed; entry `138` /
 source frame `246` adds `3804 -> 223` selected-payload reduction and removes
-`6773` draw pixels. The strict
-four-yellow canary stays exact-flat at
-`scratch/ps1-perf-iterate/w1high-clip138-four-yellow-current-20260522/20260522-160920-2372995/summary.json`.
+`6773` draw pixels. The latest no-`144` mid-cluster pass clips entries `132`,
+`133`, `135`, `136`, `139`, `140`, `141`, `142`, `143`, `145`, and `146`,
+dropping selected logical payload `45948 -> 26217` while removing `12336`
+cleanup pixels and `20989` draw pixels. The strict four-yellow canary stays
+exact-flat at
+`scratch/ps1-perf-iterate/w1high-clip132-146-no144-four-yellow-current-20260522/20260522-170757-2705075/summary.json`.
 The paired `{80..92}`, `{92..108}`, and entry138 plus `{268..280}` retries
 still fail: `{80..92}` saves two reads but regresses to `1812/1473/1440`,
 blocking/refill `45/13`; `{92..108}` saves three reads but regresses
 blocking/refill to `43/13`; and `{268..280}` saves reads but regresses to
-`1811/1472/1439`, blocking/refill `49/15`. This is headroom rather than a
-converted speed win. The next W1-high render swing should split-test remaining
-singletons from the `132..146` cluster or move to generated no-hot-C ownership.
+`1811/1472/1439`, blocking/refill `49/15`. The broader `144`-containing late
+clip sets are also closed because they tighten target `1440 -> 1439`. This is
+headroom rather than a converted speed win; the next W1-high swing should use
+the new render slack to retry generated/no-hot-C deadline ownership or a narrow
+read conversion, not another broad static C/setup row.
 The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,
@@ -1026,18 +1031,21 @@ broad active payload drops `755808 -> 708532` and improves blocking/due
 scorer can select much narrower subsets with explicit refill gates.
 
 Latest split WALKSTUF1 high late screen-clip result: the broad `132..146`
-cluster has real fixed-layout payload savings, but most speed-bearing forms are
-phase-negative. `132..146` fails by adding one blocking VBlank, `132..136`
-also fails blocking `42 -> 43`, and `138..146` tightens target `1440 -> 1439`.
-The singleton entry `138` / source frame `246` is promoted as exact-flat
-headroom: selected logical payload drops `3804 -> 223`, `6773` draw pixels are
-removed, and the strict four-yellow canary stays exact-flat at
-`1808/1469/1440`, blocking/refill `42/12`, reads/due `41/7`. Entry138 plus the
-`{268..280}` read-row conversion is closed because it regresses to
-`1811/1472/1439`, blocking/refill `49/15`. Keep singleton 138; continue only
-with narrower singleton splits or generated deadline/refill metadata that
-explicitly protects `1469/1440`, blocking/refill `42/12`, and reads/due
-`41/7`.
+cluster has real fixed-layout payload savings, but entry `144` is the
+phase-negative target-tightener. The accepted no-`144` subset clips entries
+`132`, `133`, `135`, `136`, `139`, `140`, `141`, `142`, `143`, `145`, and
+`146` as exact-flat headroom: selected logical payload drops `45948 -> 26217`,
+`12336` cleanup pixels and `20989` draw pixels are removed, runtime
+rows/spans/pixels drop `16613/124589/681233 -> 16547/121551/660244`, and the
+strict four-yellow canary stays exact-flat at `1808/1469/1440`,
+blocking/refill `42/12`, reads/due `41/7`. The original broad `132..146`,
+`132..136`, and `138..146` misses remain closed, and new `144`-containing
+expansions are closed because they tighten target `1440 -> 1439`. Entry138
+plus the `{268..280}` read-row conversion is still closed because it regresses
+to `1811/1472/1439`, blocking/refill `49/15`. Keep the no-`144` subset; the
+next W1-high attempt must explicitly protect `1469/1440`, blocking/refill
+`42/12`, and reads/due `41/7` while converting the banked render slack into a
+deadline/read-placement win.
 
 Latest rejected BUILDING2 high `109..133` preserve-entry clipping swing:
 entry-index clipping was a no-op, and source-frame clipping only canonicalized
@@ -3862,7 +3870,7 @@ strict hot-symbol budget.
 | 12a | WALKSTUF1 low | v712 closes physical same-order compaction for the preserve-offset direct-clip-safe island `58..63`: trimming `22639` bytes regressed scene/loop `1770/1478 -> 1784/1492`, blocking `64 -> 97`, refill `20 -> 31`, and due `11 -> 15`. | Treat W1-low non-tail physical compaction as closed across left, mid, and safe-island subsets. Only late-tail v705 remains safe without generated scheduler ownership. |
 | 13 | WALKSTUF1 high | Add high-tide generated prepare-before-window ownership for the `298..322` suffix family. Low has a prepare fallback; high scalar rows are exhausted and need the same ownership class without hand branches. | High-only metadata probe, zero source-code growth in `foregroundPilotPlay`, require `blocking_vb < 81`. |
 | 14 | WALKSTUF1 high | Split the late suffix into "safe setup tail" and "visible suffix" groups with per-read ownership. Exact-flat `306..322` and negative `298..310` suggest the useful boundary is not the sector range itself. | Planner must show at least one saved read and no visible due takeover before PS1. |
-| 15 | WALKSTUF1 high | No-decode payload shrink for high frames around the `298..322` cluster using row-span canonicalization, not previous-frame D4. Prior high D4 sector-boundary deltas saved bytes but did not pay back CPU/cadence. | Host transform must save >=1 sector and leave D4 gate table unchanged. |
+| 15 | WALKSTUF1 high | No-decode payload shrink remains useful only when it is surgical and phase-scored. The accepted no-`144` mid-cluster clip proves row-span clipping can bank large render slack, while `144`-containing and broad variants tighten target cadence. | Host transform must preserve entry sizes/offsets and run a target-tightening guard before PS1; pair future shrink work with generated deadline/read-placement metadata rather than more broad clipping. |
 | 15a | WALKSTUF1 high | Closed late local-LZ cluster `133/140..144/192` as a standalone sector-collapse path. The batch saved seven modeled sectors but regressed W1-high to `1855/1519/1432`, overrun `87`, blocking/refill `64/16`, reads/due `44/11`; the largest single split, entry140/source248, still regressed to `1817/1481/1439`, overrun `42`, blocking/refill `48/15`, reads/due `42/8`. | Do not retry late W1-high L4 shrinkage without generated deadline/refill ownership or a no-decode fixed-sector format. |
 | 16 | VISITOR3 high | Closed by v641 for the scalar retest: the post-v629 read plan still lists `211..235`, but the matching-label gate is exact-flat and only adds code drift. | Future VISITOR3 high work should skip scalar `211..235` and move to custom compression, payload placement inside existing paid segments, or generated ownership with a non-flat work metric. |
 | 17 | VISITOR3 high | Deterministic staged-D4 validator for frame133: prove previous-frame ownership, decode budget, and staged-present timing locally before any emulator run. v484 failed because the chained D4 path reached frame132 correctness but not full scene correctness. | Host validator must replay frames `131..134` with exact pixels and report a schedule with no missing SFX/frame trip before PS1. |
