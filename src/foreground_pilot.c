@@ -4757,8 +4757,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
         VSync(0);
-        VSync(0);
-        VSync(0);
 #if FG_VISITOR3_LOW_PHASE_VBLANKS >= 1
     } else if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && islandState.lowTide) {
         VSync(0);

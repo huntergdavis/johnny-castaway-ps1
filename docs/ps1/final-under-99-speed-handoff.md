@@ -11,8 +11,8 @@ pixel-perfect and timing-perfect optimization loop.
 - Branch at handoff: `perf/allocator-era-under-green-20260517`.
 - Last committed optimization baseline: `5a4c8f3de0 ps1: retime w1 high first frame`.
 - Last committed log-only docs baseline: `4ebfa4535e docs: log w1 high early visual miss`.
-- Public rollup: `+0.2006%` over target / `99.8013%` target speed.
-- Raw signed rollup: `-0.5163%` over target / `100.5317%` speed.
+- Public rollup: `+0.1983%` over target / `99.8035%` target speed.
+- Raw signed rollup: `-0.5186%` over target / `100.5339%` speed.
 - Methodology total: about `17.20` public over-target points removed and `+12.70` public target-speed points gained since the compact full-matrix baseline.
 - Bands: `123` green, `3` yellow, `0` orange, `0` red.
 
