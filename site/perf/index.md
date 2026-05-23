@@ -221,8 +221,8 @@ Current battle-card rollup as of <time datetime="2026-05-23">2026-05-23</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.1762%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.8252%` exact, public-capped) |
+| Timing-bearing average over target | `+0.2%` (`0.1571%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.8440%` exact, public-capped) |
 | Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame0 consume / phase4 under-yellow canary `2026-05-23T06:57:54`; prior W1-high `200..215` previous-visible cleanup under-yellow canary `2026-05-23T05:18:30`; prior VISITOR3-low phase1 / segment4 `38..79` under-yellow canary `2026-05-23T04:29:47`; prior W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32` |
 | Stats version | full allocator refresh stamped `git:2b617cbc`; current under-yellow rows use `w1high-frame0-consume-phase4`; prior W1-high cleanup rows used `w1high-prevvis200-215-postv3`; prior VISITOR3-low used `v3low-phase1-seg4-38-79`; prior W1-high prep2 rows used `w1high-prep2-frame128-191`; prior W1-high `185..191` direct row used `w1high-direct185-191`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
@@ -1731,12 +1731,12 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T23:24:32</td>
-      <td>w1high-layout-owner372-384</td>
-      <td>1.0%</td>
-      <td class="spd-green">99.0%</td>
-      <td>1330/1317</td>
-      <td>32</td>
+      <td>2026-05-23T14:38:29</td>
+      <td>floor-lift-multiscene</td>
+      <td>0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>1319/1316</td>
+      <td>34</td>
       <td>12</td>
       <td>4</td>
       <td></td>
@@ -1787,13 +1787,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-high"><code>building4</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-18T02:30:50</td>
-      <td>git:391a265e1+building4-high-setupseg264-288</td>
-      <td>1.0%</td>
-      <td class="spd-green">99.1%</td>
-      <td>2843/2816</td>
+      <td>2026-05-23T14:38:29</td>
+      <td>floor-lift-multiscene</td>
+      <td>0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>2832/2816</td>
       <td>34</td>
-      <td>30</td>
+      <td>27</td>
       <td>1</td>
       <td></td>
     </tr>
@@ -1801,13 +1801,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-19T09:17:25</td>
-      <td>git:0faf443b9b+building4-low-window24</td>
-      <td>1.0%</td>
-      <td class="spd-green">99.1%</td>
-      <td>2847/2820</td>
-      <td>32</td>
-      <td>27</td>
+      <td>2026-05-23T14:38:29</td>
+      <td>floor-lift-multiscene</td>
+      <td>0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>2833/2822</td>
+      <td>29</td>
+      <td>23</td>
       <td>1</td>
       <td></td>
     </tr>
@@ -3117,13 +3117,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-low"><code>walkstuf1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T04:53:05</td>
-      <td>w1low-trim-main179-phase1</td>
-      <td>1.0%</td>
-      <td class="spd-green">99.0%</td>
-      <td>1461/1447</td>
-      <td>31</td>
-      <td>2</td>
+      <td>2026-05-23T14:38:29</td>
+      <td>floor-lift-multiscene</td>
+      <td>0.3%</td>
+      <td class="spd-green">99.7%</td>
+      <td>1452/1448</td>
+      <td>33</td>
+      <td>3</td>
       <td>6</td>
       <td></td>
     </tr>

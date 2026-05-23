@@ -4844,6 +4844,61 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         if (ps1PerfEnabled) ps1PerfMarkTripwire();
         gFgRuntime.active = 0;
     }
+    if (islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
+        gFgRuntime.frameIndex == 0 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 1 &&
+        !fgRuntimePresentFirstFrameNoWait()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
+        gFgRuntime.active &&
+        gFgRuntime.frameIndex == 1 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 2 &&
+        !fgRuntimePresentNextStagedAndAdvance()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (gFgRuntimeSceneId == FG_SCENE_BUILDING2 &&
+        !islandState.lowTide &&
+        gFgRuntime.frameIndex == 0 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 1 &&
+        !fgRuntimePresentFirstFrameNoWait()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (gFgRuntimeSceneId == FG_SCENE_BUILDING2 &&
+        !islandState.lowTide &&
+        gFgRuntime.active &&
+        gFgRuntime.frameIndex == 1 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 2 &&
+        !fgRuntimePresentNextStagedAndAdvance()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (fgSceneEquals(gFgRuntime.sceneName, "building4") &&
+        gFgRuntime.frameIndex == 0 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 1 &&
+        !fgRuntimePresentFirstFrameNoWait()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (fgSceneEquals(gFgRuntime.sceneName, "building4") &&
+        gFgRuntime.active &&
+        gFgRuntime.frameIndex == 1 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 2 &&
+        !fgRuntimePresentNextStagedAndAdvance()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
 
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
         VSync(0);
