@@ -83,7 +83,7 @@ fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
 `58..61` tail/phase speed promotion, the W1-high no-`144` mid-cluster,
 frame138, active-loop, and early offscreen clip headroom passes, and the
 W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
-promotion:
+promotion, and the W1-high `{108..124}` same-speed CD-pressure headroom pass:
 `+0.2144%` public average over target / `99.7880%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.5025%` / `100.5184%`. Since the compact full-matrix baseline was
@@ -182,6 +182,17 @@ keeps BUILDING2 high and VISITOR3 high/low exact-flat while W1-high improves
 W1-high swing should target a different no-decode/render-data-shape pocket or
 generated/no-hot-C deadline ownership rather than stacking more broad scalar
 read rows.
+The accepted `{108..124}` follow-up is the one safe scalar exception on this
+new baseline: the strict four-yellow canary at
+`scratch/ps1-perf-iterate/w1high-rg108-124-four-yellow-norequire-current-20260522/20260522-181237-3070338/summary.json`
+keeps W1-high exact-flat at `1808/1469/1441`, overrun `28`,
+blocking/refill `41/11`, and due `6`, while improving loop reads/read time
+`37/192 -> 36/191`, total reads/read VBlanks `52/422 -> 51/421`, hidden
+reads/VBlanks `31/151 -> 30/150`, and upload calls/rects/bytes
+`214/684/17207040 -> 213/682/17175040`. The larger `{108..132}` row is closed
+because it tightens target/refill to overrun `30`, and stacking `{372..388}` on
+top is closed because it regresses W1-high to `1813/1474/1442`, overrun `32`,
+blocking/refill `45/15`.
 The prior VISITOR3-low
 no-heartbeat code-headroom probe is also closed on this baseline. Removing the
 `JCHB` loop heartbeat kept VISITOR3-low exact-flat at `1350/1065/1041`,

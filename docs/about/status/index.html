@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3254 words
+          ~13 min read · 3257 words
         </p>
 
       <hr class="rule" />
@@ -135,11 +135,11 @@ target / <code class="language-plaintext highlighter-rouge">99.7880%</code> targ
 about <code class="language-plaintext highlighter-rouge">-0.5025%</code> / <code class="language-plaintext highlighter-rouge">100.5184%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion clips entries <code class="language-plaintext highlighter-rouge">62..66</code>
-and adds <code class="language-plaintext highlighter-rouge">{92..108}</code> plus <code class="language-plaintext highlighter-rouge">{272..284}</code> read groups, improving W1-high
-<code class="language-plaintext highlighter-rouge">1469/1440 -&gt; 1469/1441</code>, overrun <code class="language-plaintext highlighter-rouge">29 -&gt; 28</code>, blocking/refill <code class="language-plaintext highlighter-rouge">42/12 -&gt; 41/11</code>,
-and reads/due <code class="language-plaintext highlighter-rouge">41/7 -&gt; 37/6</code> while BUILDING2 high and VISITOR3 high/low stay
-exact-flat.
+allocator budget. The latest WALKSTUF1-high promotion adds the <code class="language-plaintext highlighter-rouge">{108..124}</code>
+read group on top of the accepted <code class="language-plaintext highlighter-rouge">62..66</code> clip and <code class="language-plaintext highlighter-rouge">{92..108}</code>/<code class="language-plaintext highlighter-rouge">{272..284}</code>
+stack, preserving W1-high <code class="language-plaintext highlighter-rouge">1469/1441</code>, overrun <code class="language-plaintext highlighter-rouge">28</code>, blocking/refill <code class="language-plaintext highlighter-rouge">41/11</code>,
+and due <code class="language-plaintext highlighter-rouge">6</code> while improving reads/read time <code class="language-plaintext highlighter-rouge">37/192 -&gt; 36/191</code>; BUILDING2 high
+and VISITOR3 high/low stay exact-flat.
 The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
 summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
 <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while

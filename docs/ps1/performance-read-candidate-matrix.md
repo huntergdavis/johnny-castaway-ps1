@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/w1high-clip62-66-rg92-108-rg272-284-four-yellow-current-20260522/20260522-173749-2874030`
+- Source artifact root: `scratch/ps1-perf-iterate/w1high-rg108-124-four-yellow-norequire-current-20260522/20260522-181237-3070338`
 - Candidate rows: `39`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -29,8 +29,8 @@ lanes instead of another hand-authored sector range.
 
 | Rank | Scene | Tide | Loop/Target | Blocking | Range | Saved | Cost Class | Phase Trap | Next Lane | Recommendation |
 |---:|---|---|---:|---:|---|---:|---|---|---|---|
-| 1 | `walkstuf1` | `high` | 1469/1441 | 41 | `108..132` (24s) | 2 | `risky:short-visible-gap` | `no` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
-| 2 | `walkstuf1` | `high` | 1469/1441 | 41 | `108..124` (16s) | 1 | `risky:short-visible-gap` | `no` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
+| 1 | `walkstuf1` | `high` | 1469/1441 | 41 | `124..148` (24s) | 2 | `risky:short-visible-gap` | `no` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
+| 2 | `walkstuf1` | `high` | 1469/1441 | 41 | `124..140` (16s) | 1 | `risky:short-visible-gap` | `no` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
 | 3 | `building2` | `high` | 1330/1317 | 32 | `61..73` (12s) | 1 | `risky:short-visible-gap` | `no` | `frame-deadline-data-shape-or-render-reduction` | `scheduler-owned-only` |
 | 4 | `walkstuf1` | `high` | 1469/1441 | 41 | `372..396` (24s) | 3 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
 | 5 | `walkstuf1` | `high` | 1469/1441 | 41 | `80..96` (16s) | 2 | `unsafe:tight-visible-gap` | `unsafe-visible-cost` | `no-decode-canonicalization-or-generated-owner` | `scheduler-owned-only` |
