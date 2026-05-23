@@ -62,9 +62,10 @@ the BUILDING4 low `24 KiB` stream-window green promotion, and the BUILDING2
 high previous-visible cleanup-speed promotion and VISITOR3-low `88..104`
 read-group follow-up, then the W1-low compact trim/retarget phase promotion,
 VISITOR3-low slack-knee speed promotion, VISITOR3-low one-VBlank phase
-retime, and the W1-high `383..399` transient setup-slice speed pass, is
-**+0.2073% over target / 99.7948% target speed**, with roughly **17.19
-percentage points** of over-target gap closed and about **12.69 target-speed
+retime, the W1-high `383..399` transient setup-slice speed pass, and the
+W1-high direct `185..191` rescue, is
+**+0.2067% over target / 99.7953% target speed**, with roughly **17.19
+percentage points** of over-target gap closed and about **12.70 target-speed
 points** added. The latest targeted W1/B2 setup checkpoint moved WALKSTUF1
 high/low out of orange, and the VISITOR3 high/low clean-relief stream-window
 plus high terminal-trim and setup-segment extension promotions moved both
