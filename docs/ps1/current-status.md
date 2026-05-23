@@ -4,14 +4,14 @@
 
 
 **Last updated:** 2026-05-23 (`perf/allocator-era-under-green-20260517` after
-the WALKSTUF1-high `200..215` previous-visible cleanup headroom pass, the VISITOR3-low phase1 / segment4 `38..79` promotion, the WALKSTUF1-high prep2 frame-gate promotion, the WALKSTUF1-high `185..191` direct-stage rescue, the WALKSTUF1-high `383..399` transient setup-slice / clean-cap speed pass, the WALKSTUF1-high `183..199` late-layout / `372..384` owner refill-headroom pass, the WALKSTUF1-high `372..388` fresh-owner retarget speed pass, the WALKSTUF1-high frames `189..191` direct-stage headroom pass, the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high `{108..124}` same-speed CD-pressure pass, the WALKSTUF1-high `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
+the WALKSTUF1-high frame0 consume speed promotion, the WALKSTUF1-high `200..215` previous-visible cleanup headroom pass, the VISITOR3-low phase1 / segment4 `38..79` promotion, the WALKSTUF1-high prep2 frame-gate promotion, the WALKSTUF1-high `185..191` direct-stage rescue, the WALKSTUF1-high `383..399` transient setup-slice / clean-cap speed pass, the WALKSTUF1-high `183..199` late-layout / `372..384` owner refill-headroom pass, the WALKSTUF1-high `372..388` fresh-owner retarget speed pass, the WALKSTUF1-high frames `189..191` direct-stage headroom pass, the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high `{108..124}` same-speed CD-pressure pass, the WALKSTUF1-high `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the W1-high frame138, active-loop, and early offscreen clip headroom passes, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank
 phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact
 trim/retarget phase green promotion, the W1-high and BUILDING2-high one-VBlank phase promotions, the VISITOR3-high
 segment3/exact-clean speed promotion, the D4/local-LZ decoder inline
 code-headroom passes, and the `JCPERF2`-only perf-reporting code-headroom
 pass; all 63 scenes remain validated, all 126 high/low rows are
-timing-bearing, and the public headless battle card is `+0.2028%` over target
-/ `99.7992%` target speed).
+timing-bearing, and the public headless battle card is `+0.2006%` over target
+/ `99.8013%` target speed).
 
 ## Overall
 
@@ -370,8 +370,8 @@ gap-placed D4 speed promotion, and the VISITOR3-low `88..104`, `72..88`, plus `1
 speed promotion, plus the VISITOR3-high entry `62` cleanup-only headroom pass,
 the W1-low entry `90..99` fixed-layout canonicalization pass,
 the public battle card is now
-`+0.2028%` over target / `99.7992%` target speed; the raw signed optimization
-rollup is about `-0.5141%` / `100.5295%`.
+`+0.2006%` over target / `99.8013%` target speed; the raw signed optimization
+rollup is `-0.5163%` / `100.5317%`.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.20`
 public over-target points and added about `12.70` public target-speed points.
@@ -506,12 +506,12 @@ Milestone releases:
   work-volume clipping, and WALKSTUF1 high/low late-tail plus high frame55/frame138/frame51/frame49/frame47/frame45/frame43/frame56/frame57/frame136/frame135/frame139 offscreen, high frame51/frame49/frame47/frame45/frame43/frame138/frame135 in-place payload shrinking, and low mid/left/pre-tail/mid-right/pre-left-edge/post-left/late-left2/frame1/post-mid/frame3/frame140/frame61/frame60/frame62/frame59/frame58/frame63 offscreen
   work reductions plus the WALKSTUF1 low `394..410` retained-read promotion
   plus frame53/frame136/frame79/frame81/frame129/frame139/frame87/frame89/frame98/frame27/frame101/frame93/frame94/frame97/frame99/frame100/frame134/frame91/frame92/frame95/frame140/frame108/frame109/frame107 no-shift payload shrinking, BUILDING2 high frame172/frame171/frame96 no-shift payload shrinking, the JOHNNY1 local-LZ full-frame payload compression, and the WALKSTUF1 low `209..225` retained-read row.
-  The current public battle card is `+0.2028%` / `99.7992%` with `123` green, `3` yellow, and `0` orange rows;
+  The current public battle card is `+0.2006%` / `99.8013%` with `123` green, `3` yellow, and `0` orange rows;
   BUILDING2 high is now green at `1330/1317` with blocking/read/due `32/33/4`, BUILDING2 low now measures
   `1327/1318` after trimming active payload `660236 -> 538534` and priming relative sectors `112..128` plus `226..262` with clean80/slack5 shaping, BUILDING2 high now banks previous-visible cleanup, screen-clip, trim-tail work, safe-tail trims, and fixed-footprint physical compaction to
   active payload `520974`, WALKSTUF1 high is
-  `1466/1445` with blocking/refill `35`/`5`, loop reads/read time `36`/`182`, rows/spans/pixels
-  `16540/120651/654904`, and dirty rows `28303` after the `200..215` previous-visible cleanup headroom pass, the prep2 `128..191` frame-gate promotion, the `185..191` direct-stage rescue, the `383..399` transient setup-slice / clean-cap speed pass, the `183..199` late-layout / `372..384` owner refill-headroom pass, the `372..388` fresh-owner retarget speed pass, frames `189..191` direct-stage headroom pass, entry134 screen-clip headroom pass, `{108..124}` CD-pressure pass, entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, entry `58..61` tail-trim/phase-3 speed pass, and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
+  `1462/1445` with blocking/refill `35`/`5`, loop reads/read time `36`/`182`, rows/spans/pixels
+  `16540/120651/654904`, and dirty rows `28303` after the frame0 consume speed promotion, the `200..215` previous-visible cleanup headroom pass, the prep2 `128..191` frame-gate promotion, the `185..191` direct-stage rescue, the `383..399` transient setup-slice / clean-cap speed pass, the `183..199` late-layout / `372..384` owner refill-headroom pass, the `372..388` fresh-owner retarget speed pass, frames `189..191` direct-stage headroom pass, entry134 screen-clip headroom pass, `{108..124}` CD-pressure pass, entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, entry `58..61` tail-trim/phase-3 speed pass, and no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, WALKSTUF1 low is now green at `1461/1447`
   with blocking/refill `31`/`2`, loop reads/read time `22`/`117`, and active payload
   `708288` after the compact trim/retarget phase pass, VISITOR3 high is
   `1065/1046` with blocking/read count `34`/`8`,

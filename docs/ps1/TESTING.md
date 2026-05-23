@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-23:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2028%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7992%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; VISITOR3-low phase1 / segment4 `38..79` under-yellow canary `2026-05-23T04:29:47`; prior W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
-| Stats version | mixed; VISITOR3-low is stamped `v3low-phase1-seg4-38-79`, current W1-high/VISITOR3-high under-yellow rows are stamped `w1high-prep2-frame128-191`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2006%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.8013%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frame0 consume / phase4 under-yellow canary `2026-05-23T06:57:54`; prior VISITOR3-low phase1 / segment4 `38..79` under-yellow canary `2026-05-23T04:29:47`; prior W1-high prep2 frame-gate under-yellow canary `2026-05-23T02:30:44`; prior W1-high direct `185..191` under-yellow canary `2026-05-23T00:56:07`; prior W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32` |
+| Stats version | mixed; current WALKSTUF1-high and VISITOR3 high/low under-yellow rows are stamped `w1high-frame0-consume-phase4`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,7 +94,19 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted VISITOR3-low phase/segment note:
+Latest promoted WALKSTUF1-high frame0 consume note:
+W1-high now uses a pre-loop frame0 present/consume step, a four-VBlank
+high-tide phase offset, and default-off boot breadcrumb logging so the timing
+change stays in the `233472` byte PS-EXE bucket. Focused proof:
+`scratch/ps1-perf-iterate/w1high-frame0-consume-phase4-focused-20260523/20260523-065606-4021916/summary.json`.
+Under-yellow proof:
+`scratch/ps1-perf-iterate/w1high-frame0-consume-phase4-under-yellow-canary-20260523/20260523-065754-4032041/summary.json`.
+W1-high improves `1815/1466/1445 -> 1815/1462/1445`, overrun `21 -> 17`,
+blocking/refill stay `35/5`, reads/due stay `36/6`, and pack LBAs plus the
+PS-EXE bucket stay fixed. VISITOR3 high/low remain exact-flat in the same
+canary.
+
+Prior promoted VISITOR3-low phase/segment note:
 The current VISITOR3-low row combines `FG_VISITOR3_LOW_PHASE_VBLANKS=1` with a
 widened setup segment `38..79`. Focused proof:
 `scratch/ps1-perf-iterate/visitor3-low-phase1-seg4-38-79-focused-20260523/20260523-042811-2950754/summary.json`.

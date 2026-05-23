@@ -36,6 +36,9 @@ typedef struct _FILE FILE;
 #ifndef JC_BOOT_DIAG_LOGS
 #define JC_BOOT_DIAG_LOGS 0
 #endif
+#ifndef JC_PRINTF_PROBE_LOGS
+#define JC_PRINTF_PROBE_LOGS 0
+#endif
 #ifndef JC_PAUSE_REQUEST_DIAG_LOGS
 #define JC_PAUSE_REQUEST_DIAG_LOGS 0
 #endif
@@ -1263,6 +1266,7 @@ static void ps1LogBootSelection(const char *explicitScene)
     );
 }
 
+#if JC_PRINTF_PROBE_LOGS
 static void ps1PrintfProbe(const char *phase, const char *sceneName)
 {
     if (!ps1BootPrintfTest) {
@@ -1284,6 +1288,9 @@ static void ps1PrintfProbe(const char *phase, const char *sceneName)
         screensaverLoopDisabled
     );
 }
+#else
+#define ps1PrintfProbe(phase, sceneName) ((void)0)
+#endif
 
 /* Load and display title screen from raw file on CD */
 /* This runs BEFORE resource parsing for instant visual feedback */

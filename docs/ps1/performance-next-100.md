@@ -88,20 +88,20 @@ W1-high entry134 same-speed screen-clip headroom pass, the W1-high
 frames `189..191` direct-stage headroom pass, the W1-high `372..388`
 fresh-owner retarget for owner frames `183..188`, the W1-high `183..199`
 late-layout / `372..384` owner refill-headroom pass, the W1-high prep2
-`128..191` frame-gate promotion, and the VISITOR3-low phase1 / segment4
-`38..79` promotion:
-`+0.2028%` public average over target / `99.7992%` public target speed across
+`128..191` frame-gate promotion, the VISITOR3-low phase1 / segment4
+`38..79` promotion, and the W1-high frame0 consume speed promotion:
+`+0.2006%` public average over target / `99.8013%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5141%` / `100.5295%`. Since the compact full-matrix baseline was
+`-0.5163%` / `100.5317%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.20` public over-target points and added about `12.70` public
 target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low phase/segment promotion passed focused proof
+`0` red. The latest W1-high frame0 consume promotion passed focused proof
 and under-yellow canary at
-`scratch/ps1-perf-iterate/visitor3-low-phase1-seg4-38-79-under-yellow-canary-20260523/20260523-042947-2959812/summary.json`:
-VISITOR3-low improves `1380/1063/1043 -> 1386/1062/1045`, overrun
-`20 -> 17`, blocking/refill `46/1 -> 38/0`, reads/due `17/8 -> 12/6`, and
-read time `89 -> 72`; VISITOR3-high and W1-high stay exact-flat. The next
+`scratch/ps1-perf-iterate/w1high-frame0-consume-phase4-under-yellow-canary-20260523/20260523-065754-4032041/summary.json`:
+W1-high improves `1815/1466/1445 -> 1815/1462/1445`, overrun `21 -> 17`,
+with blocking/refill unchanged at `35/5`, reads/due unchanged at `36/6`, and
+VISITOR3 high/low exact-flat. The next
 under-green priority remains W1-high first because it is closest to green, then
 VISITOR3-low, then VISITOR3-high. The earlier VISITOR3-low additive residency
 pass keeps the accepted

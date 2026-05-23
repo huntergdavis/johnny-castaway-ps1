@@ -215,7 +215,7 @@ enum {
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_START (202UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT2_BYTES (40UL * FG_CD_SECTOR_SIZE)
 #define FG_BUILDING2_HIGH_PHASE_VBLANKS 1
-#define FG_WALKSTUF1_HIGH_PHASE_VBLANKS 3
+#define FG_WALKSTUF1_HIGH_PHASE_VBLANKS 4
 #define FG_WALKSTUF1_LOW_PHASE_VBLANKS 1
 #define FG_VISITOR3_LOW_PHASE_VBLANKS 1
 #define FG_BUILDING2_LOW_SETUP_SEGMENT_START (112UL * FG_CD_SECTOR_SIZE)
@@ -2701,6 +2701,26 @@ static int fgRuntimePrimeNextFrameForSetup(void)
     return 1;
 }
 
+static int __attribute__((noinline, optimize("Os")))
+fgRuntimePresentAndConsumeFirstFrameForW1High(void)
+{
+    grBeginResidualCleanBgFirstFrame();
+    grUpdateDisplay(NULL, NULL, NULL);
+    fgRuntimeMarkFrameRendered();
+    gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                           gFgRuntime.displayVBlanks);
+    gFgRuntime.frameIndex = 1;
+    gFgRuntime.frameVBlank = 0;
+    if (!fgRuntimeConsumeStagedFrame(gFgRuntime.frameIndex))
+        return 0;
+    if (fgRuntimePrimeNextFrameForSetup() < 0)
+        return 0;
+    fgRuntimeWaitHeldVBlank();
+    fgRuntimeWaitHeldVBlank();
+    gFgRuntime.sceneClockTick = fgReadTickCounter();
+    return 1;
+}
+
 static uint32 fgRuntimePackPayloadEndBytes(void)
 {
     uint16 i;
@@ -4724,6 +4744,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * scene→walk→scene transition. */
     grForceFullRedrawNextFrame();
 
+    if (!islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
+        gFgRuntime.frameIndex == 0 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 1 &&
+        !fgRuntimePresentAndConsumeFirstFrameForW1High()) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
         VSync(0);
         VSync(0);
@@ -4785,29 +4816,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
     {
-        /* JCHB heartbeat: non-truncating telemetry. Emits a log line every
-         * ~120 VBlanks (~2 s) so we can see the loop iterating across
-         * scene playback. Does NOT cap or truncate the scene — the loop
-         * exits naturally via foregroundPilotRuntimeActive() going false. */
-        uint32 sceneLoopStartTick = (uint32)VSync(-1);
-        uint32 lastHeartbeatTick = sceneLoopStartTick;
-        uint32 loopIterCount = 0;
         while (foregroundPilotRuntimeActive()) {
             int advancedThisLoop = 0;
-
-            ++loopIterCount;
-            {
-                uint32 nowTick = (uint32)VSync(-1);
-                if (nowTick - lastHeartbeatTick > 120u) {
-                    printf("JCHB scene=%s frame=%u/%u iter=%lu elapsed=%lu\n",
-                           sceneName,
-                           (unsigned)gFgRuntime.frameIndex,
-                           (unsigned)gFgRuntime.header.frameCount,
-                           (unsigned long)loopIterCount,
-                           (unsigned long)(nowTick - sceneLoopStartTick));
-                    lastHeartbeatTick = nowTick;
-                }
-            }
 
             /* Pause-menu request: break out so jc_reborn's outer loop can
              * advance to next scene or restart the loop. The flag is

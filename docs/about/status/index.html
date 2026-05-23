@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3253 words
+          ~13 min read · 3250 words
         </p>
 
       <hr class="rule" />
@@ -130,15 +130,15 @@ chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2028%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7992%</code> target speed; the raw signed optimization matrix is
-about <code class="language-plaintext highlighter-rouge">-0.5141%</code> / <code class="language-plaintext highlighter-rouge">100.5295%</code>. The allocator validation branch records a R34
+allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2006%</code> over
+target / <code class="language-plaintext highlighter-rouge">99.8013%</code> target speed; the raw signed optimization matrix is
+<code class="language-plaintext highlighter-rouge">-0.5163%</code> / <code class="language-plaintext highlighter-rouge">100.5317%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest VISITOR3-low promotion combines a one-VBlank
-phase retime with setup segment <code class="language-plaintext highlighter-rouge">38..79</code>, passing at <code class="language-plaintext highlighter-rouge">1062/1045</code>, overrun
-<code class="language-plaintext highlighter-rouge">17</code>, blocking/refill <code class="language-plaintext highlighter-rouge">38/0</code>, and reads/due <code class="language-plaintext highlighter-rouge">12/6</code> while VISITOR3-high and
-WALKSTUF1-high remain exact-flat under the same canary.
+allocator budget. The latest WALKSTUF1-high promotion presents and consumes
+frame0 before the measured loop, passing at <code class="language-plaintext highlighter-rouge">1462/1445</code>, overrun <code class="language-plaintext highlighter-rouge">17</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">35/5</code>, and reads/due <code class="language-plaintext highlighter-rouge">36/6</code> while VISITOR3 high/low remain
+exact-flat under the same canary.
 The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
 summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
 <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while
