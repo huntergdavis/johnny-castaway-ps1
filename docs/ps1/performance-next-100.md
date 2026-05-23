@@ -84,15 +84,24 @@ fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
 frame138, active-loop, and early offscreen clip headroom passes, and the
 W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
 promotion, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the
-W1-high entry134 same-speed screen-clip headroom pass, and the W1-high
-frames `189..191` direct-stage headroom pass:
-`+0.2144%` public average over target / `99.7881%` public target speed across
+W1-high entry134 same-speed screen-clip headroom pass, the W1-high
+frames `189..191` direct-stage headroom pass, and the W1-high `372..388`
+fresh-owner retarget for owner frames `183..188`:
+`+0.2133%` public average over target / `99.7891%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5025%` / `100.5184%`. Since the compact full-matrix baseline was
+`-0.5037%` / `100.5195%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.19` public over-target points and added about `12.69` public
 target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
-`0` red. The latest VISITOR3-low additive residency pass keeps the accepted
+`0` red. The latest W1-high fresh-owner retarget passed the focused gate and
+the canonical four-row gate at
+`scratch/ps1-perf-iterate/w1high-owner372-388-four-yellow-canonical-current-20260522/20260522-214458-221762/summary.json`:
+W1-high improves `1809/1470/1442 -> 1807/1468/1442`, overrun `28 -> 26`,
+blocking `40 -> 39`, reads `40 -> 39`, while refill stays `10` and due stays
+`6`; BUILDING2 high and VISITOR3 high/low stay exact-flat. The next
+under-green priority remains W1-high first because it is closest to green, then
+VISITOR3 high, then VISITOR3 low. The earlier VISITOR3-low additive residency
+pass keeps the accepted
 `281..305`, `150..177`, and `206..232` retained setup slices intact while
 adding sector range `55..79` in `MEM_REGION_CACHE`. It also resets the
 low-tide VISITOR3 phase offset to `0`; the new residency preserves the current

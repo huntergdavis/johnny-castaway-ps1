@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2144% public over target / 99.7881% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2133% public over target / 99.7891% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,11 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.2144%` over target /
-`99.7881%` target speed across all 126 timing-bearing rows. The raw signed
-optimization matrix is about `-0.5025%` / `100.5184%`; bands are `123`
+loading, and the current battle card is `+0.2133%` over target /
+`99.7891%` target speed across all 126 timing-bearing rows. The raw signed
+optimization matrix is about `-0.5037%` / `100.5195%`; bands are `123`
 green, `3` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-high frames `189..191` direct-stage headroom pass, the W1-high entry134 same-speed screen-clip headroom pass, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the W1-high `372..388` fresh-owner retarget speed pass, the W1-high frames `189..191` direct-stage headroom pass, the W1-high entry134 same-speed screen-clip headroom pass, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`

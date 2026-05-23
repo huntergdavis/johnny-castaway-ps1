@@ -2278,6 +2278,43 @@ static int fgRuntimeWalkstuf1LowFreshOwner(uint32 *ioWindowStart,
     return 0;
 }
 
+static int fgRuntimeWalkstuf1HighFreshOwner(uint32 *ioWindowStart,
+                                            uint32 *ioReadEnd,
+                                            uint16 slackVBlanks,
+                                            uint16 ownerFrameIndex)
+{
+    uint16 entryStartSector;
+    uint32 candidateStart;
+    uint32 candidateEnd;
+
+    if (ioWindowStart == NULL ||
+        ioReadEnd == NULL ||
+        (*ioWindowStart & 2047UL) != 0)
+        return 0;
+
+    if (islandState.lowTide ||
+        gFgRuntimeSceneId != FG_SCENE_WALKSTUF1 ||
+        slackVBlanks == 0)
+        return 0;
+
+    entryStartSector = (uint16)(*ioWindowStart >> 11);
+    if (ownerFrameIndex >= 183 &&
+        ownerFrameIndex <= 188 &&
+        entryStartSector >= 372 &&
+        entryStartSector < 388) {
+        candidateStart = 372UL * FG_CD_SECTOR_SIZE;
+        candidateEnd = 388UL * FG_CD_SECTOR_SIZE;
+        if (candidateEnd > *ioReadEnd &&
+            candidateEnd - candidateStart <= gFgRuntime.streamWindowSize) {
+            *ioWindowStart = candidateStart;
+            *ioReadEnd = candidateEnd;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
 {
     uint32 windowStart;
@@ -2503,6 +2540,10 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
                                     &readEnd,
                                     slackVBlanks,
                                     ownerFrameIndex);
+    fgRuntimeWalkstuf1HighFreshOwner(&windowStart,
+                                     &readEnd,
+                                     slackVBlanks,
+                                     ownerFrameIndex);
     readBytes = readEnd - windowStart;
     if (readEnd > (uint32)gFgRuntime.packCdFile.size)
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;

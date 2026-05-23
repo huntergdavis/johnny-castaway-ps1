@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-22:
 | Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.2%` (`0.2144%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7881%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
-| Stats version | mixed; current W1-high timing row is stamped `w1high-direct-late-189-191-headroom`; current four-yellow timing rows otherwise use `w1high-entry58-61-tail-phase3`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.2%` (`0.2133%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7891%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
+| Stats version | mixed; current four-yellow timing rows are stamped `w1high-owner372-388-fresh-owner`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,14 +94,16 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1-high direct-stage headroom note:
-W1-high now lets frames `189..191` use the small-payload direct-stage path
-when held slack is above the stream-window minimum. Focused proof:
-`scratch/ps1-perf-iterate/w1high-direct-late-189-191-four-yellow-norequire-current-20260522/20260522-203120-3922960/summary.json`.
-W1-high moves to `1809/1470/1442`, overrun `28`, with blocking/refill
-`41/11 -> 40/10`, prefetch overrun `11 -> 10`, target speed
-`98.0939% -> 98.0952%`, and reads/read VBlanks `36/191 -> 40/206`.
-BUILDING2 high and VISITOR3 high/low stay exact-flat in the four-row canary.
+Latest promoted WALKSTUF1-high fresh-owner retarget note:
+W1-high now retargets owner frames `183..188` to the `372..388` sector window
+before the hot refill path commits its read window. Focused proof:
+`scratch/ps1-perf-iterate/w1high-owner372-388-current-20260522/20260522-213627-173738/summary.json`.
+Canonical four-row proof:
+`scratch/ps1-perf-iterate/w1high-owner372-388-four-yellow-canonical-current-20260522/20260522-214458-221762/summary.json`.
+W1-high moves to `1807/1468/1442`, overrun `26`, with blocking/refill
+`40/10 -> 39/10`, target speed `98.0952% -> 98.2289%`, and reads
+`40 -> 39`. BUILDING2 high and VISITOR3 high/low stay exact-flat in the
+canonical four-row canary.
 
 Prior promoted WALKSTUF1-high screen-clip headroom note:
 W1-high now clips entry `134` / source frame `242` in `WALKSTUF1.FG2` while

@@ -23,15 +23,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2144%` over
-target / `99.7881%` target speed; the raw signed optimization matrix is
-about `-0.5025%` / `100.5184%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2133%` over
+target / `99.7891%` target speed; the raw signed optimization matrix is
+about `-0.5037%` / `100.5195%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion direct-stages frames
-`189..191` above the normal window slack minimum, passing at
-`1470/1442`, overrun `28`, with blocking/refill `41/11 -> 40/10` and target
-speed `98.0939% -> 98.0952%`.
+allocator budget. The latest WALKSTUF1-high promotion retargets high-tide
+owner frames `183..188` to the `372..388` sector window, passing at
+`1468/1442`, overrun `26`, with blocking/refill `40/10 -> 39/10` and target
+speed `98.0952% -> 98.2289%`.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while
