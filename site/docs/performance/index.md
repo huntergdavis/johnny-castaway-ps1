@@ -315,9 +315,9 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.4%` / `100.4%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.2% over target / 99.8% target speed** (`0.1977%`
-exact public over target / `99.8041%` exact public target speed); the raw
-signed optimization matrix is `-0.5192%` / `100.5344%`.
+the public average is **+0.2% over target / 99.8% target speed** (`0.1956%`
+exact public over target / `99.8062%` exact public target speed); the raw
+signed optimization matrix is `-0.5213%` / `100.5366%`.
 
 The latest WALKSTUF1 allocator-era baseline uses targeted setup segments
 instead of the old full-scene resident setup buffers. High keeps relative
@@ -982,7 +982,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.1977% over target / 99.8041% target speed, with three
+  public average is now +0.1956% over target / 99.8062% target speed, with three
   remaining CD-/data-shape-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

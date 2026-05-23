@@ -90,12 +90,12 @@ fresh-owner retarget for owner frames `183..188`, the W1-high `183..199`
 late-layout / `372..384` owner refill-headroom pass, the W1-high prep2
 `128..191` frame-gate promotion, the VISITOR3-low phase1 / segment4
 `38..79` promotion, and the W1-high frame0 consume speed promotion:
-`+0.1977%` public average over target / `99.8041%` public target speed across
+`+0.1956%` public average over target / `99.8062%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
-`-0.5192%` / `100.5344%`. Since the compact full-matrix baseline was
+`-0.5213%` / `100.5366%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `17.20` public over-target points and added about `12.70` public
-target-speed points. Bands are now `123` green, `3` yellow, `0` orange, and
+target-speed points. Bands are now `124` green, `2` yellow, `0` orange, and
 `0` red. The latest W1-high frame0 consume promotion passed focused proof
 and under-yellow canary at
 `scratch/ps1-perf-iterate/w1high-frame0-consume-phase4-under-yellow-canary-20260523/20260523-065754-4032041/summary.json`:

@@ -4756,6 +4756,29 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         gFgRuntime.active = 0;
     }
 
+    if (!islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
+        gFgRuntime.active &&
+        gFgRuntime.frameIndex == 1 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 2) {
+        grBeginResidualCleanBgFrame();
+        grUpdateDisplay(NULL, NULL, NULL);
+        gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                               gFgRuntime.displayVBlanks);
+        gFgRuntime.frameIndex = 2;
+        gFgRuntime.frameVBlank = 0;
+        if (!fgRuntimeConsumeStagedFrame(gFgRuntime.frameIndex) ||
+            fgRuntimePrimeNextFrameForSetup() < 0) {
+            if (ps1PerfEnabled) ps1PerfMarkTripwire();
+            gFgRuntime.active = 0;
+        }
+        fgRuntimeWaitHeldVBlank();
+        fgRuntimeWaitHeldVBlank();
+        fgRuntimeWaitHeldVBlank();
+        gFgRuntime.sceneClockTick = fgReadTickCounter();
+    }
+
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
         VSync(0);
 #if FG_VISITOR3_LOW_PHASE_VBLANKS >= 1
