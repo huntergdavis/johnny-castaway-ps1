@@ -23,15 +23,15 @@ chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from `v0.8.4-ps1` while streaming previews without a large paused-menu heap
-allocation. The public headless battle card is `+0.2133%` over
-target / `99.7891%` target speed; the raw signed optimization matrix is
-about `-0.5037%` / `100.5195%`. The allocator validation branch records a R34
+allocation. The public headless battle card is `+0.2073%` over
+target / `99.7948%` target speed; the raw signed optimization matrix is
+about `-0.5096%` / `100.5251%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion physically compacts
-frames `183..199` and narrows high-tide owner coverage to frames `183..187` /
-sectors `372..384`, passing at `1468/1442`, overrun `26`, with hidden refill
-`10 -> 9` while BUILDING2 high and VISITOR3 high/low stay exact-flat.
+allocator budget. The latest WALKSTUF1-high promotion adds a high-tide
+`383..399` transient setup slice and caps W1-high clean capture at `64 KiB`,
+passing at `1467/1442`, overrun `25`, blocking/refill `37/8`, and reads/due
+`35/6` while VISITOR3 high/low remain valid under the same canary.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while
@@ -117,13 +117,14 @@ uses an `80 KiB` window with terminal overread trimming, merged setup segment
 `203..262`, frame `139` raw-gap relocation, frames `56` and `57` raw in that
 paid gap with a `56 KiB` tight-refill cap, high clean strips capped at
 `64 KiB`, and the early retained setup edge `40..47`.
-High measures `1070/1046`, overrun `24`, blocking
-`35`, reads/due `5/2`; low uses a
+High now measures `1065/1046`, overrun `19`, blocking/refill
+`34/1`, reads/due `8/2`; low uses a
 `16 KiB` slack-5 window plus a third retained setup segment extended to
 `206..232`, with frame `138` raw relocated into that paid gap, then adds
 the `16..32`, `72..88`, and `88..104` retained read-group rows plus the
 four-VBlank slack-knee guard, then adds a one-VBlank low-tide phase offset. It
-now measures `1065/1041`, overrun `24`, blocking `55`, reads/due `28/10`.
+now measures `1063/1043`, overrun `20`, blocking/refill `46/1`, reads/due
+`17/8`.
 Both rows moved out of red and the orange band is now empty
 without reintroducing the clean-rect allocation
 failure. BUILDING4 high now primes relative sectors `264..288` during setup,

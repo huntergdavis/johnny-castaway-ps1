@@ -131,8 +131,8 @@ clean slices at `64 KiB`, the clean-relief window retune widens high from
 latest same-speed slide moves that edge to `42..49`, keeping `1070/1046`
 while reducing loop reads/read time `5/61 -> 4/59`. The recent VISITOR3-high
 speed pass retargets segment3 to `48..55`, switches high-tide clean capture to
-six exact rects, and adds a three-VBlank phase ballast; the canonical row now
-lands at `1067/1045`, overrun `22`, blocking/refill `32/0`, with fixed pack
+six exact rects, and adds a three-VBlank phase ballast; the current canary row
+lands at `1065/1046`, overrun `19`, blocking/refill `34/1`, with fixed pack
 LBA and PS-EXE bucket.
 BUILDING4 high is now green after the setup-segment pass, BUILDING2 high
 now layers a one-VBlank phase retime over the small scheduler wins from the
@@ -159,11 +159,14 @@ blocking/refill `40/10`. The prior `372..388` fresh-owner retarget then
 moved W1-high again to `1468/1442` / `98.229%`, cut overrun `28 -> 26`,
 blocking `40 -> 39`, and loop reads `40 -> 39` while BUILDING2 high and
 VISITOR3 high/low remained exact-flat under canonical boot variants. The
-current late-layout/owner refinement physically compacts frames `183..199` and
+prior late-layout/owner refinement physically compacts frames `183..199` and
 narrows owner coverage to `183..187` / `372..384`; speed remains `1468/1442`,
-but hidden refill improves `10 -> 9`, with B2/V3 exact-flat. Direct `183..191`
-speed rescue remains closed because it reaches `1467/1443` only by regressing
-blocking/due to `42/7`.
+but hidden refill improves `10 -> 9`, with B2/V3 exact-flat. The current
+W1-high speed pass adds a high-tide `383..399` transient setup slice and caps
+W1-high clean capture at `64 KiB`, improving W1-high to `1467/1442` /
+`98.296%`, overrun `25`, blocking/refill `37/8`, and reads/due `35/6`.
+Direct `183..191` speed rescue remains closed because it reaches `1467/1443`
+only by regressing blocking/due to `42/7`.
 The prior VISITOR3-low entry `109..112` fixed-layout clip keeps the
 five-yellow canary exact-flat while shrinking selected active payload
 `8170 -> 6004`; the broad full-pack clip and paired `{46..58}` read row are
@@ -198,7 +201,7 @@ default `7200`-frame timing window.
 
 ## Rollup
 
-Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
+Current battle-card rollup as of <time datetime="2026-05-23">2026-05-23</time>:
 
 | Metric | Value |
 |---|---:|
@@ -210,10 +213,10 @@ Current battle-card rollup as of <time datetime="2026-05-22">2026-05-22</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.2%` (`0.2133%` exact, public-capped) |
-| Timing-bearing average target speed | `99.8%` (`99.7891%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20`; prior W1-high active-loop clip headroom gate `2026-05-22T15:49:45` |
-| Stats version | full allocator refresh stamped `git:2b617cbc`; current four-yellow timing rows use `w1high-layout-owner372-384`; prior W1-high owner row used `w1high-owner372-388-fresh-owner`; prior W1-high direct-stage row used `w1high-direct-late-189-191-headroom`; prior W1-high headroom row used `w1high-clip134-headroom`; prior B2-high compact rows used `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
+| Timing-bearing average over target | `+0.2%` (`0.2073%` exact, public-capped) |
+| Timing-bearing average target speed | `99.8%` (`99.7948%` exact, public-capped) |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `383..399` transient setup-slice canary `2026-05-23T00:19:21`; prior W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20`; prior W1-high active-loop clip headroom gate `2026-05-22T15:49:45` |
+| Stats version | full allocator refresh stamped `git:2b617cbc`; current under-yellow timing rows use `w1high-seg4-383-399-cap64`; prior W1-high owner row used `w1high-owner372-388-fresh-owner`; prior W1-high direct-stage row used `w1high-direct-late-189-191-headroom`; prior W1-high headroom row used `w1high-clip134-headroom`; prior B2-high compact rows used `b2high-compact-current`; prior VISITOR3-low additive setup rows used `v3low-seg4-add55-79-cache-phase0`; prior VISITOR3-low frame134 D4 rows used `v3low-d4-frame134-headroom`; prior VISITOR3-low phase-retime rows used `v3low-phase1`; prior W1-low compact trim/retarget rows used `w1low-trim-main179-phase1`; prior B2-high setup-alias source/data work used `b2high-alias38`; BUILDING4 high remains stamped `git:391a265e1+building4-high-setupseg264-288`; BUILDING4 low remains stamped `git:0faf443b9b+building4-low-window24`; per-row version is in the [`Stats Version` column below](#reading-the-table). |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Current JOHNNY1 payload/speed track: `johnny1-local-lz-v932` compresses
@@ -223,13 +226,12 @@ active payload `316608 -> 112093`. Both tides are now green at `1948/1945`,
 overrun `3`, blocking/refill `5`, read time `37`, due `0`, and target speed
 `99.85%`.
 
-Latest WALKSTUF1-high late-layout/owner track:
-`w1high-layout-owner372-384` physically places frames `183..199`
-contiguously and narrows high-tide owner coverage to frames `183..187` /
-sectors `372..384`. The canonical four-row gate keeps BUILDING2 high and
-VISITOR3 high/low exact-flat while W1-high remains `1807/1468/1442`, overrun
-`26`, blocking `39`, reads/due `40/6`, target speed `98.2289%`, and hidden
-refill improves `10 -> 9`.
+Latest WALKSTUF1-high setup-slice track:
+`w1high-seg4-383-399-cap64` adds a high-tide `383..399` transient setup
+slice and caps W1-high clean-rect capture at `64 KiB`. The under-yellow canary
+keeps VISITOR3 high/low valid while W1-high improves `1807/1468/1442 ->
+1816/1467/1442`, overrun `26 -> 25`, blocking `39 -> 37`, refill `9 -> 8`,
+reads `40 -> 35`, and target speed `98.2289% -> 98.296%`.
 
 Prior WALKSTUF1-high fresh-owner retarget track:
 `w1high-owner372-388-fresh-owner` retargeted high-tide owner frames `183..188`
@@ -2916,13 +2918,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T23:24:32</td>
-      <td>w1high-layout-owner372-384</td>
-      <td>2.1%</td>
-      <td class="spd-yellow">97.9%</td>
-      <td>1067/1045</td>
-      <td>32</td>
-      <td>0</td>
+      <td>2026-05-23T00:19:21</td>
+      <td>w1high-seg4-383-399-cap64</td>
+      <td>1.8%</td>
+      <td class="spd-yellow">98.2%</td>
+      <td>1065/1046</td>
+      <td>34</td>
+      <td>1</td>
       <td>2</td>
       <td></td>
     </tr>
@@ -2930,13 +2932,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T23:24:32</td>
-      <td>w1high-layout-owner372-384</td>
-      <td>2.3%</td>
-      <td class="spd-yellow">97.7%</td>
-      <td>1065/1041</td>
-      <td>50</td>
-      <td>0</td>
+      <td>2026-05-23T00:19:21</td>
+      <td>w1high-seg4-383-399-cap64</td>
+      <td>1.9%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>1063/1043</td>
+      <td>46</td>
+      <td>1</td>
       <td>8</td>
       <td></td>
     </tr>
@@ -3056,13 +3058,13 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T23:24:32</td>
-      <td>w1high-layout-owner372-384</td>
-      <td>1.8%</td>
-      <td class="spd-yellow">98.2%</td>
-      <td>1468/1442</td>
-      <td>39</td>
-      <td>9</td>
+      <td>2026-05-23T00:19:21</td>
+      <td>w1high-seg4-383-399-cap64</td>
+      <td>1.7%</td>
+      <td class="spd-yellow">98.3%</td>
+      <td>1467/1442</td>
+      <td>37</td>
+      <td>8</td>
       <td>6</td>
       <td></td>
     </tr>

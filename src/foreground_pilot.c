@@ -232,6 +232,8 @@ enum {
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES (46UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_START (286UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_BYTES (58UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_START (383UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_BYTES (16UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
@@ -2909,6 +2911,8 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         if (segment3Bytes > 0)
             segment3Buffer = segmentBuffer + segmentBytes + segment2Bytes;
         if (segment4Bytes > 0) {
+            /* MEM_REGION_RATIONALE: VISITOR3-low fourth setup slice.
+             * CACHE keeps the paid low-tail residency alive past setup. */
             gFgSetupSegment4OwnedBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                                             segment4Bytes,
                                                             "fgSetupSegment4Buffer");
@@ -3005,6 +3009,9 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segmentBytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES;
             segment2Start = FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_START;
             segment2Bytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_BYTES;
+            segment4Start = FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_START;
+            segment4Bytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_BYTES;
+            gFgCleanRectMaxBytes = 64UL * 1024UL;
         }
         allocationBytes = segmentBytes + (islandState.lowTide ? 0UL : segment2Bytes);
         /* MEM_REGION_RATIONALE: targeted reusable read-cluster cache.
@@ -3025,6 +3032,8 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         }
         if (segment2Bytes > 0) {
             if (islandState.lowTide) {
+                /* MEM_REGION_RATIONALE: W1-low trailing setup edge.
+                 * TRANSIENT avoids growing the already large CACHE segment. */
                 gFgSetupSegment2OwnedBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
                                                                 segment2Bytes,
                                                                 "fgSetupSegment2Buffer");
@@ -3043,6 +3052,26 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                 }
             } else {
                 segment2Buffer = segmentBuffer + segmentBytes;
+            }
+        }
+        if (!islandState.lowTide && segment4Bytes > 0) {
+            /* MEM_REGION_RATIONALE: W1-high late setup slice.
+             * TRANSIENT pays the final cluster without exhausting CACHE. */
+            gFgSetupSegment4OwnedBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
+                                                            segment4Bytes,
+                                                            "fgSetupSegment4Buffer");
+            gFgSetupSegment4OwnedBufferSize = segment4Bytes;
+            gFgSetupSegment4OwnedBufferRegion = MEM_REGION_TRANSIENT;
+            segment4Buffer = gFgSetupSegment4OwnedBuffer;
+            if (segment4Buffer == NULL) {
+                gFgSetupSegment4OwnedBufferSize = 0;
+                memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+                gFgSetupSegmentBuffer = NULL;
+                gFgSetupSegmentBufferSize = 0;
+                gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+                if (ps1PerfEnabled)
+                    ps1PerfMarkAllocFail(segment4Bytes);
+                return 0;
             }
         }
         gFgRuntime.setupSegmentReusable = 1;
