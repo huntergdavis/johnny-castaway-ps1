@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3244 words
+          ~13 min read · 3252 words
         </p>
 
       <hr class="rule" />
@@ -135,10 +135,10 @@ target / <code class="language-plaintext highlighter-rouge">99.7891%</code> targ
 about <code class="language-plaintext highlighter-rouge">-0.5037%</code> / <code class="language-plaintext highlighter-rouge">100.5195%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion retargets high-tide
-owner frames <code class="language-plaintext highlighter-rouge">183..188</code> to the <code class="language-plaintext highlighter-rouge">372..388</code> sector window, passing at
-<code class="language-plaintext highlighter-rouge">1468/1442</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>, with blocking/refill <code class="language-plaintext highlighter-rouge">40/10 -&gt; 39/10</code> and target
-speed <code class="language-plaintext highlighter-rouge">98.0952% -&gt; 98.2289%</code>.
+allocator budget. The latest WALKSTUF1-high promotion physically compacts
+frames <code class="language-plaintext highlighter-rouge">183..199</code> and narrows high-tide owner coverage to frames <code class="language-plaintext highlighter-rouge">183..187</code> /
+sectors <code class="language-plaintext highlighter-rouge">372..384</code>, passing at <code class="language-plaintext highlighter-rouge">1468/1442</code>, overrun <code class="language-plaintext highlighter-rouge">26</code>, with hidden refill
+<code class="language-plaintext highlighter-rouge">10 -&gt; 9</code> while BUILDING2 high and VISITOR3 high/low stay exact-flat.
 The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
 summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
 <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while

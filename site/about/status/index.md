@@ -28,10 +28,10 @@ target / `99.7891%` target speed; the raw signed optimization matrix is
 about `-0.5037%` / `100.5195%`. The allocator validation branch records a R34
 full matrix of `126/126` PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion retargets high-tide
-owner frames `183..188` to the `372..388` sector window, passing at
-`1468/1442`, overrun `26`, with blocking/refill `40/10 -> 39/10` and target
-speed `98.0952% -> 98.2289%`.
+allocator budget. The latest WALKSTUF1-high promotion physically compacts
+frames `183..199` and narrows high-tide owner coverage to frames `183..187` /
+sectors `372..384`, passing at `1468/1442`, overrun `26`, with hidden refill
+`10 -> 9` while BUILDING2 high and VISITOR3 high/low stay exact-flat.
 The latest code-headroom pass makes `JCPERF2` the default scene-end perf
 summary, compiles legacy `JCPERF` behind `PS1_PERF_LEGACY_TRACE=1`, and scopes
 `ps1PerfEndScene()` to `-Os`; the four-yellow canary stays exact-flat while

@@ -241,10 +241,15 @@ clip plus <code class="language-plaintext highlighter-rouge">{92..108}</code>/<c
 <code class="language-plaintext highlighter-rouge">42/12 -&gt; 41/11</code>, reads/due <code class="language-plaintext highlighter-rouge">41/7 -&gt; 37/6</code>, and reduces runtime
 rows/spans/pixels to <code class="language-plaintext highlighter-rouge">16547/120919/658340</code>; the current <code class="language-plaintext highlighter-rouge">189..191</code>
 direct-stage headroom pass moves W1-high to <code class="language-plaintext highlighter-rouge">1470/1442</code> / <code class="language-plaintext highlighter-rouge">98.095%</code> and
-blocking/refill <code class="language-plaintext highlighter-rouge">40/10</code>. The latest <code class="language-plaintext highlighter-rouge">372..388</code> fresh-owner retarget then
-moves W1-high again to <code class="language-plaintext highlighter-rouge">1468/1442</code> / <code class="language-plaintext highlighter-rouge">98.229%</code>, cuts overrun <code class="language-plaintext highlighter-rouge">28 -&gt; 26</code>,
+blocking/refill <code class="language-plaintext highlighter-rouge">40/10</code>. The prior <code class="language-plaintext highlighter-rouge">372..388</code> fresh-owner retarget then
+moved W1-high again to <code class="language-plaintext highlighter-rouge">1468/1442</code> / <code class="language-plaintext highlighter-rouge">98.229%</code>, cut overrun <code class="language-plaintext highlighter-rouge">28 -&gt; 26</code>,
 blocking <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code>, and loop reads <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code> while BUILDING2 high and
-VISITOR3 high/low remain exact-flat under canonical boot variants.
+VISITOR3 high/low remained exact-flat under canonical boot variants. The
+current late-layout/owner refinement physically compacts frames <code class="language-plaintext highlighter-rouge">183..199</code> and
+narrows owner coverage to <code class="language-plaintext highlighter-rouge">183..187</code> / <code class="language-plaintext highlighter-rouge">372..384</code>; speed remains <code class="language-plaintext highlighter-rouge">1468/1442</code>,
+but hidden refill improves <code class="language-plaintext highlighter-rouge">10 -&gt; 9</code>, with B2/V3 exact-flat. Direct <code class="language-plaintext highlighter-rouge">183..191</code>
+speed rescue remains closed because it reaches <code class="language-plaintext highlighter-rouge">1467/1443</code> only by regressing
+blocking/due to <code class="language-plaintext highlighter-rouge">42/7</code>.
 The prior VISITOR3-low entry <code class="language-plaintext highlighter-rouge">109..112</code> fixed-layout clip keeps the
 five-yellow canary exact-flat while shrinking selected active payload
 <code class="language-plaintext highlighter-rouge">8170 -&gt; 6004</code>; the broad full-pack clip and paired <code class="language-plaintext highlighter-rouge">{46..58}</code> read row are
@@ -331,11 +336,11 @@ default <code class="language-plaintext highlighter-rouge">7200</code>-frame tim
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">372..388</code> fresh-owner retarget canonical four-row gate <code class="language-plaintext highlighter-rouge">2026-05-22T21:44:58</code>; prior W1-high frames <code class="language-plaintext highlighter-rouge">189..191</code> direct-stage four-row gate <code class="language-plaintext highlighter-rouge">2026-05-22T20:31:20</code>; prior W1-high focused direct-stage proof <code class="language-plaintext highlighter-rouge">2026-05-22T20:14:39</code>; prior W1-high entry134 screen-clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T18:34:50</code>; prior W1-high <code class="language-plaintext highlighter-rouge">{108..124}</code> same-speed CD-pressure gate <code class="language-plaintext highlighter-rouge">2026-05-22T18:12:37</code>; prior W1-high <code class="language-plaintext highlighter-rouge">62..66</code> clip plus <code class="language-plaintext highlighter-rouge">{92..108}</code>/<code class="language-plaintext highlighter-rouge">{272..284}</code> speed gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:37:49</code>; prior W1-high no-<code class="language-plaintext highlighter-rouge">144</code> mid-cluster clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:07:57</code>; prior W1-high frame138 clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T16:09:20</code>; prior W1-high active-loop clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T15:49:45</code></td>
+      <td style="text-align: right">full allocator matrix <code class="language-plaintext highlighter-rouge">2026-05-16T11:29:21</code>; W1-high <code class="language-plaintext highlighter-rouge">183..199</code> late-layout / <code class="language-plaintext highlighter-rouge">372..384</code> owner canary <code class="language-plaintext highlighter-rouge">2026-05-22T23:24:32</code>; prior W1-high <code class="language-plaintext highlighter-rouge">372..388</code> fresh-owner retarget canonical four-row gate <code class="language-plaintext highlighter-rouge">2026-05-22T21:44:58</code>; prior W1-high frames <code class="language-plaintext highlighter-rouge">189..191</code> direct-stage four-row gate <code class="language-plaintext highlighter-rouge">2026-05-22T20:31:20</code>; prior W1-high focused direct-stage proof <code class="language-plaintext highlighter-rouge">2026-05-22T20:14:39</code>; prior W1-high entry134 screen-clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T18:34:50</code>; prior W1-high <code class="language-plaintext highlighter-rouge">{108..124}</code> same-speed CD-pressure gate <code class="language-plaintext highlighter-rouge">2026-05-22T18:12:37</code>; prior W1-high <code class="language-plaintext highlighter-rouge">62..66</code> clip plus <code class="language-plaintext highlighter-rouge">{92..108}</code>/<code class="language-plaintext highlighter-rouge">{272..284}</code> speed gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:37:49</code>; prior W1-high no-<code class="language-plaintext highlighter-rouge">144</code> mid-cluster clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T17:07:57</code>; prior W1-high frame138 clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T16:09:20</code>; prior W1-high active-loop clip headroom gate <code class="language-plaintext highlighter-rouge">2026-05-22T15:49:45</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1high-owner372-388-fresh-owner</code>; prior W1-high timing row used <code class="language-plaintext highlighter-rouge">w1high-direct-late-189-191-headroom</code>; prior W1-high headroom row used <code class="language-plaintext highlighter-rouge">w1high-clip134-headroom</code>; prior B2-high compact rows used <code class="language-plaintext highlighter-rouge">b2high-compact-current</code>; prior VISITOR3-low additive setup rows used <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>; prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
+      <td style="text-align: right">full allocator refresh stamped <code class="language-plaintext highlighter-rouge">git:2b617cbc</code>; current four-yellow timing rows use <code class="language-plaintext highlighter-rouge">w1high-layout-owner372-384</code>; prior W1-high owner row used <code class="language-plaintext highlighter-rouge">w1high-owner372-388-fresh-owner</code>; prior W1-high direct-stage row used <code class="language-plaintext highlighter-rouge">w1high-direct-late-189-191-headroom</code>; prior W1-high headroom row used <code class="language-plaintext highlighter-rouge">w1high-clip134-headroom</code>; prior B2-high compact rows used <code class="language-plaintext highlighter-rouge">b2high-compact-current</code>; prior VISITOR3-low additive setup rows used <code class="language-plaintext highlighter-rouge">v3low-seg4-add55-79-cache-phase0</code>; prior VISITOR3-low frame134 D4 rows used <code class="language-plaintext highlighter-rouge">v3low-d4-frame134-headroom</code>; prior VISITOR3-low phase-retime rows used <code class="language-plaintext highlighter-rouge">v3low-phase1</code>; prior W1-low compact trim/retarget rows used <code class="language-plaintext highlighter-rouge">w1low-trim-main179-phase1</code>; prior B2-high setup-alias source/data work used <code class="language-plaintext highlighter-rouge">b2high-alias38</code>; BUILDING4 high remains stamped <code class="language-plaintext highlighter-rouge">git:391a265e1+building4-high-setupseg264-288</code>; BUILDING4 low remains stamped <code class="language-plaintext highlighter-rouge">git:0faf443b9b+building4-low-window24</code>; per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a>.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -351,12 +356,19 @@ active payload <code class="language-plaintext highlighter-rouge">316608 -&gt; 1
 overrun <code class="language-plaintext highlighter-rouge">3</code>, blocking/refill <code class="language-plaintext highlighter-rouge">5</code>, read time <code class="language-plaintext highlighter-rouge">37</code>, due <code class="language-plaintext highlighter-rouge">0</code>, and target speed
 <code class="language-plaintext highlighter-rouge">99.85%</code>.</p>
 
-<p>Latest WALKSTUF1-high fresh-owner retarget track:
-<code class="language-plaintext highlighter-rouge">w1high-owner372-388-fresh-owner</code> retargets high-tide owner frames <code class="language-plaintext highlighter-rouge">183..188</code>
-to the <code class="language-plaintext highlighter-rouge">372..388</code> sector window before the hot refill path commits its read
-window. The canonical four-row gate keeps BUILDING2 high and VISITOR3 high/low
-exact-flat while W1-high improves <code class="language-plaintext highlighter-rouge">1809/1470/1442 -&gt; 1807/1468/1442</code>,
-overrun <code class="language-plaintext highlighter-rouge">28 -&gt; 26</code>, blocking <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code>, reads <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code>, and target speed
+<p>Latest WALKSTUF1-high late-layout/owner track:
+<code class="language-plaintext highlighter-rouge">w1high-layout-owner372-384</code> physically places frames <code class="language-plaintext highlighter-rouge">183..199</code>
+contiguously and narrows high-tide owner coverage to frames <code class="language-plaintext highlighter-rouge">183..187</code> /
+sectors <code class="language-plaintext highlighter-rouge">372..384</code>. The canonical four-row gate keeps BUILDING2 high and
+VISITOR3 high/low exact-flat while W1-high remains <code class="language-plaintext highlighter-rouge">1807/1468/1442</code>, overrun
+<code class="language-plaintext highlighter-rouge">26</code>, blocking <code class="language-plaintext highlighter-rouge">39</code>, reads/due <code class="language-plaintext highlighter-rouge">40/6</code>, target speed <code class="language-plaintext highlighter-rouge">98.2289%</code>, and hidden
+refill improves <code class="language-plaintext highlighter-rouge">10 -&gt; 9</code>.</p>
+
+<p>Prior WALKSTUF1-high fresh-owner retarget track:
+<code class="language-plaintext highlighter-rouge">w1high-owner372-388-fresh-owner</code> retargeted high-tide owner frames <code class="language-plaintext highlighter-rouge">183..188</code>
+to the <code class="language-plaintext highlighter-rouge">372..388</code> sector window before the hot refill path committed its read
+window. It improved W1-high <code class="language-plaintext highlighter-rouge">1809/1470/1442 -&gt; 1807/1468/1442</code>, overrun
+<code class="language-plaintext highlighter-rouge">28 -&gt; 26</code>, blocking <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code>, reads <code class="language-plaintext highlighter-rouge">40 -&gt; 39</code>, and target speed
 <code class="language-plaintext highlighter-rouge">98.0952% -&gt; 98.2289%</code>.</p>
 
 <p>Prior WALKSTUF1-high screen-clip headroom track:
@@ -1807,8 +1819,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T21:44:58</td>
-      <td>w1high-owner372-388-fresh-owner</td>
+      <td>2026-05-22T23:24:32</td>
+      <td>w1high-layout-owner372-384</td>
       <td>1.0%</td>
       <td class="spd-green">99.0%</td>
       <td>1330/1317</td>
@@ -3039,8 +3051,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-high"><code>visitor3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T21:44:58</td>
-      <td>w1high-owner372-388-fresh-owner</td>
+      <td>2026-05-22T23:24:32</td>
+      <td>w1high-layout-owner372-384</td>
       <td>2.1%</td>
       <td class="spd-yellow">97.9%</td>
       <td>1067/1045</td>
@@ -3053,8 +3065,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-visitor3-low"><code>visitor3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-22T21:44:58</td>
-      <td>w1high-owner372-388-fresh-owner</td>
+      <td>2026-05-22T23:24:32</td>
+      <td>w1high-layout-owner372-384</td>
       <td>2.3%</td>
       <td class="spd-yellow">97.7%</td>
       <td>1065/1041</td>
@@ -3179,13 +3191,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><a class="scene-perf-rowlink" href="#perf-walkstuf1-high"><code>walkstuf1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-22T21:44:58</td>
-      <td>w1high-owner372-388-fresh-owner</td>
+      <td>2026-05-22T23:24:32</td>
+      <td>w1high-layout-owner372-384</td>
       <td>1.8%</td>
       <td class="spd-yellow">98.2%</td>
       <td>1468/1442</td>
       <td>39</td>
-      <td>10</td>
+      <td>9</td>
       <td>6</td>
       <td></td>
     </tr>

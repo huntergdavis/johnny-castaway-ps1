@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-22:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.2%` (`0.2133%` exact, public-capped) |
 | Timing-bearing average target speed | `99.8%` (`99.7891%` exact, public-capped) |
-| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
-| Stats version | mixed; current four-yellow timing rows are stamped `w1high-owner372-388-fresh-owner`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | full allocator matrix `2026-05-16T11:29:21`; W1-high `183..199` late-layout / `372..384` owner canary `2026-05-22T23:24:32`; prior W1-high `372..388` fresh-owner retarget canonical four-row gate `2026-05-22T21:44:58`; prior W1-high frames `189..191` direct-stage four-row gate `2026-05-22T20:31:20`; prior W1-high focused direct-stage proof `2026-05-22T20:14:39`; prior W1-high entry134 screen-clip headroom gate `2026-05-22T18:34:50`; prior W1-high `{108..124}` same-speed CD-pressure gate `2026-05-22T18:12:37`; prior W1-high `62..66` clip plus `{92..108}`/`{272..284}` speed gate `2026-05-22T17:37:49`; prior W1-high no-`144` mid-cluster clip headroom gate `2026-05-22T17:07:57`; prior W1-high frame138 clip headroom gate `2026-05-22T16:09:20` |
+| Stats version | mixed; current four-yellow timing rows are stamped `w1high-layout-owner372-384`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | high `1068 / 1073 VBlanks`, low `1067 / 1074 VBlanks`, both public-capped at `100.0%` target speed |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -94,16 +94,22 @@ read-plan candidates beside loop, target, blocking, refill, upload, restore,
 and payload metrics so late-stage work can avoid repeating phase-negative
 scalar read rows.
 
-Latest promoted WALKSTUF1-high fresh-owner retarget note:
-W1-high now retargets owner frames `183..188` to the `372..388` sector window
-before the hot refill path commits its read window. Focused proof:
-`scratch/ps1-perf-iterate/w1high-owner372-388-current-20260522/20260522-213627-173738/summary.json`.
+Latest promoted WALKSTUF1-high late-layout/owner note:
+W1-high now physically places frames `183..199` contiguously in
+`WALKSTUF1.FG2` and narrows high-tide fresh-owner coverage to owner frames
+`183..187` / sectors `372..384`. Focused proof:
+`scratch/ps1-perf-iterate/w1high-layout-owner372-384-current-20260522/20260522-231636-824466/summary.json`.
 Canonical four-row proof:
-`scratch/ps1-perf-iterate/w1high-owner372-388-four-yellow-canonical-current-20260522/20260522-214458-221762/summary.json`.
-W1-high moves to `1807/1468/1442`, overrun `26`, with blocking/refill
-`40/10 -> 39/10`, target speed `98.0952% -> 98.2289%`, and reads
-`40 -> 39`. BUILDING2 high and VISITOR3 high/low stay exact-flat in the
-canonical four-row canary.
+`scratch/ps1-perf-iterate/w1high-layout-owner372-384-four-yellow-norequire-current-20260522/20260522-232432-869167/summary.json`.
+W1-high remains `1807/1468/1442`, overrun `26`, with blocking/refill
+`39/10 -> 39/9`, reads/due `40/6`, and target speed `98.2289%`. BUILDING2
+high and VISITOR3 high/low stay exact-flat in the canonical four-row canary.
+
+Prior promoted WALKSTUF1-high fresh-owner retarget note:
+W1-high retargets owner frames `183..188` to the `372..388` sector window
+before the hot refill path commits its read window. It moved W1-high to
+`1807/1468/1442`, overrun `26`, with blocking/refill `40/10 -> 39/10`,
+target speed `98.0952% -> 98.2289%`, and reads `40 -> 39`.
 
 Prior promoted WALKSTUF1-high screen-clip headroom note:
 W1-high now clips entry `134` / source frame `242` in `WALKSTUF1.FG2` while

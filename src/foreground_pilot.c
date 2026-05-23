@@ -2299,11 +2299,11 @@ static int fgRuntimeWalkstuf1HighFreshOwner(uint32 *ioWindowStart,
 
     entryStartSector = (uint16)(*ioWindowStart >> 11);
     if (ownerFrameIndex >= 183 &&
-        ownerFrameIndex <= 188 &&
+        ownerFrameIndex <= 187 &&
         entryStartSector >= 372 &&
-        entryStartSector < 388) {
+        entryStartSector < 384) {
         candidateStart = 372UL * FG_CD_SECTOR_SIZE;
-        candidateEnd = 388UL * FG_CD_SECTOR_SIZE;
+        candidateEnd = 384UL * FG_CD_SECTOR_SIZE;
         if (candidateEnd > *ioReadEnd &&
             candidateEnd - candidateStart <= gFgRuntime.streamWindowSize) {
             *ioWindowStart = candidateStart;
