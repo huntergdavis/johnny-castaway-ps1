@@ -4808,9 +4808,27 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         gFgRuntime.sceneClockTick = fgReadTickCounter();
     }
 
+    if (!islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_VISITOR3 &&
+        gFgRuntime.frameIndex == 0 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 1 &&
+        !fgRuntimePresentFirstFrameNoWait()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+    if (!islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_VISITOR3 &&
+        gFgRuntime.active &&
+        gFgRuntime.frameIndex == 1 &&
+        gFgRuntime.stagedFrameValid &&
+        gFgRuntime.stagedFrameIndex == 2 &&
+        !fgRuntimePresentNextStagedAndAdvance()) {
+        if (ps1PerfEnabled) ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+    }
+
     if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide) {
-        VSync(0);
-        VSync(0);
         VSync(0);
         VSync(0);
 #if FG_VISITOR3_LOW_PHASE_VBLANKS >= 1
