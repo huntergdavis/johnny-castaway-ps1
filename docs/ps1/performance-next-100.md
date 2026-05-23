@@ -83,9 +83,10 @@ fixed-footprint physical compaction speed pass, the WALKSTUF1-high entry
 `58..61` tail/phase speed promotion, the W1-high no-`144` mid-cluster,
 frame138, active-loop, and early offscreen clip headroom passes, and the
 W1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed
-promotion, the W1-high `{108..124}` same-speed CD-pressure headroom pass, and
-the W1-high entry134 same-speed screen-clip headroom pass:
-`+0.2144%` public average over target / `99.7880%` public target speed across
+promotion, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the
+W1-high entry134 same-speed screen-clip headroom pass, and the W1-high
+frames `189..191` direct-stage headroom pass:
+`+0.2144%` public average over target / `99.7881%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is about
 `-0.5025%` / `100.5184%`. Since the compact full-matrix baseline was
 about `17.4%` over target / `87.1%` target speed, the headless methodology has

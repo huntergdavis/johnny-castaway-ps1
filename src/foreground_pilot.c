@@ -1229,6 +1229,13 @@ static int fgRuntimeShouldDirectStageEntry(uint16 frameIndex,
         slackVBlanks > minSlack)
         return 1;
 
+    if (!islandState.lowTide &&
+        gFgRuntimeSceneId == FG_SCENE_WALKSTUF1 &&
+        frameIndex >= 189 &&
+        frameIndex <= 191 &&
+        slackVBlanks > minSlack)
+        return 1;
+
     return 0;
 }
 

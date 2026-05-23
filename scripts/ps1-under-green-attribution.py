@@ -327,7 +327,7 @@ def main() -> int:
         "candidate_next_lane",
         "candidate_recommendation",
     ]
-    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
+    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames, lineterminator="\n")
     writer.writeheader()
     known_scenes = load_known_scenes()
     closed_ranges = load_closed_ranges(args.experiment_log)

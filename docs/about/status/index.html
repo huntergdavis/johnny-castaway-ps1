@@ -106,7 +106,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3258 words
+          ~12 min read · 3243 words
         </p>
 
       <hr class="rule" />
@@ -131,16 +131,14 @@ chapter-select grid in the in-game
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
 from <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> while streaming previews without a large paused-menu heap
 allocation. The public headless battle card is <code class="language-plaintext highlighter-rouge">+0.2144%</code> over
-target / <code class="language-plaintext highlighter-rouge">99.7880%</code> target speed; the raw signed optimization matrix is
+target / <code class="language-plaintext highlighter-rouge">99.7881%</code> target speed; the raw signed optimization matrix is
 about <code class="language-plaintext highlighter-rouge">-0.5025%</code> / <code class="language-plaintext highlighter-rouge">100.5184%</code>. The allocator validation branch records a R34
 full matrix of <code class="language-plaintext highlighter-rouge">126/126</code> PASS with 0 BSODs, and the latest targeted W1/B2 plus
 VISITOR3 checkpoints keep the top allocator-era rows measured inside the
-allocator budget. The latest WALKSTUF1-high promotion clips entry <code class="language-plaintext highlighter-rouge">134</code> /
-source frame <code class="language-plaintext highlighter-rouge">242</code>, preserving W1-high <code class="language-plaintext highlighter-rouge">1469/1441</code>, overrun <code class="language-plaintext highlighter-rouge">28</code>,
-blocking/refill <code class="language-plaintext highlighter-rouge">41/11</code>, reads/due <code class="language-plaintext highlighter-rouge">36/6</code>, while improving
-rows/spans/pixels <code class="language-plaintext highlighter-rouge">16547/120919/658340 -&gt; 16540/120651/654904</code>, restore bytes
-<code class="language-plaintext highlighter-rouge">458142 -&gt; 457128</code>, and upload bytes <code class="language-plaintext highlighter-rouge">17175040 -&gt; 17172480</code>; BUILDING2 high
-and VISITOR3 high/low stay exact-flat.
+allocator budget. The latest WALKSTUF1-high promotion direct-stages frames
+<code class="language-plaintext highlighter-rouge">189..191</code> above the normal window slack minimum, passing at
+<code class="language-plaintext highlighter-rouge">1470/1442</code>, overrun <code class="language-plaintext highlighter-rouge">28</code>, with blocking/refill <code class="language-plaintext highlighter-rouge">41/11 -&gt; 40/10</code> and target
+speed <code class="language-plaintext highlighter-rouge">98.0939% -&gt; 98.0952%</code>.
 The latest code-headroom pass makes <code class="language-plaintext highlighter-rouge">JCPERF2</code> the default scene-end perf
 summary, compiles legacy <code class="language-plaintext highlighter-rouge">JCPERF</code> behind <code class="language-plaintext highlighter-rouge">PS1_PERF_LEGACY_TRACE=1</code>, and scopes
 <code class="language-plaintext highlighter-rouge">ps1PerfEndScene()</code> to <code class="language-plaintext highlighter-rouge">-Os</code>; the four-yellow canary stays exact-flat while

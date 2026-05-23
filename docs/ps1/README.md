@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.16-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2144% public over target / 99.7880% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.2144% public over target / 99.7881% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -24,10 +24,10 @@ promoted and the post-release optimization branch now focused on the final
 under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
 deterministic BOOTMODE scene selection and heapless Scene Explorer preview
 loading, and the current battle card is `+0.2144%` over target /
-`99.7880%` target speed across all 126 timing-bearing rows. The raw signed
+`99.7881%` target speed across all 126 timing-bearing rows. The raw signed
 optimization matrix is about `-0.5025%` / `100.5184%`; bands are `123`
 green, `3` yellow, `0` orange, and `0` red. The latest allocator-era wins
-include the W1-high entry134 same-speed screen-clip headroom pass, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
+include the W1-high frames `189..191` direct-stage headroom pass, the W1-high entry134 same-speed screen-clip headroom pass, the W1-high `{108..124}` same-speed CD-pressure headroom pass, the W1-high entries `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, the earlier W1-high entry `58..61` tail-trim/phase-3 speed pass, the BUILDING2-high fixed-footprint physical compaction speed pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed pass, the W1-low compact trim/retarget phase pass, the W1-high one-VBlank phase speed pass, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass,
 VISITOR3 high/low retained setup/data-shape work, the VISITOR3-high
 setup-edge `40..47` retention, BUILDING4 high
 setup residency, BUILDING2 high guarded read rows, BUILDING2 low `112..128`
@@ -40,8 +40,8 @@ enabled by low-only 48 KiB clean-rect chunking, then `244..350` plus
 read-work, plus the W1-high one-VBlank phase retime and the BUILDING2-high one-VBlank phase retime, entries
 `89..91`, safe-tail entries `101..104`, `141`, `175..177`, and `333`, and the compacted entries `76`/`77` pack trims that move that row to `1330/1317`, overrun `13`,
 blocking/refill `32/12`, target speed `99.023%`, loop reads/read time
-`33/149`, and active payload `520974`. W1-high now measures `1469/1441`, overrun `28`, target speed
-`98.094%`, blocking/refill `41/11`, reads/due `36/6`, and read time `191`. The current
+`33/149`, and active payload `520974`. W1-high now measures `1470/1442`, overrun `28`, target speed
+`98.095%`, blocking/refill `40/10`, reads/due `40/6`, and read time `206`. The current
 VISITOR3-low stack adds the four-VBlank slack-knee guard on top of the
 `16..32`, `72..88`, and `88..104` retained read groups, then adds a
 one-VBlank low-tide phase offset, moving low to `1065/1041`, overrun `24`,
@@ -86,10 +86,11 @@ The latest WALKSTUF1 high allocator-era baseline keeps `198..244` and
 ownership, the high-tide one-VBlank phase retime, the entry `58..61`
 tail/phase-3 speed pass, the early/active/mid screen-span clip passes, the
 entry `62..66` clip plus `{92..108}`/`{272..284}` read-group speed pass, and
-the `{108..124}` same-speed CD-pressure headroom pass, then clips entry `134`
-as same-speed render/upload headroom. It measures
-`1469/1441` at `98.094%` target speed, overrun `28`,
-blocking/refill `41/11`, loop reads/read time `36/191`, and due `6`,
+the `{108..124}` same-speed CD-pressure headroom pass, clips entry `134`
+as same-speed render/upload headroom, and direct-stages late frames `189..191`
+when slack is above the stream-window minimum. It measures
+`1470/1442` at `98.095%` target speed, overrun `28`,
+blocking/refill `40/10`, loop reads/read time `40/206`, and due `6`,
 with runtime rows/spans/pixels now `16540/120651/654904` and pack LBA/sectors
 plus the PS-EXE bucket fixed.
 
