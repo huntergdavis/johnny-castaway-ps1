@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-FRAMES="${PS1_PERF_FRAMES:-7200}"
+FRAMES="${PS1_PERF_FRAMES:-12000}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-240}"
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 LABEL="canary-baseline-$(date +%Y%m%d-%H%M%S)"
@@ -24,7 +24,7 @@ path in <output>/latest-canary-baseline.txt. Use this before risky runtime
 experiments so baseline comparisons are same-commit and same-layout.
 
 Options:
-  --frames N       Emulated frames per case (default: PS1_PERF_FRAMES or 7200).
+  --frames N       Emulated frames per case (default: PS1_PERF_FRAMES or 12000).
   --timeout N      Wall-clock timeout per case (default: PS1_PERF_TIMEOUT or 240).
   --output DIR     Output root (default: scratch/ps1-perf-iterate).
   --label LABEL    Output subdirectory label (default: canary-baseline-<timestamp>).

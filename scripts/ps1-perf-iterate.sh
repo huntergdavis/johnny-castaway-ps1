@@ -26,7 +26,7 @@ EMBEDDED_BOOTMODE_HEADER="$PROJECT_ROOT/config/ps1/bootmode_embedded.h"
 
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 EXPERIMENT_LOG="${PS1_PERF_EXPERIMENT_LOG:-$OUTPUT_ROOT/experiments.jsonl}"
-FRAMES="${PS1_PERF_FRAMES:-7200}"
+FRAMES="${PS1_PERF_FRAMES:-12000}"
 INTERVAL="${PS1_PERF_INTERVAL:-999999}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-${REGTEST_TIMEOUT:-180}}"
 LOG_LEVEL="${PS1_PERF_LOG_LEVEL:-Warning}"
@@ -77,7 +77,10 @@ Options:
   --perf-log               Use perf-log token (default).
   --perf-detail            Use perf-detail token.
   --perf-debug             Use perf-debug token.
-  --frames N               Emulated frames per case (default: 7200).
+  --frames N               Emulated frames per case (default: 12000).
+                           Early-stop on JCPERF2 means short scenes exit as
+                           soon as they emit perf data; this budget only
+                           affects the longest scenes (suzy1/mary1/building3).
   --interval N             Screenshot dump interval (default: 999999).
   --timeout N              Wall-clock timeout per case (default: REGTEST_TIMEOUT or 180).
   --log LEVEL              DuckStation log level (default: Warning).

@@ -13,6 +13,8 @@ LIMIT=""
 SEED="${REGTEST_SEED:-1}"
 FRAMES="${PS1_PERF_FRAMES:-7200}"
 SUZY1_MIN_FRAMES="${PS1_PERF_SUZY1_FRAMES:-12000}"
+MARY1_MIN_FRAMES="${PS1_PERF_MARY1_FRAMES:-9000}"
+BUILDING3_MIN_FRAMES="${PS1_PERF_BUILDING3_FRAMES:-9600}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-220}"
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 SHEET="$PROJECT_ROOT/docs/ps1/performance-scene-matrix.csv"
@@ -42,8 +44,10 @@ Options:
   --seed N                   Seed for random order and boot strings (default: REGTEST_SEED or 1).
   --frames N                 Emulated frames per case (default: PS1_PERF_FRAMES or 7200).
                              suzy1 cases are raised to PS1_PERF_SUZY1_FRAMES
-                             or 12000 when this value is lower, because that
-                             scene reaches JCPERF2 after the default budget.
+                             or 12000, mary1 to PS1_PERF_MARY1_FRAMES or 9000,
+                             and building3 to PS1_PERF_BUILDING3_FRAMES or 9600
+                             when this value is lower, because those scenes
+                             reach JCPERF2 after the default budget.
   --timeout N                Wall-clock timeout per case (default: PS1_PERF_TIMEOUT or 220).
   --output DIR               Perf output root (default: scratch/ps1-perf-iterate).
   --sheet PATH               CSV sheet to refresh after a successful run.
@@ -229,6 +233,12 @@ case_frame_budget() {
 
     if [[ "$label" == suzy1-* ]] && [ "$frames" -lt "$SUZY1_MIN_FRAMES" ]; then
         frames="$SUZY1_MIN_FRAMES"
+    fi
+    if [[ "$label" == mary1-* || "$label" == mary1 ]] && [ "$frames" -lt "$MARY1_MIN_FRAMES" ]; then
+        frames="$MARY1_MIN_FRAMES"
+    fi
+    if [[ "$label" == building3-* || "$label" == building3 ]] && [ "$frames" -lt "$BUILDING3_MIN_FRAMES" ]; then
+        frames="$BUILDING3_MIN_FRAMES"
     fi
     printf '%s\n' "$frames"
 }
