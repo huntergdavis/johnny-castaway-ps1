@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="History — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, the v0.8.8-ps1 VISITOR5 high performance release, and the v0.8.9-ps1 WALKSTUF1 low payload-reduction release." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.16; built 2026-05-23" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline, the v0.8.4-ps1 chapter-select-thumbnail reconciliation, the v0.8.5-ps1 full headless matrix release, the v0.8.6-ps1 WALKSTUF1/VISITOR3 setup-segment compaction follow-through, the v0.8.7-ps1 deterministic boot and Scene Explorer preview stability release, the v0.8.8-ps1 VISITOR5 high performance release, and the v0.8.9-ps1 WALKSTUF1 low payload-reduction release." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.0; built 2026-05-24" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -122,7 +122,7 @@
   <li><a href="#the-hybrid-pipeline-pivot" id="markdown-toc-the-hybrid-pipeline-pivot">The hybrid pipeline pivot</a></li>
   <li><a href="#first-scenes-validated" id="markdown-toc-first-scenes-validated">First scenes validated</a></li>
   <li><a href="#the-63-scene-grind" id="markdown-toc-the-63-scene-grind">The 63-scene grind</a></li>
-  <li><a href="#where-it-stands-at-v0816-ps1" id="markdown-toc-where-it-stands-at-v0816-ps1">Where it stands at v0.8.16-ps1</a></li>
+  <li><a href="#where-it-stands-at-v090-ps1" id="markdown-toc-where-it-stands-at-v090-ps1">Where it stands at v0.9.0-ps1</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
@@ -484,10 +484,10 @@ and system pages. The important engineering rule was the same as
 the walking release: the steady-state frame loop does not allocate.</li>
 </ul>
 
-<h2 id="where-it-stands-at-v0816-ps1">Where it stands at v0.8.16-ps1</h2>
+<h2 id="where-it-stands-at-v090-ps1">Where it stands at v0.9.0-ps1</h2>
 
 <ul>
-  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code></strong>.</li>
+  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code></strong>.</li>
   <li>Validated scenes:
 <strong>63 / 63</strong> —
 every routed scene the original game had, signed off across every
@@ -577,9 +577,9 @@ between scene endpoints.</li>
 confirms the current runtime can run long sessions without the
 prior scene-to-scene leak.</li>
   <li><a href="../../docs/glossary/#ps-exe">PS-EXE</a> size: <strong>~208 KiB</strong> (104 × 2 KiB CD-ROM
-sectors) at <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code> after legacy ADS/TTM/FG1
+sectors) at <code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code> after legacy ADS/TTM/FG1
 paths were stripped from the linker pass.</li>
-  <li>Routed CD image: <strong>~79 MB</strong> at <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code>
+  <li>Routed CD image: <strong>~79 MB</strong> at <code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code>
 (mostly FG2 pack payload routed selectively onto the disc).</li>
   <li>Generated FG2 corpus on disk: <strong>126 packs</strong> (high-tide +
 low-tide for all 63 scenes), <strong>~343 MB</strong>, routed onto
@@ -595,7 +595,7 @@ Long-term hardware-soak observations are still on the wishlist.</li>
   <li><a href="../method/">Method</a> — the <em>what</em> and
 the <em>why</em> of the hybrid pipeline this history walked toward.</li>
   <li><a href="../status/">Status</a> — the current
-per-component state at <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code>.</li>
+per-component state at <code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code>.</li>
   <li><a href="../../releases/">Releases</a> — every tagged
 version with theme line and headline bullets.</li>
   <li><a href="../../lab/the-63-scene-grind/">Lab: the 63-scene grind</a>
@@ -640,7 +640,7 @@ you were cheated. Open source and free.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.16-ps1</a>)
+          (<a href="../../releases/">v0.9.0-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
