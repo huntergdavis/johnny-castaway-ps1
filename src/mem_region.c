@@ -844,6 +844,16 @@ void memLogTelemetry(void)
 
 void memVerifyBootBudget(void)
 {
+    /* R34: when MEM_BOOT_BUDGET is 0 the BOOT region is disabled —
+     * no callers allocate from it and the headroom went to CACHE. The
+     * pack-metrics sum below is a historical worst-case estimate from
+     * when frame/prefetch/window buffers lived in BOOT; with those
+     * migrated to CACHE the check is meaningless against a zero
+     * budget and would silently halt (graphics not yet up → text
+     * panel + infinite loop, no JCBSOD telemetry). Skip cleanly. */
+    if (MEM_BOOT_BUDGET == 0u) {
+        return;
+    }
     /* Sum the worst-case BOOT-region footprints across all packs.
      * The metrics header pre-computes each pack's max frame buffer,
      * prefetch buffer, stream window, stream scratch demands; we

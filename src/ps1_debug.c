@@ -350,29 +350,75 @@ void ps1Bsod(const char *scene, const char *reason,
         if (*p == '/' || *p == '\\') fileBase = p + 1;
     }
 
-    /* 38-column layout. The Win 3.1 BSOD's voice was direct, slightly
-     * punctilious, and assumed an adult audience — match that tone. */
-    FntPrint(fontID,
-        " JOHNNY CASTAWAY  SYSTEM ERROR\n"
-        " ==============================\n"
-        "\n"
-        " A fatal error has occurred.\n"
-        " The screensaver has halted to\n"
-        " prevent further problems.\n"
-        "\n"
-        " Reason:\n"
-        "   %s\n"
-        "\n"
-        " Scene:  %s\n"
-        " At:     %s:%d\n"
-        "\n"
-        " Diagnostics:\n"
-        "   Largest free block: %lu KB\n"
-        "\n"
-        " Reset the console to recover.\n"
-        " (Photograph this screen for\n"
-        "  the bug report.)\n",
-        reason, scene, fileBase, line, heapKB);
+    /* Word-wrap the reason into the BSOD panel's 38-col layout. The
+     * 8x8 BIOS font + 304 px text width = 38 columns; reasons like
+     * "CACHE exhausted (region+libc both): req=65280 have=107276" are
+     * 57 chars and previously got clipped at the right margin. Wrap
+     * at the last space before column WRAP_COL, hard-break if a single
+     * word exceeds the column width. Indent continuation lines so the
+     * structure stays readable. */
+    {
+        char reasonBuf[256];
+        size_t outLen = 0;
+        const size_t indentChars = 3;     /* "   " prefix on each line */
+        const size_t bufMax = sizeof(reasonBuf) - 1;
+        const int WRAP_COL = 36;          /* leave a 1-col safety margin */
+        const char *r = reason;
+        while (*r && outLen < bufMax) {
+            /* Emit indent for this line. */
+            for (size_t i = 0; i < indentChars && outLen < bufMax; i++)
+                reasonBuf[outLen++] = ' ';
+            /* Find the end of the chunk that fits. */
+            size_t chunkChars = 0;
+            size_t lastSpace = 0;       /* offset in r where last space was */
+            size_t lastSpaceChunk = 0;  /* chunkChars at that point */
+            size_t cap = (size_t)WRAP_COL - indentChars;
+            while (r[chunkChars] && chunkChars < cap) {
+                if (r[chunkChars] == ' ') {
+                    lastSpace = chunkChars;
+                    lastSpaceChunk = chunkChars;
+                }
+                chunkChars++;
+            }
+            /* If we hit the cap mid-word and saw a space, break there. */
+            size_t copyLen = chunkChars;
+            if (r[chunkChars] && r[chunkChars] != ' ' && lastSpace > 0) {
+                copyLen = lastSpaceChunk;
+            }
+            /* Copy the chunk. */
+            for (size_t i = 0; i < copyLen && outLen < bufMax; i++)
+                reasonBuf[outLen++] = r[i];
+            if (outLen < bufMax)
+                reasonBuf[outLen++] = '\n';
+            r += copyLen;
+            /* Skip a single leading space on the next line so the
+             * indented continuation lines don't double-space. */
+            if (*r == ' ') r++;
+        }
+        reasonBuf[outLen] = '\0';
+
+        FntPrint(fontID,
+            " JOHNNY CASTAWAY  SYSTEM ERROR\n"
+            " ==============================\n"
+            "\n"
+            " A fatal error has occurred.\n"
+            " The screensaver has halted to\n"
+            " prevent further problems.\n"
+            "\n"
+            " Reason:\n"
+            "%s"
+            "\n"
+            " Scene:  %s\n"
+            " At:     %s:%d\n"
+            "\n"
+            " Diagnostics:\n"
+            "   Largest free block: %lu KB\n"
+            "\n"
+            " Reset the console to recover.\n"
+            " (Photograph this screen for\n"
+            "  the bug report.)\n",
+            reasonBuf, scene, fileBase, line, heapKB);
+    }
 
     FntFlush(fontID);
     DrawSync(0);

@@ -135,8 +135,16 @@ typedef enum MemRegion {
  * wipe means TRANSIENT can never fragment. CACHE pressure should
  * stay well below 640 KB once clean-rects are forced into TRANSIENT
  * even at peak. */
-#define MEM_BOOT_BUDGET      (  32u * 1024u)
-#define MEM_CACHE_BUDGET     ( 640u * 1024u)
+/* R34: BOOT region budget reduced to 0 — no `memAlloc(MEM_REGION_BOOT,
+ * …)` call sites exist in the codebase (only references are comments
+ * and the enum definition), so the historical 32 KB was permanently
+ * unused. Confirmed via `memBootUsed=0 memBootPeak=0` across every
+ * BSOD diagnostic. The 32 KB is reassigned to CACHE so the walkstuf1
+ * scene's heavy setup pattern has more contiguous room for the 64 KB
+ * clean-rect that previously failed with 107 KB free-but-fragmented.
+ * Total region budget stays at 1440 KB so libc headroom is unchanged. */
+#define MEM_BOOT_BUDGET      (   0u * 1024u)
+#define MEM_CACHE_BUDGET     ( 672u * 1024u)
 #define MEM_TRANSIENT_BUDGET ( 768u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
