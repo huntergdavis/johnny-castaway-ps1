@@ -85,6 +85,8 @@ uint32 cdromGetSize(int fileHandle);
 
 #include <psxcd.h>
 
+CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename);
+
 typedef struct {
     CdlFILE cdfile;
     long currentPos;

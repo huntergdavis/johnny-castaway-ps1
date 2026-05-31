@@ -12,18 +12,19 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.16-ps1` |
+| Release | `v0.9.2-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.1571% public over target / 99.8440% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.16-ps1` is the current release, with the memory-region allocator
-promoted and the post-release optimization branch now focused on the final
-under-99 rows. It keeps all 63 scenes visually/audibly validated, preserves
-deterministic BOOTMODE scene selection and heapless Scene Explorer preview
-loading, and the current battle card is `+0.1571%` over target /
+`v0.9.2-ps1` is the current release, with the memory-region allocator
+promoted, all 126 routed/timing-bearing rows at or above 99% target speed, and
+the extended-soak CD/VISITOR3-low stability fixes in place. It keeps all
+63 scenes visually/audibly validated, preserves deterministic BOOTMODE scene
+selection and heapless Scene Explorer preview loading, and the current battle
+card is `+0.1571%` over target /
 `99.8440%` target speed across all 126 timing-bearing rows. The raw signed
 optimization matrix is `-0.5598%` / `100.5744%`; bands are `123`
 green, `3` yellow, `0` orange, and `0` red. The latest allocator-era wins

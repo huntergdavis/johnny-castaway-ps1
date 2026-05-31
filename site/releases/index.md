@@ -22,6 +22,52 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.9.2-ps1` - long-run CD and VISITOR3-low stability release
+<time datetime="2026-05-31"><em>2026-05-31</em></time>
+
+A stability point release after `v0.9.1-ps1`. It promotes the extended-soak
+fixes for the two rare failures found only after randomized scene playback had
+been running for many hours.
+
+- **CD searches are quiesced.** Runtime file lookups now drain the prior
+  read/pause path before `CdSearchFile()`, preventing async `CdlPause`
+  completion from racing later directory-walk `CdlSetloc` commands.
+- **VISITOR3-low gets surgical memory relief.** Low tide drops the clean-relief
+  stream window that competed with the low setup tail and five split clean-rect
+  strips. VISITOR3-high keeps its reduced high-tide relief window.
+- **Soak verification stayed clean.** The targeted VISITOR3-low run confirmed
+  `no-prefetch` with no `fg-stream-window`, and the follow-up randomized soak
+  was intentionally stopped for release after about 47.5 hours with no
+  `JCBSOD`, `JCSKIP`, `CACHE exhausted`, or DuckStation `Incorrect parameters`
+  markers.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.9.2/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.2-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.1-ps1` - longevity testing improvements
+<time datetime="2026-05-24"><em>2026-05-24</em></time>
+
+A stability checkpoint after `v0.9.0-ps1`. It raises CACHE headroom by 32 KB,
+wraps long BSOD reasons on screen, and records a 6-hour 126-scene headless
+soak with 0 BSODs.
+
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.1-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.0-ps1` - all routed rows green
+<time datetime="2026-05-23"><em>2026-05-23</em></time>
+
+A performance milestone release: all 126 routed high/low scene variants are
+timing-bearing and at or above 99% target speed.
+
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.0-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.14-ps1` — JOHNNY1 local-LZ green promotion
 <time datetime="2026-05-15"><em>2026-05-15</em></time>
 

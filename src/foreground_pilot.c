@@ -1302,23 +1302,26 @@ static int fgSceneKeepsStage1UnderCleanMemoryRelief(const char *sceneName)
 
 static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
 {
-    return fgSceneEquals(sceneName, "visitor3");
+    /* VISITOR3-high still benefits from a small clean-relief window. VISITOR3-low
+     * is the long-soak cliff: its 48 KB grouped window competes with the low
+     * setup tail and five split clean-rect strips, leaving the final small
+     * clean strip dependent on CACHE/libc fragmentation luck. */
+    return fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide;
 }
 
 static uint32 fgSceneCleanReliefWindowBytes(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "visitor3") && !islandState.lowTide)
         return 80UL * 1024UL;
-    if (fgSceneEquals(sceneName, "visitor3"))
-        return FG_PREFETCH_DEFAULT_WINDOW_BYTES;
     return 0;
 }
 
 /* Round 33 allocator-era note: VISITOR3 still needs cleanMemoryRelief=1
  * because its split clean rects can consume ~360 KB and TRANSIENT is already
  * mostly occupied by bg tiles. Unlike the older broad relief path, keep the
- * tiny stage1 prefetch frame buffer live and only suppress the large
- * setup-prime window allocation. */
+ * tiny stage1 prefetch frame buffer live. High tide also keeps a reduced
+ * stream window; low tide drops that window so its final clean-rect strip
+ * does not depend on a long-run CACHE/libc fallback hole. */
 static int fgSceneForcesCleanMemoryRelief(const char *sceneName)
 {
     return fgSceneEquals(sceneName, "visitor3");
@@ -1398,7 +1401,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
     if (cdPath == NULL || outSize == NULL)
         return NULL;
 
-    if (CdSearchFile(&fileInfo, (char *)cdPath) == NULL) {
+    if (ps1_cdSearchFileQuiesced(&fileInfo, cdPath) == NULL) {
         printf("FG search %s\n", cdPath);
         return NULL;
     }

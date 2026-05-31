@@ -352,7 +352,7 @@ int cdromOpen2(const char *filename)
 
     /* Search for the file on CD-ROM */
     CdlFILE *file = &cdFiles[slot];
-    if (CdSearchFile(file, filename) == NULL) {
+    if (ps1_cdSearchFileQuiesced(file, filename) == NULL) {
         ps1DebugPrint("cdromOpen2: File not found: %s", filename);
         return -1;
     }
@@ -590,6 +590,16 @@ void cdromResetState(void)
     }
 }
 
+CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
+{
+    /* PSn00bSDK's CdRead path completes the data transfer, then issues an
+     * async CdlPause. Our fast read polling can return before that pause's
+     * completion IRQ, and that IRQ resets the CD parameter FIFO. Drain it
+     * before CdSearchFile, whose directory walk issues CdlSetloc commands. */
+    (void)CdReadSync(0, NULL);
+    return CdSearchFile(file, filename);
+}
+
 PS1File* ps1_fopen(const char* filename, const char* mode)
 {
     /* Find free file slot */
@@ -616,7 +626,7 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     strcat(cdPath, ";1");
 
     /* Search for file on CD */
-    CdlFILE *result = CdSearchFile(&file->cdfile, cdPath);
+    CdlFILE *result = ps1_cdSearchFileQuiesced(&file->cdfile, cdPath);
 
     if (result == NULL) {
         /* Try without ;1 suffix */
@@ -624,7 +634,7 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
         altPath[0] = '\\';
         strncpy(altPath + 1, filename, sizeof(altPath) - 2);
         altPath[sizeof(altPath) - 1] = '\0';
-        result = CdSearchFile(&file->cdfile, altPath);
+        result = ps1_cdSearchFileQuiesced(&file->cdfile, altPath);
     }
 
     if (result == NULL) {
@@ -701,7 +711,7 @@ PS1File* ps1_fopen_stream(const char* filename, uint32_t cacheBytes)
     memset(file, 0, sizeof(*file));
 
     /* Resolve file on CD. */
-    CdlFILE *result = CdSearchFile(&file->cdfile, (char*)filename);
+    CdlFILE *result = ps1_cdSearchFileQuiesced(&file->cdfile, filename);
     if (result == NULL) {
         return NULL;
     }
@@ -989,7 +999,7 @@ int ps1_streamResolveFile(const char* filename, CdlFILE* outFile)
     cdPath[sizeof(cdPath) - 3] = '\0';
     strcat(cdPath, ";1");
 
-    return (CdSearchFile(outFile, cdPath) != NULL) ? 1 : 0;
+    return (ps1_cdSearchFileQuiesced(outFile, cdPath) != NULL) ? 1 : 0;
 }
 
 int ps1_streamReadIntoFile(const CdlFILE *cdfile, uint32_t offset, uint32_t size, uint8_t *dstBuffer)
@@ -1589,7 +1599,7 @@ static int ps1PilotRefreshPackFileInfo(struct TPs1ActivePack *pack)
     cdPath[sizeof(cdPath) - 3] = '\0';
     strcat(cdPath, ";1");
 
-    if (CdSearchFile(&cdfile, cdPath) == NULL) {
+    if (ps1_cdSearchFileQuiesced(&cdfile, cdPath) == NULL) {
         pack->fileInfoValid = 0;
         return 0;
     }
@@ -1624,7 +1634,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
     strncpy(cdPath + 1, packFile, sizeof(cdPath) - 4);
     cdPath[sizeof(cdPath) - 3] = '\0';
     strcat(cdPath, ";1");
-    if (CdSearchFile(&cdfile, cdPath) == NULL)
+    if (ps1_cdSearchFileQuiesced(&cdfile, cdPath) == NULL)
         return 0;
 
     headerData = ps1_streamReadFromCdFile(&cdfile, 0, PS1_PACK_HEADER_SIZE);
@@ -1692,7 +1702,7 @@ static int ps1PilotLoadPackIndex(const char *adsName, struct TPs1ActivePack *out
         strncpy(cdPackPath + 1, packFile, sizeof(cdPackPath) - 4);
         cdPackPath[sizeof(cdPackPath) - 3] = '\0';
         strcat(cdPackPath, ";1");
-        if (CdSearchFile(&packCdFile, cdPackPath) != NULL) {
+        if (ps1_cdSearchFileQuiesced(&packCdFile, cdPackPath) != NULL) {
             outPack->cachedStartSector = CdPosToInt(&packCdFile.pos);
             outPack->cachedFileSize = packCdFile.size;
         } else {
@@ -1844,7 +1854,7 @@ uint8_t *ps1PilotLoadPsb(const char *psbName, uint32 *outSize)
 uint8_t *ps1_loadRawFile(const char *path, uint32_t *outSize)
 {
     CdlFILE fileInfo;
-    if (CdSearchFile(&fileInfo, (char *)path) == NULL) {
+    if (ps1_cdSearchFileQuiesced(&fileInfo, path) == NULL) {
         return NULL;
     }
 
@@ -2661,7 +2671,7 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
 
     /* Get actual file size from CD (may differ from metadata) */
     CdlFILE cdfile;
-    if (CdSearchFile(&cdfile, path) == NULL) {
+    if (ps1_cdSearchFileQuiesced(&cdfile, path) == NULL) {
         printf("ps1_loadBmpData: File not found: %s\n", path);
         return;
     }

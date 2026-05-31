@@ -1328,7 +1328,7 @@ static void loadTitleScreenEarly(void)
 
     /* Load TITLE.RAW using direct CD calls */
     CdlFILE fileInfo;
-    if (!CdSearchFile(&fileInfo, "\\TITLE.RAW;1")) {
+    if (!ps1_cdSearchFileQuiesced(&fileInfo, "\\TITLE.RAW;1")) {
         free(screenBuffer);
         return;  /* File not found, continue anyway */
     }

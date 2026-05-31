@@ -157,14 +157,17 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.16-ps1` is the memory-region allocator stability
-release after the `v0.8.15-ps1` WALKSTUF1 high setup-segment performance
-promotion. All 63 scenes remain validated, all 126 high/low variants are routed
-and timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured; `suzy3` is not a
+Latest point release: `v0.9.2-ps1` is the long-run CD and VISITOR3-low
+stability release after the `v0.9.1-ps1` longevity-test checkpoint. All 63
+scenes remain validated, all 126 high/low variants are routed and
+timing-bearing, and MARY1/2/3 plus SUZY1/2 are measured; `suzy3` is not a
 standalone scene route. The allocator route now separates BOOT, CACHE, and
 TRANSIENT lifetimes, wipes scene-boundary transient allocations, reuses CACHE
 storage through free-list/LRU paths, and gates every `memAlloc` call site with a
-nearby `MEM_REGION_RATIONALE`. The current allocator matrix battle card is
+nearby `MEM_REGION_RATIONALE`. The v0.9.2 soak fix also quiesces CD file
+searches before directory walks and removes the low-tide VISITOR3 clean-relief
+stream window that caused a rare CACHE/libc fragmentation cliff. The current
+allocator matrix battle card is
 `+0.5699%` over target / `99.4843%` target speed, raw signed `-0.1470%` /
 `100.2147%`, with `118` green, `4` yellow, `2` orange, and `2` red rows.
 Earlier pack/data wins remain in force: the MARY3
@@ -465,6 +468,15 @@ shrinking pack transform, or a deliberate layout-moving experiment with full
 canaries.
 
 Milestone releases:
+- `v0.9.2-ps1` — long-run CD and VISITOR3-low stability release. CD file
+  searches now drain the prior read/pause path before `CdSearchFile()`, and
+  VISITOR3-low no longer keeps the clean-relief stream window that competed
+  with the low setup tail and five split clean-rect strips in multiday soaks.
+- `v0.9.1-ps1` — longevity testing improvements. Raises CACHE headroom by
+  32 KB, improves BSOD reason display, and verifies the full 126-scene
+  headless route over a 6-hour soak with 0 BSODs.
+- `v0.9.0-ps1` — performance milestone release. All 126 routed high/low
+  scene/tide rows are timing-bearing and at or above 99% target speed.
 - `v0.8.16-ps1` — memory-region allocator stability release. Promotes
   BOOT/CACHE/TRANSIENT allocation lifetimes, scene-boundary TRANSIENT wipes,
   CACHE free-list/LRU reuse, generated pack-header metrics, and allocator

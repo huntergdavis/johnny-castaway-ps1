@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state after v0.8.16-ps1
+eyebrow: Component-level state after v0.9.2-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -15,10 +15,13 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 The current release line keeps every row in the live per-scene ledger signed
 off, all 126 high/low scene variants routed and timing-bearing, deterministic
-BOOTMODE scene selection logged and gated, and the new memory-region allocator
-promoted into mainline. BOOT allocations now seal after startup, CACHE
-allocations reuse long-lived resource storage through free-list/LRU paths, and
-TRANSIENT scene allocations can be wiped between major scene loads. The
+BOOTMODE scene selection logged and gated, the memory-region allocator promoted
+into mainline, and the extended-soak CD/VISITOR3-low stability fixes in place.
+BOOT allocations now seal after startup, CACHE allocations reuse long-lived
+resource storage through free-list/LRU paths, TRANSIENT scene allocations can
+be wiped between major scene loads, CD file searches are quiesced before
+directory walks, and VISITOR3-low no longer keeps the clean-relief stream
+window that caused a rare CACHE/libc fragmentation cliff. The
 chapter-select grid in the in-game
 [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
@@ -271,7 +274,11 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.16-ps1` promotes the memory-region
+- **Milestone release cadence.** `v0.9.2-ps1` hardens the long-run CD and
+  VISITOR3-low paths after multiday soak testing. `v0.9.1-ps1` raises CACHE
+  headroom and improves BSOD display for longevity testing. `v0.9.0-ps1`
+  marks all 126 routed high/low scene variants green at 99%+ target speed.
+  `v0.8.16-ps1` promotes the memory-region
   allocator: BOOT/CACHE/TRANSIENT lifetimes, scene-boundary transient wipes,
   CACHE free-list/LRU reuse, generated pack-header metrics, and allocator
   rationale gates. `v0.8.15-ps1` promotes the WALKSTUF1 high setup-resident CD
