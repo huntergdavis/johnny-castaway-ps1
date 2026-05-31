@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Status — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.1; built 2026-05-24" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,11 +102,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state after v0.8.16-ps1</p>
+      <p class="eyebrow">Component-level state after v0.9.2-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3250 words
+          ~13 min read · 3315 words
         </p>
 
       <hr class="rule" />
@@ -115,17 +115,20 @@
   <div class="page-body">
     <h2 id="headline">Headline</h2>
 
-<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code></strong>. Scenes validated
+<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code></strong>. Scenes validated
 under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
 The current release line keeps every row in the live per-scene ledger signed
 off, all 126 high/low scene variants routed and timing-bearing, deterministic
-BOOTMODE scene selection logged and gated, and the new memory-region allocator
-promoted into mainline. BOOT allocations now seal after startup, CACHE
-allocations reuse long-lived resource storage through free-list/LRU paths, and
-TRANSIENT scene allocations can be wiped between major scene loads. The
+BOOTMODE scene selection logged and gated, the memory-region allocator promoted
+into mainline, and the extended-soak CD/VISITOR3-low stability fixes in place.
+BOOT allocations now seal after startup, CACHE allocations reuse long-lived
+resource storage through free-list/LRU paths, TRANSIENT scene allocations can
+be wiped between major scene loads, CD file searches are quiesced before
+directory walks, and VISITOR3-low no longer keeps the clean-relief stream
+window that caused a rare CACHE/libc fragmentation cliff. The
 chapter-select grid in the in-game
 <a href="../../docs/glossary/#scene-explorer">Scene Explorer</a>
 keeps the custom on-PS1-captured thumbnails for every one of the 63 scenes
@@ -359,7 +362,7 @@ done.”</p>
     <tr>
       <td>CD packaging (mkpsxiso)</td>
       <td>Complete</td>
-      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code> is ~79 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
+      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> is ~79 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
     </tr>
   </tbody>
 </table>
@@ -413,7 +416,7 @@ harness output is the SoT for build-and-boot regressions.</p>
 <ul>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
-loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code>
+loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code>
 has the public-capped headless baseline at <code class="language-plaintext highlighter-rouge">99.8%</code>
 target speed across all 126 timing-bearing rows after the VISITOR3,
 WALKSTUF1, MARY3, BUILDING, ACTIVITY9, JOHNNY1, and WALKSTUF3
@@ -458,7 +461,11 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code> promotes the memory-region
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> hardens the long-run CD and
+VISITOR3-low paths after multiday soak testing. <code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code> raises CACHE
+headroom and improves BSOD display for longevity testing. <code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code>
+marks all 126 routed high/low scene variants green at 99%+ target speed.
+<code class="language-plaintext highlighter-rouge">v0.8.16-ps1</code> promotes the memory-region
 allocator: BOOT/CACHE/TRANSIENT lifetimes, scene-boundary transient wipes,
 CACHE free-list/LRU reuse, generated pack-header metrics, and allocator
 rationale gates. <code class="language-plaintext highlighter-rouge">v0.8.15-ps1</code> promotes the WALKSTUF1 high setup-resident CD
@@ -546,7 +553,7 @@ this page uses without scaffolding.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.1-ps1</a>)
+          (<a href="../../releases/">v0.9.2-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
