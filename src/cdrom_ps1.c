@@ -35,6 +35,15 @@
 #define PS1_PACK_ENTRY_SIZE 28
 #define PS1_PACK_FILE_MAX 32
 
+static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
+static void *gPs1CdReadIdleHookUserData = NULL;
+
+void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData)
+{
+    gPs1CdReadIdleHook = hook;
+    gPs1CdReadIdleHookUserData = userData;
+}
+
 /*
  * Build 28: Test different file path formats with debug output
  * Use ps1DebugPrint since we know it works now
@@ -935,12 +944,22 @@ static int ps1CdReadSyncBounded(void)
     int syncResult;
     int fastPoll = 1000000;
 
+    syncResult = CdReadSync(1, NULL);
+    if (gPs1CdReadIdleHook != NULL) {
+        int vsyncWait = 240;
+        while (syncResult > 0 && --vsyncWait > 0) {
+            gPs1CdReadIdleHook(gPs1CdReadIdleHookUserData);
+            syncResult = CdReadSync(1, NULL);
+        }
+        return syncResult;
+    }
+
     /* Keep normal foreground reads on the old VBlank-free fast path. If the
      * non-blocking sync stays pending, fall back to a bounded VBlank wait so
      * long soaks can recover from a missed CD completion IRQ. */
-    do {
+    while (syncResult > 0 && --fastPoll > 0) {
         syncResult = CdReadSync(1, NULL);
-    } while (syncResult > 0 && --fastPoll > 0);
+    }
 
     if (syncResult <= 0)
         return syncResult;

@@ -879,6 +879,7 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
     foregroundPilotSetHeapProbe(0);
+    foregroundPilotSetLoadingWaveProof(0);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     freeplaySetTelemetryLevel(0);
@@ -1079,6 +1080,13 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+        } else if (!strcmp(tokens[i], "loading-waves") ||
+                   !strcmp(tokens[i], "load-waves") ||
+                   !strcmp(tokens[i], "async-load-waves")) {
+            foregroundPilotSetLoadingWaveProof(1);
+        } else if (!strcmp(tokens[i], "loading-waves-off") ||
+                   !strcmp(tokens[i], "no-loading-waves")) {
+            foregroundPilotSetLoadingWaveProof(0);
         } else if (!strcmp(tokens[i], "prefetch-off") || !strcmp(tokens[i], "no-prefetch")) {
             foregroundPilotSetPrefetchStage1(0);
             foregroundPilotSetPrefetchWindow(0);
@@ -1400,6 +1408,7 @@ static void usage()
         printf("         capture-foreground-include-static-base - include current base-BMP ledger draws in foreground-only captures\n");
         printf("         capture-foreground-skip-visibility-mask - replay current foreground ledger without final-frame masking\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
+        printf("         loading-waves   - PS1-only proof: animate waves during FG2 setup CD waits\n");
         printf("         FG2 prefetch defaults to stage1 + 32KB stream window\n");
         printf("         prefetch-window32|48|64 or prefetch-window BYTES - override FG2 stream window size\n");
         printf("         no-prefetch      - disable FG2 prefetch for diagnostics\n");
@@ -1497,6 +1506,15 @@ static void parseArgs(int argc, char **argv)
             else if (!strcmp(argv[i], "prefetch-off") || !strcmp(argv[i], "no-prefetch")) {
                 foregroundPilotSetPrefetchStage1(0);
                 foregroundPilotSetPrefetchWindow(0);
+            }
+            else if (!strcmp(argv[i], "loading-waves") ||
+                     !strcmp(argv[i], "load-waves") ||
+                     !strcmp(argv[i], "async-load-waves")) {
+                foregroundPilotSetLoadingWaveProof(1);
+            }
+            else if (!strcmp(argv[i], "loading-waves-off") ||
+                     !strcmp(argv[i], "no-loading-waves")) {
+                foregroundPilotSetLoadingWaveProof(0);
             }
             else if (!strcmp(argv[i], "prefetch-stage1") || !strcmp(argv[i], "stage1")) {
                 foregroundPilotSetPrefetchStage1(1);

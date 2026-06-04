@@ -54,6 +54,24 @@ Acceptance checks:
 - First displayed foreground frame is clean: no stale wave strip, no missing
   island/raft/holiday pixels, no foreground residue.
 
+Current proof hook:
+
+- Boot token: `loading-waves` (aliases: `load-waves`, `async-load-waves`).
+- Default behavior is unchanged; `loading-waves-off`/`no-loading-waves` can
+  explicitly clear the flag in diagnostic boot strings.
+- The proof saves a temporary wave-only clean rect after the ocean/island
+  backdrop is ready, installs a CD-read idle hook for foreground pack setup,
+  restores/ticks/uploads the wave strip while `CdReadSync(1, NULL)` is still
+  pending, then frees the temporary rect before the normal per-scene clean
+  snapshot is saved.
+- Initial evidence on 2026-06-04:
+  - `fishing1` high tide: 35 loading-wave ticks, perf gates passed,
+    `cd_fail=0`, `frame_mismatch=0`, `full_fallbacks=0`.
+  - `fishing1` low tide: 37 loading-wave ticks, perf gates passed,
+    `cd_fail=0`, `frame_mismatch=0`, `full_fallbacks=0`.
+  - Default-off `fishing1` high tide: perf gates passed and no `JCASYNC`
+    markers emitted.
+
 ## Phase 2: Single-Flight Async CD Primitive
 
 After the visual proof target is clear, add a narrow async CD API that current

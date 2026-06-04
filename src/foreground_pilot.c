@@ -361,6 +361,8 @@ static uint8 gFgHeapProbeEnabled = 0;
  * scenes once allocated), prefetch is back on by default. */
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
+static uint8 gFgLoadingWaveProofEnabled = 0;
+static uint16 gFgLoadingWaveProofTicks = 0;
 static struct TTtmSlot gFgBackdropSlot;
 static struct TTtmThread gFgBackdropThread;
 
@@ -382,6 +384,8 @@ static void fgBackdropRelease(int keepBackgrnd);
 static void fgReleaseStreamBuffers(void);
 static void fgReleaseStreamBuffersHard(void);
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void);
+static int fgLoadingWaveProofBegin(const char *sceneName);
+static void fgLoadingWaveProofEnd(const char *sceneName);
 static void fgInitVisiblePipeline(void);
 static uint8 fgSceneIdForName(const char *sceneName);
 
@@ -2033,6 +2037,58 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         printf("JCRECT 1-rect split grSaveCleanBgRects=%d\n", rc);
         return rc > 0;
     }
+}
+
+static void fgLoadingWaveProofReadIdleHook(void *userData)
+{
+    (void)userData;
+
+    if (!gFgBackdropThread.isRunning) {
+        VSync(0);
+        return;
+    }
+
+    grRestoreBgFromRects();
+    if (gFgBackdropThread.timer == 0) {
+        gFgBackdropThread.timer = gFgBackdropThread.delay;
+        islandAnimate(&gFgBackdropThread);
+    } else {
+        islandRedrawWave(&gFgBackdropThread);
+        gFgBackdropThread.timer--;
+    }
+    fgBackdropStampHoliday();
+
+    VSync(0);
+    grDrawBackground();
+    gFgLoadingWaveProofTicks++;
+}
+
+static int fgLoadingWaveProofBegin(const char *sceneName)
+{
+    if (!gFgLoadingWaveProofEnabled || !gFgBackdropThread.isRunning)
+        return 0;
+
+    if (!fgBackdropSaveCleanBgRectsForPack(0, 0, 0, 0)) {
+        printf("JCASYNC loading-waves-begin scene=%s ok=0 reason=wave-clean-failed\n",
+               sceneName ? sceneName : "?");
+        return 0;
+    }
+
+    gFgLoadingWaveProofTicks = 0;
+    printf("JCASYNC loading-waves-begin scene=%s ok=1 cleanBytes=%lu\n",
+           sceneName ? sceneName : "?",
+           grCleanBgRectsBytes());
+    ps1_cdSetReadIdleHook(fgLoadingWaveProofReadIdleHook, NULL);
+    return 1;
+}
+
+static void fgLoadingWaveProofEnd(const char *sceneName)
+{
+    ps1_cdSetReadIdleHook(NULL, NULL);
+    printf("JCASYNC loading-waves-end scene=%s ticks=%u\n",
+           sceneName ? sceneName : "?",
+           (unsigned int)gFgLoadingWaveProofTicks);
+    grFreeCleanBgRects();
 }
 
 static uint32 fgBackdropCleanRectEstimateForPack(sint16 fgX, sint16 fgY,
@@ -4494,6 +4550,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int largeCleanSnapshot = 0;
     int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
+    int loadingWaveProofActive = 0;
 
     /* Round 33: hoist fgRuntimeReset() to BEFORE grLoadScreen.
      *
@@ -4678,9 +4735,16 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     grSetPresentDuringScreenLoad(1);
 
+    if (!blackBackdrop && !sceneSpecificBackdrop)
+        loadingWaveProofActive = fgLoadingWaveProofBegin(sceneName);
+
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
+        if (loadingWaveProofActive) {
+            ps1_cdSetReadIdleHook(NULL, NULL);
+            grDeactivateCleanBgRects();
+        }
         /* Phase 2 of mem-region rollout deletes the JCSKIP/graceful-
          * skip pattern: under the deterministic allocator, allocations
          * cannot fail, so this branch should be unreachable in a
@@ -4690,6 +4754,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * triage instead of papering over it. See plan v9 manifest
          * item #1. */
         JC_BSOD(sceneName, "pack-start failed (non-recoverable I/O or data bug)");
+    }
+    if (loadingWaveProofActive) {
+        fgLoadingWaveProofEnd(sceneName);
+        loadingWaveProofActive = 0;
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
@@ -5267,6 +5335,11 @@ void foregroundPilotSetHeapProbe(int enabled)
 #endif
 }
 
+void foregroundPilotSetLoadingWaveProof(int enabled)
+{
+    gFgLoadingWaveProofEnabled = enabled ? 1 : 0;
+}
+
 void foregroundPilotResetPrefetchDefaults(void)
 {
     /* Match the file-static default: prefetch is ON. Scenes need it for
@@ -5354,6 +5427,11 @@ void foregroundPilotSetSceneDrawOffset(int x, int y)
 }
 
 void foregroundPilotSetHeapProbe(int enabled)
+{
+    (void)enabled;
+}
+
+void foregroundPilotSetLoadingWaveProof(int enabled)
 {
     (void)enabled;
 }

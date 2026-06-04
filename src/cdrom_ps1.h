@@ -87,6 +87,9 @@ uint32 cdromGetSize(int fileHandle);
 
 CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename);
 
+typedef void (*Ps1CdReadIdleHook)(void *userData);
+void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData);
+
 typedef struct {
     CdlFILE cdfile;
     long currentPos;
