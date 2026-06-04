@@ -233,7 +233,8 @@ enum {
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_START (286UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_BYTES (58UL * FG_CD_SECTOR_SIZE)
 #define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_START (383UL * FG_CD_SECTOR_SIZE)
-#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_BYTES (16UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_DISABLED_BYTES (16UL * FG_CD_SECTOR_SIZE)
+#define FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_BYTES (0UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
@@ -3069,6 +3070,11 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment2Bytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT2_BYTES;
             segment4Start = FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_START;
             segment4Bytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_BYTES;
+            /* Segment 4 is optional read-ahead. Keep its TRANSIENT bytes free
+             * for the W1-high clean snapshot; the normal stream path fetches
+             * the same FG2 payloads on demand. */
+            printf("JCMEM setup-seg4-disabled scene=walkstuf1 bytes=%lu reason=clean-headroom\n",
+                   (unsigned long)FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_DISABLED_BYTES);
             gFgCleanRectMaxBytes = 64UL * 1024UL;
         }
         allocationBytes = segmentBytes + (islandState.lowTide ? 0UL : segment2Bytes);
