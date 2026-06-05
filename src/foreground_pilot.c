@@ -2068,6 +2068,12 @@ static int fgLoadingWaveProofBegin(const char *sceneName)
     if (!gFgLoadingWaveProofEnabled || !gFgBackdropThread.isRunning)
         return 0;
 
+    if (fgSceneEquals(sceneName, "visitor3")) {
+        printf("JCASYNC loading-waves-skip scene=%s reason=transient-headroom\n",
+               sceneName ? sceneName : "?");
+        return 0;
+    }
+
     if (!fgBackdropSaveCleanBgRectsForPack(0, 0, 0, 0)) {
         printf("JCASYNC loading-waves-begin scene=%s ok=0 reason=wave-clean-failed\n",
                sceneName ? sceneName : "?");

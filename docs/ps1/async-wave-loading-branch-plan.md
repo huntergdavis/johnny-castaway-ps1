@@ -64,6 +64,9 @@ Current proof hook:
   restores/ticks/uploads the wave strip while `CdReadSync(1, NULL)` is still
   pending, then frees the temporary rect before the normal per-scene clean
   snapshot is saved.
+- `visitor3` is skipped for now because its setup buffers and clean-relief path
+  are already TRANSIENT-tight; the temporary wave snapshot caused a 2026-06-04
+  soak halt at `req=157696 have=118180`.
 - Initial evidence on 2026-06-04:
   - `fishing1` high tide: 35 loading-wave ticks, perf gates passed,
     `cd_fail=0`, `frame_mismatch=0`, `full_fallbacks=0`.
