@@ -142,6 +142,22 @@ The cleanup loop is viable if it is treated as a constrained, binary-preserving 
 
 This gives a high-confidence safety gate: if the final PS1 executable bytes are identical, the runtime-loaded program image is identical. If they differ, the change may still be correct, but it is no longer a mechanically proven cleanup.
 
+## Recurring Cleanup Prompt
+
+Send this prompt for each cleanup pass:
+
+```text
+Read docs/ps1/binary-identical-cleanup-plan.md and perform exactly one binary-identical cleanup step.
+
+Do not ask questions. If anything is ambiguous, pick the safest unambiguous cleanup: one function, one small helper cluster, or one local comment/formatting/readability improvement that can be proven by the binary gate. Prefer changes that make the source more pedagogical: clearer function order, tighter local names where binary-safe, better local structure, and terse comments that explain intent rather than restating code.
+
+Before editing, establish the current PS1 executable baseline with a clean build. Red-team the candidate in analysis: identify why it might affect binary output, including source order, static/linkage changes, compile options, __FILE__/__LINE__/__DATE__, inlining, data layout, section names, and headers. Choose only a candidate that should preserve the final PS1 executable.
+
+Make the smallest useful cleanup. Preserve behavior, symbol names, linkage, attributes, compile flags, generated data, and public interfaces unless the plan explicitly allows a one-time baseline change. Build again and compare the final PS1 executable bytes against the baseline, not the ELF. If the binary differs, inspect briefly, revert or split smaller, and try again in the same turn. Leave no non-identical cleanup edits behind.
+
+When the binary is identical, commit that one cleanup with a concise message. In the final response, report the function/file cleaned, the binary hash or cmp result, and any skipped risk you noticed.
+```
+
 ## References
 
 - GNU `ld`: `--sort-section=name` applies `SORT_BY_NAME` to wildcard section patterns.
