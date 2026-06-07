@@ -45,7 +45,7 @@ static const char *holidayLabel(void)
         return pmText(PMT_AUTO);
     if (hostHolidayMode == HOLIDAY_MODE_NONE) return pmText(PMT_NONE);
     if (hostForcedHoliday == 0) return pmText(PMT_NONE);
-    return holidayShortName(hostForcedHoliday);
+    return pmHolidayShortName(hostForcedHoliday);
 }
 
 static int holidaySetMode(void)
@@ -294,8 +294,8 @@ static void drawHolidayMenu(void)
     drawSeparator();
     if (holidayModeIsManual(hostHolidayMode) &&
         hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
-        pmPrintf(pmText(PMT_HOLIDAY_DATE_LINE), holidayDateLabel(hostForcedHoliday));
-        pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), holidayTitle(hostForcedHoliday));
+        pmPrintf(pmText(PMT_HOLIDAY_DATE_LINE), pmHolidayDateLabel(hostForcedHoliday));
+        pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), pmHolidayTitle(hostForcedHoliday));
     } else if ((hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 ||
                 hostHolidayMode == HOLIDAY_MODE_AUTO_ALL) &&
                ps1SoftTimeEnabled) {
@@ -303,7 +303,7 @@ static void drawHolidayMenu(void)
                         ? holidayForDateOriginal4(ps1SoftYear, ps1SoftMonth, ps1SoftDay)
                         : holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
         pmPrintf(pmText(PMT_DATE_PICKER),
-                 dateHoliday ? holidayShortName(dateHoliday) : pmText(PMT_NONE));
+                 dateHoliday ? pmHolidayShortName(dateHoliday) : pmText(PMT_NONE));
     } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4) {
         pmPrintf(pmText(PMT_RANDOM_ORIG4_UNTIL));
         pmPrintf(pmText(PMT_SET_TIME_SAVED));

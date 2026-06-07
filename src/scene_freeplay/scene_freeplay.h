@@ -13,16 +13,10 @@ void freeplaySetTelemetryLevel(int level);
 int  freeplayGetTelemetryLevel(void);
 
 int freeplayGagCount(void);
-const char *freeplayGagTitle(int index);
-const char *freeplayGagDescription(int index);
-const char *freeplayGagBmp(int index);
 int freeplayGagFrames(int index);
 int freeplayGagMemoryKB(int index);
 
 int freeplayVisitorCount(void);
-const char *freeplayVisitorTitle(int index);
-const char *freeplayVisitorDescription(int index);
-const char *freeplayVisitorBmp(int index);
 int freeplayVisitorFrames(int index);
 int freeplayVisitorMemoryKB(int index);
 

@@ -297,20 +297,46 @@ int holidaySpriteIndex(int id)
     return h ? h->sprite_index : -1;
 }
 
+#ifndef PS1_BUILD
+static const struct HolidayDisplay *holidayDisplayById(int id)
+{
+    for (int i = 0; i < gHolidayDisplayCount; i++) {
+        if (gHolidayDisplays[i].id == id)
+            return &gHolidayDisplays[i];
+    }
+    return 0;
+}
+#endif
+
 const char *holidayTitle(int id)
 {
-    const struct Holiday *h = holidayById(id);
+#ifndef PS1_BUILD
+    const struct HolidayDisplay *h = holidayDisplayById(id);
     return h ? h->title : "?";
+#else
+    (void)id;
+    return "?";
+#endif
 }
 
 const char *holidayShortName(int id)
 {
-    const struct Holiday *h = holidayById(id);
+#ifndef PS1_BUILD
+    const struct HolidayDisplay *h = holidayDisplayById(id);
     return h ? h->short_name : "?";
+#else
+    (void)id;
+    return "?";
+#endif
 }
 
 const char *holidayDateLabel(int id)
 {
-    const struct Holiday *h = holidayById(id);
+#ifndef PS1_BUILD
+    const struct HolidayDisplay *h = holidayDisplayById(id);
     return h ? h->date_label : "?";
+#else
+    (void)id;
+    return "?";
+#endif
 }

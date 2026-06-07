@@ -95,12 +95,12 @@ static void drawFreeplayGagCatalog(void)
     drawSeparator();
     pmPrintf(pmText(PMT_FREEPLAY_ENTRY),
              freeplayGagCursor + 1, count,
-             freeplayGagTitle(freeplayGagCursor));
-    pmPrintf(pmText(PMT_BMP_LINE), freeplayGagBmp(freeplayGagCursor));
+             pmFreeplayGagTitle(freeplayGagCursor));
+    pmPrintf(pmText(PMT_BMP_LINE), pmFreeplayGagBmp(freeplayGagCursor));
     pmPrintf(pmText(PMT_FRAMES_RAM),
              freeplayGagFrames(freeplayGagCursor),
              freeplayGagMemoryKB(freeplayGagCursor));
-    pmPrintf(pmText(PMT_DESC_LINE), freeplayGagDescription(freeplayGagCursor));
+    pmPrintf(pmText(PMT_DESC_LINE), pmFreeplayGagDescription(freeplayGagCursor));
     drawSeparator();
     pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
     pmPrintf(menuFreeplayActive ? pmText(PMT_X_SPAWN_NOW) : pmText(PMT_START_FREEPLAY_FIRST));
@@ -121,12 +121,12 @@ static void drawFreeplayVisitorCatalog(void)
     drawSeparator();
     pmPrintf(pmText(PMT_FREEPLAY_ENTRY),
              freeplayVisitorCursor + 1, count,
-             freeplayVisitorTitle(freeplayVisitorCursor));
-    pmPrintf(pmText(PMT_BMP_LINE), freeplayVisitorBmp(freeplayVisitorCursor));
+             pmFreeplayVisitorTitle(freeplayVisitorCursor));
+    pmPrintf(pmText(PMT_BMP_LINE), pmFreeplayVisitorBmp(freeplayVisitorCursor));
     pmPrintf(pmText(PMT_FRAMES_RAM),
              freeplayVisitorFrames(freeplayVisitorCursor),
              freeplayVisitorMemoryKB(freeplayVisitorCursor));
-    pmPrintf(pmText(PMT_DESC_LINE), freeplayVisitorDescription(freeplayVisitorCursor));
+    pmPrintf(pmText(PMT_DESC_LINE), pmFreeplayVisitorDescription(freeplayVisitorCursor));
     drawSeparator();
     pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
     pmPrintf(menuFreeplayActive ? pmText(PMT_X_SPAWN_NOW) : pmText(PMT_START_FREEPLAY_FIRST));
@@ -182,9 +182,9 @@ static void drawSetTime(void)
     {
         int dateHoliday = holidayForDate(editYear, editMonth, editDay);
         pmPrintf(pmText(PMT_SET_TIME_HOLIDAY),
-                 dateHoliday ? holidayShortName(dateHoliday) : pmText(PMT_NONE));
+                 dateHoliday ? pmHolidayShortName(dateHoliday) : pmText(PMT_NONE));
         if (dateHoliday)
-            pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), holidayTitle(dateHoliday));
+            pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), pmHolidayTitle(dateHoliday));
     }
 
     pmPrintf("\n");

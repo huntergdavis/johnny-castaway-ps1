@@ -246,6 +246,85 @@ static const char *pmText(enum Ps1MenuTextId id)
     return (const char *)&pmMenuTextData[pos];
 }
 
+enum PmHolidayTextField {
+    PM_HOLIDAY_TITLE = 0,
+    PM_HOLIDAY_SHORT = 1,
+    PM_HOLIDAY_DATE = 2
+};
+
+static enum Ps1MenuTextId pmHolidayTextId(int holidayId,
+                                          enum PmHolidayTextField field)
+{
+    uint16 id;
+
+    if (holidayId <= 0 || holidayId >= PS1_HOLIDAY_TEXT_ID_LIMIT ||
+        field < 0 || field >= PS1_HOLIDAY_TEXT_FIELD_COUNT)
+        return PMT_UNKNOWN;
+    id = gPs1HolidayMenuTextIds[holidayId][field];
+    if (id >= (uint16)PMT_COUNT)
+        return PMT_UNKNOWN;
+    return (enum Ps1MenuTextId)id;
+}
+
+static const char *pmHolidayTitle(int holidayId)
+{
+    return pmText(pmHolidayTextId(holidayId, PM_HOLIDAY_TITLE));
+}
+
+static const char *pmHolidayShortName(int holidayId)
+{
+    return pmText(pmHolidayTextId(holidayId, PM_HOLIDAY_SHORT));
+}
+
+static const char *pmHolidayDateLabel(int holidayId)
+{
+    return pmText(pmHolidayTextId(holidayId, PM_HOLIDAY_DATE));
+}
+
+static enum Ps1MenuTextId pmFreeplayIndexedTextId(enum Ps1MenuTextId first,
+                                                  int index, int count)
+{
+    if (index < 0 || index >= count)
+        return PMT_UNKNOWN;
+    return (enum Ps1MenuTextId)((int)first + index);
+}
+
+static const char *pmFreeplayGagTitle(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_GAG_TITLE_0,
+                                          index, freeplayGagCount()));
+}
+
+static const char *pmFreeplayGagDescription(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_GAG_DESC_0,
+                                          index, freeplayGagCount()));
+}
+
+static const char *pmFreeplayGagBmp(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_GAG_BMP_0,
+                                          index, freeplayGagCount()));
+}
+
+static const char *pmFreeplayVisitorTitle(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_VISITOR_TITLE_0,
+                                          index, freeplayVisitorCount()));
+}
+
+static const char *pmFreeplayVisitorDescription(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_VISITOR_DESC_0,
+                                          index, freeplayVisitorCount()));
+}
+
+static const char *pmFreeplayVisitorBmp(int index)
+{
+    return pmText(pmFreeplayIndexedTextId(PMT_FREEPLAY_VISITOR_BMP_0,
+                                          index, freeplayVisitorCount()));
+}
+
 /* ---------------------------------------------------------------------------
  *  Embedded 8x8 ASCII font — chars 0x20..0x7F (96 chars).
  *  Each char is 8 bytes; each byte is one row, MSB = leftmost pixel.

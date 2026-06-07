@@ -13,16 +13,15 @@ static const char *fpModeName(enum TFpMode mode)
 }
 #endif
 
-static const struct TFpMenuMeta *fpMetaAt(const struct TFpMenuMeta *meta,
-                                          int count, int index)
+static int fpClampIndex(int count, int index)
 {
-    if (meta == NULL || count <= 0)
-        return NULL;
+    if (count <= 0)
+        return 0;
     if (index < 0)
         index = 0;
     if (index >= count)
         index = count - 1;
-    return &meta[index];
+    return index;
 }
 
 int freeplayGagCount(void)
@@ -30,34 +29,16 @@ int freeplayGagCount(void)
     return FP_GAG_COUNT;
 }
 
-const char *freeplayGagTitle(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpGagMeta, FP_GAG_COUNT, index);
-    return meta ? meta->title : "";
-}
-
-const char *freeplayGagDescription(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpGagMeta, FP_GAG_COUNT, index);
-    return meta ? meta->description : "";
-}
-
-const char *freeplayGagBmp(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpGagMeta, FP_GAG_COUNT, index);
-    return meta ? meta->bmp : "";
-}
-
 int freeplayGagFrames(int index)
 {
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpGagMeta, FP_GAG_COUNT, index);
-    return meta ? meta->frames : 0;
+    index = fpClampIndex(FP_GAG_COUNT, index);
+    return kFpGagFrameCounts[index];
 }
 
 int freeplayGagMemoryKB(int index)
 {
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpGagMeta, FP_GAG_COUNT, index);
-    return meta ? meta->memoryKB : 0;
+    index = fpClampIndex(FP_GAG_COUNT, index);
+    return kFpGagMemoryKB[index];
 }
 
 int freeplayVisitorCount(void)
@@ -65,32 +46,14 @@ int freeplayVisitorCount(void)
     return FP_SUMMON_COUNT;
 }
 
-const char *freeplayVisitorTitle(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpSummonMeta, FP_SUMMON_COUNT, index);
-    return meta ? meta->title : "";
-}
-
-const char *freeplayVisitorDescription(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpSummonMeta, FP_SUMMON_COUNT, index);
-    return meta ? meta->description : "";
-}
-
-const char *freeplayVisitorBmp(int index)
-{
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpSummonMeta, FP_SUMMON_COUNT, index);
-    return meta ? meta->bmp : "";
-}
-
 int freeplayVisitorFrames(int index)
 {
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpSummonMeta, FP_SUMMON_COUNT, index);
-    return meta ? meta->frames : 0;
+    index = fpClampIndex(FP_SUMMON_COUNT, index);
+    return kFpSummonFrameCounts[index];
 }
 
 int freeplayVisitorMemoryKB(int index)
 {
-    const struct TFpMenuMeta *meta = fpMetaAt(kFpSummonMeta, FP_SUMMON_COUNT, index);
-    return meta ? meta->memoryKB : 0;
+    index = fpClampIndex(FP_SUMMON_COUNT, index);
+    return kFpSummonMemoryKB[index];
 }

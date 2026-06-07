@@ -8,9 +8,6 @@
 const struct Holiday gHolidays[] = {
     {
         .id            = 4,
-        .title         = "New Year's Day",
-        .short_name    = "NEW YEAR",
-        .date_label    = "JAN 1",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 1,
         .day           = 1,
@@ -26,9 +23,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 5,
-        .title         = "Elvis's Birthday",
-        .short_name    = "ELVIS BDAY",
-        .date_label    = "JAN 8",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 1,
         .day           = 8,
@@ -44,9 +38,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 6,
-        .title         = "MLK Jr. Day",
-        .short_name    = "MLK DAY",
-        .date_label    = "3RD MON JAN",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 1,
         .day           = 0,
@@ -62,9 +53,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 7,
-        .title         = "Groundhog Day",
-        .short_name    = "GROUNDHOG",
-        .date_label    = "FEB 2",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 2,
         .day           = 2,
@@ -80,9 +68,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 8,
-        .title         = "Valentine's Day",
-        .short_name    = "VALENTINE",
-        .date_label    = "FEB 14",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 2,
         .day           = 14,
@@ -98,9 +83,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 9,
-        .title         = "Super Bowl Sunday",
-        .short_name    = "SUPER BOWL",
-        .date_label    = "2ND SUN FEB",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 2,
         .day           = 0,
@@ -116,9 +98,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 10,
-        .title         = "Presidents' Day",
-        .short_name    = "PRESIDENTS",
-        .date_label    = "3RD MON FEB",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 2,
         .day           = 0,
@@ -134,9 +113,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 11,
-        .title         = "Mardi Gras",
-        .short_name    = "MARDI GRAS",
-        .date_label    = "EASTER-47",
         .kind          = HOLIDAY_KIND_EASTER_OFFSET,
         .month         = 0,
         .day           = 0,
@@ -152,9 +128,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 12,
-        .title         = "Pi Day",
-        .short_name    = "PI DAY",
-        .date_label    = "MAR 14",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 3,
         .day           = 14,
@@ -170,9 +143,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 2,
-        .title         = "St. Patrick's Day",
-        .short_name    = "ST PATRICK",
-        .date_label    = "MAR 17",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 3,
         .day           = 17,
@@ -188,9 +158,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 13,
-        .title         = "First Day of Spring",
-        .short_name    = "SPRING",
-        .date_label    = "MAR 20",
         .kind          = HOLIDAY_KIND_EQUINOX_VER,
         .month         = 3,
         .day           = 0,
@@ -206,9 +173,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 14,
-        .title         = "April Fool's Day",
-        .short_name    = "APRIL FOOL",
-        .date_label    = "APR 1",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 4,
         .day           = 1,
@@ -224,9 +188,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 36,
-        .title         = "4/20 Day",
-        .short_name    = "420 DAY",
-        .date_label    = "APR 20",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 4,
         .day           = 20,
@@ -242,9 +203,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 15,
-        .title         = "Easter",
-        .short_name    = "EASTER",
-        .date_label    = "EASTER",
         .kind          = HOLIDAY_KIND_EASTER_OFFSET,
         .month         = 0,
         .day           = 0,
@@ -260,9 +218,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 16,
-        .title         = "Earth Day",
-        .short_name    = "EARTH DAY",
-        .date_label    = "APR 22",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 4,
         .day           = 22,
@@ -278,9 +233,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 17,
-        .title         = "Star Wars Day",
-        .short_name    = "STAR WARS",
-        .date_label    = "MAY 4",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 5,
         .day           = 4,
@@ -296,9 +248,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 18,
-        .title         = "Cinco de Mayo",
-        .short_name    = "CINCO MAYO",
-        .date_label    = "MAY 5",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 5,
         .day           = 5,
@@ -314,9 +263,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 19,
-        .title         = "Mother's Day",
-        .short_name    = "MOTHERS DAY",
-        .date_label    = "2ND SUN MAY",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 5,
         .day           = 0,
@@ -332,9 +278,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 20,
-        .title         = "Memorial Day",
-        .short_name    = "MEMORIAL",
-        .date_label    = "LAST MON MAY",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 5,
         .day           = 0,
@@ -350,9 +293,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 21,
-        .title         = "Father's Day",
-        .short_name    = "FATHERS DAY",
-        .date_label    = "3RD SUN JUN",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 6,
         .day           = 0,
@@ -368,9 +308,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 22,
-        .title         = "First Day of Summer",
-        .short_name    = "SUMMER",
-        .date_label    = "JUN 21",
         .kind          = HOLIDAY_KIND_SOLSTICE_SUM,
         .month         = 6,
         .day           = 0,
@@ -386,9 +323,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 23,
-        .title         = "Pride Day",
-        .short_name    = "PRIDE",
-        .date_label    = "LAST SUN JUN",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 6,
         .day           = 0,
@@ -404,9 +338,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 24,
-        .title         = "Independence Day",
-        .short_name    = "JULY 4TH",
-        .date_label    = "JUL 4",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 7,
         .day           = 4,
@@ -422,9 +353,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 25,
-        .title         = "Moon Landing Day",
-        .short_name    = "MOON LAND",
-        .date_label    = "JUL 20",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 7,
         .day           = 20,
@@ -440,9 +368,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 26,
-        .title         = "National Watermelon Day",
-        .short_name    = "WATERMELON",
-        .date_label    = "AUG 3",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 8,
         .day           = 3,
@@ -458,9 +383,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 27,
-        .title         = "Left-Handers Day",
-        .short_name    = "LEFT HAND",
-        .date_label    = "AUG 13",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 8,
         .day           = 13,
@@ -476,9 +398,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 28,
-        .title         = "Hawaii Statehood Day",
-        .short_name    = "HAWAII DAY",
-        .date_label    = "AUG 21",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 8,
         .day           = 21,
@@ -494,9 +413,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 29,
-        .title         = "Labor Day",
-        .short_name    = "LABOR DAY",
-        .date_label    = "1ST MON SEP",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 9,
         .day           = 0,
@@ -512,9 +428,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 30,
-        .title         = "Talk Like a Pirate Day",
-        .short_name    = "PIRATE DAY",
-        .date_label    = "SEP 19",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 9,
         .day           = 19,
@@ -530,9 +443,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 31,
-        .title         = "First Day of Autumn",
-        .short_name    = "AUTUMN",
-        .date_label    = "SEP 22",
         .kind          = HOLIDAY_KIND_EQUINOX_AUT,
         .month         = 9,
         .day           = 0,
@@ -548,9 +458,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 32,
-        .title         = "Columbus / Indigenous Peoples' Day",
-        .short_name    = "COLUMBUS",
-        .date_label    = "2ND MON OCT",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 10,
         .day           = 0,
@@ -566,9 +473,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 1,
-        .title         = "Halloween",
-        .short_name    = "HALLOWEEN",
-        .date_label    = "OCT 31",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 10,
         .day           = 31,
@@ -584,9 +488,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 33,
-        .title         = "Election Day",
-        .short_name    = "ELECTION",
-        .date_label    = "NOV 2-8",
         .kind          = HOLIDAY_KIND_ELECTION_DAY,
         .month         = 11,
         .day           = 0,
@@ -602,9 +503,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 34,
-        .title         = "Veterans Day",
-        .short_name    = "VETERANS",
-        .date_label    = "NOV 11",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 11,
         .day           = 11,
@@ -620,9 +518,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 35,
-        .title         = "Thanksgiving",
-        .short_name    = "THANKSGIVE",
-        .date_label    = "4TH THU NOV",
         .kind          = HOLIDAY_KIND_NTH_WEEKDAY,
         .month         = 11,
         .day           = 0,
@@ -638,9 +533,6 @@ const struct Holiday gHolidays[] = {
     },
     {
         .id            = 3,
-        .title         = "Christmas",
-        .short_name    = "CHRISTMAS",
-        .date_label    = "DEC 25",
         .kind          = HOLIDAY_KIND_FIXED,
         .month         = 12,
         .day           = 25,
@@ -657,3 +549,226 @@ const struct Holiday gHolidays[] = {
 };
 
 const int gHolidayCount = 36;
+
+#ifndef PS1_BUILD
+const struct HolidayDisplay gHolidayDisplays[] = {
+    {
+        .id         = 4,
+        .title      = "New Year's Day",
+        .short_name = "NEW YEAR",
+        .date_label = "JAN 1",
+    },
+    {
+        .id         = 5,
+        .title      = "Elvis's Birthday",
+        .short_name = "ELVIS BDAY",
+        .date_label = "JAN 8",
+    },
+    {
+        .id         = 6,
+        .title      = "MLK Jr. Day",
+        .short_name = "MLK DAY",
+        .date_label = "3RD MON JAN",
+    },
+    {
+        .id         = 7,
+        .title      = "Groundhog Day",
+        .short_name = "GROUNDHOG",
+        .date_label = "FEB 2",
+    },
+    {
+        .id         = 8,
+        .title      = "Valentine's Day",
+        .short_name = "VALENTINE",
+        .date_label = "FEB 14",
+    },
+    {
+        .id         = 9,
+        .title      = "Super Bowl Sunday",
+        .short_name = "SUPER BOWL",
+        .date_label = "2ND SUN FEB",
+    },
+    {
+        .id         = 10,
+        .title      = "Presidents' Day",
+        .short_name = "PRESIDENTS",
+        .date_label = "3RD MON FEB",
+    },
+    {
+        .id         = 11,
+        .title      = "Mardi Gras",
+        .short_name = "MARDI GRAS",
+        .date_label = "EASTER-47",
+    },
+    {
+        .id         = 12,
+        .title      = "Pi Day",
+        .short_name = "PI DAY",
+        .date_label = "MAR 14",
+    },
+    {
+        .id         = 2,
+        .title      = "St. Patrick's Day",
+        .short_name = "ST PATRICK",
+        .date_label = "MAR 17",
+    },
+    {
+        .id         = 13,
+        .title      = "First Day of Spring",
+        .short_name = "SPRING",
+        .date_label = "MAR 20",
+    },
+    {
+        .id         = 14,
+        .title      = "April Fool's Day",
+        .short_name = "APRIL FOOL",
+        .date_label = "APR 1",
+    },
+    {
+        .id         = 36,
+        .title      = "4/20 Day",
+        .short_name = "420 DAY",
+        .date_label = "APR 20",
+    },
+    {
+        .id         = 15,
+        .title      = "Easter",
+        .short_name = "EASTER",
+        .date_label = "EASTER",
+    },
+    {
+        .id         = 16,
+        .title      = "Earth Day",
+        .short_name = "EARTH DAY",
+        .date_label = "APR 22",
+    },
+    {
+        .id         = 17,
+        .title      = "Star Wars Day",
+        .short_name = "STAR WARS",
+        .date_label = "MAY 4",
+    },
+    {
+        .id         = 18,
+        .title      = "Cinco de Mayo",
+        .short_name = "CINCO MAYO",
+        .date_label = "MAY 5",
+    },
+    {
+        .id         = 19,
+        .title      = "Mother's Day",
+        .short_name = "MOTHERS DAY",
+        .date_label = "2ND SUN MAY",
+    },
+    {
+        .id         = 20,
+        .title      = "Memorial Day",
+        .short_name = "MEMORIAL",
+        .date_label = "LAST MON MAY",
+    },
+    {
+        .id         = 21,
+        .title      = "Father's Day",
+        .short_name = "FATHERS DAY",
+        .date_label = "3RD SUN JUN",
+    },
+    {
+        .id         = 22,
+        .title      = "First Day of Summer",
+        .short_name = "SUMMER",
+        .date_label = "JUN 21",
+    },
+    {
+        .id         = 23,
+        .title      = "Pride Day",
+        .short_name = "PRIDE",
+        .date_label = "LAST SUN JUN",
+    },
+    {
+        .id         = 24,
+        .title      = "Independence Day",
+        .short_name = "JULY 4TH",
+        .date_label = "JUL 4",
+    },
+    {
+        .id         = 25,
+        .title      = "Moon Landing Day",
+        .short_name = "MOON LAND",
+        .date_label = "JUL 20",
+    },
+    {
+        .id         = 26,
+        .title      = "National Watermelon Day",
+        .short_name = "WATERMELON",
+        .date_label = "AUG 3",
+    },
+    {
+        .id         = 27,
+        .title      = "Left-Handers Day",
+        .short_name = "LEFT HAND",
+        .date_label = "AUG 13",
+    },
+    {
+        .id         = 28,
+        .title      = "Hawaii Statehood Day",
+        .short_name = "HAWAII DAY",
+        .date_label = "AUG 21",
+    },
+    {
+        .id         = 29,
+        .title      = "Labor Day",
+        .short_name = "LABOR DAY",
+        .date_label = "1ST MON SEP",
+    },
+    {
+        .id         = 30,
+        .title      = "Talk Like a Pirate Day",
+        .short_name = "PIRATE DAY",
+        .date_label = "SEP 19",
+    },
+    {
+        .id         = 31,
+        .title      = "First Day of Autumn",
+        .short_name = "AUTUMN",
+        .date_label = "SEP 22",
+    },
+    {
+        .id         = 32,
+        .title      = "Columbus / Indigenous Peoples' Day",
+        .short_name = "COLUMBUS",
+        .date_label = "2ND MON OCT",
+    },
+    {
+        .id         = 1,
+        .title      = "Halloween",
+        .short_name = "HALLOWEEN",
+        .date_label = "OCT 31",
+    },
+    {
+        .id         = 33,
+        .title      = "Election Day",
+        .short_name = "ELECTION",
+        .date_label = "NOV 2-8",
+    },
+    {
+        .id         = 34,
+        .title      = "Veterans Day",
+        .short_name = "VETERANS",
+        .date_label = "NOV 11",
+    },
+    {
+        .id         = 35,
+        .title      = "Thanksgiving",
+        .short_name = "THANKSGIVE",
+        .date_label = "4TH THU NOV",
+    },
+    {
+        .id         = 3,
+        .title      = "Christmas",
+        .short_name = "CHRISTMAS",
+        .date_label = "DEC 25",
+    },
+};
+
+const int gHolidayDisplayCount = 36;
+#endif

@@ -159,14 +159,6 @@ struct TFpPersistent {
     sint16 y;
 };
 
-struct TFpMenuMeta {
-    const char *title;
-    const char *description;
-    const char *bmp;
-    uint16 frames;
-    uint16 memoryKB;
-};
-
 struct TFpState {
     sint16 x;
     sint16 y;
@@ -272,28 +264,16 @@ static const char *const kFpGagLabels[FP_GAG_COUNT] = {
     "RUNAWAY"
 };
 
-static const struct TFpMenuMeta kFpGagMeta[FP_GAG_COUNT] = {
-    {"Scratch","Johnny scratches and settles in.",     "GJFFFOOD.BMP",49,135},
-    {"Hot",    "Johnny wipes out in the heat.",        "GJHOT.BMP",   23, 33},
-    {"Idea",   "A light bulb appears over Johnny.",    "LITEBULB.BMP", 5,  5},
-    {"Angry",  "Johnny throws a small tantrum.",       "GJANGRY.BMP", 49, 38},
-    {"Bonk",   "A coconut clocks Johnny.",             "COCOHEAD.BMP",10,  4},
-    {"Strut",  "Johnny takes a proud little walk.",    "MEXCWALK.BMP", 8, 11},
-    {"Runaway","Johnny bolts across the island.",      "GJRUNAWA.BMP",14, 42}
+static const uint16 kFpGagMemoryKB[FP_GAG_COUNT] = {
+    135, 33, 5, 38, 4, 11, 42
 };
 
-static const struct TFpMenuMeta kFpSummonMeta[FP_SUMMON_COUNT] = {
-    {"Seagull",   "A small bird visits the palm.",      "GJGULL1.BMP", 1, 32},
-    {"Liliputs",  "Tiny visitors cross the sand.",      "LILIPUTS.BMP",4, 64},
-    {"Biplane",   "A plane sweeps past the island.",    "GJBIPLAN.BMP",1, 48},
-    {"Canoe",     "A native canoe stops by.",           "GJNAT1.BMP",  1, 48},
-    {"Boat",      "A boat appears offshore.",           "BOAT.BMP",    1, 48},
-    {"King Kong", "A skyline-sized visitor looms.",     "GJKINGKO.BMP",1, 80},
-    {"Mary",      "Mary drops into the scene.",         "MJBATH.BMP",  6, 96},
-    {"Pirate",    "The fish-man pirate appears.",       "FISHMAN.BMP", 1, 64},
-    {"Flock",     "A small flock passes overhead.",     "GJGULL3.BMP", 3, 64},
-    {"Meanwhile", "A comic meanwhile card appears.",    "MEANWHIL.BMP",1, 48},
-    {"Cloud",     "A cloud floats over the island.",    "CLOUDS.BMP",  1, 64}
+static const uint16 kFpSummonFrameCounts[FP_SUMMON_COUNT] = {
+    1, 4, 1, 1, 1, 1, 6, 1, 3, 1, 1
+};
+
+static const uint16 kFpSummonMemoryKB[FP_SUMMON_COUNT] = {
+    32, 64, 48, 48, 48, 80, 96, 64, 64, 48, 64
 };
 
 #include "scene_freeplay/catalog.c.inc"
@@ -328,16 +308,10 @@ int freeplayGetTelemetryLevel(void)
 }
 
 int freeplayGagCount(void) { return 0; }
-const char *freeplayGagTitle(int index) { (void)index; return ""; }
-const char *freeplayGagDescription(int index) { (void)index; return ""; }
-const char *freeplayGagBmp(int index) { (void)index; return ""; }
 int freeplayGagFrames(int index) { (void)index; return 0; }
 int freeplayGagMemoryKB(int index) { (void)index; return 0; }
 
 int freeplayVisitorCount(void) { return 0; }
-const char *freeplayVisitorTitle(int index) { (void)index; return ""; }
-const char *freeplayVisitorDescription(int index) { (void)index; return ""; }
-const char *freeplayVisitorBmp(int index) { (void)index; return ""; }
 int freeplayVisitorFrames(int index) { (void)index; return 0; }
 int freeplayVisitorMemoryKB(int index) { (void)index; return 0; }
 

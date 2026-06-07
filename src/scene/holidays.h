@@ -39,9 +39,6 @@ enum HolidayMode {
 /* One row per holiday, generated into gHolidays[] in holidays_table.c. */
 struct Holiday {
     int          id;             /* Stable holiday id; 0 is reserved for none */
-    const char  *title;          /* Display title for pause menu details */
-    const char  *short_name;     /* 12-char max, used by pause menu cycling */
-    const char  *date_label;     /* Compact fixed/rule label for pause menu */
     int          kind;           /* HolidayDateKind */
     /* Date-rule fields. Interpretation depends on `kind`:
      *   FIXED         : month + day used
@@ -63,8 +60,21 @@ struct Holiday {
     short        sprite_index;          /* HOLIDAY.BMP/PSB frame index */
 };
 
+#ifndef PS1_BUILD
+struct HolidayDisplay {
+    int         id;
+    const char *title;
+    const char *short_name;
+    const char *date_label;
+};
+#endif
+
 extern const struct Holiday gHolidays[];
 extern const int            gHolidayCount;
+#ifndef PS1_BUILD
+extern const struct HolidayDisplay gHolidayDisplays[];
+extern const int                   gHolidayDisplayCount;
+#endif
 
 /* --- Algorithm primitives (pure, year-agnostic, no allocations). --- */
 
