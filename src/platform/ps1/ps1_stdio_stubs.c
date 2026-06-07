@@ -11,16 +11,8 @@
 #include "mytypes.h"
 #include "cdrom_ps1.h"
 
-__asm__(
-    ".text\n"
-    ".globl ps1_stdio_bios_write\n"
-    ".type ps1_stdio_bios_write,@function\n"
-    "ps1_stdio_bios_write:\n"
-    "li $10,0xa0\n"
-    "jr $10\n"
-    "li $9,3\n"
-);
-extern int ps1_stdio_bios_write(int fd, const void *buff, size_t len);
+extern int printf(const char *format, ...);
+extern int putchar(int ch);
 
 typedef struct _FILE FILE;
 #define stderr ((FILE*)2)
@@ -28,15 +20,19 @@ typedef struct _FILE FILE;
 
 static int ps1StdoutWrite(const char *text, size_t len)
 {
+    size_t i;
+
     if (text == NULL || len == 0)
         return 0;
-    ps1_stdio_bios_write(1, text, len);
+
+    for (i = 0; i < len; i++)
+        putchar((unsigned char)text[i]);
     return (int)len;
 }
 
 static int ps1StdoutChar(char ch)
 {
-    ps1_stdio_bios_write(1, &ch, 1);
+    putchar((unsigned char)ch);
     return 1;
 }
 
@@ -107,19 +103,6 @@ static int ps1StdoutUnsigned(unsigned long value, unsigned int base,
         written += ps1StdoutChar(digits[i]);
     if (leftJustify)
         written += ps1StdoutPad(pad, ' ');
-    return written;
-}
-
-int putchar(int ch)
-{
-    ps1StdoutChar((char)ch);
-    return ch;
-}
-
-int puts(const char *str)
-{
-    int written = ps1StdoutStringN(str, -1);
-    written += ps1StdoutChar('\n');
     return written;
 }
 
@@ -251,17 +234,6 @@ int vprintf(const char *format, __gnuc_va_list arg)
     }
 
     return written;
-}
-
-int printf(const char *format, ...)
-{
-    va_list args;
-    int result;
-
-    va_start(args, format);
-    result = vprintf(format, args);
-    va_end(args);
-    return result;
 }
 
 FILE *fopen(const char *pathname, const char *mode)
