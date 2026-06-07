@@ -16,7 +16,7 @@ defects already seen during the scene-by-scene push.
 - Website scene data: `site/_data/scenes.yml`
 - Per-scene website pages: `site/scenes/<slug>/index.md`
 - Static website output: `docs/`
-- Scene explorer generated data: `src/scene_explorer_data.h`
+- Scene explorer generated data: `src/pause_menu/scene_explorer_data.h`
 - Local skill source: `/home/hunter/.codex/skills/jc-ps1-scene-debug/SKILL.md`
 
 Immediate handoff note:
@@ -49,7 +49,7 @@ Immediate handoff note:
 2. Read the current scene row.
 
    ```bash
-   rg -n "<slug>|<PACK>|<LOWPACK>" docs/ps1/scene-status.md site/_data/scenes.yml scripts/export-scene-foreground-pilot.sh src/foreground_pilot.c config/ps1/cd_layout.xml
+   rg -n "<slug>|<PACK>|<LOWPACK>" docs/ps1/scene-status.md site/_data/scenes.yml scripts/export-scene-foreground-pilot.sh src/foreground_pilot/foreground_pilot.c config/ps1/cd_layout.xml
    ```
 
 3. Regenerate the host capture and high/low FG2 packs before first visual validation unless intentionally inspecting a historical pack.

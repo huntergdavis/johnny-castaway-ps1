@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Generate src/scene_explorer_data.h for the in-game Scene Explorer.
+Generate src/pause_menu/scene_explorer_data.h for the in-game Scene Explorer.
 
 Sources:
 - docs/ps1/scene-status.md          slugs + visual-validation status
 - site/scenes/<slug>/index.md       display name (frontmatter `title`)
 - generated/ps1/foreground/*.FG2    frame counts (FG2 header offset 6, uint16 LE)
 
-The output is consumed by src/scene_explorer.c at runtime to populate the
-pause-menu Scene Explorer sub-screen. Re-run as part of release.sh; a
+The output is consumed by src/pause_menu/pause_menu.c at runtime to populate
+the Scene Explorer sub-screen. Re-run as part of release.sh; a
 CI dry-run check should fail if the committed file drifts from source.
 """
 
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCENE_STATUS = ROOT / "docs/ps1/scene-status.md"
 SCENES_DIR = ROOT / "site/scenes"
 FG2_DIR = ROOT / "generated/ps1/foreground"
-OUTPUT = ROOT / "src/scene_explorer_data.h"
+OUTPUT = ROOT / "src/pause_menu/scene_explorer_data.h"
 
 # Family display name (what the menu shows under "Family:") keyed by slug
 # prefix. miscgag and suzy both surface as "Misc & Suzy" because each family

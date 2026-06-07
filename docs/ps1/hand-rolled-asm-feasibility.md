@@ -53,7 +53,7 @@ PSn00bSDK ships with GCC for `mipsel-none-elf` (PSn00bSDK 0.24, GCC
 `"r"` / `"=r"` constraints; PSn00bSDK's own headers
 (`scratch/psn00b-src/libpsn00b/include/inline_c.h`,
 `psxgte.h`) use it heavily for GTE intrinsics. Our codebase already has
-five inline asm sites (`src/events_ps1.c`, `src/spi.c`) for COP0 / GP /
+five inline asm sites (`src/platform/ps1/events_ps1.c`, `src/platform/ps1/spi.c`) for COP0 / GP /
 SP register access.
 
 Mechanically there is no friction. Per-file optimization flags also
@@ -64,7 +64,7 @@ basis with `__attribute__((optimize("O2")))` (already used in
 
 ## Hot Path Inventory
 
-From `src/graphics_ps1.c` plus the JCPERF2 phase tags in `src/ps1_perf.c`:
+From `src/graphics_ps1/graphics_ps1.c` plus the JCPERF2 phase tags in `src/platform/ps1/ps1_perf.c`:
 
 | Phase | Function | Per-frame cost | Where the cycles go |
 |---|---|---|---|
@@ -289,8 +289,8 @@ trivially.
 
 ## Files Worth Re-Reading Before Starting Asm Work
 
-- `src/graphics_ps1.c` — `compositeIndexedSpanFwd` (1349), `compositePsbSpanFwd` (1423), `grCompositePacked4OpaqueRun` (1824), `grCleanRectCopyIn` (~2914).
-- `src/ps1_perf.c` — phase markers and JCPERF2 counter shape if a finer counter is needed.
+- `src/graphics_ps1/graphics_ps1.c` — `compositeIndexedSpanFwd` (1349), `compositePsbSpanFwd` (1423), `grCompositePacked4OpaqueRun` (1824), `grCleanRectCopyIn` (~2914).
+- `src/platform/ps1/ps1_perf.c` — phase markers and JCPERF2 counter shape if a finer counter is needed.
 - `scratch/psn00b-src/libpsn00b/include/inline_c.h` — reference for the inline-asm conventions PSn00bSDK uses.
 - `scratch/psn00b-src/libpsn00b/include/psxpress.h` — scratchpad usage example (DCT decompression).
 - `docs/ps1/performance-optimization-plan.md` and `docs/ps1/performance-experiment-log.md` — what's already been tried, what regressed.

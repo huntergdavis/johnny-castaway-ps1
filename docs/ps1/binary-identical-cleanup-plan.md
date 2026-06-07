@@ -36,7 +36,7 @@ The current PS1 build already uses:
 
 Two throwaway builds were tested:
 
-1. Move a live `atoi()` function earlier inside `src/ps1_stubs.c`.
+1. Move a live `atoi()` function earlier inside `src/platform/ps1/ps1_stubs.c`.
 2. Move the same `atoi()` function into a new source file while preserving compile options.
 
 Without section sorting, moving live `atoi()` changed `build-ps1/jcreborn.exe`.

@@ -68,7 +68,7 @@ emit. On `MARY 4`'s random-load path the real clean save was over
 `256 KiB`; the estimator under-counted and didn't release optional
 prefetch/walk memory in time.
 
-`v0.8.1`'s [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) now computes pressure through one
+`v0.8.1`'s [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c) now computes pressure through one
 helper that mirrors the clean-save path — pack bounds, ocean wave
 band, clamping, low-tide split. `fgPlayOceanRuntimeScene()` calls
 that estimate before allocating, so wide scenes drop optional
@@ -106,7 +106,7 @@ that ships the next `MARY 4` freeze, signed off and timed.
 
 - [v0.8.1-ps1 release notes]({{ '/source/docs/ps1/release-notes-0.8.1/' | relative_url }})
 - [v0.8.1-ps1 GitHub release]({{ site.github_url }}/releases/tag/v0.8.1-ps1)
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) — the file the fix lives in; the centralized pressure helper the body describes (`fgPlayOceanRuntimeScene` allocation site).
+- [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c) — the file the fix lives in; the centralized pressure helper the body describes (`fgPlayOceanRuntimeScene` allocation site).
 - [Glossary: soak-test]({{ '/docs/glossary/#soak-test' | relative_url }})
 - [Glossary: clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
 - [/perf/]({{ '/perf/' | relative_url }}) — the matrix the row of `MARY 4` came in green on

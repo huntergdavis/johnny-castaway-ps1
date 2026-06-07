@@ -47,5 +47,5 @@ No 32x32 emblem entry; the visual for this holiday is the original Sierra full-i
 ## Source
 
 - Row in [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) (search for `id: 3` or `short_name: "CHRISTMAS"`).
-- Generated row in [`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c).
+- Generated row in [`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c).
 - Original Sierra sprite (1992 game). Sprite frame index `2`.

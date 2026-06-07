@@ -40,7 +40,7 @@ The flow is intentionally small:
 2. Comment and blank lines are stripped.
 3. The script text is embedded into `config/ps1/padscript_embedded.h`.
 4. `BOOTMODE.TXT` enables the layer with `pad-script` or `pad-script-log`.
-5. `src/ps1_pad_script.c` parses the embedded script into fixed-size events.
+5. `src/platform/ps1/ps1_pad_script.c` parses the embedded script into fixed-size events.
 6. `ps1PadButtonsWithAnalog()` reads the physical controller, folds the left
    analog stick into D-pad bits, then calls `ps1PadScriptMergeButtons()`.
 7. Scripted buttons are ORed into the physical active-high mask.
@@ -55,8 +55,8 @@ does not parse, log, allocate, or synthesize input.
 |---|---|
 | `config/ps1/PADSCRIPT.TXT` | Source script embedded into the PS1 executable at build time. Empty for normal builds. |
 | `config/ps1/padscript_embedded.h` | Generated header produced by `scripts/build-ps1.sh`. |
-| `src/ps1_pad_script.c` | Parser, event scheduler, screenshot marker logger, and input merger. |
-| `src/ps1_pad_input.h` | Shared pad helper that folds analog into D-pad and merges scripted buttons. |
+| `src/platform/ps1/ps1_pad_script.c` | Parser, event scheduler, screenshot marker logger, and input merger. |
+| `src/platform/ps1/ps1_pad_input.h` | Shared pad helper that folds analog into D-pad and merges scripted buttons. |
 | `scripts/ps1-menu-input-harness.sh` | End-to-end menu screenshot route: stages boot/script files, builds, runs regtest, restores files. |
 | `scripts/ps1-menu-harness-report.py` | Copies marker-aligned frames and rewrites the website menu guide. |
 | `site/help/menu/index.md` | Generated player-facing menu guide. |

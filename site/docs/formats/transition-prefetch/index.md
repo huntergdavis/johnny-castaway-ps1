@@ -109,7 +109,7 @@ has no spare bandwidth.
 ## How the runtime decides what to load
 
 The PS1-side prefetcher is in
-[`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c).
+[`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c).
 At a high level:
 
 1. While playing a scene, the pilot maintains a `streamWindowBuffer`
@@ -206,5 +206,5 @@ where the planner guessed wrong.
 - [`docs/ps1/research/generated/scene_analysis_output_2026-03-17.json`]({{ site.github_url }}/blob/main/docs/ps1/research/generated/scene_analysis_output_2026-03-17.json)
   — input file the transition + prefetch planning artifacts above
   were generated from; named in the page intro.
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+- [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)
   — runtime consumer; the prefetch decision logic lives here.

@@ -1766,7 +1766,7 @@ Close global upload-gap retuning as a 99% speed path; any retry should be
 scene-local/generated and paired with CD/deadline ownership rather than a
 global constant.
 Latest rejected code-phase/link-order swing: moving `src/cdrom_ps1.c` before
-`src/foreground_pilot.c` shifted foreground hot symbols by about `+10984` bytes
+`src/foreground_pilot/foreground_pilot.c` shifted foreground hot symbols by about `+10984` bytes
 while keeping the PS-EXE bucket at `233472`, but the current five-yellow canary
 was exact-flat on every speed-bearing metric. Artifact:
 `scratch/ps1-perf-iterate/linkorder-cd-before-fg-canary/20260520-045809-3193268/summary.json`.
@@ -5120,7 +5120,7 @@ The feasibility pass says hand-written MIPS is viable, but it should not be the
 first move. The cheaper, higher-confidence ladder is: make `-O2` tests the top
 priority across the whole build, use word-stride C in restore/compose loops,
 try scratchpad palette storage, then write small assembly only for a measured
-hot loop. Current `CMakeLists.txt` already leaves `src/graphics_ps1.c` out of
+hot loop. Current `CMakeLists.txt` already leaves `src/graphics_ps1/graphics_ps1.c` out of
 the whole-TU `-Os` list, so the immediate `-O2` idea becomes a build-wide
 audit/gate: confirm which files/helpers are actually compiled at default
 `-O2`, then test every accepted `-Os` override back at `-O2` one at a time
@@ -5216,51 +5216,51 @@ FISHING1 regressed `loop_vb 1068 -> 1069`, `blocking_vb 4 -> 9`,
 `592 -> 660` bytes and ELF grew `952312 -> 952548`. Keep the helper at
 function-scoped `-Os` until setup/direct-read splitting or scheduler metadata
 changes the phase.
-The current v0.7.2 default-`O2` retest of `src/ps1_stubs.c` is also rejected:
+The current v0.7.2 default-`O2` retest of `src/platform/ps1/ps1_stubs.c` is also rejected:
 FISHING1, VISITOR3, WALKSTUF1, BUILDING2, and ACTIVITY9 exact canaries stayed
 fully flat while ELF grew `952312 -> 952360` and the stubs object grew
 `16640 -> 16680`. Keep the translation unit at `-Os` and do not put remaining
 cold/default-off `-O2` probes ahead of generated metadata without a stronger
 phase hypothesis.
-The current v0.7.2 default-`O2` retest of `src/pause_menu.c` is rejected:
+The current v0.7.2 default-`O2` retest of `src/pause_menu/pause_menu.c` is rejected:
 it grew the PS-EXE bucket by `2048` bytes, shifted foreground LBAs by `+1`,
 and regressed FISHING1, WALKSTUF1, BUILDING2, and ACTIVITY9 canaries. Keep the
 translation unit at `-Os`; do not retry pause-menu `-O2` unless link-phase
 padding or pause/menu source shape changes materially.
-The current v0.7.2 default-`O2` retest of `src/ps1_captions.c` is rejected:
+The current v0.7.2 default-`O2` retest of `src/platform/ps1/ps1_captions.c` is rejected:
 FISHING1 stayed exact-flat and the PS-EXE bucket stayed fixed, but the ELF and
 captions object both grew with no speed or work-volume improvement. Keep the
 translation unit at `-Os`.
-The current v0.7.2 default-`O2` retest of `src/memcard.c` is rejected:
+The current v0.7.2 default-`O2` retest of `src/platform/ps1/memcard.c` is rejected:
 FISHING1 regressed `loop_vb 1068 -> 1069`, visible blocking `4 -> 5`, and
 prefetch overrun `4 -> 6` while the ELF and memcard object grew. Keep the
 translation unit at `-Os`.
-The current v0.7.2 default-`O2` retest of `src/holidays.c` is rejected:
+The current v0.7.2 default-`O2` retest of `src/scene/holidays.c` is rejected:
 FISHING1 showed the same visible regression pattern while the ELF grew by
 `3472` bytes and the holidays object grew `25440 -> 30008`. Keep the
 translation unit at `-Os`.
-The current v0.8.0 default-`O2` retest of `src/ps1_debug.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/platform/ps1/ps1_debug.c` is rejected:
 against the refreshed `v080-current-fishing1-baseline`, FISHING1 stayed
 exact-flat at `1069/1073`, but ELF grew `954192 -> 954632` with no timing or
 work-volume win. Keep the translation unit at `-Os`.
-The current v0.8.0 default-`O2` retest of `src/utils.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/core/utils.c` is rejected:
 FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 955436` and
 tracked hot symbols shifted by `+20` bytes. Keep the translation unit at
 `-Os`.
-The current v0.8.0 default-`O2` retest of `src/island.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/scene/island.c` is rejected:
 FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954492` and
 tracked graphics/CD symbols shifted by `+48` bytes. Keep the translation unit
 at `-Os`; the normal cold compiler-flag queue is exhausted, leaving only
 review-only/default-off surfaces unless the link layout changes materially.
-The current v0.8.0 default-`O2` retest of `src/ps1_pad_script.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/platform/ps1/ps1_pad_script.c` is rejected:
 FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954248` and
 tracked CD helper symbols shifted by `+36` bytes. Keep the translation unit at
 `-Os`.
-The current v0.8.0 default-`O2` retest of `src/scene_freeplay.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/scene_freeplay/scene_freeplay.c` is rejected:
 it grew the PS-EXE bucket `215040 -> 217088`, shifted `FISHING1.FG2` LBA
 `434 -> 435`, and grew ELF `954192 -> 960236` with no timing win. Keep the
 translation unit at `-Os`.
-The current v0.8.0 default-`O2` retest of `src/scene_picker.c` is rejected:
+The current v0.8.0 default-`O2` retest of `src/scene/scene_picker.c` is rejected:
 FISHING1 stayed exact-flat with fixed tracked hot symbols, but ELF grew
 `954192 -> 955976` with no timing or work-volume win. Keep the translation unit
 at `-Os`; the `-O2` audit queue is exhausted.

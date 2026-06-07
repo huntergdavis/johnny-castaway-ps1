@@ -13,7 +13,7 @@ They are kept as archaeology because they capture the bring-up
 methodology in concrete form — start with the smallest test that
 exercises one subsystem, get it running, then move to the next. The
 production code that descends from these tests now lives in
-`src/graphics_ps1.c`, `src/cdrom_ps1.c`, and `src/ps1_main.c`. The
+`src/graphics_ps1/graphics_ps1.c`, `src/cdrom_ps1.c`, and `src/ps1_main.c`. The
 retired versions are short enough to read in one sitting.
 
 All three files are 1.4 to 4.4 KB. None of them are built by the

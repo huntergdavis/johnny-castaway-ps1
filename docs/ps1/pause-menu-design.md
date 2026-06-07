@@ -4,7 +4,7 @@
 
 **Status:** current for `v0.5.0-ps1`
 
-**Runtime files:** `src/pause_menu.c`, `src/pause_menu.h`
+**Runtime files:** `src/pause_menu/pause_menu.c`, `src/pause_menu/pause_menu.h`
 **Related:** [freeplay-mode-design.md](freeplay-mode-design.md)
 
 The pause menu is the PS1 port's in-game control room. It opens with
@@ -82,7 +82,7 @@ screensaver loop in `jc_reborn.c` consumes by:
 
 ## State Enum
 
-`src/pause_menu.h` exposes:
+`src/pause_menu/pause_menu.h` exposes:
 
 ```c
 enum PauseMenuState {

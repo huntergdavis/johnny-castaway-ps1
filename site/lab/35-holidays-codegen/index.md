@@ -38,7 +38,7 @@ The source file is `holidays.yml`.
 
 That file names each holiday, its short label, date rule, sprite dimensions,
 anchor, palette hints, and description. Codegen turns it into
-[`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c). Tests make sure the original four IDs do not move,
+[`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c). Tests make sure the original four IDs do not move,
 date rules resolve correctly, and duplicate IDs do not sneak in.
 
 That is the right shape for this problem. Calendar rules belong in data.

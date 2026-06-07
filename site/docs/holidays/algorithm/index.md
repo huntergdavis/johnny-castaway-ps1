@@ -32,7 +32,7 @@ that needs annual republishing was not acceptable.
 
 So every date is computed from a pure algorithm at runtime. No
 year-specific data, no embedded calendar. The whole core lives in
-[`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c) —
+[`src/scene/holidays.c`]({{ site.github_url }}/blob/main/src/scene/holidays.c) —
 roughly 320 lines of C, no allocations, no PS1 dependencies.
 
 ## Day-of-week from (month, day, year)
@@ -275,7 +275,7 @@ int holidayForDate(int year, int month, int day)
 ```
 
 The dispatcher's complement is the codegen output. Each row of
-[`gHolidays[]`]({{ site.github_url }}/blob/main/src/holidays_table.c) is
+[`gHolidays[]`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c) is
 generated from
 [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) by
 `scripts/holidays-codegen.py`. The C file never lists holidays
@@ -318,9 +318,9 @@ shipped with.
   the retrospective on building the codegen pipeline, the date
   algorithms above, and the sprite primitives the emblem sheet
   composes from.
-- [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c) —
+- [`src/scene/holidays.c`]({{ site.github_url }}/blob/main/src/scene/holidays.c) —
   this file's algorithms.
-- [`src/holidays.h`]({{ site.github_url }}/blob/main/src/holidays.h) —
+- [`src/scene/holidays.h`]({{ site.github_url }}/blob/main/src/scene/holidays.h) —
   public API.
 - [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) —
   source of truth for the table.

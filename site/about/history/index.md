@@ -150,7 +150,7 @@ on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
 controller input, SPU playback.
 
-Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)
 runtime); externally it is "PS1 scene playback." The decisive
 property is that the PS1 stops carrying state that the desktop
 engine built up across scenes. The disappearing-Johnny class doesn't

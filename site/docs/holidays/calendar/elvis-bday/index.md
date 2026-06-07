@@ -47,4 +47,4 @@ This holiday has an emblem on the shared sheet at cell 0, pixel offset (0, 0). V
 ## Source
 
 - Row in [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) (search for `id: 5` or `short_name: "ELVIS BDAY"`).
-- Generated row in [`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c).
+- Generated row in [`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c).

@@ -24,7 +24,7 @@ no scene-repeat prevention, no FINAL/FIRST sequence structure, no
 day-of-story enforcement (the check at `jc_reborn.c:1760` is a no-op
 comment), and no walk-aware retry.
 
-The original Sierra engine in `src/story.c:481-725` is the opposite
+The original Sierra engine in `src/host/story.c:481-725` is the opposite
 shape — a state machine that runs sequences of (6-19 intermediate scenes
 + 1 FINAL), filters by `FINAL` / `FIRST` / `LOWTIDE_OK` / `VARPOS_OK` /
 `dayNo` per-pick, retries up to 8 times when a candidate has no valid
@@ -64,7 +64,7 @@ trimming, not growing, the heap. The picker can't add to that pile.
 
 ### Original algorithm static-budget analysis
 
-`storyPickScene` already exists at `src/story.c:287` and is the
+`storyPickScene` already exists at `src/host/story.c:287` and is the
 candidate to port. It works like this:
 
 ```c
@@ -199,7 +199,7 @@ The original loops up to 8 times to reject candidates whose
 whose `spotEnd` is missing (no walk-out for next iteration), or that
 repeat the previous scene's ADS+tag.
 
-We can lift this verbatim from `src/story.c:589-596` — it's a tight
+We can lift this verbatim from `src/host/story.c:589-596` — it's a tight
 loop on `storyPickScene` with no allocations.
 
 ### M4. FIRST gating
@@ -234,11 +234,11 @@ Picker. Decide on visual signoff.
 | File | Change |
 |---|---|
 | `src/jc_reborn.c` | Replace `fgLoopNextScene` with a dispatcher that calls `pickerRandom` / `pickerSequential` / `pickerOriginal`. Lift the walk-aware retry helper into a shared inline. |
-| `src/scene_picker.c` (new, optional) | All three picker bodies + module statics. Could just live inline in `jc_reborn.c` if it stays small. |
-| `src/scene_picker.h` (new, optional) | Public surface: `pickerNextScene`, `pickerSetPolicy`, `pickerOnSceneSetCycle`. |
-| `src/pause_menu.h` | New `pauseMenuPickerPolicy` int + `pauseMenuRequestPickerCycle` flag. |
-| `src/pause_menu.c` | New `MENU_SCENE_PICKER` row, optional sub-screen if nested. |
-| `src/memcard.c` | Persist picker policy. Schema bump. |
+| `src/scene/scene_picker.c` (new, optional) | All three picker bodies + module statics. Could just live inline in `jc_reborn.c` if it stays small. |
+| `src/scene/scene_picker.h` (new, optional) | Public surface: `pickerNextScene`, `pickerSetPolicy`, `pickerOnSceneSetCycle`. |
+| `src/pause_menu/pause_menu.h` | New `pauseMenuPickerPolicy` int + `pauseMenuRequestPickerCycle` flag. |
+| `src/pause_menu/pause_menu.c` | New `MENU_SCENE_PICKER` row, optional sub-screen if nested. |
+| `src/platform/ps1/memcard.c` | Persist picker policy. Schema bump. |
 | `docs/ps1/scene-picker-design.md` | This file. |
 | `docs/ps1/pause-menu-design.md` | New picker section after Scene Set. |
 | `site/help/menu/index.md` | New menu-help entry. |
@@ -382,7 +382,7 @@ impractical.
 
 **Fix**: ship the System → Force Story Day knob in the same release
 as Original. Easy hook — `storyForcedCurrentDay` already exists at
-`src/story.c:312`, just needs a pause-menu front-end.
+`src/host/story.c:312`, just needs a pause-menu front-end.
 
 ### R11. Sequential mode's "order" is unspecified
 

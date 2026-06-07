@@ -11,8 +11,8 @@ persistence, and CD-image embedding are all live.
 |---|---|---|
 | Asset | `jc_resources/extracted/snd/OCEAN.VAG` (123 KB, 20-sec seamless loop) | Shipped |
 | CD layout | `config/ps1/cd_layout.xml` adds OCEAN.VAG under `SND/` | Shipped |
-| Boot loader | `src/sound_ps1.c::soundInit` uploads VAG to SPU RAM after the SFX block; auto-keys voice 23 if `oceanAmbientEnabled` | Shipped |
-| Start/Stop API | `oceanAmbientStart()` / `oceanAmbientStop()` / `oceanAmbientLoaded()` in `src/sound_ps1.h` | Shipped |
+| Boot loader | `src/platform/ps1/sound_ps1.c::soundInit` uploads VAG to SPU RAM after the SFX block; auto-keys voice 23 if `oceanAmbientEnabled` | Shipped |
+| Start/Stop API | `oceanAmbientStart()` / `oceanAmbientStop()` / `oceanAmbientLoaded()` in `src/platform/ps1/sound_ps1.h` | Shipped |
 | Pause-menu toggle | `ACCESS_OCEAN` row on the Accessibility page; LEFT/RIGHT/X flips the toggle and immediately starts/stops the SPU voice | Shipped |
 | Memcard persistence | `MC_VERSION` 2 → 3; `oceanAmbientEnabled` field; v2 saves load gracefully with the new field defaulted ON | Shipped |
 | Frame impact | Per-VBlank cost zero (SPU mixes + auto-loops in hardware); JCPERF2 unchanged | Verified |
@@ -228,7 +228,7 @@ Reuse the established pattern.
 
 ### Global state
 
-In `src/sound_ps1.c` (or a new `src/ambient_ps1.c` if we want to keep
+In `src/platform/ps1/sound_ps1.c` (or a new `src/ambient_ps1.c` if we want to keep
 the SFX path clean):
 
 ```c
@@ -295,7 +295,7 @@ void oceanAmbientStop(void)
 
 ### Pause-menu row
 
-In `src/pause_menu.c`, add an `OPT_OCEAN_AMBIENT` enum entry near
+In `src/pause_menu/pause_menu.c`, add an `OPT_OCEAN_AMBIENT` enum entry near
 the other audio toggles in the Accessibility submenu. Add a row that:
 
 - displays "Ocean ambience: ON / OFF"
@@ -307,7 +307,7 @@ copy-paste.
 
 ### Memcard persistence
 
-Bump `MC_VERSION` from 2 to 3 in `src/memcard.c`. Add
+Bump `MC_VERSION` from 2 to 3 in `src/platform/ps1/memcard.c`. Add
 `oceanAmbientEnabled` to `JCMCSettings`. Read/write alongside
 `soundMuted`. Migration is the standard "field
 not present in v2 → use default" path the codebase already has.
@@ -455,10 +455,10 @@ finish wiring it in:
    mv scratch/ocean-ambience/encode_vag_loop.py scripts/
    mv scratch/ocean-ambience/make_tight_loop.py scripts/
    ```
-3. **Wire boot loader.** Extend `soundInit` in `src/sound_ps1.c` to
+3. **Wire boot loader.** Extend `soundInit` in `src/platform/ps1/sound_ps1.c` to
    load `OCEAN.VAG` into SPU RAM after the existing SFX block.
 4. **Add start/stop helpers.** `oceanAmbientStart()` /
-   `oceanAmbientStop()` in `src/sound_ps1.c`. ADSR with slow
+   `oceanAmbientStop()` in `src/platform/ps1/sound_ps1.c`. ADSR with slow
    attack/release so toggles don't click.
 5. **Wire pause-menu row.** Add `OPT_OCEAN_AMBIENT` to the menu enum;
    render row; toggle calls start/stop.
@@ -473,10 +473,10 @@ finish wiring it in:
 
 ## Files Worth Reading Before Implementation
 
-- `src/sound_ps1.c` — existing SFX path, SpuInit, VAG loader, mute.
-- `src/pause_menu.c` — existing toggle rows (`OPT_SOUND`,
+- `src/platform/ps1/sound_ps1.c` — existing SFX path, SpuInit, VAG loader, mute.
+- `src/pause_menu/pause_menu.c` — existing toggle rows (`OPT_SOUND`,
   `OPT_CAPTIONS`); copy this pattern.
-- `src/memcard.c` — `JCMCSettings`, `MC_VERSION`, migration pattern.
+- `src/platform/ps1/memcard.c` — `JCMCSettings`, `MC_VERSION`, migration pattern.
 - `scratch/psn00b-src/examples/sound/vagsample/main.c` — minimal
   one-shot VAG playback example.
 - `scratch/psn00b-src/libpsn00b/include/psxspu.h` — full SPU API,

@@ -282,22 +282,22 @@ section collects them.
 
 **Implementations** (one per build):
 
-- [`src/graphics.c`]({{ site.github_url }}/blob/main/src/graphics.c)
+- [`src/host/graphics.c`]({{ site.github_url }}/blob/main/src/host/graphics.c)
   — host SDL2 surfaces and blits.
-- [`src/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c)
+- [`src/graphics_ps1/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1/graphics_ps1.c)
   — PS1 PSn00bSDK GPU + tile renderer.
 
 **Gameplay-code consumers** (the four modules that hold to the
 contract instead of writing two divergent renderers):
 
-- [`src/ttm.c`]({{ site.github_url }}/blob/main/src/ttm.c)
+- [`src/host/ttm.c`]({{ site.github_url }}/blob/main/src/host/ttm.c)
   — clip zone, copy/save/restore zone, pixel/line/rect/circle,
   draw sprite, clear/load screen, BMP load.
-- [`src/walk.c`]({{ site.github_url }}/blob/main/src/walk.c)
+- [`src/walk/walk.c`]({{ site.github_url }}/blob/main/src/walk/walk.c)
   — clear screen, draw sprite (flip).
-- [`src/island.c`]({{ site.github_url }}/blob/main/src/island.c)
+- [`src/scene/island.c`]({{ site.github_url }}/blob/main/src/scene/island.c)
   — load screen, BMP load/release, draw sprite (flip).
-- [`src/ads.c`]({{ site.github_url }}/blob/main/src/ads.c)
+- [`src/ads/ads.c`]({{ site.github_url }}/blob/main/src/ads/ads.c)
   — layer allocation/release, frame begin/present, background
   restore. The replay sprite path is the largest current contract
   violation (named in the section above).

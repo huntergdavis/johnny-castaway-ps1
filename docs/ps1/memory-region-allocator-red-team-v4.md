@@ -182,7 +182,7 @@ the decision tree as step 5. But nothing enforces this — a future
 contributor adds MEM_REGION_VRAM_MIRROR and forgets to update the
 tree. A pre-commit hook or CI grep checking
 `grep -c "MEM_REGION_" docs/ps1/mem-region-decision-tree.md` against
-`grep -c "MEM_REGION_" src/mem_region.h` would catch it.
+`grep -c "MEM_REGION_" src/mem_region/mem_region.h` would catch it.
 
 ---
 
@@ -200,7 +200,7 @@ tree. A pre-commit hook or CI grep checking
 
 #### 🟠 PR11. Pre-emptive eviction violates scene_picker's "net-zero heap pressure"
 
-`src/scene_picker.c:4-6` is explicit: "Designed for net-zero heap
+`src/scene/scene_picker.c:4-6` is explicit: "Designed for net-zero heap
 pressure: malloc/free/realloc/calloc are poison-included below."
 Adding `memCachePreEvictForNextScene` to `fgLoopNextScene` (which is in
 or adjacent to the picker) introduces a CACHE state mutation in code

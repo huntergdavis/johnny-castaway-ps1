@@ -9,7 +9,7 @@ Outputs:
   /home/hunter/workspace/jc_reborn/src/scene/holidays_table.c
       C source with `gHolidays[]` static const array + gHolidayCount.
       Linked alongside src/scene/holidays.c which contains the date-algorithm
-      core. Schema must match struct Holiday in src/holidays.h.
+      core. Schema must match struct Holiday in src/scene/holidays.h.
 
 Run:
   python3 scripts/holidays-codegen.py

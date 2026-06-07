@@ -245,11 +245,11 @@ for the long-term direction (replay continuity is on the kill list).
   it verbatim.
 - [`scripts/extract-dirty-region-templates.py`]({{ site.github_url }}/blob/main/scripts/extract-dirty-region-templates.py)
   — offline extractor that derives templates from TTM bytecode.
-- [`src/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c)
+- [`src/graphics_ps1/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1/graphics_ps1.c)
   — runtime consumer; `grRestoreBgTiles`, `currDirty` /
   `prevDirty`, and `grForceFullRedrawNextFrame`. The fix for the
   `prevDirty` bug above is documented at the head of this file.
-- [`src/ads.c`]({{ site.github_url }}/blob/main/src/ads.c)
+- [`src/ads/ads.c`]({{ site.github_url }}/blob/main/src/ads/ads.c)
   — the legacy actor-recovery / "replay continuity" code the
   Current limitations section names. On the SDL compat lite kill
   list as the long-term direction.

@@ -258,7 +258,7 @@ This is the *hybrid pipeline*. Internally it's called [`fgpilot`]({{ '/docs/glos
 because that's what the directory was named when it was a pilot
 experiment that didn't yet work. The name stuck. The project is
 gradually migrating it to *PS1 scene playback* in operator-facing
-docs. The internal name is in [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) and is going to
+docs. The internal name is in [`foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c) and is going to
 stay there until someone has time to rename two thousand lines of C.
 
 The first scene that worked, end to end, under this method was
@@ -324,7 +324,7 @@ System, Set Time / Date, and Set RNG Seed. It uses a custom embedded 8x8 ASCII f
 `FntFlush` is empirically broken in the scene-runtime context: the
 primitives accumulate but no pixels appear. POLY_F4 quads handle the
 dim and the panel chrome. User settings persist to a memory card save
-at `bu00:` through [`memcard.c`]({{ site.github_url }}/blob/main/src/memcard.c); the persisted set covers sound mute,
+at `bu00:` through [`memcard.c`]({{ site.github_url }}/blob/main/src/platform/ps1/memcard.c); the persisted set covers sound mute,
 captions, holiday mode, ocean ambience, and the rest of the
 pause-menu toggles.
 

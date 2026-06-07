@@ -39,7 +39,7 @@ console. Make the check unconditional. Cost is ~3 instructions per
 
 #### 🔴 P8. `ps1Bsod` reads stale heap diagnostics that no longer mean anything
 
-`src/ps1_debug.c:228` queries `fgProbeLargestAlloc()` and prints
+`src/platform/ps1/ps1_debug.c:228` queries `fgProbeLargestAlloc()` and prints
 `JCBSOD heapKB=...` in every BSOD dump. After Phase 2 deletes the bandaid
 heap-probe infrastructure (and after the project-level malloc poison
 makes libc malloc unreachable), `fgProbeLargestAlloc`'s binary-search
@@ -78,7 +78,7 @@ the choice.
 
 The plan reuses `ps1Bsod` which calls `printf` many times. On PsyQ, the
 runtime's `printf` writes into a fixed-size internal buffer (~256 B); no
-heap. On PsnoobSDK (which the project uses — see `src/ps1_debug.c`
+heap. On PsnoobSDK (which the project uses — see `src/platform/ps1/ps1_debug.c`
 header) similar. **Verify** the project's specific libc's printf is
 non-allocating and add a code comment to that effect, so a future
 contributor doesn't swap in a fancy printf and re-create a BSOD recursion.
@@ -360,7 +360,7 @@ black screen with no obvious cause.
 **Required:** before Phase 1 ships, upgrade `fatalError` on PS1 to render
 a minimal on-screen text panel (not the full BSOD UI — graphics isn't
 up — but at least flip the frame buffer to a solid color and dump TTY)
-or call `ps1DebugError` from `src/ps1_debug.h:51` (which the team built
+or call `ps1DebugError` from `src/platform/ps1/ps1_debug.h:51` (which the team built
 specifically for this and may already be safe pre-graphics).
 
 #### 🔴 A11. `ps1Bsod` reads heap-probe data via legacy externs

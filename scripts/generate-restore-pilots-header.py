@@ -13,7 +13,7 @@ DEFAULT_SPECS = [
     Path("docs/ps1/research/restore_pilot_spec_johnny_2026-03-18.json"),
     Path("docs/ps1/research/restore_pilot_spec_walkstuf_2026-03-18.json"),
 ]
-DEFAULT_HEADER = Path("src/ps1_restore_pilots.h")
+DEFAULT_HEADER = Path("src/foreground_pilot/ps1_restore_pilots.h")
 
 
 def load_json(path: Path) -> dict:

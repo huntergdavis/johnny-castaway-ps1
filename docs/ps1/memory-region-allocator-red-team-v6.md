@@ -135,7 +135,7 @@ None new. v7 perf is well-quantified.
 
 #### 🟠 A26. `mem_region_extern.h` header layering still ambiguous
 
-v7 says: "`src/mem_region_extern.h` holds forward declarations
+v7 says: "`src/mem_region/mem_region_extern.h` holds forward declarations
 consumed by both `mem_region.c` and `ps1_debug.c`."
 
 But the forward decls use `MemRegion` (the enum):

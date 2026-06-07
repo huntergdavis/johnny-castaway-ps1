@@ -9,7 +9,7 @@ Branch: `walk-implementation-20260429`
 This is the artifact the walk implementation plan
 ([walk-implementation-plan.md](walk-implementation-plan.md)) § R6
 calls for: pre-flight audit + canonical (x, y) per spot extracted from
-`src/walk_data.h`.
+`src/walk/walk_data.h`.
 
 ## R6.1 — Spot graph completeness
 
@@ -155,5 +155,5 @@ existing per-scene SFX.
 - [Walk implementation plan](walk-implementation-plan.md)
 - [Freeplay direct-control mode](freeplay-mode-design.md)
 - [Hardware constraints](hardware-specs.md)
-- Upstream walk module: `src/walk.c`, `src/walk_data.h`, `src/calcpath.c`
+- Upstream walk module: `src/walk/walk.c`, `src/walk/walk_data.h`, `src/walk/calcpath.c`
 - Original asset extraction: `tools/src/extract_walk_data.c`

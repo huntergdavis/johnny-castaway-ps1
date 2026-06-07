@@ -253,7 +253,7 @@ flip in arbitrary order; the PS1 GPU consumes an *[ordering table]({{ '/docs/glo
 linked list of primitives sorted back-to-front — and renders the whole
 list when you call `DrawOTag`. Every PS1 module in this codebase ends up
 shaped around "build the OT, then submit", which is why
-[`graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c) is
+[`graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1/graphics_ps1.c) is
 much longer than the SDL host counterpart.
 
 ## PSn00bSDK quick reference
@@ -352,7 +352,7 @@ in the research directory, but it has not been implemented.
 ## View source on GitHub
 
 - [`docs/ps1/api-mapping.md`]({{ site.github_url }}/blob/main/docs/ps1/api-mapping.md) — original document.
-- [`src/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c) — the GPU surface in practice.
-- [`src/events_ps1.c`]({{ site.github_url }}/blob/main/src/events_ps1.c) — controller polling.
-- [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c) — SPU side.
+- [`src/graphics_ps1/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1/graphics_ps1.c) — the GPU surface in practice.
+- [`src/platform/ps1/events_ps1.c`]({{ site.github_url }}/blob/main/src/platform/ps1/events_ps1.c) — controller polling.
+- [`src/platform/ps1/sound_ps1.c`]({{ site.github_url }}/blob/main/src/platform/ps1/sound_ps1.c) — SPU side.
 - [`src/cdrom_ps1.c`]({{ site.github_url }}/blob/main/src/cdrom_ps1.c) — CD I/O.

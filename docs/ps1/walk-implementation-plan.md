@@ -19,7 +19,7 @@ Owner: PS1 perf branch
 
 > **2026-05-04 update — picker promoted, `kProvenScenes` retired.**
 > The scene-picking logic moved out of `fgLoopNextScene` into a
-> dedicated `src/scene_picker.c` (Random / Sequential / Original
+> dedicated `src/scene/scene_picker.c` (Random / Sequential / Original
 > policies, see `docs/ps1/scene-picker-design.md`). The
 > hand-curated `kProvenScenes[]` array referenced throughout this
 > plan has been replaced by `kAllScenes[]`, which contains every
@@ -28,7 +28,7 @@ Owner: PS1 perf branch
 > module, not in `fgLoopNextScene`. The `kProvenScenes` snippets
 > later in this doc describe the pre-picker baseline that motivated
 > the walk port — read `docs/ps1/scene-picker-design.md` and
-> `src/scene_picker.c` for current behaviour.
+> `src/scene/scene_picker.c` for current behaviour.
 
 ## Executive Summary
 
@@ -42,7 +42,7 @@ This plan ports the walking system to the PS1 build without touching the
 FG2-pack replay path the perf branch depends on. The scope is the cleanest
 hybrid available:
 
-- Bring the existing `src/walk.c` + `src/walk_data.h` + `src/calcpath.c`
+- Bring the existing `src/walk/walk.c` + `src/walk/walk_data.h` + `src/walk/calcpath.c`
   modules into the PS1 build.
 - Ship `JOHNWALK.BMP` on the disc.
 - Add a tiny scene picker that maintains Johnny's current spot/heading and
@@ -94,7 +94,7 @@ Validation evidence for the release candidate:
 
 ### 1.1 Scene metadata is pre-declared
 
-`src/story_data.h` declares all 63 scenes with start/end position metadata:
+`src/host/story_data.h` declares all 63 scenes with start/end position metadata:
 
 ```c
 struct TStoryScene {
@@ -115,12 +115,12 @@ Six labeled spots on the island (`SPOT_A..F`) and eight headings
 
 ### 1.2 The walking system is a self-contained module
 
-`src/walk.c` is 189 lines. `src/walk_data.h` is 530 lines of static const
+`src/walk/walk.c` is 189 lines. `src/walk/walk_data.h` is 530 lines of static const
 data extracted from Sierra's original `SCRANTIC.SCR` — per-frame
 `(sprite_index, x, y, frame_id)` for every walk transition plus turning
-poses. `src/calcpath.c` does shortest-path through the 6-spot graph.
+poses. `src/walk/calcpath.c` does shortest-path through the 6-spot graph.
 
-`adsPlayWalk(fromSpot, fromHdg, toSpot, toHdg)` in `src/ads.c:2216`
+`adsPlayWalk(fromSpot, fromHdg, toSpot, toHdg)` in `src/ads/ads.c:2216`
 orchestrates: load `JOHNWALK.BMP` into a TTM slot, call `walkInit()`, loop
 `walkAnimate()` per frame until it returns `delay=0`. The PS1-specific
 ifdefs in `walk.c` already partially anticipate the port (sufficient
@@ -129,7 +129,7 @@ the lone holdout).
 
 ### 1.3 The story loop chains scenes together
 
-`storyLoop()` in `src/story.c:560-690`:
+`storyLoop()` in `src/host/story.c:560-690`:
 
 ```
 1. Pick a "final scene"
@@ -234,7 +234,7 @@ themselves and then call the kernel.
 ### 3.5.2 Shared position type
 
 ```c
-// src/walk_render.h
+// src/walk/walk_render.h
 struct TWalkPos {
     int x;          // pixel coord, island-relative
     int y;          // pixel coord, island-relative
@@ -341,8 +341,8 @@ can defer if perf or schedule pressure says so.
 **Goal:** walk module compiles into `jcreborn.bin`.
 
 1. Add to `CMakeLists.txt` SOURCES:
-    - `src/walk.c`
-    - `src/calcpath.c`
+    - `src/walk/walk.c`
+    - `src/walk/calcpath.c`
    (`walk.h`, `walk_data.h`, `calcpath.h` are headers — pulled in
    transitively.)
 
@@ -383,7 +383,7 @@ can defer if perf or schedule pressure says so.
 **Goal:** the shared kernel from § 3.5.1 exists and renders correctly
 when given a sprite frame + position + flags. No driver yet.
 
-1. New file `src/walk_render.c` + `src/walk_render.h`. Public API:
+1. New file `src/walk/walk_render.c` + `src/walk/walk_render.h`. Public API:
    ```c
    void walkRenderInit(void);             // load JOHNWALK.BMP into slot 1
    void walkRenderRelease(void);          // free slot 1
@@ -498,7 +498,7 @@ next scene, walks to that scene's start, plays it, repeats.
       `dayNo == 0 || dayNo == storyCurrentDay`)
     - Excludes FINAL on intermediate picks, excludes FIRST after the
       first iteration (mirrors the original's `wantedFlags`/
-      `unwantedFlags` logic at `src/story.c:567-575`)
+      `unwantedFlags` logic at `src/host/story.c:567-575`)
     - Picks one at random from the candidates
     - Returns its `TStoryScene*`
 
@@ -513,7 +513,7 @@ next scene, walks to that scene's start, plays it, repeats.
    FINAL scenes that don't reset, etc.).
 
 6. The 8-pick retry limit from the original story loop
-   (`src/story.c:583`) is preserved; if 8 picks fail to satisfy filters,
+   (`src/host/story.c:583`) is preserved; if 8 picks fail to satisfy filters,
    accept anything that matches `wantedFlags`. Original behavior.
 
 **Acceptance:**
@@ -570,12 +570,12 @@ the samples, wires them, and adds the toggle.
 
 **Phase 4.3 — pause-menu toggle (½ day)**
 
-- Add `OPT_FOOTSTEPS` to the Options enum in `src/pause_menu.c`,
+- Add `OPT_FOOTSTEPS` to the Options enum in `src/pause_menu/pause_menu.c`,
   alongside `OPT_SOUND`, `OPT_DAYNIGHT`, `OPT_TIDE`, `OPT_RAFT`,
   `OPT_HOLIDAY`, `OPT_CAPTIONS`, `OPT_PERF`.
 - New global `int footstepsEnabled = 1;` in the same scope as
   `soundMuted` etc., persisted to memcard via the existing settings
-  block in `src/memcard.c`.
+  block in `src/platform/ps1/memcard.c`.
 - Default ON. Memcard restoration on boot picks up the user's last
   setting.
 
@@ -747,25 +747,25 @@ compositor call both modes use.
 intro/outro), matching the original.
 
 1. Port `storyUpdateCurrentDay()` (and any helpers it calls) from
-   `src/story.c` into a PS1-compatible form. This is the function that
+   `src/host/story.c` into a PS1-compatible form. This is the function that
    advances the day counter; on the host build it ticks once per
    storyLoop iteration with day-progression rules.
 
 2. Persist `storyCurrentDay` to memcard alongside the existing
    pause-menu settings. The original Sierra game persists day in the
    Windows registry; the PS1 equivalent is the memcard save block,
-   already wired via `src/memcard.c`. Add a `currentDay` field.
+   already wired via `src/platform/ps1/memcard.c`. Add a `currentDay` field.
 
 3. Add scene-day filtering to the picker:
    ```c
    if (scene->dayNo != 0 && scene->dayNo != storyCurrentDay) skip;
    ```
-   (already mirrored in `src/story.c:300`.)
+   (already mirrored in `src/host/story.c:300`.)
 
-4. Day advancement triggers — read from `src/story.c`:
+4. Day advancement triggers — read from `src/host/story.c`:
     - Day rolls forward when certain `FINAL` scenes finish (raft progress,
       Mary's visit, etc.). Specific rules in `storyApplySceneDay()`
-      (`src/story.c:118`).
+      (`src/host/story.c:118`).
 
 5. Pause-menu integration: existing "Set Time" editor adds a
    "Set Day" cycler (1..11 → wrap). Useful for debugging story-day
@@ -797,23 +797,23 @@ intro/outro), matching the original.
 
 **Modified:**
 - `CMakeLists.txt` — SOURCES gains walk.c, calcpath.c (and walk_pilot.c)
-- `src/walk.c` — SDL surface dependency at line 80 hoisted behind
+- `src/walk/walk.c` — SDL surface dependency at line 80 hoisted behind
   `#ifndef PS1_BUILD`
 - `src/jc_reborn.c` — `fgLoopNextScene()` replaced with story-aware
   picker; new `walk-test` boot token; storyCurrentDay state and
   memcard integration
-- `src/foreground_pilot.c` (or a new caller) — invokes
+- `src/foreground_pilot/foreground_pilot.c` (or a new caller) — invokes
   `fgWalkRender()` between scene plays
-- `src/memcard.c` — `currentDay` field
+- `src/platform/ps1/memcard.c` — `currentDay` field
 - `config/ps1/cd_layout.xml` — `JOHNWALK.BMP` route
-- `src/pause_menu.c` — Set Day cycler under Set Time
+- `src/pause_menu/pause_menu.c` — Set Day cycler under Set Time
 
 **Reused:**
-- `src/walk_data.h`, `src/walk.h` — drop in unchanged
-- `src/calcpath.c`, `src/calcpath.h` — drop in unchanged
-- `src/story_data.h` — included by PS1 picker (data only, no
+- `src/walk/walk_data.h`, `src/walk/walk.h` — drop in unchanged
+- `src/walk/calcpath.c`, `src/walk/calcpath.h` — drop in unchanged
+- `src/host/story_data.h` — included by PS1 picker (data only, no
   function-pointer dependency)
-- `src/island.c` / `islandState` — already PS1-tracked
+- `src/scene/island.c` / `islandState` — already PS1-tracked
 
 ## 6. Memory and code budget
 
@@ -891,7 +891,7 @@ pack regenerated with a known walk-end starting pose.
 7, FISHING 8, MARY 5, VISITOR 5 set `LEFT_ISLAND` and have no defined
 `spotEnd/hdgEnd`. After they finish, Johnny is "off the island" until a
 FIRST scene resets the position. The original engine sets
-`prevSpot=-1` in this case (`src/story.c:649`). The PS1 picker must
+`prevSpot=-1` in this case (`src/host/story.c:649`). The PS1 picker must
 encode the same: when prev=-1, the next picked scene MUST be either
 FIRST (sets fresh start) or another no-walk-needed scene. **Risk:
 medium.** **Mitigation:** Phase 3's picker explicitly preserves the
@@ -901,7 +901,7 @@ from invalid coordinates.
 
 **R1.4. Scenes with `spotStart=0` should not be walked TO.** Several
 scenes have no defined start position (anywhere works). The original
-engine's `storyHasValidStart()` check at `src/story.c:585` skips the
+engine's `storyHasValidStart()` check at `src/host/story.c:585` skips the
 walk if the next scene's start is undefined. The PS1 picker must
 preserve that gate. **Risk: low** (straightforward port) but easy to
 miss.
@@ -911,7 +911,7 @@ candidates that satisfy filters; if none match the spot/start gate, it
 falls back. This is a soft constraint, not a hard one — the original
 intentionally permits "imperfect" picks rather than infinite-loop.
 **Risk: low.** **Mitigation:** copy the literal loop structure from
-`src/story.c:583-590`. Don't tighten it.
+`src/host/story.c:583-590`. Don't tighten it.
 
 **R1.6. Random number generator state.** The PS1 picker uses `rand()`.
 The host capture used the same `rand()` per scene; if the PS1 picker
@@ -997,7 +997,7 @@ asymptotically 63). **Risk: very low.**
 **R3.3. RNG consumption count.** If the picker calls `rand()` in a
 different pattern than the original story loop, the `seed` boot token
 loses reproducibility. **Risk: medium for testing only.**
-**Mitigation:** the PS1 picker copies `src/story.c`'s exact RNG-call
+**Mitigation:** the PS1 picker copies `src/host/story.c`'s exact RNG-call
 sequence. Don't add or remove any `rand()` calls without versioning the
 seed model.
 

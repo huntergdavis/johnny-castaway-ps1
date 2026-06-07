@@ -122,7 +122,7 @@ add the packs:
 <file name="<LOW_PACK_BASENAME>.FG2" type="data" source="../../generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2"/>
 ```
 
-[`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) —
+[`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c) —
 add the scene to the active routing function:
 
 - `fgCompactOverlayPackPathForScene(sceneName)` returns the high or low
@@ -239,7 +239,7 @@ exists as a diagnostic — not as the acceptance gate.
 ## Diagnostics
 
 - **Telemetry overlay**:
-  [`ps1_debug.c`]({{ site.github_url }}/blob/main/src/ps1_debug.c) provides
+  [`ps1_debug.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_debug.c) provides
   a 5-panel on-screen overlay. Use this for frame-by-frame counters and
   hot-path diagnostics.
 - **PS1 `printf()` / TTY logging** works in DuckStation for gated probes.
@@ -351,13 +351,13 @@ in the archaeology and research docs.
 - [`scripts/batch-capture-all-scenes.sh`]({{ site.github_url }}/blob/main/scripts/batch-capture-all-scenes.sh)
   — generates the all-63-scenes pack corpus referenced in the
   "Existing all-scene pack corpus" section.
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+- [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)
   — the routing function `fgCompactOverlayPackPathForScene` that Step 2
   asks the contributor to extend.
 - [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c)
   — `kAllScenes[]` (the scene-picker pool Step 2 lands new slugs in,
   post-`v0.7.0-ps1` retirement of the gated `kProvenScenes`).
-- [`src/ps1_debug.c`]({{ site.github_url }}/blob/main/src/ps1_debug.c)
+- [`src/platform/ps1/ps1_debug.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_debug.c)
   — the 5-panel telemetry overlay the Diagnostics section names.
 - [`docs/ps1/development-workflow.md`]({{ site.github_url }}/blob/main/docs/ps1/development-workflow.md) — original.
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md) — the active strategy.

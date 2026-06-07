@@ -56,7 +56,7 @@ or timing semantics.
 
    ```bash
    rg -n "walkstuf1|visitor3" docs/ps1/scene-status.md docs/ps1/current-status.md docs/ps1/performance-experiment-log.md
-   git log --oneline -n 20 -- src/foreground_pilot.c generated/ps1/foreground scripts docs/ps1
+   git log --oneline -n 20 -- src/foreground_pilot/foreground_pilot.c generated/ps1/foreground scripts docs/ps1
    ```
 
 3. Classify the failure before editing:

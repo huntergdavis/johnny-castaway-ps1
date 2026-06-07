@@ -29,7 +29,7 @@ A few of these articles were drafted by AI sub-agents and then
 human-edited, in the same workflow described inside them. That
 disclosure is part of the methodology, not an apology for it. The
 voice anchor for the whole site — the four-line [`drawCredits`]({{ '/docs/glossary/#drawcredits' | relative_url }}) text in
-`src/pause_menu.c` — is hand-written and load-bearing; everything
+`src/pause_menu/pause_menu.c` — is hand-written and load-bearing; everything
 downstream of it gets edited until it sounds like the same person. The
 [voice-anchor article]({{ '/lab/voice-anchor-problem/' | relative_url }})
 goes into how that pipeline works in practice.

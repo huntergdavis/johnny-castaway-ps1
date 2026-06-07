@@ -54,7 +54,7 @@ Per scene:
 3. `docs/ps1/scene-status.md` — Notes column.
 4. `jc_resources/extracted/scr/SX<abbrev><tag>.SCR` — the chapter-
    select thumbnail.
-5. [`src/scene_explorer_data.h`]({{ site.github_url }}/blob/main/src/scene_explorer_data.h) — the in-game Scene Explorer header,
+5. [`src/pause_menu/scene_explorer_data.h`]({{ site.github_url }}/blob/main/src/pause_menu/scene_explorer_data.h) — the in-game Scene Explorer header,
    regenerated from sources 1–3.
 
 ## What the on-PS1 view caught

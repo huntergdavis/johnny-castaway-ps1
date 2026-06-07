@@ -26,12 +26,12 @@ If you paid for this, you were cheated. Open source and free.
 
 Three things plug together:
 
-1. **The caption corpus** (`captions[]` in `src/ps1_captions.c`) holds the
+1. **The caption corpus** (`captions[]` in `src/platform/ps1/ps1_captions.c`) holds the
    actual subtitle strings. There are a handful of "special" captions
    (`intro`, `christmas`, `halloween`, `night`, `lowtide`, `fadeout`, etc.)
    plus 64 numbered scene captions (`scene00` … `scene63`).
 2. **The scene-to-ADS map** (`captionSceneMap[]`, also in
-   `src/ps1_captions.c`) routes an `(ads_name, ads_tag)` pair to a caption
+   `src/platform/ps1/ps1_captions.c`) routes an `(ads_name, ads_tag)` pair to a caption
    id. When a scene starts, the runtime calls
    `captionsOnAdsStart("FISHING", 3)` and the mapper picks the right
    `sceneNN` string.
@@ -44,7 +44,7 @@ The captions module shares VRAM with the [pause menu]({{ '/docs/pause-menu/' | r
 on first use it calls `pauseMenuEnsureFontUploaded()` so the captions don't
 need to wait for the user to open the pause menu before subtitles can render.
 The font lives at VRAM `(640, 256)` with a CLUT at `(640, 360)` — those
-constants are exported from [`pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu.h).
+constants are exported from [`pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu/pause_menu.h).
 
 When captions are disabled or no scene is active, `captionsRender()` returns
 immediately. It is zero-cost when off.
@@ -174,7 +174,7 @@ caption belongs to which scene — the per-scene `index.md` titles +
 bodies, the [`scenes.yml`]({{ site.github_url }}/blob/main/site/_data/scenes.yml) notes, the [`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) Notes column,
 and the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})'s display strings (regenerated from
 those sources). The `captionSceneMap[]` array in
-[`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+[`src/platform/ps1/ps1_captions.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_captions.c)
 was not updated as part of `v0.8.4-ps1`; the runtime continues to
 play whatever caption the audit's mapping picked. Repointing the
 `captionSceneMap[]` rows where the caption text contradicts the
@@ -191,7 +191,7 @@ explicitly anticipated.
 ## How to add a caption
 
 The pipeline is two arrays in one file. Both live in
-[`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c).
+[`src/platform/ps1/ps1_captions.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_captions.c).
 
 1. Add the caption text to the `captions[]` array.
 
@@ -272,5 +272,5 @@ no-op stub — captions are a PS1-only feature.
 ## View source on GitHub
 
 - [`docs/ps1/caption-audit-2026-04-26.yaml`]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
-- [`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
-- [`src/ps1_captions.h`]({{ site.github_url }}/blob/main/src/ps1_captions.h)
+- [`src/platform/ps1/ps1_captions.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_captions.c)
+- [`src/platform/ps1/ps1_captions.h`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_captions.h)
