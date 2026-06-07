@@ -1366,7 +1366,7 @@ void adsInit()    // Initialize slots and threads for TTM scripts.
 }
 
 
-void adsPlaySingleTtm(char *ttmName, uint16 startTag)  // TODO - tempo
+void adsPlaySingleTtm(char *ttmName, uint16 startTag)  // Play one TTM scene from `startTag`.
 {
     adsInit();
     ttmLoadTtm(ttmSlots, ttmName);
