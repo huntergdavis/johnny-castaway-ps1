@@ -42,6 +42,12 @@ enum {
     PS1_CD_IDLE_HOOK_CHUNK_SECTORS = 4
 };
 
+struct TPs1CdAsyncRead {
+    uint8 active;
+};
+
+static struct TPs1CdAsyncRead gPs1CdAsyncRead;
+
 void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData)
 {
     gPs1CdReadIdleHook = hook;
@@ -60,6 +66,61 @@ static void ps1CdPumpReadIdleHook(void)
 {
     if (gPs1CdReadIdleHook != NULL)
         gPs1CdReadIdleHook(gPs1CdReadIdleHookUserData);
+}
+
+int __attribute__((noinline,optimize("Os")))
+ps1_streamAsyncReadAlignedBegin(const CdlFILE *cdfile,
+                                uint32_t offset,
+                                uint32_t size,
+                                uint8_t *dstBuffer)
+{
+    CdlLOC loc;
+    uint32_t fileLba;
+    uint32_t startSector;
+    uint32_t sectors;
+
+    if (gPs1CdAsyncRead.active ||
+        cdfile == NULL ||
+        dstBuffer == NULL ||
+        size == 0 ||
+        (offset % CD_SECTOR_SIZE) != 0 ||
+        (size % CD_SECTOR_SIZE) != 0)
+        return 0;
+
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
+    startSector = offset / CD_SECTOR_SIZE;
+    sectors = size / CD_SECTOR_SIZE;
+    if (sectors == 0)
+        return 0;
+
+    CdIntToPos(fileLba + startSector, &loc);
+    if (CdControl(CdlSetloc, (uint8_t *)&loc, NULL) == 0)
+        return 0;
+
+    if (CdRead((int)sectors, (uint32_t *)dstBuffer, CdlModeSpeed) == 0)
+        return 0;
+
+    gPs1CdAsyncRead.active = 1;
+    return 1;
+}
+
+int __attribute__((noinline,optimize("Os")))
+ps1_streamAsyncReadPoll(void)
+{
+    int syncResult;
+
+    if (!gPs1CdAsyncRead.active)
+        return PS1_CD_ASYNC_ERROR;
+
+    syncResult = CdReadSync(1, NULL);
+    if (syncResult > 0)
+        return PS1_CD_ASYNC_PENDING;
+
+    gPs1CdAsyncRead.active = 0;
+    if (syncResult == 0)
+        return PS1_CD_ASYNC_DONE;
+
+    return PS1_CD_ASYNC_ERROR;
 }
 
 /*

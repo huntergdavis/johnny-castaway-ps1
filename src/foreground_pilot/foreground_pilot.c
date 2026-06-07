@@ -368,11 +368,13 @@ struct TFgNextSceneStage {
     uint8 valid;
     uint8 lowTide;
     uint8 usesStreamWindow;
+    uint8 readInFlight;
     char sceneName[16];
     CdlFILE packCdFile;
     uint32 windowStart;
     uint32 windowBytes;
     uint32 loadedBytes;
+    uint32 pendingBytes;
 };
 struct TFgCleanOverlayKey {
     uint8 valid;
@@ -413,7 +415,8 @@ static void fgReleaseStreamBuffers(void);
 static void fgReleaseStreamBuffersHard(void);
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void);
 static void fgNextSceneStageInvalidate(void);
-static int fgNextSceneStageTryTick(const char *sceneName, uint16 *outElapsedVBlanks);
+static int fgNextSceneStageTryTick(const char *sceneName);
+static int fgNextSceneStageFinishPending(void);
 static int fgNextSceneStageAdoptWindow(const char *sceneName);
 static void fgInitVisiblePipeline(void);
 static uint8 fgSceneIdForName(const char *sceneName);
@@ -1662,7 +1665,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             uint16 prepareElapsedVBlanks = 0;
-            uint16 nextStageElapsedVBlanks = 0;
             uint16 heldSlackVBlanks = 0;
             uint8 schedOwner = PS1_PERF_SCHED_WAIT;
             int didPrefetch = 0;
@@ -1745,8 +1747,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             if (!advancedThisLoop &&
                 !didPrefetch &&
                 !didPrepare) {
-                didNextStage = fgNextSceneStageTryTick(sceneName,
-                                                       &nextStageElapsedVBlanks);
+                didNextStage = fgNextSceneStageTryTick(sceneName);
                 if (didNextStage)
                     schedOwner = PS1_PERF_SCHED_CD_WINDOW;
             }
@@ -1764,10 +1765,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                     else
                         eventsWaitTick(0);
                 } else if (didNextStage) {
-                    if (nextStageElapsedVBlanks == 0)
-                        fgRuntimeWaitHeldVBlank();
-                    else
-                        eventsWaitTick(0);
+                    fgRuntimeWaitHeldVBlank();
                 } else {
                     fgRuntimeWaitHeldVBlank();
                 }
@@ -1819,9 +1817,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         }
     }
     if (ps1PerfEnabled) {
+        fgNextSceneStageFinishPending();
         ps1PerfMarkLoopEnd();
         ps1PerfMarkSoundCursor(gFgRuntime.soundEventCursor);
         ps1PerfMarkCleanupStart();
+    } else {
+        fgNextSceneStageFinishPending();
     }
 
     if (deferWalkCleanRecapture && !blackBackdrop && !sceneSpecificBackdrop &&

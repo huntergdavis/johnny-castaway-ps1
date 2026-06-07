@@ -90,6 +90,18 @@ CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename);
 typedef void (*Ps1CdReadIdleHook)(void *userData);
 void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData);
 
+enum {
+    PS1_CD_ASYNC_ERROR = -1,
+    PS1_CD_ASYNC_PENDING = 0,
+    PS1_CD_ASYNC_DONE = 1
+};
+
+int ps1_streamAsyncReadAlignedBegin(const CdlFILE *cdfile,
+                                    uint32_t offset,
+                                    uint32_t size,
+                                    uint8_t *dstBuffer);
+int ps1_streamAsyncReadPoll(void);
+
 typedef struct {
     CdlFILE cdfile;
     long currentPos;

@@ -173,6 +173,37 @@ First integration target:
 - Foreground setup reads that happen after `grLoadScreen()` and
   `fgBackdropEnableWaveBackdrop()`, especially aligned setup-segment reads.
 
+### 2026-06-07 Checkpoint
+
+The branch now has the first single-flight async CD primitive wired into the
+same-key next-scene window proof:
+
+- `ps1_streamAsyncReadAlignedBegin()` starts one sector-aligned `CdRead` into
+  caller-owned memory.
+- `ps1_streamAsyncReadPoll()` checks completion with non-blocking
+  `CdReadSync(1, NULL)`.
+- The next-scene proof borrows the existing `fg-stream-window` buffer and
+  reads the staged 128KB window asynchronously while the current scene is still
+  holding frames.
+
+Short visible `fishing1 lowtide loading-waves perf-detail seed 1` result:
+
+- Booted cleanly and repeated several transitions.
+- `JCSTAGE S 131072`, `JCSTAGE R 131072`, and `JCSTAGE A 131072/131072`
+  confirm the window was started, completed, then adopted.
+- Correctness stayed clean: `frame_mismatch=0`, `cd_fail=0`, no `JCBSOD`.
+- Repeated setup remained `setup_vb=90`, with `screen_vb=13`,
+  `backdrop_vb=15`, `pack_start_vb=61`, `setup_reads=3`,
+  `setup_bytes=18944`.
+- Current-scene measured CD blocking fell to `blocking_vb=1` because the staged
+  window is no longer a synchronous read in the held-frame loop.
+
+Conclusion: non-blocking CD transfer works and is stable in the short proof,
+but it is currently staging only payload bytes. The remaining transition pause
+is now the next scene's activation/setup path, especially `pack_start_vb=61`.
+The next step is to prepare/adopt more pack metadata and setup state before the
+scene boundary, with the blocking path kept as fallback.
+
 ## Phase 3: Instrumentation
 
 Replace the currently zeroed async perf line with real counters once Phase 2 is
