@@ -248,6 +248,10 @@ Follow-up input-diagnostic gate:
   `.text` 166,364 B, `.rodata` 45,676 B.
 - `PS1_VERBOSE_DIAGNOSTICS=ON ./scripts/build-ps1.sh clean` still compiles and
   produces a diagnostic binary with the full input forensics path.
+- The scene-explorer metadata table is now emitted once with extern declarations
+  for other translation units instead of being duplicated by the generated
+  header. Clean default build after this dedup pass: `build-ps1/jcreborn.exe`
+  218 KB, `.text` 166,376 B, `.rodata` 44,164 B.
 
 ### 2026-06-07 SPU RAM Scratch Feasibility
 

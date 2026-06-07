@@ -19,7 +19,8 @@ struct TSceneExplorerEntry {
     uint8       _pad;
 };
 
-static const struct TSceneExplorerEntry gSceneExplorer[] = {
+#ifdef SCENE_EXPLORER_DATA_DEFINE
+const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "fishing1", "FISHING 1  -  Catches a starfish, throws it back", "Fishing", "FG/FISHING1.FG2", "BMP/SCEXPL_FISHING1.PSB", 156, 1, 0 },
     { "fishing2", "FISHING 2  -  Hooks a Titanic life preserver", "Fishing", "FG/FISHING2.FG2", "BMP/SCEXPL_FISHING2.PSB", 295, 1, 0 },
     { "fishing3", "FISHING 3  -  Octopus steals the fish and walks off", "Fishing", "FG/FISHING3.FG2", "BMP/SCEXPL_FISHING3.PSB", 329, 1, 0 },
@@ -84,9 +85,9 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "building6", "BUILDING 6  -  Lilliputians tie Johnny up (no-bird variant)", "Building", "FG/BUILDING6.FG2", "BMP/SCEXPL_BUILDING6.PSB", 307, 1, 0 },
     { "building7", "BUILDING 7  -  Builds a fire, grills a fish, eats it", "Building", "FG/BUILDING7.FG2", "BMP/SCEXPL_BUILDING7.PSB", 460, 1, 0 },
 };
-#define gSceneExplorerCount ((int)(sizeof(gSceneExplorer) / sizeof(gSceneExplorer[0])))
+const int gSceneExplorerCount = (int)(sizeof(gSceneExplorer) / sizeof(gSceneExplorer[0]));
 
-static const int gSceneExplorerFamilyStart[] = {
+const int gSceneExplorerFamilyStart[] = {
     0,
     8,
     14,
@@ -97,6 +98,12 @@ static const int gSceneExplorerFamilyStart[] = {
     53,
     56,
 };
-#define gSceneExplorerFamilyCount ((int)(sizeof(gSceneExplorerFamilyStart) / sizeof(gSceneExplorerFamilyStart[0])))
+const int gSceneExplorerFamilyCount = (int)(sizeof(gSceneExplorerFamilyStart) / sizeof(gSceneExplorerFamilyStart[0]));
+#else
+extern const struct TSceneExplorerEntry gSceneExplorer[];
+extern const int gSceneExplorerCount;
+extern const int gSceneExplorerFamilyStart[];
+extern const int gSceneExplorerFamilyCount;
+#endif
 
 #endif

@@ -34,7 +34,9 @@
 #include "ps1_perf.h"
 #include "ps1_gpu_ot.h"
 #include "memcard.h"
+#define SCENE_EXPLORER_DATA_DEFINE
 #include "scene_explorer_data.h"
+#undef SCENE_EXPLORER_DATA_DEFINE
 #include "holidays.h"
 #include "ps1_captions.h"
 #include "ps1_pad_input.h"

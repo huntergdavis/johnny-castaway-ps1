@@ -196,7 +196,8 @@ def main():
     out.append("    uint8       _pad;")
     out.append("};")
     out.append("")
-    out.append("static const struct TSceneExplorerEntry gSceneExplorer[] = {")
+    out.append("#ifdef SCENE_EXPLORER_DATA_DEFINE")
+    out.append("const struct TSceneExplorerEntry gSceneExplorer[] = {")
     for e in entries:
         display = e["display_name"].replace('"', '\\"')
         out.append(
@@ -205,16 +206,22 @@ def main():
             f'{e["validated"]}, 0 }},'
         )
     out.append("};")
-    out.append("#define gSceneExplorerCount "
-               "((int)(sizeof(gSceneExplorer) / sizeof(gSceneExplorer[0])))")
+    out.append("const int gSceneExplorerCount = "
+               "(int)(sizeof(gSceneExplorer) / sizeof(gSceneExplorer[0]));")
     out.append("")
-    out.append("static const int gSceneExplorerFamilyStart[] = {")
+    out.append("const int gSceneExplorerFamilyStart[] = {")
     for s in family_starts:
         out.append(f"    {s},")
     out.append("};")
-    out.append("#define gSceneExplorerFamilyCount "
-               "((int)(sizeof(gSceneExplorerFamilyStart) / "
-               "sizeof(gSceneExplorerFamilyStart[0])))")
+    out.append("const int gSceneExplorerFamilyCount = "
+               "(int)(sizeof(gSceneExplorerFamilyStart) / "
+               "sizeof(gSceneExplorerFamilyStart[0]));")
+    out.append("#else")
+    out.append("extern const struct TSceneExplorerEntry gSceneExplorer[];")
+    out.append("extern const int gSceneExplorerCount;")
+    out.append("extern const int gSceneExplorerFamilyStart[];")
+    out.append("extern const int gSceneExplorerFamilyCount;")
+    out.append("#endif")
     out.append("")
     out.append("#endif")
     out.append("")
