@@ -849,13 +849,19 @@ static char ps1BootArgStorage[3][32];
 static char ps1BootOverrideSource[16];
 static char ps1BootOverrideText[128];
 static char ps1BootForegroundOverlayScene[32];
+#if PS1_VERBOSE_DIAGNOSTICS
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
 volatile uint16 ps1BootDbgCaptureMode = 0;
+#endif
+#if JC_PRINTF_PROBE_LOGS
 static int ps1BootPrintfTest = 0;
+#endif
+#if PS1_VERBOSE_DIAGNOSTICS
 /* When set, fire JC_BSOD synthetically right after the first scene
  * completes — used to verify the BSOD UI without a real failure. */
 static int ps1BootBsodAfterFirstScene = 0;
+#endif
 
 static int ps1IsSpace(char c)
 {
@@ -874,6 +880,7 @@ static void ps1ResetBootArgs(void)
     ps1BootOverrideSource[0] = '\0';
     ps1BootOverrideText[0] = '\0';
     ps1BootForegroundOverlayScene[0] = '\0';
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootCaptureMetaDirStorage[0] = '\0';
     ps1BootCaptureSceneLabelStorage[0] = '\0';
 
@@ -881,15 +888,22 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlay = 0;
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
+#endif
     foregroundPilotSetHeapProbe(0);
     foregroundPilotSetLoadingWaveProof(0);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     freeplaySetTelemetryLevel(0);
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootDbgCaptureMode = 0;
+#endif
     ps1BootForcedSeed = -1;
+#if JC_PRINTF_PROBE_LOGS
     ps1BootPrintfTest = 0;
+#endif
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootBsodAfterFirstScene = 0;
+#endif
     hostForcedIslandPosValid = 0;
     hostForcedIslandX = 0;
     hostForcedIslandY = 0;
@@ -972,24 +986,32 @@ static int ps1IsFgPilotOptionToken(const char *token)
     if (token == NULL)
         return 0;
 
-    return !strcmp(token, "capture-overlay-mask") ||
-           !strcmp(token, "capture-overlay") ||
-           !strcmp(token, "fgoverlay") ||
-           !strcmp(token, "capture-meta-dir") ||
-           !strcmp(token, "capture-range") ||
-           !strcmp(token, "capture-interval") ||
-           !strcmp(token, "capture-scene-label") ||
+#if PS1_VERBOSE_DIAGNOSTICS
+    if (!strcmp(token, "capture-overlay-mask") ||
+        !strcmp(token, "capture-overlay") ||
+        !strcmp(token, "capture-meta-dir") ||
+        !strcmp(token, "capture-range") ||
+        !strcmp(token, "capture-interval") ||
+        !strcmp(token, "capture-scene-label") ||
+        !strcmp(token, "bsod-test") ||
+        !strcmp(token, "bsod-ui-test-mem-boot") ||
+        !strcmp(token, "bsod-ui-test-mem-cache") ||
+        !strcmp(token, "bsod-ui-test-mem-transient") ||
+        !strcmp(token, "heap-probe"))
+        return 1;
+#endif
+#if JC_PRINTF_PROBE_LOGS
+    if (!strcmp(token, "printf-test") || !strcmp(token, "logtest"))
+        return 1;
+#endif
+
+    return !strcmp(token, "fgoverlay") ||
            !strcmp(token, "island-pos") ||
            !strcmp(token, "lowtide") ||
            !strcmp(token, "raft-stage") ||
            !strcmp(token, "night") ||
            !strcmp(token, "holiday") ||
            !strcmp(token, "noloop") ||
-           !strcmp(token, "bsod-test") ||
-           !strcmp(token, "bsod-ui-test-mem-boot") ||
-           !strcmp(token, "bsod-ui-test-mem-cache") ||
-           !strcmp(token, "bsod-ui-test-mem-transient") ||
-           !strcmp(token, "heap-probe") ||
            !strcmp(token, "loading-waves") ||
            !strcmp(token, "load-waves") ||
            !strcmp(token, "async-load-waves") ||
@@ -1021,8 +1043,6 @@ static int ps1IsFgPilotOptionToken(const char *token)
 #endif
            !strcmp(token, "pad-script") ||
            !strcmp(token, "pad-script-log") ||
-           !strcmp(token, "printf-test") ||
-           !strcmp(token, "logtest") ||
            !strcmp(token, "seed");
 }
 
@@ -1087,7 +1107,11 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     }
 
     for (int i = 0; i < tokenCount; i++) {
-        if (!strcmp(tokens[i], "capture-overlay-mask")) {
+        if (0) {
+            /* Anchor the optional diagnostic-only else-if clauses below. */
+        }
+#if PS1_VERBOSE_DIAGNOSTICS
+        else if (!strcmp(tokens[i], "capture-overlay-mask")) {
             grCaptureOverlay = 1;
             grCaptureOverlayMaskOnly = 1;
             ps1BootDbgCaptureMode = 2;
@@ -1095,13 +1119,16 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             grCaptureOverlay = 1;
             if (ps1BootDbgCaptureMode == 0)
                 ps1BootDbgCaptureMode = 1;
-        } else if (!strcmp(tokens[i], "fgoverlay") && (i + 1) < tokenCount) {
+        }
+#endif
+        else if (!strcmp(tokens[i], "fgoverlay") && (i + 1) < tokenCount) {
             ps1CopyBootString(
                 ps1BootForegroundOverlayScene,
                 sizeof(ps1BootForegroundOverlayScene),
                 tokens[i + 1]
             );
             i++;
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "capture-meta-dir") && (i + 1) < tokenCount) {
             grCaptureMetaDir = ps1CopyBootString(
                 ps1BootCaptureMetaDirStorage,
@@ -1123,6 +1150,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
                 tokens[i + 1]
             ));
             i++;
+#endif
         } else if (!strcmp(tokens[i], "island-pos") && (i + 2) < tokenCount) {
             hostForcedIslandX = atoi(tokens[i + 1]);
             hostForcedIslandY = atoi(tokens[i + 2]);
@@ -1147,6 +1175,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             i++;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "bsod-test")) {
             /* Force a synthetic BSOD after the first scene plays so we
              * can sanity-check the fatal-error UI. */
@@ -1169,6 +1198,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+#endif
         } else if (!strcmp(tokens[i], "loading-waves") ||
                    !strcmp(tokens[i], "load-waves") ||
                    !strcmp(tokens[i], "async-load-waves")) {
@@ -1212,8 +1242,10 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             ps1PadScriptConfigureFromEmbedded(1, 0);
         } else if (!strcmp(tokens[i], "pad-script-log")) {
             ps1PadScriptConfigureFromEmbedded(1, 1);
+#if JC_PRINTF_PROBE_LOGS
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
+#endif
         }
 #if PS1_VERBOSE_DIAGNOSTICS
         else if (!strcmp(tokens[i], "padtest")) {
@@ -2211,12 +2243,14 @@ int main(int argc, char **argv)
 #endif
         }
 
+#if PS1_VERBOSE_DIAGNOSTICS
         /* BOOTMODE bsod-test: synthesize a fatal-error after the first
          * scene completes so the BSOD UI can be verified visually. */
         if (ps1BootBsodAfterFirstScene) {
             JC_BSOD(loopScene, "bsod-test bootmode flag — synthetic fatal "
                               "after first scene to validate BSOD rendering");
         }
+#endif
 
         /* After the scene played, update Johnny's spot/heading so the
          * next loop iteration knows where to walk from. */
