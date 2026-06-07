@@ -71,6 +71,16 @@ extern int  oceanAmbientLoaded(void);
 #define CMD_READ       0x52
 #define CMD_WRITE      0x57
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
+#if PS1_VERBOSE_DIAGNOSTICS
+#define JCMC_DIAG_PRINTF(...) do { printf(__VA_ARGS__); } while (0)
+#else
+#define JCMC_DIAG_PRINTF(...) do { } while (0)
+#endif
+
 const char *memcardLastStatus = NULL;
 
 /* Sync flag for SPI callback. SPI driver calls our callback from IRQ
@@ -147,24 +157,25 @@ static int mcardSpiReadSector(int sector, uint8_t *out128)
 
     if (!mcardWaitDone()) {
         memcardLastStatus = "read timeout";
-        printf("JCMC read sector %d: TIMEOUT\n", sector);
+        JCMC_DIAG_PRINTF("JCMC read sector %d: TIMEOUT\n", sector);
         return 0;
     }
 
     if (mcardOpRxLen < 139) {
         memcardLastStatus = "read short";
-        printf("JCMC read sector %d: short rx_len=%d\n", sector, mcardOpRxLen);
+        JCMC_DIAG_PRINTF("JCMC read sector %d: short rx_len=%d\n", sector, mcardOpRxLen);
         return 0;
     }
     if (mcardOpRxBuf[1] != 0x5A || mcardOpRxBuf[2] != 0x5D) {
         memcardLastStatus = "bad ack";
-        printf("JCMC read sector %d: rx[0..3]=%02x %02x %02x %02x (expect ?? 5A 5D ..)\n",
-               sector, mcardOpRxBuf[0], mcardOpRxBuf[1], mcardOpRxBuf[2], mcardOpRxBuf[3]);
+        JCMC_DIAG_PRINTF("JCMC read sector %d: rx[0..3]=%02x %02x %02x %02x (expect ?? 5A 5D ..)\n",
+                         sector, mcardOpRxBuf[0], mcardOpRxBuf[1],
+                         mcardOpRxBuf[2], mcardOpRxBuf[3]);
         return 0;
     }
     if (mcardOpRxBuf[138] != 0x47) {
-        printf("JCMC read sector %d: end byte = %02x (expected 0x47)\n",
-               sector, mcardOpRxBuf[138]);
+        JCMC_DIAG_PRINTF("JCMC read sector %d: end byte = %02x (expected 0x47)\n",
+                         sector, mcardOpRxBuf[138]);
         /* Continue anyway — the data is likely intact. */
     }
 
@@ -201,20 +212,21 @@ static int mcardSpiWriteSector(int sector, const uint8_t *data128)
     ExitCriticalSection();
     if (!mcardWaitDone()) {
         memcardLastStatus = "write timeout";
-        printf("JCMC write sector %d: TIMEOUT\n", sector);
+        JCMC_DIAG_PRINTF("JCMC write sector %d: TIMEOUT\n", sector);
         return 0;
     }
 
     if (mcardOpRxLen < 137) {
         memcardLastStatus = "write short";
-        printf("JCMC write sector %d: short rx_len=%d\n", sector, mcardOpRxLen);
+        JCMC_DIAG_PRINTF("JCMC write sector %d: short rx_len=%d\n", sector, mcardOpRxLen);
         return 0;
     }
     /* End byte 0x47=OK, 0x4E=BadChecksum, 0xFF=BadSector. */
     uint8_t stat = mcardOpRxBuf[mcardOpRxLen - 1];
     if (stat != 0x47) {
-        printf("JCMC write sector %d: stat=%02x rx[1..3]=%02x %02x %02x\n",
-               sector, stat, mcardOpRxBuf[1], mcardOpRxBuf[2], mcardOpRxBuf[3]);
+        JCMC_DIAG_PRINTF("JCMC write sector %d: stat=%02x rx[1..3]=%02x %02x %02x\n",
+                         sector, stat, mcardOpRxBuf[1], mcardOpRxBuf[2],
+                         mcardOpRxBuf[3]);
         memcardLastStatus = "write nack";
         return 0;
     }
@@ -336,7 +348,7 @@ static void mcardWriteIconBitmap(uint8 *frame)
 int memcardLoadSettings(void)
 {
     int ok = 1;
-    printf("JCMC load: starting (slow poll, MemCardRequest path)\n");
+    JCMC_DIAG_PRINTF("JCMC load: starting (slow poll, MemCardRequest path)\n");
     mcardSlowPoll();
 
     /* Read directory entry first to verify the file is present. */
@@ -355,7 +367,7 @@ int memcardLoadSettings(void)
     /* Read all 64 sectors of block 1 into mcardFrame. */
     for (int s = 0; s < MC_NUM_SECT; s++) {
         if (!mcardSpiReadSector(MC_FIRST_SECT + s, &mcardFrame[s * MC_SECTOR_SIZE])) {
-            printf("JCMC load: read sector %d failed\n", MC_FIRST_SECT + s);
+            JCMC_DIAG_PRINTF("JCMC load: read sector %d failed\n", MC_FIRST_SECT + s);
             ok = 0;
             break;
         }
@@ -366,7 +378,7 @@ int memcardLoadSettings(void)
     JCMCSettings *s = (JCMCSettings *)&mcardFrame[DATA_OFFSET];
     if (s->magic != MC_MAGIC) {
         memcardLastStatus = "bad magic";
-        printf("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
+        JCMC_DIAG_PRINTF("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
         return 0;
     }
     /* Accept v2..v6. v6 adds holidayMode. v5 adds pickerPolicy
@@ -453,11 +465,11 @@ int memcardLoadSettings(void)
     }
 
     memcardLastStatus = "loaded";
-    printf("JCMC loaded: muted=%d dn=%d holimode=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d picker=%d\n",
-           soundMuted, hostForcedNight, hostHolidayMode, hostForcedHoliday,
-           ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMinute,
-           ps1SoftMonth, ps1SoftDay, ps1SoftYear, oceanAmbientEnabled,
-           pickerGetPolicy());
+    JCMC_DIAG_PRINTF("JCMC loaded: muted=%d dn=%d holimode=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d picker=%d\n",
+                     soundMuted, hostForcedNight, hostHolidayMode,
+                     hostForcedHoliday, ps1SoftTimeEnabled, ps1SoftHour,
+                     ps1SoftMinute, ps1SoftMonth, ps1SoftDay, ps1SoftYear,
+                     oceanAmbientEnabled, pickerGetPolicy());
     return 1;
 }
 
@@ -499,7 +511,7 @@ int memcardSaveSettings(void)
     uint8 dirEntry[MC_SECTOR_SIZE];
     mcardBuildDirEntry(dirEntry);
     if (!mcardSpiWriteSector(MC_BLOCK, dirEntry)) {
-        printf("JCMC save: dir-entry write failed\n");
+        JCMC_DIAG_PRINTF("JCMC save: dir-entry write failed\n");
         mcardFastPoll();
         return 0;
     }
@@ -508,7 +520,7 @@ int memcardSaveSettings(void)
     for (int sect = 0; sect < MC_NUM_SECT; sect++) {
         if (!mcardSpiWriteSector(MC_FIRST_SECT + sect,
                                   &mcardFrame[sect * MC_SECTOR_SIZE])) {
-            printf("JCMC save: sector %d write failed\n", MC_FIRST_SECT + sect);
+            JCMC_DIAG_PRINTF("JCMC save: sector %d write failed\n", MC_FIRST_SECT + sect);
             mcardFastPoll();
             return 0;
         }
@@ -516,6 +528,6 @@ int memcardSaveSettings(void)
 
     mcardFastPoll();
     memcardLastStatus = "saved";
-    printf("JCMC saved %d bytes (block %d)\n", MC_FRAME_SIZE, MC_BLOCK);
+    JCMC_DIAG_PRINTF("JCMC saved %d bytes (block %d)\n", MC_FRAME_SIZE, MC_BLOCK);
     return 1;
 }
