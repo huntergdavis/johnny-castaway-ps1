@@ -1350,6 +1350,7 @@ static void ps1LoadBootOverride(void)
     }
 }
 
+#if JC_BOOT_DIAG_LOGS
 static void ps1LogBootSelection(const char *explicitScene)
 {
     printf(
@@ -1369,6 +1370,9 @@ static void ps1LogBootSelection(const char *explicitScene)
         ps1BootOverrideText[0] ? ps1BootOverrideText : "-"
     );
 }
+#else
+#define ps1LogBootSelection(explicitScene) ((void)0)
+#endif
 
 #if JC_PRINTF_PROBE_LOGS
 static void ps1PrintfProbe(const char *phase, const char *sceneName)
