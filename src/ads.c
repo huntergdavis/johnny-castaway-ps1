@@ -1313,7 +1313,7 @@ static void adsRandomEnd()
 }
 
 
-void adsInit()    // Init slots and threads for TTM scripts  // TODO : rename
+void adsInit()    // Initialize slots and threads for TTM scripts.
 {
     /* Allocate TTM slots/threads dynamically to reduce BSS size */
     if (ttmSlots == NULL) {
