@@ -234,6 +234,7 @@ void grInitEmptyBackground();
 void grShowMeanwhileLoadingFrame(uint16 tick);
 void grSaveCleanBgTiles(void);
 void grSetSaveCleanOnScreenLoad(int enabled);
+void grSetFullScreenScrCacheEnabled(int enabled);
 void grFreeCleanBgTiles(void);
 void grReleaseBackgroundTiles(void);
 /* Round 33: called from fgRuntimeReset immediately after memSceneReset.
@@ -268,6 +269,8 @@ void grSetCleanBgBlackMode(int enabled);
 void grPreallocCleanBgRects(const uint32 *capBytes, int n);
 int  grCleanBgRectsCount(void);
 unsigned long grCleanBgRectsBytes(void);
+void grSetCleanBgRectsForceCache(int enabled);
+void grRestoreBgRectsFull(void);
 /* Capture/restore rectangles into a caller-owned buffer (dst/src sized
  * w*h*sizeof(uint16)). Same per-tile splitting + dirty-rect gating as
  * the grSaveCleanBgRects snapshots — but independent of that machinery,

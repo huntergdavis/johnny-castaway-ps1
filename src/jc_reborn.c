@@ -937,6 +937,63 @@ static void ps1RememberBootOverride(const char *source, const char *buffer)
     }
 }
 
+static int ps1IsFgPilotOptionToken(const char *token)
+{
+    if (token == NULL)
+        return 0;
+
+    return !strcmp(token, "capture-overlay-mask") ||
+           !strcmp(token, "capture-overlay") ||
+           !strcmp(token, "fgoverlay") ||
+           !strcmp(token, "capture-meta-dir") ||
+           !strcmp(token, "capture-range") ||
+           !strcmp(token, "capture-interval") ||
+           !strcmp(token, "capture-scene-label") ||
+           !strcmp(token, "island-pos") ||
+           !strcmp(token, "lowtide") ||
+           !strcmp(token, "raft-stage") ||
+           !strcmp(token, "night") ||
+           !strcmp(token, "holiday") ||
+           !strcmp(token, "noloop") ||
+           !strcmp(token, "bsod-test") ||
+           !strcmp(token, "bsod-ui-test-mem-boot") ||
+           !strcmp(token, "bsod-ui-test-mem-cache") ||
+           !strcmp(token, "bsod-ui-test-mem-transient") ||
+           !strcmp(token, "heap-probe") ||
+           !strcmp(token, "loading-waves") ||
+           !strcmp(token, "load-waves") ||
+           !strcmp(token, "async-load-waves") ||
+           !strcmp(token, "loading-waves-off") ||
+           !strcmp(token, "no-loading-waves") ||
+           !strcmp(token, "prefetch-off") ||
+           !strcmp(token, "no-prefetch") ||
+           !strcmp(token, "prefetch-stage1") ||
+           !strcmp(token, "stage1") ||
+           !strcmp(token, "prefetch-stage1-off") ||
+           !strcmp(token, "no-stage1") ||
+           !strcmp(token, "prefetch-window32") ||
+           !strcmp(token, "window32") ||
+           !strcmp(token, "prefetch-window48") ||
+           !strcmp(token, "window48") ||
+           !strcmp(token, "prefetch-window64") ||
+           !strcmp(token, "window64") ||
+           !strcmp(token, "prefetch-window") ||
+           !strcmp(token, "perf-log") ||
+           !strcmp(token, "perf") ||
+           !strcmp(token, "perf-detail") ||
+           !strcmp(token, "perf-debug") ||
+           !strcmp(token, "freeplay-log") ||
+           !strcmp(token, "freeplay-detail") ||
+           !strcmp(token, "freeplay-debug") ||
+           !strcmp(token, "pad-diag") ||
+           !strcmp(token, "pad-debug") ||
+           !strcmp(token, "pad-script") ||
+           !strcmp(token, "pad-script-log") ||
+           !strcmp(token, "printf-test") ||
+           !strcmp(token, "logtest") ||
+           !strcmp(token, "seed");
+}
+
 static int ps1ApplyBootOverride(char *buffer, const char *source)
 {
     char *tokens[32];
@@ -1204,7 +1261,9 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     }
 
     if (!strcmp(tokens[tokenBase], "fgpilot")) {
-        if ((tokenBase + 1) < tokenCount && ps1CopyBootArg(0, tokens[tokenBase + 1]))
+        if ((tokenBase + 1) < tokenCount &&
+            !ps1IsFgPilotOptionToken(tokens[tokenBase + 1]) &&
+            ps1CopyBootArg(0, tokens[tokenBase + 1]))
             numArgs = 1;
         argForegroundPilot = 1;
         return 1;

@@ -49,6 +49,8 @@ static int gIslandSuppressBackdropLeafs = 0;
 /* Track last-drawn wave sprite for replay on non-firing frames */
 static PS1Surface *lastWaveSprite = NULL;
 static sint16 lastWaveX = 0, lastWaveY = 0;
+static int gIslandWaveCounter1 = 0;
+static int gIslandWaveCounter2 = 0;
 
 void islandInit(struct TTtmThread *ttmThread)
 {
@@ -172,11 +174,44 @@ void islandInit(struct TTtmThread *ttmThread)
 }
 
 
+static uint16 islandAdvanceWaveSelection(sint16 *waveX, sint16 *waveY)
+{
+    uint16 waveSpriteNo = 0;
+
+    if (islandState.lowTide) {
+
+        gIslandWaveCounter2++;
+        gIslandWaveCounter2 %= 4;
+
+        switch (gIslandWaveCounter2) {
+            case 0: *waveX = 129; *waveY = 340; waveSpriteNo = 39+gIslandWaveCounter1; break;  // rock waves (40)
+            case 1: *waveX = 233; *waveY = 323; waveSpriteNo = 30+gIslandWaveCounter1; break;  // low tide waves - left (31)
+            case 2: *waveX = 367; *waveY = 356; waveSpriteNo = 33+gIslandWaveCounter1; break;  // low tide waves - center (33)
+            case 3: *waveX = 558; *waveY = 323; waveSpriteNo = 36+gIslandWaveCounter1; break;  // low tide waves - right (36)
+        }
+    }
+    else {
+
+        gIslandWaveCounter2++;
+        gIslandWaveCounter2 %= 3;
+
+        switch (gIslandWaveCounter2) {
+            case 0: *waveX = 270; *waveY = 306; waveSpriteNo = 3+gIslandWaveCounter1; break;  // high tide waves - left (3)
+            case 1: *waveX = 364; *waveY = 319; waveSpriteNo = 6+gIslandWaveCounter1; break;  // high tide waves - center (6)
+            case 2: *waveX = 518; *waveY = 303; waveSpriteNo = 9+gIslandWaveCounter1; break;  // high tide waves - right (9)
+        }
+    }
+
+    if (!gIslandWaveCounter2) {
+        gIslandWaveCounter1++;
+        gIslandWaveCounter1 %= 3;
+    }
+
+    return waveSpriteNo;
+}
+
 void islandAnimate(struct TTtmThread *ttmThread)
 {
-    static int counter1 = 0;
-    static int counter2 = 0;
-
     struct TTtmSlot *ttmSlot = ttmThread->ttmSlot;
 
     sint16 waveX = 0, waveY = 0;
@@ -185,29 +220,7 @@ void islandAnimate(struct TTtmThread *ttmThread)
     grDx = islandState.xPos;
     grDy = islandState.yPos;
 
-    if (islandState.lowTide) {
-
-        counter2++;
-        counter2 %= 4;
-
-        switch (counter2) {
-            case 0: waveX = 129; waveY = 340; waveSpriteNo = 39+counter1; break;  // rock waves (40)
-            case 1: waveX = 233; waveY = 323; waveSpriteNo = 30+counter1; break;  // low tide waves - left (31)
-            case 2: waveX = 367; waveY = 356; waveSpriteNo = 33+counter1; break;  // low tide waves - center (33)
-            case 3: waveX = 558; waveY = 323; waveSpriteNo = 36+counter1; break;  // low tide waves - right (36)
-        }
-    }
-    else {
-
-        counter2++;
-        counter2 %= 3;
-
-        switch (counter2) {
-            case 0: waveX = 270; waveY = 306; waveSpriteNo = 3+counter1; break;  // high tide waves - left (3)
-            case 1: waveX = 364; waveY = 319; waveSpriteNo = 6+counter1; break;  // high tide waves - center (6)
-            case 2: waveX = 518; waveY = 303; waveSpriteNo = 9+counter1; break;  // high tide waves - right (9)
-        }
-    }
+    waveSpriteNo = islandAdvanceWaveSelection(&waveX, &waveY);
 
     grDrawSprite(grBackgroundSfc, ttmSlot, waveX, waveY, waveSpriteNo, 0);
 
@@ -217,10 +230,6 @@ void islandAnimate(struct TTtmThread *ttmThread)
     lastWaveX = waveX + grDx;
     lastWaveY = waveY + grDy;
 
-    if (!counter2) {
-        counter1++;
-        counter1 %= 3;
-    }
 }
 
 

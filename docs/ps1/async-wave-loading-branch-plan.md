@@ -9,16 +9,23 @@ Date: 2026-06-04
 This branch is an isolated experiment. It must not change release-line behavior
 unless explicitly enabled by a boot token or build flag.
 
-The first goal is to prove that the PS1 can keep shoreline waves visibly
-animating while the next foreground scene is loading. Performance optimization
-from non-blocking reads is a later branch goal, not the first success criterion.
+The branch started as a proof that the PS1 could keep shoreline waves visibly
+animating while the next foreground scene loaded. That direct approach has been
+reverted because it did not reduce the actual wall-clock transition and created
+allocator risk. Failed wave-tick attempts are recorded in
+`docs/ps1/async-wave-loading-failed-experiments.md`.
 
-## Phase 1: Wave Loading Proof
+The retained goal is now narrower and more useful: make same-key ocean scene
+transitions short enough that the water does not need a special loading-time
+animation path.
 
-Prove the technique on normal island/ocean foreground scenes where the runtime
-wave system already exists.
+## Historical Phase 1: Wave Loading Proof
 
-Target behavior:
+This was the original proof target on normal island/ocean foreground scenes
+where the runtime wave system already exists. It has been reverted; the retained
+branch work is the preload/reuse path below.
+
+Original target behavior:
 
 - During scene setup, once the new ocean/island backdrop is ready, the wave
   strip continues to animate while CD reads for the foreground pack are pending.
@@ -35,7 +42,7 @@ Good first scenes:
 - `walkstuf1` high: useful stress case after Phase 1 is stable, but not the
   first proof because it is timing-sensitive and currently soaking a memory fix.
 
-Implementation boundaries:
+Original implementation boundaries:
 
 - Add a small, opt-in loading-wave tick that only touches RAM/VRAM:
   restore/tick wave sprite, upload wave-region rows, wait one VBlank.
@@ -44,7 +51,7 @@ Implementation boundaries:
 - Do not keep the previous scene alive while loading the next scene in Phase 1.
   Current scene-boundary cleanup is load-bearing for long-run stability.
 
-Acceptance checks:
+Original acceptance checks:
 
 - Headless perf/regtest boots complete with feature disabled and enabled.
 - Wave-enabled loading runs do not produce `JCBSOD`, CD failures, clean-rect
@@ -54,31 +61,97 @@ Acceptance checks:
 - First displayed foreground frame is clean: no stale wave strip, no missing
   island/raft/holiday pixels, no foreground residue.
 
-Current proof hook:
+Current retained proof hook:
 
 - Boot token: `loading-waves` (aliases: `load-waves`, `async-load-waves`).
+  The token name is historical; it now enables the same-key preload/reuse proof,
+  not direct wave ticking during reads.
 - Default behavior is unchanged; `loading-waves-off`/`no-loading-waves` can
   explicitly clear the flag in diagnostic boot strings.
-- The proof saves a temporary wave-only clean rect after the ocean/island
-  backdrop is ready, installs a CD-read idle hook for foreground pack setup,
-  restores/ticks/uploads the wave strip while `CdReadSync(1, NULL)` is still
-  pending, then frees the temporary rect before the normal per-scene clean
-  snapshot is saved.
-- `visitor3` is skipped for now because its setup buffers and clean-relief path
-  are already TRANSIENT-tight; the temporary wave snapshot caused a 2026-06-04
-  soak halt at `req=157696 have=118180`.
-- Initial evidence on 2026-06-04:
-  - `fishing1` high tide: 35 loading-wave ticks, perf gates passed,
-    `cd_fail=0`, `frame_mismatch=0`, `full_fallbacks=0`.
-  - `fishing1` low tide: 37 loading-wave ticks, perf gates passed,
-    `cd_fail=0`, `frame_mismatch=0`, `full_fallbacks=0`.
-  - Default-off `fishing1` high tide: perf gates passed and no `JCASYNC`
-    markers emitted.
+- The retained proof borrows the existing `fg-stream-window` after the current
+  scene no longer needs it, then lets the next scene adopt that window in place.
+  Matching same-key ocean scenes can reuse `BACKGRND.PSB` and a clean screen
+  baseline instead of fully reloading the static island backdrop.
+- Removed wave-tick experiments include the grouped save-under hook and direct
+  framebuffer shadow hook. Their evidence and failure reasons live in the
+  failed-experiments file.
+- The walkstuf1 crash also exposed a non-water allocator issue: reusable
+  setup residency can still be live when the runtime clean snapshot is saved.
+  If the clean snapshot is larger than remaining TRANSIENT space, the branch
+  now drops CACHE-backed setup residency before `grSaveCleanBgRects`, so a
+  hidden read cache cannot starve the correctness-critical clean baseline.
+
+## 2026-06-06 Optimization Pivot
+
+The branch now has a second, faster proof path behind the same `loading-waves`
+boot token. Instead of trying to tick waves through every blocking setup read,
+it keeps validated ocean setup state alive across matching island scenes:
+
+- The current safer proof borrows the existing 128KB `fg-stream-window` after
+  the current scene has no more payload reads. The next scene adopts that
+  window in place after `fgRuntimeReset`, avoiding the extra side-buffer
+  allocation and copy.
+- If the next scene has the same reusable ocean key
+  (`scene/island/tide/night/raft/holiday/draw-offset`), the branch keeps the
+  existing `BACKGRND.PSB` slot and the clean screen snapshot. The next scene can
+  restore the saved clean rect pixels instead of reloading `OCEAN00.SCR` and
+  rebuilding the static island backdrop.
+- This is intentionally narrow. It is a same-key ocean-scene proof, not a
+  general scene-streaming architecture yet.
+
+Measured visible-loop `fishing1 lowtide` results:
+
+- Baseline repeated scene setup: `setup_vb=262-263`, `screen_vb=84`,
+  `backdrop_vb=83`, `setup_reads=13`, `setup_bytes=396792`,
+  `setup_read_vb=154-155`.
+- Side-stage plus retained `BACKGRND.PSB`: `setup_vb=191`, `screen_vb=84`,
+  `backdrop_vb=36`, `setup_reads=11`, `setup_bytes=172544`,
+  `setup_read_vb=95`.
+- Side-buffer stage plus reusable clean screen/backdrop: `setup_vb=73-75`,
+  `screen_vb=8-9`, `backdrop_vb=0`, `clean_rect_vb=0`,
+  `setup_reads=2`, `setup_bytes=8228`, `setup_read_vb=19-21`.
+- In-place `fg-stream-window` stage plus reusable clean screen/backdrop:
+  common repeated path `setup_vb=86-87`, `screen_vb=8-10`,
+  `backdrop_vb=0-1`, `clean_rect_vb=0`, `setup_reads=3`,
+  `setup_bytes=73764`, `setup_read_vb=36`.
+
+At 60Hz, the fastest side-buffer proof dropped repeated transition setup from
+roughly 4.4 seconds to roughly 1.2 seconds, but it was not soakable. It crashed
+after about 522 emulator seconds with:
+
+```text
+JCBSOD-FATAL CACHE exhausted (region+libc both): req=131072
+```
+
+The safer in-place proof drops the common repeated transition to roughly 1.4
+seconds, while avoiding the extra `fg-next-stage` CACHE allocation. A
+720-second visible run reached the watchdog without `JCBSOD`, `cd_fail`, or
+`frame_mismatch`, and continued through emulator time ~718s.
+
+This matches the subjective "feels faster" result, but it is not release-ready
+yet:
+
+- The in-place proof still keeps about 300-345KB of CACHE live across the
+  boundary and logs `JCMEM CACHE-rewind-skip`.
+- The reusable clean path occasionally falls back to a rebuild
+  (`setup_vb=187-220`) when the clean/background state is not reusable; this is
+  still faster than the original repeated-scene baseline but needs a cleaner
+  invalidation story.
+- It is only valid while the ocean reuse key matches. Broader scene pairs need
+  a real lookahead key and invalidation story.
+- Before a week-long soak, the branch should either restore the normal
+  scene-boundary CACHE rewind or prove that every retained buffer has a bounded,
+  single-owner lifetime.
+
+Longer term, this path is closer to the desired ring-buffer/lookahead design:
+stream only the setup ranges needed by the next scene while earlier scene state
+is still useful, avoid full next-scene residency, and reuse stable background
+state only when a strict key says the pixels are identical.
 
 ## Phase 2: Single-Flight Async CD Primitive
 
-After the visual proof target is clear, add a narrow async CD API that current
-blocking callers do not use by default.
+After the retained preload/reuse proof is stable, add a narrow async CD API
+that current blocking callers do not use by default.
 
 Initial API shape:
 
@@ -121,8 +194,9 @@ JCASYNC loading-waves scene=fishing1 read=fgSetupSegmentBuffer ticks=12
 
 ## Later Branch Goal: Optimization
 
-Once waves are proven, this branch can evaluate whether the same non-blocking
-read machinery improves scene timing or memory pressure.
+Once the same-key preload/reuse path is stable, this branch can evaluate
+whether non-blocking read machinery improves scene timing or memory pressure
+beyond the current in-place `fg-stream-window` proof.
 
 Potential payoffs:
 
@@ -133,15 +207,13 @@ Potential payoffs:
   back that TRANSIENT memory risk.
 - Lower CACHE/TRANSIENT residency by keeping fewer "just in case" read windows.
 
-This optimization work should stay separate from the Phase 1 wave proof. A
-successful Phase 1 can be judged purely on visible loading polish and stability;
-performance changes should be measured and accepted only after the wave path is
-boring and reliable.
+This optimization work should stay separate from release-line fixes.
+Performance changes should be measured and accepted only after the retained
+preload path is boring and reliable.
 
-## Non-Goals For The First Proof
+## Non-Goals
 
 - Full async conversion of all CD reads.
 - Preserving the old scene's exact final frame while the next scene loads.
-- Loading resources from CD inside the loading-wave tick.
 - Changing default release behavior.
-- Fixing W1-high timing regression as part of the first wave proof.
+- Reintroducing a loading-time wave tick while the transition still blocks.

@@ -21,6 +21,8 @@
  *
  */
 
+#include "mytypes.h"
+
 struct TIslandState {
     int lowTide;
     int night;
@@ -31,6 +33,9 @@ struct TIslandState {
 };
 
 extern struct TIslandState islandState;
+
+struct TTtmSlot;
+struct PS1Surface;
 
 void islandInit(struct TTtmThread *ttmThread);
 void islandAnimate(struct TTtmThread *ttmThread);

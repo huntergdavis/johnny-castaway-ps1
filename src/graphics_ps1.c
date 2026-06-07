@@ -103,6 +103,11 @@ static uint16 *bgTile3Clean = NULL;
 static uint16 *bgTile4Clean = NULL;
 static int grSaveCleanOnScreenLoad = 1;
 static uint8 gScrStreamRows[SCR_STREAM_ROWS * SCR_STREAM_ROW_BYTES];
+static int gFullScreenScrCacheEnabled = 0;
+static uint8 *gFullScreenScrCache = NULL;
+static uint32 gFullScreenScrCacheBytes = 0;
+static int gFullScreenScrCacheValid = 0;
+static char gFullScreenScrCacheName[16] = "";
 
 /* Dirty-rect tracking: per-tile row-granularity restore/upload.
  * Index: 0=bgTile0, 1=bgTile1, 2=bgTile3, 3=bgTile4.
@@ -3311,6 +3316,20 @@ void grSetSaveCleanOnScreenLoad(int enabled)
     grSaveCleanOnScreenLoad = enabled ? 1 : 0;
 }
 
+void grSetFullScreenScrCacheEnabled(int enabled)
+{
+    gFullScreenScrCacheEnabled = enabled ? 1 : 0;
+    if (!gFullScreenScrCacheEnabled) {
+        if (gFullScreenScrCache != NULL) {
+            memFree(MEM_REGION_CACHE, gFullScreenScrCache);
+            gFullScreenScrCache = NULL;
+        }
+        gFullScreenScrCacheBytes = 0;
+        gFullScreenScrCacheValid = 0;
+        gFullScreenScrCacheName[0] = '\0';
+    }
+}
+
 /* ---- Rect-based clean-pixel backup (option B). Alternative to full-tile
  *      clean copies: scene declares one or more rectangles that cover its
  *      dynamic regions; only those rects are backed up + restored. Massive
@@ -3336,6 +3355,7 @@ struct TGrCleanRect {
 static struct TGrCleanRect gGrCleanRects[GR_MAX_CLEAN_RECTS];
 static int gGrCleanRectCount = 0;
 static int gGrCleanBgBlackMode = 0;
+static int gGrCleanBgRectsForceCache = 0;
 
 /* Copy a rectangle's pixels out of the 4 bg tiles into a flat buffer. */
 static void grCleanRectCopyOut(struct TGrCleanRect *r)
@@ -3433,6 +3453,56 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
     }
     if (perfTrack)
         ps1PerfMarkRestore(copiedBytes);
+}
+
+static void grCleanRectCopyInFull(const struct TGrCleanRect *r)
+{
+    int sy;
+    if (r->pixels == NULL || r->width == 0 || r->height == 0) return;
+    for (sy = 0; sy < (int)r->height; sy++) {
+        int destY = r->y + sy;
+        if (destY < 0 || destY >= 480) continue;
+        {
+            PS1Surface *tileLeft, *tileRight;
+            int tileLocalY;
+            const uint16 *srcRow = r->pixels + (uint32)sy * (uint32)r->width;
+            int xStart = r->x;
+            int xEnd = r->x + (int)r->width;
+            if (destY < 240) {
+                tileLocalY = destY;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = destY - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+            if (xStart < 0) xStart = 0;
+            if (xEnd > 640) xEnd = 640;
+            if (tileLeft && tileLeft->pixels && xStart < 320) {
+                int lx0 = xStart;
+                int lx1 = (xEnd < 320) ? xEnd : 320;
+                if (lx0 < lx1) {
+                    uint16 *dst = tileLeft->pixels +
+                        (tileLocalY * (int)tileLeft->width) + lx0;
+                    memcpy(dst, srcRow + (lx0 - r->x),
+                           (size_t)(lx1 - lx0) * sizeof(uint16));
+                    grMarkRectDirty(lx0, destY, lx1, destY + 1);
+                }
+            }
+            if (tileRight && tileRight->pixels && xEnd > 320) {
+                int rx0 = (xStart > 320) ? (xStart - 320) : 0;
+                int rx1 = xEnd - 320;
+                if (rx0 < rx1) {
+                    uint16 *dst = tileRight->pixels +
+                        (tileLocalY * (int)tileRight->width) + rx0;
+                    memcpy(dst, srcRow + ((rx0 + 320) - r->x),
+                           (size_t)(rx1 - rx0) * sizeof(uint16));
+                    grMarkRectDirty(rx0 + 320, destY, rx1 + 320, destY + 1);
+                }
+            }
+        }
+    }
 }
 
 static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width)
@@ -3616,6 +3686,18 @@ int grCleanBgRectsCount(void)
     return gGrCleanRectCount;
 }
 
+void grSetCleanBgRectsForceCache(int enabled)
+{
+    gGrCleanBgRectsForceCache = enabled ? 1 : 0;
+}
+
+void grRestoreBgRectsFull(void)
+{
+    int i;
+    for (i = 0; i < gGrCleanRectCount; i++)
+        grCleanRectCopyInFull(&gGrCleanRects[i]);
+}
+
 unsigned long grCleanBgRectsBytes(void)
 {
     unsigned long total = 0;
@@ -3744,7 +3826,9 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
          * if TRANSIENT fills, just transparently spill to libc and
          * still get per-scene-wiped at memSceneReset. */
         MemRegion target;
-        if (requiredBytes[idx] <= transRemaining) {
+        if (gGrCleanBgRectsForceCache) {
+            target = MEM_REGION_CACHE;
+        } else if (requiredBytes[idx] <= transRemaining) {
             target = MEM_REGION_TRANSIENT;
         } else {
             target = MEM_REGION_CACHE;
@@ -4712,16 +4796,148 @@ static void grExpandScrPackedRow(uint16 *dst, const uint8 *src, uint16 byteCount
     }
 }
 
+static int grIsFullScreenScrResource(const struct TScrResource *scrResource)
+{
+    return scrResource != NULL &&
+           scrResource->width == 640 &&
+           scrResource->height == 480 &&
+           scrResource->uncompressedSize == 153600UL;
+}
+
+static void grCopyFullScreenScrName(char *dst, uint32 dstBytes,
+                                    const char *src)
+{
+    uint32 i;
+
+    if (dst == NULL || dstBytes == 0)
+        return;
+    if (src == NULL) {
+        dst[0] = '\0';
+        return;
+    }
+    for (i = 0; i + 1 < dstBytes && src[i] != '\0'; i++)
+        dst[i] = src[i];
+    dst[i] = '\0';
+}
+
+static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
+{
+    if (!gFullScreenScrCacheEnabled ||
+        resName == NULL ||
+        bytes == 0)
+        return 0;
+
+    if (gFullScreenScrCache != NULL &&
+        gFullScreenScrCacheBytes >= bytes)
+        return 1;
+
+    if (gFullScreenScrCache != NULL) {
+        memFree(MEM_REGION_CACHE, gFullScreenScrCache);
+        gFullScreenScrCache = NULL;
+    }
+    gFullScreenScrCacheBytes = 0;
+    gFullScreenScrCacheValid = 0;
+    gFullScreenScrCacheName[0] = '\0';
+
+    /* MEM_REGION_RATIONALE: optional packed full-screen SCR cache for the
+     * async-loading branch. Stores 4bpp source bytes (150KB), not the 600KB
+     * expanded bg tiles, and is freed when the proof toggle is disabled. */
+    gFullScreenScrCache = (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
+                                            "gr-scr-cache");
+    if (gFullScreenScrCache == NULL)
+        return 0;
+    gFullScreenScrCacheBytes = bytes;
+    grCopyFullScreenScrName(gFullScreenScrCacheName,
+                            sizeof(gFullScreenScrCacheName),
+                            resName);
+    return 1;
+}
+
+static void grExpandFullScreenScrPackedToTiles(const uint8 *packed)
+{
+    uint16 y;
+
+    ensureBgTileRAM(&bgTile0, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile1, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile3, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile4, 320, BG_TILE_HEIGHT);
+    bgTile2a = NULL;
+    bgTile2b = NULL;
+    bgTile5a = NULL;
+    bgTile5b = NULL;
+
+    for (y = 0; y < 480; y++) {
+        const uint8 *srcRow = packed + ((uint32)y * SCR_STREAM_ROW_BYTES);
+        if (y < BG_TILE_HEIGHT) {
+            grExpandScrPackedRow(bgTile0->pixels + ((uint32)y * 320),
+                                 srcRow, 160);
+            grExpandScrPackedRow(bgTile1->pixels + ((uint32)y * 320),
+                                 srcRow + 160, 160);
+        } else {
+            uint16 tileY = (uint16)(y - BG_TILE_HEIGHT);
+            grExpandScrPackedRow(bgTile3->pixels + ((uint32)tileY * 320),
+                                 srcRow, 160);
+            grExpandScrPackedRow(bgTile4->pixels + ((uint32)tileY * 320),
+                                 srcRow + 160, 160);
+        }
+    }
+}
+
+static void grUploadFullScreenBgTilesIfNeeded(void)
+{
+    RECT rect0, rect1, rect3, rect4;
+
+    if (!grPresentDuringScreenLoad)
+        return;
+
+    if (bgTile0 && bgTile0->pixels) {
+        setRECT(&rect0, 0, 0, bgTile0->width, bgTile0->height);
+        LoadImage(&rect0, (uint32*)bgTile0->pixels);
+    }
+    if (bgTile1 && bgTile1->pixels) {
+        setRECT(&rect1, 320, 0, bgTile1->width, bgTile1->height);
+        LoadImage(&rect1, (uint32*)bgTile1->pixels);
+    }
+    if (bgTile3 && bgTile3->pixels) {
+        setRECT(&rect3, 0, 240, bgTile3->width, bgTile3->height);
+        LoadImage(&rect3, (uint32*)bgTile3->pixels);
+    }
+    if (bgTile4 && bgTile4->pixels) {
+        setRECT(&rect4, 320, 240, bgTile4->width, bgTile4->height);
+        LoadImage(&rect4, (uint32*)bgTile4->pixels);
+    }
+    DrawSync(0);
+}
+
+static int grLoadFullScreenScrCached(struct TScrResource *scrResource)
+{
+    if (!grIsFullScreenScrResource(scrResource) ||
+        !gFullScreenScrCacheEnabled ||
+        !gFullScreenScrCacheValid ||
+        gFullScreenScrCache == NULL ||
+        gFullScreenScrCacheBytes < scrResource->uncompressedSize ||
+        strcmp(gFullScreenScrCacheName, scrResource->resName) != 0)
+        return 0;
+
+    grExpandFullScreenScrPackedToTiles(gFullScreenScrCache);
+    grUploadFullScreenBgTilesIfNeeded();
+    grBackgroundSfc = bgTile0;
+    if (grSaveCleanOnScreenLoad)
+        grSaveCleanBgTiles();
+    printf("JCSCREEN scr-cache-apply %s bytes=%lu\n",
+           scrResource->resName,
+           (unsigned long)scrResource->uncompressedSize);
+    return 1;
+}
+
 static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 {
     CdlFILE cdfile;
     char path[32];
     uint16 y;
+    int cacheTarget = 0;
 
-    if (scrResource == NULL ||
-        scrResource->width != 640 ||
-        scrResource->height != 480 ||
-        scrResource->uncompressedSize != 153600UL) {
+    if (!grIsFullScreenScrResource(scrResource)) {
         return 0;
     }
 
@@ -4737,6 +4953,8 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
     bgTile2b = NULL;
     bgTile5a = NULL;
     bgTile5b = NULL;
+    cacheTarget = grEnsureFullScreenScrCache(scrResource->resName,
+                                             scrResource->uncompressedSize);
 
     for (y = 0; y < 480; y = (uint16)(y + SCR_STREAM_ROWS)) {
         uint16 rows = (uint16)((480 - y) > SCR_STREAM_ROWS ? SCR_STREAM_ROWS : (480 - y));
@@ -4745,8 +4963,12 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 
         if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
                                            gScrStreamRows)) {
+            if (cacheTarget)
+                gFullScreenScrCacheValid = 0;
             return 0;
         }
+        if (cacheTarget)
+            memcpy(gFullScreenScrCache + offset, gScrStreamRows, bytes);
 
         for (uint16 row = 0; row < rows; row++) {
             uint16 screenY = (uint16)(y + row);
@@ -4762,6 +4984,12 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
         }
     }
 
+    if (cacheTarget) {
+        gFullScreenScrCacheValid = 1;
+        printf("JCSCREEN scr-cache-fill %s bytes=%lu\n",
+               scrResource->resName,
+               (unsigned long)scrResource->uncompressedSize);
+    }
     return 1;
 }
 
@@ -4937,27 +5165,13 @@ void grLoadScreen(char *strArg)
      * Stream them directly into bg tiles so the scene loop never needs a
      * 153600-byte temporary SCR heap allocation. */
     if (scrResource->uncompressedData == NULL &&
+        grLoadFullScreenScrCached(scrResource)) {
+        return;
+    }
+
+    if (scrResource->uncompressedData == NULL &&
         grLoadFullScreenScrStreamed(scrResource)) {
-        if (grPresentDuringScreenLoad) {
-            RECT rect0, rect1, rect3, rect4;
-            if (bgTile0 && bgTile0->pixels) {
-                setRECT(&rect0, 0, 0, bgTile0->width, bgTile0->height);
-                LoadImage(&rect0, (uint32*)bgTile0->pixels);
-            }
-            if (bgTile1 && bgTile1->pixels) {
-                setRECT(&rect1, 320, 0, bgTile1->width, bgTile1->height);
-                LoadImage(&rect1, (uint32*)bgTile1->pixels);
-            }
-            if (bgTile3 && bgTile3->pixels) {
-                setRECT(&rect3, 0, 240, bgTile3->width, bgTile3->height);
-                LoadImage(&rect3, (uint32*)bgTile3->pixels);
-            }
-            if (bgTile4 && bgTile4->pixels) {
-                setRECT(&rect4, 320, 240, bgTile4->width, bgTile4->height);
-                LoadImage(&rect4, (uint32*)bgTile4->pixels);
-            }
-            DrawSync(0);
-        }
+        grUploadFullScreenBgTilesIfNeeded();
         grBackgroundSfc = bgTile0;
         if (grSaveCleanOnScreenLoad)
             grSaveCleanBgTiles();

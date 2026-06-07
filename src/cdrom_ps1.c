@@ -38,10 +38,28 @@
 static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
 static void *gPs1CdReadIdleHookUserData = NULL;
 
+enum {
+    PS1_CD_IDLE_HOOK_CHUNK_SECTORS = 4
+};
+
 void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData)
 {
     gPs1CdReadIdleHook = hook;
     gPs1CdReadIdleHookUserData = userData;
+}
+
+static uint32_t ps1CdChunkLimitWithIdleHook(uint32_t normalLimit)
+{
+    if (gPs1CdReadIdleHook != NULL &&
+        normalLimit > PS1_CD_IDLE_HOOK_CHUNK_SECTORS)
+        return PS1_CD_IDLE_HOOK_CHUNK_SECTORS;
+    return normalLimit;
+}
+
+static void ps1CdPumpReadIdleHook(void)
+{
+    if (gPs1CdReadIdleHook != NULL)
+        gPs1CdReadIdleHook(gPs1CdReadIdleHookUserData);
 }
 
 /*
@@ -948,9 +966,11 @@ static int ps1CdReadSyncBounded(void)
     if (gPs1CdReadIdleHook != NULL) {
         int vsyncWait = 240;
         while (syncResult > 0 && --vsyncWait > 0) {
-            gPs1CdReadIdleHook(gPs1CdReadIdleHookUserData);
+            VSync(0);
             syncResult = CdReadSync(1, NULL);
         }
+        if (syncResult <= 0)
+            ps1CdPumpReadIdleHook();
         return syncResult;
     }
 
@@ -1109,8 +1129,12 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         uint32_t chunkSectors = numSectors - sectorsRead;
         uint8_t *chunkDst = sectorBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
@@ -1266,6 +1290,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         return 0;
     if (maxChunkSectors > PS1_CD_READ_CHUNK_SECTORS)
         maxChunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+    maxChunkSectors = ps1CdChunkLimitWithIdleHook(maxChunkSectors);
     requestStart = offset;
     requestEnd = offset + size;
 
@@ -1387,8 +1412,12 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         uint32_t chunkSectors = numSectors - sectorsRead;
         uint8_t *chunkDst = dstBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
@@ -1459,8 +1488,12 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
         uint32_t chunkSectors = totalSectors - sectorsRead;
         uint8_t *chunkDst = fileBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + sectorsRead, &loc);
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
