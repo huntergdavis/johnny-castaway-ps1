@@ -33,6 +33,9 @@ int soundEffectCount(void);
 int soundEffectLoaded(int nb);
 unsigned long soundEffectSizeBytes(int nb);
 int soundEffectSampleRate(int nb);
+unsigned long soundSpuDataEnd(void);
+unsigned long soundSpuCacheBase(void);
+unsigned long soundSpuCacheBytes(void);
 
 /* Ocean ambience — looping background audio.
  *

@@ -53,6 +53,8 @@ int oceanAmbientEnabled = 1;
 /* SPU configuration */
 #define MAX_SOUND_EFFECTS 25
 #define SPU_DATA_START 0x1010  /* After SPU capture buffers + dummy block */
+#define SPU_RAM_SIZE_BYTES (512u * 1024u)
+#define SPU_DMA_ALIGN_BYTES 64u
 #define VAG_HEADER_SIZE 48    /* Standard Sony VAG header size */
 #define NUM_CHANNELS 8        /* Use 8 channels for round-robin */
 /* Leave mixer headroom for scenes that intentionally overlap the same SFX.
@@ -80,6 +82,28 @@ static uint32_t oceanAdpcmSize = 0;
 static uint16_t oceanPitch    = 0;
 static int      oceanLoaded   = 0;
 static int      oceanPlaying  = 0;
+static uint32_t soundSpuDataEndAddr = SPU_DATA_START;
+static uint32_t soundSpuCacheBaseAddr = 0;
+static uint32_t soundSpuCacheByteCount = 0;
+
+static uint32_t soundAlignSpuDma(uint32_t value)
+{
+    return (value + (SPU_DMA_ALIGN_BYTES - 1u)) & ~(SPU_DMA_ALIGN_BYTES - 1u);
+}
+
+static void soundUpdateSpuCacheWindow(uint32_t usedEnd)
+{
+    uint32_t base = soundAlignSpuDma(usedEnd);
+    soundSpuDataEndAddr = usedEnd;
+    if (base >= SPU_RAM_SIZE_BYTES) {
+        soundSpuCacheBaseAddr = SPU_RAM_SIZE_BYTES;
+        soundSpuCacheByteCount = 0;
+        return;
+    }
+    soundSpuCacheBaseAddr = base;
+    soundSpuCacheByteCount =
+        (SPU_RAM_SIZE_BYTES - base) & ~(SPU_DMA_ALIGN_BYTES - 1u);
+}
 
 static void soundStopAllVoices(void)
 {
@@ -147,7 +171,7 @@ void soundInit()
         uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
 
         /* Check SPU RAM overflow (512KB total) */
-        if (spuAddr + dmaSize > 512 * 1024) {
+        if (spuAddr + dmaSize > SPU_RAM_SIZE_BYTES) {
             printf("SPU: out of RAM at sound %d\n", i);
             free(vagData);
             break;
@@ -209,10 +233,10 @@ void soundInit()
         uint32_t adpcmSize = vagSize - VAG_HEADER_SIZE;
         uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
 
-        if (spuAddr + dmaSize > 512 * 1024) {
+        if (spuAddr + dmaSize > SPU_RAM_SIZE_BYTES) {
             printf("SPU: out of RAM for OCEAN.VAG (need %lu, have %lu)\n",
                    (unsigned long)dmaSize,
-                   (unsigned long)(512u * 1024u - spuAddr));
+                   (unsigned long)(SPU_RAM_SIZE_BYTES - spuAddr));
             free(vagData);
             break;
         }
@@ -240,6 +264,8 @@ void soundInit()
                           (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr,
                           (unsigned)sampleRate);
     } while (0);
+
+    soundUpdateSpuCacheWindow(spuAddr);
 
     /* Auto-start ambience only after saved settings have been loaded. */
     if (oceanLoaded && oceanAmbientEnabled && !soundMuted)
@@ -379,6 +405,21 @@ int soundEffectSampleRate(int nb)
     if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
         return 0;
     return (int)soundSampleRates[nb];
+}
+
+unsigned long soundSpuDataEnd(void)
+{
+    return (unsigned long)soundSpuDataEndAddr;
+}
+
+unsigned long soundSpuCacheBase(void)
+{
+    return (unsigned long)soundSpuCacheBaseAddr;
+}
+
+unsigned long soundSpuCacheBytes(void)
+{
+    return (unsigned long)soundSpuCacheByteCount;
 }
 
 /*
