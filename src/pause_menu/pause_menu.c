@@ -23,6 +23,7 @@
 #include <psxapi.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "mytypes.h"
@@ -33,6 +34,7 @@
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 #include "ps1_gpu_ot.h"
+#include "cdrom_ps1.h"
 #include "memcard.h"
 #define SCENE_EXPLORER_DATA_DEFINE
 #include "scene_explorer_data.h"

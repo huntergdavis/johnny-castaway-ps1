@@ -28,17 +28,21 @@ static int handleSceneExplorerInput(uint16 pressed)
         pauseMenuExplorerCursor = gSceneExplorerFamilyStart[fam];
     }
     if (pressed & PAD_CROSS) {
+        sceneExplorerRememberLaunchName(pauseMenuExplorerCursor);
         pauseMenuRequestPlayScene = pauseMenuExplorerCursor;
         pauseMenuRequestLoopScene = -1;
         sceneExplorerLoadedCursor = -1;
         grFreeSceneExplorerThumbnailBuffer();
+        sceneExplorerReleaseStringData();
         return 0;       /* close menu — scene plays on next iteration */
     }
     if (pressed & PAD_TRIANGLE) {
+        sceneExplorerRememberLaunchName(pauseMenuExplorerCursor);
         pauseMenuRequestLoopScene = pauseMenuExplorerCursor;
         pauseMenuRequestPlayScene = -1;
         sceneExplorerLoadedCursor = -1;
         grFreeSceneExplorerThumbnailBuffer();
+        sceneExplorerReleaseStringData();
         return 0;
     }
     if (pressed & (PAD_CIRCLE | PAD_START)) {
@@ -47,6 +51,7 @@ static int handleSceneExplorerInput(uint16 pressed)
         prevButtons = 0xFFFF;
         sceneExplorerLoadedCursor = -1;
         grFreeSceneExplorerThumbnailBuffer();
+        sceneExplorerReleaseStringData();
         /* Force the main menu to re-draw its dim+panel over whatever
          * thumbnail pixels are sitting in the framebuffer. */
         menuFramebufferPrimed = 0;

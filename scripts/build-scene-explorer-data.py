@@ -22,6 +22,7 @@ SCENE_STATUS = ROOT / "docs/ps1/scene-status.md"
 SCENES_DIR = ROOT / "site/scenes"
 FG2_DIR = ROOT / "generated/ps1/foreground"
 OUTPUT = ROOT / "src/pause_menu/scene_explorer_data.h"
+STRING_OUTPUT = ROOT / "generated/ps1/SCEXPL.DAT"
 
 # Family display name (what the menu shows under "Family:") keyed by slug
 # prefix. miscgag and suzy both surface as "Misc & Suzy" because each family
@@ -131,14 +132,6 @@ def read_frame_count(slug):
     return struct.unpack_from("<H", header, 6)[0]
 
 
-def pack_path_for(slug):
-    return f"FG/{slug.upper()}.FG2"
-
-
-def thumb_psb_for(slug):
-    return f"BMP/SCEXPL_{slug.upper()}.PSB"
-
-
 def main():
     rows = parse_scene_status()
     if len(rows) != 63:
@@ -155,8 +148,7 @@ def main():
             "slug": slug,
             "display_name": to_ascii(read_display_name(slug)),
             "family": family,
-            "pack": pack_path_for(slug),
-            "thumb_psb": thumb_psb_for(slug),
+            "family_index": FAMILY_ORDER.index(family),
             "frame_count": read_frame_count(slug),
             "validated": 1 if row["validated"] else 0,
         })
@@ -187,23 +179,24 @@ def main():
     out.append("")
     out.append("struct TSceneExplorerEntry {")
     out.append("    const char *slug;          /* internal scene identifier (e.g. \"fishing1\") */")
-    out.append("    const char *display_name;  /* shown on the menu line */")
-    out.append("    const char *family;        /* display family group */")
-    out.append("    const char *pack;          /* CD-relative FG2 path */")
-    out.append("    const char *thumb_psb;     /* CD-relative thumbnail PSB path */")
+    out.append("    uint16      display_name_offset; /* byte offset into SCEXPL.DAT strings */")
     out.append("    uint16      frame_count;   /* from FG2 header */")
+    out.append("    uint8       family_index;  /* index into sceneExplorerFamilyName() */")
     out.append("    uint8       validated;     /* 1 if scene-status visuals are checked */")
     out.append("    uint8       _pad;")
     out.append("};")
     out.append("")
     out.append("#ifdef SCENE_EXPLORER_DATA_DEFINE")
     out.append("const struct TSceneExplorerEntry gSceneExplorer[] = {")
+    string_blob = bytearray()
+    string_offsets = []
     for e in entries:
-        display = e["display_name"].replace('"', '\\"')
+        encoded_display = e["display_name"].encode("ascii") + b"\0"
+        string_offsets.append(len(string_blob))
+        string_blob.extend(encoded_display)
         out.append(
-            f'    {{ "{e["slug"]}", "{display}", "{e["family"]}", '
-            f'"{e["pack"]}", "{e["thumb_psb"]}", {e["frame_count"]}, '
-            f'{e["validated"]}, 0 }},'
+            f'    {{ "{e["slug"]}", {string_offsets[-1]}, '
+            f'{e["frame_count"]}, {e["family_index"]}, {e["validated"]}, 0 }},'
         )
     out.append("};")
     out.append("const int gSceneExplorerCount = "
@@ -223,13 +216,28 @@ def main():
     out.append("extern const int gSceneExplorerFamilyCount;")
     out.append("#endif")
     out.append("")
+    out.append("const char *sceneExplorerDisplayName(int index);")
+    out.append("const char *sceneExplorerFamilyName(int familyIndex);")
+    out.append("const char *sceneExplorerSelectedDisplayName(void);")
+    out.append("")
     out.append("#endif")
     out.append("")
 
     OUTPUT.write_text("\n".join(out), encoding="utf-8")
+    STRING_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    if len(string_blob) > 0xFFFF:
+        raise RuntimeError("Scene Explorer string blob exceeds 64 KiB")
+    header = bytearray()
+    header.extend(b"JCSX")
+    header.extend(struct.pack("<HH", 1, len(entries)))
+    STRING_OUTPUT.write_bytes(bytes(header) + bytes(string_blob))
     print(
         f"Wrote {OUTPUT.relative_to(ROOT)} "
         f"({len(entries)} entries, {len(family_starts)} families)"
+    )
+    print(
+        f"Wrote {STRING_OUTPUT.relative_to(ROOT)} "
+        f"({len(string_blob)} string bytes)"
     )
 
 

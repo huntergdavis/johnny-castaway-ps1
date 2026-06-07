@@ -15,6 +15,7 @@
             <file name="JCREBORN.EXE" type="data" source="../../build-ps1/jcreborn.exe"/>
             <file name="TITLE.RAW" type="data" source="../../generated/ps1/foreground/TITLE.RAW"/>
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
+            <file name="SCEXPL.DAT" type="data" source="../../generated/ps1/SCEXPL.DAT"/>
 
             <dir name="FG" source="../../generated/ps1/foreground">
                 <file name="FISHING1.FG2" type="data" source="../../generated/ps1/foreground/FISHING1.FG2"/>

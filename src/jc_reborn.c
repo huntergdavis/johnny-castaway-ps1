@@ -2153,7 +2153,7 @@ int main(int argc, char **argv)
                     char banner[64];
                     if (ps1BuildText3(banner, sizeof(banner),
                                       oneShot ? "Now playing: " : "Looping: ",
-                                      gSceneExplorer[idx].display_name, ""))
+                                      sceneExplorerSelectedDisplayName(), ""))
                         captionsShowText(banner, 240);
                 }
             }
