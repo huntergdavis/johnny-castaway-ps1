@@ -8,6 +8,7 @@ Makefile
 *.bin
 *.cue
 *.log
+config/ps1/build_date_embedded.h
 build-*/
 # `build-*/` is meant for the PS1 C-build dirs (build-ps1/, build-host/).
 # The lab article slug `build-farm/` collides with that rule, so explicitly
