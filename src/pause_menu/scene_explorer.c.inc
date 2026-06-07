@@ -23,18 +23,6 @@ static uint32 sceneExplorerStringBase = 0;
 static int sceneExplorerStringDataValid = 0;
 static char sceneExplorerLaunchName[64] = "";
 
-static const char *const sceneExplorerFamilyNames[] = {
-    "Fishing",
-    "Johnny",
-    "Mary",
-    "Visitors",
-    "Activities",
-    "Misc & Suzy",
-    "Standing",
-    "Walking",
-    "Building",
-};
-
 static uint16 sceneExplorerReadLe16(const uint8 *p)
 {
     return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
@@ -42,12 +30,19 @@ static uint16 sceneExplorerReadLe16(const uint8 *p)
 
 const char *sceneExplorerFamilyName(int familyIndex)
 {
-    if (familyIndex < 0 ||
-        familyIndex >= (int)(sizeof(sceneExplorerFamilyNames) /
-                             sizeof(sceneExplorerFamilyNames[0]))) {
-        return "?";
+    switch (familyIndex) {
+    case 0: return pmText(PMT_FAMILY_FISHING);
+    case 1: return pmText(PMT_FAMILY_JOHNNY);
+    case 2: return pmText(PMT_FAMILY_MARY);
+    case 3: return pmText(PMT_FAMILY_VISITORS);
+    case 4: return pmText(PMT_FAMILY_ACTIVITIES);
+    case 5: return pmText(PMT_FAMILY_MISC_SUZY);
+    case 6: return pmText(PMT_FAMILY_STANDING);
+    case 7: return pmText(PMT_FAMILY_WALKING);
+    case 8: return pmText(PMT_FAMILY_BUILDING);
+    default:
+        return pmText(PMT_UNKNOWN);
     }
-    return sceneExplorerFamilyNames[familyIndex];
 }
 
 static void sceneExplorerCopyText(char *dst, int dstSize, const char *src)
@@ -253,21 +248,21 @@ static void drawSceneExplorer(void)
      * First line starts at y=24 logical so the title isn't clipped by
      * NTSC overscan at the very top of the framebuffer. */
     pmTextStart(pmPrintfX, 24);
-    pmPrintf("       SCENE EXPLORER\n");
+    pmPrintf(pmText(PMT_SCENE_EXPLORER_TITLE));
     drawSeparator();
-    pmPrintf(" %d/%d   %s\n",
+    pmPrintf(pmText(PMT_SCENE_EXPLORER_COUNT),
              cur + 1, gSceneExplorerCount,
-             e->validated ? "* validated" : "? pending");
-    pmPrintf(" %s\n", title);
-    pmPrintf(" Family: %s   Frames: %u\n",
+             e->validated ? pmText(PMT_VALIDATED) : pmText(PMT_PENDING));
+    pmPrintf(pmText(PMT_LINE_STRING), title);
+    pmPrintf(pmText(PMT_SCENE_FAMILY_FRAMES),
              sceneExplorerFamilyName(e->family_index), (unsigned)e->frame_count);
 
     /* Bottom band — pack name, separator, nav hints (X/△/O on one
      * line so the band fits in 4 lines instead of 5 and we stay clear
      * of bottom NTSC overscan). */
     pmTextStart(pmPrintfX, 376);
-    pmPrintf(" Pack: %s\n", packLabel);
+    pmPrintf(pmText(PMT_SCENE_PACK), packLabel);
     drawSeparator();
-    pmPrintf(" <- -> scene     L1/R1 family\n");
-    pmPrintf(" X play  /\\ loop  O back\n");
+    pmPrintf(pmText(PMT_SCENE_NAV));
+    pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }

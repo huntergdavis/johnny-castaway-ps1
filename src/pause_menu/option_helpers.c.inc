@@ -4,11 +4,11 @@
 static const char *perfLevelLabel(void)
 {
     switch (ps1PerfLevel) {
-    case 0: return "OFF";
-    case 1: return "SUMMARY";
-    case 2: return "DETAIL";
-    case 3: return "DEBUG";
-    default: return "?";
+    case 0: return pmText(PMT_OFF);
+    case 1: return pmText(PMT_SUMMARY);
+    case 2: return pmText(PMT_DETAIL);
+    case 3: return pmText(PMT_DEBUG);
+    default: return pmText(PMT_UNKNOWN);
     }
 }
 
@@ -31,10 +31,10 @@ extern int ps1SoftTimeEnabled;
 static const char *daynightLabel(void)
 {
     switch (hostForcedNight) {
-    case -1: return "AUTO";
-    case 0:  return "DAY";
-    case 1:  return "NIGHT";
-    default: return "?";
+    case -1: return pmText(PMT_AUTO);
+    case 0:  return pmText(PMT_DAY);
+    case 1:  return pmText(PMT_NIGHT);
+    default: return pmText(PMT_UNKNOWN);
     }
 }
 
@@ -42,9 +42,9 @@ static const char *holidayLabel(void)
 {
     if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 ||
         hostHolidayMode == HOLIDAY_MODE_AUTO_ALL)
-        return "AUTO";
-    if (hostHolidayMode == HOLIDAY_MODE_NONE) return "NONE";
-    if (hostForcedHoliday == 0) return "NONE";
+        return pmText(PMT_AUTO);
+    if (hostHolidayMode == HOLIDAY_MODE_NONE) return pmText(PMT_NONE);
+    if (hostForcedHoliday == 0) return pmText(PMT_NONE);
     return holidayShortName(hostForcedHoliday);
 }
 
@@ -58,12 +58,12 @@ static int holidaySetMode(void)
 static const char *holidaySetLabel(void)
 {
     switch (holidaySetMode()) {
-    case HOLIDAY_MODE_AUTO_ORIGINAL4: return "AUTO DATE:ORIG4";
-    case HOLIDAY_MODE_AUTO_ALL:       return "AUTO DATE";
-    case HOLIDAY_MODE_NONE:           return "NONE";
-    case HOLIDAY_MODE_MANUAL_ORIG4:   return "ORIGINAL 4";
-    case HOLIDAY_MODE_MANUAL_EXPANDED:return "EXPANDED";
-    default: return "?";
+    case HOLIDAY_MODE_AUTO_ORIGINAL4: return pmText(PMT_AUTO_DATE_ORIG4);
+    case HOLIDAY_MODE_AUTO_ALL:       return pmText(PMT_AUTO_DATE);
+    case HOLIDAY_MODE_NONE:           return pmText(PMT_NONE);
+    case HOLIDAY_MODE_MANUAL_ORIG4:   return pmText(PMT_ORIGINAL_4);
+    case HOLIDAY_MODE_MANUAL_EXPANDED:return pmText(PMT_EXPANDED);
+    default: return pmText(PMT_UNKNOWN);
     }
 }
 
@@ -163,10 +163,10 @@ static void cycleHoliday(int dir)
 static const char *tideLabel(void)
 {
     switch (hostForcedLowTide) {
-    case -1: return "AUTO";
-    case  0: return "HIGH";
-    case  1: return "LOW";
-    default: return "?";
+    case -1: return pmText(PMT_AUTO);
+    case  0: return pmText(PMT_HIGH);
+    case  1: return pmText(PMT_LOW);
+    default: return pmText(PMT_UNKNOWN);
     }
 }
 
@@ -183,14 +183,14 @@ static void cycleTide(int dir)
 static const char *raftLabel(void)
 {
     switch (hostForcedRaftStage) {
-    case -1: return "AUTO";
-    case  0: return "NONE";
+    case -1: return pmText(PMT_AUTO);
+    case  0: return pmText(PMT_NONE);
     case  1: return "1";
     case  2: return "2";
     case  3: return "3";
     case  4: return "4";
     case  5: return "5";
-    default: return "?";
+    default: return pmText(PMT_UNKNOWN);
     }
 }
 
@@ -213,7 +213,7 @@ static void cyclePerf(int dir)
 
 static const char *captionsLabel(void)
 {
-    return captionsGetEnabled() ? "ON" : "OFF";
+    return captionsGetEnabled() ? pmText(PMT_ON) : pmText(PMT_OFF);
 }
 
 static void cycleCaptions(int dir)
@@ -225,34 +225,34 @@ static void cycleCaptions(int dir)
 
 static void drawMainMenu(void)
 {
-    pmPrintf(" JOHNNY CASTAWAY  - PAUSED -\n");
+    pmPrintf(pmText(PMT_MAIN_TITLE));
     drawSeparator();
 
-    pmPrintf(" %s Resume\n",
+    pmPrintf(pmText(PMT_MAIN_RESUME),
              menuCursor == MENU_RESUME ? ">" : " ");
     /* Scene Set Options is a sub-screen; the inline cycler moved into
      * it alongside the new Scene Picker policy selector. The active
      * set name lives inside the sub-screen — appending it here would
      * overflow the panel for the longer set names ("Misc & Suzy",
      * "Johnny Stories", etc.). */
-    pmPrintf(" %s Scene Set Options...\n",
+    pmPrintf(pmText(PMT_MAIN_SCENE_SET),
              menuCursor == MENU_SCENE_SET ? ">" : " ");
-    pmPrintf(" %s Scene Explorer\n",
+    pmPrintf(pmText(PMT_MAIN_SCENE_EXPLORER),
              menuCursor == MENU_SCENE_EXPLORER ? ">" : " ");
-    pmPrintf(" %s Freeplay: %s\n",
+    pmPrintf(pmText(PMT_MAIN_FREEPLAY),
              menuCursor == MENU_FREEPLAY ? ">" : " ",
-             menuFreeplayActive ? "ON" : "OFF");
-    pmPrintf(" %s Freeplay Options\n",
+             menuFreeplayActive ? pmText(PMT_ON) : pmText(PMT_OFF));
+    pmPrintf(pmText(PMT_MAIN_FREEPLAY_OPTIONS),
              menuCursor == MENU_FREEPLAY_OPTIONS ? ">" : " ");
-    pmPrintf(" %s World Options\n",
+    pmPrintf(pmText(PMT_MAIN_WORLD_OPTIONS),
              menuCursor == MENU_WORLD ? ">" : " ");
-    pmPrintf(" %s Accessibility\n",
+    pmPrintf(pmText(PMT_MAIN_ACCESSIBILITY),
              menuCursor == MENU_ACCESSIBILITY ? ">" : " ");
-    pmPrintf(" %s System\n",
+    pmPrintf(pmText(PMT_MAIN_SYSTEM),
              menuCursor == MENU_SYSTEM ? ">" : " ");
 
     drawSeparator();
-    pmPrintf("  X = select   O/START = resume\n");
+    pmPrintf(pmText(PMT_HINT_SELECT_RESUME));
 }
 
 /* ---------------------------------------------------------------------------
@@ -260,95 +260,81 @@ static void drawMainMenu(void)
  * ------------------------------------------------------------------------- */
 static void drawOptions(void)
 {
-    pmPrintf("     WORLD OPTIONS\n");
+    pmPrintf(pmText(PMT_WORLD_TITLE));
     drawSeparator();
 
-    pmPrintf(" %s Day/Night: %s\n",
+    pmPrintf(pmText(PMT_WORLD_DAYNIGHT),
              optionsCursor == WORLD_DAYNIGHT ? ">" : " ", daynightLabel());
-    pmPrintf(" %s Tide:      %s\n",
+    pmPrintf(pmText(PMT_WORLD_TIDE),
              optionsCursor == WORLD_TIDE ? ">" : " ", tideLabel());
-    pmPrintf(" %s Raft:      %s\n",
+    pmPrintf(pmText(PMT_WORLD_RAFT),
              optionsCursor == WORLD_RAFT ? ">" : " ", raftLabel());
-    pmPrintf(" %s Holidays...\n",
+    pmPrintf(pmText(PMT_WORLD_HOLIDAYS),
              optionsCursor == WORLD_HOLIDAYS ? ">" : " ");
-    pmPrintf(" %s Set Island Pos...\n",
+    pmPrintf(pmText(PMT_WORLD_ISLAND_POS),
              optionsCursor == WORLD_ISLAND_POS ? ">" : " ");
-    pmPrintf(" %s Back\n",
+    pmPrintf(pmText(PMT_MENU_BACK),
              optionsCursor == WORLD_BACK ? ">" : " ");
 
     drawSeparator();
-    pmPrintf(" LEFT/RIGHT or X adjust\n");
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_HINT_ADJUST));
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawHolidayMenu(void)
 {
-    pmPrintf("        HOLIDAYS\n");
+    pmPrintf(pmText(PMT_HOLIDAYS_TITLE));
     drawSeparator();
-    pmPrintf(" %s Set:     %s\n",
+    pmPrintf(pmText(PMT_HOLIDAY_SET),
              holidayCursor == HOLIDAY_SET ? ">" : " ", holidaySetLabel());
-    pmPrintf(" %s Holiday: %s\n",
+    pmPrintf(pmText(PMT_HOLIDAY_SELECT),
              holidayCursor == HOLIDAY_SELECT ? ">" : " ", holidayLabel());
-    pmPrintf(" %s Back\n",
+    pmPrintf(pmText(PMT_MENU_BACK),
              holidayCursor == HOLIDAY_BACK ? ">" : " ");
     drawSeparator();
     if (holidayModeIsManual(hostHolidayMode) &&
         hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
-        pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
-        pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
+        pmPrintf(pmText(PMT_HOLIDAY_DATE_LINE), holidayDateLabel(hostForcedHoliday));
+        pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), holidayTitle(hostForcedHoliday));
     } else if ((hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 ||
                 hostHolidayMode == HOLIDAY_MODE_AUTO_ALL) &&
                ps1SoftTimeEnabled) {
         int dateHoliday = (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4)
                         ? holidayForDateOriginal4(ps1SoftYear, ps1SoftMonth, ps1SoftDay)
                         : holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
-        pmPrintf("   Date picker: %s\n",
-                 dateHoliday ? holidayShortName(dateHoliday) : "NONE");
+        pmPrintf(pmText(PMT_DATE_PICKER),
+                 dateHoliday ? holidayShortName(dateHoliday) : pmText(PMT_NONE));
     } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4) {
-        pmPrintf("   Random original 4 until\n");
-        pmPrintf("   Set Time/Date is saved.\n");
+        pmPrintf(pmText(PMT_RANDOM_ORIG4_UNTIL));
+        pmPrintf(pmText(PMT_SET_TIME_SAVED));
     } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ALL) {
-        pmPrintf("   Random expanded holiday\n");
-        pmPrintf("   until Set Time/Date.\n");
+        pmPrintf(pmText(PMT_RANDOM_EXPANDED_HOLIDAY));
+        pmPrintf(pmText(PMT_UNTIL_SET_TIME));
     }
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawAccessibilityMenu(void)
 {
     extern int oceanAmbientEnabled;
-    const char *soundLabel = soundMuted ? "MUTED" : "ON";
-    const char *oceanLabel = oceanAmbientEnabled ? "ON" : "OFF";
+    const char *soundLabel = soundMuted ? pmText(PMT_MUTED) : pmText(PMT_ON);
+    const char *oceanLabel = oceanAmbientEnabled ? pmText(PMT_ON) : pmText(PMT_OFF);
 
-    pmPrintf("     ACCESSIBILITY\n");
+    pmPrintf(pmText(PMT_ACCESS_TITLE));
     drawSeparator();
-    pmPrintf(" %s Captions:  %s\n",
+    pmPrintf(pmText(PMT_ACCESS_CAPTIONS),
              accessCursor == ACCESS_CAPTIONS ? ">" : " ", captionsLabel());
-    pmPrintf(" %s Sound:     %s\n",
+    pmPrintf(pmText(PMT_ACCESS_SOUND),
              accessCursor == ACCESS_SOUND ? ">" : " ", soundLabel);
-    pmPrintf(" %s Ocean:     %s\n",
+    pmPrintf(pmText(PMT_ACCESS_OCEAN),
              accessCursor == ACCESS_OCEAN ? ">" : " ", oceanLabel);
-    pmPrintf(" %s Sound Test...\n",
+    pmPrintf(pmText(PMT_ACCESS_SOUND_TEST),
              accessCursor == ACCESS_SOUND_TEST ? ">" : " ");
-    pmPrintf(" %s Back\n",
+    pmPrintf(pmText(PMT_MENU_BACK),
              accessCursor == ACCESS_BACK ? ">" : " ");
     drawSeparator();
-    pmPrintf(" LEFT/RIGHT or X adjust\n");
-    pmPrintf(" O/START = back\n");
-}
-
-static const char *soundTestName(int index)
-{
-    static const char *const names[] = {
-        "SOUND00", "SOUND01", "SOUND02", "SOUND03", "SOUND04",
-        "SOUND05", "SOUND06", "SOUND07", "SOUND08", "SOUND09",
-        "SOUND10", "SOUND11", "SOUND12", "SOUND13", "SOUND14",
-        "SOUND15", "SOUND16", "SOUND17", "SOUND18", "SOUND19",
-        "SOUND20", "SOUND21", "SOUND22", "SOUND23", "SOUND24"
-    };
-    if (index < 0 || index >= (int)(sizeof(names) / sizeof(names[0])))
-        return "SOUND??";
-    return names[index];
+    pmPrintf(pmText(PMT_HINT_ADJUST));
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawSoundTestMenu(void)
@@ -361,47 +347,47 @@ static void drawSoundTestMenu(void)
     if (soundTestCursor >= count)
         soundTestCursor = 0;
 
-    pmPrintf("       SOUND TEST\n");
+    pmPrintf(pmText(PMT_SOUND_TEST_TITLE));
     drawSeparator();
-    pmPrintf(" %02d/%02d  %s\n",
-             soundTestCursor + 1, count, soundTestName(soundTestCursor));
-    pmPrintf(" Status: %s\n",
-             soundEffectLoaded(soundTestCursor) ? "READY" : "MISSING");
-    pmPrintf(" Size:   %lu KB\n",
+    pmPrintf(pmText(PMT_SOUND_TEST_ENTRY),
+             soundTestCursor + 1, count, soundTestCursor);
+    pmPrintf(pmText(PMT_STATUS_LINE),
+             soundEffectLoaded(soundTestCursor) ? pmText(PMT_READY) : pmText(PMT_MISSING));
+    pmPrintf(pmText(PMT_SIZE_LINE),
              (soundEffectSizeBytes(soundTestCursor) + 1023UL) / 1024UL);
-    pmPrintf(" Rate:   %d Hz\n",
+    pmPrintf(pmText(PMT_RATE_LINE),
              soundEffectSampleRate(soundTestCursor));
-    pmPrintf(" Output: %s\n", soundMuted ? "MUTED" : "ON");
+    pmPrintf(pmText(PMT_OUTPUT_LINE), soundMuted ? pmText(PMT_MUTED) : pmText(PMT_ON));
     drawSeparator();
-    pmPrintf(" UP/DOWN choose\n");
-    pmPrintf(" X play   O/START back\n");
+    pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
+    pmPrintf(pmText(PMT_X_PLAY_BACK));
 }
 
 static void drawSystemMenu(void)
 {
-    pmPrintf("        SYSTEM\n");
+    pmPrintf(pmText(PMT_SYSTEM_TITLE));
     drawSeparator();
-    pmPrintf(" %s Save Settings\n",
+    pmPrintf(pmText(PMT_SYSTEM_SAVE),
              systemCursor == SYSTEM_SAVE ? ">" : " ");
-    pmPrintf(" %s Set Time/Date...\n",
+    pmPrintf(pmText(PMT_SYSTEM_SET_TIME),
              systemCursor == SYSTEM_SET_TIME ? ">" : " ");
-    pmPrintf(" %s Set RNG Seed...\n",
+    pmPrintf(pmText(PMT_SYSTEM_SET_SEED),
              systemCursor == SYSTEM_SET_SEED ? ">" : " ");
-    pmPrintf(" %s Perf Log: %s\n",
+    pmPrintf(pmText(PMT_SYSTEM_PERF),
              systemCursor == SYSTEM_PERF ? ">" : " ", perfLevelLabel());
     {
         int day = storyCurrentDay;
         if (day < 1 || day > 11) day = 1;
-        pmPrintf(" %s Story Day: %s%2d/11%s\n",
+        pmPrintf(pmText(PMT_SYSTEM_STORY_DAY),
                  systemCursor == SYSTEM_STORY_DAY ? ">" : " ",
                  systemCursor == SYSTEM_STORY_DAY ? "<" : " ",
                  day,
                  systemCursor == SYSTEM_STORY_DAY ? ">" : " ");
     }
-    pmPrintf(" %s Reset Scene\n",
+    pmPrintf(pmText(PMT_SYSTEM_RESET_SCENE),
              systemCursor == SYSTEM_RESET_LOOP ? ">" : " ");
-    pmPrintf(" %s Next Scene\n",
+    pmPrintf(pmText(PMT_SYSTEM_NEXT_SCENE),
              systemCursor == SYSTEM_NEXT_SCENE ? ">" : " ");
     drawSeparator();
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_O_START_BACK));
 }

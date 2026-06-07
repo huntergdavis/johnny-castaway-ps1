@@ -1,7 +1,9 @@
 # Toggle captions through the pause menu, then request Next Scene.
 # Used to smoke-test caption data loading from CAPTION.DAT.
 
-wait 8s
+wait 12s
+tap START
+wait 18s
 tap START
 wait 20
 tap DOWN

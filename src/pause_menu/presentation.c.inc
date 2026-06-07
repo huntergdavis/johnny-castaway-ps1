@@ -3,38 +3,38 @@
  * ------------------------------------------------------------------------- */
 static void drawControls(void)
 {
-    pmPrintf("       CONTROLS\n");
+    pmPrintf(pmText(PMT_CONTROLS_TITLE));
     drawSeparator();
-    pmPrintf(" D-PAD/L-STICK  Walk\n");
-    pmPrintf(" L2 / R2        Slow / Fast\n");
-    pmPrintf(" CIRCLE         Fish\n");
-    pmPrintf(" R1+UP          Day/Night\n");
-    pmPrintf(" R1+DOWN        Tide\n");
-    pmPrintf(" R1+LEFT        Raft\n");
-    pmPrintf(" R1+RIGHT       Holiday\n");
-    pmPrintf(" START          Pause\n");
+    pmPrintf(pmText(PMT_CONTROLS_WALK));
+    pmPrintf(pmText(PMT_CONTROLS_SPEED));
+    pmPrintf(pmText(PMT_CONTROLS_FISH));
+    pmPrintf(pmText(PMT_CONTROLS_DAYNIGHT));
+    pmPrintf(pmText(PMT_CONTROLS_TIDE));
+    pmPrintf(pmText(PMT_CONTROLS_RAFT));
+    pmPrintf(pmText(PMT_CONTROLS_HOLIDAY));
+    pmPrintf(pmText(PMT_CONTROLS_PAUSE));
     drawSeparator();
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawFreeplayOptions(void)
 {
-    pmPrintf("    FREEPLAY OPTIONS\n");
+    pmPrintf(pmText(PMT_FREEPLAY_OPTIONS_TITLE));
     drawSeparator();
-    pmPrintf(" %s Gags...\n",
+    pmPrintf(pmText(PMT_FPO_GAGS),
              freeplayOptionsCursor == FPO_GAGS ? ">" : " ");
-    pmPrintf(" %s Visitors...\n",
+    pmPrintf(pmText(PMT_FPO_VISITORS),
              freeplayOptionsCursor == FPO_VISITORS ? ">" : " ");
-    pmPrintf(" %s Controls\n",
+    pmPrintf(pmText(PMT_FPO_CONTROLS),
              freeplayOptionsCursor == FPO_CONTROLS ? ">" : " ");
-    pmPrintf(" %s Clear Screen\n",
+    pmPrintf(pmText(PMT_FPO_CLEAR),
              freeplayOptionsCursor == FPO_CLEAR ? ">" : " ");
-    pmPrintf(" %s Back\n",
+    pmPrintf(pmText(PMT_MENU_BACK),
              freeplayOptionsCursor == FPO_BACK ? ">" : " ");
     drawSeparator();
     if (!menuFreeplayActive)
-        pmPrintf(" Start freeplay to spawn.\n");
-    pmPrintf(" X = select   O/START = back\n");
+        pmPrintf(pmText(PMT_START_FREEPLAY_TO_SPAWN));
+    pmPrintf(pmText(PMT_HINT_SELECT_BACK));
 }
 
 /* ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ static void drawFreeplayOptions(void)
  * ------------------------------------------------------------------------- */
 static void drawSceneSetOptions(void)
 {
-    pmPrintf("   SCENE SET OPTIONS\n");
+    pmPrintf(pmText(PMT_SCENE_SET_TITLE));
     drawSeparator();
 
     /* Scene Set row: shows pending value with arrows when focused. */
@@ -54,7 +54,7 @@ static void drawSceneSetOptions(void)
                           ? pendingSceneSet : pauseMenuSceneSet;
         int dirty   = (pendingSceneSet != pauseMenuSceneSet);
         if (showIdx < 0 || showIdx >= NUM_SCENE_SETS) showIdx = 0;
-        pmPrintf(" %s Set:    %s%s%s%s\n",
+        pmPrintf(pmText(PMT_SCENE_SET),
                  sceneSetOptionsCursor == SSO_SCENE_SET ? ">" : " ",
                  sceneSetOptionsCursor == SSO_SCENE_SET ? "<" : " ",
                  kSceneSetNames[showIdx],
@@ -66,19 +66,19 @@ static void drawSceneSetOptions(void)
      * step — the policy switch is cheap and reversible). */
     {
         int policy = pickerGetPolicy();
-        pmPrintf(" %s Picker: %s%s%s\n",
+        pmPrintf(pmText(PMT_SCENE_PICKER),
                  sceneSetOptionsCursor == SSO_PICKER ? ">" : " ",
                  sceneSetOptionsCursor == SSO_PICKER ? "<" : " ",
                  pickerPolicyName(policy),
                  sceneSetOptionsCursor == SSO_PICKER ? ">" : " ");
     }
 
-    pmPrintf(" %s Back\n",
+    pmPrintf(pmText(PMT_MENU_BACK),
              sceneSetOptionsCursor == SSO_BACK ? ">" : " ");
 
     drawSeparator();
-    pmPrintf(" L/R cycle   X commit\n");
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_L_R_CYCLE_COMMIT));
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawFreeplayGagCatalog(void)
@@ -91,20 +91,20 @@ static void drawFreeplayGagCatalog(void)
     if (freeplayGagCursor < 0)
         freeplayGagCursor = count - 1;
 
-    pmPrintf("      FREEPLAY GAG\n");
+    pmPrintf(pmText(PMT_FREEPLAY_GAG_TITLE));
     drawSeparator();
-    pmPrintf(" %02d/%02d  %.22s\n",
+    pmPrintf(pmText(PMT_FREEPLAY_ENTRY),
              freeplayGagCursor + 1, count,
              freeplayGagTitle(freeplayGagCursor));
-    pmPrintf(" BMP: %.18s\n", freeplayGagBmp(freeplayGagCursor));
-    pmPrintf(" Frames: %-3d  RAM: ~%d KB\n",
+    pmPrintf(pmText(PMT_BMP_LINE), freeplayGagBmp(freeplayGagCursor));
+    pmPrintf(pmText(PMT_FRAMES_RAM),
              freeplayGagFrames(freeplayGagCursor),
              freeplayGagMemoryKB(freeplayGagCursor));
-    pmPrintf(" %.28s\n", freeplayGagDescription(freeplayGagCursor));
+    pmPrintf(pmText(PMT_DESC_LINE), freeplayGagDescription(freeplayGagCursor));
     drawSeparator();
-    pmPrintf(" UP/DOWN choose\n");
-    pmPrintf(menuFreeplayActive ? " X spawn now\n" : " Start freeplay first\n");
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
+    pmPrintf(menuFreeplayActive ? pmText(PMT_X_SPAWN_NOW) : pmText(PMT_START_FREEPLAY_FIRST));
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 static void drawFreeplayVisitorCatalog(void)
@@ -117,20 +117,20 @@ static void drawFreeplayVisitorCatalog(void)
     if (freeplayVisitorCursor < 0)
         freeplayVisitorCursor = count - 1;
 
-    pmPrintf("    FREEPLAY VISITOR\n");
+    pmPrintf(pmText(PMT_FREEPLAY_VISITOR_TITLE));
     drawSeparator();
-    pmPrintf(" %02d/%02d  %.22s\n",
+    pmPrintf(pmText(PMT_FREEPLAY_ENTRY),
              freeplayVisitorCursor + 1, count,
              freeplayVisitorTitle(freeplayVisitorCursor));
-    pmPrintf(" BMP: %.18s\n", freeplayVisitorBmp(freeplayVisitorCursor));
-    pmPrintf(" Frames: %-3d  RAM: ~%d KB\n",
+    pmPrintf(pmText(PMT_BMP_LINE), freeplayVisitorBmp(freeplayVisitorCursor));
+    pmPrintf(pmText(PMT_FRAMES_RAM),
              freeplayVisitorFrames(freeplayVisitorCursor),
              freeplayVisitorMemoryKB(freeplayVisitorCursor));
-    pmPrintf(" %.28s\n", freeplayVisitorDescription(freeplayVisitorCursor));
+    pmPrintf(pmText(PMT_DESC_LINE), freeplayVisitorDescription(freeplayVisitorCursor));
     drawSeparator();
-    pmPrintf(" UP/DOWN choose\n");
-    pmPrintf(menuFreeplayActive ? " X spawn now\n" : " Start freeplay first\n");
-    pmPrintf(" O/START = back\n");
+    pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
+    pmPrintf(menuFreeplayActive ? pmText(PMT_X_SPAWN_NOW) : pmText(PMT_START_FREEPLAY_FIRST));
+    pmPrintf(pmText(PMT_O_START_BACK));
 }
 
 /* ---------------------------------------------------------------------------
@@ -138,44 +138,42 @@ static void drawFreeplayVisitorCatalog(void)
  * ------------------------------------------------------------------------- */
 static void drawSetTime(void)
 {
-    const char *fieldNames[] = {"Month","Day","Year","Hour","Min"};
-
     pmPrintf("\n");
     drawSeparator();
-    pmPrintf("   SET TIME AND DATE\n");
+    pmPrintf(pmText(PMT_SET_TIME_TITLE));
     drawSeparator();
     pmPrintf("\n");
 
     /* Month */
-    pmPrintf(" %s Month: %s%02d%s\n",
+    pmPrintf(pmText(PMT_SET_TIME_MONTH),
              editField == 0 ? ">" : " ",
              editField == 0 ? "[" : " ",
              editMonth,
              editField == 0 ? "]" : " ");
 
     /* Day */
-    pmPrintf(" %s Day:   %s%02d%s\n",
+    pmPrintf(pmText(PMT_SET_TIME_DAY),
              editField == 1 ? ">" : " ",
              editField == 1 ? "[" : " ",
              editDay,
              editField == 1 ? "]" : " ");
 
     /* Year */
-    pmPrintf(" %s Year:  %s%04d%s\n",
+    pmPrintf(pmText(PMT_SET_TIME_YEAR),
              editField == 2 ? ">" : " ",
              editField == 2 ? "[" : " ",
              editYear,
              editField == 2 ? "]" : " ");
 
     /* Hour */
-    pmPrintf(" %s Hour:  %s%02d%s\n",
+    pmPrintf(pmText(PMT_SET_TIME_HOUR),
              editField == 3 ? ">" : " ",
              editField == 3 ? "[" : " ",
              editHour,
              editField == 3 ? "]" : " ");
 
     /* Minute */
-    pmPrintf(" %s Min:   %s%02d%s\n",
+    pmPrintf(pmText(PMT_SET_TIME_MIN),
              editField == 4 ? ">" : " ",
              editField == 4 ? "[" : " ",
              editMinute,
@@ -183,18 +181,16 @@ static void drawSetTime(void)
 
     {
         int dateHoliday = holidayForDate(editYear, editMonth, editDay);
-        pmPrintf("   Holiday: %s\n",
-                 dateHoliday ? holidayShortName(dateHoliday) : "NONE");
+        pmPrintf(pmText(PMT_SET_TIME_HOLIDAY),
+                 dateHoliday ? holidayShortName(dateHoliday) : pmText(PMT_NONE));
         if (dateHoliday)
-            pmPrintf("   %.28s\n", holidayTitle(dateHoliday));
+            pmPrintf(pmText(PMT_HOLIDAY_TITLE_LINE), holidayTitle(dateHoliday));
     }
 
     pmPrintf("\n");
-    pmPrintf(" UP/DOWN select field\n");
-    pmPrintf(" LEFT/RIGHT adjust value\n");
-    pmPrintf(" X to confirm, O/START back\n");
-
-    (void)fieldNames;
+    pmPrintf(pmText(PMT_UP_DOWN_SELECT_FIELD));
+    pmPrintf(pmText(PMT_LEFT_RIGHT_ADJUST_VALUE));
+    pmPrintf(pmText(PMT_X_CONFIRM_BACK));
 }
 
 /* ---------------------------------------------------------------------------
@@ -212,35 +208,35 @@ static void drawIslandPos(void)
 {
     pmPrintf("\n");
     drawSeparator();
-    pmPrintf("    SET ISLAND POSITION\n");
+    pmPrintf(pmText(PMT_ISLAND_TITLE));
     drawSeparator();
     pmPrintf("\n");
 
-    pmPrintf(" %s X offset:  %s%+4d%s\n",
+    pmPrintf(pmText(PMT_ISLAND_X),
              editIslandField == 0 ? ">" : " ",
              editIslandField == 0 ? "[" : " ",
              editIslandX,
              editIslandField == 0 ? "]" : " ");
-    pmPrintf(" %s Y offset:  %s%+4d%s\n",
+    pmPrintf(pmText(PMT_ISLAND_Y),
              editIslandField == 1 ? ">" : " ",
              editIslandField == 1 ? "[" : " ",
              editIslandY,
              editIslandField == 1 ? "]" : " ");
-    pmPrintf(" %s Mode:      %s%s%s\n",
+    pmPrintf(pmText(PMT_ISLAND_MODE),
              editIslandField == 2 ? ">" : " ",
              editIslandField == 2 ? "[" : " ",
-             editIslandValid ? "MANUAL" : "AUTO",
+             editIslandValid ? pmText(PMT_MANUAL) : pmText(PMT_AUTO),
              editIslandField == 2 ? "]" : " ");
 
     pmPrintf("\n");
-    pmPrintf(" UP/DOWN  select field\n");
-    pmPrintf(" LEFT/RIGHT adjust X/Y by 4\n");
-    pmPrintf("           toggle mode\n");
-    pmPrintf(" X = confirm   O/START = back\n");
+    pmPrintf(pmText(PMT_UP_DOWN_SELECT_FIELD));
+    pmPrintf(pmText(PMT_LEFT_RIGHT_ADJUST_XY));
+    pmPrintf(pmText(PMT_TOGGLE_MODE));
+    pmPrintf(pmText(PMT_X_CONFIRM_BACK_EQ));
 
     if (!editIslandValid && (editIslandX != 0 || editIslandY != 0)) {
         pmPrintf("\n");
-        pmPrintf(" (X/Y kept; AUTO ignores them)\n");
+        pmPrintf(pmText(PMT_XY_IGNORED));
     }
 }
 
@@ -257,17 +253,17 @@ static void drawSetSeed(void)
 {
     pmPrintf("\n");
     drawSeparator();
-    pmPrintf("    SET RNG SEED\n");
+    pmPrintf(pmText(PMT_SEED_TITLE));
     drawSeparator();
     pmPrintf("\n");
 
-    pmPrintf(" %s Mode:   %s%s%s\n",
+    pmPrintf(pmText(PMT_SEED_MODE),
              editSeedField == 0 ? ">" : " ",
              editSeedField == 0 ? "[" : " ",
-             editSeedFixed ? "FIXED" : "AUTO",
+             editSeedFixed ? pmText(PMT_FIXED) : pmText(PMT_AUTO),
              editSeedField == 0 ? "]" : " ");
 
-    pmPrintf(" %s Value:  %s%10u%s\n",
+    pmPrintf(pmText(PMT_SEED_VALUE),
              editSeedField == 1 ? ">" : " ",
              editSeedField == 1 ? "[" : " ",
              editSeedValue,
@@ -275,17 +271,17 @@ static void drawSetSeed(void)
 
     pmPrintf("\n");
     if (ps1LastSeedKnown) {
-        pmPrintf(" Current seed: %u\n", ps1LastSeedApplied);
+        pmPrintf(pmText(PMT_CURRENT_SEED), ps1LastSeedApplied);
     } else {
-        pmPrintf(" Current seed: (unknown)\n");
+        pmPrintf(pmText(PMT_CURRENT_SEED_UNKNOWN));
     }
 
     pmPrintf("\n");
-    pmPrintf(" UP/DOWN  select field\n");
-    pmPrintf(" LEFT/RIGHT  +/-1\n");
-    pmPrintf(" L1/R1       +/-100\n");
-    pmPrintf(" L2/R2       +/-10000\n");
-    pmPrintf(" X = confirm   O/START = back\n");
+    pmPrintf(pmText(PMT_UP_DOWN_SELECT_FIELD));
+    pmPrintf(pmText(PMT_LEFT_RIGHT_PLUS1));
+    pmPrintf(pmText(PMT_L1_R1_PLUS100));
+    pmPrintf(pmText(PMT_L2_R2_PLUS10000));
+    pmPrintf(pmText(PMT_X_CONFIRM_BACK_EQ));
 }
 
 /* ---------------------------------------------------------------------------
@@ -297,20 +293,20 @@ static void drawSetSeed(void)
  * ------------------------------------------------------------------------- */
 static void drawCredits(void)
 {
-    pmPrintf(" CREDITS  (O/START to return)\n");
+    pmPrintf(pmText(PMT_CREDITS_TITLE));
     drawSeparator();
-    pmPrintf(" A labor of love by\n");
-    pmPrintf(" Hunter Davis.\n");
+    pmPrintf(pmText(PMT_CREDITS_LOVE));
+    pmPrintf(pmText(PMT_CREDITS_HUNTER));
     pmPrintf("\n");
-    pmPrintf(" Hunter does not own or have\n");
-    pmPrintf(" a license to the Johnny\n");
-    pmPrintf(" Castaway character. The\n");
-    pmPrintf(" original creator generously\n");
-    pmPrintf(" allows fan ports.\n");
+    pmPrintf(pmText(PMT_CREDITS_NO_OWN_1));
+    pmPrintf(pmText(PMT_CREDITS_NO_OWN_2));
+    pmPrintf(pmText(PMT_CREDITS_NO_OWN_3));
+    pmPrintf(pmText(PMT_CREDITS_CREATOR));
+    pmPrintf(pmText(PMT_CREDITS_FAN_PORTS));
     pmPrintf("\n");
-    pmPrintf(" If you paid for this, you\n");
-    pmPrintf(" were cheated.\n");
-    pmPrintf(" Open source and free:\n");
-    pmPrintf(" github.com/huntergdavis/\n");
-    pmPrintf(" Johnny-Castaway-PS1\n");
+    pmPrintf(pmText(PMT_CREDITS_PAID_1));
+    pmPrintf(pmText(PMT_CREDITS_PAID_2));
+    pmPrintf(pmText(PMT_CREDITS_FREE));
+    pmPrintf(pmText(PMT_CREDITS_URL_1));
+    pmPrintf(pmText(PMT_CREDITS_URL_2));
 }

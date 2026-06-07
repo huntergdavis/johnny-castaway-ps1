@@ -17,6 +17,7 @@
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
             <file name="SCEXPL.DAT" type="data" source="../../generated/ps1/SCEXPL.DAT"/>
             <file name="CAPTION.DAT" type="data" source="../../generated/ps1/CAPTION.DAT"/>
+            <file name="MENUTEXT.DAT" type="data" source="../../generated/ps1/MENUTEXT.DAT"/>
 
             <dir name="FG" source="../../generated/ps1/foreground">
                 <file name="FISHING1.FG2" type="data" source="../../generated/ps1/foreground/FISHING1.FG2"/>

@@ -14,6 +14,7 @@ PS1_PERF_VERBOSE_SCHEMA="${PS1_PERF_VERBOSE_SCHEMA:-OFF}"
 PS1_VERBOSE_DIAGNOSTICS="${PS1_VERBOSE_DIAGNOSTICS:-OFF}"
 
 python3 scripts/build-caption-data.py
+python3 scripts/build-menu-text-data.py
 
 python3 - <<'PY'
 import json

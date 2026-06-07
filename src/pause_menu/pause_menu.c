@@ -45,6 +45,9 @@
 #include "scene_freeplay.h"
 #include "scene_picker.h"
 #include "config/ps1/build_date_embedded.h"
+#define PS1_MENU_TEXT_DEFINE
+#include "generated/ps1/ps1_menu_text_data.h"
+#undef PS1_MENU_TEXT_DEFINE
 
 #ifndef PAUSE_MENU_DIAG_LOGS
 #define PAUSE_MENU_DIAG_LOGS 0
@@ -147,6 +150,101 @@ static uint8  pausePrimBuf[24576];
 
 /* Cached heap-free probe value, refreshed once per pause-show. */
 static unsigned long pmCachedHeapKB = 0;
+
+static uint8 *pmMenuTextData = NULL;
+static uint32 pmMenuTextDataSize = 0;
+static uint32 pmMenuTextBase = 0;
+static int pmMenuTextDataValid = 0;
+static int pmMenuTextLoadFailed = 0;
+
+static uint16 pmReadLe16(const uint8 *p)
+{
+    return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
+}
+
+static void pmMenuTextRelease(void)
+{
+    if (pmMenuTextData != NULL) {
+        free(pmMenuTextData);
+        pmMenuTextData = NULL;
+    }
+    pmMenuTextDataSize = 0;
+    pmMenuTextBase = 0;
+    pmMenuTextDataValid = 0;
+    pmMenuTextLoadFailed = 0;
+}
+
+static int pmMenuTextValidate(const uint8 *data, uint32 size)
+{
+    uint16 count;
+    uint32 stringBase;
+    uint32 stringBytes;
+    int i;
+
+    if (data == NULL || size < 8)
+        return 0;
+    if (data[0] != 'J' || data[1] != 'C' ||
+        data[2] != 'M' || data[3] != 'T')
+        return 0;
+    if (pmReadLe16(&data[4]) != 1)
+        return 0;
+    count = pmReadLe16(&data[6]);
+    if (count != (uint16)PMT_COUNT)
+        return 0;
+
+    stringBase = 8u;
+    stringBytes = size - stringBase;
+    for (i = 0; i < (int)count; i++) {
+        uint32 offset = (uint32)gPs1MenuTextOffsets[i];
+        uint32 pos = offset;
+        if (offset >= stringBytes)
+            return 0;
+        while (pos < stringBytes && data[stringBase + pos] != '\0')
+            pos++;
+        if (pos >= stringBytes)
+            return 0;
+    }
+    return 1;
+}
+
+static int pmMenuTextEnsure(void)
+{
+    uint32 size = 0;
+    uint8 *data;
+
+    if (pmMenuTextDataValid)
+        return 1;
+    if (pmMenuTextLoadFailed || pmMenuTextData != NULL)
+        return 0;
+
+    data = (uint8 *)ps1_loadRawFile("\\MENUTEXT.DAT;1", &size);
+    if (data == NULL || !pmMenuTextValidate(data, size)) {
+        if (data != NULL)
+            free(data);
+        pmMenuTextLoadFailed = 1;
+        return 0;
+    }
+
+    pmMenuTextData = data;
+    pmMenuTextDataSize = size;
+    pmMenuTextBase = 8u;
+    pmMenuTextDataValid = 1;
+    return 1;
+}
+
+static const char *pmText(enum Ps1MenuTextId id)
+{
+    uint32 pos;
+
+    if (id < 0 || id >= PMT_COUNT)
+        return "?";
+    if (!pmMenuTextEnsure())
+        return "?";
+    pos = pmMenuTextBase + (uint32)gPs1MenuTextOffsets[id];
+    if (pos >= pmMenuTextDataSize)
+        return "?";
+    return (const char *)&pmMenuTextData[pos];
+}
 
 /* ---------------------------------------------------------------------------
  *  Embedded 8x8 ASCII font — chars 0x20..0x7F (96 chars).

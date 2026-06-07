@@ -324,7 +324,7 @@ static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
 
 static void drawSeparator(void)
 {
-    pmPrintf("----------------------------\n");
+    pmPrintf(pmText(PMT_SEPARATOR));
 }
 
 /* ---------------------------------------------------------------------------
@@ -338,18 +338,18 @@ static void drawSceneInfo(void)
     uint16 fCnt = foregroundPilotRuntimeFrameCount();
     uint32 uptimeSec = ps1FrameCount / 60;
 
-    pmPrintf("    DEBUG INFO");
+    pmPrintf(pmText(PMT_DEBUG_INFO_TITLE));
     drawSeparator();
-    pmPrintf(" Scene:  %s",   scene && *scene ? scene : "(none)");
-    pmPrintf(" Mode:   %s",   mode  ? mode  : "?");
-    pmPrintf(" Frame:  %u/%u", (unsigned)fIdx, (unsigned)fCnt);
-    pmPrintf(" Heap:   %lu KB free", pmCachedHeapKB);
-    pmPrintf(" Uptime: %lu:%02lu",
+    pmPrintf(pmText(PMT_DEBUG_SCENE), scene && *scene ? scene : pmText(PMT_NONE_PAREN));
+    pmPrintf(pmText(PMT_DEBUG_MODE), mode ? mode : pmText(PMT_UNKNOWN));
+    pmPrintf(pmText(PMT_DEBUG_FRAME), (unsigned)fIdx, (unsigned)fCnt);
+    pmPrintf(pmText(PMT_DEBUG_HEAP), pmCachedHeapKB);
+    pmPrintf(pmText(PMT_DEBUG_UPTIME),
              (unsigned long)(uptimeSec / 60), (unsigned long)(uptimeSec % 60));
-    pmPrintf(" Build:  %s", PS1_EMBEDDED_BUILD_DATE);
-    pmPrintf(" Perf:   %s", perfLevelLabel());
-    pmPrintf(" Sound:  %s", soundMuted ? "MUTED" : "ON");
-    pmPrintf(" Save:   %s", memcardLastStatus ? memcardLastStatus : "(none)");
+    pmPrintf(pmText(PMT_DEBUG_BUILD), PS1_EMBEDDED_BUILD_DATE);
+    pmPrintf(pmText(PMT_DEBUG_PERF), perfLevelLabel());
+    pmPrintf(pmText(PMT_DEBUG_SOUND), soundMuted ? pmText(PMT_MUTED) : pmText(PMT_ON));
+    pmPrintf(pmText(PMT_DEBUG_SAVE), memcardLastStatus ? memcardLastStatus : pmText(PMT_NONE_PAREN));
     drawSeparator();
-    pmPrintf(" O/START = BACK");
+    pmPrintf(pmText(PMT_O_START_BACK_CAPS));
 }

@@ -25,6 +25,8 @@ void pauseMenuSetFreeplayActive(int active)
 
 void pauseMenuShow(void)
 {
+    pmMenuTextEnsure();
+
     menuVisible           = 1;
     menuCursor            = 0;
     optionsCursor         = 0;
@@ -76,6 +78,7 @@ void pauseMenuHide(void)
     menuVisible = 0;
     menuFramebufferPrimed = 0;
     /* Sound stays in user's chosen state — no auto-restore. */
+    pmMenuTextRelease();
 }
 
 int pauseMenuIsVisible(void)
