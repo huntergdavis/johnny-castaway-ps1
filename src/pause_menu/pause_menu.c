@@ -45,6 +45,9 @@
 #ifndef PAUSE_MENU_DIAG_LOGS
 #define PAUSE_MENU_DIAG_LOGS 0
 #endif
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.

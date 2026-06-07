@@ -23,6 +23,10 @@
 #include "ps1_pad_script.h"
 #include "config/ps1/padscript_embedded.h"
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 #define PAD_SCRIPT_MAX_EVENTS 160
 #define PAD_SCRIPT_LABEL_LEN  32
 #define PAD_SCRIPT_LINE_LEN   96
@@ -335,6 +339,7 @@ void ps1PadScriptConfigureFromEmbedded(int enabled, int verbose)
     gPadScriptEnabled = (gPadScriptEventCount > 0) ? 1 : 0;
     updatePadScriptState();
 
+#if PS1_VERBOSE_DIAGNOSTICS
     if (gPadScriptVerbose) {
         int i;
         printf("JCPADSCRIPT %s events=%d verbose=%d\n",
@@ -352,6 +357,7 @@ void ps1PadScriptConfigureFromEmbedded(int enabled, int verbose)
                    ev->label);
         }
     }
+#endif
 }
 
 uint16 ps1PadScriptMergeButtons(uint16 physicalButtons)
@@ -361,6 +367,7 @@ uint16 ps1PadScriptMergeButtons(uint16 physicalButtons)
         return physicalButtons;
     syncPadScriptToVSync();
     merged = (uint16)(physicalButtons | gPadScriptButtons);
+#if PS1_VERBOSE_DIAGNOSTICS
     if (gPadScriptVerbose && merged != gPadScriptLastLoggedButtons) {
         printf("JCPADSCRIPT buttons frame=%lu tick=%lu physical=%04x script=%04x merged=%04x\n",
                (unsigned long)gPadScriptFrame,
@@ -370,6 +377,7 @@ uint16 ps1PadScriptMergeButtons(uint16 physicalButtons)
                (unsigned)merged);
         gPadScriptLastLoggedButtons = merged;
     }
+#endif
     return merged;
 }
 
@@ -380,5 +388,9 @@ int ps1PadScriptIsEnabled(void)
 
 int ps1PadScriptVerboseLogEnabled(void)
 {
+#if PS1_VERBOSE_DIAGNOSTICS
     return gPadScriptEnabled && gPadScriptVerbose;
+#else
+    return 0;
+#endif
 }

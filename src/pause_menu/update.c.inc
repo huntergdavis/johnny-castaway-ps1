@@ -66,11 +66,13 @@ int pauseMenuUpdate(void)
 
     /* Dispatch to current sub-screen input handler. */
     enum PauseMenuState oldState = menuState;
+#if PS1_VERBOSE_DIAGNOSTICS
     int oldMenuCursor = menuCursor;
     int oldOptionsCursor = optionsCursor;
     int oldFreeplayOptionsCursor = freeplayOptionsCursor;
     int oldAccessCursor = accessCursor;
     int oldSystemCursor = systemCursor;
+#endif
     int keepOpen = 1;
     switch (menuState) {
     case PAUSE_MENU_MAIN:
@@ -136,6 +138,7 @@ int pauseMenuUpdate(void)
         menuFramebufferPrimed = 0;
     }
 
+#if PS1_VERBOSE_DIAGNOSTICS
     if (ps1PadScriptVerboseLogEnabled() &&
         (pressed ||
          oldState != menuState ||
@@ -156,6 +159,7 @@ int pauseMenuUpdate(void)
                (unsigned)pressed,
                keepOpen);
     }
+#endif
 
     if (!keepOpen) {
         pauseMenuHide();

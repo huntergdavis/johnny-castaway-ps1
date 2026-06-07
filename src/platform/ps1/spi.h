@@ -37,6 +37,10 @@
 #include <stddef.h>
 #include <psxpad.h>
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 // Maximum request/response length (34 bytes for pads, 140 for memory cards).
 // Must be a multiple of 4 to avoid memory alignment issues.
 //#define SPI_BUFF_LEN 36
@@ -57,6 +61,7 @@ typedef struct _SPI_Request {
 	struct _SPI_Request	*next;
 } SPI_Request;
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCSPI: diagnostic state snapshot. Filled by SPI_DbgSnapshot. */
 #define SPI_DBG_RX_HIST_SLOTS 4
 
@@ -109,6 +114,7 @@ extern volatile uint32_t spi_dbg_poll_count;
 extern volatile uint32_t spi_dbg_ack_count;
 extern volatile uint32_t spi_dbg_cb_count;
 extern volatile uint32_t spi_dbg_last_rxlen;
+#endif
 
 /* Public API */
 
@@ -116,11 +122,13 @@ extern volatile uint32_t spi_dbg_last_rxlen;
 extern "C" {
 #endif
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /**
  * @brief Snapshot driver counters + IRQ/SIO/Timer registers. Safe from
  * the main loop, NOT from an IRQ handler.
  */
 void SPI_DbgSnapshot(SPI_DbgState *out);
+#endif
 
 /**
  * @brief Allocates a new request object and adds it to the request queue. The

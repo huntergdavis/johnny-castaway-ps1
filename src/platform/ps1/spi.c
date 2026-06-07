@@ -14,6 +14,10 @@
 
 #include "spi.h"
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 /* Internal structures and globals */
 
 typedef struct _SPI_Context {
@@ -27,6 +31,7 @@ static volatile SPI_Context  _context;
 static volatile SPI_Request  *_current_req;
 static volatile SPI_Callback _default_cb;
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCSPI: instrumentation counters. Live in this TU so the IRQ handlers
  * can bump them without crossing a function-call boundary. Read by the
  * main loop (events_ps1.c) via SPI_DbgSnapshot(). All volatile so the
@@ -62,6 +67,7 @@ volatile uint32_t spi_dbg_rx_hist_idx = 0;
  * match what the BIOS has in its event table, something stomped them. */
 volatile uint32_t spi_dbg_poll_handler_addr = 0;
 volatile uint32_t spi_dbg_ack_handler_addr  = 0;
+#endif
 
 /* Request queue management */
 
@@ -110,6 +116,7 @@ static void _spi_next_req(void) {
 /* Interrupt handlers */
 
 static void _spi_poll_irq_handler(void) {
+#if PS1_VERBOSE_DIAGNOSTICS
 	/* JCSPI T21: capture $gp/$sp first thing — before touching globals.
 	 * If $gp is wrong we won't even reach the spi_dbg_*++ writes (or
 	 * they'll write to garbage memory). Capturing into a register first
@@ -128,12 +135,14 @@ static void _spi_poll_irq_handler(void) {
 
 	spi_dbg_poll_count++;
 	spi_dbg_last_rxlen = _context.rx_len;
+#endif
 
 	// Fetch the last response byte, which wasn't followed by a pulse on /ACK,
 	// from the RX FIFO.
 	if (SIO_STAT(0) & 0x0002)
 		_context.rx_buff[_context.rx_len - 1] = (uint8_t) SIO_DATA(0);
 
+#if PS1_VERBOSE_DIAGNOSTICS
 	/* JCSPI: snapshot rx history slot for this completed poll cycle. */
 	{
 		uint32_t slot = spi_dbg_rx_hist_idx & (SPI_DBG_RX_HIST_SLOTS - 1);
@@ -143,9 +152,12 @@ static void _spi_poll_irq_handler(void) {
 		spi_dbg_rx_hist_port[slot]  = _context.port;
 		spi_dbg_rx_hist_idx++;
 	}
+#endif
 
 	if (_context.callback) {
+#if PS1_VERBOSE_DIAGNOSTICS
 		spi_dbg_cb_count++;
+#endif
 		_context.callback(_context.port, _context.rx_buff, _context.rx_len);
 	}
 
@@ -173,7 +185,9 @@ static void _spi_poll_irq_handler(void) {
 }
 
 static void _spi_ack_irq_handler(void) {
+#if PS1_VERBOSE_DIAGNOSTICS
 	spi_dbg_ack_count++;
+#endif
 
 	// Wait until /ACK is pulled up by the controller before sending the next
 	// byte. According to nocash docs, this has to be done before resetting the
@@ -206,6 +220,7 @@ static void _spi_ack_irq_handler(void) {
 		SIO_DATA(0) = 0x00;
 }
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCSPI: snapshot helper. Copies all relevant state into the caller's
  * struct. Designed to be called from the main loop, NOT from an IRQ
  * handler — reads volatile registers and the static SPI context. */
@@ -282,6 +297,7 @@ void SPI_DbgSnapshot(SPI_DbgState *out) {
 			out->rx_hist[s][i] = spi_dbg_rx_hist[s][i];
 	}
 }
+#endif
 
 /* Public API */
 
@@ -318,12 +334,14 @@ void SPI_SetPollRate(uint32_t value) {
 }
 
 void SPI_Init(SPI_Callback callback) {
+#if PS1_VERBOSE_DIAGNOSTICS
 	/* JCSPI T19: record the addresses we INTENDED to install so the
 	 * snapshot can compare against whatever the BIOS event table
 	 * actually has. If the BIOS chained someone else's handler ahead
 	 * of ours, these addresses won't run. */
 	spi_dbg_poll_handler_addr = (uint32_t)&_spi_poll_irq_handler;
 	spi_dbg_ack_handler_addr  = (uint32_t)&_spi_ack_irq_handler;
+#endif
 
 	// Disable the BIOS timer handler (which for some stupid reason is enabled
 	// by default, even though it does nothing) and set up custom interrupt

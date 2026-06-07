@@ -31,6 +31,10 @@
 #include "spi.h"
 #include "ps1_pad_input.h"
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 /* Global variables */
 int evHotKeysEnabled = 0;
 int evPadDiagnosticsEnabled = 0;
@@ -39,6 +43,7 @@ int evPadDiagnosticsEnabled = 0;
  * same shared pad state via `extern uint8 pad_buff[2][34];`. */
 uint8 pad_buff[2][34];
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCSPI persistent btn tracker — watches every SPI poll (250 Hz)
  * and remembers extreme values + change count across the whole run.
  * If btn_lo ever drops below 0xFF the user pressed something; if it
@@ -53,10 +58,12 @@ volatile uint8  spi_btn_last_lo = 0xFF;
 volatile uint8  spi_btn_last_hi = 0xFF;
 volatile uint32 spi_btn_p0_polls = 0;
 volatile uint32 spi_btn_p0_nonff = 0;
+#endif
 
 static uint16 delayResidue = 0;
 static uint32 lastFrameTick = 0;
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCSPI T14: read MIPS COP0 STATUS register (SR). Bit 0 = IEc (current
  * interrupt enable). If 0, CPU-level IRQs are gated and nothing fires. */
 static uint32 cop0_read_sr(void)
@@ -96,12 +103,19 @@ static uint32 vbl_seen_at_last_snapshot = 0;
  * can't access globals. */
 static uint32 main_gp_baseline = 0;
 static uint32 main_sp_baseline = 0;
+#endif
 
 void eventsSetPadDiagnostics(int enabled)
 {
+#if PS1_VERBOSE_DIAGNOSTICS
     evPadDiagnosticsEnabled = enabled ? 1 : 0;
+#else
+    (void)enabled;
+    evPadDiagnosticsEnabled = 0;
+#endif
 }
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /*
  * Synchronous SIO0 hardware probe — IRQ-free.
  *
@@ -195,6 +209,7 @@ static void jcspiSyncProbe(void)
     #undef _SIO_STAT
     #undef _SIO_DATA
 }
+#endif
 
 static uint16 eventsDelayTicksToTargetVBlanks(uint16 delay)
 {
@@ -263,6 +278,7 @@ void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t r
     dst[2] = buff[2];          /* btn low */
     dst[3] = buff[3];          /* btn high */
 
+#if PS1_VERBOSE_DIAGNOSTICS
     /* JCSPI persistent btn tracker is diagnostic-only. Pause reads pad_buff
      * directly and does not need these volatile counters on every SPI IRQ. */
     if (evPadDiagnosticsEnabled && port == 0) {
@@ -279,6 +295,7 @@ void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t r
             spi_btn_last_hi = buff[3];
         }
     }
+#endif
 
     /* Copy remaining bytes verbatim (analog axes etc., DualShock).
      * Cap at 30 bytes after the 4-byte header — pad_buff is 34 total. */
@@ -305,6 +322,7 @@ void eventsInit()
     delayResidue = 0;
     lastFrameTick = (uint32)VSync(-1);
 
+#if PS1_VERBOSE_DIAGNOSTICS
     if (evPadDiagnosticsEnabled) {
         /* JCSPI T21 baseline: capture main-loop $gp / $sp BEFORE anything
          * else. Compared later against $gp/$sp captured at IRQ entry. If
@@ -336,6 +354,7 @@ void eventsInit()
                (unsigned)p->stat, (unsigned)p->btn);
         printf("JCSPI PADTYPE expected: stat=AA btn=DDCC (if btn at off 2 little-endian) — mismatch means LAYOUT BUG\n");
     }
+#endif
 
     /* Initialize pad_buff to a safe disconnected-controller state so any
      * reads that happen before the first SPI poll fires give 0xFFFF (no
@@ -348,6 +367,7 @@ void eventsInit()
         for (int i = 4; i < 34; i++) pad_buff[p][i] = 0x00;
     }
 
+#if PS1_VERBOSE_DIAGNOSTICS
     if (evPadDiagnosticsEnabled) {
         printf("JCPAD eventsInit ENTER (SPI driver) pad_buff[0]=%p pad_buff[1]=%p\n",
                (void*)pad_buff[0], (void*)pad_buff[1]);
@@ -363,10 +383,12 @@ void eventsInit()
                (unsigned long)((cop0_read_sr() >> 8) & 0xFF),
                (unsigned long)((cop0_read_cause() >> 2) & 0x1F));
     }
+#endif
 
     /* JCSPI: snapshot driver state IMMEDIATELY before SPI_Init for a
      * baseline. After SPI_Init, snapshot again so we can prove the
      * registers we want set are actually set. */
+#if PS1_VERBOSE_DIAGNOSTICS
     if (evPadDiagnosticsEnabled) {
         SPI_DbgState pre, post;
         SPI_DbgSnapshot(&pre);
@@ -441,12 +463,16 @@ void eventsInit()
                (unsigned long)*(volatile uint32_t*)0xBF8010F0,
                (unsigned long)*(volatile uint32_t*)0xBF8010F4);
     } else {
+#endif
         SPI_Init(eventsSpiPollCallback);
+#if PS1_VERBOSE_DIAGNOSTICS
     }
     if (evPadDiagnosticsEnabled)
         printf("JCPAD SPI_Init called — driver polling at 250 Hz (125 Hz per port)\n");
+#endif
 }
 
+#if PS1_VERBOSE_DIAGNOSTICS
 /* JCPAD diagnostic state — checked + printed by eventsWaitTick. */
 static uint32 padDiagCalls = 0;
 static uint16 padDiagLastBtn0 = 0xFFFF;
@@ -459,6 +485,7 @@ static int    padDiagBtnEverChanged1 = 0;
 static int    padDiagStatEverChanged0 = 0;
 static int    padDiagStartEverSeen = 0;
 static int    padDiagAnyPressedEverSeen = 0;
+#endif
 
 /*
  * Wait for specified number of ticks (frame timing).
@@ -471,6 +498,7 @@ static int    padDiagAnyPressedEverSeen = 0;
  */
 void eventsWaitTick(uint16 delay)
 {
+#if PS1_VERBOSE_DIAGNOSTICS
     /* JCPAD diagnostics are intentionally opt-in. Normal playback still
      * polls Start below, but does not log or sample debug registers. */
     if (evPadDiagnosticsEnabled) {
@@ -659,6 +687,7 @@ void eventsWaitTick(uint16 delay)
             printf("JCSPI VERDICT: %s\n", verdict);
         }
     }
+#endif
 
     /* Read controller state.
      *
@@ -676,8 +705,10 @@ void eventsWaitTick(uint16 delay)
         uint16 buttons = ps1PadButtonsWithAnalog(pad);
 
         if (buttons & PAD_START) {
+#if PS1_VERBOSE_DIAGNOSTICS
             if (evPadDiagnosticsEnabled)
                 printf("JCPAD START PATH ENTERED call #%lu\n", (unsigned long)padDiagCalls);
+#endif
             pauseMenuShow();
             /* pauseMenuUpdate() VSyncs internally — don't double-pace. */
             while (pauseMenuUpdate()) { }
@@ -696,8 +727,10 @@ void eventsWaitTick(uint16 delay)
                 pauseMenuRequestResetLoop) {
                 return;
             }
+#if PS1_VERBOSE_DIAGNOSTICS
             if (evPadDiagnosticsEnabled)
                 printf("JCPAD START PATH EXITED\n");
+#endif
         }
     }
 

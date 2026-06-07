@@ -237,6 +237,18 @@ to a disk-backed string table and load entries on demand. The target is not
 transition speed directly; it is executable-size recovery that can be traded for
 larger or safer async staging windows.
 
+Follow-up input-diagnostic gate:
+
+- Default builds now compile out the heavyweight `pad-diag` / `padtest` /
+  `JCSPI` / `JCPAD` / verbose `JCPADSCRIPT` paths unless
+  `PS1_VERBOSE_DIAGNOSTICS=ON`.
+- Normal direct-SPI pad polling, Start-button pause, memcard SPI requests, and
+  non-verbose `pad-script` automation remain in the default build.
+- Clean default PS1 build after this pass: `build-ps1/jcreborn.exe` 220 KB,
+  `.text` 166,364 B, `.rodata` 45,676 B.
+- `PS1_VERBOSE_DIAGNOSTICS=ON ./scripts/build-ps1.sh clean` still compiles and
+  produces a diagnostic binary with the full input forensics path.
+
 ### 2026-06-07 SPU RAM Scratch Feasibility
 
 Current audio loading leaves meaningful unused SPU RAM:

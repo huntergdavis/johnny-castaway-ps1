@@ -52,10 +52,12 @@ void pauseMenuShow(void)
            (unsigned)ps1PerfLevel,
            soundMuted);
 #endif
+#if PS1_VERBOSE_DIAGNOSTICS
     if (ps1PadScriptVerboseLogEnabled()) {
         printf("JCPAUSE show state=%d cursor=%d\n",
                (int)menuState, menuCursor);
     }
+#endif
 
     /* Refresh the heap-free cache once per pause-show. fgProbeLargestAlloc
      * does ~9 malloc/free cycles which fragments the heap if called every
@@ -65,10 +67,12 @@ void pauseMenuShow(void)
 
 void pauseMenuHide(void)
 {
+#if PS1_VERBOSE_DIAGNOSTICS
     if (ps1PadScriptVerboseLogEnabled()) {
         printf("JCPAUSE hide state=%d cursor=%d\n",
                (int)menuState, menuCursor);
     }
+#endif
     menuVisible = 0;
     menuFramebufferPrimed = 0;
     /* Sound stays in user's chosen state — no auto-restore. */

@@ -42,6 +42,9 @@ typedef struct _FILE FILE;
 #ifndef JC_PAUSE_REQUEST_DIAG_LOGS
 #define JC_PAUSE_REQUEST_DIAG_LOGS 0
 #endif
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
 /* Declare functions implemented in ps1_stubs.c */
 void exit(int status);
 int atoi(const char *str);
@@ -1012,8 +1015,10 @@ static int ps1IsFgPilotOptionToken(const char *token)
            !strcmp(token, "freeplay-log") ||
            !strcmp(token, "freeplay-detail") ||
            !strcmp(token, "freeplay-debug") ||
+#if PS1_VERBOSE_DIAGNOSTICS
            !strcmp(token, "pad-diag") ||
            !strcmp(token, "pad-debug") ||
+#endif
            !strcmp(token, "pad-script") ||
            !strcmp(token, "pad-script-log") ||
            !strcmp(token, "printf-test") ||
@@ -1199,15 +1204,19 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             freeplaySetTelemetryLevel(2);
         } else if (!strcmp(tokens[i], "freeplay-debug")) {
             freeplaySetTelemetryLevel(3);
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
             eventsSetPadDiagnostics(1);
+#endif
         } else if (!strcmp(tokens[i], "pad-script")) {
             ps1PadScriptConfigureFromEmbedded(1, 0);
         } else if (!strcmp(tokens[i], "pad-script-log")) {
             ps1PadScriptConfigureFromEmbedded(1, 1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
-        } else if (!strcmp(tokens[i], "padtest")) {
+        }
+#if PS1_VERBOSE_DIAGNOSTICS
+        else if (!strcmp(tokens[i], "padtest")) {
             /* Minimal pad-input sanity test. Runs an infinite loop that
              * paints the background red on Start, green on Cross, blue on
              * any other button, and black when nothing's pressed. Logs
@@ -1277,6 +1286,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             }
             /* unreachable */
         }
+#endif
     }
 
     if (!strcmp(tokens[0], "island")) {
@@ -1626,9 +1636,11 @@ static void parseArgs(int argc, char **argv)
                 }
             }
 #ifdef PS1_BUILD
+#if PS1_VERBOSE_DIAGNOSTICS
             else if (!strcmp(argv[i], "pad-diag") || !strcmp(argv[i], "pad-debug")) {
                 eventsSetPadDiagnostics(1);
             }
+#endif
             else if (!strcmp(argv[i], "pad-script")) {
                 ps1PadScriptConfigureFromEmbedded(1, 0);
             }
