@@ -491,9 +491,11 @@ static int grLoadFullScreenScrCached(struct TScrResource *scrResource)
     grBackgroundSfc = bgTile0;
     if (grSaveCleanOnScreenLoad)
         grSaveCleanBgTiles();
+#if PS1_VERBOSE_DIAGNOSTICS
     printf("JCSCREEN scr-cache-apply %s bytes=%lu\n",
            scrResource->resName,
            (unsigned long)scrResource->uncompressedSize);
+#endif
     return 1;
 }
 
@@ -508,7 +510,8 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
         return 0;
     }
 
-    snprintf(path, sizeof(path), "SCR\\%s", scrResource->resName);
+    if (!grBuildPath3(path, sizeof(path), "SCR\\", scrResource->resName, ""))
+        return 0;
     if (!ps1_streamResolveFile(path, &cdfile))
         return 0;
 
@@ -553,9 +556,11 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 
     if (cacheTarget) {
         gFullScreenScrCacheValid = 1;
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCSCREEN scr-cache-fill %s bytes=%lu\n",
                scrResource->resName,
                (unsigned long)scrResource->uncompressedSize);
+#endif
     }
     return 1;
 }

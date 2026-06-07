@@ -6,14 +6,8 @@ void pauseMenuEnsureFontUploaded(void)
 
 void pauseMenuInit(void)
 {
-    /* Reload BIOS font into VRAM -- graphicsInit may have overwritten it. */
-    FntLoad(960, 0);
-
-    /* Match OLD (working) commit b4476f3d: only open a stream if none
-     * exists. ps1DebugInit already opened one as fontID=0; reuse that. */
-    if (fontID < 0) {
-        fontID = FntOpen(0, 0, 640, 480, 0, 1024);
-    }
+    if (fontID < 0)
+        fontID = 0;
 #if PAUSE_MENU_DIAG_LOGS
     printf("JCPAUSE pauseMenuInit fontID=%d\n", fontID);
 #endif
@@ -31,10 +25,6 @@ void pauseMenuSetFreeplayActive(int active)
 
 void pauseMenuShow(void)
 {
-    /* Reload font VRAM each time we enter the menu -- the game's
-     * LoadImage uploads may have clobbered the (960,0) font area. */
-    FntLoad(960, 0);
-
     menuVisible           = 1;
     menuCursor            = 0;
     optionsCursor         = 0;

@@ -7,8 +7,14 @@
 #include <psxapi.h>
 #include <psxgpu.h>
 
+#ifndef PS1_PERF_VERBOSE_SCHEMA
+#define PS1_PERF_VERBOSE_SCHEMA 0
+#endif
+
 struct TTtmThread;
+#if PS1_PERF_VERBOSE_SCHEMA
 #include "island.h"
+#endif
 
 #define PS1_PERF_PHASE_SETUP 0
 #define PS1_PERF_PHASE_LOOP 1
@@ -299,6 +305,7 @@ static uint32 ps1PerfCurrentElapsed(uint32 startTick)
     return ps1PerfTickDiff(startTick, ps1PerfTick());
 }
 
+#if PS1_PERF_VERBOSE_SCHEMA
 static const char *ps1PerfFormatName(void)
 {
     if (gPs1Perf.packFormat == 2)
@@ -322,6 +329,7 @@ static const char *ps1PerfPrefetchPolicyName(void)
         return "stage1";
     return "none";
 }
+#endif
 
 void ps1PerfSetLevel(int level)
 {
@@ -1123,7 +1131,7 @@ static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
 }
 #endif
 
-#if PS1_PERF_DEEP_TRACE
+#if PS1_PERF_DEEP_TRACE && PS1_PERF_VERBOSE_SCHEMA
 static void ps1PerfPrintSchedBucket(const char *section, uint8 event)
 {
     printf(
@@ -1138,6 +1146,7 @@ static void ps1PerfPrintSchedBucket(const char *section, uint8 event)
 }
 #endif
 
+#if PS1_PERF_VERBOSE_SCHEMA
 static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
                                 uint32 setupVBlanks, uint32 cleanupVBlanks)
 {
@@ -1423,6 +1432,83 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.cdReadFailures
     );
 }
+#else
+static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
+                                uint32 setupVBlanks, uint32 cleanupVBlanks)
+{
+    uint32 overrunVBlanks = (loopVBlanks > gPs1Perf.targetVBlanks)
+        ? (loopVBlanks - gPs1Perf.targetVBlanks)
+        : 0;
+
+    (void)cleanupVBlanks;
+    printf(
+        "JCP3S %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+        gPs1Perf.sceneName,
+        (unsigned long)sceneVBlanks,
+        (unsigned long)loopVBlanks,
+        (unsigned long)gPs1Perf.targetVBlanks,
+        (unsigned long)overrunVBlanks,
+        (unsigned long)setupVBlanks,
+        (unsigned long)gPs1Perf.screenVBlanks,
+        (unsigned long)gPs1Perf.backdropVBlanks,
+        (unsigned long)gPs1Perf.packStartVBlanks,
+        (unsigned long)gPs1Perf.cleanRectVBlanks,
+        (unsigned long)gPs1Perf.firstFrameVBlanks
+    );
+    printf(
+        "JCP3C %lu %lu %lu %lu %lu %lu %lu %lu %lu %u\n",
+        (unsigned long)gPs1Perf.cdSetupReads,
+        (unsigned long)gPs1Perf.cdSetupBytes,
+        (unsigned long)gPs1Perf.cdSetupVBlanks,
+        (unsigned long)gPs1Perf.cdLoopReads,
+        (unsigned long)gPs1Perf.cdLoopVBlanks,
+        (unsigned long)gPs1Perf.cdBlockingVBlanks,
+        (unsigned long)gPs1Perf.cdHiddenVBlanks,
+        (unsigned long)gPs1Perf.cdReads,
+        (unsigned long)gPs1Perf.cdReadFailures,
+        (unsigned int)gPs1Perf.maxCdElapsedVBlanks
+    );
+    printf(
+        "JCP3P %u %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+        (unsigned int)gPs1Perf.prefetchPolicy,
+        (unsigned long)gPs1Perf.prefetchBytes,
+        (unsigned long)gPs1Perf.prefetchAttempts,
+        (unsigned long)gPs1Perf.prefetchHits,
+        (unsigned long)gPs1Perf.prefetchStageHits,
+        (unsigned long)gPs1Perf.prefetchWindowHits,
+        (unsigned long)gPs1Perf.prefetchMisses,
+        (unsigned long)gPs1Perf.prefetchSlackVBlanks,
+        (unsigned long)gPs1Perf.prefetchUsedVBlanks,
+        (unsigned long)gPs1Perf.prefetchOverrunVBlanks
+    );
+    printf(
+        "JCP3R %lu %lu %lu %lu %lu %u %u %lu %lu %lu %lu %lu\n",
+        (unsigned long)gPs1Perf.renderVBlanks,
+        (unsigned long)gPs1Perf.restoreVBlanks,
+        (unsigned long)gPs1Perf.composeVBlanks,
+        (unsigned long)gPs1Perf.presentWaitVBlanks,
+        (unsigned long)gPs1Perf.uploadElapsedVBlanks,
+        (unsigned int)gPs1Perf.maxRenderVBlanks,
+        (unsigned int)gPs1Perf.maxRenderFrameIndex,
+        (unsigned long)gPs1Perf.crossedRestore,
+        (unsigned long)gPs1Perf.crossedCompose,
+        (unsigned long)gPs1Perf.crossedUpload,
+        (unsigned long)gPs1Perf.crossedAdvance,
+        (unsigned long)gPs1Perf.fullFallbacks
+    );
+    printf(
+        "JCP3K %lu %lu %lu %lu %lu %u %u %u\n",
+        (unsigned long)gPs1Perf.advances,
+        (unsigned long)gPs1Perf.renderedLoops,
+        (unsigned long)gPs1Perf.heldLoops,
+        (unsigned long)gPs1Perf.lateAdvances,
+        (unsigned long)gPs1Perf.frameMismatches,
+        (unsigned int)gPs1Perf.maxElapsedVBlanks,
+        (unsigned int)gPs1Perf.maxElapsedFrameIndex,
+        (unsigned int)gPs1Perf.packFrameCount
+    );
+}
+#endif
 
 void __attribute__((optimize("Os"))) ps1PerfEndScene(const char *sceneName)
 {

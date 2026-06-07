@@ -125,8 +125,9 @@ void soundInit()
     int loaded = 0;
 
     for (int i = 0; i < MAX_SOUND_EFFECTS; i++) {
-        char filename[32];
-        sprintf(filename, "\\SND\\SOUND%02d.VAG;1", i);
+        char filename[] = "\\SND\\SOUND00.VAG;1";
+        filename[10] = (char)('0' + ((i / 10) % 10));
+        filename[11] = (char)('0' + (i % 10));
 
         uint32_t vagSize = 0;
         uint8_t *vagData = ps1_loadRawFile(filename, &vagSize);

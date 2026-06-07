@@ -922,6 +922,33 @@ static char *ps1CopyBootString(char *dst, size_t dstSize, const char *src)
     return dst;
 }
 
+static int ps1BuildText3(char *dst, size_t dstSize,
+                         const char *a, const char *b, const char *c)
+{
+    size_t pos = 0;
+    const char *parts[3];
+    int part;
+
+    if (dst == NULL || dstSize == 0)
+        return 0;
+
+    parts[0] = a ? a : "";
+    parts[1] = b ? b : "";
+    parts[2] = c ? c : "";
+    for (part = 0; part < 3; part++) {
+        const char *s = parts[part];
+        while (*s != '\0') {
+            if (pos + 1 >= dstSize) {
+                dst[0] = '\0';
+                return 0;
+            }
+            dst[pos++] = *s++;
+        }
+    }
+    dst[pos] = '\0';
+    return 1;
+}
+
 static void ps1RememberBootOverride(const char *source, const char *buffer)
 {
     ps1CopyBootString(ps1BootOverrideSource,
@@ -2042,9 +2069,9 @@ int main(int argc, char **argv)
             ps1ShowFreeplayLoadingFrame("changing scene set", 0);
             {
                 char banner[40];
-                snprintf(banner, sizeof(banner), "Scene Set: %s",
-                         pauseMenuSceneSetName(pauseMenuSceneSet));
-                captionsShowText(banner, 300);
+                if (ps1BuildText3(banner, sizeof(banner), "Scene Set: ",
+                                  pauseMenuSceneSetName(pauseMenuSceneSet), ""))
+                    captionsShowText(banner, 300);
             }
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
@@ -2076,11 +2103,10 @@ int main(int argc, char **argv)
                     oneShot ? "now playing" : "looping", 0);
                 {
                     char banner[64];
-                    snprintf(banner, sizeof(banner),
-                             "%s %s",
-                             oneShot ? "Now playing:" : "Looping:",
-                             gSceneExplorer[idx].display_name);
-                    captionsShowText(banner, 240);
+                    if (ps1BuildText3(banner, sizeof(banner),
+                                      oneShot ? "Now playing: " : "Looping: ",
+                                      gSceneExplorer[idx].display_name, ""))
+                        captionsShowText(banner, 240);
                 }
             }
         }

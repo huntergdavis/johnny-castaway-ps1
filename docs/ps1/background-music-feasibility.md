@@ -207,19 +207,21 @@ tune for other tracks.
 
 ## SPU RAM Map
 
-The existing SFX system uses ~94 KB starting at SPU address `0x1010`.
-After SFX, SPU memory looks like:
+The current implementation loads the SFX bank sequentially starting at SPU
+address `0x1010`, then loads `OCEAN.VAG` immediately after the last SFX. With
+the current VAG set and 64-byte DMA alignment, SPU memory looks like:
 
 | Region | Bytes | Notes |
 |---|---|---|
 | System / capture / dummy block | 0x0000 - 0x0FFF | 4 KB reserved by SPU. |
-| SFX VAG bank | 0x1010 - ~0x18000 | ~94 KB, 25 sound effects loaded by `soundInit`. |
-| **Reserved for SFX expansion** | ~0x18000 - 0x20000 | ~32 KB headroom. |
-| **OCEAN.VAG ambience loop** | 0x20000 - ~0x3F800 | ~123 KB. Address chosen to leave SFX expansion alone. |
-| **Available for future tracks** | ~0x3F800 - 0x80000 | ~257 KB. Slot model below. |
+| SFX VAG bank | 0x1010 - 0x18C0F | 97,280 bytes of DMA-aligned SFX data. |
+| **OCEAN.VAG ambience loop** | 0x18C10 - 0x3784F | 126,016 bytes of DMA-aligned ocean ADPCM. |
+| **Available for future tracks/storage** | 0x37850 - 0x7FFFF | 296,880 bytes free with ocean loaded. |
 
-(The exact addresses are implementation-side; what matters here is
-that we have ~257 KB free after the ocean loop.)
+Before `OCEAN.VAG` is loaded, the free span is 422,896 bytes. Reclaiming the
+ocean loop as scratch storage is possible only if ambience is stopped or later
+reloaded; normal code should treat the 296,880-byte post-ocean span as the
+safe always-free headroom.
 
 ## Pause-Menu Toggle: `oceanAmbientEnabled`
 

@@ -204,6 +204,78 @@ is now the next scene's activation/setup path, especially `pack_start_vb=61`.
 The next step is to prepare/adopt more pack metadata and setup state before the
 scene boundary, with the blocking path kept as fallback.
 
+### 2026-06-07 Binary-Headroom Checkpoint
+
+The branch also needs executable headroom because every byte kept out of the
+PS-EXE can become CACHE/TRANSIENT slack or future read-ahead buffer budget.
+Stage 1 removed default verbose diagnostic/perf schemas and the heavy stdio
+formatter dependencies from the PS1 build:
+
+- `PS1_PERF_VERBOSE_SCHEMA=OFF` keeps the compact `JCP3*` perf schema in the
+  default binary; the old full named `JCPERF2` lines are opt-in.
+- `PS1_VERBOSE_DIAGNOSTICS=OFF` removes verbose one-off debug strings from the
+  default binary while leaving the guarded code available for diagnosis.
+- PS1 path/caption/menu/debug formatting now uses small local append/build
+  helpers instead of `snprintf`, `sprintf`, `vsnprintf`, `FntPrint`,
+  `FntFlush`, or `FntOpen`.
+
+Clean default PS1 build after Stage 1:
+
+| Artifact | Size |
+|---|---:|
+| `build-ps1/jcreborn.exe` | 228 KB |
+| `.text` | 171,704 B |
+| `.rodata` | 49,360 B |
+| `.data + .sdata` | 9,322 B |
+
+Map/string verification: the default PS-EXE no longer links
+`snprintf`, `sprintf`, `vsnprintf`, `FntPrint`, `FntFlush`, `FntOpen`, or the
+double helper `__muldf3`.
+
+Stage 2 remains a later branch goal: move large static UI/help/diagnostic text
+to a disk-backed string table and load entries on demand. The target is not
+transition speed directly; it is executable-size recovery that can be traded for
+larger or safer async staging windows.
+
+### 2026-06-07 SPU RAM Scratch Feasibility
+
+Current audio loading leaves meaningful unused SPU RAM:
+
+| State | Used | Free |
+|---|---:|---:|
+| SFX loaded, before `OCEAN.VAG` | 101,392 B | 422,896 B |
+| SFX plus `OCEAN.VAG` loaded | 227,408 B | 296,880 B |
+
+This gives the branch about 290 KB of always-free SPU-side storage with the
+ocean loop enabled, or about 413 KB if the ocean loop is temporarily not
+resident.
+
+This is useful as cold storage, not normal heap:
+
+- The CPU cannot directly dereference SPU RAM.
+- CD data still has to land in main RAM first, then be copied to SPU with
+  `SpuWrite`; later use requires `SpuRead` back into main RAM before CPU decode
+  or GPU upload.
+- SPU DMA is fast enough to be a plausible staging/cache move, but it adds
+  another transfer and must not overwrite playing SFX or the ocean loop.
+
+Promising branch uses:
+
+- Park compressed next-scene bytes in SPU RAM after an async CD read has filled
+  a main-RAM window, freeing that main-RAM window for the current scene.
+- Store low-priority setup chunks or string-table pages that are cheap to read
+  back before activation.
+- Treat the ocean loop's 126 KB as optional emergency headroom only behind an
+  explicit experiment, because reclaiming it means stopping or reloading
+  ambience before playback.
+
+Non-goals for SPU scratch:
+
+- No direct CD-to-SPU path.
+- No direct GPU render/upload from SPU RAM.
+- No overwriting resident audio assets unless the owning voice is stopped and
+  the asset can be reloaded deterministically.
+
 ## Phase 3: Instrumentation
 
 Replace the currently zeroed async perf line with real counters once Phase 2 is

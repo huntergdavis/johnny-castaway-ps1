@@ -126,7 +126,8 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
      * return MEM_REGION_CACHE-allocated buffers — free uniformly
      * via memFree(CACHE) below. */
     if (psbBuf == NULL) {
-        snprintf(psbPath, sizeof(psbPath), "PSB\\%s", psbName);
+        if (!grBuildPath3(psbPath, sizeof(psbPath), "PSB\\", psbName, ""))
+            return 0;
         psbBuf = ps1_streamReadCache(psbPath, 0, psbSize);
         if (psbBuf == NULL) return 0;
     }

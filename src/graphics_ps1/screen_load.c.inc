@@ -75,7 +75,11 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     else if (!strcmp(family, "building")) abbrev = "BL";
     else return 0;
 
-    snprintf(path, sizeof(path), "SCR\\SX%s%s.SCR", abbrev, digits);
+    if (!grBuildPath3(path, sizeof(path), "SCR\\SX", abbrev, ""))
+        return 0;
+    i = strlen(path);
+    if (!grBuildPath3(path + i, sizeof(path) - (size_t)i, digits, ".SCR", ""))
+        return 0;
     if (!ps1_streamResolveFile(path, &cdfile))
         return 0;
 

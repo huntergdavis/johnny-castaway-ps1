@@ -13,12 +13,14 @@
 #include <sys/types.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <psxgpu.h>
 #include <psxgte.h>
 #include <psxapi.h>
 #include <psxpad.h>
 
 #include "ps1_debug.h"
+#include "ps1_gpu_ot.h"
 
 /* Font stream ID - not static so jc_reborn.c can access it */
 int fontID = -1;

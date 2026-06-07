@@ -10,6 +10,8 @@ source "scripts/docker-common.sh"
 docker_init
 
 PS1_PERF_DEEP_TRACE="${PS1_PERF_DEEP_TRACE:-OFF}"
+PS1_PERF_VERBOSE_SCHEMA="${PS1_PERF_VERBOSE_SCHEMA:-OFF}"
+PS1_VERBOSE_DIAGNOSTICS="${PS1_VERBOSE_DIAGNOSTICS:-OFF}"
 
 python3 - <<'PY'
 import json
@@ -73,6 +75,8 @@ if [ "${1:-}" = "clean" ]; then
             cmake -G "Unix Makefiles" \
                 -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
                 -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
+                -DPS1_PERF_VERBOSE_SCHEMA='"$PS1_PERF_VERBOSE_SCHEMA"' \
+                -DPS1_VERBOSE_DIAGNOSTICS='"$PS1_VERBOSE_DIAGNOSTICS"' \
                 -S /project -B /project/build-ps1
         '
 fi
@@ -89,6 +93,8 @@ echo "=== Building PS1 executable ==="
         cmake -G "Unix Makefiles" \
             -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
             -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
+            -DPS1_PERF_VERBOSE_SCHEMA='"$PS1_PERF_VERBOSE_SCHEMA"' \
+            -DPS1_VERBOSE_DIAGNOSTICS='"$PS1_VERBOSE_DIAGNOSTICS"' \
             -S /project -B /project/build-ps1
         cd /project/build-ps1
         make jcreborn

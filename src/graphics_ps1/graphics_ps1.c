@@ -44,12 +44,42 @@
 #ifndef GRAPHICS_PS1_DIAG_LOGS
 #define GRAPHICS_PS1_DIAG_LOGS 0
 #endif
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
 
 #if GRAPHICS_PS1_DIAG_LOGS
 #define GR_DIAG_PRINTF(...) do { if (debugMode) printf(__VA_ARGS__); } while (0)
 #else
 #define GR_DIAG_PRINTF(...) do { } while (0)
 #endif
+
+static int grBuildPath3(char *out, size_t outSize,
+                        const char *a, const char *b, const char *c)
+{
+    size_t pos = 0;
+    const char *parts[3];
+    int part;
+
+    if (out == NULL || outSize == 0)
+        return 0;
+
+    parts[0] = a ? a : "";
+    parts[1] = b ? b : "";
+    parts[2] = c ? c : "";
+    for (part = 0; part < 3; part++) {
+        const char *s = parts[part];
+        while (*s != '\0') {
+            if (pos + 1 >= outSize) {
+                out[0] = '\0';
+                return 0;
+            }
+            out[pos++] = *s++;
+        }
+    }
+    out[pos] = '\0';
+    return 1;
+}
 
 /* Primitive buffer for GPU commands */
 #define PRIMITIVE_BUFFER_SIZE 32768

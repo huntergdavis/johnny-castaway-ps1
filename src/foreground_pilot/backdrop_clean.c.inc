@@ -200,6 +200,7 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[1] = upperMinY;
         ws[1] = (uint16)(upperEndX - upperMinX);
         hs[1] = (uint16)(upperEndY - upperMinY);
+#if PS1_VERBOSE_DIAGNOSTICS
 #if FG_HEAP_PROBE_LOGS
         if (gFgHeapProbeEnabled) {
             printf("JCRECT 2-rect lower=(%d,%d,%u,%u) upper=(%d,%d,%u,%u) heapKB=%lu\n",
@@ -213,9 +214,12 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
                    (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
                    (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1]);
         }
+#endif
         int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 2,
                                          kMaxCleanRectBytes);
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCRECT 2-rect split grSaveCleanBgRects=%d\n", rc);
+#endif
         return rc > 0;
     } else {
         sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
@@ -225,6 +229,7 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[0] = lowerMinY;
         ws[0] = (uint16)(lowerEndX - lowerMinX);
         hs[0] = (uint16)(lowerEndY - lowerMinY);
+#if PS1_VERBOSE_DIAGNOSTICS
 #if FG_HEAP_PROBE_LOGS
         if (gFgHeapProbeEnabled) {
             printf("JCRECT 1-rect lower=(%d,%d,%u,%u) heapKB=%lu\n",
@@ -236,9 +241,12 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
             printf("JCRECT 1-rect lower=(%d,%d,%u,%u)\n",
                    (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0]);
         }
+#endif
         int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 1,
                                          kMaxCleanRectBytes);
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCRECT 1-rect split grSaveCleanBgRects=%d\n", rc);
+#endif
         return rc > 0;
     }
 }

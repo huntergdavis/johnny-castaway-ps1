@@ -24,6 +24,10 @@
 #include "ps1_debug.h"
 #include "scene_freeplay.h"
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 uint16 ps1AdsDbgActiveThreads = 0;
 uint16 ps1AdsDbgMini = 0;
 uint16 ps1AdsDbgRunningThreads = 0;
@@ -539,10 +543,12 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 gFgFrameBufferSize = maxDataSize;
             }
             if (cleanMemoryRelief) {
+#if PS1_VERBOSE_DIAGNOSTICS
                 printf("JCMEM clean-relief scene=%s clean=%lu maxFrame=%lu no-prefetch\n",
                        sceneName,
                        (unsigned long)cleanSnapshotEstimate,
                        (unsigned long)maxDataSize);
+#endif
                 fgDropOptionalPrefetchBuffersForCleanSnapshot();
                 if (fgSceneForcesCleanMemoryRelief(sceneName)) {
                     /* Round 16: explicit-free of grow-only persistent
@@ -1174,10 +1180,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * state, breaking the 226s soak ceiling. */
     {
         if (reuseCleanOverlayForProof) {
+#if PS1_VERBOSE_DIAGNOSTICS
             if (perfDetail) {
                 printf("JCSCREEN clean-overlay-ready bytes=%lu\n",
                        grCleanBgRectsBytes());
             }
+#endif
         } else {
             grFreeCleanBgRects();
             fgCleanOverlayInvalidate();
@@ -1199,8 +1207,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * 790s in the R33-extended soak. */
         if (keepBackgrndForProof) {
             fgBackdropRelease(1);
+#if PS1_VERBOSE_DIAGNOSTICS
             if (perfDetail)
                 printf("JCWAVE keep-backgrnd\n");
+#endif
         } else {
             fgBackdropRelease(0);
         }
@@ -1211,6 +1221,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     {
         int rewound = memCacheRewindIfEmpty();
         if (!rewound) {
+#if PS1_VERBOSE_DIAGNOSTICS
             extern size_t memRegionUsed(unsigned int);
             extern int numAdsResources;
             extern int numTtmResources;
@@ -1256,6 +1267,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                    bmpLive, bmpPinned, (unsigned long)(bmpBytes/1024),
                    scrLive, scrPinned, (unsigned long)(scrBytes/1024));
             memDumpCacheStats("JCMEM cache-stats-at-rewind-skip");
+#endif
         }
     }
 
@@ -1307,10 +1319,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     if (reuseCleanOverlayForProof) {
         grRestoreBgRectsFull();
+#if PS1_VERBOSE_DIAGNOSTICS
         if (perfDetail) {
             printf("JCSCREEN clean-overlay-apply bytes=%lu\n",
                    grCleanBgRectsBytes());
         }
+#endif
     }
     grSetSaveCleanOnScreenLoad(1);
     if (ps1PerfEnabled)
@@ -1374,21 +1388,27 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             /* Wide scenes need the backdrop baseline more than optional
              * prefetch. The pixels stay exact; only the hidden-read cache is
              * sacrificed for enough contiguous heap to save clean rects. */
+#if PS1_VERBOSE_DIAGNOSTICS
             printf("JCMEM large-clean scene=%s bytes=%lu drop-prefetch\n",
                    sceneName, (unsigned long)cleanRectEstimate);
+#endif
             fgDropPressureCachesForCleanSnapshot(sceneName, cleanRectEstimate);
         }
         fgDropSetupResidencyForCleanSnapshot(sceneName, cleanRectEstimate);
     }
     if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
+#endif
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
     } else if (reuseCleanOverlayForProof) {
+#if PS1_VERBOSE_DIAGNOSTICS
         if (perfDetail) {
             printf("JCSCREEN clean-overlay-skip-save bytes=%lu\n",
                    grCleanBgRectsBytes());
         }
+#endif
     } else {
         int forceCleanCacheForProof = gFgLoadingWaveProofEnabled &&
             !blackBackdrop &&

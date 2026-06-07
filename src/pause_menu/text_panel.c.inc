@@ -1,13 +1,12 @@
 /* ---------------------------------------------------------------------------
- *  Drawing helpers -- all use FntPrint into the existing fontID stream
+ *  Drawing helpers -- direct BIOS-font SPRT renderer
  * ------------------------------------------------------------------------- */
 
 /* MANUAL SPRT TEXT RENDERER.
  *
- * Bypasses PSn00bSDK's broken FntFlush by building SPRT primitives
- * ourselves, pointing at the BIOS font texture that FntLoad(960, 0)
- * uploaded to VRAM. The BIOS font is 16 chars wide × 16 chars tall,
- * 8x8 each (256 chars total), stored 4-bit packed.
+ * Builds SPRT primitives directly, pointing at the BIOS font texture uploaded
+ * to VRAM. The BIOS font is 16 chars wide by 16 chars tall, 8x8 each
+ * (256 chars total), stored 4-bit packed.
  *
  * ASCII char N → texture coords (u, v):
  *   col = N % 16, row = N / 16
@@ -57,31 +56,207 @@ static void pmTextDrawChar(uint8 **nextp, uint32 *otSlot, char c)
     pmTextX += PM_DRAW_W;
 }
 
-static void pmTextDrawStr(uint8 **nextp, uint32 *otSlot, const char *s)
+static void pmTextDrawStrN(uint8 **nextp, uint32 *otSlot,
+                           const char *s, int maxChars)
 {
-    while (*s) {
+    int count = 0;
+
+    if (s == NULL)
+        s = "(null)";
+    while (*s && (maxChars < 0 || count < maxChars)) {
+        if (*s == '\n' || *s == '\r') {
+            s++;
+            continue;
+        }
         pmTextDrawChar(nextp, otSlot, *s);
         s++;
+        count++;
     }
 }
 
-/* printf-style helper that uses the per-frame globals. Newline at end
- * advances pmTextY by PM_LINE_STEP and resets pmTextX to the column
- * the line started in (set by the caller before this call). */
+static int pmTextLenN(const char *s, int maxChars)
+{
+    int len = 0;
+
+    if (s == NULL)
+        s = "(null)";
+    while (*s && (maxChars < 0 || len < maxChars)) {
+        if (*s != '\n' && *s != '\r')
+            len++;
+        s++;
+    }
+    return len;
+}
+
+static void pmTextDrawPad(int count, char c)
+{
+    while (count-- > 0)
+        pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, c);
+}
+
+static int pmUnsignedDigits(unsigned long value, char *digits)
+{
+    char tmp[16];
+    int count = 0;
+    int out = 0;
+
+    do {
+        tmp[count++] = (char)('0' + (value % 10UL));
+        value /= 10UL;
+    } while (value != 0 && count < (int)sizeof(tmp));
+
+    while (count > 0)
+        digits[out++] = tmp[--count];
+    digits[out] = '\0';
+    return out;
+}
+
+static void pmTextDrawUnsigned(unsigned long value, char signChar,
+                               int width, int leftJustify, int zeroPad)
+{
+    char digits[16];
+    int digitCount = pmUnsignedDigits(value, digits);
+    int total = digitCount + (signChar ? 1 : 0);
+    int pad = (width > total) ? (width - total) : 0;
+    int i;
+
+    if (!leftJustify && !zeroPad)
+        pmTextDrawPad(pad, ' ');
+    if (signChar)
+        pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, signChar);
+    if (!leftJustify && zeroPad)
+        pmTextDrawPad(pad, '0');
+    for (i = 0; i < digitCount; i++)
+        pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, digits[i]);
+    if (leftJustify)
+        pmTextDrawPad(pad, ' ');
+}
+
+static const char *pmParseFormat(const char *p, int *leftJustify,
+                                 int *plusSign, int *zeroPad,
+                                 int *width, int *precision,
+                                 int *longFlag, char *spec)
+{
+    *leftJustify = 0;
+    *plusSign = 0;
+    *zeroPad = 0;
+    *width = 0;
+    *precision = -1;
+    *longFlag = 0;
+
+    for (;;) {
+        if (*p == '-') {
+            *leftJustify = 1;
+            p++;
+        } else if (*p == '+') {
+            *plusSign = 1;
+            p++;
+        } else if (*p == '0') {
+            *zeroPad = 1;
+            p++;
+        } else {
+            break;
+        }
+    }
+
+    while (*p >= '0' && *p <= '9') {
+        *width = (*width * 10) + (*p - '0');
+        p++;
+    }
+
+    if (*p == '.') {
+        p++;
+        *precision = 0;
+        while (*p >= '0' && *p <= '9') {
+            *precision = (*precision * 10) + (*p - '0');
+            p++;
+        }
+    }
+
+    if (*p == 'l') {
+        *longFlag = 1;
+        p++;
+    }
+
+    *spec = *p;
+    if (*p != '\0')
+        p++;
+    return p;
+}
+
+/* Small menu-only printf subset. It supports the formats used by the
+ * pause UI without pulling in the general formatter on PS1. */
 static void pmPrintf(const char *fmt, ...)
 {
-    char buf[80];
     va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, sizeof(buf), fmt, ap);
-    va_end(ap);
-    /* Strip trailing newlines — pmPrintf advances Y itself. */
-    int len = (int)strlen(buf);
-    while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r'))
-        buf[--len] = '\0';
-    /* Reset X to line start. */
+    const char *p;
+
+    if (fmt == NULL)
+        fmt = "";
+
     pmTextX = pmPrintfX;
-    pmTextDrawStr(&pmFramePrimNext, pmFrameOtSlot, buf);
+    va_start(ap, fmt);
+    p = fmt;
+    while (*p) {
+        int leftJustify;
+        int plusSign;
+        int zeroPad;
+        int width;
+        int precision;
+        int longFlag;
+        char spec;
+
+        if (*p == '\n' || *p == '\r') {
+            p++;
+            continue;
+        }
+        if (*p != '%') {
+            pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, *p++);
+            continue;
+        }
+
+        p++;
+        if (*p == '%') {
+            pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, '%');
+            p++;
+            continue;
+        }
+
+        p = pmParseFormat(p, &leftJustify, &plusSign, &zeroPad,
+                          &width, &precision, &longFlag, &spec);
+        if (spec == 's') {
+            const char *s = va_arg(ap, const char *);
+            int len = pmTextLenN(s, precision);
+            int pad = (width > len) ? (width - len) : 0;
+            if (!leftJustify)
+                pmTextDrawPad(pad, ' ');
+            pmTextDrawStrN(&pmFramePrimNext, pmFrameOtSlot, s, precision);
+            if (leftJustify)
+                pmTextDrawPad(pad, ' ');
+        } else if (spec == 'd') {
+            long value = longFlag ? va_arg(ap, long) : (long)va_arg(ap, int);
+            unsigned long mag;
+            char signChar = 0;
+            if (value < 0) {
+                signChar = '-';
+                mag = 0UL - (unsigned long)value;
+            } else {
+                mag = (unsigned long)value;
+                if (plusSign)
+                    signChar = '+';
+            }
+            pmTextDrawUnsigned(mag, signChar, width, leftJustify, zeroPad);
+        } else if (spec == 'u') {
+            unsigned long value = longFlag
+                ? va_arg(ap, unsigned long)
+                : (unsigned long)va_arg(ap, unsigned int);
+            pmTextDrawUnsigned(value, 0, width, leftJustify, zeroPad);
+        } else if (spec != '\0') {
+            pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, '%');
+            pmTextDrawChar(&pmFramePrimNext, pmFrameOtSlot, spec);
+        }
+    }
+    va_end(ap);
     pmTextY += PM_LINE_STEP;
 }
 

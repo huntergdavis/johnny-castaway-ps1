@@ -11,21 +11,256 @@
 #include "mytypes.h"
 #include "cdrom_ps1.h"
 
-extern int printf(const char *format, ...);
-extern int vsnprintf(char *str, size_t size, const char *format, __gnuc_va_list arg);
+__asm__(
+    ".text\n"
+    ".globl ps1_stdio_bios_write\n"
+    ".type ps1_stdio_bios_write,@function\n"
+    "ps1_stdio_bios_write:\n"
+    "li $10,0xa0\n"
+    "jr $10\n"
+    "li $9,3\n"
+);
+extern int ps1_stdio_bios_write(int fd, const void *buff, size_t len);
 
 typedef struct _FILE FILE;
 #define stderr ((FILE*)2)
 #define stdout ((FILE*)1)
 
+static int ps1StdoutWrite(const char *text, size_t len)
+{
+    if (text == NULL || len == 0)
+        return 0;
+    ps1_stdio_bios_write(1, text, len);
+    return (int)len;
+}
+
+static int ps1StdoutChar(char ch)
+{
+    ps1_stdio_bios_write(1, &ch, 1);
+    return 1;
+}
+
+static int ps1StdoutStringN(const char *text, int maxChars)
+{
+    const char *start;
+    size_t len = 0;
+
+    if (text == NULL)
+        text = "(null)";
+
+    start = text;
+    while (*text != '\0' && (maxChars < 0 || (int)len < maxChars)) {
+        text++;
+        len++;
+    }
+    return ps1StdoutWrite(start, len);
+}
+
+static int ps1StdoutPad(int count, char ch)
+{
+    int written = 0;
+
+    while (count-- > 0)
+        written += ps1StdoutChar(ch);
+    return written;
+}
+
+static int ps1DigitsUnsigned(unsigned long value, unsigned int base,
+                             int uppercase, char *digits)
+{
+    const char *alphabet = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
+    char tmp[32];
+    int count = 0;
+    int out = 0;
+
+    if (base < 2)
+        base = 10;
+    do {
+        tmp[count++] = alphabet[value % base];
+        value /= base;
+    } while (value != 0 && count < (int)sizeof(tmp));
+
+    while (count > 0)
+        digits[out++] = tmp[--count];
+    digits[out] = '\0';
+    return out;
+}
+
+static int ps1StdoutUnsigned(unsigned long value, unsigned int base,
+                             int uppercase, char signChar,
+                             int width, int leftJustify, int zeroPad)
+{
+    char digits[32];
+    int digitCount = ps1DigitsUnsigned(value, base, uppercase, digits);
+    int total = digitCount + (signChar ? 1 : 0);
+    int pad = (width > total) ? (width - total) : 0;
+    int written = 0;
+    int i;
+
+    if (!leftJustify && !zeroPad)
+        written += ps1StdoutPad(pad, ' ');
+    if (signChar)
+        written += ps1StdoutChar(signChar);
+    if (!leftJustify && zeroPad)
+        written += ps1StdoutPad(pad, '0');
+    for (i = 0; i < digitCount; i++)
+        written += ps1StdoutChar(digits[i]);
+    if (leftJustify)
+        written += ps1StdoutPad(pad, ' ');
+    return written;
+}
+
+int putchar(int ch)
+{
+    ps1StdoutChar((char)ch);
+    return ch;
+}
+
+int puts(const char *str)
+{
+    int written = ps1StdoutStringN(str, -1);
+    written += ps1StdoutChar('\n');
+    return written;
+}
+
 int vprintf(const char *format, __gnuc_va_list arg)
 {
-    char buffer[512];
-    int result = vsnprintf(buffer, sizeof(buffer), format, arg);
-    if (result >= 0) {
-        buffer[sizeof(buffer) - 1] = '\0';
-        printf("%s", buffer);
+    int written = 0;
+
+    if (format == NULL)
+        return 0;
+
+    while (*format != '\0') {
+        const char *runStart;
+        int leftJustify = 0;
+        int plusSign = 0;
+        int zeroPad = 0;
+        int width = 0;
+        int precision = -1;
+        int longFlag = 0;
+        char spec;
+
+        runStart = format;
+        while (*format != '\0' && *format != '%')
+            format++;
+        if (format != runStart)
+            written += ps1StdoutWrite(runStart, (size_t)(format - runStart));
+        if (*format == '\0')
+            break;
+
+        format++;
+        if (*format == '%') {
+            written += ps1StdoutChar('%');
+            format++;
+            continue;
+        }
+
+        for (;;) {
+            if (*format == '-') {
+                leftJustify = 1;
+                format++;
+            } else if (*format == '+') {
+                plusSign = 1;
+                format++;
+            } else if (*format == '0') {
+                zeroPad = 1;
+                format++;
+            } else {
+                break;
+            }
+        }
+
+        while (*format >= '0' && *format <= '9') {
+            width = (width * 10) + (*format - '0');
+            format++;
+        }
+
+        if (*format == '.') {
+            format++;
+            precision = 0;
+            while (*format >= '0' && *format <= '9') {
+                precision = (precision * 10) + (*format - '0');
+                format++;
+            }
+        }
+
+        if (*format == 'l') {
+            longFlag = 1;
+            format++;
+        } else if (*format == 'h') {
+            format++;
+        }
+
+        spec = *format;
+        if (spec != '\0')
+            format++;
+
+        if (spec == 's') {
+            const char *s = va_arg(arg, const char *);
+            int len = 0;
+            const char *scan = s ? s : "(null)";
+            int pad;
+
+            while (scan[len] != '\0' &&
+                   (precision < 0 || len < precision)) {
+                len++;
+            }
+            pad = (width > len) ? (width - len) : 0;
+            if (!leftJustify)
+                written += ps1StdoutPad(pad, ' ');
+            written += ps1StdoutStringN(s, precision);
+            if (leftJustify)
+                written += ps1StdoutPad(pad, ' ');
+        } else if (spec == 'd' || spec == 'i') {
+            long value = longFlag ? va_arg(arg, long) : (long)va_arg(arg, int);
+            unsigned long mag;
+            char signChar = 0;
+
+            if (value < 0) {
+                signChar = '-';
+                mag = 0UL - (unsigned long)value;
+            } else {
+                mag = (unsigned long)value;
+                if (plusSign)
+                    signChar = '+';
+            }
+            written += ps1StdoutUnsigned(mag, 10, 0, signChar,
+                                         width, leftJustify, zeroPad);
+        } else if (spec == 'u') {
+            unsigned long value = longFlag
+                ? va_arg(arg, unsigned long)
+                : (unsigned long)va_arg(arg, unsigned int);
+            written += ps1StdoutUnsigned(value, 10, 0, 0,
+                                         width, leftJustify, zeroPad);
+        } else if (spec == 'x' || spec == 'X') {
+            unsigned long value = longFlag
+                ? va_arg(arg, unsigned long)
+                : (unsigned long)va_arg(arg, unsigned int);
+            written += ps1StdoutUnsigned(value, 16, spec == 'X', 0,
+                                         width, leftJustify, zeroPad);
+        } else if (spec == 'p') {
+            unsigned long value = (unsigned long)va_arg(arg, void *);
+            written += ps1StdoutStringN("0x", -1);
+            written += ps1StdoutUnsigned(value, 16, 0, 0, 8, 0, 1);
+        } else if (spec == 'c') {
+            written += ps1StdoutChar((char)va_arg(arg, int));
+        } else if (spec != '\0') {
+            written += ps1StdoutChar('%');
+            written += ps1StdoutChar(spec);
+        }
     }
+
+    return written;
+}
+
+int printf(const char *format, ...)
+{
+    va_list args;
+    int result;
+
+    va_start(args, format);
+    result = vprintf(format, args);
+    va_end(args);
     return result;
 }
 

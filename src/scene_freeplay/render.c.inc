@@ -109,10 +109,10 @@ static void fpDrawAsset(const struct TFpAsset *asset)
 
 static void fpDrawFire(void)
 {
-    char bmp[12];
+    char bmp[] = "FIRE1.BMP";
     if (!gFp.fireActive)
         return;
-    snprintf(bmp, sizeof(bmp), "FIRE%u.BMP", (unsigned)((gFp.fireFrame % 5) + 1));
+    bmp[4] = (char)('1' + (gFp.fireFrame % 5));
     if (!fpLoadSlot(FP_SLOT_PERSIST, bmp))
         return;
     fpSetIslandDrawOffset();
@@ -223,6 +223,7 @@ static void fpBuildOverlay(void)
         fpText(gFp.banner);
     }
 
+#if PS1_VERBOSE_DIAGNOSTICS
     if (gFreeplayTelemetryLevel >= 3) {
         char line[64];
         snprintf(line, sizeof(line), "FP %s X%d Y%d R%lu A%lu",
@@ -232,12 +233,15 @@ static void fpBuildOverlay(void)
         fpTextStart(12, 204);
         fpText(line);
     }
+#endif
 }
 
 static int fpOverlayVisible(void)
 {
     return (gFp.bannerTimer > 0 ||
+#if PS1_VERBOSE_DIAGNOSTICS
             gFreeplayTelemetryLevel >= 3 ||
+#endif
             captionsIsVisible()) ? 1 : 0;
 }
 
@@ -258,7 +262,11 @@ static void fpPresent(void)
     ps1FrameCount++;
     VSync(0);
     grDrawBackground();
-    if (gFp.bannerTimer > 0 || gFreeplayTelemetryLevel >= 3) {
+    if (gFp.bannerTimer > 0 ||
+#if PS1_VERBOSE_DIAGNOSTICS
+        gFreeplayTelemetryLevel >= 3 ||
+#endif
+        0) {
         pauseMenuEnsureFontUploaded();
         fpBuildOverlay();
         DrawOTag(&fpOverlayOt[FP_OVERLAY_OT_LEN - 1]);

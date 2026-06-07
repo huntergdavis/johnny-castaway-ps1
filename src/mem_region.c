@@ -148,9 +148,8 @@ void memHalt(const char *scene, const char *reason)
                 __FILE__, __LINE__);
         /* ps1Bsod is noreturn — compiler infers unreachable. */
     } else {
-        ps1DebugError("%s: %s",
-                      scene  ? scene  : "(boot)",
-                      reason ? reason : "(unspecified)");
+        (void)scene;
+        ps1DebugError(reason ? reason : "(unspecified)");
         for (;;) { /* halt forever — GCC infers non-returning */ }
     }
 }
@@ -162,24 +161,52 @@ void memHalt(const char *scene, const char *reason)
 static char        g_haltReason[160];
 static volatile int g_haltDepth = 0;
 
+static char *memAppendText(char *dst, char *end, const char *src)
+{
+    if (src == NULL)
+        src = "?";
+    while (dst < end && *src != '\0') {
+        *dst++ = *src++;
+    }
+    *dst = '\0';
+    return dst;
+}
+
+static char *memAppendUnsigned(char *dst, char *end, size_t value)
+{
+    char digits[24];
+    int count = 0;
+
+    do {
+        digits[count++] = (char)('0' + (value % 10u));
+        value /= 10u;
+    } while (value != 0 && count < (int)sizeof(digits));
+
+    while (count > 0 && dst < end)
+        *dst++ = digits[--count];
+    *dst = '\0';
+    return dst;
+}
+
 static const char *formatHaltReason(const char *region, const char *what,
                                     size_t required, size_t available)
 {
+    char *p;
+    char *end;
+
     if (g_haltDepth++ > 0) {
         return "[concurrent fatal]";
     }
-    /* PSX libc printf is non-allocating per project invariant. */
-#ifdef PS1_BUILD
-    extern int snprintf(char *, size_t, const char *, ...);
-#else
-    /* host stdio.h supplies snprintf */
-#endif
-    snprintf(g_haltReason, sizeof(g_haltReason),
-             "%s %s: req=%lu have=%lu",
-             region ? region : "?",
-             what   ? what   : "?",
-             (unsigned long)required,
-             (unsigned long)available);
+    p = g_haltReason;
+    end = g_haltReason + sizeof(g_haltReason) - 1;
+    *p = '\0';
+    p = memAppendText(p, end, region);
+    p = memAppendText(p, end, " ");
+    p = memAppendText(p, end, what);
+    p = memAppendText(p, end, ": req=");
+    p = memAppendUnsigned(p, end, required);
+    p = memAppendText(p, end, " have=");
+    p = memAppendUnsigned(p, end, available);
     return g_haltReason;
 }
 

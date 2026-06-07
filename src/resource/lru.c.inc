@@ -2,6 +2,10 @@
  * LRU Cache Implementation
  * ============================================================================ */
 
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+
 void initLRUCache(void) {
     globalTick = 0;
     totalMemoryUsed = 0;
@@ -130,11 +134,13 @@ void checkMemoryBudget(void) {
         return;
     }
 
+#if !defined(PS1_BUILD) || PS1_VERBOSE_DIAGNOSTICS
     if (debugMode) {
         printf("LRU cache: Memory over budget (%.2f MB / %.2f MB), evicting...\n",
                totalMemoryUsed / (1024.0 * 1024.0),
                memoryBudget / (1024.0 * 1024.0));
     }
+#endif
 
     /* Find and evict LRU unpinned resources */
     while (totalMemoryUsed > memoryBudget) {
@@ -171,10 +177,12 @@ void checkMemoryBudget(void) {
         if (lruResource != NULL) {
             if (strcmp(lruType, "ADS") == 0) {
                 struct TAdsResource *ads = (struct TAdsResource *)lruResource;
+#if !defined(PS1_BUILD) || PS1_VERBOSE_DIAGNOSTICS
                 if (debugMode) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ads->resName, lruSize / 1024.0);
                 }
+#endif
                 /* PS1: uncompressedData is CACHE-region allocated
                  * via ps1_streamReadFromCdFile (or ps1_fopen file
                  * buffer). LRU evictor frees through memFree. */
@@ -187,10 +195,12 @@ void checkMemoryBudget(void) {
                 totalMemoryUsed -= lruSize;
             } else if (strcmp(lruType, "TTM") == 0) {
                 struct TTtmResource *ttm = (struct TTtmResource *)lruResource;
+#if !defined(PS1_BUILD) || PS1_VERBOSE_DIAGNOSTICS
                 if (debugMode) {
                     printf("LRU cache: Evicting %s (%.2f KB)\n",
                            ttm->resName, lruSize / 1024.0);
                 }
+#endif
 #ifdef PS1_BUILD
                 memFree(MEM_REGION_CACHE, ttm->uncompressedData);
 #else
@@ -201,9 +211,11 @@ void checkMemoryBudget(void) {
             }
         } else {
             /* No unpinned resources to evict */
+#if !defined(PS1_BUILD) || PS1_VERBOSE_DIAGNOSTICS
             if (debugMode) {
                 printf("LRU cache: All resources pinned, cannot evict\n");
             }
+#endif
             break;
         }
     }

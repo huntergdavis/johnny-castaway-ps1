@@ -118,7 +118,7 @@ void ps1Bsod(const char *scene, const char *reason,
      * comfortable margin. 304x224 inset by 8 px — gives ~38 columns,
      * 28 rows. */
     FntLoad(960, 0);
-    fontID = FntOpen(8, 8, BSOD_W - 16, BSOD_H - 16, 0, 1024);
+    fontID = 0;
 
     if (scene == NULL || scene[0] == '\0') scene = "(unknown)";
     if (reason == NULL || reason[0] == '\0') reason = "(unspecified)";
@@ -150,6 +150,9 @@ void ps1Bsod(const char *scene, const char *reason,
      * structure stays readable. */
     {
         char reasonBuf[256];
+        char panelBuf[1024];
+        char *panel = panelBuf;
+        char *panelEnd = panelBuf + sizeof(panelBuf) - 1;
         size_t outLen = 0;
         const size_t indentChars = 3;     /* "   " prefix on each line */
         const size_t bufMax = sizeof(reasonBuf) - 1;
@@ -188,7 +191,8 @@ void ps1Bsod(const char *scene, const char *reason,
         }
         reasonBuf[outLen] = '\0';
 
-        FntPrint(fontID,
+        *panel = '\0';
+        panel = ps1DebugAppendText(panel, panelEnd,
             " JOHNNY CASTAWAY  SYSTEM ERROR\n"
             " ==============================\n"
             "\n"
@@ -196,22 +200,32 @@ void ps1Bsod(const char *scene, const char *reason,
             " The screensaver has halted to\n"
             " prevent further problems.\n"
             "\n"
-            " Reason:\n"
-            "%s"
+            " Reason:\n");
+        panel = ps1DebugAppendText(panel, panelEnd, reasonBuf);
+        panel = ps1DebugAppendText(panel, panelEnd,
             "\n"
-            " Scene:  %s\n"
-            " At:     %s:%d\n"
+            " Scene:  ");
+        panel = ps1DebugAppendText(panel, panelEnd, scene);
+        panel = ps1DebugAppendText(panel, panelEnd, "\n At:     ");
+        panel = ps1DebugAppendText(panel, panelEnd, fileBase);
+        panel = ps1DebugAppendText(panel, panelEnd, ":");
+        panel = ps1DebugAppendSigned(panel, panelEnd, (long)line);
+        panel = ps1DebugAppendText(panel, panelEnd,
+            "\n"
             "\n"
             " Diagnostics:\n"
-            "   Largest free block: %lu KB\n"
+            "   Largest free block: ");
+        panel = ps1DebugAppendUnsigned(panel, panelEnd, heapKB);
+        panel = ps1DebugAppendText(panel, panelEnd,
+            " KB\n"
             "\n"
             " Reset the console to recover.\n"
             " (Photograph this screen for\n"
-            "  the bug report.)\n",
-            reasonBuf, scene, fileBase, line, heapKB);
+            "  the bug report.)\n");
+        ps1DebugDrawTextBlock(8, 8, BSOD_W - 16, BSOD_H - 16,
+                              panelBuf, 255, 255, 255);
     }
 
-    FntFlush(fontID);
     DrawSync(0);
     VSync(0);
 

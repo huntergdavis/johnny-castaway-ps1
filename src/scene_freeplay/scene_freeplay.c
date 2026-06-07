@@ -72,6 +72,9 @@ extern int ps1SoftTimeEnabled;
 #ifndef FREEPLAY_DIAG_LOGS
 #define FREEPLAY_DIAG_LOGS 0
 #endif
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
 #if FREEPLAY_DIAG_LOGS
 #define FP_LOG(level, args) do { if (gFreeplayTelemetryLevel >= (level)) printf args; } while (0)
 #else

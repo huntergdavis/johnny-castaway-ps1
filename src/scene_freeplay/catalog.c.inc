@@ -1,3 +1,4 @@
+#if FREEPLAY_DIAG_LOGS || PS1_VERBOSE_DIAGNOSTICS
 static const char *fpModeName(enum TFpMode mode)
 {
     switch (mode) {
@@ -10,6 +11,7 @@ static const char *fpModeName(enum TFpMode mode)
     default: return "?";
     }
 }
+#endif
 
 static const struct TFpMenuMeta *fpMetaAt(const struct TFpMenuMeta *meta,
                                           int count, int index)

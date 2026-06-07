@@ -38,6 +38,33 @@
 static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
 static void *gPs1CdReadIdleHookUserData = NULL;
 
+static int ps1BuildPath3(char *out, size_t outSize,
+                         const char *a, const char *b, const char *c)
+{
+    size_t pos = 0;
+    const char *parts[3];
+    int part;
+
+    if (out == NULL || outSize == 0)
+        return 0;
+
+    parts[0] = a ? a : "";
+    parts[1] = b ? b : "";
+    parts[2] = c ? c : "";
+    for (part = 0; part < 3; part++) {
+        const char *s = parts[part];
+        while (*s != '\0') {
+            if (pos + 1 >= outSize) {
+                out[0] = '\0';
+                return 0;
+            }
+            out[pos++] = *s++;
+        }
+    }
+    out[pos] = '\0';
+    return 1;
+}
+
 enum {
     PS1_CD_IDLE_HOOK_CHUNK_SECTORS = 4
 };
@@ -1695,8 +1722,7 @@ static int ps1PilotBuildPackFile(const char *adsName, char *outPath, size_t outP
     if (stem[0] == '\0')
         return 0;
 
-    snprintf(outPath, outPathSize, "PACKS\\%s.PAK", stem);
-    return 1;
+    return ps1BuildPath3(outPath, outPathSize, "PACKS\\", stem, ".PAK");
 }
 
 static int ps1PilotRefreshPackFileInfo(struct TPs1ActivePack *pack)
@@ -2780,7 +2806,8 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
 
     /* Build path to pre-extracted file */
     char path[64];
-    snprintf(path, sizeof(path), "\\BMP\\%s;1", bmpResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "\\BMP\\", bmpResource->resName, ";1"))
+        return;
 
     /* Get actual file size from CD (may differ from metadata) */
     CdlFILE cdfile;
@@ -2795,7 +2822,8 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
     readSize = (fileSize < bmpResource->uncompressedSize) ? fileSize : bmpResource->uncompressedSize;
 
     /* Build path for ps1_streamRead (without leading backslash and ;1) */
-    snprintf(path, sizeof(path), "BMP\\%s", bmpResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "BMP\\", bmpResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed, no processing needed */
     if (ps1PilotDbgFallbacks < 0xFFFFU)
@@ -2845,7 +2873,8 @@ void ps1_loadScrData(struct TScrResource *scrResource)
     /* Build path to pre-extracted file: "SCR/OCEAN00.SCR" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "SCR\\%s", scrResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "SCR\\", scrResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed, no processing needed
      * Trust the metadata uncompressedSize - the extracted files should match */
@@ -2886,7 +2915,8 @@ void ps1_loadTtmData(struct TTtmResource *ttmResource)
     /* Build path to pre-extracted file: "TTM/FISHWALK.TTM" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "TTM\\%s", ttmResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "TTM\\", ttmResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed bytecode */
     if (ps1PilotDbgFallbacks < 0xFFFFU)
@@ -2928,7 +2958,8 @@ void ps1_loadAdsData(struct TAdsResource *adsResource)
     /* Build path to pre-extracted file: "ADS/STAND.ADS" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "ADS\\%s", adsResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "ADS\\", adsResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed bytecode */
     if (ps1PilotDbgFallbacks < 0xFFFFU)

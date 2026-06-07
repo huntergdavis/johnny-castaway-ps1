@@ -28,7 +28,6 @@
 #else
 #include <stddef.h>
 extern int rand(void);
-extern int sprintf(char *str, const char *format, ...);
 #endif
 
 #include "mytypes.h"
@@ -61,8 +60,8 @@ void islandInit(struct TTtmThread *ttmThread)
         grLoadScreen("NIGHT.SCR");
     }
     else {
-        char scrName[16];
-        sprintf(scrName, "OCEAN0%c.SCR", (char)('0' + (rand() % 3)));
+        char scrName[] = "OCEAN00.SCR";
+        scrName[6] = (char)('0' + (rand() % 3));
         grLoadScreen(scrName);
     }
 
