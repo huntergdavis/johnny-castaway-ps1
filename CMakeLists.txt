@@ -159,7 +159,7 @@ source_group("PS1\\Freeplay" FILES
     src/scene_freeplay/runtime.c.inc
 )
 source_group("ADS" FILES
-    src/ads.c
+    src/ads/ads.c
     src/ads/restore_pilot.c.inc
     src/ads/replay_telemetry.c.inc
     src/ads/script_index.c.inc
@@ -191,7 +191,7 @@ source_group("PS1\\Graphics" FILES
     src/graphics_ps1/capture_zones.c.inc
 )
 source_group("PS1\\Features" FILES
-    src/ps1_features.c
+    src/ps1_features/ps1_features.c
     src/ps1_features/scene_control.c.inc
     src/ps1_features/direct_control.c.inc
     src/ps1_features/clock.c.inc
@@ -258,6 +258,19 @@ endif()
 target_include_directories(jcreborn
     BEFORE PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ads
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/foreground_pilot
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/graphics_ps1
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/host
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/mem_region
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/pause_menu
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/ps1
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ps1_features
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/resource
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/scene
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/scene_freeplay
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/walk
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

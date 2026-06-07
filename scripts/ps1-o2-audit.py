@@ -27,22 +27,22 @@ ATTR_RE = re.compile(r'__attribute__\s*\(\(\s*optimize\s*\(\s*"([^"]+)"\s*\)\s*\
 FUNC_NAME_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 
 HOT_TU_ORDER = [
-    "src/foreground_pilot.c",
+    "src/foreground_pilot/foreground_pilot.c",
     "src/jc_reborn.c",
-    "src/resource.c",
-    "src/sound_ps1.c",
-    "src/events_ps1.c",
+    "src/resource/resource.c",
+    "src/platform/ps1/sound_ps1.c",
+    "src/platform/ps1/events_ps1.c",
 ]
 
 COLD_TU_ORDER = [
-    "src/pause_menu.c",
-    "src/ps1_captions.c",
-    "src/memcard.c",
-    "src/holidays.c",
-    "src/ps1_debug.c",
-    "src/ps1_stubs.c",
-    "src/utils.c",
-    "src/island.c",
+    "src/pause_menu/pause_menu.c",
+    "src/platform/ps1/ps1_captions.c",
+    "src/platform/ps1/memcard.c",
+    "src/scene/holidays.c",
+    "src/platform/ps1/ps1_debug.c",
+    "src/platform/ps1/ps1_stubs.c",
+    "src/core/utils.c",
+    "src/scene/island.c",
 ]
 
 GRAPHICS_HELPERS = {
@@ -85,7 +85,7 @@ REJECTED_DEFAULT_O2_FUNCTIONS = {
 }
 
 REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
-    "src/foreground_pilot.c": (
+    "src/foreground_pilot/foreground_pilot.c": (
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 grew foregroundPilotPlay and failed structurally before scene-end metrics.",
     ),
@@ -93,59 +93,59 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and shifting hot symbols.",
     ),
-    "src/resource.c": (
+    "src/resource/resource.c": (
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and shifting foreground symbols.",
     ),
-    "src/sound_ps1.c": (
+    "src/platform/ps1/sound_ps1.c": (
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.",
     ),
-    "src/events_ps1.c": (
+    "src/platform/ps1/events_ps1.c": (
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.",
     ),
-    "src/ps1_stubs.c": (
+    "src/platform/ps1/ps1_stubs.c": (
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and the stubs object.",
     ),
-    "src/pause_menu.c": (
+    "src/pause_menu/pause_menu.c": (
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and regressed canaries.",
     ),
-    "src/ps1_captions.c": (
+    "src/platform/ps1/ps1_captions.c": (
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and the captions object.",
     ),
-    "src/memcard.c": (
+    "src/platform/ps1/memcard.c": (
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 regressed FISHING1 visible CD pressure while growing ELF and the memcard object.",
     ),
-    "src/holidays.c": (
+    "src/scene/holidays.c": (
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 regressed FISHING1 visible CD pressure while growing ELF and the holidays object.",
     ),
-    "src/ps1_debug.c": (
+    "src/platform/ps1/ps1_debug.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat against the refreshed v0.8.0 baseline but grew ELF with no work or speed win.",
     ),
-    "src/utils.c": (
+    "src/core/utils.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked hot symbols by 20 bytes with no work or speed win.",
     ),
-    "src/island.c": (
+    "src/scene/island.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked graphics/CD symbols by 48 bytes with no work or speed win.",
     ),
-    "src/ps1_pad_script.c": (
+    "src/platform/ps1/ps1_pad_script.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked CD helper symbols by 36 bytes with no work or speed win.",
     ),
-    "src/scene_freeplay.c": (
+    "src/scene_freeplay/scene_freeplay.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and gave no active-scene timing win.",
     ),
-    "src/scene_picker.c": (
+    "src/scene/scene_picker.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat with fixed tracked hot symbols but grew ELF with no work or speed win.",
     ),
@@ -265,7 +265,12 @@ def classify_tu(source: str) -> str:
         return "hot"
     if source in COLD_TU_ORDER:
         return "cold"
-    if source in {"src/graphics_ps1.c", "src/cdrom_ps1.c", "src/ps1_perf.c", "src/walk_render.c"}:
+    if source in {
+        "src/graphics_ps1/graphics_ps1.c",
+        "src/cdrom_ps1.c",
+        "src/platform/ps1/ps1_perf.c",
+        "src/walk/walk_render.c",
+    }:
         return "hot-default-o2"
     return "default-o2"
 

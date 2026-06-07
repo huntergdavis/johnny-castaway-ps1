@@ -46,32 +46,46 @@ mkdir -p "$BUILD_DIR"
 
 SOURCES=(
     src/jc_reborn.c
-    src/utils.c
-    src/holidays.c
-    src/holidays_table.c
-    src/uncompress.c
-    src/resource.c
-    src/dump.c
-    src/story.c
-    src/walk.c
-    src/calcpath.c
-    src/walk_render.c
-    src/ads.c
-    src/foreground_pilot.c
-    src/ttm.c
-    src/island.c
-    src/bench.c
-    src/graphics.c
-    src/sound.c
-    src/events.c
-    src/config.c
-    src/scene_freeplay.c
+    src/core/utils.c
+    src/scene/holidays.c
+    src/scene/holidays_table.c
+    src/core/uncompress.c
+    src/resource/resource.c
+    src/host/dump.c
+    src/host/story.c
+    src/walk/walk.c
+    src/walk/calcpath.c
+    src/walk/walk_render.c
+    src/ads/ads.c
+    src/foreground_pilot/foreground_pilot.c
+    src/host/ttm.c
+    src/scene/island.c
+    src/host/bench.c
+    src/host/graphics.c
+    src/host/sound.c
+    src/host/events.c
+    src/host/config.c
+    src/scene_freeplay/scene_freeplay.c
 )
 
 pushd "$PROJECT_ROOT" >/dev/null
 "$CC" \
     -Wall -Wpedantic -std=c99 -O2 \
-    -Isrc -I. \
+    -Isrc \
+    -Isrc/ads \
+    -Isrc/core \
+    -Isrc/foreground_pilot \
+    -Isrc/graphics_ps1 \
+    -Isrc/host \
+    -Isrc/mem_region \
+    -Isrc/pause_menu \
+    -Isrc/platform/ps1 \
+    -Isrc/ps1_features \
+    -Isrc/resource \
+    -Isrc/scene \
+    -Isrc/scene_freeplay \
+    -Isrc/walk \
+    -I. \
     $SDL_CFLAGS \
     $CFLAGS \
     "${SOURCES[@]}" \

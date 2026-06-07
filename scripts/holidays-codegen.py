@@ -6,9 +6,9 @@ Inputs:
   /home/hunter/workspace/jc_reborn/holidays.yml
 
 Outputs:
-  /home/hunter/workspace/jc_reborn/src/holidays_table.c
+  /home/hunter/workspace/jc_reborn/src/scene/holidays_table.c
       C source with `gHolidays[]` static const array + gHolidayCount.
-      Linked alongside src/holidays.c which contains the date-algorithm
+      Linked alongside src/scene/holidays.c which contains the date-algorithm
       core. Schema must match struct Holiday in src/holidays.h.
 
 Run:
@@ -25,7 +25,7 @@ except ImportError:
 
 REPO = Path(__file__).resolve().parent.parent
 YAML_PATH = REPO / "holidays.yml"
-TABLE_OUT = REPO / "src" / "holidays_table.c"
+TABLE_OUT = REPO / "src" / "scene" / "holidays_table.c"
 
 KIND_MAP = {
     "fixed":           "HOLIDAY_KIND_FIXED",
