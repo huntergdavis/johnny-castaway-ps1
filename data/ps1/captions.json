@@ -1,0 +1,318 @@
+[
+  {
+    "id": "intro",
+    "text": "This is Johnny Castaway.\nStranded on a tiny island\nwith one palm tree.\nHe wears white shorts and a hat."
+  },
+  {
+    "id": "christmas",
+    "text": "It is Christmas.\nA small tree with red bulbs\nand a golden star."
+  },
+  {
+    "id": "halloween",
+    "text": "It is Halloween.\nA carved jack-o-lantern\nsits on the island."
+  },
+  {
+    "id": "newyears",
+    "text": "It is New Years.\nA banner reads Happy New Year\non the palm tree."
+  },
+  {
+    "id": "stpatrick",
+    "text": "It is St Patrick's Day.\nFour-leaf clovers grow\non the island."
+  },
+  {
+    "id": "night",
+    "text": "It is night.\nThe island is bathed\nin moonlight."
+  },
+  {
+    "id": "day",
+    "text": "It is day.\nThe sun shines brightly."
+  },
+  {
+    "id": "regularday",
+    "text": "It is a regular day."
+  },
+  {
+    "id": "hightide",
+    "text": "It is high tide.\nWaves lap at the island."
+  },
+  {
+    "id": "lowtide",
+    "text": "It is low tide.\nWaves lap at the island."
+  },
+  {
+    "id": "fadeout",
+    "text": "The scene fades to black."
+  },
+  {
+    "id": "walking",
+    "text": "Johnny walks around\nthe island."
+  },
+  {
+    "id": "scene00",
+    "text": "Johnny dives off the palm tree.\nA perfect flip into the ocean.\nCrabs and seagull hold up\nlow scorecards."
+  },
+  {
+    "id": "scene01",
+    "text": "Johnny dives off the palm tree.\nIt turns into a belly-flop.\nCrabs and seagull hold up\nlow scorecards."
+  },
+  {
+    "id": "scene02",
+    "text": "Johnny reads under the tree.\nA seagull lands on his head.\nHe swings a club but misses\nand hits himself."
+  },
+  {
+    "id": "scene03",
+    "text": "Johnny bathes in the ocean.\nA seagull steals his clothes\nfor its nest.\nJohnny shivers angrily."
+  },
+  {
+    "id": "scene04",
+    "text": "Johnny reads under the tree.\nA seagull swoops down\nand steals his book."
+  },
+  {
+    "id": "scene05",
+    "text": "Johnny climbs the palm tree.\nHe looks around, then dives.\nHe walks back and looks around."
+  },
+  {
+    "id": "scene06",
+    "text": "Johnny fans himself in heat.\nHe does a rain dance in a mask.\nA cloud appears but no rain.\nLightning strikes him to ash."
+  },
+  {
+    "id": "scene07",
+    "text": "Johnny reads under the tree.\nHe falls asleep.\nA coconut bonks his head.\nHe wakes and keeps reading."
+  },
+  {
+    "id": "scene08",
+    "text": "Johnny reads under the tree.\nHe scratches his head confused.\nThe book was upside down.\nHe flips it and reads on."
+  },
+  {
+    "id": "scene09",
+    "text": "Johnny bathes in the ocean.\nHe scrubs, smells the brush\nin disgust, grabs his clothes\nand walks behind the tree."
+  },
+  {
+    "id": "scene10",
+    "text": "Johnny wears a mask and skirt.\nA yacht couple takes photos.\nHis grass skirt falls open.\nThe yacht sails away."
+  },
+  {
+    "id": "scene11",
+    "text": "Johnny builds a sand castle.\nIt crumbles.\nHe stomps it in frustration."
+  },
+  {
+    "id": "scene12",
+    "text": "Johnny sleeps under the tree.\nLilliputians row ashore\nand tie him down.\nA seagull nests on him."
+  },
+  {
+    "id": "scene13",
+    "text": "Johnny sleeps under the tree.\nZs float as he snores.\nHe walks to the island edge."
+  },
+  {
+    "id": "scene14",
+    "text": "Johnny builds a sand castle.\nLilliputians claim it as\ntheir fortress.\nTiny planes attack Johnny."
+  },
+  {
+    "id": "scene15",
+    "text": "Johnny tries to build a fire.\nHe rubs sticks together.\nIt finally lights!\nHe warms his hands, it dies."
+  },
+  {
+    "id": "scene16",
+    "text": "Johnny relaxes by a fire.\nHe roasts an old boot.\nHe eats the boot whole."
+  },
+  {
+    "id": "scene17",
+    "text": "Johnny sleeps under the tree.\nLilliputians row ashore\nand tie him down.\nHe goes back to sleep."
+  },
+  {
+    "id": "scene18",
+    "text": "Johnny goes fishing.\nHe catches a starfish.\nHe throws it back."
+  },
+  {
+    "id": "scene19",
+    "text": "Johnny goes fishing.\nHe catches a boot.\nHe keeps the boot."
+  },
+  {
+    "id": "scene20",
+    "text": "Johnny goes fishing.\nHe catches five green fish.\nThen an angry octopus.\nThe octopus chokes him."
+  },
+  {
+    "id": "scene21",
+    "text": "Johnny goes fishing.\nHe catches a shark.\nThe shark drags him around\nthe ocean like a jet-ski."
+  },
+  {
+    "id": "scene22",
+    "text": "Johnny goes fishing.\nA shark eats him.\nThe shark spits him back out."
+  },
+  {
+    "id": "scene23",
+    "text": "Johnny goes fishing.\nHe catches a big green fish.\nIt spits water in his face."
+  },
+  {
+    "id": "scene24",
+    "text": "Johnny goes fishing.\nHe catches a crab.\nIt snaps his nose."
+  },
+  {
+    "id": "scene25",
+    "text": "Johnny goes fishing.\nHe catches a boot.\nHe keeps the boot."
+  },
+  {
+    "id": "scene26",
+    "text": "A clock spins wildly.\nSunset silhouette. A plane.\nJohnny parachutes down.\nThe End."
+  },
+  {
+    "id": "scene27",
+    "text": "A bottle washes ashore.\nJohnny writes an S.O.S.\nHe corks the bottle\nand throws it out to sea."
+  },
+  {
+    "id": "scene28",
+    "text": "Johnny writes a message.\nHe imagines a clock at 3pm.\nHe throws the bottle out\nto prepare for his date."
+  },
+  {
+    "id": "scene29",
+    "text": "A bottle washes ashore.\nJohnny picks it up excitedly.\nSadly, it is his own S.O.S.\nHe throws it back out."
+  },
+  {
+    "id": "scene30",
+    "text": "Johnny writes an S.O.S.\nHe corks the bottle\nand throws it out to sea."
+  },
+  {
+    "id": "scene31",
+    "text": "A clock spins wildly.\nJohnny types at an office PC.\nHe dreams of the island\nand the mermaid. He looks sad."
+  },
+  {
+    "id": "scene32",
+    "text": "Johnny sets up a fancy dinner.\nA mermaid appears.\nThey eat, toast champagne,\nand dance. She swims away."
+  },
+  {
+    "id": "scene33",
+    "text": "A mermaid swims up.\nShe gives Johnny a necklace.\nHe gives her a life preserver.\nHe proposes a date."
+  },
+  {
+    "id": "scene34",
+    "text": "Johnny fishes at the edge.\nA mermaid swims up behind him.\nHe thinks it is a fish."
+  },
+  {
+    "id": "scene35",
+    "text": "Johnny fixes his raft.\nThe mermaid asks what he does.\nHe says he is leaving.\nShe is heartbroken."
+  },
+  {
+    "id": "scene36",
+    "text": "Johnny packs his bags.\nThe mermaid and shark say bye.\nThe shark shakes his hand.\nJohnny paddles away."
+  },
+  {
+    "id": "scene37",
+    "text": "Johnny fans himself in heat.\nHe fans harder and harder.\nHe melts into a puddle."
+  },
+  {
+    "id": "scene38",
+    "text": "Johnny goes to swim.\nHe dips a toe in the ocean.\nA shark snaps at him.\nHe scrambles back to shore."
+  },
+  {
+    "id": "scene39",
+    "text": "Johnny stands at the edge.\nHe taps his foot nervously."
+  },
+  {
+    "id": "scene40",
+    "text": "Johnny adjusts his pants."
+  },
+  {
+    "id": "scene41",
+    "text": "Johnny looks over the ocean.\nHe adjusts his hat and pants."
+  },
+  {
+    "id": "scene42",
+    "text": "Johnny taps his foot."
+  },
+  {
+    "id": "scene43",
+    "text": "Johnny lifts his hat\nand looks around."
+  },
+  {
+    "id": "scene44",
+    "text": "Johnny taps his foot.\nHe lifts his hat\nand looks around."
+  },
+  {
+    "id": "scene45",
+    "text": "Johnny taps his foot.\nHe looks back into\nthe distance."
+  },
+  {
+    "id": "scene46",
+    "text": "Johnny lifts his hat."
+  },
+  {
+    "id": "scene47",
+    "text": "Johnny taps his foot.\nHe looks at the palm tree."
+  },
+  {
+    "id": "scene48",
+    "text": "Johnny looks at his raft."
+  },
+  {
+    "id": "scene49",
+    "text": "Johnny looks over the ocean."
+  },
+  {
+    "id": "scene50",
+    "text": "Johnny looks around\nunder the palm tree shade."
+  },
+  {
+    "id": "scene51",
+    "text": "Johnny pulls out a spyglass\nand scans the horizon."
+  },
+  {
+    "id": "scene52",
+    "text": "Johnny pulls out a spyglass\nand scans the horizon."
+  },
+  {
+    "id": "scene53",
+    "text": "A frog clock spins wildly.\nA redhead finds the bottle.\nShe imagines a volcano island\nand a handsome man."
+  },
+  {
+    "id": "scene54",
+    "text": "A frog clock spins wildly.\nJohnny's raft reaches her.\nShe kisses him passionately,\nthen scolds him."
+  },
+  {
+    "id": "scene55",
+    "text": "Johnny scans with a spyglass.\nA plane flies overhead.\nHe looks the wrong way\nand misses it entirely."
+  },
+  {
+    "id": "scene56",
+    "text": "A red boat spots Johnny.\nHe waves excitedly.\nThe boat is enormous,\nit fills the whole screen."
+  },
+  {
+    "id": "scene57",
+    "text": "Johnny shakes the palm tree.\nA coconut bonks his head\nand flies into the ocean."
+  },
+  {
+    "id": "scene58",
+    "text": "Johnny shakes the palm tree.\nA coconut falls down.\nHe chases and catches it.\nHe cracks and eats it."
+  },
+  {
+    "id": "scene59",
+    "text": "Johnny shakes the palm tree.\nA coconut falls down.\nHe cracks it on the tree\nand eats it."
+  },
+  {
+    "id": "scene60",
+    "text": ""
+  },
+  {
+    "id": "scene61",
+    "text": "A boat with partygoers sails up.\nJohnny swims to the boat.\nHe returns very drunk,\nwearing a party hat."
+  },
+  {
+    "id": "scene62",
+    "text": "Johnny builds up his raft."
+  },
+  {
+    "id": "scene63",
+    "text": "Johnny jogs around the island\nin a grey jogging outfit.\nHe changes back to normal."
+  },
+  {
+    "id": "buildingdone",
+    "text": "Johnny finishes building.\nHe stands at the island edge\nand admires his work."
+  },
+  {
+    "id": "visitorboat",
+    "text": "A boat reaches the island.\nJohnny climbs aboard\nand sails away."
+  },
+  {
+    "id": "fishingraft",
+    "text": "Johnny goes fishing.\nHe catches a life raft.\nHe drags it ashore."
+  }
+]

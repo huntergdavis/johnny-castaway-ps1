@@ -13,6 +13,8 @@ PS1_PERF_DEEP_TRACE="${PS1_PERF_DEEP_TRACE:-OFF}"
 PS1_PERF_VERBOSE_SCHEMA="${PS1_PERF_VERBOSE_SCHEMA:-OFF}"
 PS1_VERBOSE_DIAGNOSTICS="${PS1_VERBOSE_DIAGNOSTICS:-OFF}"
 
+python3 scripts/build-caption-data.py
+
 python3 - <<'PY'
 import json
 import time

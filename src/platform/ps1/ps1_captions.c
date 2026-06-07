@@ -14,433 +14,27 @@
  */
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "ps1_captions.h"
 
 #ifdef PS1_BUILD
 #include <psxgpu.h>
+#include "cdrom_ps1.h"
 #include "pause_menu.h"
 #include "ps1_gpu_ot.h"
+#else
+#include <stdio.h>
 #endif
 
 /* ------------------------------------------------------------------ */
-/*  Caption text  — moved here from the header so the data lives in   */
-/*  one translation unit. Special captions (intro, christmas, etc.)   */
-/*  are triggered from runtime hooks; numbered captions sceneNN are   */
-/*  reached through captionSceneMap[] below.                           */
+/*  Caption text metadata                                             */
 /* ------------------------------------------------------------------ */
 
-static const struct TCaption captions[] = {
-
-    /* --- Special / environmental captions --- */
-
-    {"intro",
-        "This is Johnny Castaway.\n"
-        "Stranded on a tiny island\n"
-        "with one palm tree.\n"
-        "He wears white shorts and a hat."},
-
-    {"christmas",
-        "It is Christmas.\n"
-        "A small tree with red bulbs\n"
-        "and a golden star."},
-
-    {"halloween",
-        "It is Halloween.\n"
-        "A carved jack-o-lantern\n"
-        "sits on the island."},
-
-    {"newyears",
-        "It is New Years.\n"
-        "A banner reads Happy New Year\n"
-        "on the palm tree."},
-
-    {"stpatrick",
-        "It is St Patrick's Day.\n"
-        "Four-leaf clovers grow\n"
-        "on the island."},
-
-    {"night",
-        "It is night.\n"
-        "The island is bathed\n"
-        "in moonlight."},
-
-    {"day",
-        "It is day.\n"
-        "The sun shines brightly."},
-
-    {"regularday",
-        "It is a regular day."},
-
-    {"hightide",
-        "It is high tide.\n"
-        "Waves lap at the island."},
-
-    {"lowtide",
-        "It is low tide.\n"
-        "Waves lap at the island."},
-
-    {"fadeout",
-        "The scene fades to black."},
-
-    {"walking",
-        "Johnny walks around\n"
-        "the island."},
-
-    /* --- Numbered scenes (match storyScenes[] indices) --- */
-
-    {"scene00",
-        "Johnny dives off the palm tree.\n"
-        "A perfect flip into the ocean.\n"
-        "Crabs and seagull hold up\n"
-        "low scorecards."},
-
-    {"scene01",
-        "Johnny dives off the palm tree.\n"
-        "It turns into a belly-flop.\n"
-        "Crabs and seagull hold up\n"
-        "low scorecards."},
-
-    {"scene02",
-        "Johnny reads under the tree.\n"
-        "A seagull lands on his head.\n"
-        "He swings a club but misses\n"
-        "and hits himself."},
-
-    {"scene03",
-        "Johnny bathes in the ocean.\n"
-        "A seagull steals his clothes\n"
-        "for its nest.\n"
-        "Johnny shivers angrily."},
-
-    {"scene04",
-        "Johnny reads under the tree.\n"
-        "A seagull swoops down\n"
-        "and steals his book."},
-
-    {"scene05",
-        "Johnny climbs the palm tree.\n"
-        "He looks around, then dives.\n"
-        "He walks back and looks around."},
-
-    {"scene06",
-        "Johnny fans himself in heat.\n"
-        "He does a rain dance in a mask.\n"
-        "A cloud appears but no rain.\n"
-        "Lightning strikes him to ash."},
-
-    {"scene07",
-        "Johnny reads under the tree.\n"
-        "He falls asleep.\n"
-        "A coconut bonks his head.\n"
-        "He wakes and keeps reading."},
-
-    {"scene08",
-        "Johnny reads under the tree.\n"
-        "He scratches his head confused.\n"
-        "The book was upside down.\n"
-        "He flips it and reads on."},
-
-    {"scene09",
-        "Johnny bathes in the ocean.\n"
-        "He scrubs, smells the brush\n"
-        "in disgust, grabs his clothes\n"
-        "and walks behind the tree."},
-
-    {"scene10",
-        "Johnny wears a mask and skirt.\n"
-        "A yacht couple takes photos.\n"
-        "His grass skirt falls open.\n"
-        "The yacht sails away."},
-
-    {"scene11",
-        "Johnny builds a sand castle.\n"
-        "It crumbles.\n"
-        "He stomps it in frustration."},
-
-    {"scene12",
-        "Johnny sleeps under the tree.\n"
-        "Lilliputians row ashore\n"
-        "and tie him down.\n"
-        "A seagull nests on him."},
-
-    {"scene13",
-        "Johnny sleeps under the tree.\n"
-        "Zs float as he snores.\n"
-        "He walks to the island edge."},
-
-    {"scene14",
-        "Johnny builds a sand castle.\n"
-        "Lilliputians claim it as\n"
-        "their fortress.\n"
-        "Tiny planes attack Johnny."},
-
-    {"scene15",
-        "Johnny tries to build a fire.\n"
-        "He rubs sticks together.\n"
-        "It finally lights!\n"
-        "He warms his hands, it dies."},
-
-    {"scene16",
-        "Johnny relaxes by a fire.\n"
-        "He roasts an old boot.\n"
-        "He eats the boot whole."},
-
-    {"scene17",
-        "Johnny sleeps under the tree.\n"
-        "Lilliputians row ashore\n"
-        "and tie him down.\n"
-        "He goes back to sleep."},
-
-    {"scene18",
-        "Johnny goes fishing.\n"
-        "He catches a starfish.\n"
-        "He throws it back."},
-
-    {"scene19",
-        "Johnny goes fishing.\n"
-        "He catches a boot.\n"
-        "He keeps the boot."},
-
-    {"scene20",
-        "Johnny goes fishing.\n"
-        "He catches five green fish.\n"
-        "Then an angry octopus.\n"
-        "The octopus chokes him."},
-
-    {"scene21",
-        "Johnny goes fishing.\n"
-        "He catches a shark.\n"
-        "The shark drags him around\n"
-        "the ocean like a jet-ski."},
-
-    {"scene22",
-        "Johnny goes fishing.\n"
-        "A shark eats him.\n"
-        "The shark spits him back out."},
-
-    {"scene23",
-        "Johnny goes fishing.\n"
-        "He catches a big green fish.\n"
-        "It spits water in his face."},
-
-    {"scene24",
-        "Johnny goes fishing.\n"
-        "He catches a crab.\n"
-        "It snaps his nose."},
-
-    {"scene25",
-        "Johnny goes fishing.\n"
-        "He catches a boot.\n"
-        "He keeps the boot."},
-
-    {"scene26",
-        "A clock spins wildly.\n"
-        "Sunset silhouette. A plane.\n"
-        "Johnny parachutes down.\n"
-        "The End."},
-
-    {"scene27",
-        "A bottle washes ashore.\n"
-        "Johnny writes an S.O.S.\n"
-        "He corks the bottle\n"
-        "and throws it out to sea."},
-
-    {"scene28",
-        "Johnny writes a message.\n"
-        "He imagines a clock at 3pm.\n"
-        "He throws the bottle out\n"
-        "to prepare for his date."},
-
-    {"scene29",
-        "A bottle washes ashore.\n"
-        "Johnny picks it up excitedly.\n"
-        "Sadly, it is his own S.O.S.\n"
-        "He throws it back out."},
-
-    {"scene30",
-        "Johnny writes an S.O.S.\n"
-        "He corks the bottle\n"
-        "and throws it out to sea."},
-
-    {"scene31",
-        "A clock spins wildly.\n"
-        "Johnny types at an office PC.\n"
-        "He dreams of the island\n"
-        "and the mermaid. He looks sad."},
-
-    {"scene32",
-        "Johnny sets up a fancy dinner.\n"
-        "A mermaid appears.\n"
-        "They eat, toast champagne,\n"
-        "and dance. She swims away."},
-
-    {"scene33",
-        "A mermaid swims up.\n"
-        "She gives Johnny a necklace.\n"
-        "He gives her a life preserver.\n"
-        "He proposes a date."},
-
-    {"scene34",
-        "Johnny fishes at the edge.\n"
-        "A mermaid swims up behind him.\n"
-        "He thinks it is a fish."},
-
-    {"scene35",
-        "Johnny fixes his raft.\n"
-        "The mermaid asks what he does.\n"
-        "He says he is leaving.\n"
-        "She is heartbroken."},
-
-    {"scene36",
-        "Johnny packs his bags.\n"
-        "The mermaid and shark say bye.\n"
-        "The shark shakes his hand.\n"
-        "Johnny paddles away."},
-
-    {"scene37",
-        "Johnny fans himself in heat.\n"
-        "He fans harder and harder.\n"
-        "He melts into a puddle."},
-
-    {"scene38",
-        "Johnny goes to swim.\n"
-        "He dips a toe in the ocean.\n"
-        "A shark snaps at him.\n"
-        "He scrambles back to shore."},
-
-    {"scene39",
-        "Johnny stands at the edge.\n"
-        "He taps his foot nervously."},
-
-    {"scene40",
-        "Johnny adjusts his pants."},
-
-    {"scene41",
-        "Johnny looks over the ocean.\n"
-        "He adjusts his hat and pants."},
-
-    {"scene42",
-        "Johnny taps his foot."},
-
-    {"scene43",
-        "Johnny lifts his hat\n"
-        "and looks around."},
-
-    {"scene44",
-        "Johnny taps his foot.\n"
-        "He lifts his hat\n"
-        "and looks around."},
-
-    {"scene45",
-        "Johnny taps his foot.\n"
-        "He looks back into\n"
-        "the distance."},
-
-    {"scene46",
-        "Johnny lifts his hat."},
-
-    {"scene47",
-        "Johnny taps his foot.\n"
-        "He looks at the palm tree."},
-
-    {"scene48",
-        "Johnny looks at his raft."},
-
-    {"scene49",
-        "Johnny looks over the ocean."},
-
-    {"scene50",
-        "Johnny looks around\n"
-        "under the palm tree shade."},
-
-    {"scene51",
-        "Johnny pulls out a spyglass\n"
-        "and scans the horizon."},
-
-    {"scene52",
-        "Johnny pulls out a spyglass\n"
-        "and scans the horizon."},
-
-    {"scene53",
-        "A frog clock spins wildly.\n"
-        "A redhead finds the bottle.\n"
-        "She imagines a volcano island\n"
-        "and a handsome man."},
-
-    {"scene54",
-        "A frog clock spins wildly.\n"
-        "Johnny's raft reaches her.\n"
-        "She kisses him passionately,\n"
-        "then scolds him."},
-
-    {"scene55",
-        "Johnny scans with a spyglass.\n"
-        "A plane flies overhead.\n"
-        "He looks the wrong way\n"
-        "and misses it entirely."},
-
-    {"scene56",
-        "A red boat spots Johnny.\n"
-        "He waves excitedly.\n"
-        "The boat is enormous,\n"
-        "it fills the whole screen."},
-
-    {"scene57",
-        "Johnny shakes the palm tree.\n"
-        "A coconut bonks his head\n"
-        "and flies into the ocean."},
-
-    {"scene58",
-        "Johnny shakes the palm tree.\n"
-        "A coconut falls down.\n"
-        "He chases and catches it.\n"
-        "He cracks and eats it."},
-
-    {"scene59",
-        "Johnny shakes the palm tree.\n"
-        "A coconut falls down.\n"
-        "He cracks it on the tree\n"
-        "and eats it."},
-
-    {"scene60",
-        ""},  /* empty in source data */
-
-    {"scene61",
-        "A boat with partygoers sails up.\n"
-        "Johnny swims to the boat.\n"
-        "He returns very drunk,\n"
-        "wearing a party hat."},
-
-    {"scene62",
-        "Johnny builds up his raft."},
-
-    {"scene63",
-        "Johnny jogs around the island\n"
-        "in a grey jogging outfit.\n"
-        "He changes back to normal."},
-
-    /* --- New captions for orphaned ADS slots (filled in caption-data
-     * audit, 2026-04-26) --- */
-
-    {"buildingdone",
-        "Johnny finishes building.\n"
-        "He stands at the island edge\n"
-        "and admires his work."},
-
-    {"visitorboat",
-        "A boat reaches the island.\n"
-        "Johnny climbs aboard\n"
-        "and sails away."},
-
-    {"fishingraft",
-        "Johnny goes fishing.\n"
-        "He catches a life raft.\n"
-        "He drags it ashore."},
-
-    {NULL, NULL}  /* sentinel */
-};
+#define PS1_CAPTION_DATA_DEFINE
+#include "generated/ps1/ps1_caption_data.h"
+#undef PS1_CAPTION_DATA_DEFINE
 
 
 /* ------------------------------------------------------------------ */
@@ -546,9 +140,148 @@ static const struct TCaptionSceneMap captionSceneMap[] = {
 int ps1CaptionsEnabled          = 0;
 static const char *currentCaption = NULL;
 static int captionDisplayTimer  = 0;
+static int currentCaptionFromDisc = 0;
+static uint8 *captionTextData = NULL;
+static uint32 captionTextDataSize = 0;
+static uint32 captionTextBase = 0;
+static int captionTextDataValid = 0;
 
 /* ~5 seconds at 60 fps */
 #define CAPTION_DURATION_FRAMES  300
+
+static uint16 captionsReadLe16(const uint8 *p)
+{
+    return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
+}
+
+static void captionsReleaseTextData(void)
+{
+    if (captionTextData != NULL) {
+        free(captionTextData);
+        captionTextData = NULL;
+    }
+    captionTextDataSize = 0;
+    captionTextBase = 0;
+    captionTextDataValid = 0;
+}
+
+static void captionsDropCurrent(void)
+{
+    currentCaption = NULL;
+    captionDisplayTimer = 0;
+    currentCaptionFromDisc = 0;
+    captionsReleaseTextData();
+}
+
+static uint8 *captionsLoadTextFile(uint32 *outSize)
+{
+#ifdef PS1_BUILD
+    return (uint8 *)ps1_loadRawFile("\\CAPTION.DAT;1", outSize);
+#else
+    FILE *f;
+    long size;
+    uint8 *data;
+
+    if (outSize == NULL)
+        return NULL;
+    f = fopen("generated/ps1/CAPTION.DAT", "rb");
+    if (f == NULL)
+        return NULL;
+    if (fseek(f, 0, SEEK_END) != 0) {
+        fclose(f);
+        return NULL;
+    }
+    size = ftell(f);
+    if (size <= 0) {
+        fclose(f);
+        return NULL;
+    }
+    rewind(f);
+    data = (uint8 *)malloc((size_t)size);
+    if (data == NULL) {
+        fclose(f);
+        return NULL;
+    }
+    if (fread(data, 1, (size_t)size, f) != (size_t)size) {
+        free(data);
+        fclose(f);
+        return NULL;
+    }
+    fclose(f);
+    *outSize = (uint32)size;
+    return data;
+#endif
+}
+
+static int captionsValidateTextData(const uint8 *data, uint32 size)
+{
+    uint16 count;
+    uint32 stringBase;
+    uint32 stringBytes;
+    int i;
+
+    if (data == NULL || size < 8)
+        return 0;
+    if (data[0] != 'J' || data[1] != 'C' ||
+        data[2] != 'C' || data[3] != 'P')
+        return 0;
+    if (captionsReadLe16(&data[4]) != 1)
+        return 0;
+    count = captionsReadLe16(&data[6]);
+    if (count != gCaptionDataCount)
+        return 0;
+
+    stringBase = 8u;
+    stringBytes = size - stringBase;
+    for (i = 0; i < (int)count; i++) {
+        uint32 offset = (uint32)gCaptionData[i].text_offset;
+        uint32 pos = offset;
+        if (offset >= stringBytes)
+            return 0;
+        while (pos < stringBytes && data[stringBase + pos] != '\0')
+            pos++;
+        if (pos >= stringBytes)
+            return 0;
+    }
+    return 1;
+}
+
+static int captionsEnsureTextData(void)
+{
+    uint32 size = 0;
+    uint8 *data;
+
+    if (captionTextDataValid)
+        return 1;
+    if (captionTextData != NULL)
+        return 0;
+
+    data = captionsLoadTextFile(&size);
+    if (data == NULL)
+        return 0;
+    if (!captionsValidateTextData(data, size)) {
+        free(data);
+        return 0;
+    }
+
+    captionTextData = data;
+    captionTextDataSize = size;
+    captionTextBase = 8u;
+    captionTextDataValid = 1;
+    return 1;
+}
+
+static const char *captionsTextByOffset(uint16 offset)
+{
+    uint32 pos;
+
+    if (!captionsEnsureTextData())
+        return NULL;
+    pos = captionTextBase + (uint32)offset;
+    if (pos >= captionTextDataSize)
+        return NULL;
+    return (const char *)&captionTextData[pos];
+}
 
 /* ------------------------------------------------------------------ */
 /*  Enable / disable                                                  */
@@ -557,10 +290,8 @@ static int captionDisplayTimer  = 0;
 void captionsSetEnabled(int enabled)
 {
     ps1CaptionsEnabled = enabled;
-    if (!enabled) {
-        currentCaption = NULL;
-        captionDisplayTimer = 0;
-    }
+    if (!enabled)
+        captionsDropCurrent();
 }
 
 int captionsGetEnabled(void)
@@ -576,8 +307,7 @@ int captionsIsVisible(void)
 
 void captionsClear(void)
 {
-    currentCaption = NULL;
-    captionDisplayTimer = 0;
+    captionsDropCurrent();
 }
 
 
@@ -587,20 +317,29 @@ void captionsClear(void)
 
 void captionsOnSceneStart(const char *sceneId)
 {
+    int i;
+
     if (!ps1CaptionsEnabled || sceneId == NULL) return;
 
     currentCaption = NULL;
     captionDisplayTimer = 0;
+    currentCaptionFromDisc = 0;
 
-    for (int i = 0; captions[i].scene_id != NULL; i++) {
-        if (strcmp(captions[i].scene_id, sceneId) == 0) {
+    for (i = 0; gCaptionData[i].scene_id != NULL; i++) {
+        if (strcmp(gCaptionData[i].scene_id, sceneId) == 0) {
+            const char *text = captionsTextByOffset(gCaptionData[i].text_offset);
             /* Skip empty captions (e.g. scene60) */
-            if (captions[i].text[0] == '\0') return;
-            currentCaption = captions[i].text;
+            if (text == NULL || text[0] == '\0') {
+                captionsDropCurrent();
+                return;
+            }
+            currentCaption = text;
+            currentCaptionFromDisc = 1;
             captionDisplayTimer = CAPTION_DURATION_FRAMES;
             return;
         }
     }
+    captionsDropCurrent();
 }
 
 
@@ -632,14 +371,15 @@ void captionsOnAdsStart(const char *adsName, uint16 adsTag)
     }
 
     /* No mapping found — clear any previous caption. */
-    currentCaption = NULL;
-    captionDisplayTimer = 0;
+    captionsDropCurrent();
 }
 
 void captionsShowText(const char *text, int frames)
 {
     if (!ps1CaptionsEnabled || text == NULL || text[0] == '\0') return;
+    captionsReleaseTextData();
     currentCaption = text;
+    currentCaptionFromDisc = 0;
     captionDisplayTimer = (frames > 0) ? frames : CAPTION_DURATION_FRAMES;
 }
 
@@ -650,8 +390,11 @@ void captionsShowText(const char *text, int frames)
 
 const char *captionsGetCurrent(void)
 {
-    if (!ps1CaptionsEnabled || captionDisplayTimer <= 0)
+    if (!ps1CaptionsEnabled || captionDisplayTimer <= 0) {
+        if (currentCaptionFromDisc)
+            captionsDropCurrent();
         return NULL;
+    }
 
     captionDisplayTimer--;
     return currentCaption;
@@ -738,8 +481,11 @@ static int capDrawChar(uint8 **nextp, uint32 *otSlot,
 void captionsRender(void)
 {
     if (!ps1CaptionsEnabled || captionDisplayTimer <= 0 ||
-        currentCaption == NULL)
+        currentCaption == NULL) {
+        if (currentCaptionFromDisc)
+            captionsDropCurrent();
         return;
+    }
 
     /* Caller (grUpdateDisplay) might invoke us before the first pause
      * has been opened. Make sure the font is in VRAM. Idempotent. */
@@ -801,7 +547,7 @@ void captionsRender(void)
     if (captionDisplayTimer > 0)
         captionDisplayTimer--;
     if (captionDisplayTimer <= 0)
-        currentCaption = NULL;
+        captionsDropCurrent();
 }
 
 #else  /* host build — no PS1 GPU; render is a no-op */
