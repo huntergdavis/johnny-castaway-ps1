@@ -223,9 +223,11 @@ enum {
 #define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
+#define FG_NEXT_STAGE_METADATA_BYTES FG_PACK_METADATA_PREFIX_BYTES
 #define FG_NEXT_STAGE_SIDE_BYTES (128UL * 1024UL)
 #define FG_NEXT_STAGE_TARGET_BYTES (64UL * 1024UL)
 #define FG_NEXT_STAGE_CHUNK_BYTES (8UL * 1024UL)
+#define FG_NEXT_STAGE_PAYLOAD_SPU_OFFSET FG_NEXT_STAGE_METADATA_BYTES
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_START (3UL * FG_CD_SECTOR_SIZE)
@@ -387,10 +389,13 @@ struct TFgNextSceneStage {
     uint8 lowTide;
     uint8 usesStreamWindow;
     uint8 parkedInSpu;
+    uint8 metadataParkedInSpu;
     uint8 readInFlight;
     uint8 phase;
     char sceneName[16];
     CdlFILE packCdFile;
+    uint32 metadataBytes;
+    uint32 spuPayloadOffset;
     uint32 windowStart;
     uint32 windowBytes;
     uint32 loadedBytes;
@@ -440,6 +445,10 @@ static void fgReleaseStreamBuffers(void);
 static void fgReleaseStreamBuffersHard(void);
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void);
 static void fgNextSceneStageInvalidate(void);
+static int fgNextSceneStageAdoptFile(const char *sceneName, CdlFILE *outFile);
+static int fgNextSceneStageReadMetadataPrefix(const char *sceneName,
+                                              uint8 *dst,
+                                              uint32 bytes);
 static int fgNextSceneStageTryTick(const char *sceneName);
 static int fgNextSceneStageFinishPending(void);
 static int fgNextSceneStageAdoptWindow(const char *sceneName);
@@ -511,10 +520,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (ps1CaptionsEnabled &&
                 fgParseCompactOverlayScene(sceneName, &sceneFamily, &sceneTag))
                 captionsOnAdsStart(sceneFamily->adsName, sceneTag);
-            if (!fgLoadMetadataPrefix(path,
-                                      &gFgRuntime.header,
-                                      gFgRuntime.palette,
-                                      &gFgRuntime.entryTable))
+            if (!fgNextSceneStageAdoptFile(sceneName, &gFgRuntime.packCdFile) &&
+                !ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
+                fgRuntimeReset();
+                return 0;
+            }
+            gFgRuntime.packCdFileValid = 1;
+            if (!fgLoadMetadataPrefixFromCdFile(sceneName,
+                                                &gFgRuntime.packCdFile,
+                                                &gFgRuntime.header,
+                                                gFgRuntime.palette,
+                                                &gFgRuntime.entryTable))
                 return 0;
             packFlags = gFgRuntime.header.reserved0;
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
@@ -534,7 +550,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             }
             fgApplySceneRelativeOffsets(&gFgRuntime.header,
                                         &gFgRuntime.entryTable);
-            if (!fgLoadSoundEvents(path, &gFgRuntime.header,
+            if (!fgLoadSoundEvents(&gFgRuntime.packCdFile, &gFgRuntime.header,
                                    &gFgRuntime.soundEvents,
                                    &gFgRuntime.soundEventCount)) {
                 fgRuntimeReset();
@@ -844,11 +860,6 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.streamWindowValid = 0;
             gFgRuntime.streamScratch = gFgStreamScratch;
             gFgRuntime.streamScratchSize = gFgStreamScratchSize;
-            if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
-                fgRuntimeReset();
-                return 0;
-            }
-            gFgRuntime.packCdFileValid = 1;
             fgNextSceneStageAdoptWindow(sceneName);
             if (!fgRuntimePrimeSetupWindow()) {
                 fgRuntimeReset();

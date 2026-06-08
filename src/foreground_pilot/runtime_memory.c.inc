@@ -749,7 +749,7 @@ static void fgRuntimeReset(void)
     fgTelemetryUpdate();
 }
 
-static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *header,
+static int fgLoadSoundEvents(const CdlFILE *cdfile, const struct TFgPilotHeader *header,
                              struct TFgPilotSoundEvent **outEvents, uint16 *outCount)
 {
     uint8 *data;
@@ -762,15 +762,21 @@ static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *head
     *outEvents = NULL;
     *outCount = 0;
 
-    if (!path || !header)
+    if (!cdfile || !header)
         return 1;
     if (header->soundEventCount == 0 || header->soundEventsOffset == 0)
         return 1;
 
     byteCount = (uint32)header->soundEventCount * 4u;
-    data = ps1_streamRead(path, header->soundEventsOffset, byteCount);
+    data = (uint8 *)memAlloc(MEM_REGION_CACHE, byteCount,
+                             "fg-sound-events-raw");
     if (!data)
         return 0;
+    if (!ps1_streamReadIntoFile(cdfile, header->soundEventsOffset,
+                                byteCount, data)) {
+        memFree(MEM_REGION_CACHE, data);
+        return 0;
+    }
 
     /* MEM_REGION_RATIONALE: per-scene sound-event table. Freed wholesale
      * by memSceneReset at the next fgRuntimeReset. INIT_FULL_WRITE — the
@@ -786,7 +792,7 @@ static int fgLoadSoundEvents(const char *path, const struct TFgPilotHeader *head
         (*outEvents)[i].sampleId    = fgReadU16(data + ((uint32)i * 4u) + 2u);
     }
     *outCount = header->soundEventCount;
-    memFree(MEM_REGION_CACHE, data);  /* `data` is from ps1_streamRead — CACHE pointer; libc free() was a silent no-op + leak. */
+    memFree(MEM_REGION_CACHE, data);
     return 1;
 }
 

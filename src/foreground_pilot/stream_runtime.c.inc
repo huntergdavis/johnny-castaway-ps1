@@ -478,6 +478,7 @@ static int __attribute__((noinline,optimize("Os")))
 fgNextSceneStageStart(const char *sceneName)
 {
     const char *path;
+    uint32 metadataBytes;
 
     if (!fgNextSceneStageCanRun() ||
         sceneName == NULL)
@@ -509,7 +510,17 @@ fgNextSceneStageStart(const char *sceneName)
         fgNextSceneStageInvalidate();
         return 0;
     }
+    metadataBytes = FG_NEXT_STAGE_METADATA_BYTES;
+    if (metadataBytes > gFgNextSceneStage.packCdFile.size)
+        metadataBytes = fgSectorAlignDown(gFgNextSceneStage.packCdFile.size);
+    if (metadataBytes < FG_CD_SECTOR_SIZE) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+    metadataBytes = fgSectorAlignDown(metadataBytes);
     gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_HEADER;
+    gFgNextSceneStage.metadataBytes = metadataBytes;
+    gFgNextSceneStage.spuPayloadOffset = 0;
     gFgNextSceneStage.windowStart = 0;
     gFgNextSceneStage.windowBytes = 0;
     gFgNextSceneStage.loadedBytes = 0;
@@ -519,15 +530,38 @@ fgNextSceneStageStart(const char *sceneName)
 
     if (!ps1_streamAsyncReadAlignedBegin(&gFgNextSceneStage.packCdFile,
                                          0,
-                                         FG_CD_SECTOR_SIZE,
+                                         metadataBytes,
                                          gFgStreamWindowBuffer)) {
         fgNextSceneStageInvalidate();
         return 0;
     }
 
     gFgNextSceneStage.readInFlight = 1;
-    gFgNextSceneStage.pendingBytes = FG_CD_SECTOR_SIZE;
+    gFgNextSceneStage.pendingBytes = metadataBytes;
     FG_STAGE_PRINTF("JCSTAGE H\n");
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageParkMetadataInSpu(void)
+{
+    if (!gFgSpuStageEnabled ||
+        gFgNextSceneStage.metadataParkedInSpu ||
+        gFgNextSceneStage.metadataBytes == 0 ||
+        gFgStreamWindowBuffer == NULL)
+        return 0;
+
+    ps1SpuCacheInit();
+    if (!ps1SpuCacheReady() ||
+        ps1SpuCacheCapacity() < gFgNextSceneStage.metadataBytes)
+        return 0;
+
+    if (!ps1SpuCacheWrite(0, gFgStreamWindowBuffer,
+                          gFgNextSceneStage.metadataBytes))
+        return 0;
+
+    gFgNextSceneStage.metadataParkedInSpu = 1;
+    gFgNextSceneStage.spuPayloadOffset = FG_NEXT_STAGE_PAYLOAD_SPU_OFFSET;
     return 1;
 }
 
@@ -544,10 +578,14 @@ fgNextSceneStageParkInSpu(void)
 
     ps1SpuCacheInit();
     if (!ps1SpuCacheReady() ||
-        ps1SpuCacheCapacity() < gFgNextSceneStage.loadedBytes)
+        ps1SpuCacheCapacity() < gFgNextSceneStage.spuPayloadOffset ||
+        ps1SpuCacheCapacity() - gFgNextSceneStage.spuPayloadOffset <
+            gFgNextSceneStage.loadedBytes)
         return 0;
 
-    if (!ps1SpuCacheWrite(0, gFgStreamWindowBuffer, gFgNextSceneStage.loadedBytes))
+    if (!ps1SpuCacheWrite(gFgNextSceneStage.spuPayloadOffset,
+                          gFgStreamWindowBuffer,
+                          gFgNextSceneStage.loadedBytes))
         return 0;
 
     gFgNextSceneStage.parkedInSpu = 1;
@@ -603,7 +641,7 @@ fgNextSceneStageCompleteHeaderRead(void)
 
     if (gFgNextSceneStage.phase != FG_NEXT_STAGE_PHASE_HEADER ||
         gFgStreamWindowBuffer == NULL ||
-        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
+        gFgStreamWindowBufferSize < gFgNextSceneStage.metadataBytes)
         return 0;
 
     fgParseHeader(gFgStreamWindowBuffer, &header);
@@ -649,6 +687,7 @@ fgNextSceneStageCompleteHeaderRead(void)
     gFgNextSceneStage.windowBytes = windowBytes;
     gFgNextSceneStage.loadedBytes = 0;
     gFgNextSceneStage.pendingBytes = 0;
+    fgNextSceneStageParkMetadataInSpu();
     FG_STAGE_PRINTF("JCSTAGE S %lu\n", (unsigned long)windowBytes);
     return 1;
 }
@@ -1070,8 +1109,11 @@ fgNextSceneStageInvalidate(void)
     gFgNextSceneStage.windowStart = 0;
     gFgNextSceneStage.windowBytes = 0;
     gFgNextSceneStage.loadedBytes = 0;
+    gFgNextSceneStage.metadataBytes = 0;
+    gFgNextSceneStage.spuPayloadOffset = 0;
     gFgNextSceneStage.usesStreamWindow = 0;
     gFgNextSceneStage.parkedInSpu = 0;
+    gFgNextSceneStage.metadataParkedInSpu = 0;
     gFgNextSceneStage.readInFlight = 0;
     gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
     gFgNextSceneStage.pendingBytes = 0;
@@ -1133,6 +1175,33 @@ fgNextSceneStageMatches(const char *sceneName)
 }
 
 static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageAdoptFile(const char *sceneName, CdlFILE *outFile)
+{
+    if (outFile == NULL ||
+        !fgNextSceneStageMatches(sceneName))
+        return 0;
+
+    *outFile = gFgNextSceneStage.packCdFile;
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageReadMetadataPrefix(const char *sceneName,
+                                   uint8 *dst,
+                                   uint32 bytes)
+{
+    if (dst == NULL ||
+        bytes == 0 ||
+        !fgNextSceneStageMatches(sceneName) ||
+        !gFgNextSceneStage.metadataParkedInSpu ||
+        bytes > gFgNextSceneStage.metadataBytes ||
+        ps1SpuCacheCapacity() < bytes)
+        return 0;
+
+    return ps1SpuCacheRead(0, dst, bytes);
+}
+
+static int __attribute__((noinline,optimize("Os")))
 fgNextSceneStageAdoptWindow(const char *sceneName)
 {
     if (!gFgNextSceneStage.valid &&
@@ -1145,8 +1214,12 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
             gFgRuntime.streamWindowSize < gFgNextSceneStage.loadedBytes ||
             gFgStreamWindowBuffer == NULL ||
             gFgStreamWindowBufferSize < gFgNextSceneStage.loadedBytes ||
-            ps1SpuCacheCapacity() < gFgNextSceneStage.loadedBytes ||
-            !ps1SpuCacheRead(0, gFgStreamWindowBuffer, gFgNextSceneStage.loadedBytes)) {
+            ps1SpuCacheCapacity() < gFgNextSceneStage.spuPayloadOffset ||
+            ps1SpuCacheCapacity() - gFgNextSceneStage.spuPayloadOffset <
+                gFgNextSceneStage.loadedBytes ||
+            !ps1SpuCacheRead(gFgNextSceneStage.spuPayloadOffset,
+                             gFgStreamWindowBuffer,
+                             gFgNextSceneStage.loadedBytes)) {
             fgNextSceneStageInvalidate();
             return 0;
         }

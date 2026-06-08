@@ -438,8 +438,11 @@ static void fgFreeEntryTable(struct TFgPilotEntryTable *table)
     table->count = 0;
 }
 
-static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHeader,
-                                uint16 *outPalette, struct TFgPilotEntryTable *outTable)
+static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
+                                          const CdlFILE *cdfile,
+                                          struct TFgPilotHeader *outHeader,
+                                          uint16 *outPalette,
+                                          struct TFgPilotEntryTable *outTable)
 {
     uint8 *metadata;
     uint32 prefixBytes = FG_PACK_METADATA_PREFIX_BYTES;
@@ -449,16 +452,23 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
     uint16 paletteEntries;
     uint16 i;
 
-    if (!path || !outHeader || !outPalette || !outTable)
+    if (!cdfile || !outHeader || !outPalette || !outTable)
         return 0;
 
     memset(outTable, 0, sizeof(*outTable));
     for (i = 0; i < 256; i++)
         outPalette[i] = 0;
 
-    metadata = ps1_streamRead(path, 0, prefixBytes);
+    metadata = (uint8 *)memAlloc(MEM_REGION_CACHE, prefixBytes,
+                                 "fg-metadata-prefix");
     if (!metadata)
         return 0;
+
+    if (!fgNextSceneStageReadMetadataPrefix(sceneName, metadata, prefixBytes) &&
+        !ps1_streamReadAlignedIntoFile(cdfile, 0, prefixBytes, metadata)) {
+        memFree(MEM_REGION_CACHE, metadata);
+        return 0;
+    }
 
     fgParseHeader(metadata, outHeader);
     if ((!fgHeaderIsPal4Spans(outHeader) &&
@@ -498,8 +508,12 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
         memcpy(expanded, metadata, prefixBytes);
         memFree(MEM_REGION_CACHE, metadata);
 
-        tail = ps1_streamRead(path, prefixBytes, tailBytes);
-        if (!tail) {
+        tail = (uint8 *)memAlloc(MEM_REGION_CACHE, tailBytes,
+                                 "fg-metadata-tail");
+        if (!tail ||
+            !ps1_streamReadIntoFile(cdfile, prefixBytes, tailBytes, tail)) {
+            if (tail)
+                memFree(MEM_REGION_CACHE, tail);
             memFree(MEM_REGION_CACHE, expanded);
             return 0;
         }
