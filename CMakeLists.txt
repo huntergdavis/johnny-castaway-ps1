@@ -40,6 +40,7 @@ set(SOURCES
     # PS1-specific implementations
     src/graphics_ps1/graphics_ps1.c
     src/platform/ps1/sound_ps1.c
+    src/platform/ps1/ps1_spu_cache.c
     src/platform/ps1/events_ps1.c
     src/platform/ps1/ps1_pad_script.c
     src/cdrom_ps1.c

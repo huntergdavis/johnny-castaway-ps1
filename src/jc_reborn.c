@@ -73,6 +73,7 @@ int fclose(FILE *stream);
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "sound_ps1.h"
+#include "ps1_spu_cache.h"
 #include "memcard.h"
 #include "mem_region.h"
 #include "cdrom_ps1.h"
@@ -102,6 +103,27 @@ static void ps1ShowFreeplayLoadingFrame(const char *phase, int tick)
 {
     (void)phase;
     grShowMeanwhileLoadingFrame((uint16)tick);
+}
+
+static void ps1SpuCacheProofHalt(int ok)
+{
+    DRAWENV draw;
+
+    ResetGraph(0);
+    SetVideoMode(MODE_NTSC);
+    SetDefDrawEnv(&draw, 0, 0, 640, 480);
+    if (ok)
+        setRGB0(&draw, 0, 96, 0);
+    else
+        setRGB0(&draw, 96, 0, 0);
+    draw.isbg = 1;
+    PutDrawEnv(&draw);
+    SetDispMask(1);
+
+    while (1) {
+        VSync(0);
+        PutDrawEnv(&draw);
+    }
 }
 
 /* story_data.h is platform-independent — it's just a const struct
@@ -849,6 +871,8 @@ static char ps1BootArgStorage[3][32];
 static char ps1BootOverrideSource[16];
 static char ps1BootOverrideText[128];
 static char ps1BootForegroundOverlayScene[32];
+static int ps1BootSpuCacheTest = 0;
+static int ps1BootSpuCacheProof = 0;
 #if PS1_VERBOSE_DIAGNOSTICS
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
@@ -880,6 +904,8 @@ static void ps1ResetBootArgs(void)
     ps1BootOverrideSource[0] = '\0';
     ps1BootOverrideText[0] = '\0';
     ps1BootForegroundOverlayScene[0] = '\0';
+    ps1BootSpuCacheTest = 0;
+    ps1BootSpuCacheProof = 0;
 #if PS1_VERBOSE_DIAGNOSTICS
     ps1BootCaptureMetaDirStorage[0] = '\0';
     ps1BootCaptureSceneLabelStorage[0] = '\0';
@@ -981,6 +1007,39 @@ static void ps1RememberBootOverride(const char *source, const char *buffer)
     }
 }
 
+static int ps1BootStringHasToken(const char *text, const char *token)
+{
+    size_t tokenLen;
+    const char *cursor;
+
+    if (!text || !text[0] || !token)
+        return 0;
+
+    tokenLen = strlen(token);
+    cursor = text;
+    while (*cursor) {
+        const char *start;
+        size_t len;
+
+        while (*cursor && ps1IsSpace(*cursor))
+            cursor++;
+        start = cursor;
+        while (*cursor && !ps1IsSpace(*cursor))
+            cursor++;
+
+        len = (size_t)(cursor - start);
+        if (len == tokenLen && !strncmp(start, token, tokenLen))
+            return 1;
+    }
+
+    return 0;
+}
+
+static int ps1BootOverrideHasToken(const char *token)
+{
+    return ps1BootStringHasToken(ps1BootOverrideText, token);
+}
+
 static int ps1IsFgPilotOptionToken(const char *token)
 {
     if (token == NULL)
@@ -1030,6 +1089,8 @@ static int ps1IsFgPilotOptionToken(const char *token)
            !strcmp(token, "prefetch-window64") ||
            !strcmp(token, "window64") ||
            !strcmp(token, "prefetch-window") ||
+           !strcmp(token, "spu-cache-test") ||
+           !strcmp(token, "spu-cache-proof") ||
            !strcmp(token, "perf-log") ||
            !strcmp(token, "perf") ||
            !strcmp(token, "perf-detail") ||
@@ -1054,6 +1115,10 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     int tokenBase = 0;
 
     ps1RememberBootOverride(source, buffer);
+    if (ps1BootOverrideHasToken("spu-cache-test"))
+        ps1BootSpuCacheTest = 1;
+    if (ps1BootOverrideHasToken("spu-cache-proof"))
+        ps1BootSpuCacheProof = 1;
 
 #if JC_BOOT_DIAG_LOGS
     /* JCBOOT diag: print the entire buffer so we can confirm which
@@ -1222,6 +1287,10 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
         } else if (!strcmp(tokens[i], "prefetch-window") && (i + 1) < tokenCount) {
             foregroundPilotSetPrefetchWindow((unsigned long)atoi(tokens[i + 1]));
             i++;
+        } else if (!strcmp(tokens[i], "spu-cache-test")) {
+            ps1BootSpuCacheTest = 1;
+        } else if (!strcmp(tokens[i], "spu-cache-proof")) {
+            ps1BootSpuCacheProof = 1;
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -2037,6 +2106,17 @@ int main(int argc, char **argv)
     if (memcardSettingsLoaded && memcardRequestedMute) {
         soundMuted = 0;
         soundMuteToggle();  /* apply saved mute to SPU registers */
+    }
+    if (ps1BootSpuCacheTest || ps1BootSpuCacheProof ||
+        ps1BootOverrideHasToken("spu-cache-test") ||
+        ps1BootOverrideHasToken("spu-cache-proof") ||
+        ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-test") ||
+        ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof")) {
+        int cacheOk = ps1SpuCacheSelfTest();
+        if (ps1BootSpuCacheProof ||
+            ps1BootOverrideHasToken("spu-cache-proof") ||
+            ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof"))
+            ps1SpuCacheProofHalt(cacheOk);
     }
     ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
