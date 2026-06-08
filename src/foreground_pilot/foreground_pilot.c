@@ -18,6 +18,7 @@
 #include "pause_menu.h"
 #include "ps1_captions.h"
 #include "sound_ps1.h"
+#include "ps1_spu_cache.h"
 #include "utils.h"
 #include "ps1_perf.h"
 #include "walk_pilot.h"
@@ -26,6 +27,15 @@
 
 #ifndef PS1_VERBOSE_DIAGNOSTICS
 #define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
+#ifndef FG_STAGE_DIAG_LOGS
+#define FG_STAGE_DIAG_LOGS 0
+#endif
+
+#if FG_STAGE_DIAG_LOGS
+#define FG_STAGE_PRINTF(...) do { printf(__VA_ARGS__); } while (0)
+#else
+#define FG_STAGE_PRINTF(...) do { } while (0)
 #endif
 
 uint16 ps1AdsDbgActiveThreads = 0;
@@ -367,11 +377,13 @@ static uint8 gFgHeapProbeEnabled = 0;
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 static uint8 gFgLoadingWaveProofEnabled = 0;
+static uint8 gFgSpuStageEnabled = 0;
 struct TFgNextSceneStage {
     uint8 active;
     uint8 valid;
     uint8 lowTide;
     uint8 usesStreamWindow;
+    uint8 parkedInSpu;
     uint8 readInFlight;
     char sceneName[16];
     CdlFILE packCdFile;
@@ -1979,12 +1991,20 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
     }
 }
 
+void foregroundPilotSetSpuStage(int enabled)
+{
+    gFgSpuStageEnabled = enabled ? 1 : 0;
+    if (!gFgSpuStageEnabled)
+        fgNextSceneStageInvalidate();
+}
+
 void foregroundPilotResetPrefetchDefaults(void)
 {
     /* Match the file-static default: prefetch is ON. Scenes need it for
      * full-speed playback. See gFgPrefetchStage1Enabled rationale. */
     gFgPrefetchStage1Enabled = 1;
     gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
+    gFgSpuStageEnabled = 0;
 }
 
 void foregroundPilotSetPrefetchStage1(int enabled)

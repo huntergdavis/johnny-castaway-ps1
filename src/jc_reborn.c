@@ -1091,6 +1091,8 @@ static int ps1IsFgPilotOptionToken(const char *token)
            !strcmp(token, "prefetch-window") ||
            !strcmp(token, "spu-cache-test") ||
            !strcmp(token, "spu-cache-proof") ||
+           !strcmp(token, "spu-stage") ||
+           !strcmp(token, "no-spu-stage") ||
            !strcmp(token, "perf-log") ||
            !strcmp(token, "perf") ||
            !strcmp(token, "perf-detail") ||
@@ -1291,6 +1293,10 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             ps1BootSpuCacheTest = 1;
         } else if (!strcmp(tokens[i], "spu-cache-proof")) {
             ps1BootSpuCacheProof = 1;
+        } else if (!strcmp(tokens[i], "spu-stage")) {
+            foregroundPilotSetSpuStage(1);
+        } else if (!strcmp(tokens[i], "no-spu-stage")) {
+            foregroundPilotSetSpuStage(0);
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -1739,6 +1745,12 @@ static void parseArgs(int argc, char **argv)
                     fprintf(stderr, "Error: prefetch-window requires a byte count\n");
                     usage();
                 }
+            }
+            else if (!strcmp(argv[i], "spu-stage")) {
+                foregroundPilotSetSpuStage(1);
+            }
+            else if (!strcmp(argv[i], "no-spu-stage")) {
+                foregroundPilotSetSpuStage(0);
             }
 #ifdef PS1_BUILD
 #if PS1_VERBOSE_DIAGNOSTICS

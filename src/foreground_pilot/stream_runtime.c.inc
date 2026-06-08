@@ -533,7 +533,50 @@ fgNextSceneStageStart(const char *sceneName)
     gFgRuntime.streamWindowValid = 0;
     gFgRuntime.streamWindowStart = windowStart;
     gFgRuntime.streamWindowBytes = 0;
-    printf("JCSTAGE S %lu\n", (unsigned long)windowBytes);
+    FG_STAGE_PRINTF("JCSTAGE S %lu\n", (unsigned long)windowBytes);
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageParkInSpu(void)
+{
+    if (!gFgSpuStageEnabled ||
+        !gFgNextSceneStage.usesStreamWindow ||
+        gFgNextSceneStage.parkedInSpu ||
+        gFgNextSceneStage.loadedBytes == 0 ||
+        gFgNextSceneStage.loadedBytes > gFgNextSceneStage.windowBytes ||
+        gFgStreamWindowBuffer == NULL)
+        return 0;
+
+    ps1SpuCacheInit();
+    if (!ps1SpuCacheReady() ||
+        ps1SpuCacheCapacity() < gFgNextSceneStage.loadedBytes)
+        return 0;
+
+    if (!ps1SpuCacheWrite(0, gFgStreamWindowBuffer, gFgNextSceneStage.loadedBytes))
+        return 0;
+
+    gFgNextSceneStage.parkedInSpu = 1;
+    gFgNextSceneStage.usesStreamWindow = 0;
+    gFgRuntime.streamWindowValid = 0;
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageCompleteRead(void)
+{
+    if (gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes)
+        return 1;
+
+    if (gFgSpuStageEnabled && !fgNextSceneStageParkInSpu()) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    gFgNextSceneStage.active = 0;
+    gFgNextSceneStage.valid = 1;
+    FG_STAGE_PRINTF("JCSTAGE R %lu\n",
+                    (unsigned long)gFgNextSceneStage.windowBytes);
     return 1;
 }
 
@@ -573,12 +616,7 @@ fgNextSceneStageTryTick(const char *sceneName)
         gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
         gFgNextSceneStage.pendingBytes = 0;
         gFgNextSceneStage.readInFlight = 0;
-        if (gFgNextSceneStage.loadedBytes >= gFgNextSceneStage.windowBytes) {
-            gFgNextSceneStage.active = 0;
-            gFgNextSceneStage.valid = 1;
-            printf("JCSTAGE R %lu\n", (unsigned long)gFgNextSceneStage.windowBytes);
-        }
-        return 1;
+        return fgNextSceneStageCompleteRead();
     }
 
     chunkBytes = gFgNextSceneStage.windowBytes;
@@ -918,6 +956,7 @@ fgNextSceneStageInvalidate(void)
     gFgNextSceneStage.windowBytes = 0;
     gFgNextSceneStage.loadedBytes = 0;
     gFgNextSceneStage.usesStreamWindow = 0;
+    gFgNextSceneStage.parkedInSpu = 0;
     gFgNextSceneStage.readInFlight = 0;
     gFgNextSceneStage.pendingBytes = 0;
 }
@@ -943,12 +982,7 @@ fgNextSceneStageFinishPending(void)
     gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
     gFgNextSceneStage.pendingBytes = 0;
     gFgNextSceneStage.readInFlight = 0;
-    if (gFgNextSceneStage.loadedBytes >= gFgNextSceneStage.windowBytes) {
-        gFgNextSceneStage.active = 0;
-        gFgNextSceneStage.valid = 1;
-        printf("JCSTAGE R %lu\n", (unsigned long)gFgNextSceneStage.windowBytes);
-    }
-    return 1;
+    return fgNextSceneStageCompleteRead();
 }
 
 static int __attribute__((noinline,optimize("Os")))
@@ -965,6 +999,29 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
     if (!gFgNextSceneStage.valid &&
         (!gFgNextSceneStage.active || gFgNextSceneStage.loadedBytes == 0))
         return 0;
+    if (gFgNextSceneStage.parkedInSpu) {
+        if (!fgNextSceneStageMatches(sceneName) ||
+            gFgNextSceneStage.readInFlight ||
+            gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
+            gFgRuntime.streamWindowSize < gFgNextSceneStage.loadedBytes ||
+            gFgStreamWindowBuffer == NULL ||
+            gFgStreamWindowBufferSize < gFgNextSceneStage.loadedBytes ||
+            ps1SpuCacheCapacity() < gFgNextSceneStage.loadedBytes ||
+            !ps1SpuCacheRead(0, gFgStreamWindowBuffer, gFgNextSceneStage.loadedBytes)) {
+            fgNextSceneStageInvalidate();
+            return 0;
+        }
+
+        gFgRuntime.streamWindowStart = gFgNextSceneStage.windowStart;
+        gFgRuntime.streamWindowBytes = gFgNextSceneStage.loadedBytes;
+        gFgRuntime.streamWindowValid = 1;
+        FG_STAGE_PRINTF("JCSTAGE P %lu/%lu\n",
+                        (unsigned long)gFgNextSceneStage.loadedBytes,
+                        (unsigned long)gFgNextSceneStage.windowBytes);
+        fgNextSceneStageInvalidate();
+        return 1;
+    }
+
     if (!fgNextSceneStageMatches(sceneName) ||
         !gFgNextSceneStage.usesStreamWindow ||
         gFgNextSceneStage.readInFlight ||
@@ -979,9 +1036,9 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
     gFgRuntime.streamWindowStart = gFgNextSceneStage.windowStart;
     gFgRuntime.streamWindowBytes = gFgNextSceneStage.loadedBytes;
     gFgRuntime.streamWindowValid = 1;
-    printf("JCSTAGE A %lu/%lu\n",
-           (unsigned long)gFgNextSceneStage.loadedBytes,
-           (unsigned long)gFgNextSceneStage.windowBytes);
+    FG_STAGE_PRINTF("JCSTAGE A %lu/%lu\n",
+                    (unsigned long)gFgNextSceneStage.loadedBytes,
+                    (unsigned long)gFgNextSceneStage.windowBytes);
     fgNextSceneStageInvalidate();
     return 1;
 }
