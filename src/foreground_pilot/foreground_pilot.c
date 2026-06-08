@@ -225,6 +225,7 @@ enum {
 #define FG_CD_SECTOR_SIZE 2048UL
 #define FG_NEXT_STAGE_SIDE_BYTES (128UL * 1024UL)
 #define FG_NEXT_STAGE_TARGET_BYTES (64UL * 1024UL)
+#define FG_NEXT_STAGE_CHUNK_BYTES (8UL * 1024UL)
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_START (3UL * FG_CD_SECTOR_SIZE)

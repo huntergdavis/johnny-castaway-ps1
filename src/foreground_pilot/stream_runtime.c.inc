@@ -557,10 +557,11 @@ fgNextSceneStageParkInSpu(void)
 }
 
 static int __attribute__((noinline,optimize("Os")))
-fgNextSceneStageCompletePayloadRead(void)
+fgNextSceneStagePublishLoadedWindow(void)
 {
-    if (gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes)
-        return 1;
+    if (gFgNextSceneStage.loadedBytes == 0 ||
+        gFgNextSceneStage.loadedBytes > gFgNextSceneStage.windowBytes)
+        return 0;
 
     if (gFgSpuStageEnabled && !fgNextSceneStageParkInSpu()) {
         fgNextSceneStageInvalidate();
@@ -570,8 +571,23 @@ fgNextSceneStageCompletePayloadRead(void)
     gFgNextSceneStage.active = 0;
     gFgNextSceneStage.valid = 1;
     gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
-    FG_STAGE_PRINTF("JCSTAGE R %lu\n",
+    FG_STAGE_PRINTF("JCSTAGE R %lu/%lu\n",
+                    (unsigned long)gFgNextSceneStage.loadedBytes,
                     (unsigned long)gFgNextSceneStage.windowBytes);
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageCompletePayloadRead(void)
+{
+    if (gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes)
+        return 1;
+
+    if (!fgNextSceneStagePublishLoadedWindow()) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
     return 1;
 }
 
@@ -648,6 +664,8 @@ fgNextSceneStageBeginPayloadRead(void)
         return fgNextSceneStageCompletePayloadRead();
 
     chunkBytes = gFgNextSceneStage.windowBytes - gFgNextSceneStage.loadedBytes;
+    if (chunkBytes > FG_NEXT_STAGE_CHUNK_BYTES)
+        chunkBytes = FG_NEXT_STAGE_CHUNK_BYTES;
 
     if (!ps1_streamAsyncReadAlignedBegin(
             &gFgNextSceneStage.packCdFile,
@@ -1068,15 +1086,7 @@ fgNextSceneStageFinishPending(void)
         gFgNextSceneStage.valid)
         return 1;
 
-    while (gFgNextSceneStage.active && !gFgNextSceneStage.valid) {
-        if (!gFgNextSceneStage.readInFlight &&
-            gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD &&
-            !fgNextSceneStageBeginPayloadRead())
-            return 0;
-
-        if (!gFgNextSceneStage.readInFlight)
-            return 1;
-
+    if (gFgNextSceneStage.readInFlight) {
         do {
             asyncResult = ps1_streamAsyncReadPoll();
             if (asyncResult == PS1_CD_ASYNC_PENDING)
@@ -1090,20 +1100,27 @@ fgNextSceneStageFinishPending(void)
         gFgNextSceneStage.readInFlight = 0;
         if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_HEADER) {
             gFgNextSceneStage.pendingBytes = 0;
-            if (!fgNextSceneStageCompleteHeaderRead())
+            if (!fgNextSceneStageCompleteHeaderRead()) {
+                fgNextSceneStageInvalidate();
                 return 0;
-            continue;
-        }
-        if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD) {
+            }
+        } else if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD) {
             gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
             gFgNextSceneStage.pendingBytes = 0;
-            return fgNextSceneStageCompletePayloadRead();
+        } else {
+            fgNextSceneStageInvalidate();
+            return 0;
         }
-
-        fgNextSceneStageInvalidate();
-        return 0;
     }
 
+    if (gFgNextSceneStage.loadedBytes >= gFgNextSceneStage.windowBytes &&
+        gFgNextSceneStage.windowBytes > 0)
+        return fgNextSceneStageCompletePayloadRead();
+
+    if (gFgSpuStageEnabled && gFgNextSceneStage.loadedBytes > 0)
+        return fgNextSceneStagePublishLoadedWindow();
+
+    fgNextSceneStageInvalidate();
     return 1;
 }
 
