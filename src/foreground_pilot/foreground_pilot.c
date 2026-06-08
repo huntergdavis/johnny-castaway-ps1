@@ -163,6 +163,7 @@ struct TFgPilotRuntime {
 };
 
 static char gForegroundPilotScene[16] = "";
+static char gFgStageSceneName[16] = "";
 static sint16 gFgSceneDrawOffsetX = 0;
 static sint16 gFgSceneDrawOffsetY = 0;
 static uint32 gFgCleanRectMaxBytes = 96UL * 1024UL;
@@ -223,6 +224,7 @@ enum {
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 #define FG_NEXT_STAGE_SIDE_BYTES (128UL * 1024UL)
+#define FG_NEXT_STAGE_TARGET_BYTES (64UL * 1024UL)
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_START (3UL * FG_CD_SECTOR_SIZE)
@@ -385,12 +387,18 @@ struct TFgNextSceneStage {
     uint8 usesStreamWindow;
     uint8 parkedInSpu;
     uint8 readInFlight;
+    uint8 phase;
     char sceneName[16];
     CdlFILE packCdFile;
     uint32 windowStart;
     uint32 windowBytes;
     uint32 loadedBytes;
     uint32 pendingBytes;
+};
+enum {
+    FG_NEXT_STAGE_PHASE_NONE = 0,
+    FG_NEXT_STAGE_PHASE_HEADER = 1,
+    FG_NEXT_STAGE_PHASE_PAYLOAD = 2
 };
 struct TFgCleanOverlayKey {
     uint8 valid;
@@ -447,6 +455,16 @@ static uint8 fgSceneIdForName(const char *sceneName);
 #include "foreground_pilot/backdrop_clean.c.inc"
 #include "foreground_pilot/stream_runtime.c.inc"
 #line 4277 "/project/src/foreground_pilot.c"
+static int fgCleanRectsNeedCacheForProof(const char *sceneName)
+{
+    if (!gFgLoadingWaveProofEnabled)
+        return 0;
+    if (gFgStageSceneName[0] != '\0' &&
+        !fgSceneEquals(sceneName, gFgStageSceneName))
+        return 0;
+    return 1;
+}
+
 static int foregroundPilotRuntimeStart(const char *sceneName)
 {
     /* Round 33: fgRuntimeReset() previously ran here, BUT that put it
@@ -1422,7 +1440,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         }
 #endif
     } else {
-        int forceCleanCacheForProof = gFgLoadingWaveProofEnabled &&
+        int forceCleanCacheForProof = fgCleanRectsNeedCacheForProof(sceneName) &&
             !blackBackdrop &&
             !sceneSpecificBackdrop &&
             !largeCleanSnapshot;
@@ -1779,7 +1797,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             if (!advancedThisLoop &&
                 !didPrefetch &&
                 !didPrepare) {
-                didNextStage = fgNextSceneStageTryTick(sceneName);
+                const char *stageSceneName =
+                    (gFgStageSceneName[0] != '\0') ? gFgStageSceneName : sceneName;
+                didNextStage = fgNextSceneStageTryTick(stageSceneName);
                 if (didNextStage)
                     schedOwner = PS1_PERF_SCHED_CD_WINDOW;
             }
@@ -1877,8 +1897,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(0);
         fgCleanOverlayInvalidate();
-    } else if (gFgLoadingWaveProofEnabled) {
+    } else if (fgCleanRectsNeedCacheForProof(sceneName)) {
         fgCleanOverlayRemember(sceneName);
+    } else if (gFgLoadingWaveProofEnabled) {
+        fgCleanOverlayInvalidate();
     } else {
         /* Deactivate the rect-snapshot — keep the buffer alive at its
          * boot-prealloc address so we don't fragment normal island scenes. */
@@ -1998,6 +2020,20 @@ void foregroundPilotSetSpuStage(int enabled)
         fgNextSceneStageInvalidate();
 }
 
+void foregroundPilotSetStageScene(const char *sceneName)
+{
+    size_t i;
+
+    if (!sceneName) {
+        gFgStageSceneName[0] = '\0';
+        return;
+    }
+
+    for (i = 0; i + 1 < sizeof(gFgStageSceneName) && sceneName[i] != '\0'; i++)
+        gFgStageSceneName[i] = sceneName[i];
+    gFgStageSceneName[i] = '\0';
+}
+
 void foregroundPilotResetPrefetchDefaults(void)
 {
     /* Match the file-static default: prefetch is ON. Scenes need it for
@@ -2005,6 +2041,7 @@ void foregroundPilotResetPrefetchDefaults(void)
     gFgPrefetchStage1Enabled = 1;
     gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
     gFgSpuStageEnabled = 0;
+    gFgStageSceneName[0] = '\0';
 }
 
 void foregroundPilotSetPrefetchStage1(int enabled)
@@ -2068,6 +2105,7 @@ void foregroundPilotPlay(void)
 #else
 
 static char gForegroundPilotScene[16] = "";
+static char gFgStageSceneName[16] = "";
 
 void foregroundPilotSetScene(const char *sceneName)
 {
@@ -2095,8 +2133,24 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
     (void)enabled;
 }
 
+void foregroundPilotSetSpuStage(int enabled)
+{
+    (void)enabled;
+}
+
+void foregroundPilotSetStageScene(const char *sceneName)
+{
+    if (!sceneName) {
+        gFgStageSceneName[0] = '\0';
+        return;
+    }
+    strncpy(gFgStageSceneName, sceneName, sizeof(gFgStageSceneName) - 1);
+    gFgStageSceneName[sizeof(gFgStageSceneName) - 1] = '\0';
+}
+
 void foregroundPilotResetPrefetchDefaults(void)
 {
+    gFgStageSceneName[0] = '\0';
 }
 
 void foregroundPilotSetPrefetchStage1(int enabled)

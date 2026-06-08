@@ -477,35 +477,14 @@ fgNextSceneStageCanRun(void)
 static int __attribute__((noinline,optimize("Os")))
 fgNextSceneStageStart(const char *sceneName)
 {
-    uint32 fileBytes;
-    uint32 windowStart;
-    uint32 requestBytes;
-    uint32 validBytes;
-    uint32 windowBytes;
+    const char *path;
 
     if (!fgNextSceneStageCanRun() ||
         sceneName == NULL)
         return 0;
 
-    windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
-    fileBytes = gFgRuntime.packCdFile.size;
-    if (windowStart >= fileBytes)
-        return 0;
-
-    requestBytes = gFgRuntime.setupPrimeWindowBytes > 0 ?
-        gFgRuntime.setupPrimeWindowBytes : gFgRuntime.streamWindowReadSize;
-    if (requestBytes > FG_NEXT_STAGE_SIDE_BYTES)
-        requestBytes = FG_NEXT_STAGE_SIDE_BYTES;
-    if (requestBytes < FG_CD_SECTOR_SIZE)
-        return 0;
-
-    validBytes = fileBytes - windowStart;
-    if (validBytes > requestBytes)
-        validBytes = requestBytes;
-    windowBytes = fgSectorAlignUp(validBytes);
-    if (windowBytes > FG_NEXT_STAGE_SIDE_BYTES)
-        windowBytes = FG_NEXT_STAGE_SIDE_BYTES;
-    if (windowBytes == 0)
+    path = fgCompactOverlayPackPathForScene(sceneName);
+    if (path == NULL)
         return 0;
 
     /* The first side-buffer proof staged early but malloc/free cycled an
@@ -516,7 +495,7 @@ fgNextSceneStageStart(const char *sceneName)
     if (fgRuntimeNextPayloadEntry(NULL) != NULL ||
         gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
         gFgStreamWindowBuffer == NULL ||
-        gFgStreamWindowBufferSize < windowBytes)
+        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
         return 0;
 
     fgNextSceneStageInvalidate();
@@ -526,14 +505,29 @@ fgNextSceneStageStart(const char *sceneName)
     strncpy(gFgNextSceneStage.sceneName, sceneName,
             sizeof(gFgNextSceneStage.sceneName) - 1);
     gFgNextSceneStage.sceneName[sizeof(gFgNextSceneStage.sceneName) - 1] = '\0';
-    gFgNextSceneStage.packCdFile = gFgRuntime.packCdFile;
-    gFgNextSceneStage.windowStart = windowStart;
-    gFgNextSceneStage.windowBytes = windowBytes;
+    if (!ps1_streamResolveFile(path, &gFgNextSceneStage.packCdFile)) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+    gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_HEADER;
+    gFgNextSceneStage.windowStart = 0;
+    gFgNextSceneStage.windowBytes = 0;
     gFgNextSceneStage.loadedBytes = 0;
     gFgRuntime.streamWindowValid = 0;
-    gFgRuntime.streamWindowStart = windowStart;
+    gFgRuntime.streamWindowStart = 0;
     gFgRuntime.streamWindowBytes = 0;
-    FG_STAGE_PRINTF("JCSTAGE S %lu\n", (unsigned long)windowBytes);
+
+    if (!ps1_streamAsyncReadAlignedBegin(&gFgNextSceneStage.packCdFile,
+                                         0,
+                                         FG_CD_SECTOR_SIZE,
+                                         gFgStreamWindowBuffer)) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    gFgNextSceneStage.readInFlight = 1;
+    gFgNextSceneStage.pendingBytes = FG_CD_SECTOR_SIZE;
+    FG_STAGE_PRINTF("JCSTAGE H\n");
     return 1;
 }
 
@@ -563,7 +557,7 @@ fgNextSceneStageParkInSpu(void)
 }
 
 static int __attribute__((noinline,optimize("Os")))
-fgNextSceneStageCompleteRead(void)
+fgNextSceneStageCompletePayloadRead(void)
 {
     if (gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes)
         return 1;
@@ -575,15 +569,122 @@ fgNextSceneStageCompleteRead(void)
 
     gFgNextSceneStage.active = 0;
     gFgNextSceneStage.valid = 1;
+    gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
     FG_STAGE_PRINTF("JCSTAGE R %lu\n",
                     (unsigned long)gFgNextSceneStage.windowBytes);
     return 1;
 }
 
 static int __attribute__((noinline,optimize("Os")))
-fgNextSceneStageTryTick(const char *sceneName)
+fgNextSceneStageCompleteHeaderRead(void)
+{
+    struct TFgPilotHeader header;
+    uint32 fileBytes;
+    uint32 windowStart;
+    uint32 requestBytes;
+    uint32 validBytes;
+    uint32 windowBytes;
+
+    if (gFgNextSceneStage.phase != FG_NEXT_STAGE_PHASE_HEADER ||
+        gFgStreamWindowBuffer == NULL ||
+        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
+        return 0;
+
+    fgParseHeader(gFgStreamWindowBuffer, &header);
+    if ((!fgHeaderIsPal4Spans(&header) &&
+         !fgHeaderIsIndexed8Spans(&header) &&
+         !fgHeaderIsPal4TemporalResidual(&header) &&
+         !fgHeaderIsIndexed8TemporalResidual(&header)) ||
+        header.frameCount == 0) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    windowStart = fgSectorAlignDown(header.dataOffset);
+    fileBytes = gFgNextSceneStage.packCdFile.size;
+    if (windowStart >= fileBytes) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    requestBytes = FG_NEXT_STAGE_TARGET_BYTES;
+    if (requestBytes > FG_NEXT_STAGE_SIDE_BYTES)
+        requestBytes = FG_NEXT_STAGE_SIDE_BYTES;
+    if (requestBytes > gFgStreamWindowBufferSize)
+        requestBytes = fgSectorAlignDown(gFgStreamWindowBufferSize);
+    if (requestBytes < FG_CD_SECTOR_SIZE) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    validBytes = fileBytes - windowStart;
+    if (validBytes > requestBytes)
+        validBytes = requestBytes;
+    windowBytes = fgSectorAlignUp(validBytes);
+    if (windowBytes > requestBytes)
+        windowBytes = requestBytes;
+    if (windowBytes == 0) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_PAYLOAD;
+    gFgNextSceneStage.windowStart = windowStart;
+    gFgNextSceneStage.windowBytes = windowBytes;
+    gFgNextSceneStage.loadedBytes = 0;
+    gFgNextSceneStage.pendingBytes = 0;
+    FG_STAGE_PRINTF("JCSTAGE S %lu\n", (unsigned long)windowBytes);
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageBeginPayloadRead(void)
 {
     uint32 chunkBytes;
+
+    if (gFgNextSceneStage.phase != FG_NEXT_STAGE_PHASE_PAYLOAD ||
+        gFgNextSceneStage.readInFlight ||
+        gFgNextSceneStage.loadedBytes >= gFgNextSceneStage.windowBytes)
+        return fgNextSceneStageCompletePayloadRead();
+
+    chunkBytes = gFgNextSceneStage.windowBytes - gFgNextSceneStage.loadedBytes;
+
+    if (!ps1_streamAsyncReadAlignedBegin(
+            &gFgNextSceneStage.packCdFile,
+            gFgNextSceneStage.windowStart + gFgNextSceneStage.loadedBytes,
+            chunkBytes,
+            gFgStreamWindowBuffer + gFgNextSceneStage.loadedBytes)) {
+        fgNextSceneStageInvalidate();
+        return 0;
+    }
+
+    gFgNextSceneStage.readInFlight = 1;
+    gFgNextSceneStage.pendingBytes = chunkBytes;
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageWorkStillValid(const char *sceneName)
+{
+    if (!fgNextSceneStageCanRun() ||
+        !fgSceneEquals(sceneName, gFgNextSceneStage.sceneName) ||
+        gFgNextSceneStage.lowTide != (uint8)(islandState.lowTide ? 1 : 0) ||
+        !gFgNextSceneStage.usesStreamWindow ||
+        gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
+        gFgStreamWindowBuffer == NULL ||
+        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
+        return 0;
+
+    if (gFgNextSceneStage.windowBytes > 0 &&
+        gFgStreamWindowBufferSize < gFgNextSceneStage.windowBytes)
+        return 0;
+
+    return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageTryTick(const char *sceneName)
+{
     int asyncResult;
 
     if (gFgNextSceneStage.valid)
@@ -593,13 +694,7 @@ fgNextSceneStageTryTick(const char *sceneName)
         return 0;
     if (!gFgNextSceneStage.active)
         return 0;
-    if (!fgNextSceneStageCanRun() ||
-        !fgSceneEquals(sceneName, gFgNextSceneStage.sceneName) ||
-        gFgNextSceneStage.lowTide != (uint8)(islandState.lowTide ? 1 : 0) ||
-        !gFgNextSceneStage.usesStreamWindow ||
-        gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
-        gFgStreamWindowBuffer == NULL ||
-        gFgStreamWindowBufferSize < gFgNextSceneStage.windowBytes) {
+    if (!fgNextSceneStageWorkStillValid(sceneName)) {
         fgNextSceneStageInvalidate();
         return 0;
     }
@@ -613,25 +708,27 @@ fgNextSceneStageTryTick(const char *sceneName)
             return 0;
         }
 
-        gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
-        gFgNextSceneStage.pendingBytes = 0;
         gFgNextSceneStage.readInFlight = 0;
-        return fgNextSceneStageCompleteRead();
-    }
+        if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_HEADER) {
+            gFgNextSceneStage.pendingBytes = 0;
+            if (!fgNextSceneStageCompleteHeaderRead())
+                return 0;
+            return fgNextSceneStageBeginPayloadRead();
+        }
 
-    chunkBytes = gFgNextSceneStage.windowBytes;
+        if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD) {
+            gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
+            gFgNextSceneStage.pendingBytes = 0;
+            return fgNextSceneStageCompletePayloadRead();
+        }
 
-    if (!ps1_streamAsyncReadAlignedBegin(
-            &gFgNextSceneStage.packCdFile,
-            gFgNextSceneStage.windowStart,
-            chunkBytes,
-            gFgStreamWindowBuffer)) {
         fgNextSceneStageInvalidate();
         return 0;
     }
 
-    gFgNextSceneStage.readInFlight = 1;
-    gFgNextSceneStage.pendingBytes = chunkBytes;
+    if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD)
+        return fgNextSceneStageBeginPayloadRead();
+
     return 1;
 }
 
@@ -958,6 +1055,7 @@ fgNextSceneStageInvalidate(void)
     gFgNextSceneStage.usesStreamWindow = 0;
     gFgNextSceneStage.parkedInSpu = 0;
     gFgNextSceneStage.readInFlight = 0;
+    gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
     gFgNextSceneStage.pendingBytes = 0;
 }
 
@@ -966,23 +1064,47 @@ fgNextSceneStageFinishPending(void)
 {
     int asyncResult;
 
-    if (!gFgNextSceneStage.readInFlight)
+    if (!gFgNextSceneStage.active ||
+        gFgNextSceneStage.valid)
         return 1;
 
-    do {
-        asyncResult = ps1_streamAsyncReadPoll();
-        if (asyncResult == PS1_CD_ASYNC_PENDING)
-            VSync(0);
-    } while (asyncResult == PS1_CD_ASYNC_PENDING);
-    if (asyncResult != PS1_CD_ASYNC_DONE) {
+    while (gFgNextSceneStage.active && !gFgNextSceneStage.valid) {
+        if (!gFgNextSceneStage.readInFlight &&
+            gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD &&
+            !fgNextSceneStageBeginPayloadRead())
+            return 0;
+
+        if (!gFgNextSceneStage.readInFlight)
+            return 1;
+
+        do {
+            asyncResult = ps1_streamAsyncReadPoll();
+            if (asyncResult == PS1_CD_ASYNC_PENDING)
+                VSync(0);
+        } while (asyncResult == PS1_CD_ASYNC_PENDING);
+        if (asyncResult != PS1_CD_ASYNC_DONE) {
+            fgNextSceneStageInvalidate();
+            return 0;
+        }
+
+        gFgNextSceneStage.readInFlight = 0;
+        if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_HEADER) {
+            gFgNextSceneStage.pendingBytes = 0;
+            if (!fgNextSceneStageCompleteHeaderRead())
+                return 0;
+            continue;
+        }
+        if (gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD) {
+            gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
+            gFgNextSceneStage.pendingBytes = 0;
+            return fgNextSceneStageCompletePayloadRead();
+        }
+
         fgNextSceneStageInvalidate();
         return 0;
     }
 
-    gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
-    gFgNextSceneStage.pendingBytes = 0;
-    gFgNextSceneStage.readInFlight = 0;
-    return fgNextSceneStageCompleteRead();
+    return 1;
 }
 
 static int __attribute__((noinline,optimize("Os")))

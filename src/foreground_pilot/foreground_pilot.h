@@ -6,6 +6,7 @@ void foregroundPilotSetSceneDrawOffset(int x, int y);
 void foregroundPilotSetHeapProbe(int enabled);
 void foregroundPilotSetLoadingWaveProof(int enabled);
 void foregroundPilotSetSpuStage(int enabled);
+void foregroundPilotSetStageScene(const char *sceneName);
 void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);

@@ -411,6 +411,10 @@ const char *fgLoopGetAllSlug(int index)
 static int         gFgLoopPickInProgress = 0;
 static const char *gFgLoopLastTarget     = NULL;
 static const char *gFgLoopLastPlayed     = NULL;
+#ifdef PS1_BUILD
+static int         gFgLoopLookaheadValid = 0;
+static const char *gFgLoopLookaheadScene = NULL;
+#endif
 
 /* Public accessor — called from fgRuntimeReset (which feeds the
  * scene name to memSceneReset for its JCMEM line) and from
@@ -426,6 +430,23 @@ void fgLoopMarkScenePlayed(void) {
     gFgLoopPickInProgress = 0;
 }
 
+static void fgLoopRememberPickedTarget(const char *chosen)
+{
+    if (chosen != NULL) {
+        gFgLoopLastTarget     = chosen;
+        gFgLoopPickInProgress = 1;
+    }
+}
+
+#ifdef PS1_BUILD
+static void fgLoopClearStageLookahead(void)
+{
+    gFgLoopLookaheadValid = 0;
+    gFgLoopLookaheadScene = NULL;
+    foregroundPilotSetStageScene(NULL);
+}
+#endif
+
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
@@ -433,7 +454,14 @@ static const char *fgLoopNextScene(const char *explicitScene,
 #ifdef PS1_BUILD
     extern const char *pickerNextScene(const char *explicitScene,
                                        int sceneSetIdx);
-    chosen = pickerNextScene(explicitScene, sceneSetIdx);
+    if ((explicitScene == NULL || explicitScene[0] == '\0') &&
+        gFgLoopLookaheadValid) {
+        chosen = gFgLoopLookaheadScene;
+        gFgLoopLookaheadValid = 0;
+        gFgLoopLookaheadScene = NULL;
+    } else {
+        chosen = pickerNextScene(explicitScene, sceneSetIdx);
+    }
 #else
     (void)sceneSetIdx;
     chosen = explicitScene;
@@ -444,12 +472,34 @@ static const char *fgLoopNextScene(const char *explicitScene,
      * fgLoopGetLastScene returns the target rather than the last-
      * successfully-played one. fgLoopMarkScenePlayed flips it off
      * after a successful play. */
-    if (chosen != NULL) {
-        gFgLoopLastTarget     = chosen;
-        gFgLoopPickInProgress = 1;
-    }
+    fgLoopRememberPickedTarget(chosen);
     return chosen;
 }
+
+#ifdef PS1_BUILD
+static void fgLoopPrimeStageLookahead(const char *explicitScene,
+                                      int sceneSetIdx)
+{
+    extern const char *pickerNextScene(const char *explicitScene,
+                                       int sceneSetIdx);
+
+    if (explicitScene != NULL && explicitScene[0] != '\0') {
+        foregroundPilotSetStageScene(NULL);
+        return;
+    }
+
+    if (!gFgLoopLookaheadValid) {
+        const char *nextScene = pickerNextScene(NULL, sceneSetIdx);
+        if (nextScene != NULL) {
+            gFgLoopLookaheadScene = nextScene;
+            gFgLoopLookaheadValid = 1;
+        }
+    }
+
+    foregroundPilotSetStageScene(gFgLoopLookaheadValid ?
+                                 gFgLoopLookaheadScene : NULL);
+}
+#endif
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
  * and a new island position is randomized. The PS1 screensaver loop
@@ -2205,6 +2255,7 @@ int main(int argc, char **argv)
             extern void pickerOnSceneSetCycle(void);
             pauseMenuRequestSceneSetCycle = 0;
             explicitScene = NULL;
+            fgLoopClearStageLookahead();
             pickerOnSceneSetCycle();   /* reset Sequential cursor + repeat-prevention */
             ps1ShowFreeplayLoadingFrame("changing scene set", 0);
             {
@@ -2235,6 +2286,7 @@ int main(int argc, char **argv)
             if (idx >= 0 && idx < gSceneExplorerCount) {
                 explicitScene = gSceneExplorer[idx].slug;
                 sceneExplorerOneShot = oneShot;
+                fgLoopClearStageLookahead();
                 fgLoopForgetWalkContext();
                 fgLoopSequenceJustReset = 1;
                 skipWalkThisIteration = 1;
@@ -2311,6 +2363,7 @@ int main(int argc, char **argv)
         if (!pauseMenuRequestNextScene &&
             !pauseMenuRequestFreeplay &&
             !pauseMenuRequestResetLoop) {
+            fgLoopPrimeStageLookahead(explicitScene, pauseMenuSceneSet);
             fgWalkRenderTeardown();
             foregroundPilotSetScene(loopScene);
             ps1PerfBeginScene(loopScene);
@@ -2328,6 +2381,7 @@ int main(int argc, char **argv)
         if (freeplayExitRequested()) {
             freeplayClearExitRequest();
             explicitScene = NULL;       /* return to random story rotation */
+            fgLoopClearStageLookahead();
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
@@ -2376,6 +2430,7 @@ int main(int argc, char **argv)
         }
         if (pauseMenuRequestFreeplay) {
             pauseMenuRequestFreeplay = 0;
+            fgLoopClearStageLookahead();
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
@@ -2394,10 +2449,12 @@ int main(int argc, char **argv)
             ps1PerfEndScene("freeplay");
             freeplayClearExitRequest();
             explicitScene = NULL;
+            fgLoopClearStageLookahead();
         }
         if (pauseMenuRequestResetLoop) {
             pauseMenuRequestResetLoop = 0;
             explicitScene = NULL;  /* drop pinned scene → next iter random */
+            fgLoopClearStageLookahead();
 #if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume reset-loop\n");
 #endif
