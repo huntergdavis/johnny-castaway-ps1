@@ -46,6 +46,21 @@ Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
   - One memory-shape change per branch, each behind its own boot token, each
     with its own ≥2h soak before the next stacks on it.
 
+## Measured baselines (2026-06-09, W0 harness, seed 1, verbose schema)
+
+- Shipping default (`fgpilot perf-log seed 1`, 4 scenes): boot `setup_vb=205`;
+  cold transitions `214 / 245 / 215` (~3.6-4.1 s). Every one pays
+  `screen_vb=84` + `backdrop_vb=64-67` — the scene-independent reloads are
+  ~60% of the cold cost (W4's target).
+- Proof path (`spu-stage loading-waves`): first transition `setup_vb=23`
+  (~0.38 s, the loading-waves reuse win) but `stage_adopt=0` — staged data
+  was NOT adopted even with tide unchanged (silent precondition failure,
+  see W1). BSOD on the 3rd transition: `CACHE exhausted req=98276`,
+  `cacheUsed=521208`. The W0 harness reproduces the branch-plan release
+  blocker in under 2 minutes of emulated time.
+- The 126-row matrix path is unaffected: explicit-scene noloop boots remain
+  the cold-path reference.
+
 ## Workstreams (priority order)
 
 ### W0. Measurement: scene-pair harness + transition gates  (prereq, ~days)
