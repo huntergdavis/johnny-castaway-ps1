@@ -1286,7 +1286,14 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
             return NULL;
         }
 
-        for (volatile int i = 0; i < 100000; i++);
+        /* No settle delay between Setloc and CdRead: CdlSetloc only stores
+         * the target position; the physical seek is issued by CdRead. The
+         * async path (ps1_streamAsyncReadAlignedBegin) has always done
+         * Setloc->CdRead back-to-back and survived multi-hour soaks. A
+         * 100K-iteration spin here cost ~20 ms per stream chunk, which
+         * multiplies across every chunked read in a scene transition.
+         * NOTE: validated on DuckStation only so far; needs a real-hardware
+         * burn-in before release (cd_fail gates are emulator-only). */
 
         if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
             if (perfTrack)
