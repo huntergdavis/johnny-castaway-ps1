@@ -49,6 +49,7 @@ void pauseMenuInit(void);
  * overlay (ps1_captions.c) can render text using the same font without
  * having to wait for the user to open the pause menu first. */
 void pauseMenuEnsureFontUploaded(void);
+void pauseMenuUploadDebugFont(void);
 
 /* VRAM coords of the pause-menu font texture + its CLUT. Captions use
  * these to build SPRT primitives that sample the same glyph atlas. */

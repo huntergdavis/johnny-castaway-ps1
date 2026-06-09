@@ -179,6 +179,7 @@ static uint32 fgReadU32(const uint8 *p)
 
 static int
 fgDecodeFrameDelta(uint8 *data,
+                   uint32 dataCapacity,
                    struct TFgPilotEntry *entry,
                    const uint8 *baseData,
                    uint32 baseSize)
@@ -208,6 +209,8 @@ fgDecodeFrameDelta(uint8 *data,
     stream = gFgRuntime.streamScratch;
     expandedSize = fgReadU16(stream + 4);
     commandCount = fgReadU16(stream + 6);
+    if ((uint32)expandedSize > dataCapacity)
+        return 0;
     readOffset = 8u;
     writeOffset = 0;
 
@@ -253,12 +256,16 @@ fgDecodeFrameDelta(uint8 *data,
 
 static int
 fgDecodeLocalLzPayload(uint8 *data,
+                       uint32 dataCapacity,
                        struct TFgPilotEntry *entry)
 {
     uint8 *stream;
     uint32 expandedSize;
     uint32 readOffset;
     uint32 writeOffset;
+
+    if (data == NULL || entry == NULL)
+        return 0;
 
     if (entry->dataSize < 8u ||
         fgReadU16(data) != FG_LOCAL_LZ_PAYLOAD_SENTINEL ||
@@ -269,7 +276,7 @@ fgDecodeLocalLzPayload(uint8 *data,
 
     expandedSize = fgReadU32(data + 4);
     if (entry->dataSize > gFgRuntime.streamScratchSize ||
-        expandedSize > gFgRuntime.frameBufferSize)
+        expandedSize > dataCapacity)
         return 0;
 
     memcpy(gFgRuntime.streamScratch, data, entry->dataSize);

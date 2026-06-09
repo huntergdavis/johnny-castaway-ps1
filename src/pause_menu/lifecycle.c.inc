@@ -4,6 +4,12 @@ void pauseMenuEnsureFontUploaded(void)
         pmUploadFont();
 }
 
+void pauseMenuUploadDebugFont(void)
+{
+    pmFontUploaded = 0;
+    pmUploadFont();
+}
+
 void pauseMenuInit(void)
 {
     if (fontID < 0)

@@ -153,14 +153,10 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
 static void fgDropPressureCachesForCleanSnapshot(const char *sceneName,
                                                  uint32 cleanBytes)
 {
-    /* Plan v9 Phase 2 manifest item #6 — pressure-drop is no longer
-     * needed. Clean-rect snapshots allocate from MEM_REGION_TRANSIENT,
-     * which has its own dedicated 250 KB; there's no libc-heap
-     * pressure to drop to make room. Body neutered to a no-op so
-     * existing callers still compile; they can be deleted in a
-     * follow-up Phase 2 commit. */
-    (void)sceneName;
     (void)cleanBytes;
+    if (sceneName != NULL)
+        fgNextSceneStageInvalidate();
+    fgDropOptionalPrefetchBuffersForCleanSnapshot();
 }
 
 static void fgTelemetryUpdate(void)
@@ -218,6 +214,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
     if (buffer == NULL)
         return NULL;
 
+    ps1_streamAsyncReadDrain();
     CdControl(CdlSetloc, (uint8 *)&fileInfo.pos, 0);
     CdRead(totalSectors, (uint32 *)buffer, CdlModeSpeed);
     if (CdReadSync(0, 0) < 0) {
@@ -311,6 +308,34 @@ static uint8 *gFgSetupSegment4OwnedBuffer = NULL;
 static uint32 gFgSetupSegment4OwnedBufferSize = 0;
 static MemRegion gFgSetupSegment4OwnedBufferRegion = MEM_REGION_TRANSIENT;
 
+static int fgNextSceneStageCanKeepStreamWindow(void)
+{
+    return gFgNextSceneStage.valid &&
+           gFgNextSceneStage.usesStreamWindow &&
+           !gFgNextSceneStage.active &&
+           !gFgNextSceneStage.readInFlight &&
+           !gFgNextSceneStage.parkedInSpu &&
+           gFgNextSceneStage.loadedBytes > 0 &&
+           gFgNextSceneStage.loadedBytes <= gFgNextSceneStage.windowBytes &&
+           gFgStreamWindowBuffer != NULL &&
+           gFgStreamWindowBufferSize >= gFgNextSceneStage.loadedBytes;
+}
+
+static void fgNextSceneStageInvalidateIfBorrowingStreamWindow(void)
+{
+    if (gFgNextSceneStage.usesStreamWindow ||
+        gFgNextSceneStage.readInFlight)
+        fgNextSceneStageInvalidate();
+}
+
+static void fgQuiesceCdBeforeCacheBufferMutation(void)
+{
+    if (gFgNextSceneStage.active ||
+        gFgNextSceneStage.readInFlight)
+        (void)fgNextSceneStageFinishPending();
+    (void)ps1_streamAsyncReadDrain();
+}
+
 static void fgReleaseStreamBuffers(void)
 {
     /* Grow-only buffers — DO NOT free here. The free+malloc cycle is
@@ -353,6 +378,22 @@ static void fgReleaseStreamBuffers(void)
 
 static void fgReleaseStreamBuffersHard(void)
 {
+    int keepStagedWindow;
+
+    if (gFgNextSceneStage.active ||
+        gFgNextSceneStage.readInFlight)
+        fgNextSceneStageFinishPending();
+    fgQuiesceCdBeforeCacheBufferMutation();
+
+    keepStagedWindow = fgNextSceneStageCanKeepStreamWindow();
+    if (!keepStagedWindow &&
+        (gFgNextSceneStage.active ||
+         gFgNextSceneStage.readInFlight ||
+         gFgNextSceneStage.usesStreamWindow ||
+         (gFgNextSceneStage.valid && !gFgNextSceneStage.parkedInSpu))) {
+        fgNextSceneStageInvalidate();
+    }
+
     if (gFgFrameBuffer != NULL) {
         memFree(MEM_REGION_CACHE, gFgFrameBuffer);
         gFgFrameBuffer = NULL;
@@ -363,7 +404,7 @@ static void fgReleaseStreamBuffersHard(void)
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
     }
-    if (gFgStreamWindowBuffer != NULL) {
+    if (gFgStreamWindowBuffer != NULL && !keepStagedWindow) {
         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;
@@ -372,27 +413,26 @@ static void fgReleaseStreamBuffersHard(void)
         memFree(MEM_REGION_CACHE, gFgStreamScratch);
         gFgStreamScratch = NULL;
         gFgStreamScratchSize = 0;
+        gFgRuntime.streamScratch = NULL;
+        gFgRuntime.streamScratchSize = 0;
     }
     fgReleaseStreamBuffers();
 }
 
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
 {
-    /* Plan v9 Phase 2 manifest item #5 — pressure-drop body neutered.
-     * Originally freed gFgFrameBuffer/gFgPrefetchFrameBuffer/
-     * gFgStreamWindowBuffer to make libc-heap room for clean-rect
-     * allocation. With clean-rect now in MEM_REGION_TRANSIENT (its
-     * own 250 KB), this dropping is unnecessary and counterproductive
-     * (frees grow-only buffers that scene N+1 would have to re-allocate).
-     *
-     * The gFgRuntime field reset below was the function's secondary
-     * responsibility; left in place because that part is unrelated to
-     * memory pressure and harmless when called. The buffer-freeing
-     * machinery above is gone. */
-
-    /* Preserve current frame buffer pointer/size — was previously
-     * computed in a "keep" variable; with the drop logic gone the
-     * grow-only buffer is still in gFgFrameBuffer and untouched. */
+    fgNextSceneStageInvalidate();
+    fgQuiesceCdBeforeCacheBufferMutation();
+    if (gFgPrefetchFrameBuffer != NULL) {
+        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+        gFgPrefetchFrameBuffer = NULL;
+        gFgPrefetchFrameBufferSize = 0;
+    }
+    if (gFgStreamWindowBuffer != NULL) {
+        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+        gFgStreamWindowBuffer = NULL;
+        gFgStreamWindowBufferSize = 0;
+    }
     gFgRuntime.frameBuffer = gFgFrameBuffer;
     gFgRuntime.frameBufferSize = gFgFrameBufferSize;
     gFgRuntime.prefetchFrameBuffer = NULL;
@@ -403,6 +443,8 @@ static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
     gFgRuntime.streamWindowStart = 0;
     gFgRuntime.streamWindowBytes = 0;
     gFgRuntime.setupPrimeWindowBytes = 0;
+    gFgRuntime.streamScratch = gFgStreamScratch;
+    gFgRuntime.streamScratchSize = gFgStreamScratchSize;
     gFgRuntime.setupSegmentBuffer = NULL;
     gFgRuntime.setupSegmentStart = 0;
     gFgRuntime.setupSegmentBytes = 0;
@@ -501,6 +543,8 @@ static void fgRefreshSetupSegmentReusable(void)
 
 static void fgDropCacheSetupResidency(void)
 {
+    fgQuiesceCdBeforeCacheBufferMutation();
+
     if (gFgSetupSegmentBuffer != NULL &&
         gFgSetupSegmentBufferRegion == MEM_REGION_CACHE) {
         uint8 *segmentBuffer = gFgSetupSegmentBuffer;
@@ -657,6 +701,8 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
 
 static void fgRuntimeReset(void)
 {
+    fgQuiesceCdBeforeCacheBufferMutation();
+
     /* Wipe the TRANSIENT region — all per-scene allocations made via
      * memAlloc(MEM_REGION_TRANSIENT, ...) become unreachable. The bump
      * pointer rewinds in one word write. Cheap in release; ~15 ms in

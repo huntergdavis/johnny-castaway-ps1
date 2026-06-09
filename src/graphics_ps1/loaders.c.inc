@@ -3,14 +3,52 @@ void grLoadBmp(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
     grLoadBmpRAM(ttmSlot, slotNo, strArg);
 }
 
+static void grResetBmpSlotRefs(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
+{
+    int i;
+
+    if (ttmSlot == NULL || bmpSlotNo >= MAX_BMP_SLOTS)
+        return;
+    for (i = 0; i < MAX_SPRITES_PER_BMP; i++)
+        ttmSlot->sprites[bmpSlotNo][i] = NULL;
+    ttmSlot->numSprites[bmpSlotNo] = 0;
+    ttmSlot->loadedBmp[bmpSlotNo] = NULL;
+    ttmSlot->loadedBmpNames[bmpSlotNo] = NULL;
+    ttmSlot->psbData[bmpSlotNo] = NULL;
+}
+
+static void grReleasePartialSprites(struct TTtmSlot *ttmSlot,
+                                    uint16 bmpSlotNo,
+                                    int count)
+{
+    int i;
+
+    if (ttmSlot == NULL || bmpSlotNo >= MAX_BMP_SLOTS)
+        return;
+    if (count < 0 || count > MAX_SPRITES_PER_BMP)
+        memHalt("(graphics)", "BMP partial count corrupt");
+    for (i = 0; i < count; i++) {
+        if (ttmSlot->sprites[bmpSlotNo][i] != NULL) {
+            grFreeLayer(ttmSlot->sprites[bmpSlotNo][i]);
+            ttmSlot->sprites[bmpSlotNo][i] = NULL;
+        }
+    }
+}
+
 /*
  * Release BMP sprite sheet from slot
  */
 void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
 {
+    int count;
+    int i;
+
     if (ttmSlot == NULL || bmpSlotNo >= MAX_BMP_SLOTS) {
         return;
     }
+    count = ttmSlot->numSprites[bmpSlotNo];
+    if (count < 0 || count > MAX_SPRITES_PER_BMP)
+        memHalt("(graphics)", "BMP slot count corrupt");
 
     /* Replay records keep raw indexedPixels pointers into BMP/PSB storage.
      * If this slot is being replaced during the active thread's TTM tick,
@@ -38,7 +76,7 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
     /* Free all sprites in this slot (PS1Surface structs only;
      * indexedPixels with indexedOwned=0 are NOT freed here because
      * they point into either the BMP resource data or the PSB buffer). */
-    for (int i = 0; i < ttmSlot->numSprites[bmpSlotNo]; i++) {
+    for (i = 0; i < count; i++) {
         if (ttmSlot->sprites[bmpSlotNo][i] != NULL) {
             grFreeLayer(ttmSlot->sprites[bmpSlotNo][i]);
             ttmSlot->sprites[bmpSlotNo][i] = NULL;
@@ -63,7 +101,127 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
         ttmSlot->psbData[bmpSlotNo] = NULL;
     }
 
-    ttmSlot->numSprites[bmpSlotNo] = 0;
+    grResetBmpSlotRefs(ttmSlot, bmpSlotNo);
+}
+
+static void grFreePsbBuffer(uint8 *psbBuf)
+{
+    if (psbBuf == NULL)
+        return;
+    if (memIsReady())
+        memFree(MEM_REGION_CACHE, psbBuf);
+    else
+        free(psbBuf);
+}
+
+static int grInstallPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
+                              struct TBmpResource *bmpResource,
+                              uint8 *psbBuf, uint32 psbSize)
+{
+    PSBHeader *hdr;
+    PSBFrame *frames;
+    uint8 *pixelBase;
+    int numToLoad;
+    int framesLoaded;
+    uint32 frameTableEnd;
+    int i;
+
+    if (ttmSlot == NULL || slotNo >= MAX_BMP_SLOTS ||
+        bmpResource == NULL || psbBuf == NULL) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+
+    if (psbSize < sizeof(PSBHeader)) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+
+    hdr = (PSBHeader *)psbBuf;
+    if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+
+    if (hdr->numFrames == 0 || hdr->dataOffset > psbSize ||
+        hdr->totalSize > psbSize) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+
+    frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
+    if (frameTableEnd > hdr->dataOffset) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+
+    if (ttmSlot->numSprites[slotNo] || ttmSlot->psbData[slotNo] != NULL)
+        grReleaseBmp(ttmSlot, slotNo);
+
+    frames = (PSBFrame *)(psbBuf + sizeof(PSBHeader));
+    pixelBase = psbBuf + hdr->dataOffset;
+    numToLoad = hdr->numFrames;
+    if (numToLoad > MAX_SPRITES_PER_BMP)
+        numToLoad = MAX_SPRITES_PER_BMP;
+
+    framesLoaded = 0;
+    for (i = 0; i < numToLoad; i++) {
+        PSBFrame *fr = &frames[i];
+        PS1Surface *surface;
+
+        if (hdr->dataOffset + fr->offset + fr->size > psbSize)
+            break;
+        if (fr->width == 0 || fr->height == 0 ||
+            fr->width > 640 || fr->height > 480)
+            break;
+
+        surface = (PS1Surface*)malloc(sizeof(PS1Surface));
+        if (!surface)
+            break;
+
+        surface->width = fr->width;
+        surface->height = fr->height;
+        surface->x = 0;
+        surface->y = 0;
+        surface->clutX = 0;
+        surface->clutY = 0;
+        surface->nextTile = NULL;
+        surface->pixels = NULL;
+        surface->indexedPixels = pixelBase + fr->offset;
+        surface->indexedOwned = 0;
+        surface->psbNibbles = 1;
+        surface->fullWidth = fr->width;
+        surface->fullHeight = fr->height;
+        surface->tileOffsetX = 0;
+        surface->tileOffsetY = 0;
+
+        ttmSlot->sprites[slotNo][i] = surface;
+        framesLoaded++;
+    }
+
+    if (framesLoaded != numToLoad) {
+        grReleasePartialSprites(ttmSlot, slotNo, framesLoaded);
+        grFreePsbBuffer(psbBuf);
+        grResetBmpSlotRefs(ttmSlot, slotNo);
+        return 0;
+    }
+
+    ttmSlot->numSprites[slotNo] = framesLoaded;
+    ttmSlot->psbData[slotNo] = psbBuf;
+    ttmSlot->loadedBmp[slotNo] = bmpResource;
+    ttmSlot->loadedBmpNames[slotNo] = bmpResource->resName;
+    return 1;
+}
+
+int grLoadPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
+                    char *strArg, uint8 *psbBuf, uint32 psbSize)
+{
+    struct TBmpResource *bmpResource = findBmpResource(strArg);
+    if (bmpResource == NULL) {
+        grFreePsbBuffer(psbBuf);
+        return 0;
+    }
+    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize);
 }
 
 /*
@@ -83,15 +241,8 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
     char psbPath[64];
     char psbName[32];
     int nameLen;
-    int i;
     uint32 psbSize;
     uint8 *psbBuf;
-    PSBHeader *hdr;
-    PSBFrame *frames;
-    uint8 *pixelBase;
-    int numToLoad;
-    int framesLoaded;
-    uint32 frameTableEnd;
 
     /* JOHNWALK.BMP — Phase 1+ of the walk plan promotes this to the
      * PSB-backed sprite route. Earlier guard removed 2026-04-29; the
@@ -132,116 +283,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
         if (psbBuf == NULL) return 0;
     }
 
-    /* Validate PSB header */
-    if (psbSize < sizeof(PSBHeader)) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    hdr = (PSBHeader *)psbBuf;
-    if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    if (hdr->numFrames == 0 || hdr->dataOffset > psbSize) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    /* Cross-check totalSize against actual buffer size */
-    if (hdr->totalSize > psbSize) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    /* Verify frame table fits */
-    frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
-    if (frameTableEnd > hdr->dataOffset) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    /* Release any existing sprites in this slot */
-    if (ttmSlot->numSprites[slotNo])
-        grReleaseBmp(ttmSlot, slotNo);
-
-    frames = (PSBFrame *)(psbBuf + sizeof(PSBHeader));
-    pixelBase = psbBuf + hdr->dataOffset;
-    numToLoad = hdr->numFrames;
-    if (numToLoad > MAX_SPRITES_PER_BMP)
-        numToLoad = MAX_SPRITES_PER_BMP;
-
-    framesLoaded = 0;
-    for (i = 0; i < numToLoad; i++) {
-        PSBFrame *fr = &frames[i];
-        PS1Surface *surface;
-
-        /* Validate frame bounds against actual buffer */
-        if (hdr->dataOffset + fr->offset + fr->size > psbSize) break;
-
-        /* Validate frame dimensions — reject corrupt entries that would
-         * waste RAM or confuse the compositing path (max 640x480). */
-        if (fr->width == 0 || fr->height == 0 ||
-            fr->width > 640 || fr->height > 480) break;
-
-        /* Kept on libc malloc — sprite frame descriptors live with
-         * their owning resource (BMP/PSB). Lifecycle is "until LRU
-         * eviction." Migrating to BOOT would block memFreezeBoot.
-         * Future: route through MEM_REGION_CACHE with companion frees
-         * inside grReleaseBmp / the LRU evictor. */
-        surface = (PS1Surface*)malloc(sizeof(PS1Surface));
-        if (!surface) break;
-
-        surface->width = fr->width;
-        surface->height = fr->height;
-        surface->x = 0;  /* RAM-based, not in VRAM */
-        surface->y = 0;
-        surface->clutX = 0;
-        surface->clutY = 0;
-        surface->nextTile = NULL;
-        surface->pixels = NULL;
-
-        /* Point directly into PSB data buffer (zero-copy).
-         * PSB data is in PS1 nibble order — no runtime swap needed. */
-        surface->indexedPixels = pixelBase + fr->offset;
-        surface->indexedOwned = 0;  /* Don't free per-frame; whole buffer freed on release */
-        surface->psbNibbles = 1;    /* Flag: PS1 nibble order */
-
-        /* Multi-tile fields (not used for PSB, but init for safety) */
-        surface->fullWidth = fr->width;
-        surface->fullHeight = fr->height;
-        surface->tileOffsetX = 0;
-        surface->tileOffsetY = 0;
-
-        ttmSlot->sprites[slotNo][i] = surface;
-        framesLoaded++;
-    }
-
-    ttmSlot->numSprites[slotNo] = framesLoaded;
-
-    /* If no frames loaded (corruption or OOM), free everything and fall back. */
-    if (framesLoaded == 0) {
-        if (memIsReady()) memFree(MEM_REGION_CACHE, psbBuf); else free(psbBuf);
-        return 0;
-    }
-
-    /* NOTE: The PSB header + frame table (~16 + 12*N bytes) remain in the
-     * buffer. Trimming them via memmove + realloc + pointer fixup was
-     * rejected: the savings are tiny (e.g. 1.5KB for 120 frames) compared
-     * with the memmove cost on a 33MHz R3000 and the fragility of
-     * post-realloc pointer adjustment.  Keeping the header in-place is
-     * simpler and safer. */
-
-    /* Lifecycle: store PSB buffer in slot so grReleaseBmp can free it. */
-    ttmSlot->psbData[slotNo] = psbBuf;
-
-    /* Dedup: store the BMP resource pointer so repeated loads of the same
-     * BMP into the same slot are detected and skipped by grLoadBmpRAM. */
-    ttmSlot->loadedBmp[slotNo] = bmpResource;
-    ttmSlot->loadedBmpNames[slotNo] = bmpResource->resName;
-
-    return 1;
+    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize);
 }
 
 /*
@@ -261,6 +303,10 @@ void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
     gStatLastBmpSlot = (uint16)(slotNo + 1U);
     gStatLastBmpFrames = 0;
     gStatLastBmpStatus = 1;  /* attempt */
+    if (ttmSlot == NULL || slotNo >= MAX_BMP_SLOTS) {
+        gStatLastBmpStatus = 9;  /* bad slot */
+        return;
+    }
     if (!bmpResource) {
         gStatLastBmpStatus = 2;  /* resource missing */
         return;
@@ -280,7 +326,7 @@ void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
     }
 
     /* BMP fallback path */
-    if (ttmSlot->numSprites[slotNo])
+    if (ttmSlot->numSprites[slotNo] || ttmSlot->psbData[slotNo] != NULL)
         grReleaseBmp(ttmSlot, slotNo);
 
     /* On-demand loading: load BMP data if not already loaded */

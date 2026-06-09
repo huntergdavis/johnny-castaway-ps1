@@ -8,6 +8,14 @@ static int fgRuntimeCanStageNextFrame(void)
            gFgRuntime.prefetchFrameBuffer != NULL;
 }
 
+static void fgRuntimeSyncFrameBufferGlobals(void)
+{
+    gFgFrameBuffer = gFgRuntime.frameBuffer;
+    gFgFrameBufferSize = gFgRuntime.frameBufferSize;
+    gFgPrefetchFrameBuffer = gFgRuntime.prefetchFrameBuffer;
+    gFgPrefetchFrameBufferSize = gFgRuntime.prefetchFrameBufferSize;
+}
+
 static inline void fgRuntimeClearVolatileSetupSegment(void)
 {
     if (!gFgRuntime.setupSegmentReusable) {
@@ -285,6 +293,44 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
     }
     if (ps1PerfEnabled)
         ps1PerfMarkPrefetchWindowHit(countsAsDueHit);
+    return 1;
+}
+
+static int fgRuntimeDecodeFramePayload(uint8 *data,
+                                       uint32 dataCapacity,
+                                       struct TFgPilotEntry *entry,
+                                       const uint8 *baseFrameData,
+                                       uint32 baseFrameSize)
+{
+    if (!fgDecodeFrameDelta(data,
+                            dataCapacity,
+                            entry,
+                            baseFrameData,
+                            baseFrameSize))
+        return 0;
+    if (!fgDecodeLocalLzPayload(data, dataCapacity, entry))
+        return 0;
+    return 1;
+}
+
+static int fgRuntimeDecodeAndSetStagedFrame(uint16 frameIndex,
+                                            const struct TFgPilotEntry *entry)
+{
+    struct TFgPilotEntry stagedEntry;
+
+    if (entry == NULL ||
+        gFgRuntime.prefetchFrameBuffer == NULL)
+        return 0;
+
+    stagedEntry = *entry;
+    if (!fgRuntimeDecodeFramePayload(gFgRuntime.prefetchFrameBuffer,
+                                     gFgRuntime.prefetchFrameBufferSize,
+                                     &stagedEntry,
+                                     gFgRuntime.currentFrameData,
+                                     gFgRuntime.currentEntry.dataSize))
+        return 0;
+
+    fgRuntimeSetStagedFrame(frameIndex, &stagedEntry);
     return 1;
 }
 
@@ -809,6 +855,7 @@ static int fgRuntimeConsumeStagedFrame(uint16 frameIndex)
     gFgRuntime.frameBufferSize = gFgRuntime.prefetchFrameBufferSize;
     gFgRuntime.prefetchFrameBuffer = freeBuffer;
     gFgRuntime.prefetchFrameBufferSize = freeBufferSize;
+    fgRuntimeSyncFrameBufferGlobals();
 
     gFgRuntime.currentEntry = gFgRuntime.stagedEntry;
     gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
@@ -859,7 +906,8 @@ static int fgRuntimePrimeNextFrameForSetup(void)
         }
         if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0))
             return -1;
-        fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+        if (!fgRuntimeDecodeAndSetStagedFrame(nextFrameIndex, entry))
+            return -1;
         return 1;
     }
 
@@ -873,7 +921,8 @@ static int fgRuntimePrimeNextFrameForSetup(void)
         return -1;
     }
 
-    fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+    if (!fgRuntimeDecodeAndSetStagedFrame(nextFrameIndex, entry))
+        return -1;
     return 1;
 }
 
@@ -1103,6 +1152,7 @@ fgNextSceneStageInvalidate(void)
         while (ps1_streamAsyncReadPoll() == PS1_CD_ASYNC_PENDING)
             VSync(0);
     }
+    (void)ps1_streamAsyncReadDrain();
     gFgNextSceneStage.active = 0;
     gFgNextSceneStage.valid = 0;
     gFgNextSceneStage.sceneName[0] = '\0';
@@ -1429,8 +1479,10 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             /* Segment 4 is optional read-ahead. Keep its TRANSIENT bytes free
              * for the W1-high clean snapshot; the normal stream path fetches
              * the same FG2 payloads on demand. */
+#if PS1_VERBOSE_DIAGNOSTICS
             printf("JCMEM setup-seg4-disabled scene=walkstuf1 bytes=%lu reason=clean-headroom\n",
                    (unsigned long)FG_WALKSTUF1_HIGH_SETUP_SEGMENT4_DISABLED_BYTES);
+#endif
             gFgCleanRectMaxBytes = 64UL * 1024UL;
         }
         allocationBytes = segmentBytes + (islandState.lowTide ? 0UL : segment2Bytes);
@@ -1677,7 +1729,13 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                     return 1;
                 }
 
-                fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+                if (!fgRuntimeDecodeAndSetStagedFrame(nextFrameIndex, entry)) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkTripwire();
+                    gFgRuntime.active = 0;
+                    return 1;
+                }
+                FG_CACHE_CHECK("fg-stage-direct");
                 {
                     uint32 windowStart = fgSectorAlignDown(entry->dataOffset);
                     uint32 windowBytes =
@@ -1690,6 +1748,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                     gFgRuntime.streamWindowBytes = windowBytes;
                     gFgRuntime.streamWindowValid = 1;
                 }
+                FG_CACHE_CHECK("fg-stage-direct-window");
                 return 1;
             }
             if (!fgRuntimeFillWindowForEntry(entry, nextFrameIndex, slackVBlanks, 1, &elapsedVBlanks)) {
@@ -1708,7 +1767,13 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
             gFgRuntime.active = 0;
             return 1;
         }
-        fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+        if (!fgRuntimeDecodeAndSetStagedFrame(nextFrameIndex, entry)) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
+            gFgRuntime.active = 0;
+            return 1;
+        }
+        FG_CACHE_CHECK("fg-stage-window");
         return 1;
     }
 
@@ -1747,7 +1812,13 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
-    fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+    if (!fgRuntimeDecodeAndSetStagedFrame(nextFrameIndex, entry)) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+        return 1;
+    }
+    FG_CACHE_CHECK("fg-stage-read");
     return 1;
 }
 
@@ -1824,6 +1895,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     const uint8 *baseFrameData;
     uint32 baseFrameSize;
     uint8 *loadBuffer;
+    uint32 loadBufferCapacity;
     uint8 useAlternateLoadBuffer = 0;
     struct TFgPilotEntry loadedEntry;
     int entryIsEmpty;
@@ -1836,8 +1908,10 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
         ps1PerfSetCurrentFrame(frameIndex, entry->sourceFrame, entry->dataOffset);
 
     stagedResult = fgRuntimeConsumeStagedFrame(frameIndex);
-    if (stagedResult != 0)
+    if (stagedResult != 0) {
+        FG_CACHE_CHECK("fg-load-consumed-staged");
         return stagedResult > 0 ? 1 : 0;
+    }
 
     /* An empty entry (w=0, h=0, no payload) is a capture artifact from a
      * host frame where the ledger was blank (mid-refresh). Hold the previous
@@ -1854,6 +1928,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
         if (ps1PerfEnabled)
             ps1PerfMarkEntry(0, gFgRuntime.displayVBlanks, 1,
                              entry->sourceFrame, entry->dataOffset);
+        FG_CACHE_CHECK("fg-load-empty-hold");
         fgFireSoundEventsUpTo(entry->sourceFrame);
         fgTelemetryUpdate();
         return 1;
@@ -1885,11 +1960,14 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
         }
 
         loadBuffer = gFgRuntime.frameBuffer;
+        loadBufferCapacity = gFgRuntime.frameBufferSize;
+        FG_CACHE_CHECK("fg-load-before-read");
         if (baseFrameData != NULL &&
             fgRuntimeUsesPreviousFrameDelta(frameIndex) &&
             gFgRuntime.prefetchFrameBuffer != NULL &&
             loadedEntry.dataSize <= gFgRuntime.prefetchFrameBufferSize) {
             loadBuffer = gFgRuntime.prefetchFrameBuffer;
+            loadBufferCapacity = gFgRuntime.prefetchFrameBufferSize;
             useAlternateLoadBuffer = 1;
         }
 
@@ -1897,6 +1975,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                          loadBuffer,
                                          1)) {
             /* Loaded from the retained setup/window cache. */
+            FG_CACHE_CHECK("fg-load-after-window-copy");
         } else if (fgRuntimeEntryFitsWindow(&loadedEntry)) {
             if (!fgRuntimeFillWindowForEntry(&loadedEntry, frameIndex, 0, 0, NULL) ||
                 !fgRuntimeCopyEntryFromWindow(&loadedEntry,
@@ -1906,6 +1985,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                     ps1PerfMarkTripwire();
                 return 0;
             }
+            FG_CACHE_CHECK("fg-load-after-window-fill");
         } else {
             fgRuntimeClearVolatileSetupSegment();
             if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
@@ -1918,21 +1998,19 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                     ps1PerfMarkTripwire();
                 return 0;
             }
+            FG_CACHE_CHECK("fg-load-after-read");
         }
 
-        if (!fgDecodeFrameDelta(loadBuffer,
-                                &loadedEntry,
-                                baseFrameData,
-                                baseFrameSize)) {
+        if (!fgRuntimeDecodeFramePayload(loadBuffer,
+                                         loadBufferCapacity,
+                                         &loadedEntry,
+                                         baseFrameData,
+                                         baseFrameSize)) {
             if (ps1PerfEnabled)
                 ps1PerfMarkTripwire();
             return 0;
         }
-        if (!fgDecodeLocalLzPayload(loadBuffer, &loadedEntry)) {
-            if (ps1PerfEnabled)
-                ps1PerfMarkTripwire();
-            return 0;
-        }
+        FG_CACHE_CHECK("fg-load-after-decode");
 
         if (useAlternateLoadBuffer) {
             uint8 *oldFrameBuffer = gFgRuntime.frameBuffer;
@@ -1941,11 +2019,14 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
             gFgRuntime.frameBufferSize = gFgRuntime.prefetchFrameBufferSize;
             gFgRuntime.prefetchFrameBuffer = oldFrameBuffer;
             gFgRuntime.prefetchFrameBufferSize = oldFrameBufferSize;
+            fgRuntimeSyncFrameBufferGlobals();
+            FG_CACHE_CHECK("fg-load-after-swap");
         }
         gFgRuntime.currentEntry = loadedEntry;
         gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
     }
 
+    FG_CACHE_CHECK("fg-load-frame");
     gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
                                                    &gFgRuntime.currentEntry,
                                                    gFgRuntime.presentedVBlanks);
@@ -2012,12 +2093,14 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
     if (perfDetail)
         ps1PerfBeginPipeline(PS1_PERF_PIPE_PREPARE);
 
+    FG_CACHE_CHECK("fg-prepare-before");
     if (perfDetail)
         perfTick = ps1PerfTick();
     if (fgRuntimeUsesTemporalResidual())
         grBeginResidualCleanBgFrame();
     else
         grRestoreBgFromRects();
+    FG_CACHE_CHECK("fg-prepare-after-restore");
     if (perfDetail)
         ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                ps1PerfElapsedVBlanks(perfTick));
@@ -2039,11 +2122,13 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
             gFgBackdropThread.timer--;
         }
     }
+    FG_CACHE_CHECK("fg-prepare-after-waves");
 
     if (perfDetail)
         perfTick = ps1PerfTick();
     fgRuntimeComposeEntryToBackground(&gFgRuntime.stagedEntry,
                                       gFgRuntime.prefetchFrameBuffer);
+    FG_CACHE_CHECK("fg-prepare-after-compose");
     if (perfDetail)
         ps1PerfMarkRenderPhase(PS1_PERF_RENDER_COMPOSE,
                                ps1PerfElapsedVBlanks(perfTick));
@@ -2082,6 +2167,7 @@ static int fgRuntimePresentPreparedFrame(int perfDetail)
                                ps1PerfElapsedVBlanks(perfTick));
 
     foregroundPilotRuntimeAdvance();
+    FG_CACHE_CHECK("fg-present-after-advance");
     if (!gFgRuntime.active || gFgRuntime.frameIndex != preparedFrameIndex) {
         if (ps1PerfEnabled)
             ps1PerfMarkTripwire();

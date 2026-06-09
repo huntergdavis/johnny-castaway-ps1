@@ -101,6 +101,7 @@ int ps1_streamAsyncReadAlignedBegin(const CdlFILE *cdfile,
                                     uint32_t size,
                                     uint8_t *dstBuffer);
 int ps1_streamAsyncReadPoll(void);
+int ps1_streamAsyncReadDrain(void);
 
 typedef struct {
     CdlFILE cdfile;

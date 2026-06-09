@@ -113,7 +113,8 @@ static void fgBackdropEnableWaveBackdrop(void)
     if (islandState.raft >= 1 && islandState.raft <= 5) {
         int xRaft = islandState.lowTide ? 529 : 512;
         int yRaft = islandState.lowTide ? 281 : 266;
-        grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
+        if (!walkPilotLoadMraftFromSpu(&gFgBackdropSlot, 1))
+            grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
         grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
                      xRaft, yRaft, (uint16)(islandState.raft - 1), 1);
         grReleaseBmp(&gFgBackdropSlot, 1);

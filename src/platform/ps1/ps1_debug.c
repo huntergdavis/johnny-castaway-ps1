@@ -21,6 +21,7 @@
 
 #include "ps1_debug.h"
 #include "ps1_gpu_ot.h"
+#include "pause_menu.h"
 
 /* Font stream ID - not static so jc_reborn.c can access it */
 int fontID = -1;

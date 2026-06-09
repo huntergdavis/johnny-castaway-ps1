@@ -97,6 +97,7 @@ extern uint8 pad_buff[2][34];
 #include "holidays.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
+#include "scene_picker.h"
 
 #ifdef PS1_BUILD
 static void ps1ShowFreeplayLoadingFrame(const char *phase, int tick)
@@ -923,6 +924,7 @@ static char ps1BootOverrideText[128];
 static char ps1BootForegroundOverlayScene[32];
 static int ps1BootSpuCacheTest = 0;
 static int ps1BootSpuCacheProof = 0;
+static int ps1BootPickerPolicy = -1;
 #if PS1_VERBOSE_DIAGNOSTICS
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
@@ -956,6 +958,7 @@ static void ps1ResetBootArgs(void)
     ps1BootForegroundOverlayScene[0] = '\0';
     ps1BootSpuCacheTest = 0;
     ps1BootSpuCacheProof = 0;
+    ps1BootPickerPolicy = -1;
 #if PS1_VERBOSE_DIAGNOSTICS
     ps1BootCaptureMetaDirStorage[0] = '\0';
     ps1BootCaptureSceneLabelStorage[0] = '\0';
@@ -1143,6 +1146,9 @@ static int ps1IsFgPilotOptionToken(const char *token)
            !strcmp(token, "spu-cache-proof") ||
            !strcmp(token, "spu-stage") ||
            !strcmp(token, "no-spu-stage") ||
+           !strcmp(token, "picker-random") ||
+           !strcmp(token, "picker-sequential") ||
+           !strcmp(token, "picker-original") ||
            !strcmp(token, "perf-log") ||
            !strcmp(token, "perf") ||
            !strcmp(token, "perf-detail") ||
@@ -1347,6 +1353,15 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             foregroundPilotSetSpuStage(1);
         } else if (!strcmp(tokens[i], "no-spu-stage")) {
             foregroundPilotSetSpuStage(0);
+        } else if (!strcmp(tokens[i], "picker-random")) {
+            ps1BootPickerPolicy = SCENE_PICKER_RANDOM;
+            pickerSetPolicy(ps1BootPickerPolicy);
+        } else if (!strcmp(tokens[i], "picker-sequential")) {
+            ps1BootPickerPolicy = SCENE_PICKER_SEQUENTIAL;
+            pickerSetPolicy(ps1BootPickerPolicy);
+        } else if (!strcmp(tokens[i], "picker-original")) {
+            ps1BootPickerPolicy = SCENE_PICKER_ORIGINAL;
+            pickerSetPolicy(ps1BootPickerPolicy);
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -1602,6 +1617,7 @@ static void loadTitleScreenEarly(void)
     int totalSectors = (totalBytes + 2047) / 2048;
 
     /* Seek to file location */
+    ps1_streamAsyncReadDrain();
     CdControl(CdlSetloc, (uint8*)&fileInfo.pos, 0);
 
     /* Read data */
@@ -2083,6 +2099,13 @@ int main(int argc, char **argv)
 #endif
     ps1PrintfProbe("mem-region-ready", NULL);
 
+    /* Reserve the walk clean buffer before boot-time SPU staging or other
+     * optional caches take transient bites out of libc heap. */
+    {
+        extern int walkPilotInit(void);
+        (void)walkPilotInit();
+    }
+
     /* Seed RNG — use forced seed if specified in BOOTMODE, else hardware RNG. */
     if (ps1BootForcedSeed >= 0) {
         srand((unsigned int)ps1BootForcedSeed);
@@ -2163,6 +2186,8 @@ int main(int argc, char **argv)
      * boot-time ambience from keying on. Explicit BOOTMODE parameters are
      * launch-time intent and must win over saved defaults. */
     memcardSettingsLoaded = memcardLoadSettings();
+    if (ps1BootPickerPolicy >= 0)
+        pickerSetPolicy(ps1BootPickerPolicy);
     memcardRequestedMute = soundMuted;
     soundInit();
     if (memcardSettingsLoaded && memcardRequestedMute) {
@@ -2180,6 +2205,7 @@ int main(int argc, char **argv)
             ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof"))
             ps1SpuCacheProofHalt(cacheOk);
     }
+    walkPilotPrimeSpuAssetsBlocking();
     ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
         hostForcedNight = bootNight;
@@ -2213,15 +2239,6 @@ int main(int argc, char **argv)
     const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
-
-    /* Force walk-subsystem to pre-allocate its 149 KB clean buffer
-     * before memFreezeBoot. Without this, the lazy allocation inside
-     * walkPilotCaptureCleanWalkAreaIfStale fires post-freeze and
-     * halts. */
-    {
-        extern int walkPilotInit(void);
-        (void)walkPilotInit();
-    }
 
     /* Freeze the BOOT region. Activating the no-fail invariant: any
      * later memAlloc(MEM_REGION_BOOT, ...) halts via memHalt with a

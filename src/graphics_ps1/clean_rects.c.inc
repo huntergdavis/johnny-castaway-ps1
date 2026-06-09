@@ -39,6 +39,10 @@ static int gGrCleanRectCount = 0;
 static int gGrCleanBgBlackMode = 0;
 static int gGrCleanBgRectsForceCache = 0;
 
+#define GR_SPU_RECT_ROW_SCRATCH_BYTES 1024u
+static uint32 gGrSpuRectRowScratch[GR_SPU_RECT_ROW_SCRATCH_BYTES /
+                                   sizeof(uint32)];
+
 /* Copy a rectangle's pixels out of the 4 bg tiles into a flat buffer. */
 static void grCleanRectCopyOut(struct TGrCleanRect *r)
 {
@@ -339,7 +343,7 @@ void grFreeCleanBgRects(void)
 
 void grDeactivateCleanBgRects(void)
 {
-    grResetCleanBgRects(0);
+    grResetCleanBgRects(1);
     gGrCleanBgBlackMode = 0;
 }
 
@@ -422,6 +426,187 @@ void grRestoreBgRect(const uint16 *src, sint16 x, sint16 y, uint16 w, uint16 h)
     r.pixels = (uint16 *)src;
     r.capacityBytes = (uint32)w * (uint32)h * sizeof(uint16);
     grCleanRectCopyIn(&r);
+}
+
+int grCaptureBgRectToSpu(uint32 spuOffset, sint16 x, sint16 y,
+                         uint16 w, uint16 h, uint32 rowStrideBytes)
+{
+    uint32 rowBytes;
+    uint32 totalBytes;
+    int sy;
+
+    if (w == 0 || h == 0)
+        return 0;
+    rowBytes = (uint32)w * (uint32)sizeof(uint16);
+    if (rowStrideBytes < rowBytes ||
+        rowStrideBytes > GR_SPU_RECT_ROW_SCRATCH_BYTES ||
+        (rowStrideBytes & (PS1_SPU_CACHE_ALIGN - 1u)) != 0u ||
+        (spuOffset & (PS1_SPU_CACHE_ALIGN - 1u)) != 0u)
+        return 0;
+    totalBytes = rowStrideBytes * (uint32)h;
+
+    ps1SpuCacheInit();
+    if (!ps1SpuCacheReady() ||
+        ps1SpuCacheCapacity() < spuOffset ||
+        ps1SpuCacheCapacity() - spuOffset < totalBytes)
+        return 0;
+
+    for (sy = 0; sy < (int)h; sy++) {
+        int destY = y + sy;
+        uint16 *dstRow = (uint16 *)gGrSpuRectRowScratch;
+        memset(gGrSpuRectRowScratch, 0, (size_t)rowStrideBytes);
+
+        if (destY >= 0 && destY < 480) {
+            PS1Surface *tileLeft, *tileRight;
+            int tileLocalY;
+            int xStart = x;
+            int xEnd = x + (int)w;
+
+            if (destY < 240) {
+                tileLocalY = destY;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = destY - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+            if (xStart < 0) xStart = 0;
+            if (xEnd > 640) xEnd = 640;
+            if (tileLeft && tileLeft->pixels && xStart < 320) {
+                int lx0 = xStart;
+                int lx1 = (xEnd < 320) ? xEnd : 320;
+                if (lx0 < lx1) {
+                    uint16 *src = tileLeft->pixels +
+                        (tileLocalY * (int)tileLeft->width) + lx0;
+                    memcpy(dstRow + (lx0 - x), src,
+                           (size_t)(lx1 - lx0) * sizeof(uint16));
+                }
+            }
+            if (tileRight && tileRight->pixels && xEnd > 320) {
+                int rx0 = (xStart > 320) ? xStart : 320;
+                int rx1 = xEnd;
+                if (rx0 < rx1) {
+                    uint16 *src = tileRight->pixels +
+                        (tileLocalY * (int)tileRight->width) + (rx0 - 320);
+                    memcpy(dstRow + (rx0 - x), src,
+                           (size_t)(rx1 - rx0) * sizeof(uint16));
+                }
+            }
+        }
+
+        if (!ps1SpuCacheWrite(spuOffset + rowStrideBytes * (uint32)sy,
+                              gGrSpuRectRowScratch,
+                              rowStrideBytes))
+            return 0;
+    }
+    return 1;
+}
+
+void grRestoreBgRectFromSpu(uint32 spuOffset, sint16 x, sint16 y,
+                            uint16 w, uint16 h, uint32 rowStrideBytes)
+{
+    uint32 rowBytes;
+    uint32 totalBytes;
+    uint32 copiedBytes = 0;
+    int perfTrack = ps1PerfEnabled;
+    int sy;
+
+    if (w == 0 || h == 0)
+        return;
+    rowBytes = (uint32)w * (uint32)sizeof(uint16);
+    if (rowStrideBytes < rowBytes ||
+        rowStrideBytes > GR_SPU_RECT_ROW_SCRATCH_BYTES ||
+        (rowStrideBytes & (PS1_SPU_CACHE_ALIGN - 1u)) != 0u ||
+        (spuOffset & (PS1_SPU_CACHE_ALIGN - 1u)) != 0u)
+        return;
+    totalBytes = rowStrideBytes * (uint32)h;
+
+    ps1SpuCacheInit();
+    if (!ps1SpuCacheReady() ||
+        ps1SpuCacheCapacity() < spuOffset ||
+        ps1SpuCacheCapacity() - spuOffset < totalBytes)
+        return;
+
+    grEnsureDirtyRowState();
+    for (sy = 0; sy < (int)h; sy++) {
+        int destY = y + sy;
+        PS1Surface *tileLeft, *tileRight;
+        int tileLocalY;
+        int xStart = x;
+        int xEnd = x + (int)w;
+        int leftIdx, rightIdx;
+        int leftCopy = 0;
+        int rightCopy = 0;
+        int lx0 = 0, lx1 = 0;
+        int rx0 = 0, rx1 = 0;
+        const uint16 *srcRow;
+
+        if (destY < 0 || destY >= 480)
+            continue;
+        if (destY < 240) {
+            tileLocalY = destY;
+            tileLeft = bgTile0;
+            tileRight = bgTile1;
+            leftIdx = 0;
+        } else {
+            tileLocalY = destY - 240;
+            tileLeft = bgTile3;
+            tileRight = bgTile4;
+            leftIdx = 2;
+        }
+        rightIdx = leftIdx + 1;
+        if (xStart < 0) xStart = 0;
+        if (xEnd > 640) xEnd = 640;
+
+        if (tileLeft && tileLeft->pixels && xStart < 320 &&
+            prevDirtyRowMinX[leftIdx][tileLocalY] >= 0) {
+            lx0 = xStart;
+            lx1 = (xEnd < 320) ? xEnd : 320;
+            if (lx0 < prevDirtyRowMinX[leftIdx][tileLocalY])
+                lx0 = prevDirtyRowMinX[leftIdx][tileLocalY];
+            if (lx1 > prevDirtyRowMaxX[leftIdx][tileLocalY] + 1)
+                lx1 = prevDirtyRowMaxX[leftIdx][tileLocalY] + 1;
+            leftCopy = (lx0 < lx1);
+        }
+        if (tileRight && tileRight->pixels && xEnd > 320 &&
+            prevDirtyRowMinX[rightIdx][tileLocalY] >= 0) {
+            rx0 = (xStart > 320) ? (xStart - 320) : 0;
+            rx1 = xEnd - 320;
+            if (rx0 < prevDirtyRowMinX[rightIdx][tileLocalY])
+                rx0 = prevDirtyRowMinX[rightIdx][tileLocalY];
+            if (rx1 > prevDirtyRowMaxX[rightIdx][tileLocalY] + 1)
+                rx1 = prevDirtyRowMaxX[rightIdx][tileLocalY] + 1;
+            rightCopy = (rx0 < rx1);
+        }
+        if (!leftCopy && !rightCopy)
+            continue;
+
+        if (!ps1SpuCacheRead(spuOffset + rowStrideBytes * (uint32)sy,
+                             gGrSpuRectRowScratch,
+                             rowStrideBytes))
+            return;
+        srcRow = (const uint16 *)gGrSpuRectRowScratch;
+
+        if (leftCopy) {
+            uint16 *dst = tileLeft->pixels +
+                (tileLocalY * (int)tileLeft->width) + lx0;
+            size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+            memcpy(dst, srcRow + (lx0 - x), bytes);
+            if (perfTrack)
+                copiedBytes += (uint32)bytes;
+        }
+        if (rightCopy) {
+            uint16 *dst = tileRight->pixels +
+                (tileLocalY * (int)tileRight->width) + rx0;
+            size_t bytes = (size_t)(rx1 - rx0) * sizeof(uint16);
+            memcpy(dst, srcRow + ((rx0 + 320) - x), bytes);
+            if (perfTrack)
+                copiedBytes += (uint32)bytes;
+        }
+    }
+    if (perfTrack)
+        ps1PerfMarkRestore(copiedBytes);
 }
 
 /* Set up rect-based clean backup. Drops any existing rects first (also any

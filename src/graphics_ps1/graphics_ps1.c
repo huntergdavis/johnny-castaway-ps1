@@ -40,6 +40,7 @@
 #include "psb_registry.h"
 #include "ps1_gpu_ot.h"
 #include "ps1_captions.h"
+#include "ps1_spu_cache.h"
 
 #ifndef GRAPHICS_PS1_DIAG_LOGS
 #define GRAPHICS_PS1_DIAG_LOGS 0

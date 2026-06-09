@@ -195,6 +195,10 @@ int memCacheRewindIfEmpty(void);
 /* R33-soak diagnostic: dump CACHE bump high-water + free-list summary. */
 void memDumpCacheStats(const char *prefix);
 
+/* Temporary corruption triage: validates the CACHE free-list at a caller
+ * supplied phase label. Remove or compile-gate once the soak fault is fixed. */
+void memDebugValidateCache(const char *phase);
+
 /* ---------------------------------------------------------------------
  * Allocation API
  * ------------------------------------------------------------------- */

@@ -17,6 +17,8 @@
 
 #include "mytypes.h"
 
+struct TTtmSlot;
+
 /*
  * Walk Johnny from (fromSpot, fromHdg) to (toSpot, toHdg) using
  * walk.c's pre-baked path data + the shared walk_render kernel.
@@ -80,5 +82,14 @@ void walkPilotReleaseCleanWalkArea(void);
 int           walkPilotCleanBufferAllocated(void);  /* 0 / 1 */
 unsigned long walkPilotCleanBufferBytes(void);      /* 0 if not alloc'd */
 int           walkPilotJohnwalkSlotLoaded(void);    /* 0 / 1 */
+
+/* Optional PS1 SPU cold-cache path for walk-adjacent assets. The foreground
+ * scheduler calls the JOHNWALK tick only after current-scene payload reads
+ * are done; boot priming also stages MRAFT.PSB and the walk-clean snapshot
+ * uses SPU cold storage when capacity is available. */
+void walkPilotSetSpuStage(int enabled);
+int  walkPilotStageJohnwalkSpuTick(void);
+int  walkPilotPrimeSpuAssetsBlocking(void);
+int  walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo);
 
 #endif /* WALK_PILOT_H */

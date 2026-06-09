@@ -31,11 +31,24 @@
 #ifndef FG_STAGE_DIAG_LOGS
 #define FG_STAGE_DIAG_LOGS 0
 #endif
+#ifndef FG_CACHE_DIAG_CHECKS
+#define FG_CACHE_DIAG_CHECKS 0
+#endif
 
 #if FG_STAGE_DIAG_LOGS
 #define FG_STAGE_PRINTF(...) do { printf(__VA_ARGS__); } while (0)
 #else
 #define FG_STAGE_PRINTF(...) do { } while (0)
+#endif
+
+#if FG_CACHE_DIAG_CHECKS
+#define FG_CACHE_CHECK(phase_) \
+    do { \
+        if (fgSceneEquals(gFgRuntime.sceneName, "fishing1")) \
+            memDebugValidateCache((phase_)); \
+    } while (0)
+#else
+#define FG_CACHE_CHECK(phase_) do { (void)(phase_); } while (0)
 #endif
 
 uint16 ps1AdsDbgActiveThreads = 0;
@@ -223,11 +236,11 @@ enum {
 #define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
-#define FG_NEXT_STAGE_METADATA_BYTES FG_PACK_METADATA_PREFIX_BYTES
+#define FG_NEXT_STAGE_METADATA_BYTES PS1_SPU_CACHE_FG_METADATA_BYTES
 #define FG_NEXT_STAGE_SIDE_BYTES (128UL * 1024UL)
-#define FG_NEXT_STAGE_TARGET_BYTES (64UL * 1024UL)
+#define FG_NEXT_STAGE_TARGET_BYTES PS1_SPU_CACHE_FG_PAYLOAD_BYTES
 #define FG_NEXT_STAGE_CHUNK_BYTES (8UL * 1024UL)
-#define FG_NEXT_STAGE_PAYLOAD_SPU_OFFSET FG_NEXT_STAGE_METADATA_BYTES
+#define FG_NEXT_STAGE_PAYLOAD_SPU_OFFSET PS1_SPU_CACHE_FG_PAYLOAD_OFFSET
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define FG_BUILDING2_HIGH_SETUP_SEGMENT_START (3UL * FG_CD_SECTOR_SIZE)
@@ -300,6 +313,7 @@ enum {
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
 #define FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES (112UL * 1024UL)
+#define FG_FRAME_BUFFER_GUARD_BYTES 0UL
 #define fgEntryHasPayload(entry) \
     (((entry) != NULL && \
       (entry)->dataSize > 0 && \
@@ -382,7 +396,7 @@ static uint8 gFgHeapProbeEnabled = 0;
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 static uint8 gFgLoadingWaveProofEnabled = 0;
-static uint8 gFgSpuStageEnabled = 0;
+static uint8 gFgSpuStageEnabled = 1;
 struct TFgNextSceneStage {
     uint8 active;
     uint8 valid;
@@ -467,12 +481,8 @@ static uint8 fgSceneIdForName(const char *sceneName);
 #line 4277 "/project/src/foreground_pilot.c"
 static int fgCleanRectsNeedCacheForProof(const char *sceneName)
 {
-    if (!gFgLoadingWaveProofEnabled)
-        return 0;
-    if (gFgStageSceneName[0] != '\0' &&
-        !fgSceneEquals(sceneName, gFgStageSceneName))
-        return 0;
-    return 1;
+    (void)sceneName;
+    return 0;
 }
 
 static int foregroundPilotRuntimeStart(const char *sceneName)
@@ -510,6 +520,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             const struct TFgPilotSceneFamily *sceneFamily = NULL;
             uint16 sceneTag = 0;
             uint32 maxDataSize = 0;
+            uint32 frameBufferBytes = 0;
             uint32 cleanSnapshotEstimate = 0;
             uint8 cleanMemoryRelief = 0;
             uint16 packFlags;
@@ -568,33 +579,54 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 maxDataSize < FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES) {
                 maxDataSize = FG_JOHNNY1_LOCAL_LZ_MAX_EXPANDED_BYTES;
             }
-            cleanSnapshotEstimate = fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
+            frameBufferBytes = fgSectorAlignUp(maxDataSize + FG_FRAME_BUFFER_GUARD_BYTES);
+            {
+                sint16 cleanBoundsX = 0;
+                sint16 cleanBoundsY = 0;
+                uint16 cleanBoundsW = 0;
+                uint16 cleanBoundsH = 0;
+                if (fgRuntimeComputeDrawBounds(&cleanBoundsX,
+                                               &cleanBoundsY,
+                                               &cleanBoundsW,
+                                               &cleanBoundsH)) {
+                    cleanSnapshotEstimate =
+                        fgBackdropCleanRectEstimateForPack(cleanBoundsX,
+                                                           cleanBoundsY,
+                                                           cleanBoundsW,
+                                                           cleanBoundsH);
+                } else {
+                    cleanSnapshotEstimate =
+                        fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
+                }
+            }
             cleanMemoryRelief = (uint8)(
-                fgSceneNeedsCleanMemoryRelief(sceneName, cleanSnapshotEstimate, maxDataSize)
+                fgSceneNeedsCleanMemoryRelief(sceneName, cleanSnapshotEstimate, frameBufferBytes)
                 || fgSceneForcesCleanMemoryRelief(sceneName));
-            if (maxDataSize > gFgFrameBufferSize) {
-                if (gFgFrameBuffer != NULL)
+            if (frameBufferBytes > gFgFrameBufferSize) {
+                if (gFgFrameBuffer != NULL) {
+                    fgQuiesceCdBeforeCacheBufferMutation();
                     memFree(MEM_REGION_CACHE, gFgFrameBuffer);
+                }
                 /* MEM_REGION_RATIONALE: grow-only frame buffer, persistent
                  * across scenes; not LRU-tracked. CACHE region. */
                 gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                   maxDataSize,
+                                                   frameBufferBytes,
                                                    "fg-frame");
                 if (gFgFrameBuffer == NULL) {
                     if (ps1PerfEnabled)
-                        ps1PerfMarkAllocFail(maxDataSize);
+                        ps1PerfMarkAllocFail(frameBufferBytes);
                     gFgFrameBufferSize = 0;
                     fgRuntimeReset();
                     return 0;
                 }
-                gFgFrameBufferSize = maxDataSize;
+                gFgFrameBufferSize = frameBufferBytes;
             }
             if (cleanMemoryRelief) {
 #if PS1_VERBOSE_DIAGNOSTICS
                 printf("JCMEM clean-relief scene=%s clean=%lu maxFrame=%lu no-prefetch\n",
                        sceneName,
                        (unsigned long)cleanSnapshotEstimate,
-                       (unsigned long)maxDataSize);
+                       (unsigned long)frameBufferBytes);
 #endif
                 fgDropOptionalPrefetchBuffersForCleanSnapshot();
                 if (fgSceneForcesCleanMemoryRelief(sceneName)) {
@@ -622,12 +654,15 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                      * this free reclaims them. */
                     if (!fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName) &&
                         gFgPrefetchFrameBuffer != NULL) {
+                        fgQuiesceCdBeforeCacheBufferMutation();
                         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
                         gFgPrefetchFrameBuffer = NULL;
                         gFgPrefetchFrameBufferSize = 0;
                     }
                     if (!fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName) &&
                         gFgStreamWindowBuffer != NULL) {
+                        fgNextSceneStageInvalidateIfBorrowingStreamWindow();
+                        fgQuiesceCdBeforeCacheBufferMutation();
                         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
                         gFgStreamWindowBuffer = NULL;
                         gFgStreamWindowBufferSize = 0;
@@ -637,21 +672,23 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchStage1Enabled &&
                 (!cleanMemoryRelief ||
                  fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName))) {
-                if (maxDataSize > gFgPrefetchFrameBufferSize) {
-                    if (gFgPrefetchFrameBuffer != NULL)
+                if (frameBufferBytes > gFgPrefetchFrameBufferSize) {
+                    if (gFgPrefetchFrameBuffer != NULL) {
+                        fgQuiesceCdBeforeCacheBufferMutation();
                         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+                    }
                     /* MEM_REGION_RATIONALE: grow-only prefetch frame
                      * buffer, peer of gFgFrameBuffer. CACHE region. */
                     gFgPrefetchFrameBuffer = (uint8 *)memAlloc(
-                        MEM_REGION_CACHE, maxDataSize, "fg-prefetch-frame");
+                        MEM_REGION_CACHE, frameBufferBytes, "fg-prefetch-frame");
                     if (gFgPrefetchFrameBuffer == NULL) {
                         if (ps1PerfEnabled)
-                            ps1PerfMarkAllocFail(maxDataSize);
+                            ps1PerfMarkAllocFail(frameBufferBytes);
                         gFgPrefetchFrameBufferSize = 0;
                         fgRuntimeReset();
                         return 0;
                     }
-                    gFgPrefetchFrameBufferSize = maxDataSize;
+                    gFgPrefetchFrameBufferSize = frameBufferBytes;
                 }
             }
             if (gFgPrefetchWindowBytes > 0 &&
@@ -795,8 +832,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                             fgRuntimeReset();
                             return 0;
                         }
-                        if (gFgStreamWindowBuffer != NULL)
+                        if (gFgStreamWindowBuffer != NULL) {
+                            fgNextSceneStageInvalidateIfBorrowingStreamWindow();
+                            fgQuiesceCdBeforeCacheBufferMutation();
                             memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+                        }
                         gFgStreamWindowBuffer = newWindowBuffer;
                         gFgStreamWindowBufferSize = windowCapacityBytes;
                     } else if (newWindowBuffer != NULL) {
@@ -813,13 +853,16 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (cleanMemoryRelief &&
                     gFgStreamScratch != NULL &&
                     gFgStreamScratchSize > requiredScratch) {
+                    fgQuiesceCdBeforeCacheBufferMutation();
                     memFree(MEM_REGION_CACHE, gFgStreamScratch);
                     gFgStreamScratch = NULL;
                     gFgStreamScratchSize = 0;
                 }
                 if (requiredScratch > gFgStreamScratchSize) {
-                    if (gFgStreamScratch != NULL)
+                    if (gFgStreamScratch != NULL) {
+                        fgQuiesceCdBeforeCacheBufferMutation();
                         memFree(MEM_REGION_CACHE, gFgStreamScratch);
+                    }
                     /* MEM_REGION_RATIONALE: grow-only alignment scratch.
                      * CACHE region. */
                     gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE,
@@ -917,12 +960,14 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     fgRuntimeReset();
                     return 0;
                 }
+                FG_CACHE_CHECK("fg-after-load0");
                 if (fgRuntimePrimeNextFrameForSetup() < 0) {
                     if (ps1PerfEnabled)
                         ps1PerfMarkTripwire();
                     fgRuntimeReset();
                     return 0;
                 }
+                FG_CACHE_CHECK("fg-after-prime1");
                 if (!fgEntryHasPayload(&gFgRuntime.currentEntry) &&
                     gFgRuntime.stagedFrameValid &&
                     gFgRuntime.stagedFrameIndex == 1) {
@@ -938,12 +983,14 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         fgRuntimeReset();
                         return 0;
                     }
+                    FG_CACHE_CHECK("fg-after-consume1");
                     if (fgRuntimePrimeNextFrameForSetup() < 0) {
                         if (ps1PerfEnabled)
                             ps1PerfMarkTripwire();
                         fgRuntimeReset();
                         return 0;
                     }
+                    FG_CACHE_CHECK("fg-after-prime2");
                     fgRuntimeWaitHeldVBlank();
                 }
                 if (ps1PerfEnabled)
@@ -1113,9 +1160,9 @@ void foregroundPilotRuntimeEnd(void)
 
 void foregroundPilotTeardownForFreeplay(void)
 {
+    fgNextSceneStageInvalidate();
     fgRuntimeReset();
     fgReleaseStreamBuffersHard();
-    fgNextSceneStageInvalidate();
     fgCleanOverlayInvalidate();
     grSetFullScreenScrCacheEnabled(0);
     grSetCleanBgRectsForceCache(0);
@@ -1233,8 +1280,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             fgCleanOverlayInvalidate();
         }
 
-        /* R33r: also release JOHNWALK.PSB (~93 KB CACHE-resident,
-         * walk_pilot.c). walkPilotEnsureBmp reloads on demand. */
+        /* R33r: release JOHNWALK.PSB (~49 KB CACHE-resident,
+         * walk_pilot.c). Under spu-stage, walkPilotEnsureBmp reloads
+         * from SPU cold storage; otherwise it falls back to CD. */
         fgWalkRenderTeardown();
 
         /* R33s: also release BACKGRND.BMP PSB in gFgBackdropSlot
@@ -1471,6 +1519,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             JC_BSOD(sceneName, "clean-rect alloc failed (TRANSIENT budget shortfall)");
         }
         grSetCleanBgRectsForceCache(0);
+        FG_CACHE_CHECK("fg-clean-saved");
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_CLEAN_RECT,
@@ -1485,6 +1534,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * transitions. With holiday baked in, restore alone shows it. */
     if (!blackBackdrop && !sceneSpecificBackdrop)
         fgBackdropStampHoliday();
+    FG_CACHE_CHECK("fg-after-holiday-stamp");
 
     /* Capture the pristine walk-area pixels into walk_pilot's persistent
      * buffer, gated on islandState change. bgTile here is ocean + island
@@ -1500,6 +1550,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              islandState.xPos,
                                              islandState.yPos);
     }
+    FG_CACHE_CHECK("fg-after-walk-clean");
     /* Force a full-tile framebuffer upload on the FIRST scene-frame
      * upload. Without this, scene N+1's first grDrawBackground only
      * uploads its dirty-row union, so any framebuffer pixels left from
@@ -1732,6 +1783,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             int didPrefetch = 0;
             int didPrepare = 0;
             int didNextStage = 0;
+            int didWalkStage = 0;
             if (ps1PerfEnabled) {
                 ps1PerfMarkHeldLoop();
                 heldSlackVBlanks = fgRuntimeHeldSlackBeforeWait();
@@ -1815,6 +1867,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                 if (didNextStage)
                     schedOwner = PS1_PERF_SCHED_CD_WINDOW;
             }
+            if (!advancedThisLoop &&
+                !didPrefetch &&
+                !didPrepare &&
+                !didNextStage &&
+                fgRuntimeNextPayloadEntry(NULL) == NULL) {
+                didWalkStage = walkPilotStageJohnwalkSpuTick();
+                if (didWalkStage)
+                    schedOwner = PS1_PERF_SCHED_CD_WINDOW;
+            }
             if (ps1PerfEnabled)
                 ps1PerfMarkScheduler(schedOwner, heldSlackVBlanks);
             if (!advancedThisLoop) {
@@ -1829,6 +1890,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                     else
                         eventsWaitTick(0);
                 } else if (didNextStage) {
+                    fgRuntimeWaitHeldVBlank();
+                } else if (didWalkStage) {
                     fgRuntimeWaitHeldVBlank();
                 } else {
                     fgRuntimeWaitHeldVBlank();
@@ -1882,11 +1945,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     if (ps1PerfEnabled) {
         fgNextSceneStageFinishPending();
+        FG_CACHE_CHECK("fg-after-stage-finish");
         ps1PerfMarkLoopEnd();
         ps1PerfMarkSoundCursor(gFgRuntime.soundEventCursor);
         ps1PerfMarkCleanupStart();
     } else {
         fgNextSceneStageFinishPending();
+        FG_CACHE_CHECK("fg-after-stage-finish");
     }
 
     if (deferWalkCleanRecapture && !blackBackdrop && !sceneSpecificBackdrop &&
@@ -1902,6 +1967,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * state accumulates and a later scene's large contiguous alloc
      * (clean-rect buffer ~270 KB, frame payload ~90 KB, BACKGRND PSB
      * ~93 KB) fails silently after 2-3 iterations. */
+    FG_CACHE_CHECK("fg-before-runtime-reset");
     fgRuntimeReset();
     fgReleaseStreamBuffers();
     if (blackBackdrop || sceneSpecificBackdrop ||
@@ -2028,6 +2094,7 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
 void foregroundPilotSetSpuStage(int enabled)
 {
     gFgSpuStageEnabled = enabled ? 1 : 0;
+    walkPilotSetSpuStage(gFgSpuStageEnabled);
     if (!gFgSpuStageEnabled)
         fgNextSceneStageInvalidate();
 }
@@ -2052,7 +2119,8 @@ void foregroundPilotResetPrefetchDefaults(void)
      * full-speed playback. See gFgPrefetchStage1Enabled rationale. */
     gFgPrefetchStage1Enabled = 1;
     gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
-    gFgSpuStageEnabled = 0;
+    gFgSpuStageEnabled = 1;
+    walkPilotSetSpuStage(1);
     gFgStageSceneName[0] = '\0';
 }
 

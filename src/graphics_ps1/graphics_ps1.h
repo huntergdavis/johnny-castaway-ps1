@@ -190,6 +190,8 @@ void grFreeLayer(PS1Surface *sfc);
 
 void grLoadBmp(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg);
 void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg);
+int grLoadPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
+                    char *strArg, uint8 *psbBuf, uint32 psbSize);
 void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo);
 void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY);
 void grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY);
@@ -256,16 +258,8 @@ void grRestoreBgFromRects(void);
 void grFreeCleanBgRects(void);
 void grDeactivateCleanBgRects(void);
 void grSetCleanBgBlackMode(int enabled);
-/* Pre-allocate clean-rect pixel buffers at the supplied worst-case
- * capacities (in bytes per slot, n slots). Call once at boot, before
- * the screensaver loop starts cycling scenes. Subsequent
- * grSaveCleanBgRects calls find existing capacity sufficient and reuse
- * the same buffer instead of free+malloc — eliminates the heap
- * fragmentation that builds up across hundreds of scene transitions
- * and eventually starves a wide lower-rect alloc.
- *
- * Per-scene cleanup paths must use grDeactivateCleanBgRects (not
- * grFreeCleanBgRects) for the pre-alloc to stick. */
+/* Legacy no-op. Clean-rect pixels are scene-owned under mem_region and
+ * deactivation releases their storage. */
 void grPreallocCleanBgRects(const uint32 *capBytes, int n);
 int  grCleanBgRectsCount(void);
 unsigned long grCleanBgRectsBytes(void);
@@ -278,6 +272,10 @@ void grRestoreBgRectsFull(void);
  * walk_pilot's persistent walk-area buffer). */
 void grCaptureBgRect(uint16 *dst, sint16 x, sint16 y, uint16 w, uint16 h);
 void grRestoreBgRect(const uint16 *src, sint16 x, sint16 y, uint16 w, uint16 h);
+int  grCaptureBgRectToSpu(uint32 spuOffset, sint16 x, sint16 y,
+                           uint16 w, uint16 h, uint32 rowStrideBytes);
+void grRestoreBgRectFromSpu(uint32 spuOffset, sint16 x, sint16 y,
+                             uint16 w, uint16 h, uint32 rowStrideBytes);
 void grRestoreBgTiles(void);
 void grRestoreBackgroundRectForFrame(int x, int y, int width, int height);
 void grRestoreAndCompositeDirect16BackgroundRectForFrame(int x, int y, int width, int height,

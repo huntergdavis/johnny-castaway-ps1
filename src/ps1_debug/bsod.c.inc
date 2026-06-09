@@ -1,7 +1,7 @@
 
 /*
  * Windows-3.1-style fatal-error screen. Solid blue background with white
- * BIOS-font diagnostic info. Halts forever — caller must never return.
+ * diagnostic info. Halts forever — caller must never return.
  *
  * Tries hard to surface enough state to diagnose:
  *   - the scene slug that was loading
@@ -92,21 +92,18 @@ void ps1Bsod(const char *scene, const char *reason,
         printf("JCBSOD-HALT\n");
     }
 
-    /* Reinit GPU. The game has been mutating display + VRAM and may have
-     * been in 640x480 interlaced mode, but the BIOS font helper reads
-     * cleanest at standard 320x240 NTSC — and at that resolution PSn00bSDK
-     * shows ~40 columns of the 8x8 BIOS font, which lines up with our
-     * panel design. Set an explicit display + draw env so we don't
-     * inherit anything weird from whatever crashed. */
-    #define BSOD_W 320
-    #define BSOD_H 240
+    /* Reinit GPU and use the same embedded font path as pause/captions.
+     * The old BIOS-font/FntLoad path painted the blue background but lost
+     * visible text after some fatal states. */
+    #define BSOD_W 640
+    #define BSOD_H 480
     ResetGraph(0);
     SetVideoMode(MODE_NTSC);
 
     DISPENV disp;
     DRAWENV draw;
     SetDefDispEnv(&disp, 0, 0, BSOD_W, BSOD_H);
-    disp.isinter = 0;
+    disp.isinter = 1;
     SetDefDrawEnv(&draw, 0, 0, BSOD_W, BSOD_H);
     setRGB0(&draw, 0, 0, 168);   /* Win 3.1 BSOD blue */
     draw.isbg = 1;               /* solid-fill the framebuffer */
@@ -114,10 +111,7 @@ void ps1Bsod(const char *scene, const char *reason,
     PutDrawEnv(&draw);
     SetDispMask(1);
 
-    /* Open a font stream that fits inside the 320x240 viewport with a
-     * comfortable margin. 304x224 inset by 8 px — gives ~38 columns,
-     * 28 rows. */
-    FntLoad(960, 0);
+    pauseMenuUploadDebugFont();
     fontID = 0;
 
     if (scene == NULL || scene[0] == '\0') scene = "(unknown)";
@@ -142,7 +136,7 @@ void ps1Bsod(const char *scene, const char *reason,
     }
 
     /* Word-wrap the reason into the BSOD panel's 38-col layout. The
-     * 8x8 BIOS font + 304 px text width = 38 columns; reasons like
+     * embedded 16x16 font + 624 px text width = 39 columns; reasons like
      * "CACHE exhausted (region+libc both): req=65280 have=107276" are
      * 57 chars and previously got clipped at the right margin. Wrap
      * at the last space before column WRAP_COL, hard-break if a single

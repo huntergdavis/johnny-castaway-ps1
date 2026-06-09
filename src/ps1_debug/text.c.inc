@@ -1,12 +1,6 @@
 /*
  * Initialize visual debugging system
  */
-#define PS1_DEBUG_FONT_X 960
-#define PS1_DEBUG_FONT_Y 0
-#define PS1_DEBUG_CLUT_X 960
-#define PS1_DEBUG_CLUT_Y 128
-#define PS1_DEBUG_GLYPH_W 8
-#define PS1_DEBUG_GLYPH_H 8
 #define PS1_DEBUG_OT_LEN 8
 #define PS1_DEBUG_PRIM_BYTES 32768
 #define PS1_DEBUG_TEXT_BUF_BYTES 2048
@@ -82,15 +76,17 @@ static void ps1DebugDrawTextBlock(int x, int y, int w, int h,
     if (text == NULL)
         text = "";
 
+    pauseMenuEnsureFontUploaded();
     ClearOTagR(ps1DebugOt, PS1_DEBUG_OT_LEN);
     if (next + sizeof(DR_TPAGE) < limit) {
         DR_TPAGE *tp = (DR_TPAGE *)next;
         next += sizeof(DR_TPAGE);
-        setDrawTPage(tp, 0, 0, getTPage(0, 0, PS1_DEBUG_FONT_X, PS1_DEBUG_FONT_Y));
+        setDrawTPage(tp, 0, 1,
+                     getTPage(0, 0, PAUSE_FONT_VRAM_X, PAUSE_FONT_VRAM_Y));
         ps1GpuOtAddPrim(&ps1DebugOt[PS1_DEBUG_OT_LEN - 1], tp);
     }
 
-    while (*text != '\0' && y + PS1_DEBUG_GLYPH_H <= maxY) {
+    while (*text != '\0' && y + PAUSE_GLYPH_DRAW_H <= maxY) {
         unsigned char c = (unsigned char)*text++;
         int col;
         int row;
@@ -98,32 +94,36 @@ static void ps1DebugDrawTextBlock(int x, int y, int w, int h,
 
         if (c == '\r')
             continue;
-        if (c == '\n' || x + PS1_DEBUG_GLYPH_W > maxX) {
+        if (c == '\n' || x + PAUSE_GLYPH_DRAW_W > maxX) {
             x = startX;
-            y += PS1_DEBUG_GLYPH_H;
+            y += PAUSE_GLYPH_DRAW_H;
             if (c == '\n')
                 continue;
         }
-        if (c < 32 || c > 127) {
-            x += PS1_DEBUG_GLYPH_W;
+        if (c < PAUSE_GLYPH_FIRST ||
+            c >= PAUSE_GLYPH_FIRST + PAUSE_GLYPH_COUNT) {
+            x += PAUSE_GLYPH_DRAW_W;
             continue;
         }
         if (next + sizeof(SPRT) >= limit)
             break;
 
-        col = c & 15;
-        row = c >> 4;
+        {
+            int idx = (int)c - PAUSE_GLYPH_FIRST;
+            col = idx & 15;
+            row = idx >> 4;
+        }
         sprt = (SPRT *)next;
         next += sizeof(SPRT);
         setSprt(sprt);
         setXY0(sprt, x, y);
-        setWH(sprt, PS1_DEBUG_GLYPH_W, PS1_DEBUG_GLYPH_H);
-        setUV0(sprt, (uint8_t)(col * PS1_DEBUG_GLYPH_W),
-               (uint8_t)(row * PS1_DEBUG_GLYPH_H));
-        setClut(sprt, PS1_DEBUG_CLUT_X, PS1_DEBUG_CLUT_Y);
+        setWH(sprt, PAUSE_GLYPH_DRAW_W, PAUSE_GLYPH_DRAW_H);
+        setUV0(sprt, (uint8_t)(col * PAUSE_GLYPH_DRAW_W),
+               (uint8_t)(row * PAUSE_GLYPH_DRAW_H));
+        setClut(sprt, PAUSE_CLUT_VRAM_X, PAUSE_CLUT_VRAM_Y);
         setRGB0(sprt, r, g, b);
         ps1GpuOtAddPrim(textOt, sprt);
-        x += PS1_DEBUG_GLYPH_W;
+        x += PAUSE_GLYPH_DRAW_W;
     }
 
     DrawOTag(&ps1DebugOt[PS1_DEBUG_OT_LEN - 1]);
@@ -137,8 +137,18 @@ void ps1DebugInit(void)
     ResetGraph(0);
     SetVideoMode(MODE_NTSC);
 
-    /* Load built-in PSX BIOS font (8x8 characters) */
-    FntLoad(960, 0);
+    {
+        DISPENV disp;
+        DRAWENV draw;
+        SetDefDispEnv(&disp, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        disp.isinter = 1;
+        SetDefDrawEnv(&draw, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        draw.isbg = 0;
+        PutDispEnv(&disp);
+        PutDrawEnv(&draw);
+    }
+
+    pauseMenuUploadDebugFont();
     fontID = 0;
 
     /* Enable display */
@@ -261,10 +271,20 @@ void ps1DebugWait(void)
  */
 void ps1DebugError(const char *fmt, ...)
 {
-    /* Re-initialize GPU and font - the game overwrites font VRAM area */
+    /* Re-initialize GPU and font - the game can overwrite draw state. */
     ResetGraph(0);
     SetVideoMode(MODE_NTSC);
-    FntLoad(960, 0);
+    {
+        DISPENV disp;
+        DRAWENV draw;
+        SetDefDispEnv(&disp, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        disp.isinter = 1;
+        SetDefDrawEnv(&draw, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        draw.isbg = 1;
+        PutDispEnv(&disp);
+        PutDrawEnv(&draw);
+    }
+    pauseMenuUploadDebugFont();
     fontID = 0;
     SetDispMask(1);
 
