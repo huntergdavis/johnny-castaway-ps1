@@ -471,8 +471,9 @@ static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
     if (!metadata)
         return 0;
 
-    if (!fgNextSceneStageReadMetadataPrefix(sceneName, metadata, prefixBytes) &&
-        !ps1_streamReadAlignedIntoFile(cdfile, 0, prefixBytes, metadata)) {
+    if (fgNextSceneStageReadMetadataPrefix(sceneName, metadata, prefixBytes)) {
+        ps1PerfMarkStageAdopt(PS1_PERF_STAGE_ADOPT_METADATA);
+    } else if (!ps1_streamReadAlignedIntoFile(cdfile, 0, prefixBytes, metadata)) {
         memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }

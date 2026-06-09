@@ -531,8 +531,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (ps1CaptionsEnabled &&
                 fgParseCompactOverlayScene(sceneName, &sceneFamily, &sceneTag))
                 captionsOnAdsStart(sceneFamily->adsName, sceneTag);
-            if (!fgNextSceneStageAdoptFile(sceneName, &gFgRuntime.packCdFile) &&
-                !ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
+            if (fgNextSceneStageAdoptFile(sceneName, &gFgRuntime.packCdFile)) {
+                ps1PerfMarkStageAdopt(PS1_PERF_STAGE_ADOPT_FILE);
+            } else if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
                 fgRuntimeReset();
                 return 0;
             }

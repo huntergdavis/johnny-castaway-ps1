@@ -1281,6 +1281,7 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
                         (unsigned long)gFgNextSceneStage.loadedBytes,
                         (unsigned long)gFgNextSceneStage.windowBytes);
         fgNextSceneStageInvalidate();
+        ps1PerfMarkStageAdopt(PS1_PERF_STAGE_ADOPT_WINDOW);
         return 1;
     }
 
@@ -1302,6 +1303,7 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
                     (unsigned long)gFgNextSceneStage.loadedBytes,
                     (unsigned long)gFgNextSceneStage.windowBytes);
     fgNextSceneStageInvalidate();
+    ps1PerfMarkStageAdopt(PS1_PERF_STAGE_ADOPT_WINDOW);
     return 1;
 }
 

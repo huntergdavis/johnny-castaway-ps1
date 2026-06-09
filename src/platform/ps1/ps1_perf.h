@@ -24,6 +24,14 @@ enum {
     PS1_PERF_SETUP_FIRST_FRAME = 5
 };
 
+/* Next-scene stage adoption flags: which transition costs were satisfied
+ * from the lookahead stage instead of cold CD work. OR-combined per scene. */
+enum {
+    PS1_PERF_STAGE_ADOPT_FILE = 0x01,     /* pack CdlFILE adopted (no CdSearchFile) */
+    PS1_PERF_STAGE_ADOPT_METADATA = 0x02, /* metadata prefix read from SPU stage */
+    PS1_PERF_STAGE_ADOPT_WINDOW = 0x04    /* first payload window adopted */
+};
+
 enum {
     PS1_PERF_RENDER_RESTORE = 1,
     PS1_PERF_RENDER_COMPOSE = 2,
@@ -71,6 +79,7 @@ void ps1PerfEndScene(const char *sceneName);
 uint32 ps1PerfTick(void);
 uint16 ps1PerfElapsedVBlanks(uint32 startTick);
 void ps1PerfMarkSetupPhase(uint8 phase, uint16 elapsedVBlanks);
+void ps1PerfMarkStageAdopt(uint8 flags);
 void ps1PerfMarkLoopStart(void);
 void ps1PerfMarkLoopEnd(void);
 void ps1PerfMarkCleanupStart(void);
@@ -135,6 +144,7 @@ static inline void ps1PerfEndScene(const char *sceneName) { (void)sceneName; }
 static inline uint32 ps1PerfTick(void) { return 0; }
 static inline uint16 ps1PerfElapsedVBlanks(uint32 startTick) { (void)startTick; return 0; }
 static inline void ps1PerfMarkSetupPhase(uint8 phase, uint16 elapsedVBlanks) { (void)phase; (void)elapsedVBlanks; }
+static inline void ps1PerfMarkStageAdopt(uint8 flags) { (void)flags; }
 static inline void ps1PerfMarkLoopStart(void) {}
 static inline void ps1PerfMarkLoopEnd(void) {}
 static inline void ps1PerfMarkCleanupStart(void) {}

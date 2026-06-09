@@ -57,6 +57,7 @@ struct TPs1PerfCounters {
     uint32 packStartVBlanks;
     uint32 cleanRectVBlanks;
     uint32 firstFrameVBlanks;
+    uint8 stageAdoptFlags;
 
     uint32 renderedLoops;
     uint32 heldLoops;
@@ -401,6 +402,13 @@ void ps1PerfMarkSetupPhase(uint8 phase, uint16 elapsedVBlanks)
         default:
             break;
     }
+}
+
+void ps1PerfMarkStageAdopt(uint8 flags)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.stageAdoptFlags |= flags;
 }
 
 void ps1PerfMarkLoopStart(void)
@@ -1197,7 +1205,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned int)gPs1Perf.maxElapsedFrameIndex
     );
     printf(
-        "JCPERF2 setup setup_vb=%lu screen_vb=%lu backdrop_vb=%lu pack_start_vb=%lu clean_rect_vb=%lu first_frame_vb=%lu cleanup_vb=%lu setup_reads=%lu setup_bytes=%lu\n",
+        "JCPERF2 setup setup_vb=%lu screen_vb=%lu backdrop_vb=%lu pack_start_vb=%lu clean_rect_vb=%lu first_frame_vb=%lu cleanup_vb=%lu setup_reads=%lu setup_bytes=%lu stage_adopt=%u\n",
         (unsigned long)setupVBlanks,
         (unsigned long)gPs1Perf.screenVBlanks,
         (unsigned long)gPs1Perf.backdropVBlanks,
@@ -1206,7 +1214,8 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.firstFrameVBlanks,
         (unsigned long)cleanupVBlanks,
         (unsigned long)gPs1Perf.cdSetupReads,
-        (unsigned long)gPs1Perf.cdSetupBytes
+        (unsigned long)gPs1Perf.cdSetupBytes,
+        (unsigned int)gPs1Perf.stageAdoptFlags
     );
     printf(
         "JCPERF2 frame payload=%lu max_payload=%lu max_payload_idx=%u max_payload_src=%u rows=%lu spans=%lu pixels=%lu hold_max=%u hold_max_idx=%u hold_1=%lu hold_2_4=%lu hold_5_8=%lu hold_9p=%lu payload_0=%lu payload_1k=%lu payload_4k=%lu payload_16k=%lu payload_64k=%lu payload_64kp=%lu\n",
@@ -1442,7 +1451,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
 
     (void)cleanupVBlanks;
     printf(
-        "JCP3S %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+        "JCP3S %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %u\n",
         gPs1Perf.sceneName,
         (unsigned long)sceneVBlanks,
         (unsigned long)loopVBlanks,
@@ -1453,7 +1462,8 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.backdropVBlanks,
         (unsigned long)gPs1Perf.packStartVBlanks,
         (unsigned long)gPs1Perf.cleanRectVBlanks,
-        (unsigned long)gPs1Perf.firstFrameVBlanks
+        (unsigned long)gPs1Perf.firstFrameVBlanks,
+        (unsigned int)gPs1Perf.stageAdoptFlags
     );
     printf(
         "JCP3C %lu %lu %lu %lu %lu %lu %lu %lu %lu %u\n",
