@@ -22,7 +22,7 @@ Same panel reconvenes for loop 4. v7 closed 12 of 12 v5 findings. Looking for ne
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-red-team-v6.md` |
 | Lines | 229 |
-| Approx. words | 1037 |
+| Approx. words | 1038 |
 | Code fences | 3 |
 
 ## Outline

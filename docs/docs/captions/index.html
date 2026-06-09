@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Closed captions — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -146,12 +146,12 @@ Johnny is doing.</p>
 <p>Three things plug together:</p>
 
 <ol>
-  <li><strong>The caption corpus</strong> (<code class="language-plaintext highlighter-rouge">captions[]</code> in <code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code>) holds the
+  <li><strong>The caption corpus</strong> (<code class="language-plaintext highlighter-rouge">captions[]</code> in <code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.c</code>) holds the
 actual subtitle strings. There are a handful of “special” captions
 (<code class="language-plaintext highlighter-rouge">intro</code>, <code class="language-plaintext highlighter-rouge">christmas</code>, <code class="language-plaintext highlighter-rouge">halloween</code>, <code class="language-plaintext highlighter-rouge">night</code>, <code class="language-plaintext highlighter-rouge">lowtide</code>, <code class="language-plaintext highlighter-rouge">fadeout</code>, etc.)
 plus 64 numbered scene captions (<code class="language-plaintext highlighter-rouge">scene00</code> … <code class="language-plaintext highlighter-rouge">scene63</code>).</li>
   <li><strong>The scene-to-ADS map</strong> (<code class="language-plaintext highlighter-rouge">captionSceneMap[]</code>, also in
-<code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code>) routes an <code class="language-plaintext highlighter-rouge">(ads_name, ads_tag)</code> pair to a caption
+<code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.c</code>) routes an <code class="language-plaintext highlighter-rouge">(ads_name, ads_tag)</code> pair to a caption
 id. When a scene starts, the runtime calls
 <code class="language-plaintext highlighter-rouge">captionsOnAdsStart("FISHING", 3)</code> and the mapper picks the right
 <code class="language-plaintext highlighter-rouge">sceneNN</code> string.</li>
@@ -165,7 +165,7 @@ into VRAM.</li>
 on first use it calls <code class="language-plaintext highlighter-rouge">pauseMenuEnsureFontUploaded()</code> so the captions don’t
 need to wait for the user to open the pause menu before subtitles can render.
 The font lives at VRAM <code class="language-plaintext highlighter-rouge">(640, 256)</code> with a CLUT at <code class="language-plaintext highlighter-rouge">(640, 360)</code> — those
-constants are exported from <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.h"><code class="language-plaintext highlighter-rouge">pause_menu.h</code></a>.</p>
+constants are exported from <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu/pause_menu.h"><code class="language-plaintext highlighter-rouge">pause_menu.h</code></a>.</p>
 
 <p>When captions are disabled or no scene is active, <code class="language-plaintext highlighter-rouge">captionsRender()</code> returns
 immediately. It is zero-cost when off.</p>
@@ -405,7 +405,7 @@ caption belongs to which scene — the per-scene <code class="language-plaintext
 bodies, the <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_data/scenes.yml"><code class="language-plaintext highlighter-rouge">scenes.yml</code></a> notes, the <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a> Notes column,
 and the in-game <a href="../glossary/#scene-explorer">Scene Explorer</a>’s display strings (regenerated from
 those sources). The <code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> array in
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.c</code></a>
 was not updated as part of <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>; the runtime continues to
 play whatever caption the audit’s mapping picked. Repointing the
 <code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> rows where the caption text contradicts the
@@ -422,7 +422,7 @@ explicitly anticipated.</p>
 <h2 id="how-to-add-a-caption">How to add a caption</h2>
 
 <p>The pipeline is two arrays in one file. Both live in
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.c</code></a>.</p>
 
 <ol>
   <li>
@@ -512,8 +512,8 @@ describes-the-gag-not-the-frame).</li>
 
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml"><code class="language-plaintext highlighter-rouge">docs/ps1/caption-audit-2026-04-26.yaml</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.h"><code class="language-plaintext highlighter-rouge">src/ps1_captions.h</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_captions.h"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_captions.h</code></a></li>
 </ul>
 
   </div>
@@ -534,7 +534,7 @@ describes-the-gag-not-the-frame).</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

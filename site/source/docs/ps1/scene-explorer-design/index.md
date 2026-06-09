@@ -22,7 +22,7 @@ A new pause-menu sub-screen that lets the player browse all 63 scenes in the cat
 |---|---:|
 | Source path | `docs/ps1/scene-explorer-design.md` |
 | Lines | 379 |
-| Approx. words | 2247 |
+| Approx. words | 2252 |
 | Code fences | 5 |
 
 ## Outline

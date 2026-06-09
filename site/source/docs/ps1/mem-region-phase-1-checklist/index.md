@@ -22,7 +22,7 @@ Companion to memory-region-allocator-plan.md. Mirrors the 24 steps of Phase 1 as
 |---|---:|
 | Source path | `docs/ps1/mem-region-phase-1-checklist.md` |
 | Lines | 105 |
-| Approx. words | 639 |
+| Approx. words | 640 |
 | Code fences | 0 |
 
 ## Outline

@@ -21,8 +21,8 @@ Date: 2026-05-01 Branch context: ocean-ambience-20260501, shipped as v0.6.0-ps1.
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/background-music-feasibility.md` |
-| Lines | 489 |
-| Approx. words | 2873 |
+| Lines | 491 |
+| Approx. words | 2923 |
 | Code fences | 8 |
 
 ## Outline

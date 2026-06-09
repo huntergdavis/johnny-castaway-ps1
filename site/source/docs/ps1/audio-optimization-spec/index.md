@@ -21,8 +21,8 @@ All 23 original WAV files share identical format:
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/audio-optimization-spec.md` |
-| Lines | 495 |
-| Approx. words | 2848 |
+| Lines | 505 |
+| Approx. words | 2925 |
 | Code fences | 13 |
 
 ## Outline

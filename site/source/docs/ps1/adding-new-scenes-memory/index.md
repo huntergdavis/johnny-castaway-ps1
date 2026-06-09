@@ -22,7 +22,7 @@ Companion to memory-region-allocator-plan.md. Read this before merging a PR that
 |---|---:|
 | Source path | `docs/ps1/adding-new-scenes-memory.md` |
 | Lines | 180 |
-| Approx. words | 1061 |
+| Approx. words | 1064 |
 | Code fences | 3 |
 
 ## Outline

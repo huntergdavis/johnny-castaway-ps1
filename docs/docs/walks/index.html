@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Story-loop walks — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Reference manual for the Johnny Castaway PS1 port&#39;s story-loop walk subsystem — walk_pilot, walk_render, the six-spot route table from the original Sierra walk_data, and the runtime invariants (persistent clean buffer, ocean waves, palm-tree occlusion, holiday overlay re-stamping) that keep walks visually correct." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Reference manual for the Johnny Castaway PS1 port&#39;s story-loop walk subsystem — walk_pilot, walk_render, the six-spot route table from the original Sierra walk_data, and the runtime invariants (persistent clean buffer, ocean waves, palm-tree occlusion, holiday overlay re-stamping) that keep walks visually correct." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -356,15 +356,15 @@ fix.</li>
 <h2 id="source-on-github">Source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_pilot.h"><code class="language-plaintext highlighter-rouge">src/walk_pilot.h</code></a>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk_pilot.h"><code class="language-plaintext highlighter-rouge">src/walk/walk_pilot.h</code></a>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_pilot.c"><code class="language-plaintext highlighter-rouge">src/walk_pilot.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.h"><code class="language-plaintext highlighter-rouge">src/walk_render.h</code></a>
-· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.h"><code class="language-plaintext highlighter-rouge">src/walk.h</code></a>
-· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.c"><code class="language-plaintext highlighter-rouge">src/walk.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.h"><code class="language-plaintext highlighter-rouge">src/calcpath.h</code></a>
-· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.c"><code class="language-plaintext highlighter-rouge">src/calcpath.c</code></a> — the <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body’s “(from, to) pair has a direct path” paragraph).</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_data.h"><code class="language-plaintext highlighter-rouge">src/walk_data.h</code></a> — the upstream Sierra route table.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk_render.h"><code class="language-plaintext highlighter-rouge">src/walk/walk_render.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk/walk_render.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk.h"><code class="language-plaintext highlighter-rouge">src/walk/walk.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk.c"><code class="language-plaintext highlighter-rouge">src/walk/walk.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/calcpath.h"><code class="language-plaintext highlighter-rouge">src/walk/calcpath.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/calcpath.c"><code class="language-plaintext highlighter-rouge">src/walk/calcpath.c</code></a> — the <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body’s “(from, to) pair has a direct path” paragraph).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk/walk_data.h"><code class="language-plaintext highlighter-rouge">src/walk/walk_data.h</code></a> — the upstream Sierra route table.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-implementation-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-implementation-plan.md</code></a> — original walk port plan, with the Phase 4 footsteps record kept for historical accuracy.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-spot-coordinates.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-spot-coordinates.md</code></a> — pre-flight audit and per-spot coordinates.</li>
 </ul>
@@ -387,7 +387,7 @@ fix.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="PS1 hardware constraints — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -106,7 +106,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1890 words
+          ~8 min read · 2117 words
         </p>
 
       <hr class="rule" />
@@ -223,7 +223,7 @@ its own <code class="language-plaintext highlighter-rouge">-O2 -Wall -Wpedantic 
 links with <code class="language-plaintext highlighter-rouge">-Wl,--gc-sections</code> so unused engine paths get stripped at the
 linker. After that pass <code class="language-plaintext highlighter-rouge">jcreborn.elf</code> is around 924 KiB; the converted
 <code class="language-plaintext highlighter-rouge">jcreborn.exe</code> lands at 208 KiB (104 × 2 KiB CD-ROM sectors) at
-<code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code>.</p>
+<code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code>.</p>
 
 <h3 id="graphics-gpu--vram">Graphics (GPU + VRAM)</h3>
 
@@ -262,6 +262,19 @@ mix audio; it uploads samples once and triggers them via voice keys.</p>
 ADPCM — preloads into SPU RAM at boot. There is no streaming, no music. See
 <a href="../audio/">Audio pipeline</a> for the SPU layout map.</p>
 
+<p>Starting with <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code>, the runtime also uses the unused tail of SPU RAM as
+a cold cache. This is not a normal heap: the CPU cannot address SPU RAM
+directly. Data must be copied into SPU RAM with <code class="language-plaintext highlighter-rouge">SpuWrite()</code> and copied back
+with <code class="language-plaintext highlighter-rouge">SpuRead()</code> before CPU or GPU use. That still pays off because an SPU DMA
+round trip is much cheaper than another CD seek, and because parking a landed
+read there lets main RAM go back to scene playback.</p>
+
+<p>The release layout reserves 8 KB for next-scene metadata, 64 KB for a
+next-scene foreground payload window, 48 KB for <code class="language-plaintext highlighter-rouge">JOHNWALK.PSB</code>, 144 KB for the
+walk clean snapshot, and 12 KB for <code class="language-plaintext highlighter-rouge">MRAFT.PSB</code>. The walk clean snapshot is the
+biggest immediate win: it avoids a large main-RAM allocation in walk scenes,
+which was the fragile part of long Original-order soaks.</p>
+
 <h3 id="storage-cd-rom">Storage (CD-ROM)</h3>
 
 <p>The CD is a 2x drive — 300 KB/s sustained, 150 ms cold seek. Both numbers
@@ -271,11 +284,19 @@ the CD as an explicit prefetch surface, not a transparent filesystem; reads
 are scheduled inside held VBlanks where possible, so seek latency lives
 under already-idle frames.</p>
 
+<p><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> adds a stricter non-blocking read path for transition staging.
+The foreground pilot can start aligned async reads for the next scene’s pack
+metadata and first payload window, poll those reads while the current scene is
+still alive, and then park completed data into the SPU cold cache. Before any
+blocking read, directory search, or buffer mutation, the runtime drains the
+async path so the CD controller is quiet. That keeps the correctness model
+simple while still moving useful CD work before the visible scene boundary.</p>
+
 <h3 id="input-controller">Input (controller)</h3>
 
 <p>Everything goes through the SIO0 serial bus. PSn00bSDK ships a BIOS pad
 driver, but it does not auto-poll in the project’s PSn00bSDK 0.24 +
-DuckStation environment. The port does its own SPI driver in <code class="language-plaintext highlighter-rouge">src/spi.c</code>,
+DuckStation environment. The port does its own SPI driver in <code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c</code>,
 adapted from spicyjpeg’s PSn00bSDK example, polling at 250 Hz off Timer 2.</p>
 
 <h2 id="what-bit-us-in-practice">What bit us in practice</h2>
@@ -293,7 +314,7 @@ full 5-byte poll sequence comes from the TX buffer. The fix is one
 constant; finding the constant took an evening of staring at SIO0 and
 guessing whether the bug was in our code, the SDK, or the emulator. It was
 in the emulator, and the emulator is what almost everyone playtests on, so
-the fix is permanent. <code class="language-plaintext highlighter-rouge">src/spi.c</code> carries <code class="language-plaintext highlighter-rouge">tx_len=5</code>.</p>
+the fix is permanent. <code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c</code> carries <code class="language-plaintext highlighter-rouge">tx_len=5</code>.</p>
 
 <h3 id="fntflush-is-empirically-broken-in-scene-runtime-context"><code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in scene-runtime context</h3>
 
@@ -355,14 +376,14 @@ without bounding the format buffer. Under sustained text output the stack
 would walk into BSS and the executable would crash several minutes into a
 session, sometimes silently. The proximate fix was to disable
 <code class="language-plaintext highlighter-rouge">debugMode</code> in release builds; the deeper fix was to replace <code class="language-plaintext highlighter-rouge">vprintf</code>
-with the bounded <code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatter in <code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code>,
+with the bounded <code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatter in <code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_perf.c</code>,
 which truncate inside a static buffer. The lesson, repeated across this
 project: standard C library functions assume a host-class environment,
 and the PS1 is not that.</p>
 
 <h2 id="where-this-leaves-the-runtime">Where this leaves the runtime</h2>
 
-<p>The current build (<code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code>) lives well inside every hardware
+<p>The current build (<code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code>) lives well inside every hardware
 budget: ~208 KiB of executable code, ~95 KB of audio in SPU RAM, two
 640×480 framebuffers, and a few hundred KB of resource cache in main
 RAM. The bottleneck that remains is CD-side prefetch timing, not memory or
@@ -412,12 +433,12 @@ alphabetical.</li>
 
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/hardware-specs.md"><code class="language-plaintext highlighter-rouge">docs/ps1/hardware-specs.md</code></a> — original design doc.</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/spi.c"><code class="language-plaintext highlighter-rouge">src/spi.c</code></a> —
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/spi.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c</code></a> —
 the project’s own SPI driver (250 Hz Timer 2 polling, <code class="language-plaintext highlighter-rouge">tx_len=5</code>
 for DuckStation parity). Carries the fix the
 <a href="../../lab/two-day-spi-bug/">two-day SPI bug retrospective</a>
 walks through.</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a> —
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_perf.c</code></a> —
 bounded <code class="language-plaintext highlighter-rouge">JCPERF2</code> gated formatter; the safe substitute
 for per-frame <code class="language-plaintext highlighter-rouge">printf()</code> in timing-sensitive paths.</li>
 </ul>
@@ -440,7 +461,7 @@ for per-frame <code class="language-plaintext highlighter-rouge">printf()</code>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

@@ -22,7 +22,7 @@ This is the executable plan for the project's GitHub Pages site. It folds the ou
 |---|---:|
 | Source path | `docs/ps1/website-plan.md` |
 | Lines | 828 |
-| Approx. words | 5301 |
+| Approx. words | 5302 |
 | Code fences | 3 |
 
 ## Outline

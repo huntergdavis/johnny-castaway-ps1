@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Method — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -217,12 +217,12 @@ pack entries (high-tide, low-tide) plus the small fixed payload
 – the executable, <code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code>/<code class="language-plaintext highlighter-rouge">.001</code> for static metadata
 lookup, the SCR/PSB/SND assets the runtime still consults, and
 the title raw.</li>
-  <li><strong>PS1 replay.</strong> <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> opens the matching pack
+  <li><strong>PS1 replay.</strong> <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot/foreground_pilot.c</code></a> opens the matching pack
 for the selected scene+tide, decodes its header and per-frame
 index, and during the scene loop stamps each frame’s diff spans
 on top of the prior composite. Background, wave animation, and
 holiday overlays come from the PS1’s own narrow runtime;
-sound events fire through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/sound_ps1.c"><code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code></a> on a per-pack event
+sound events fire through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/sound_ps1.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/sound_ps1.c</code></a> on a per-pack event
 cursor with a fixed 3-frame delay so SPU key-on lines up with
 the visible trigger.</li>
 </ul>
@@ -303,7 +303,7 @@ or the dated worklogs under
 pad driver (<code class="language-plaintext highlighter-rouge">InitPAD</code> / <code class="language-plaintext highlighter-rouge">StartPAD</code>) does not auto-poll under
 DuckStation in the project’s runtime context. The fix was to lift
 the SPI controller driver from spicyjpeg’s <code class="language-plaintext highlighter-rouge">pads</code> example and run
-it directly: timer-2 plus SIO0 IRQ at 250 Hz, in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/spi.c"><code class="language-plaintext highlighter-rouge">src/spi.c</code></a>.
+it directly: timer-2 plus SIO0 IRQ at 250 Hz, in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/spi.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c</code></a>.
 That driver, as published, sends a 4-byte poll TX. Under DuckStation
 the controller bytes never make it back; the read returns
 <code class="language-plaintext highlighter-rouge">0xFFFF</code>. The console only delivers button bytes when the full
@@ -324,7 +324,7 @@ atlas. New on-screen text should not regress to <code class="language-plaintext 
 
 <p><strong>VRAM corruption across scenes – <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code> wipes
 <code class="language-plaintext highlighter-rouge">currDirty</code>.</strong> The dirty-rectangle bookkeeping in
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code></a> tracks per-frame dirty regions in <code class="language-plaintext highlighter-rouge">currDirty</code>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1/graphics_ps1.c</code></a> tracks per-frame dirty regions in <code class="language-plaintext highlighter-rouge">currDirty</code>
 and <code class="language-plaintext highlighter-rouge">prevDirty</code>. On a normal frame, <code class="language-plaintext highlighter-rouge">currDirty</code> is the spans the
 foreground touched this frame; <code class="language-plaintext highlighter-rouge">prevDirty</code> is what it touched last
 frame and now needs background restoration. The pause menu opens
@@ -386,14 +386,14 @@ precisely because static arrays push BSS into the danger zone.</li>
 work – runs the real engine, captures the real frames, encodes the
 diffs, lays out the disc – and the PS1 just plays back. That is
 why 63 scenes can fit on a single CD-ROM at all, why the
-executable is around 208 KiB at <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> after
+executable is around 208 KiB at <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> after
 the dead ADS/TTM/FG1 paths were stripped (down from a much larger
 pre-strip ELF), and why scene continuity bugs stopped being a
 runtime concern: the
 runtime no longer carries the state that those bugs lived in.</p>
 
 <p>The cost is that every scene needs a verified host capture before
-it joins the validated count. At <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> that
+it joins the validated count. At <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> that
 count is <code class="language-plaintext highlighter-rouge">63 / 63</code> —
 every routed scene the original game had now plays pixel-perfect
 on the PS1 with synced SFX across every applicable variant. The
@@ -411,7 +411,7 @@ the project was reaching for.</p>
 own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <a href="../../docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">87.1%</code> target
 speed</a> at the compact full-matrix baseline to
 <code class="language-plaintext highlighter-rouge">99.8%</code> target speed at
-<code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> — closed without changing pixels, sound
+<code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
 <a href="../../docs/performance/">reference manual</a>
 explains what each column means; the
@@ -476,7 +476,7 @@ actually looked like, including the last-cluster hard cases.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

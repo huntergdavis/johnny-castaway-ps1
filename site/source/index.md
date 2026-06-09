@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 370 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 374 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -32,8 +32,11 @@ for a guided learning path through the machinery.
 <ul class="doc-grid">
 <li><a href="{{ '/source/docs/ps1/adding-new-scenes-memory/' | relative_url }}">Adding a new scene or holiday variant — memory checklist</a><p><code>docs/ps1/adding-new-scenes-memory.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/api-mapping/' | relative_url }}">PS1 Port - API Mapping Reference</a><p><code>docs/ps1/api-mapping.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/async-wave-loading-branch-plan/' | relative_url }}">PS1 Async Wave Loading Branch Plan</a><p><code>docs/ps1/async-wave-loading-branch-plan.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/async-wave-loading-failed-experiments/' | relative_url }}">PS1 Async Loading Failed Experiments</a><p><code>docs/ps1/async-wave-loading-failed-experiments.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/audio-optimization-spec/' | relative_url }}">PS1 Audio Implementation Spec</a><p><code>docs/ps1/audio-optimization-spec.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/background-music-feasibility/' | relative_url }}">Ocean Ambience — PS1 Implementation Plan</a><p><code>docs/ps1/background-music-feasibility.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/binary-identical-cleanup-plan/' | relative_url }}">Binary-Identical Cleanup Plan</a><p><code>docs/ps1/binary-identical-cleanup-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/build-system/' | relative_url }}">PS1 Build System</a><p><code>docs/ps1/build-system.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/current-status/' | relative_url }}">PS1 Port — Current Status</a><p><code>docs/ps1/current-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/development-workflow/' | relative_url }}">PS1 Development Workflow</a><p><code>docs/ps1/development-workflow.md</code></p></li>
@@ -94,6 +97,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.8/' | relative_url }}">v0.8.8-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.8.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.9/' | relative_url }}">v0.8.9-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.9.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.9.2/' | relative_url }}">v0.9.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.9.2.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.9.3/' | relative_url }}">v0.9.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.9.3.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-plan-0.7.1/' | relative_url }}">v0.7.1-ps1 Feature Notes</a><p><code>docs/ps1/release-plan-0.7.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-explorer-design/' | relative_url }}">Scene Explorer — design doc</a><p><code>docs/ps1/scene-explorer-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-picker-design/' | relative_url }}">Scene Picker Algorithms — Research + Design (v2)</a><p><code>docs/ps1/scene-picker-design.md</code></p></li>
@@ -442,7 +446,7 @@ for a guided learning path through the machinery.
 ## Repository note
 
 <ul class="doc-grid">
-<li><a href="{{ '/source/models/Qwen2.5-VL-3B-Instruct-ov-int4/README/' | relative_url }}">Choose GPU instead of CPU in the line below to run the model on Intel integrated or discrete GPU</a><p><code>models/Qwen2.5-VL-3B-Instruct-ov-int4/README.md</code></p></li>
+<li><a href="{{ '/source/pad scripts/README/' | relative_url }}">Pad Scripts</a><p><code>pad scripts/README.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>

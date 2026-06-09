@@ -22,7 +22,7 @@ A single-day batch that pushed the PS1 port across several long-standing unknown
 |---|---:|
 | Source path | `docs/ps1/milestones-2026-04-25.md` |
 | Lines | 139 |
-| Approx. words | 998 |
+| Approx. words | 1008 |
 | Code fences | 0 |
 
 ## Outline

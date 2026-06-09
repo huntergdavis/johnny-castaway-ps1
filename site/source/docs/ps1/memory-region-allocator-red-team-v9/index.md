@@ -22,7 +22,7 @@ Companion to memory-region-allocator-plan.md v9, implementation status, and the 
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-red-team-v9.md` |
 | Lines | 1427 |
-| Approx. words | 8207 |
+| Approx. words | 8213 |
 | Code fences | 9 |
 
 ## Outline

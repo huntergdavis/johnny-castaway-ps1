@@ -22,7 +22,7 @@ Companion to memory-region-allocator-plan.md (v4). Same five-reviewer panel from
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-red-team-v3.md` |
 | Lines | 483 |
-| Approx. words | 3191 |
+| Approx. words | 3197 |
 | Code fences | 1 |
 
 ## Outline

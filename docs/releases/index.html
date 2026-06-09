@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Releases — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -111,7 +111,7 @@
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
 
-<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code></strong> with
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code></strong> with
 <strong>63 / 63</strong> scenes signed off under the
 <a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
@@ -120,6 +120,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v093-ps1---spu-async-staging-and-original-order-soak-release" id="markdown-toc-v093-ps1---spu-async-staging-and-original-order-soak-release"><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> - SPU async staging and Original-order soak release</a></li>
       <li><a href="#v092-ps1---long-run-cd-and-visitor3-low-stability-release" id="markdown-toc-v092-ps1---long-run-cd-and-visitor3-low-stability-release"><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> - long-run CD and VISITOR3-low stability release</a></li>
       <li><a href="#v091-ps1---longevity-testing-improvements" id="markdown-toc-v091-ps1---longevity-testing-improvements"><code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code> - longevity testing improvements</a></li>
       <li><a href="#v090-ps1---all-routed-rows-green" id="markdown-toc-v090-ps1---all-routed-rows-green"><code class="language-plaintext highlighter-rouge">v0.9.0-ps1</code> - all routed rows green</a></li>
@@ -156,6 +157,33 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v093-ps1---spu-async-staging-and-original-order-soak-release"><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> - SPU async staging and Original-order soak release</h3>
+<p><time datetime="2026-06-09"><em>2026-06-09</em></time></p>
+
+<p>A stability and loading point release after <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code>. It promotes the
+async-staging branch after the Original-order soak held clean, and makes
+unused SPU RAM part of the runtime’s release path.</p>
+
+<ul>
+  <li><strong>SPU RAM is now a cold cache.</strong> After audio reserves its samples, the
+runtime can park prefetched scene metadata, foreground windows, walk PSBs,
+and the walk clean buffer in unused SPU RAM, then DMA them back before CPU
+or GPU use.</li>
+  <li><strong>Transition staging uses non-blocking reads.</strong> The foreground pilot starts
+aligned async CD reads for next-scene metadata and payload windows, polls
+them during slack, and drains them before any later blocking read or buffer
+mutation.</li>
+  <li><strong>Original-order soak stayed clean.</strong> The long visible run reached roughly
+293 picks with recurring SPU walk loads and no <code class="language-plaintext highlighter-rouge">JCBSOD</code>, fatal,
+invalid-read, or <code class="language-plaintext highlighter-rouge">JCWALK</code> allocation-failure markers.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.9.3/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.3-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v092-ps1---long-run-cd-and-visitor3-low-stability-release"><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> - long-run CD and VISITOR3-low stability release</h3>
 <p><time datetime="2026-05-31"><em>2026-05-31</em></time></p>
@@ -767,7 +795,7 @@ is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">hun
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./">v0.9.2-ps1</a>)
+          (<a href="./">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

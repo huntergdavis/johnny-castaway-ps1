@@ -22,7 +22,7 @@ Same panel reconvenes. v6 closed 18 of 18 v4 findings. This pass looks for new i
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-red-team-v5.md` |
 | Lines | 340 |
-| Approx. words | 1818 |
+| Approx. words | 1819 |
 | Code fences | 4 |
 
 ## Outline

@@ -22,7 +22,7 @@ Date: 2026-04-29 Status: pre-flight audit complete (R6.1, R6.2, R6.3, R6.5) Bran
 |---|---:|
 | Source path | `docs/ps1/walk-spot-coordinates.md` |
 | Lines | 160 |
-| Approx. words | 896 |
+| Approx. words | 900 |
 | Code fences | 2 |
 
 ## Outline

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Dirty region template — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Reference for the dirty-region template — the offline JSON artifact the host build derives from TTM bytecode, telling the PS1 dirty-row renderer which rectangles to track per scene. Per-pack and per-scene template shape, opcode coverage, the grRestoreBgTiles bug that surfaced prevDirty, and where the runtime consumes it." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Reference for the dirty-region template — the offline JSON artifact the host build derives from TTM bytecode, telling the PS1 dirty-row renderer which rectangles to track per scene. Per-pack and per-scene template shape, opcode coverage, the grRestoreBgTiles bug that surfaced prevDirty, and where the runtime consumes it." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -550,11 +550,11 @@ rather than a gameplay-visible behavior.</li>
 it verbatim.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/extract-dirty-region-templates.py"><code class="language-plaintext highlighter-rouge">scripts/extract-dirty-region-templates.py</code></a>
 — offline extractor that derives templates from TTM bytecode.</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code></a>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/graphics_ps1/graphics_ps1.c"><code class="language-plaintext highlighter-rouge">src/graphics_ps1/graphics_ps1.c</code></a>
 — runtime consumer; <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code>, <code class="language-plaintext highlighter-rouge">currDirty</code> /
 <code class="language-plaintext highlighter-rouge">prevDirty</code>, and <code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame</code>. The fix for the
 <code class="language-plaintext highlighter-rouge">prevDirty</code> bug above is documented at the head of this file.</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ads.c"><code class="language-plaintext highlighter-rouge">src/ads.c</code></a>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ads/ads.c"><code class="language-plaintext highlighter-rouge">src/ads/ads.c</code></a>
 — the legacy actor-recovery / “replay continuity” code the
 Current limitations section names. On the SDL compat lite kill
 list as the long-term direction.</li>
@@ -578,7 +578,7 @@ list as the long-term direction.</li>
           Code: <a href="../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

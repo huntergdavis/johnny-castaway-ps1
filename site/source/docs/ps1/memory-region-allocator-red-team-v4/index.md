@@ -22,7 +22,7 @@ Same five-reviewer panel reconvenes for the third pass. v5 closed 19 of v3's 22 
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-red-team-v4.md` |
 | Lines | 404 |
-| Approx. words | 2300 |
+| Approx. words | 2302 |
 | Code fences | 2 |
 
 ## Outline

@@ -22,7 +22,7 @@ v0.8.4-ps1 is a content-and-UX point release after v0.8.3-ps1. The in-game Scene
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.4.md` |
 | Lines | 79 |
-| Approx. words | 629 |
+| Approx. words | 630 |
 | Code fences | 0 |
 
 ## Outline

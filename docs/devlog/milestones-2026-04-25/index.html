@@ -17,7 +17,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Milestones — April 25, 2026 — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Status snapshot from April 25, 2026: working TTY, perf module, pause menu, SPI controller driver, holiday expansion design, and memcard support." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Status snapshot from April 25, 2026: working TTY, perf module, pause menu, SPI controller driver, holiday expansion design, and memcard support." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -197,7 +197,7 @@ updated alongside this milestone.</li>
 <h2 id="2-performance-baseline--docker-regtest-pipeline">2. Performance baseline + Docker regtest pipeline</h2>
 
 <ul>
-  <li>New <code class="language-plaintext highlighter-rouge">src/ps1_perf.c/h</code> module landed with a level-gated logging API:
+  <li>New <code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_perf.c/h</code> module landed with a level-gated logging API:
 <code class="language-plaintext highlighter-rouge">ps1PerfSetLevel(level)</code> switches between OFF / SUMMARY / DETAIL /
 DEBUG. Boot-token aliases (<code class="language-plaintext highlighter-rouge">perf</code>, <code class="language-plaintext highlighter-rouge">perf-detail</code>, <code class="language-plaintext highlighter-rouge">perf-debug</code>) are
 parsed by the existing BOOTMODE.TXT path so an external operator can
@@ -225,7 +225,7 @@ Resume / Sound / Day-Night override (AUTO/DAY/NIGHT) / Holiday override
 Memcard / Reset Screensaver Loop / Next Scene / TTY Perf Log
 (OFF/SUMMARY/DETAIL/DEBUG) / Debug Info / Set Time-Date.</li>
   <li><strong>Custom font path (shipped)</strong>: embedded 8x8 ASCII glyph table
-(<code class="language-plaintext highlighter-rouge">pmFontBits[96][8]</code> in <code class="language-plaintext highlighter-rouge">src/pause_menu.c</code>), pre-doubled to 16x16 at
+(<code class="language-plaintext highlighter-rouge">pmFontBits[96][8]</code> in <code class="language-plaintext highlighter-rouge">src/pause_menu/pause_menu.c</code>), pre-doubled to 16x16 at
 upload time (<code class="language-plaintext highlighter-rouge">pmUploadFont</code>), drawn glyph-by-glyph via manual SPRT
 primitives (<code class="language-plaintext highlighter-rouge">pmTextDrawChar</code>). PSn00bSDK’s <code class="language-plaintext highlighter-rouge">FntFlush</code> was empirically
 broken in the scene-runtime context — it accumulates primitives
@@ -242,7 +242,7 @@ register writes.</li>
   <li><strong>Day/Night and Holiday overrides (shipped)</strong>: flow into
 <code class="language-plaintext highlighter-rouge">fgLoopApplyVariant</code> in <code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code> with priority
 <code class="language-plaintext highlighter-rouge">explicit menu override &gt; Set Time/Date soft override &gt; random</code>.</li>
-  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu.c/h</code>. Design: <a href="../../source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
+  <li>Files: <code class="language-plaintext highlighter-rouge">src/pause_menu/pause_menu.c/h</code>. Design: <a href="../../source/docs/ps1/pause-menu-design/">pause menu design</a>.</li>
 </ul>
 
 <h2 id="4-holiday-expansion--4--35-design">4. Holiday expansion — 4 → 35 design</h2>
@@ -271,7 +271,7 @@ reference SPI driver — timer-2 + SIO0 IRQ-driven, polling at 250 Hz.</li>
 button bytes when the <strong>full</strong> 5-byte poll sequence comes from the
 TX buffer (<code class="language-plaintext highlighter-rouge">tx_len=5</code>). That single off-by-one is what surfaced as
 “Start does nothing” during early pause-menu wiring.</li>
-  <li>Files: <code class="language-plaintext highlighter-rouge">src/spi.c/h</code>, integrated into <code class="language-plaintext highlighter-rouge">src/events_ps1.c</code>. The pause
+  <li>Files: <code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c/h</code>, integrated into <code class="language-plaintext highlighter-rouge">src/platform/ps1/events_ps1.c</code>. The pause
 menu, day-night override, and any future input feature all sit on top
 of this driver.</li>
 </ul>
@@ -279,7 +279,7 @@ of this driver.</li>
 <h2 id="6-memcard-support-shipped">6. Memcard support (SHIPPED)</h2>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">src/memcard.c/h</code> saves user pause-menu settings (sound mute,
+  <li><code class="language-plaintext highlighter-rouge">src/platform/ps1/memcard.c/h</code> saves user pause-menu settings (sound mute,
 day/night override, holiday override, soft time/date) to a single 8 KB
 block on memcard slot 1, file name <code class="language-plaintext highlighter-rouge">BASLUS-99999JCREB</code>.</li>
   <li><strong>Avoids the BIOS card driver entirely</strong> (<code class="language-plaintext highlighter-rouge">InitCARD</code> / <code class="language-plaintext highlighter-rouge">StartCARD</code> /
@@ -373,7 +373,7 @@ intended for external perf-debugging agents.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

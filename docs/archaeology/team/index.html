@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="The Team — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -205,7 +205,7 @@ input being corrupt.</p>
 
 <p>The PS1 build is impossible without <strong>PSn00bSDK</strong> (Lameguy64 et
 al.), the open-source PS1 SDK that replaces Sony’s proprietary
-toolchain. The SPI pad driver in <code class="language-plaintext highlighter-rouge">src/spi.c</code> is derived from
+toolchain. The SPI pad driver in <code class="language-plaintext highlighter-rouge">src/platform/ps1/spi.c</code> is derived from
 <strong>spicyjpeg’s</strong> MPL-licensed pad-poll example — with the
 DuckStation-specific <code class="language-plaintext highlighter-rouge">tx_len=5</code> fix on top. The emulator that every
 commit gets tested against is <strong>DuckStation</strong> (Connor McLaughlin et
@@ -290,7 +290,7 @@ between human review passes.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

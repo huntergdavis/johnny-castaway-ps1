@@ -22,7 +22,7 @@ Date: 2026-04-30 Branch context: walk-implementation-20260429 (read-only researc
 |---|---:|
 | Source path | `docs/ps1/hand-rolled-asm-feasibility.md` |
 | Lines | 298 |
-| Approx. words | 2065 |
+| Approx. words | 2075 |
 | Code fences | 1 |
 
 ## Outline

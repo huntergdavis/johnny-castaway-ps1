@@ -22,7 +22,7 @@ the WALKSTUF1-high frame0 consume speed promotion, the WALKSTUF1-high 200..215 p
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 879 |
-| Approx. words | 10035 |
+| Approx. words | 10037 |
 | Code fences | 1 |
 
 ## Outline

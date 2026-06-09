@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Archaeology — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The full story of the Johnny Castaway PS1 fan port — from Sierra&#39;s 1992 screensaver through three prior reverse-engineered ports to the hybrid host-and-replay pipeline that made FISHING 1 work." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The full story of the Johnny Castaway PS1 fan port — from Sierra&#39;s 1992 screensaver through three prior reverse-engineered ports to the hybrid host-and-replay pipeline that made FISHING 1 work." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -374,7 +374,7 @@ overlays, input, pause menu.</p>
 because that’s what the directory was named when it was a pilot
 experiment that didn’t yet work. The name stuck. The project is
 gradually migrating it to <em>PS1 scene playback</em> in operator-facing
-docs. The internal name is in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">foreground_pilot.c</code></a> and is going to
+docs. The internal name is in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">foreground_pilot.c</code></a> and is going to
 stay there until someone has time to rename two thousand lines of C.</p>
 
   <p>The first scene that worked, end to end, under this method was
@@ -386,7 +386,7 @@ release tag is <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</co
 project’s status page counts as the first real validated scene.</p>
 
   <p>A second scene, <strong>FISHING 2</strong>, was promoted on <strong>2026-04-24</strong>. As of
-the current release <code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code>, the count is
+the current release <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code>, the count is
 <strong>63 / 63</strong>.</p>
 
   <p>The bar for “validated” is human visual signoff plus audible SFX
@@ -402,7 +402,7 @@ honest about the wrong question.</p>
 
   <p>The disc plays. That’s the headline.</p>
 
-  <p><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> boots on DuckStation, loads from a ~79 MB CD
+  <p><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> boots on DuckStation, loads from a ~79 MB CD
 image, plays every scene the original game routed pixel-perfect with
 synced SFX, and idles cleanly through long randomized sessions. The
 PS1 executable is around 208 KiB after the legacy ADS/TTM/FG1 runtime
@@ -440,7 +440,7 @@ System, Set Time / Date, and Set RNG Seed. It uses a custom embedded 8x8 ASCII f
 <code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in the scene-runtime context: the
 primitives accumulate but no pixels appear. POLY_F4 quads handle the
 dim and the panel chrome. User settings persist to a memory card save
-at <code class="language-plaintext highlighter-rouge">bu00:</code> through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/memcard.c"><code class="language-plaintext highlighter-rouge">memcard.c</code></a>; the persisted set covers sound mute,
+at <code class="language-plaintext highlighter-rouge">bu00:</code> through <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/memcard.c"><code class="language-plaintext highlighter-rouge">memcard.c</code></a>; the persisted set covers sound mute,
 captions, holiday mode, ocean ambience, and the rest of the
 pause-menu toggles.</p>
 
@@ -558,7 +558,7 @@ For the “how would I learn from this?” path, use
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../releases/">v0.9.2-ps1</a>)
+          (<a href="../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Build &amp; toolchain — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 toolchain, the Docker dev image, cmake configuration, and the mkpsxiso CD pipeline." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 toolchain, the Docker dev image, cmake configuration, and the mkpsxiso CD pipeline." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -171,7 +171,7 @@ git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
 </code></pre></div></div>
 
 <p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. At
-<code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> the CD image is about <strong>76 MB</strong> — that
+<code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> the CD image is about <strong>76 MB</strong> — that
 weight is almost all foreground (FG2) packs routed onto the disc;
 the <a href="../glossary/#ps-exe">PS-EXE</a> itself is <strong>208 KiB</strong> (104 × 2 KiB CD-ROM sectors). If
 you want the per-scene loop instead
@@ -243,16 +243,16 @@ captions / SPI / memcard / scene-picker / freeplay UI subsystems, the
 walk family, and the holiday code-generated tables:</p>
 
 <div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span><span class="p">(</span>SOURCES
-    src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
-    src/foreground_pilot.c src/ps1_perf.c src/island.c
-    src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
-    src/ps1_pad_script.c
-    src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
-    src/spi.c src/memcard.c
-    src/scene_picker.c src/scene_freeplay.c
-    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
-    src/holidays.c src/holidays_table.c
-    src/ps1_stubs.c<span class="p">)</span>
+    src/jc_reborn.c src/core/utils.c src/core/uncompress.c src/resource/resource.c
+    src/foreground_pilot/foreground_pilot.c src/platform/ps1/ps1_perf.c src/scene/island.c
+    src/graphics_ps1/graphics_ps1.c src/platform/ps1/sound_ps1.c src/platform/ps1/events_ps1.c src/cdrom_ps1.c
+    src/platform/ps1/ps1_pad_script.c
+    src/platform/ps1/ps1_debug.c src/pause_menu/pause_menu.c src/platform/ps1/ps1_captions.c
+    src/platform/ps1/spi.c src/platform/ps1/memcard.c
+    src/scene/scene_picker.c src/scene_freeplay/scene_freeplay.c
+    src/walk/walk.c src/walk_pilot.c src/walk/walk_render.c src/walk/calcpath.c
+    src/scene/holidays.c src/scene/holidays_table.c
+    src/platform/ps1/ps1_stubs.c<span class="p">)</span>
 
 <span class="nf">psn00bsdk_add_executable</span><span class="p">(</span>jcreborn GPREL <span class="si">${</span><span class="nv">SOURCES</span><span class="si">}</span><span class="p">)</span>
 
@@ -264,8 +264,8 @@ walk family, and the holiday code-generated tables:</p>
     psxgpu psxgte psxspu psxcd c<span class="p">)</span>
 </code></pre></div></div>
 
-<p>The legacy <code class="language-plaintext highlighter-rouge">src/ads.c</code>, <code class="language-plaintext highlighter-rouge">src/ttm.c</code>, <code class="language-plaintext highlighter-rouge">src/story.c</code>, <code class="language-plaintext highlighter-rouge">src/config.c</code>, and
-<code class="language-plaintext highlighter-rouge">src/bench.c</code> source files still exist on disk but are not in the
+<p>The legacy <code class="language-plaintext highlighter-rouge">src/ads/ads.c</code>, <code class="language-plaintext highlighter-rouge">src/host/ttm.c</code>, <code class="language-plaintext highlighter-rouge">src/host/story.c</code>, <code class="language-plaintext highlighter-rouge">src/host/config.c</code>, and
+<code class="language-plaintext highlighter-rouge">src/host/bench.c</code> source files still exist on disk but are not in the
 SOURCES list. The host build references them; the PS1 build doesn’t.
 Section GC (<code class="language-plaintext highlighter-rouge">--gc-sections</code>) drops the dead code from cross-references
 the active modules still hold.</p>
@@ -521,7 +521,7 @@ library is replacing.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

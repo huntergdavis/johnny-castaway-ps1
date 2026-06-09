@@ -22,7 +22,7 @@ fgLoopNextScene(explicitScene, sceneSetIdx) was a three-way fallback:
 |---|---:|
 | Source path | `docs/ps1/scene-picker-design.md` |
 | Lines | 503 |
-| Approx. words | 2926 |
+| Approx. words | 2936 |
 | Code fences | 4 |
 
 ## Outline

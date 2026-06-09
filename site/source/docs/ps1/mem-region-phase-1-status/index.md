@@ -22,7 +22,7 @@ Companion to memory-region-allocator-plan.md. Tracks the substantial implementat
 |---|---:|
 | Source path | `docs/ps1/mem-region-phase-1-status.md` |
 | Lines | 214 |
-| Approx. words | 1074 |
+| Approx. words | 1075 |
 | Code fences | 1 |
 
 ## Outline

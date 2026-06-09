@@ -17,7 +17,7 @@
   <meta property="og:image:alt"    content="WALKSTUF 3 — Johnny mid-stride at night doing exercise laps. The canonical caption-mismap scene; the kind of confident-wrong answer the essay names. Captured on PS1 hardware via the validation harness." /><meta property="og:image:width"  content="961" />
   <meta property="og:image:height" content="720" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/walkstuf3-ps1-jog.png" /><meta name="twitter:title"       content="Hallucination engineering — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline." /><meta name="twitter:image:alt" content="WALKSTUF 3 — Johnny mid-stride at night doing exercise laps. The canonical caption-mismap scene; the kind of confident-wrong answer the essay names. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline." /><meta name="twitter:image:alt" content="WALKSTUF 3 — Johnny mid-stride at night doing exercise laps. The canonical caption-mismap scene; the kind of confident-wrong answer the essay names. Captured on PS1 hardware via the validation harness." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -45,7 +45,7 @@
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
-  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/35-holidays-codegen/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/" />
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/voice-anchor-problem/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/lab/dunking-bird/" />
 
   <script type="application/ld+json">
 {
@@ -79,7 +79,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/hallucination-engineering/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/hallucination-engineering/",
   "inLanguage": "en",
-  "wordCount": 760,
+  "wordCount": 758,
   "timeRequired": "PT3M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/walkstuf3-ps1-jog.png",
@@ -187,7 +187,7 @@ to detect.</p>
 <p>The first rule is simple: the agent has to read the files.</p>
 
 <p>Not “you know C”. Not “this is probably a Jekyll site”. The actual files.
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu.c</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu/pause_menu.c</code></a>.
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a>.
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a>.
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a>.
@@ -262,7 +262,7 @@ ugly:</p>
 
 <ul>
   <li>“Only edit these files.”</li>
-  <li>“Do not touch <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a>.”</li>
+  <li>“Do not touch <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/scene/holidays.c"><code class="language-plaintext highlighter-rouge">src/scene/holidays.c</code></a>.”</li>
   <li>“Index 0 is transparent.”</li>
   <li>“Build must pass.”</li>
   <li>“If you cannot find the function, say that.”</li>
@@ -313,9 +313,9 @@ editorial bar agent-drafted prose has to survive.</li>
   <nav class="scene-pager" aria-label="Lab essay navigation">
     <div class="scene-pager-prev">
 
-        <a href="../35-holidays-codegen/" rel="prev">
+        <a href="../voice-anchor-problem/" rel="prev">
           <span class="scene-pager-dir" aria-hidden="true">← older</span>
-          <span class="scene-pager-tag">35 holidays in 4 weeks</span>
+          <span class="scene-pager-tag">The voice anchor problem</span>
         </a>
 
     </div>
@@ -324,9 +324,9 @@ editorial bar agent-drafted prose has to survive.</li>
     </div>
     <div class="scene-pager-next">
 
-        <a href="../regression-as-lifestyle/" rel="next">
+        <a href="../dunking-bird/" rel="next">
           <span class="scene-pager-dir" aria-hidden="true">newer →</span>
-          <span class="scene-pager-tag">Regression as a lifestyle</span>
+          <span class="scene-pager-tag">The dunking bird</span>
         </a>
 
     </div>
@@ -352,7 +352,7 @@ editorial bar agent-drafted prose has to survive.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Development workflow — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="The Johnny Castaway PS1 port&#39;s per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.2; built 2026-05-31" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="The Johnny Castaway PS1 port&#39;s per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -250,7 +250,7 @@ add the packs:</p>
 <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"&lt;LOW_PACK_BASENAME&gt;.FG2"</span> <span class="na">type=</span><span class="s">"data"</span> <span class="na">source=</span><span class="s">"../../generated/ps1/foreground/&lt;LOW_PACK_BASENAME&gt;.FG2"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> —
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot/foreground_pilot.c</code></a> —
 add the scene to the active routing function:</p>
 
 <ul>
@@ -393,7 +393,7 @@ exists as a diagnostic — not as the acceptance gate.</p>
 
 <ul>
   <li><strong>Telemetry overlay</strong>:
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_debug.c"><code class="language-plaintext highlighter-rouge">ps1_debug.c</code></a> provides
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_debug.c"><code class="language-plaintext highlighter-rouge">ps1_debug.c</code></a> provides
 a 5-panel on-screen overlay. Use this for frame-by-frame counters and
 hot-path diagnostics.</li>
   <li><strong>PS1 <code class="language-plaintext highlighter-rouge">printf()</code> / TTY logging</strong> works in DuckStation for gated probes.
@@ -538,13 +538,13 @@ FG2 packs (Step 1).</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/batch-capture-all-scenes.sh"><code class="language-plaintext highlighter-rouge">scripts/batch-capture-all-scenes.sh</code></a>
 — generates the all-63-scenes pack corpus referenced in the
 “Existing all-scene pack corpus” section.</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot/foreground_pilot.c</code></a>
 — the routing function <code class="language-plaintext highlighter-rouge">fgCompactOverlayPackPathForScene</code> that Step 2
 asks the contributor to extend.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a>
 — <code class="language-plaintext highlighter-rouge">kAllScenes[]</code> (the scene-picker pool Step 2 lands new slugs in,
 post-<code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> retirement of the gated <code class="language-plaintext highlighter-rouge">kProvenScenes</code>).</li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_debug.c"><code class="language-plaintext highlighter-rouge">src/ps1_debug.c</code></a>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/platform/ps1/ps1_debug.c"><code class="language-plaintext highlighter-rouge">src/platform/ps1/ps1_debug.c</code></a>
 — the 5-panel telemetry overlay the Diagnostics section names.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a> — original.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a> — the active strategy.</li>
@@ -569,7 +569,7 @@ post-<code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> retire
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.2-ps1</a>)
+          (<a href="../../releases/">v0.9.3-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

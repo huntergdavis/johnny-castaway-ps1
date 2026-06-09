@@ -22,7 +22,7 @@ re-review of v4). See:
 |---|---:|
 | Source path | `docs/ps1/memory-region-allocator-plan.md` |
 | Lines | 1239 |
-| Approx. words | 7711 |
+| Approx. words | 7739 |
 | Code fences | 15 |
 
 ## Outline

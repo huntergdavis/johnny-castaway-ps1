@@ -22,7 +22,7 @@ Date: 2026-05-23
 |---|---:|
 | Source path | `docs/ps1/final-under-99-speed-handoff.md` |
 | Lines | 273 |
-| Approx. words | 1747 |
+| Approx. words | 1748 |
 | Code fences | 11 |
 
 ## Outline

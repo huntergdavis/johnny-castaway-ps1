@@ -22,7 +22,7 @@ The scripted input harness lets the PS1 build press its own controller buttons d
 |---|---:|
 | Source path | `docs/ps1/scripted-input-harness.md` |
 | Lines | 256 |
-| Approx. words | 1245 |
+| Approx. words | 1251 |
 | Code fences | 12 |
 
 ## Outline
