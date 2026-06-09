@@ -838,11 +838,10 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     /* Calculate sectors needed */
     int numSectors = (file->bufferSize + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
 
-    /* Position CD head at file location */
+    /* Position CD head at file location. No settle delay before CdRead:
+     * CdlSetloc only stores the target; CdRead issues the seek (same
+     * Setloc->CdRead pattern the async path has always soaked clean). */
     CdControl(CdlSetloc, (uint8_t*)&file->cdfile.pos, NULL);
-
-    /* Brief wait for seek */
-    for (volatile int i = 0; i < 500000; i++);
 
     /* Start CD read */
     CdRead(numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
