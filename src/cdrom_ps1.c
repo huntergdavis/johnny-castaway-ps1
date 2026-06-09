@@ -783,8 +783,10 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     }
     ps1FreeFileBuffer(file);
 
-    /* Brief wait for CD to be ready */
-    for (volatile int i = 0; i < 1000000; i++);
+    /* No "wait for CD ready" spin here: ps1_cdSearchFileQuiesced below
+     * already performs the correct synchronous drain (async-read cancel +
+     * CdReadSync) before issuing directory-walk Setloc commands. The 1M
+     * iteration spin (~180 ms per file open) predated that helper. */
 
     /* Build PS1 CD-ROM path: \\FILENAME.EXT;1 */
     char cdPath[64];
