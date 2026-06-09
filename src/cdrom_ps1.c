@@ -2063,9 +2063,9 @@ uint8_t *ps1_loadRawFile(const char *path, uint32_t *outSize)
         return NULL;
     }
 
+    /* No settle delay between Setloc and CdRead (see chunked-stream fix:
+     * Setloc only stores the target; CdRead issues the seek). */
     CdControl(CdlSetloc, (uint8_t *)&fileInfo.pos, NULL);
-    for (volatile int i = 0; i < 100000; i++);
-
     CdRead(sectors, (uint32_t *)buf, CdlModeSpeed);
     if (CdReadSync(0, NULL) < 0) {
         free(buf);
