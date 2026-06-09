@@ -357,7 +357,10 @@ if [ "$TRANSITIONS_SCENES" -gt 0 ]; then
         FRAMES=$(( TRANSITIONS_SCENES * 2200 + 4000 ))
     fi
     if [ "$TIMEOUT_EXPLICIT" -eq 0 ]; then
-        TIMEOUT=$(( 150 + TRANSITIONS_SCENES * 45 ))
+        # Headless software rendering paces near realtime (~1.8s wall per
+        # emulated second on the dev box): ~110s wall boot + up to ~60s wall
+        # per scene. Early-stop reclaims the cushion when blocks land sooner.
+        TIMEOUT=$(( 240 + TRANSITIONS_SCENES * 60 ))
     fi
 fi
 
@@ -1393,19 +1396,22 @@ for i in "${!CASE_LABELS[@]}"; do
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
-        if case_summary_passed "$summary_file" &&
-           { headless_early_stopped "$headless_root" || jcperf2_correctness_emitted "$log_file"; }; then
+        # A nonzero wrapper exit is expected when the early-stop kills the
+        # container (docker reports 137). If the JCPERF2 metrics are
+        # complete, keep going: the case's own gate verdict (including
+        # intentional --gate-setup-* failures) flows through the final
+        # summary instead of being masked as a wrapper error.
+        if headless_early_stopped "$headless_root" ||
+           jcperf2_correctness_emitted "$log_file" ||
+           duckstation_exited_successfully "$log_file"; then
             REGTEST_EXITS+=("$regtest_exit")
-            ATTEMPT_STATUSES+=("regtest_passed_after_early_stop")
+            if case_summary_passed "$summary_file"; then
+                ATTEMPT_STATUSES+=("regtest_passed_after_early_stop")
+            else
+                ATTEMPT_STATUSES+=("regtest_gates_failed_after_early_stop")
+            fi
             FAILURE_REASONS+=("wrapper_exit_${regtest_exit}_after_jcperf2_complete")
             echo "WARN: regtest wrapper exited $regtest_exit after complete JCPERF2 metrics; accepting parsed metrics." >&2
-            continue
-        fi
-        if case_summary_passed "$summary_file" && duckstation_exited_successfully "$log_file"; then
-            REGTEST_EXITS+=("$regtest_exit")
-            ATTEMPT_STATUSES+=("regtest_passed_after_wrapper_exit")
-            FAILURE_REASONS+=("wrapper_exit_${regtest_exit}_after_duckstation_success")
-            echo "WARN: regtest wrapper exited $regtest_exit after DuckStation success; accepting parsed JCPERF2 case metrics." >&2
             continue
         fi
         append_experiment_log "$summary_file" "$regtest_exit" "regtest_failed" "regtest_exit_$regtest_exit"
