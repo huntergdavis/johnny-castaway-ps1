@@ -22,6 +22,31 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.9.3-ps1` - SPU async staging and Original-order soak release
+<time datetime="2026-06-09"><em>2026-06-09</em></time>
+
+A stability and loading point release after `v0.9.2-ps1`. It promotes the
+async-staging branch after the Original-order soak held clean, and makes
+unused SPU RAM part of the runtime's release path.
+
+- **SPU RAM is now a cold cache.** After audio reserves its samples, the
+  runtime can park prefetched scene metadata, foreground windows, walk PSBs,
+  and the walk clean buffer in unused SPU RAM, then DMA them back before CPU
+  or GPU use.
+- **Transition staging uses non-blocking reads.** The foreground pilot starts
+  aligned async CD reads for next-scene metadata and payload windows, polls
+  them during slack, and drains them before any later blocking read or buffer
+  mutation.
+- **Original-order soak stayed clean.** The long visible run reached roughly
+  293 picks with recurring SPU walk loads and no `JCBSOD`, fatal,
+  invalid-read, or `JCWALK` allocation-failure markers.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.9.3/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.3-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.9.2-ps1` - long-run CD and VISITOR3-low stability release
 <time datetime="2026-05-31"><em>2026-05-31</em></time>
 

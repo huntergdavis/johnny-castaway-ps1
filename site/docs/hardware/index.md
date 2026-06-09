@@ -105,6 +105,19 @@ For this project the entire sound bank — 23 effect samples, total ~95 KB
 ADPCM — preloads into SPU RAM at boot. There is no streaming, no music. See
 [Audio pipeline]({{ '/docs/audio/' | relative_url }}) for the SPU layout map.
 
+Starting with `v0.9.3-ps1`, the runtime also uses the unused tail of SPU RAM as
+a cold cache. This is not a normal heap: the CPU cannot address SPU RAM
+directly. Data must be copied into SPU RAM with `SpuWrite()` and copied back
+with `SpuRead()` before CPU or GPU use. That still pays off because an SPU DMA
+round trip is much cheaper than another CD seek, and because parking a landed
+read there lets main RAM go back to scene playback.
+
+The release layout reserves 8 KB for next-scene metadata, 64 KB for a
+next-scene foreground payload window, 48 KB for `JOHNWALK.PSB`, 144 KB for the
+walk clean snapshot, and 12 KB for `MRAFT.PSB`. The walk clean snapshot is the
+biggest immediate win: it avoids a large main-RAM allocation in walk scenes,
+which was the fragile part of long Original-order soaks.
+
 ### Storage (CD-ROM)
 
 The CD is a 2x drive — 300 KB/s sustained, 150 ms cold seek. Both numbers
@@ -113,6 +126,14 @@ foreground packs (the largest active pack is ~1.75 MB). The runtime treats
 the CD as an explicit prefetch surface, not a transparent filesystem; reads
 are scheduled inside held VBlanks where possible, so seek latency lives
 under already-idle frames.
+
+`v0.9.3-ps1` adds a stricter non-blocking read path for transition staging.
+The foreground pilot can start aligned async reads for the next scene's pack
+metadata and first payload window, poll those reads while the current scene is
+still alive, and then park completed data into the SPU cold cache. Before any
+blocking read, directory search, or buffer mutation, the runtime drains the
+async path so the CD controller is quiet. That keeps the correctness model
+simple while still moving useful CD work before the visible scene boundary.
 
 ### Input (controller)
 

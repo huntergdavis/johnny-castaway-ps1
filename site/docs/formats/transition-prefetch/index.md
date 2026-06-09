@@ -129,6 +129,14 @@ At a high level:
    keep the head close to the in-flight pack and reads ahead in the same
    sector spiral whenever possible.
 
+At `v0.9.3-ps1`, the next-scene stage also has a non-blocking path. It starts
+aligned async CD reads for the destination pack's metadata and initial payload
+window before the current scene hands off, polls for completion during slack,
+and drains the async path before any later blocking CD operation. Completed
+metadata and payload windows can be parked in the SPU cold cache, which frees
+the main `streamWindowBuffer` for the scene still on screen. The SPU copy is a
+DMA-backed parking step, not direct CPU execution from SPU RAM.
+
 `FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS = 6` is the slack threshold
 above which the pilot will start a fall-through read into a different
 pack. Below that, the fall-through is not worth the seek penalty.
