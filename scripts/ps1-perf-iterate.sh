@@ -49,6 +49,11 @@ CHECK_ENV_ONLY=0
 NO_SEED=0
 SEED="${REGTEST_SEED:-1}"
 CASE_LOCAL_CD=0
+TRANSITIONS_SCENES="${PS1_PERF_TRANSITIONS:-0}"
+GATE_SETUP_HIT="${PS1_PERF_GATE_SETUP_HIT:-0}"
+GATE_SETUP_COLD="${PS1_PERF_GATE_SETUP_COLD:-0}"
+FRAMES_EXPLICIT=0
+TIMEOUT_EXPLICIT=0
 
 CASE_LABELS=()
 CASE_BOOTS=()
@@ -91,6 +96,20 @@ Options:
                            correctness has been emitted. By default perf runs
                            stop at that point to avoid burning the remaining
                            artificial frame budget.
+  --transitions N          Transition-measurement mode: expect a loop-mode
+                           boot (no explicit scene; the picker drives scene
+                           rotation so next-scene stage lookahead can run).
+                           Plays N scenes, parses every per-scene JCPERF2
+                           block, classifies each post-boot transition as
+                           staged-hit (stage_adopt metadata bit) or cold, and
+                           reports per-transition setup_vb. Scales --frames
+                           and --timeout with N unless given explicitly.
+                           Example boot: "fgpilot perf-log loading-waves seed 1"
+  --gate-setup-hit VB      With --transitions: fail if any staged-hit
+                           transition has setup_vb > VB (0 = report only).
+  --gate-setup-cold VB     With --transitions: fail if any cold transition
+                           (including boot scene) has setup_vb > VB
+                           (0 = report only).
   --output DIR             Output root (default: scratch/ps1-perf-iterate).
   --experiment-log FILE    Append one JSONL record per attempted case
                            (default: <output>/experiments.jsonl).
@@ -154,7 +173,15 @@ append_perf_defaults() {
     if [[ "$boot" != *" perf-log"* && "$boot" != *" perf-detail"* && "$boot" != *" perf-debug"* ]]; then
         boot="$boot $PERF_TOKEN"
     fi
-    if [[ "$boot" != *" noloop"* && "$boot" != *" loop"* ]]; then
+    # Transition runs measure the screensaver loop itself: never inject
+    # noloop, and refuse boots that carry it (one-shot runs can't produce
+    # scene-to-scene transitions).
+    if [ "$TRANSITIONS_SCENES" -gt 0 ]; then
+        if [[ "$boot" == *"noloop"* ]]; then
+            echo "ERROR: --transitions requires a looping boot; remove 'noloop' from: $boot" >&2
+            exit 1
+        fi
+    elif [[ "$boot" != *" noloop"* && "$boot" != *" loop"* ]]; then
         boot="$boot noloop"
     fi
     if [ "$NO_SEED" -eq 0 ] &&
@@ -246,11 +273,17 @@ while [ $# -gt 0 ]; do
         --perf-debug)
             PERF_TOKEN="perf-debug"; shift ;;
         --frames)
-            FRAMES="$2"; shift 2 ;;
+            FRAMES="$2"; FRAMES_EXPLICIT=1; shift 2 ;;
         --interval)
             INTERVAL="$2"; shift 2 ;;
         --timeout)
-            TIMEOUT="$2"; shift 2 ;;
+            TIMEOUT="$2"; TIMEOUT_EXPLICIT=1; shift 2 ;;
+        --transitions)
+            TRANSITIONS_SCENES="$2"; shift 2 ;;
+        --gate-setup-hit)
+            GATE_SETUP_HIT="$2"; shift 2 ;;
+        --gate-setup-cold)
+            GATE_SETUP_COLD="$2"; shift 2 ;;
         --log)
             LOG_LEVEL="$2"; shift 2 ;;
         --max-log-bytes)
@@ -307,6 +340,25 @@ fi
 
 if [ "${#CASE_LABELS[@]}" -eq 0 ]; then
     add_case "fishing1" "fgpilot fishing1"
+fi
+
+if ! [[ "$TRANSITIONS_SCENES" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --transitions must be a non-negative integer." >&2
+    exit 1
+fi
+if ! [[ "$GATE_SETUP_HIT" =~ ^[0-9]+$ ]] || ! [[ "$GATE_SETUP_COLD" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --gate-setup-hit/--gate-setup-cold must be non-negative integers (0 = report only)." >&2
+    exit 1
+fi
+if [ "$TRANSITIONS_SCENES" -gt 0 ]; then
+    # Transition runs play (N) scenes through the loop picker. Scale the
+    # frame budget and wall timeout with scene count unless given explicitly.
+    if [ "$FRAMES_EXPLICIT" -eq 0 ]; then
+        FRAMES=$(( TRANSITIONS_SCENES * 2200 + 4000 ))
+    fi
+    if [ "$TIMEOUT_EXPLICIT" -eq 0 ]; then
+        TIMEOUT=$(( 150 + TRANSITIONS_SCENES * 45 ))
+    fi
 fi
 
 if ! [[ "$FRAMES" =~ ^[0-9]+$ ]] || [ "$FRAMES" -le 0 ]; then
@@ -476,6 +528,9 @@ parse_case_metrics() {
     local run_id="${13}"
     local out_file="${14}"
 
+    PS1_PERF_TRANS_EVAL="$TRANSITIONS_SCENES" \
+    PS1_PERF_GATE_SETUP_HIT="$GATE_SETUP_HIT" \
+    PS1_PERF_GATE_SETUP_COLD="$GATE_SETUP_COLD" \
     python3 - "$label" "$boot" "$case_dir" "$log_file" \
         "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
         "$git_commit" "$git_branch" "$git_dirty" "$run_id" > "$out_file" <<'PY'
@@ -487,6 +542,11 @@ from pathlib import Path
 label, boot, case_dir, log_file = sys.argv[1:5]
 ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes, map_bytes = (int(value) for value in sys.argv[5:10])
 git_commit, git_branch, git_dirty, run_id = sys.argv[10:14]
+
+import os
+transitions_expected = int(os.environ.get("PS1_PERF_TRANS_EVAL", "0") or 0)
+gate_setup_hit = int(os.environ.get("PS1_PERF_GATE_SETUP_HIT", "0") or 0)
+gate_setup_cold = int(os.environ.get("PS1_PERF_GATE_SETUP_COLD", "0") or 0)
 log_path = Path(log_file)
 ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
@@ -530,6 +590,11 @@ def parse_value(value):
 sections = {}
 legacy = []
 tty_lines = []
+# Per-scene JCPERF2 blocks: each scene emits scene ... correctness in order.
+# `sections` stays last-wins for the legacy single-scene gates; scene_blocks
+# collects every COMPLETE block for --transitions evaluation.
+scene_blocks = []
+current_block = None
 if log_path.is_file():
     for raw in log_path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = ansi_re.sub("", raw)
@@ -552,7 +617,19 @@ if log_path.is_file():
                 continue
             key, value = token.split("=", 1)
             data[key] = parse_value(value)
+        if section == "scene":
+            current_block = {}
+        if current_block is not None:
+            current_block[section] = data
+            if section == "correctness":
+                scene_blocks.append(current_block)
+                current_block = None
         sections[section] = data
+
+if transitions_expected > 0 and scene_blocks:
+    # Early-stop can truncate a trailing block mid-emission; pin the legacy
+    # single-scene view to the last COMPLETE scene so its gates stay coherent.
+    sections = dict(scene_blocks[-1])
 
 symbols = {}
 map_path = Path("build-ps1/jcreborn.map")
@@ -582,11 +659,28 @@ def get(section, key, default=0):
     value = sections.get(section, {}).get(key, default)
     return value if isinstance(value, int) else default
 
+# Mirror of ps1IsFgPilotOptionToken (src/jc_reborn.c) for the tokens a
+# loop-mode boot is likely to carry; "fgpilot <option>" means no explicit
+# scene (picker-driven loop), not a scene named like the option.
+FGPILOT_OPTION_TOKENS = {
+    "fgoverlay", "island-pos", "lowtide", "raft-stage", "night", "holiday",
+    "noloop", "loading-waves", "load-waves", "async-load-waves",
+    "loading-waves-off", "no-loading-waves", "prefetch-off", "no-prefetch",
+    "prefetch-stage1", "stage1", "prefetch-stage1-off", "no-stage1",
+    "prefetch-window32", "window32", "prefetch-window48", "window48",
+    "prefetch-window64", "window64", "prefetch-window", "spu-cache-test",
+    "spu-cache-proof", "spu-stage", "no-spu-stage", "picker-random",
+    "picker-sequential", "picker-original", "perf-log", "perf",
+    "perf-detail", "perf-debug", "freeplay-log", "freeplay-detail",
+    "freeplay-debug", "pad-script", "pad-script-log", "seed",
+}
+
 def expected_config_from_boot(boot_text):
     parts = boot_text.split()
     expected = {}
     for idx, token in enumerate(parts):
-        if token == "fgpilot" and idx + 1 < len(parts):
+        if (token == "fgpilot" and idx + 1 < len(parts)
+                and parts[idx + 1].lower() not in FGPILOT_OPTION_TOKENS):
             expected["scene"] = parts[idx + 1].lower()
         elif token in ("lowtide", "night", "holiday", "raft-stage") and idx + 1 < len(parts):
             try:
@@ -678,6 +772,70 @@ if sections and scene_entries > 0:
         message = "active-loop incomplete: " + ", ".join(active_loop_failures)
         failures.append(message)
 
+transitions = []
+transitions_summary = None
+if transitions_expected > 0:
+    if len(scene_blocks) < transitions_expected:
+        failures.append(
+            f"transitions_incomplete expected={transitions_expected} complete={len(scene_blocks)}"
+        )
+    for idx, blk in enumerate(scene_blocks):
+        def bval(sec, key, default=0):
+            value = blk.get(sec, {}).get(key, default)
+            return value if isinstance(value, int) else default
+        bscene = str(blk.get("scene", {}).get("scene", "?"))
+        adopt = bval("setup", "stage_adopt", 0)
+        # stage_adopt bit1 = metadata prefix served from the SPU stage; that
+        # is the marker that the lookahead actually removed the cold CD read.
+        kind = "boot" if idx == 0 else ("hit" if (adopt & 2) else "cold")
+        rec = {
+            "index": idx,
+            "scene": bscene,
+            "kind": kind,
+            "stage_adopt": adopt,
+            "setup_vb": bval("setup", "setup_vb", 0),
+            "screen_vb": bval("setup", "screen_vb", 0),
+            "backdrop_vb": bval("setup", "backdrop_vb", 0),
+            "pack_start_vb": bval("setup", "pack_start_vb", 0),
+            "clean_rect_vb": bval("setup", "clean_rect_vb", 0),
+            "first_frame_vb": bval("setup", "first_frame_vb", 0),
+            "setup_reads": bval("setup", "setup_reads", 0),
+            "setup_bytes": bval("setup", "setup_bytes", 0),
+            "loop_vb": bval("timing", "loop_vb", 0),
+            "target_vb": bval("timing", "target_vb", 0),
+            "blocking_vb": bval("cd", "blocking_vb", 0),
+            "lowtide": blk.get("scene", {}).get("lowtide"),
+        }
+        transitions.append(rec)
+        for sec, key in zero_required:
+            value = bval(sec, key, 0)
+            if value != 0:
+                failures.append(f"scene[{idx}]:{bscene} {sec}.{key}={value}")
+        if idx > 0:
+            if kind == "hit" and gate_setup_hit > 0 and rec["setup_vb"] > gate_setup_hit:
+                failures.append(
+                    f"scene[{idx}]:{bscene} staged-hit setup_vb={rec['setup_vb']} > gate {gate_setup_hit}"
+                )
+            if kind == "cold" and gate_setup_cold > 0 and rec["setup_vb"] > gate_setup_cold:
+                failures.append(
+                    f"scene[{idx}]:{bscene} cold setup_vb={rec['setup_vb']} > gate {gate_setup_cold}"
+                )
+    post_boot = [t for t in transitions if t["index"] > 0]
+    staged_hits = [t for t in post_boot if t["kind"] == "hit"]
+    cold = [t for t in post_boot if t["kind"] == "cold"]
+    transitions_summary = {
+        "expected_scenes": transitions_expected,
+        "complete_scenes": len(scene_blocks),
+        "post_boot_transitions": len(post_boot),
+        "staged_hits": len(staged_hits),
+        "hit_rate": (len(staged_hits) / len(post_boot)) if post_boot else None,
+        "max_setup_vb_hit": max((t["setup_vb"] for t in staged_hits), default=None),
+        "max_setup_vb_cold": max((t["setup_vb"] for t in cold), default=None),
+        "boot_setup_vb": transitions[0]["setup_vb"] if transitions else None,
+        "gates": {"setup_hit": gate_setup_hit, "setup_cold": gate_setup_cold},
+        "records": transitions,
+    }
+
 suggestions = []
 if blocking_vb > 0:
     suggestions.append("CD/prefetch: blocking_vb remains nonzero")
@@ -760,6 +918,7 @@ summary = {
         },
     },
     "fingerprint": fingerprint,
+    "transitions": transitions_summary,
     "legacy_jcperf": legacy,
     "gate": {
         "pass": not failures,
@@ -1106,13 +1265,19 @@ run_headless_regtest() {
             elapsed=$((now - start_time))
             size="$(wc -c < "$log_file" 2>/dev/null || printf '0')"
             echo "  headless still running: ${elapsed}s elapsed, ${size} log bytes"
-            if [ "$EARLY_STOP_ON_JCPERF2" -eq 1 ] && grep -q "JCPERF2 correctness" "$log_file"; then
+            local needed_correctness=1
+            if [ "$TRANSITIONS_SCENES" -gt 0 ]; then
+                needed_correctness="$TRANSITIONS_SCENES"
+            fi
+            if [ "$EARLY_STOP_ON_JCPERF2" -eq 1 ] && \
+               [ "$(grep -c "JCPERF2 correctness" "$log_file" 2>/dev/null || printf '0')" -ge "$needed_correctness" ]; then
                 {
                     echo "reason=jcperf2_correctness"
+                    echo "needed_correctness=$needed_correctness"
                     echo "elapsed_seconds=$elapsed"
                     echo "log_bytes=$size"
                 } > "$out_dir/early-stop.txt"
-                echo "  headless early-stop: JCPERF2 correctness emitted; stopping $container_name"
+                echo "  headless early-stop: JCPERF2 correctness x$needed_correctness emitted; stopping $container_name"
                 sleep "$EARLY_STOP_SETTLE_SECONDS"
                 "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
                 kill "$pid" >/dev/null 2>&1 || true
@@ -1611,6 +1776,24 @@ for case in cases:
         f"policy={prefetch.get('policy')} hits={prefetch.get('hits')} "
         f"due_misses={prefetch.get('due_misses')}"
     )
+    trans = case.get("transitions")
+    if trans:
+        hit_rate = trans.get("hit_rate")
+        rate_text = f"{hit_rate:.0%}" if isinstance(hit_rate, float) else "n/a"
+        print(
+            f"  transitions: scenes={trans.get('complete_scenes')}/{trans.get('expected_scenes')} "
+            f"staged_hits={trans.get('staged_hits')}/{trans.get('post_boot_transitions')} ({rate_text}) "
+            f"max_setup_vb hit={trans.get('max_setup_vb_hit')} cold={trans.get('max_setup_vb_cold')} "
+            f"boot={trans.get('boot_setup_vb')}"
+        )
+        for rec in trans.get("records", []):
+            print(
+                f"    [{rec['index']:>2}] {rec['scene']:<14} {rec['kind']:<4} "
+                f"setup_vb={rec['setup_vb']:>4} adopt={rec['stage_adopt']} "
+                f"screen={rec['screen_vb']} backdrop={rec['backdrop_vb']} "
+                f"pack_start={rec['pack_start_vb']} clean_rect={rec['clean_rect_vb']} "
+                f"reads={rec['setup_reads']} bytes={rec['setup_bytes']}"
+            )
     for failure in gate.get("failures", []):
         print(f"  failure: {failure}")
     for warning in gate.get("warnings", [])[:6]:
