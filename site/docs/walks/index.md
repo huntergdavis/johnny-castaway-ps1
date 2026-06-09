@@ -199,14 +199,14 @@ clean-pressure freeze v0.8.1 fixed.
 
 ## Source on GitHub
 
-- [`src/walk_pilot.h`]({{ site.github_url }}/blob/main/src/walk_pilot.h)
+- [`src/walk/walk_pilot.h`]({{ site.github_url }}/blob/main/src/walk/walk_pilot.h)
   · [`src/walk_pilot.c`]({{ site.github_url }}/blob/main/src/walk_pilot.c)
-- [`src/walk_render.h`]({{ site.github_url }}/blob/main/src/walk_render.h)
-  · [`src/walk_render.c`]({{ site.github_url }}/blob/main/src/walk_render.c)
-- [`src/walk.h`]({{ site.github_url }}/blob/main/src/walk.h)
-  · [`src/walk.c`]({{ site.github_url }}/blob/main/src/walk.c)
-- [`src/calcpath.h`]({{ site.github_url }}/blob/main/src/calcpath.h)
-  · [`src/calcpath.c`]({{ site.github_url }}/blob/main/src/calcpath.c) — the `calcPath(fromNode, toNode)` path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body's "(from, to) pair has a direct path" paragraph).
-- [`src/walk_data.h`]({{ site.github_url }}/blob/main/src/walk_data.h) — the upstream Sierra route table.
+- [`src/walk/walk_render.h`]({{ site.github_url }}/blob/main/src/walk/walk_render.h)
+  · [`src/walk/walk_render.c`]({{ site.github_url }}/blob/main/src/walk/walk_render.c)
+- [`src/walk/walk.h`]({{ site.github_url }}/blob/main/src/walk/walk.h)
+  · [`src/walk/walk.c`]({{ site.github_url }}/blob/main/src/walk/walk.c)
+- [`src/walk/calcpath.h`]({{ site.github_url }}/blob/main/src/walk/calcpath.h)
+  · [`src/walk/calcpath.c`]({{ site.github_url }}/blob/main/src/walk/calcpath.c) — the `calcPath(fromNode, toNode)` path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body's "(from, to) pair has a direct path" paragraph).
+- [`src/walk/walk_data.h`]({{ site.github_url }}/blob/main/src/walk/walk_data.h) — the upstream Sierra route table.
 - [`docs/ps1/walk-implementation-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/walk-implementation-plan.md) — original walk port plan, with the Phase 4 footsteps record kept for historical accuracy.
 - [`docs/ps1/walk-spot-coordinates.md`]({{ site.github_url }}/blob/main/docs/ps1/walk-spot-coordinates.md) — pre-flight audit and per-spot coordinates.

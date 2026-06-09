@@ -260,7 +260,7 @@ pre-`memInit` callers and oversized scenes.
    - `ps1_streamReadFromCdFileInto` sector buffer → TRANSIENT.
    - `ps1_streamReadFromCdFileWhole` result buffer → CACHE.
    - `ensureBgTileRAM` / `createEmptyBgTileRAM` / `freeBgTile`
-     (`src/graphics_ps1.c`) PS1Surface struct + 150 KB pixel
+     (`src/graphics_ps1/graphics_ps1.c`) PS1Surface struct + 150 KB pixel
      buffer → CACHE. This was the OCEAN-scene crash driver.
 4. **Budgets re-enabled** at:
    - `MEM_BOOT_BUDGET = 32 KB`
@@ -318,7 +318,7 @@ The static region is now **functionally live**:
 - `memSceneReset` wipes TRANSIENT wholesale at every scene
   transition, including the libc-fallback linked list.
 - The LRU evictor calls back into `memFree(MEM_REGION_CACHE, ...)`
-  through `checkMemoryBudget` in `src/resource.c`, completing the
+  through `checkMemoryBudget` in `src/resource/resource.c`, completing the
   plan's feedback loop.
 - Pre-`memInit` callers (TITLE.RAW load, etc.) and oversize
   allocations transparently fall back to libc; the fallback paths
@@ -367,7 +367,7 @@ the 1012 KB region had displaced libc's contiguous heap.
 Two follow-on changes resolved this:
 
 1. **Migrated grow-only buffers from libc to CACHE** in
-   `src/foreground_pilot.c` (per plan Phase 3 table):
+   `src/foreground_pilot/foreground_pilot.c` (per plan Phase 3 table):
    - `gFgFrameBuffer` (line 3206)
    - `gFgPrefetchFrameBuffer` (line 3227)
    - `gFgStreamWindowBuffer` (line 3323)
@@ -690,7 +690,7 @@ contiguous space.
 
 ### Implementation
 
-In `grSaveCleanBgTiles` (src/graphics_ps1.c), each rect's
+In `grSaveCleanBgTiles` (src/graphics_ps1/graphics_ps1.c), each rect's
 allocation now consults TRANSIENT's remaining free space:
 
 ```c
@@ -827,7 +827,7 @@ the plan (zero remaining concerns). Implementation committed as
 
 ### What was implemented
 
-In `src/foreground_pilot.c`:
+In `src/foreground_pilot/foreground_pilot.c`:
 
 1. **Part 1: `fgSceneForcesCleanMemoryRelief(sceneName)` predicate**
    returning true only for visitor3. OR'd into the
@@ -942,7 +942,7 @@ ceiling.
 
 ### Option M: MEM_CACHE_BUDGET = 1024 KB
 
-Single change in `src/mem_region.h`. The static-assert ceiling
+Single change in `src/mem_region/mem_region.h`. The static-assert ceiling
 was raised from 1228 KB to 1340 KB.
 
 Spot-checks:

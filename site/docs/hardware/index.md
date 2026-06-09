@@ -118,7 +118,7 @@ under already-idle frames.
 
 Everything goes through the SIO0 serial bus. PSn00bSDK ships a BIOS pad
 driver, but it does not auto-poll in the project's PSn00bSDK 0.24 +
-DuckStation environment. The port does its own SPI driver in `src/spi.c`,
+DuckStation environment. The port does its own SPI driver in `src/platform/ps1/spi.c`,
 adapted from spicyjpeg's PSn00bSDK example, polling at 250 Hz off Timer 2.
 
 ## What bit us in practice
@@ -136,7 +136,7 @@ full 5-byte poll sequence comes from the TX buffer. The fix is one
 constant; finding the constant took an evening of staring at SIO0 and
 guessing whether the bug was in our code, the SDK, or the emulator. It was
 in the emulator, and the emulator is what almost everyone playtests on, so
-the fix is permanent. `src/spi.c` carries `tx_len=5`.
+the fix is permanent. `src/platform/ps1/spi.c` carries `tx_len=5`.
 
 ### `FntFlush` is empirically broken in scene-runtime context
 
@@ -198,7 +198,7 @@ without bounding the format buffer. Under sustained text output the stack
 would walk into BSS and the executable would crash several minutes into a
 session, sometimes silently. The proximate fix was to disable
 `debugMode` in release builds; the deeper fix was to replace `vprintf`
-with the bounded `JCPERF2` gated formatter in `src/ps1_perf.c`,
+with the bounded `JCPERF2` gated formatter in `src/platform/ps1/ps1_perf.c`,
 which truncate inside a static buffer. The lesson, repeated across this
 project: standard C library functions assume a host-class environment,
 and the PS1 is not that.
@@ -252,11 +252,11 @@ specialized compositors, not a clock change — the clock isn't going up.
 ## View source on GitHub
 
 - [`docs/ps1/hardware-specs.md`]({{ site.github_url }}/blob/main/docs/ps1/hardware-specs.md) — original design doc.
-- [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c) —
+- [`src/platform/ps1/spi.c`]({{ site.github_url }}/blob/main/src/platform/ps1/spi.c) —
   the project's own SPI driver (250 Hz Timer 2 polling, `tx_len=5`
   for DuckStation parity). Carries the fix the
   [two-day SPI bug retrospective]({{ '/lab/two-day-spi-bug/' | relative_url }})
   walks through.
-- [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c) —
+- [`src/platform/ps1/ps1_perf.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_perf.c) —
   bounded `JCPERF2` gated formatter; the safe substitute
   for per-frame `printf()` in timing-sensitive paths.

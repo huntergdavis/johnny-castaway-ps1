@@ -6,10 +6,10 @@ Inputs:
   /home/hunter/workspace/jc_reborn/holidays.yml
 
 Outputs:
-  /home/hunter/workspace/jc_reborn/src/holidays_table.c
+  /home/hunter/workspace/jc_reborn/src/scene/holidays_table.c
       C source with `gHolidays[]` static const array + gHolidayCount.
-      Linked alongside src/holidays.c which contains the date-algorithm
-      core. Schema must match struct Holiday in src/holidays.h.
+      Linked alongside src/scene/holidays.c which contains the date-algorithm
+      core. Schema must match struct Holiday in src/scene/holidays.h.
 
 Run:
   python3 scripts/holidays-codegen.py
@@ -25,7 +25,7 @@ except ImportError:
 
 REPO = Path(__file__).resolve().parent.parent
 YAML_PATH = REPO / "holidays.yml"
-TABLE_OUT = REPO / "src" / "holidays_table.c"
+TABLE_OUT = REPO / "src" / "scene" / "holidays_table.c"
 
 KIND_MAP = {
     "fixed":           "HOLIDAY_KIND_FIXED",
@@ -149,9 +149,6 @@ def emit_table(holidays):
         existing_idx = int(existing) if existing is not None else -1
         lines.append("    {")
         lines.append(f"        .id            = {int(h['id'])},")
-        lines.append(f"        .title         = {cstring(h.get('name', '?'))},")
-        lines.append(f"        .short_name    = {cstring(h.get('short_name', h.get('name', '?')))},")
-        lines.append(f"        .date_label    = {cstring(date_label(rule))},")
         lines.append(f"        .kind          = {kind},")
         lines.append(f"        .month         = {month},")
         lines.append(f"        .day           = {day},")
@@ -168,6 +165,21 @@ def emit_table(holidays):
     lines.append("};")
     lines.append("")
     lines.append(f"const int gHolidayCount = {len(holidays)};")
+    lines.append("")
+    lines.append("#ifndef PS1_BUILD")
+    lines.append("const struct HolidayDisplay gHolidayDisplays[] = {")
+    for h in holidays:
+        rule = normalize_kind(h.get("date_rule", {}) or {})
+        lines.append("    {")
+        lines.append(f"        .id         = {int(h['id'])},")
+        lines.append(f"        .title      = {cstring(h.get('name', '?'))},")
+        lines.append(f"        .short_name = {cstring(h.get('short_name', h.get('name', '?')))},")
+        lines.append(f"        .date_label = {cstring(date_label(rule))},")
+        lines.append("    },")
+    lines.append("};")
+    lines.append("")
+    lines.append(f"const int gHolidayDisplayCount = {len(holidays)};")
+    lines.append("#endif")
     lines.append("")
     return "\n".join(lines)
 

@@ -58,7 +58,7 @@ Phase 1 implementation:
       `malloc` (except the explicit whitelist) replaced with
       `memAlloc(REGION, n, "tag")` + `INIT_*` annotation comment.
 - [ ] **Step 13 — Hooks:** `memSceneReset` at `fgRuntimeReset`
-      (`src/foreground_pilot.c:1470`); `memCachePreEvictForNextScene`
+      (`src/foreground_pilot/foreground_pilot.c:1470`); `memCachePreEvictForNextScene`
       at `jc_reborn.c:~1956` (after `fgLoopApplyVariant`).
 - [ ] **Step 14 — Clean-rect reorder:** clean-rect allocation is the
       first TRANSIENT alloc in `foregroundPilotRuntimeStart`.

@@ -91,7 +91,7 @@ input being corrupt.
 
 The PS1 build is impossible without **PSn00bSDK** (Lameguy64 et
 al.), the open-source PS1 SDK that replaces Sony's proprietary
-toolchain. The SPI pad driver in `src/spi.c` is derived from
+toolchain. The SPI pad driver in `src/platform/ps1/spi.c` is derived from
 **spicyjpeg's** MPL-licensed pad-poll example — with the
 DuckStation-specific `tx_len=5` fix on top. The emulator that every
 commit gets tested against is **DuckStation** (Connor McLaughlin et

@@ -7,6 +7,7 @@
 #   ./scripts/regtest-scene.sh --scene "JOHNNY 1"
 #   ./scripts/regtest-scene.sh --scene "ACTIVITY 4" --scene-index 4
 #   ./scripts/regtest-scene.sh --scene "MARY 2" --boot "story scene 33"
+#   ./scripts/regtest-scene.sh --scene "FISHING 1" --pad-script captions-enable-next-scene
 #
 # The script:
 #   1. Writes a temporary BOOTMODE.TXT with the scene override
@@ -25,6 +26,7 @@ cd "$PROJECT_ROOT"
 source "$PROJECT_ROOT/scripts/docker-common.sh"
 REGTEST_SCENE_LIST="$PROJECT_ROOT/config/ps1/regtest-scenes.txt"
 EMBEDDED_BOOTMODE_HEADER="$PROJECT_ROOT/config/ps1/bootmode_embedded.h"
+EMBEDDED_PADSCRIPT_HEADER="$PROJECT_ROOT/config/ps1/padscript_embedded.h"
 
 # Load shared config
 # shellcheck source=../config/ps1/regtest-config.sh
@@ -52,6 +54,10 @@ APPEND_CAPTURE_ARGS="${REGTEST_APPEND_CAPTURE_ARGS:-0}"
 LOG_LEVEL="${REGTEST_LOG_LEVEL:-Info}"
 LOCK_FILE="${REGTEST_LOCK_FILE:-$PROJECT_ROOT/.regtest-build.lock}"
 VRAM_WRITE_DUMPS="${REGTEST_VRAM_WRITE_DUMPS:-0}"
+PAD_SCRIPT_SPEC=""
+PAD_SCRIPT_PATH=""
+PAD_SCRIPT_LABEL=""
+PAD_SCRIPT_VERBOSE=0
 
 usage() {
     cat <<'USAGE'
@@ -69,6 +75,8 @@ Options:
   --output DIR     Output directory for results (default: auto-generated)
   --overlay        Append capture-overlay to the boot string
   --overlay-mask   Append capture-overlay-mask to the boot string
+  --pad-script NAME Use a fixture from "pad scripts/", or a direct file path
+  --pad-script-log  Use pad-script-log instead of pad-script
   --skip-build     Skip CD image rebuild (use existing jcreborn.cue)
   --quiet          Suppress progress messages on stderr
   --vram-write-dumps  Enable DuckStation CPU->VRAM / VRAM-write dump capture
@@ -90,6 +98,8 @@ while [ $# -gt 0 ]; do
         --output)    OUTPUT_DIR="$2"; shift 2 ;;
         --overlay)   CAPTURE_OVERLAY=1; shift ;;
         --overlay-mask) CAPTURE_OVERLAY_MASK=1; shift ;;
+        --pad-script) PAD_SCRIPT_SPEC="$2"; shift 2 ;;
+        --pad-script-log) PAD_SCRIPT_VERBOSE=1; shift ;;
         --vram-write-dumps) VRAM_WRITE_DUMPS=1; shift ;;
         --skip-build) SKIP_BUILD=1; shift ;;
         --quiet)     QUIET=1; shift ;;
@@ -135,6 +145,41 @@ read_embedded_bootmode() {
             exit
         }
     ' "$EMBEDDED_BOOTMODE_HEADER"
+}
+
+resolve_pad_script() {
+    local spec="$1"
+    local fixture_dir="$PROJECT_ROOT/pad scripts"
+
+    if [ -z "$spec" ]; then
+        return 1
+    fi
+
+    if [ -f "$spec" ]; then
+        realpath "$spec"
+        return
+    fi
+    if [ -f "$PROJECT_ROOT/$spec" ]; then
+        realpath "$PROJECT_ROOT/$spec"
+        return
+    fi
+    if [ -f "$fixture_dir/$spec" ]; then
+        realpath "$fixture_dir/$spec"
+        return
+    fi
+    if [ -f "$fixture_dir/$spec.txt" ]; then
+        realpath "$fixture_dir/$spec.txt"
+        return
+    fi
+
+    echo "ERROR: pad script not found: $spec" >&2
+    echo "       Tried direct path and fixtures under: $fixture_dir" >&2
+    if [ -d "$fixture_dir" ]; then
+        echo "       Available fixtures:" >&2
+        find "$fixture_dir" -maxdepth 1 -type f -name '*.txt' \
+            -printf '         %f\n' 2>/dev/null | sort >&2 || true
+    fi
+    exit 1
 }
 
 resolve_scene_start() {
@@ -196,8 +241,29 @@ fi
 if [[ "$BOOT_STRING" != *" seed "* ]] && [[ "$BOOT_STRING" != seed\ * ]] && [[ "$BOOT_STRING" != *" seed" ]]; then
     BOOT_STRING="${BOOT_STRING} seed ${SEED}"
 fi
+if [ -n "$PAD_SCRIPT_SPEC" ]; then
+    PAD_SCRIPT_PATH="$(resolve_pad_script "$PAD_SCRIPT_SPEC")"
+    PAD_SCRIPT_LABEL="$(basename "$PAD_SCRIPT_PATH")"
+    PAD_SCRIPT_LABEL="${PAD_SCRIPT_LABEL%.txt}"
+    PAD_TOKEN="pad-script"
+    if [ "$PAD_SCRIPT_VERBOSE" -eq 1 ]; then
+        PAD_TOKEN="pad-script-log"
+    fi
+    if [[ "$BOOT_STRING" != *" pad-script "* ]] &&
+       [[ "$BOOT_STRING" != *" pad-script-log "* ]] &&
+       [[ "$BOOT_STRING" != pad-script\ * ]] &&
+       [[ "$BOOT_STRING" != pad-script-log\ * ]] &&
+       [[ "$BOOT_STRING" != *" pad-script" ]] &&
+       [[ "$BOOT_STRING" != *" pad-script-log" ]]; then
+        BOOT_STRING="${BOOT_STRING} ${PAD_TOKEN}"
+    fi
+fi
 
 if [ "$SKIP_BUILD" -eq 1 ]; then
+    if [ -n "$PAD_SCRIPT_PATH" ]; then
+        echo "ERROR: --pad-script requires a rebuild so the script can be embedded." >&2
+        exit 1
+    fi
     EMBEDDED_BOOTMODE="$(read_embedded_bootmode || true)"
     if [ -z "$EMBEDDED_BOOTMODE" ]; then
         echo "ERROR: --skip-build requires an existing embedded PS1 boot override in $EMBEDDED_BOOTMODE_HEADER." >&2
@@ -274,31 +340,72 @@ EOF
 fi
 
 # ---------------------------------------------------------------------------
-# Stage BOOTMODE.TXT
+# Stage BOOTMODE.TXT and optional PADSCRIPT.TXT
 # ---------------------------------------------------------------------------
 BOOTMODE_FILE="$PROJECT_ROOT/config/ps1/BOOTMODE.TXT"
+PADSCRIPT_FILE="$PROJECT_ROOT/config/ps1/PADSCRIPT.TXT"
 BOOTMODE_BACKUP=""
+PADSCRIPT_BACKUP=""
+BOOTMODE_HEADER_BACKUP=""
+PADSCRIPT_HEADER_BACKUP=""
+
+backup_path() {
+    local path="$1"
+    local backup
+    backup="$(mktemp /tmp/regtest-backup-XXXXXX)"
+    if [ -f "$path" ]; then
+        cp "$path" "$backup"
+    else
+        rm -f "$backup"
+        backup="${backup}.missing"
+        touch "$backup"
+    fi
+    printf '%s\n' "$backup"
+}
+
+restore_path() {
+    local path="$1"
+    local backup="$2"
+    [ -n "$backup" ] || return
+    if [[ "$backup" == *.missing ]]; then
+        rm -f "$path"
+        rm -f "$backup"
+    elif [ -f "$backup" ]; then
+        cp "$backup" "$path"
+        rm -f "$backup"
+    fi
+}
 
 stage_bootmode() {
-    if [ -f "$BOOTMODE_FILE" ]; then
-        BOOTMODE_BACKUP="$(mktemp /tmp/regtest-bootmode-XXXXXX.txt)"
-        cp "$BOOTMODE_FILE" "$BOOTMODE_BACKUP"
-    fi
+    BOOTMODE_BACKUP="$(backup_path "$BOOTMODE_FILE")"
+    BOOTMODE_HEADER_BACKUP="$(backup_path "$EMBEDDED_BOOTMODE_HEADER")"
     printf '%s\n' "$BOOT_STRING" > "$BOOTMODE_FILE"
     log "BOOTMODE.TXT => $BOOT_STRING"
 }
 
-restore_bootmode() {
-    if [ -n "$BOOTMODE_BACKUP" ] && [ -f "$BOOTMODE_BACKUP" ]; then
-        cp "$BOOTMODE_BACKUP" "$BOOTMODE_FILE"
-        rm -f "$BOOTMODE_BACKUP"
-    elif [ -f "$BOOTMODE_FILE" ]; then
-        : > "$BOOTMODE_FILE"
+stage_padscript() {
+    PADSCRIPT_HEADER_BACKUP="$(backup_path "$EMBEDDED_PADSCRIPT_HEADER")"
+    if [ -z "$PAD_SCRIPT_PATH" ]; then
+        return
     fi
+    PADSCRIPT_BACKUP="$(backup_path "$PADSCRIPT_FILE")"
+    cp "$PAD_SCRIPT_PATH" "$PADSCRIPT_FILE"
+    log "PADSCRIPT.TXT <= $PAD_SCRIPT_LABEL"
+}
+
+restore_bootmode() {
+    restore_path "$BOOTMODE_FILE" "$BOOTMODE_BACKUP"
+    restore_path "$EMBEDDED_BOOTMODE_HEADER" "$BOOTMODE_HEADER_BACKUP"
+}
+
+restore_padscript() {
+    restore_path "$PADSCRIPT_FILE" "$PADSCRIPT_BACKUP"
+    restore_path "$EMBEDDED_PADSCRIPT_HEADER" "$PADSCRIPT_HEADER_BACKUP"
 }
 
 cleanup() {
     restore_bootmode
+    restore_padscript
     # Kill regtest if still running
     if [ -n "${REGTEST_PID:-}" ] && kill -0 "$REGTEST_PID" 2>/dev/null; then
         kill "$REGTEST_PID" 2>/dev/null || true
@@ -314,6 +421,7 @@ acquire_lock "$LOCK_FILE"
 # ---------------------------------------------------------------------------
 if [ "$SKIP_BUILD" -eq 0 ]; then
     stage_bootmode
+    stage_padscript
     log "Rebuilding PS1 executable..."
     "$PROJECT_ROOT/scripts/build-ps1.sh" >> "$OUTPUT_DIR/build.log" 2>&1
     log "Rebuilding CD image..."
@@ -321,6 +429,7 @@ if [ "$SKIP_BUILD" -eq 0 ]; then
     log "CD image built."
 else
     stage_bootmode
+    stage_padscript
     log "Skipping build (--skip-build)."
 fi
 
@@ -612,6 +721,10 @@ def is_build_affecting(path_str):
         return False
     if path == Path("config/ps1/bootmode_embedded.h"):
         return False
+    if path == Path("config/ps1/PADSCRIPT.TXT"):
+        return False
+    if path == Path("config/ps1/padscript_embedded.h"):
+        return False
     if len(path.parts) >= 2 and path.parts[0] == "generated" and path.parts[1] == "ps1":
         return True
     if path.suffix in {".c", ".h"}:
@@ -689,6 +802,7 @@ result = {
         'scene_index': ${SCENE_INDEX:-None},
         'status': '$SCENE_STATUS' if '$SCENE_STATUS' else None,
         'boot_string': '$BOOT_STRING',
+        'pad_script': '$PAD_SCRIPT_LABEL' if '$PAD_SCRIPT_LABEL' else None,
     },
     'config': {
         'frames': $FRAMES,

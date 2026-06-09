@@ -47,4 +47,4 @@ This holiday has an emblem on the shared sheet at cell 19, pixel offset (96, 64)
 ## Source
 
 - Row in [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) (search for `id: 23` or `short_name: "PRIDE"`).
-- Generated row in [`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c).
+- Generated row in [`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c).

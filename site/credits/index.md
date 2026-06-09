@@ -56,7 +56,7 @@ the longer version — the people whose work this project stands on.
   every commit gets tested against.
 - **mkpsxiso** (Lameguy64) — `.bin/.cue` packing.
 - **spicyjpeg's pad-poll example** — the SPI driver used here is
-  derived from that MPL-licensed code (see `src/spi.c`).
+  derived from that MPL-licensed code (see `src/platform/ps1/spi.c`).
 - **Meeus / Jones / Butcher** — the Easter algorithm used for
   movable holidays.
 

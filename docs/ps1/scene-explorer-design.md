@@ -87,10 +87,10 @@ how the runtime addresses the rest of the catalog.
 `scripts/build-scene-explorer-data.py` reads:
 - `docs/ps1/scene-status.md` for slug + family + tag + validation status
 - `site/scenes/<slug>/index.md` frontmatter `title` field for display name (already in the form `"FISHING 1 — Johnny casts a line"`, which doubles as the menu's one-line description)
-- `src/story_data.h` for `dayNo`, `flags`, `spotStart`/`spotEnd`
+- `src/host/story_data.h` for `dayNo`, `flags`, `spotStart`/`spotEnd`
 - FG2 pack headers (existing reader in scripts/) for frame count
 
-Emits `src/scene_explorer_data.h`:
+Emits `src/pause_menu/scene_explorer_data.h`:
 
 ```c
 struct TSceneExplorerEntry {
@@ -133,7 +133,7 @@ extern const int                       gSceneExplorerFamilyCount;
 - Add 63 `<file path="BMP/SCEXPL_<SLUG>.PSB">` lines to
   `config/ps1/cd_layout.xml` via the same script that emits the
   metadata header (so layout stays in sync automatically).
-- Add 63 entries to `src/psb_registry.h` so the loader knows the
+- Add 63 entries to `src/resource/psb_registry.h` so the loader knows the
   per-frame size of each.
 
 ### Phase 4 — Menu state machine
@@ -264,7 +264,7 @@ already appear in `scene-status.md` with curated families first.
 
 ### R7. Codegen drift *(RESOLVED → auto-run in release.sh + CI dry-run drift check)*
 
-`src/scene_explorer_data.h` is regenerated as part of `release.sh`.
+`src/pause_menu/scene_explorer_data.h` is regenerated as part of `release.sh`.
 A CI step re-runs the codegen in dry-run mode and fails the build if
 the committed file drifts from what the source data implies.
 
@@ -337,7 +337,7 @@ begin.
 
 | Phase | Status |
 |---|---|
-| 1 — Metadata pipeline | ✅ shipped (`scripts/build-scene-explorer-data.py` → `src/scene_explorer_data.h`) |
+| 1 — Metadata pipeline | ✅ shipped (`scripts/build-scene-explorer-data.py` → `src/pause_menu/scene_explorer_data.h`) |
 | 2 — Thumbnail extractor | ✅ shipped (`scripts/build-scene-explorer-thumbnails.py`) |
 | 3 — Asset packaging (cd_layout entries) | ⏳ deferred to runtime-integration follow-up |
 | 4 — Menu state machine | ✅ shipped (text-only Scene Explorer sub-screen) |

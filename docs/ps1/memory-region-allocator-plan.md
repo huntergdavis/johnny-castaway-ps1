@@ -90,7 +90,7 @@ Resolves all 2 blockers + 7 material + 3 hygiene items from red-team v5:
 - **`MEM_REQUIRE` on `memFree` documented** — kept for symmetry;
   the ~10-cycle overhead on a no-op `memFree(TRANSIENT)` is
   negligible; documented in the perf table footnote. (PR15)
-- **`src/mem_region_extern.h` is the single source of truth for
+- **`src/mem_region/mem_region_extern.h` is the single source of truth for
   forward decls** consumed by both `mem_region.c` (definition side)
   and `ps1_debug.c` (caller side). Eliminates drift. (A23)
 - **Macros wrapping `memAlloc` are prohibited** — documented in the
@@ -149,7 +149,7 @@ Resolves all 3 blockers + 11 material + 4 hygiene items from red-team v4:
   applied to the Phase-1 merge commit before the cleanup PR opens. (S13)
 - **CI count match** — assert
   `grep -c "MEM_REGION_" mem-region-decision-tree.md ==
-  grep -c "MEM_REGION_" src/mem_region.h`. (M14)
+  grep -c "MEM_REGION_" src/mem_region/mem_region.h`. (M14)
 - **Pre-Phase-1 printf-non-allocating gate dropped** — the project-
   level malloc poison makes this a link-time check rather than a
   manual audit; redundant. (A21)
@@ -166,11 +166,11 @@ from red-team v3:
 - **ISR-safety check is unconditional**, not debug-only. `assert(ps1IsMainContext())`
   costs ~3 cycles per `memAlloc`, well under the 10-cycle budget. (P1-bis)
 - **Phase 1 Step: explicit ps1Bsod block REPLACEMENT** — the `fgProbeLargestAlloc`,
-  `fgGetFrameBufferBytes`, etc. lines in `src/ps1_debug.c:245+` are
+  `fgGetFrameBufferBytes`, etc. lines in `src/platform/ps1/ps1_debug.c:245+` are
   replaced (not extended) with mem-region state reads. `walkClean*` /
   `johnwalkSlot*` lines stay because those buffers persist into BOOT. (P8, A11)
 - **`fatalError` PS1 path upgraded** to use `ps1DebugError` (from
-  `src/ps1_debug.h:51`) which renders a minimal text panel. Pre-graphics
+  `src/platform/ps1/ps1_debug.h:51`) which renders a minimal text panel. Pre-graphics
   failures are no longer black-screen-no-explanation. (A10)
 - **Phase 2 ships as ONE bundled PR** with 8 atomic per-file commits.
   Revert any single one with `git revert <sha>`. (S7)
@@ -232,7 +232,7 @@ Every concern raised in v2's panel review is folded in. Highlights:
   decision section. Regions chosen because the constraint axis in jc_reborn
   is *lifetime*, not type.
 - **Failure UX routes through the existing `JC_BSOD` framework**
-  (`src/ps1_debug.h`) — the Win-3.1 blue screen with grep-friendly TTY
+  (`src/platform/ps1/ps1_debug.h`) — the Win-3.1 blue screen with grep-friendly TTY
   sentinels (`JCBSOD-FATAL`, `JCBSOD <k>=<v>`, `JCBSOD-HALT`) and an
   on-screen diagnostic panel. Boot-time verifies (which run before
   graphics is up) use `fatalError`; everything during scene play uses
@@ -258,7 +258,7 @@ shipping configuration.
 ## Context
 
 The PS1 build runs in 2 MB of main RAM and currently uses libc
-`malloc`/`free` through a single wrapper (`safe_malloc`, `src/utils.c:123`).
+`malloc`/`free` through a single wrapper (`safe_malloc`, `src/core/utils.c:123`).
 39 call sites churn the heap per-scene, fragmenting it within a 1.1-1.2 MB
 working set. The bandaid code that mitigates fragmentation
 (`fgDropPressureCachesForCleanSnapshot`, `fgBackdropSaveCleanBgRectsWithPressureFallback`,
@@ -622,10 +622,10 @@ bytes. No re-entrancy.
 The codebase already has a Windows-3.1-flavoured blue-screen mechanism for
 exactly this purpose:
 
-- `src/ps1_debug.h` declares `JC_BSOD(scene, reason)` (captures
+- `src/platform/ps1/ps1_debug.h` declares `JC_BSOD(scene, reason)` (captures
   `__FILE__`/`__LINE__` automatically) backed by
   `ps1Bsod(scene, reason, file, line)`.
-- The implementation at `src/ps1_debug.c:228` already emits grep-friendly
+- The implementation at `src/platform/ps1/ps1_debug.c:228` already emits grep-friendly
   TTY sentinels (`JCBSOD-FATAL`, `JCBSOD <k>=<v>` detail lines,
   `JCBSOD-HALT`) and renders a full-screen blue panel with white BIOS-font
   text including scene name, reason, file:line, heap probe, frame-buffer
@@ -672,7 +672,7 @@ Where `currentSceneOrFgLoopGetLastScene()` returns the current scene if
 one is in progress, otherwise `fgLoopGetLastScene()` for diagnostic
 continuity through the scene-pick window (resolves A14).
 
-`formatReason` is declared in **`src/ps1_debug.h`** (BSOD-side helper,
+`formatReason` is declared in **`src/platform/ps1/ps1_debug.h`** (BSOD-side helper,
 not memory-side) and writes into a single static buffer. Re-entrancy
 contract: the path is `noreturn`, so a second call would only happen if
 the first call's path itself failed. `ps1Bsod` does not allocate
@@ -684,7 +684,7 @@ call into `formatReason` writes `"[concurrent fatal]"` instead.
 
 ### `ps1Bsod`'s heap-probe block — REPLACED, not extended (P8/A11)
 
-Today, `src/ps1_debug.c:245+` emits diagnostic lines like:
+Today, `src/platform/ps1/ps1_debug.c:245+` emits diagnostic lines like:
 
 ```
 JCBSOD heapKB=...                    /* via fgProbeLargestAlloc */
@@ -725,7 +725,7 @@ The clamp does NOT cover *instruction* corruption (a stray write into
 the code section means random execution is already happening; that
 case is out of scope) (A20).
 
-**Build-layering (A19):** `src/ps1_debug.c` accesses region state via
+**Build-layering (A19):** `src/platform/ps1/ps1_debug.c` accesses region state via
 forward declarations (`extern size_t memRegionUsed(MemRegion);` at the
 top of the BSOD detail block), NOT by `#include "mem_region.h"`.
 Avoids a circular-include trap: `mem_region.c` calls `formatReason`
@@ -870,14 +870,14 @@ does it for them.
 6. `memHalt(scene, reason)` primitive in `mem_region.h`; all allocator
    failure paths call this rather than choosing JC_BSOD vs fatalError
    themselves (P9, M7).
-7. `formatReason` helper in `src/ps1_debug.h` (BSOD-side, not memory-
+7. `formatReason` helper in `src/platform/ps1/ps1_debug.h` (BSOD-side, not memory-
    side) with `volatile` static buffer + 1-entry depth counter
    guarding against the impossible-but-cheap-to-defend re-entry case
    (M10, A16).
 8. `MEM_REQUIRE(ps1IsMainContext())` (hand-rolled macro, not C's
    `assert()`) in `memAlloc` and `memFree`, unconditional in release
    builds (~8-12 cycles per call from COP0 read; P1-bis, P13).
-9. **Replace** (not extend) the heap-probe block in `src/ps1_debug.c:245+`:
+9. **Replace** (not extend) the heap-probe block in `src/platform/ps1/ps1_debug.c:245+`:
    drop `fgProbeLargestAlloc`/`prefetchBufBytes` lines, add
    `memBootUsed/Peak`, `memCacheUsed/Peak`, `memTransientUsed/Peak`,
    `sceneAllocBalance` via region-state externs. Keep `walkClean*` and
@@ -885,7 +885,7 @@ does it for them.
    Use `memSafeRead(region)` clamp helpers so the BSOD dump can't crash
    if metadata is corrupted (PR9).
 10. Upgrade `fatalError` on PS1 to render a minimal text panel via
-    `ps1DebugError` (`src/ps1_debug.h:51`) instead of plain printf +
+    `ps1DebugError` (`src/platform/ps1/ps1_debug.h:51`) instead of plain printf +
     while(1). Pre-graphics failures get on-screen feedback (A10).
 11. Boot integration including `memVerifyPackHashes`, the boot-order
     audit (audio, resource catalog, font, surface pool, walk, pause —
@@ -894,7 +894,7 @@ does it for them.
 12. Migrate all 39 call sites to `memAlloc(REGION, n, tag)` with explicit
     `INIT_ZEROED`/`INIT_FULL_WRITE`/`INIT_NONE` annotation grep'd by CI.
 13. Hook `memSceneReset` into `fgRuntimeReset` at
-    `src/foreground_pilot.c:1470`. **Pre-emptive CACHE eviction
+    `src/foreground_pilot/foreground_pilot.c:1470`. **Pre-emptive CACHE eviction
     (`memCachePreEvictForNextScene`) wired into `fgLoopNextScene` —
     not memSceneReset (PR7).**
 14. Reorder `foregroundPilotRuntimeStart` so clean-rect allocates first.
@@ -967,7 +967,7 @@ does it for them.
     PS1-build flag (A13 from v3, re-confirmed in v6).
 24. Phase 1 implementation checklist: `docs/ps1/mem-region-phase-1-checklist.md`
     lands in the same PR. Mirrors these steps as TODO items (M12).
-25. **New file `src/mem_region_extern.h`** holds forward declarations
+25. **New file `src/mem_region/mem_region_extern.h`** holds forward declarations
     consumed by `ps1_debug.c`. Single source of truth for cross-module
     symbol signatures (A23, A26). Uses an **incomplete enum forward
     declaration** to avoid pulling in `mem_region.h`:
@@ -1117,7 +1117,7 @@ Above numbers include the check.
 v4 said eviction at `memSceneReset` (too late — blocks first frame).
 v5 moved it into `fgLoopNextScene` (still wrong — that's inside the
 scene_picker which is explicitly engineered for net-zero heap pressure
-per `src/scene_picker.c:4-6`; the picker stays pure).
+per `src/scene/scene_picker.c:4-6`; the picker stays pure).
 
 v6 puts pre-emptive eviction in the caller, **after**
 `fgLoopApplyVariant`, so the effective scene name (post-variant) is

@@ -149,13 +149,13 @@ only; flip it off before opening a PR.
 If you genuinely need a new memory region — e.g., a separate VRAM-mirror
 region for the texture cache — there are three things to update:
 
-1. **`src/mem_region.h`:** add the new enum value (`MEM_REGION_*`), the
+1. **`src/mem_region/mem_region.h`:** add the new enum value (`MEM_REGION_*`), the
    budget constant (`MEM_*_BUDGET`), and any boot-verify function
    prototype (`memVerify*FitNewRegion`).
 2. **`src/mem_region.c`:** add the allocator logic (bump, free-list,
    whatever fits the lifetime model). Update `memRegionUsed`/`Peak`
    switches.
-3. **`src/ps1_debug.c`:** the BSOD detail-line block reads region state
+3. **`src/platform/ps1/ps1_debug.c`:** the BSOD detail-line block reads region state
    via `memRegionUsed(MEM_REGION_*)` for each region. Add a line for
    your new region.
 4. **`src/jc_reborn.c`:** add a `bsod-ui-test-mem-<newregion>` bootmode

@@ -36,8 +36,8 @@ MACRO_RE     = re.compile(r"^\s*#\s*define\s+\w+.*\bmemAlloc\s*\(", re.MULTILINE
 # documented in its own way).
 WHITELIST = {
     "src/mem_region.c",
-    "src/mem_region_extern.h",
-    "src/mem_region.h",
+    "src/mem_region/mem_region_extern.h",
+    "src/mem_region/mem_region.h",
 }
 
 

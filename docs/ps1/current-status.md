@@ -844,7 +844,7 @@ baseline.
   instead; do not regress to `FntFlush` for new on-screen text.
 - BIOS pad system (`InitPAD` / `StartPAD`) is unusable in our
   PSn00bSDK 0.24 + DuckStation environment. All pad input goes through
-  `src/spi.c` (timer-2 + SIO0 IRQ-driven, 250 Hz). Note the
+  `src/platform/ps1/spi.c` (timer-2 + SIO0 IRQ-driven, 250 Hz). Note the
   DuckStation-specific quirk: poll TX must be `tx_len=5`, not the
   spicyjpeg reference's `tx_len=4`, or button bytes are dropped.
 - `SpuSetCommonMasterVolume` is not honored by DuckStation HLE; sound

@@ -261,7 +261,7 @@ Plan: `ps1_debug.c` puts `extern size_t memRegionUsed(MemRegion);` at
 the top of the BSOD detail block. If `mem_region.h` changes the
 function signature (e.g., adds a flag parameter), `ps1_debug.c`'s
 forward decl links to a different symbol or the linker fails. **Single
-source of truth** is the answer: a small `src/mem_region_extern.h`
+source of truth** is the answer: a small `src/mem_region/mem_region_extern.h`
 that contains only forward decls, included by both `mem_region.c`
 (for definition) and `ps1_debug.c` (for use). No risk of drift.
 

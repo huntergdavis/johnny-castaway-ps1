@@ -175,6 +175,7 @@ CUE_FILE="$PWD/jcreborn.cue"
 CAPTURE_INTERVAL=${PS1_CAPTURE_INTERVAL:-5}
 INITIAL_CAPTURE_WAIT=${PS1_INITIAL_CAPTURE_WAIT:-35}
 CAPTURE_COUNT=${PS1_CAPTURE_COUNT:-4}
+RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-0}"
 
 mkdir -p "$SCREENSHOT_DIR"
 
@@ -220,6 +221,33 @@ take_duckstation_screenshot() {
     return 1
 }
 
+sleep_while_duckstation_alive() {
+    local remaining="$1"
+    local step
+
+    while [ "$remaining" -gt 0 ]; do
+        if ! kill -0 "$DUCK_PID" 2>/dev/null; then
+            return 1
+        fi
+        step=1
+        if [ "$remaining" -gt 5 ]; then
+            step=5
+        fi
+        sleep "$step"
+        remaining=$((remaining - step))
+    done
+
+    kill -0 "$DUCK_PID" 2>/dev/null
+}
+
+terminate_duckstation_for_cue() {
+    kill -TERM "$DUCK_PID" 2>/dev/null || true
+    pkill -TERM -f "[d]uckstation-qt $CUE_FILE" 2>/dev/null || true
+    sleep 5
+    kill -KILL "$DUCK_PID" 2>/dev/null || true
+    pkill -KILL -f "[d]uckstation-qt $CUE_FILE" 2>/dev/null || true
+}
+
 # Launch DuckStation with fast boot
 cap_duckstation_log
 prepare_duckstation_test_settings
@@ -236,32 +264,48 @@ if [ "${DUCK_LOG_MAX_BYTES:-0}" -gt 0 ] 2>/dev/null; then
     LOG_WATCHDOG_PID=$!
 fi
 
+# Background watchdog: if DuckStation is still alive after the deadline,
+# TERM it (then KILL if that doesn't take). The deadline starts when the
+# emulator launches, not after screenshot capture completes.
+if [ "$RUN_TIMEOUT_SECONDS" -gt 0 ]; then
+    (
+        sleep "$RUN_TIMEOUT_SECONDS"
+        if kill -0 "$DUCK_PID" 2>/dev/null; then
+            echo "" >&2
+            echo "rebuild-and-let-run.sh: emergency timeout reached, killing DuckStation (pid $DUCK_PID)." >&2
+            terminate_duckstation_for_cue
+        fi
+    ) &
+    WATCHDOG_PID=$!
+fi
+
 echo "DuckStation PID: $DUCK_PID"
-echo "Waiting ${INITIAL_CAPTURE_WAIT} seconds for initial screenshot..."
+if [ "$CAPTURE_COUNT" -gt 0 ]; then
+    echo "Waiting ${INITIAL_CAPTURE_WAIT} seconds for initial screenshot..."
 
-sleep "$INITIAL_CAPTURE_WAIT"
+    if ! sleep_while_duckstation_alive "$INITIAL_CAPTURE_WAIT"; then
+        echo "DuckStation exited before initial screenshot."
+    fi
 
-if kill -0 "$DUCK_PID" 2>/dev/null; then
-    if take_duckstation_screenshot SCREENSHOT_FILE; then
-        echo "Screenshot 1/${CAPTURE_COUNT} saved to: $SCREENSHOT_FILE"
+    if kill -0 "$DUCK_PID" 2>/dev/null; then
+        if take_duckstation_screenshot SCREENSHOT_FILE; then
+            echo "Screenshot 1/${CAPTURE_COUNT} saved to: $SCREENSHOT_FILE"
+        fi
     fi
 fi
 
 for ((capture_index=2; capture_index<=CAPTURE_COUNT; capture_index++)); do
     echo "Waiting ${CAPTURE_INTERVAL} more seconds for screenshot ${capture_index}..."
-    sleep "$CAPTURE_INTERVAL"
+    if ! sleep_while_duckstation_alive "$CAPTURE_INTERVAL"; then
+        echo "DuckStation exited before screenshot ${capture_index}."
+        break
+    fi
     if kill -0 "$DUCK_PID" 2>/dev/null; then
         if take_duckstation_screenshot SCREENSHOT_FILE2; then
             echo "Screenshot ${capture_index}/${CAPTURE_COUNT} saved to: $SCREENSHOT_FILE2"
         fi
     fi
 done
-
-# Emergency timeout so a forgotten DuckStation session can't run overnight
-# and fill the disk with log / screenshot artifacts. Override via env:
-#   RUN_TIMEOUT_SECONDS=0       -> disable
-#   RUN_TIMEOUT_SECONDS=1800    -> 30 min, etc.
-RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-0}"
 
 echo ""
 echo "======================================"
@@ -272,22 +316,6 @@ if [ "$RUN_TIMEOUT_SECONDS" -gt 0 ]; then
 fi
 echo "Screenshots in: $SCREENSHOT_DIR"
 echo "======================================"
-
-# Background watchdog: if DuckStation is still alive after the deadline,
-# TERM it (then KILL if that doesn't take). No-op when disabled.
-if [ "$RUN_TIMEOUT_SECONDS" -gt 0 ]; then
-    (
-        sleep "$RUN_TIMEOUT_SECONDS"
-        if kill -0 "$DUCK_PID" 2>/dev/null; then
-            echo "" >&2
-            echo "rebuild-and-let-run.sh: emergency timeout reached, killing DuckStation (pid $DUCK_PID)." >&2
-            kill -TERM "$DUCK_PID" 2>/dev/null || true
-            sleep 5
-            kill -KILL "$DUCK_PID" 2>/dev/null || true
-        fi
-    ) &
-    WATCHDOG_PID=$!
-fi
 
 # Wait for DuckStation to exit (user closes it, or watchdog fires)
 wait $DUCK_PID 2>/dev/null || true

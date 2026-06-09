@@ -229,7 +229,7 @@ fallback, never autoplays above the fold.
 
 ## 5. Voice
 
-**Anchor:** the in-game `drawCredits` text in `src/pause_menu.c`. *"A labor of
+**Anchor:** the in-game `drawCredits` text in `src/pause_menu/pause_menu.c`. *"A labor of
 love by Hunter Davis. … If you paid for this, you were cheated."* Plainspoken,
 dry, sincere, no superlatives. That's the heart.
 

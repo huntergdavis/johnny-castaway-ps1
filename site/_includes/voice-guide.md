@@ -49,7 +49,7 @@ prose are starred):
 
 In-house anchors:
 
-- `src/pause_menu.c::drawCredits` — the four-line in-game credits
+- `src/pause_menu/pause_menu.c::drawCredits` — the four-line in-game credits
   text. This is the irreducible voice: what survives at ~30 chars
   per line on a PS1 panel.
 - `docs/ps1/website-plan.md` § 5 — the project's existing

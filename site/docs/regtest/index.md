@@ -433,7 +433,7 @@ scripts/check-character-screenshot.py  Overlay-backed character check
   — post-run analysis + HTML report and run-vs-run diff.
 - [`scripts/decode-ps1-bars.py`]({{ site.github_url }}/blob/main/scripts/decode-ps1-bars.py)
   — telemetry overlay decoder (used when frames carry the on-screen
-  perf bars from `src/ps1_debug.c`).
+  perf bars from `src/platform/ps1/ps1_debug.c`).
 - [`scripts/check-character-screenshot.py`]({{ site.github_url }}/blob/main/scripts/check-character-screenshot.py)
   — overlay-backed character check the body's "Overlay-backed
   character checks" section walks through.

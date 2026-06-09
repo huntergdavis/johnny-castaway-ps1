@@ -115,8 +115,8 @@ routes and the screenshots those routes produce.
 
 | File | Why |
 |---|---|
-| [`src/ps1_pad_script.c`]({{ site.github_url }}/blob/main/src/ps1_pad_script.c) | Parser, scheduler, TTY markers, button-mask merge. |
-| [`src/ps1_pad_input.h`]({{ site.github_url }}/blob/main/src/ps1_pad_input.h) | Shared helper that folds analog stick into D-pad and calls the script merger. |
+| [`src/platform/ps1/ps1_pad_script.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_pad_script.c) | Parser, scheduler, TTY markers, button-mask merge. |
+| [`src/platform/ps1/ps1_pad_input.h`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_pad_input.h) | Shared helper that folds analog stick into D-pad and calls the script merger. |
 | [`config/ps1/PADSCRIPT.TXT`]({{ site.github_url }}/blob/main/config/ps1/PADSCRIPT.TXT) | Empty normal-build script source. |
 | [`scripts/ps1-menu-input-harness.sh`]({{ site.github_url }}/blob/main/scripts/ps1-menu-input-harness.sh) | End-to-end menu route runner. |
 | [`scripts/ps1-menu-harness-report.py`]({{ site.github_url }}/blob/main/scripts/ps1-menu-harness-report.py) | Marker-aligned screenshot extraction and help-page generator. |

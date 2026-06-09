@@ -57,7 +57,7 @@ Slack exists in the held intervals; it does not exist in the entries.
 ## What was measured
 
 The perf instrumentation lives in
-[`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c). It is
+[`src/platform/ps1/ps1_perf.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_perf.c). It is
 gated so it adds zero cost when off.
 
 Three signal sources:
@@ -1039,8 +1039,8 @@ rollup, and the regtest runner.
 - [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md)
   · [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
   — the optimization plan and the 600+ experiment ledger.
-- [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c)
-  · [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+- [`src/platform/ps1/ps1_perf.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_perf.c)
+  · [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)
   — runtime: the `JCPERF2` instrumentation and the FG2 dispatcher
   whose per-frame budget the matrix measures.
 - [`scripts/ps1-perf-iterate.sh`]({{ site.github_url }}/blob/main/scripts/ps1-perf-iterate.sh)

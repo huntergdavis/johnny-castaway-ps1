@@ -11,7 +11,7 @@ from pathlib import Path
 
 DEFAULT_SCENE_LIST = Path("config/ps1/regtest-scenes.txt")
 DEFAULT_SPEC_DIR = Path("docs/ps1/research/generated/restore_scene_specs_full_2026-03-21")
-DEFAULT_HEADER = Path("src/ps1_restore_pilots.h")
+DEFAULT_HEADER = Path("src/foreground_pilot/ps1_restore_pilots.h")
 GENERATOR = Path("scripts/generate-restore-pilots-header.py")
 EXTRA_SPEC_PATHS = [
     Path("docs/ps1/research/generated/restore_scene_specs_full_2026-03-21/fishing-ads-tag-01.json"),

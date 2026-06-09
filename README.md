@@ -537,7 +537,7 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
 
 1. **Desktop host** runs Sierra's TTM/ADS interpreter and captures every visible foreground draw plus every `PLAY_SAMPLE` opcode into a per-frame JSON bundle.
 2. A **pack compiler** turns that capture into PS1-native FG2 / FGP3 packs — high-tide and low-tide base-diff spans plus a per-frame sound-event table.
-3. On **PS1**, [`foreground_pilot.c`](src/foreground_pilot.c) loads the pack and stamps captured frames in step with a narrow runtime that handles background, wave animation, holiday overlay, and SPU playback. SFX fire on cue with a 3-frame delay so sample key-on matches the visible trigger.
+3. On **PS1**, [`foreground_pilot.c`](src/foreground_pilot/foreground_pilot.c) loads the pack and stamps captured frames in step with a narrow runtime that handles background, wave animation, holiday overlay, and SPU playback. SFX fire on cue with a 3-frame delay so sample key-on matches the visible trigger.
 
 Full pipeline — pack format byte layout, hardware constraints hit on the way, the SPI pad-poll fix, dirty-rect bookkeeping — at **[/about/method/](https://hunterdavis.com/johnny-castaway-ps1/about/method/)**.
 
@@ -577,7 +577,7 @@ Pause → **Accessibility** → **Captions: ON**. A dark band appears at the bot
 
 The corpus was authored fresh from scene content — see [`docs/ps1/caption-audit-2026-04-26.yaml`](docs/ps1/caption-audit-2026-04-26.yaml) for confidence ratings, and **[/docs/captions/#post-validation-runtime-corrections-v084-ps1](https://hunterdavis.com/johnny-castaway-ps1/docs/captions/#post-validation-runtime-corrections-v084-ps1)** for the v0.8.4 chapter-select-grind reconciliation (several scene-to-caption mappings drifted from the on-PS1 gags and have been corrected on the website's per-scene pages — the runtime `captionSceneMap[]` is open work).
 
-Implementation: [`src/ps1_captions.c`](src/ps1_captions.c) / [`.h`](src/ps1_captions.h) (corpus + renderer), [`src/foreground_pilot.c`](src/foreground_pilot.c) (per-scene fire), [`src/graphics_ps1.c`](src/graphics_ps1.c) (`captionsRender()` inside `grUpdateDisplay`).
+Implementation: [`src/platform/ps1/ps1_captions.c`](src/platform/ps1/ps1_captions.c) / [`.h`](src/platform/ps1/ps1_captions.h) (corpus + renderer), [`src/foreground_pilot/foreground_pilot.c`](src/foreground_pilot/foreground_pilot.c) (per-scene fire), [`src/graphics_ps1/graphics_ps1.c`](src/graphics_ps1/graphics_ps1.c) (`captionsRender()` inside `grUpdateDisplay`).
 
 ## Hardware target
 

@@ -42,6 +42,9 @@ typedef struct _FILE FILE;
 #ifndef JC_PAUSE_REQUEST_DIAG_LOGS
 #define JC_PAUSE_REQUEST_DIAG_LOGS 0
 #endif
+#ifndef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_VERBOSE_DIAGNOSTICS 0
+#endif
 /* Declare functions implemented in ps1_stubs.c */
 void exit(int status);
 int atoi(const char *str);
@@ -70,6 +73,7 @@ int fclose(FILE *stream);
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "sound_ps1.h"
+#include "ps1_spu_cache.h"
 #include "memcard.h"
 #include "mem_region.h"
 #include "cdrom_ps1.h"
@@ -93,12 +97,34 @@ extern uint8 pad_buff[2][34];
 #include "holidays.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
+#include "scene_picker.h"
 
 #ifdef PS1_BUILD
 static void ps1ShowFreeplayLoadingFrame(const char *phase, int tick)
 {
     (void)phase;
     grShowMeanwhileLoadingFrame((uint16)tick);
+}
+
+static void ps1SpuCacheProofHalt(int ok)
+{
+    DRAWENV draw;
+
+    ResetGraph(0);
+    SetVideoMode(MODE_NTSC);
+    SetDefDrawEnv(&draw, 0, 0, 640, 480);
+    if (ok)
+        setRGB0(&draw, 0, 96, 0);
+    else
+        setRGB0(&draw, 96, 0, 0);
+    draw.isbg = 1;
+    PutDrawEnv(&draw);
+    SetDispMask(1);
+
+    while (1) {
+        VSync(0);
+        PutDrawEnv(&draw);
+    }
 }
 
 /* story_data.h is platform-independent — it's just a const struct
@@ -386,6 +412,10 @@ const char *fgLoopGetAllSlug(int index)
 static int         gFgLoopPickInProgress = 0;
 static const char *gFgLoopLastTarget     = NULL;
 static const char *gFgLoopLastPlayed     = NULL;
+#ifdef PS1_BUILD
+static int         gFgLoopLookaheadValid = 0;
+static const char *gFgLoopLookaheadScene = NULL;
+#endif
 
 /* Public accessor — called from fgRuntimeReset (which feeds the
  * scene name to memSceneReset for its JCMEM line) and from
@@ -401,6 +431,23 @@ void fgLoopMarkScenePlayed(void) {
     gFgLoopPickInProgress = 0;
 }
 
+static void fgLoopRememberPickedTarget(const char *chosen)
+{
+    if (chosen != NULL) {
+        gFgLoopLastTarget     = chosen;
+        gFgLoopPickInProgress = 1;
+    }
+}
+
+#ifdef PS1_BUILD
+static void fgLoopClearStageLookahead(void)
+{
+    gFgLoopLookaheadValid = 0;
+    gFgLoopLookaheadScene = NULL;
+    foregroundPilotSetStageScene(NULL);
+}
+#endif
+
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
@@ -408,7 +455,14 @@ static const char *fgLoopNextScene(const char *explicitScene,
 #ifdef PS1_BUILD
     extern const char *pickerNextScene(const char *explicitScene,
                                        int sceneSetIdx);
-    chosen = pickerNextScene(explicitScene, sceneSetIdx);
+    if ((explicitScene == NULL || explicitScene[0] == '\0') &&
+        gFgLoopLookaheadValid) {
+        chosen = gFgLoopLookaheadScene;
+        gFgLoopLookaheadValid = 0;
+        gFgLoopLookaheadScene = NULL;
+    } else {
+        chosen = pickerNextScene(explicitScene, sceneSetIdx);
+    }
 #else
     (void)sceneSetIdx;
     chosen = explicitScene;
@@ -419,12 +473,34 @@ static const char *fgLoopNextScene(const char *explicitScene,
      * fgLoopGetLastScene returns the target rather than the last-
      * successfully-played one. fgLoopMarkScenePlayed flips it off
      * after a successful play. */
-    if (chosen != NULL) {
-        gFgLoopLastTarget     = chosen;
-        gFgLoopPickInProgress = 1;
-    }
+    fgLoopRememberPickedTarget(chosen);
     return chosen;
 }
+
+#ifdef PS1_BUILD
+static void fgLoopPrimeStageLookahead(const char *explicitScene,
+                                      int sceneSetIdx)
+{
+    extern const char *pickerNextScene(const char *explicitScene,
+                                       int sceneSetIdx);
+
+    if (explicitScene != NULL && explicitScene[0] != '\0') {
+        foregroundPilotSetStageScene(NULL);
+        return;
+    }
+
+    if (!gFgLoopLookaheadValid) {
+        const char *nextScene = pickerNextScene(NULL, sceneSetIdx);
+        if (nextScene != NULL) {
+            gFgLoopLookaheadScene = nextScene;
+            gFgLoopLookaheadValid = 1;
+        }
+    }
+
+    foregroundPilotSetStageScene(gFgLoopLookaheadValid ?
+                                 gFgLoopLookaheadScene : NULL);
+}
+#endif
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
  * and a new island position is randomized. The PS1 screensaver loop
@@ -846,13 +922,22 @@ static char ps1BootArgStorage[3][32];
 static char ps1BootOverrideSource[16];
 static char ps1BootOverrideText[128];
 static char ps1BootForegroundOverlayScene[32];
+static int ps1BootSpuCacheTest = 0;
+static int ps1BootSpuCacheProof = 0;
+static int ps1BootPickerPolicy = -1;
+#if PS1_VERBOSE_DIAGNOSTICS
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
 volatile uint16 ps1BootDbgCaptureMode = 0;
+#endif
+#if JC_PRINTF_PROBE_LOGS
 static int ps1BootPrintfTest = 0;
+#endif
+#if PS1_VERBOSE_DIAGNOSTICS
 /* When set, fire JC_BSOD synthetically right after the first scene
  * completes — used to verify the BSOD UI without a real failure. */
 static int ps1BootBsodAfterFirstScene = 0;
+#endif
 
 static int ps1IsSpace(char c)
 {
@@ -871,6 +956,10 @@ static void ps1ResetBootArgs(void)
     ps1BootOverrideSource[0] = '\0';
     ps1BootOverrideText[0] = '\0';
     ps1BootForegroundOverlayScene[0] = '\0';
+    ps1BootSpuCacheTest = 0;
+    ps1BootSpuCacheProof = 0;
+    ps1BootPickerPolicy = -1;
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootCaptureMetaDirStorage[0] = '\0';
     ps1BootCaptureSceneLabelStorage[0] = '\0';
 
@@ -878,14 +967,22 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlay = 0;
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
+#endif
     foregroundPilotSetHeapProbe(0);
+    foregroundPilotSetLoadingWaveProof(0);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     freeplaySetTelemetryLevel(0);
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootDbgCaptureMode = 0;
+#endif
     ps1BootForcedSeed = -1;
+#if JC_PRINTF_PROBE_LOGS
     ps1BootPrintfTest = 0;
+#endif
+#if PS1_VERBOSE_DIAGNOSTICS
     ps1BootBsodAfterFirstScene = 0;
+#endif
     hostForcedIslandPosValid = 0;
     hostForcedIslandX = 0;
     hostForcedIslandY = 0;
@@ -921,6 +1018,33 @@ static char *ps1CopyBootString(char *dst, size_t dstSize, const char *src)
     return dst;
 }
 
+static int ps1BuildText3(char *dst, size_t dstSize,
+                         const char *a, const char *b, const char *c)
+{
+    size_t pos = 0;
+    const char *parts[3];
+    int part;
+
+    if (dst == NULL || dstSize == 0)
+        return 0;
+
+    parts[0] = a ? a : "";
+    parts[1] = b ? b : "";
+    parts[2] = c ? c : "";
+    for (part = 0; part < 3; part++) {
+        const char *s = parts[part];
+        while (*s != '\0') {
+            if (pos + 1 >= dstSize) {
+                dst[0] = '\0';
+                return 0;
+            }
+            dst[pos++] = *s++;
+        }
+    }
+    dst[pos] = '\0';
+    return 1;
+}
+
 static void ps1RememberBootOverride(const char *source, const char *buffer)
 {
     ps1CopyBootString(ps1BootOverrideSource,
@@ -936,6 +1060,111 @@ static void ps1RememberBootOverride(const char *source, const char *buffer)
     }
 }
 
+static int ps1BootStringHasToken(const char *text, const char *token)
+{
+    size_t tokenLen;
+    const char *cursor;
+
+    if (!text || !text[0] || !token)
+        return 0;
+
+    tokenLen = strlen(token);
+    cursor = text;
+    while (*cursor) {
+        const char *start;
+        size_t len;
+
+        while (*cursor && ps1IsSpace(*cursor))
+            cursor++;
+        start = cursor;
+        while (*cursor && !ps1IsSpace(*cursor))
+            cursor++;
+
+        len = (size_t)(cursor - start);
+        if (len == tokenLen && !strncmp(start, token, tokenLen))
+            return 1;
+    }
+
+    return 0;
+}
+
+static int ps1BootOverrideHasToken(const char *token)
+{
+    return ps1BootStringHasToken(ps1BootOverrideText, token);
+}
+
+static int ps1IsFgPilotOptionToken(const char *token)
+{
+    if (token == NULL)
+        return 0;
+
+#if PS1_VERBOSE_DIAGNOSTICS
+    if (!strcmp(token, "capture-overlay-mask") ||
+        !strcmp(token, "capture-overlay") ||
+        !strcmp(token, "capture-meta-dir") ||
+        !strcmp(token, "capture-range") ||
+        !strcmp(token, "capture-interval") ||
+        !strcmp(token, "capture-scene-label") ||
+        !strcmp(token, "bsod-test") ||
+        !strcmp(token, "bsod-ui-test-mem-boot") ||
+        !strcmp(token, "bsod-ui-test-mem-cache") ||
+        !strcmp(token, "bsod-ui-test-mem-transient") ||
+        !strcmp(token, "heap-probe"))
+        return 1;
+#endif
+#if JC_PRINTF_PROBE_LOGS
+    if (!strcmp(token, "printf-test") || !strcmp(token, "logtest"))
+        return 1;
+#endif
+
+    return !strcmp(token, "fgoverlay") ||
+           !strcmp(token, "island-pos") ||
+           !strcmp(token, "lowtide") ||
+           !strcmp(token, "raft-stage") ||
+           !strcmp(token, "night") ||
+           !strcmp(token, "holiday") ||
+           !strcmp(token, "noloop") ||
+           !strcmp(token, "loading-waves") ||
+           !strcmp(token, "load-waves") ||
+           !strcmp(token, "async-load-waves") ||
+           !strcmp(token, "loading-waves-off") ||
+           !strcmp(token, "no-loading-waves") ||
+           !strcmp(token, "prefetch-off") ||
+           !strcmp(token, "no-prefetch") ||
+           !strcmp(token, "prefetch-stage1") ||
+           !strcmp(token, "stage1") ||
+           !strcmp(token, "prefetch-stage1-off") ||
+           !strcmp(token, "no-stage1") ||
+           !strcmp(token, "prefetch-window32") ||
+           !strcmp(token, "window32") ||
+           !strcmp(token, "prefetch-window48") ||
+           !strcmp(token, "window48") ||
+           !strcmp(token, "prefetch-window64") ||
+           !strcmp(token, "window64") ||
+           !strcmp(token, "prefetch-window") ||
+           !strcmp(token, "spu-cache-test") ||
+           !strcmp(token, "spu-cache-proof") ||
+           !strcmp(token, "spu-stage") ||
+           !strcmp(token, "no-spu-stage") ||
+           !strcmp(token, "picker-random") ||
+           !strcmp(token, "picker-sequential") ||
+           !strcmp(token, "picker-original") ||
+           !strcmp(token, "perf-log") ||
+           !strcmp(token, "perf") ||
+           !strcmp(token, "perf-detail") ||
+           !strcmp(token, "perf-debug") ||
+           !strcmp(token, "freeplay-log") ||
+           !strcmp(token, "freeplay-detail") ||
+           !strcmp(token, "freeplay-debug") ||
+#if PS1_VERBOSE_DIAGNOSTICS
+           !strcmp(token, "pad-diag") ||
+           !strcmp(token, "pad-debug") ||
+#endif
+           !strcmp(token, "pad-script") ||
+           !strcmp(token, "pad-script-log") ||
+           !strcmp(token, "seed");
+}
+
 static int ps1ApplyBootOverride(char *buffer, const char *source)
 {
     char *tokens[32];
@@ -944,6 +1173,10 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     int tokenBase = 0;
 
     ps1RememberBootOverride(source, buffer);
+    if (ps1BootOverrideHasToken("spu-cache-test"))
+        ps1BootSpuCacheTest = 1;
+    if (ps1BootOverrideHasToken("spu-cache-proof"))
+        ps1BootSpuCacheProof = 1;
 
 #if JC_BOOT_DIAG_LOGS
     /* JCBOOT diag: print the entire buffer so we can confirm which
@@ -997,7 +1230,11 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     }
 
     for (int i = 0; i < tokenCount; i++) {
-        if (!strcmp(tokens[i], "capture-overlay-mask")) {
+        if (0) {
+            /* Anchor the optional diagnostic-only else-if clauses below. */
+        }
+#if PS1_VERBOSE_DIAGNOSTICS
+        else if (!strcmp(tokens[i], "capture-overlay-mask")) {
             grCaptureOverlay = 1;
             grCaptureOverlayMaskOnly = 1;
             ps1BootDbgCaptureMode = 2;
@@ -1005,13 +1242,16 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             grCaptureOverlay = 1;
             if (ps1BootDbgCaptureMode == 0)
                 ps1BootDbgCaptureMode = 1;
-        } else if (!strcmp(tokens[i], "fgoverlay") && (i + 1) < tokenCount) {
+        }
+#endif
+        else if (!strcmp(tokens[i], "fgoverlay") && (i + 1) < tokenCount) {
             ps1CopyBootString(
                 ps1BootForegroundOverlayScene,
                 sizeof(ps1BootForegroundOverlayScene),
                 tokens[i + 1]
             );
             i++;
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "capture-meta-dir") && (i + 1) < tokenCount) {
             grCaptureMetaDir = ps1CopyBootString(
                 ps1BootCaptureMetaDirStorage,
@@ -1033,6 +1273,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
                 tokens[i + 1]
             ));
             i++;
+#endif
         } else if (!strcmp(tokens[i], "island-pos") && (i + 2) < tokenCount) {
             hostForcedIslandX = atoi(tokens[i + 1]);
             hostForcedIslandY = atoi(tokens[i + 2]);
@@ -1057,6 +1298,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             i++;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "bsod-test")) {
             /* Force a synthetic BSOD after the first scene plays so we
              * can sanity-check the fatal-error UI. */
@@ -1079,6 +1321,14 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+#endif
+        } else if (!strcmp(tokens[i], "loading-waves") ||
+                   !strcmp(tokens[i], "load-waves") ||
+                   !strcmp(tokens[i], "async-load-waves")) {
+            foregroundPilotSetLoadingWaveProof(1);
+        } else if (!strcmp(tokens[i], "loading-waves-off") ||
+                   !strcmp(tokens[i], "no-loading-waves")) {
+            foregroundPilotSetLoadingWaveProof(0);
         } else if (!strcmp(tokens[i], "prefetch-off") || !strcmp(tokens[i], "no-prefetch")) {
             foregroundPilotSetPrefetchStage1(0);
             foregroundPilotSetPrefetchWindow(0);
@@ -1095,6 +1345,23 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
         } else if (!strcmp(tokens[i], "prefetch-window") && (i + 1) < tokenCount) {
             foregroundPilotSetPrefetchWindow((unsigned long)atoi(tokens[i + 1]));
             i++;
+        } else if (!strcmp(tokens[i], "spu-cache-test")) {
+            ps1BootSpuCacheTest = 1;
+        } else if (!strcmp(tokens[i], "spu-cache-proof")) {
+            ps1BootSpuCacheProof = 1;
+        } else if (!strcmp(tokens[i], "spu-stage")) {
+            foregroundPilotSetSpuStage(1);
+        } else if (!strcmp(tokens[i], "no-spu-stage")) {
+            foregroundPilotSetSpuStage(0);
+        } else if (!strcmp(tokens[i], "picker-random")) {
+            ps1BootPickerPolicy = SCENE_PICKER_RANDOM;
+            pickerSetPolicy(ps1BootPickerPolicy);
+        } else if (!strcmp(tokens[i], "picker-sequential")) {
+            ps1BootPickerPolicy = SCENE_PICKER_SEQUENTIAL;
+            pickerSetPolicy(ps1BootPickerPolicy);
+        } else if (!strcmp(tokens[i], "picker-original")) {
+            ps1BootPickerPolicy = SCENE_PICKER_ORIGINAL;
+            pickerSetPolicy(ps1BootPickerPolicy);
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -1107,15 +1374,21 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             freeplaySetTelemetryLevel(2);
         } else if (!strcmp(tokens[i], "freeplay-debug")) {
             freeplaySetTelemetryLevel(3);
+#if PS1_VERBOSE_DIAGNOSTICS
         } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
             eventsSetPadDiagnostics(1);
+#endif
         } else if (!strcmp(tokens[i], "pad-script")) {
             ps1PadScriptConfigureFromEmbedded(1, 0);
         } else if (!strcmp(tokens[i], "pad-script-log")) {
             ps1PadScriptConfigureFromEmbedded(1, 1);
+#if JC_PRINTF_PROBE_LOGS
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
-        } else if (!strcmp(tokens[i], "padtest")) {
+#endif
+        }
+#if PS1_VERBOSE_DIAGNOSTICS
+        else if (!strcmp(tokens[i], "padtest")) {
             /* Minimal pad-input sanity test. Runs an infinite loop that
              * paints the background red on Start, green on Cross, blue on
              * any other button, and black when nothing's pressed. Logs
@@ -1185,6 +1458,7 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             }
             /* unreachable */
         }
+#endif
     }
 
     if (!strcmp(tokens[0], "island")) {
@@ -1196,7 +1470,9 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
     }
 
     if (!strcmp(tokens[tokenBase], "fgpilot")) {
-        if ((tokenBase + 1) < tokenCount && ps1CopyBootArg(0, tokens[tokenBase + 1]))
+        if ((tokenBase + 1) < tokenCount &&
+            !ps1IsFgPilotOptionToken(tokens[tokenBase + 1]) &&
+            ps1CopyBootArg(0, tokens[tokenBase + 1]))
             numArgs = 1;
         argForegroundPilot = 1;
         return 1;
@@ -1246,6 +1522,7 @@ static void ps1LoadBootOverride(void)
     }
 }
 
+#if JC_BOOT_DIAG_LOGS
 static void ps1LogBootSelection(const char *explicitScene)
 {
     printf(
@@ -1265,6 +1542,9 @@ static void ps1LogBootSelection(const char *explicitScene)
         ps1BootOverrideText[0] ? ps1BootOverrideText : "-"
     );
 }
+#else
+#define ps1LogBootSelection(explicitScene) ((void)0)
+#endif
 
 #if JC_PRINTF_PROBE_LOGS
 static void ps1PrintfProbe(const char *phase, const char *sceneName)
@@ -1337,6 +1617,7 @@ static void loadTitleScreenEarly(void)
     int totalSectors = (totalBytes + 2047) / 2048;
 
     /* Seek to file location */
+    ps1_streamAsyncReadDrain();
     CdControl(CdlSetloc, (uint8*)&fileInfo.pos, 0);
 
     /* Read data */
@@ -1400,6 +1681,7 @@ static void usage()
         printf("         capture-foreground-include-static-base - include current base-BMP ledger draws in foreground-only captures\n");
         printf("         capture-foreground-skip-visibility-mask - replay current foreground ledger without final-frame masking\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
+        printf("         loading-waves   - PS1-only proof: animate waves during FG2 setup CD waits\n");
         printf("         FG2 prefetch defaults to stage1 + 32KB stream window\n");
         printf("         prefetch-window32|48|64 or prefetch-window BYTES - override FG2 stream window size\n");
         printf("         no-prefetch      - disable FG2 prefetch for diagnostics\n");
@@ -1498,6 +1780,15 @@ static void parseArgs(int argc, char **argv)
                 foregroundPilotSetPrefetchStage1(0);
                 foregroundPilotSetPrefetchWindow(0);
             }
+            else if (!strcmp(argv[i], "loading-waves") ||
+                     !strcmp(argv[i], "load-waves") ||
+                     !strcmp(argv[i], "async-load-waves")) {
+                foregroundPilotSetLoadingWaveProof(1);
+            }
+            else if (!strcmp(argv[i], "loading-waves-off") ||
+                     !strcmp(argv[i], "no-loading-waves")) {
+                foregroundPilotSetLoadingWaveProof(0);
+            }
             else if (!strcmp(argv[i], "prefetch-stage1") || !strcmp(argv[i], "stage1")) {
                 foregroundPilotSetPrefetchStage1(1);
             }
@@ -1521,10 +1812,18 @@ static void parseArgs(int argc, char **argv)
                     usage();
                 }
             }
+            else if (!strcmp(argv[i], "spu-stage")) {
+                foregroundPilotSetSpuStage(1);
+            }
+            else if (!strcmp(argv[i], "no-spu-stage")) {
+                foregroundPilotSetSpuStage(0);
+            }
 #ifdef PS1_BUILD
+#if PS1_VERBOSE_DIAGNOSTICS
             else if (!strcmp(argv[i], "pad-diag") || !strcmp(argv[i], "pad-debug")) {
                 eventsSetPadDiagnostics(1);
             }
+#endif
             else if (!strcmp(argv[i], "pad-script")) {
                 ps1PadScriptConfigureFromEmbedded(1, 0);
             }
@@ -1800,6 +2099,13 @@ int main(int argc, char **argv)
 #endif
     ps1PrintfProbe("mem-region-ready", NULL);
 
+    /* Reserve the walk clean buffer before boot-time SPU staging or other
+     * optional caches take transient bites out of libc heap. */
+    {
+        extern int walkPilotInit(void);
+        (void)walkPilotInit();
+    }
+
     /* Seed RNG — use forced seed if specified in BOOTMODE, else hardware RNG. */
     if (ps1BootForcedSeed >= 0) {
         srand((unsigned int)ps1BootForcedSeed);
@@ -1880,12 +2186,26 @@ int main(int argc, char **argv)
      * boot-time ambience from keying on. Explicit BOOTMODE parameters are
      * launch-time intent and must win over saved defaults. */
     memcardSettingsLoaded = memcardLoadSettings();
+    if (ps1BootPickerPolicy >= 0)
+        pickerSetPolicy(ps1BootPickerPolicy);
     memcardRequestedMute = soundMuted;
     soundInit();
     if (memcardSettingsLoaded && memcardRequestedMute) {
         soundMuted = 0;
         soundMuteToggle();  /* apply saved mute to SPU registers */
     }
+    if (ps1BootSpuCacheTest || ps1BootSpuCacheProof ||
+        ps1BootOverrideHasToken("spu-cache-test") ||
+        ps1BootOverrideHasToken("spu-cache-proof") ||
+        ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-test") ||
+        ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof")) {
+        int cacheOk = ps1SpuCacheSelfTest();
+        if (ps1BootSpuCacheProof ||
+            ps1BootOverrideHasToken("spu-cache-proof") ||
+            ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof"))
+            ps1SpuCacheProofHalt(cacheOk);
+    }
+    walkPilotPrimeSpuAssetsBlocking();
     ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
         hostForcedNight = bootNight;
@@ -1920,15 +2240,6 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
 
-    /* Force walk-subsystem to pre-allocate its 149 KB clean buffer
-     * before memFreezeBoot. Without this, the lazy allocation inside
-     * walkPilotCaptureCleanWalkAreaIfStale fires post-freeze and
-     * halts. */
-    {
-        extern int walkPilotInit(void);
-        (void)walkPilotInit();
-    }
-
     /* Freeze the BOOT region. Activating the no-fail invariant: any
      * later memAlloc(MEM_REGION_BOOT, ...) halts via memHalt with a
      * clear "post-freeze" message. Per plan v9 step 13.
@@ -1961,13 +2272,14 @@ int main(int argc, char **argv)
             extern void pickerOnSceneSetCycle(void);
             pauseMenuRequestSceneSetCycle = 0;
             explicitScene = NULL;
+            fgLoopClearStageLookahead();
             pickerOnSceneSetCycle();   /* reset Sequential cursor + repeat-prevention */
             ps1ShowFreeplayLoadingFrame("changing scene set", 0);
             {
                 char banner[40];
-                snprintf(banner, sizeof(banner), "Scene Set: %s",
-                         pauseMenuSceneSetName(pauseMenuSceneSet));
-                captionsShowText(banner, 300);
+                if (ps1BuildText3(banner, sizeof(banner), "Scene Set: ",
+                                  pauseMenuSceneSetName(pauseMenuSceneSet), ""))
+                    captionsShowText(banner, 300);
             }
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
@@ -1991,6 +2303,7 @@ int main(int argc, char **argv)
             if (idx >= 0 && idx < gSceneExplorerCount) {
                 explicitScene = gSceneExplorer[idx].slug;
                 sceneExplorerOneShot = oneShot;
+                fgLoopClearStageLookahead();
                 fgLoopForgetWalkContext();
                 fgLoopSequenceJustReset = 1;
                 skipWalkThisIteration = 1;
@@ -1999,11 +2312,10 @@ int main(int argc, char **argv)
                     oneShot ? "now playing" : "looping", 0);
                 {
                     char banner[64];
-                    snprintf(banner, sizeof(banner),
-                             "%s %s",
-                             oneShot ? "Now playing:" : "Looping:",
-                             gSceneExplorer[idx].display_name);
-                    captionsShowText(banner, 240);
+                    if (ps1BuildText3(banner, sizeof(banner),
+                                      oneShot ? "Now playing: " : "Looping: ",
+                                      sceneExplorerSelectedDisplayName(), ""))
+                        captionsShowText(banner, 240);
                 }
             }
         }
@@ -2068,6 +2380,7 @@ int main(int argc, char **argv)
         if (!pauseMenuRequestNextScene &&
             !pauseMenuRequestFreeplay &&
             !pauseMenuRequestResetLoop) {
+            fgLoopPrimeStageLookahead(explicitScene, pauseMenuSceneSet);
             fgWalkRenderTeardown();
             foregroundPilotSetScene(loopScene);
             ps1PerfBeginScene(loopScene);
@@ -2085,6 +2398,7 @@ int main(int argc, char **argv)
         if (freeplayExitRequested()) {
             freeplayClearExitRequest();
             explicitScene = NULL;       /* return to random story rotation */
+            fgLoopClearStageLookahead();
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
@@ -2092,12 +2406,14 @@ int main(int argc, char **argv)
 #endif
         }
 
+#if PS1_VERBOSE_DIAGNOSTICS
         /* BOOTMODE bsod-test: synthesize a fatal-error after the first
          * scene completes so the BSOD UI can be verified visually. */
         if (ps1BootBsodAfterFirstScene) {
             JC_BSOD(loopScene, "bsod-test bootmode flag — synthetic fatal "
                               "after first scene to validate BSOD rendering");
         }
+#endif
 
         /* After the scene played, update Johnny's spot/heading so the
          * next loop iteration knows where to walk from. */
@@ -2131,6 +2447,7 @@ int main(int argc, char **argv)
         }
         if (pauseMenuRequestFreeplay) {
             pauseMenuRequestFreeplay = 0;
+            fgLoopClearStageLookahead();
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
@@ -2149,10 +2466,12 @@ int main(int argc, char **argv)
             ps1PerfEndScene("freeplay");
             freeplayClearExitRequest();
             explicitScene = NULL;
+            fgLoopClearStageLookahead();
         }
         if (pauseMenuRequestResetLoop) {
             pauseMenuRequestResetLoop = 0;
             explicitScene = NULL;  /* drop pinned scene → next iter random */
+            fgLoopClearStageLookahead();
 #if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume reset-loop\n");
 #endif

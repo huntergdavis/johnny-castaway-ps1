@@ -35,6 +35,145 @@
 #define PS1_PACK_ENTRY_SIZE 28
 #define PS1_PACK_FILE_MAX 32
 
+static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
+static void *gPs1CdReadIdleHookUserData = NULL;
+
+static int ps1BuildPath3(char *out, size_t outSize,
+                         const char *a, const char *b, const char *c)
+{
+    size_t pos = 0;
+    const char *parts[3];
+    int part;
+
+    if (out == NULL || outSize == 0)
+        return 0;
+
+    parts[0] = a ? a : "";
+    parts[1] = b ? b : "";
+    parts[2] = c ? c : "";
+    for (part = 0; part < 3; part++) {
+        const char *s = parts[part];
+        while (*s != '\0') {
+            if (pos + 1 >= outSize) {
+                out[0] = '\0';
+                return 0;
+            }
+            out[pos++] = *s++;
+        }
+    }
+    out[pos] = '\0';
+    return 1;
+}
+
+enum {
+    PS1_CD_IDLE_HOOK_CHUNK_SECTORS = 4
+};
+
+struct TPs1CdAsyncRead {
+    uint8 active;
+};
+
+static struct TPs1CdAsyncRead gPs1CdAsyncRead;
+
+void ps1_cdSetReadIdleHook(Ps1CdReadIdleHook hook, void *userData)
+{
+    gPs1CdReadIdleHook = hook;
+    gPs1CdReadIdleHookUserData = userData;
+}
+
+static uint32_t ps1CdChunkLimitWithIdleHook(uint32_t normalLimit)
+{
+    if (gPs1CdReadIdleHook != NULL &&
+        normalLimit > PS1_CD_IDLE_HOOK_CHUNK_SECTORS)
+        return PS1_CD_IDLE_HOOK_CHUNK_SECTORS;
+    return normalLimit;
+}
+
+static void ps1CdPumpReadIdleHook(void)
+{
+    if (gPs1CdReadIdleHook != NULL) {
+        gPs1CdReadIdleHook(gPs1CdReadIdleHookUserData);
+        /* Blocking readers own the CD drive between chunks. If the idle hook
+         * opportunistically started async work, finish it before the next
+         * blocking CdRead can retarget the controller. */
+        ps1_streamAsyncReadDrain();
+    }
+}
+
+int __attribute__((noinline,optimize("Os")))
+ps1_streamAsyncReadAlignedBegin(const CdlFILE *cdfile,
+                                uint32_t offset,
+                                uint32_t size,
+                                uint8_t *dstBuffer)
+{
+    CdlLOC loc;
+    uint32_t fileLba;
+    uint32_t startSector;
+    uint32_t sectors;
+
+    if (gPs1CdAsyncRead.active ||
+        cdfile == NULL ||
+        dstBuffer == NULL ||
+        size == 0 ||
+        (offset % CD_SECTOR_SIZE) != 0 ||
+        (size % CD_SECTOR_SIZE) != 0)
+        return 0;
+
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
+    startSector = offset / CD_SECTOR_SIZE;
+    sectors = size / CD_SECTOR_SIZE;
+    if (sectors == 0)
+        return 0;
+
+    (void)CdReadSync(0, NULL);
+    CdIntToPos(fileLba + startSector, &loc);
+    if (CdControl(CdlSetloc, (uint8_t *)&loc, NULL) == 0)
+        return 0;
+
+    if (CdRead((int)sectors, (uint32_t *)dstBuffer, CdlModeSpeed) == 0)
+        return 0;
+
+    gPs1CdAsyncRead.active = 1;
+    return 1;
+}
+
+int __attribute__((noinline,optimize("Os")))
+ps1_streamAsyncReadPoll(void)
+{
+    int syncResult;
+
+    if (!gPs1CdAsyncRead.active)
+        return PS1_CD_ASYNC_ERROR;
+
+    syncResult = CdReadSync(1, NULL);
+    if (syncResult > 0)
+        return PS1_CD_ASYNC_PENDING;
+
+    gPs1CdAsyncRead.active = 0;
+    if (syncResult == 0)
+        return PS1_CD_ASYNC_DONE;
+
+    return PS1_CD_ASYNC_ERROR;
+}
+
+int __attribute__((noinline,optimize("Os")))
+ps1_streamAsyncReadDrain(void)
+{
+    int syncResult;
+
+    if (!gPs1CdAsyncRead.active)
+        return 1;
+
+    syncResult = CdReadSync(0, NULL);
+    gPs1CdAsyncRead.active = 0;
+    return (syncResult == 0) ? 1 : 0;
+}
+
+static int ps1CdEnsureNoAsyncRead(void)
+{
+    return ps1_streamAsyncReadDrain();
+}
+
 /*
  * Build 28: Test different file path formats with debug output
  * Use ps1DebugPrint since we know it works now
@@ -387,6 +526,8 @@ int cdromRead(int fileHandle, void *buffer, uint32 size)
     if (currentPos + size > file->size) {
         size = file->size - currentPos;
     }
+    if (!ps1CdEnsureNoAsyncRead())
+        return -1;
 
     /* Calculate sector offset from file start */
     uint32 sectorSize = 2048;  /* CD-ROM Mode 1 sector size */
@@ -569,10 +710,33 @@ uint32 cdromGetSize(int fileHandle)
 
 static PS1File ps1FilePool[4];  /* Support up to 4 open files */
 
+static void ps1FreeCdBuffer(uint8_t *buffer, int fromRegion)
+{
+    if (buffer == NULL)
+        return;
+    if (fromRegion)
+        memFree(MEM_REGION_CACHE, buffer);
+    else
+        free(buffer);
+}
+
+static void ps1FreeFileBuffer(PS1File *file)
+{
+    if (file == NULL || file->buffer == NULL)
+        return;
+    ps1FreeCdBuffer(file->buffer, file->bufferFromRegion);
+    file->buffer = NULL;
+    file->bufferSize = 0;
+    file->bufferFromRegion = 0;
+    file->streamBase = 0;
+    file->streamBytesCached = 0;
+}
+
 /* Reset CD state after external CD operations (like title screen loading) */
 void cdromResetState(void)
 {
     /* Wait for any pending CD operations */
+    ps1_streamAsyncReadDrain();
     CdReadSync(0, NULL);
 
     /* Re-initialize the CD subsystem to fully reset state */
@@ -580,9 +744,8 @@ void cdromResetState(void)
 
     /* Ensure ps1FilePool is clean and initialized */
     for (int i = 0; i < 4; i++) {
-        if (ps1FilePool[i].buffer && !ps1FilePool[i].isOpen) {
-            free(ps1FilePool[i].buffer);
-            ps1FilePool[i].buffer = NULL;
+        if (ps1FilePool[i].buffer) {
+            ps1FreeFileBuffer(&ps1FilePool[i]);
         }
         ps1FilePool[i].isOpen = 0;
         ps1FilePool[i].bufferSize = 0;
@@ -596,12 +759,16 @@ CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
      * async CdlPause. Our fast read polling can return before that pause's
      * completion IRQ, and that IRQ resets the CD parameter FIFO. Drain it
      * before CdSearchFile, whose directory walk issues CdlSetloc commands. */
+    (void)ps1CdEnsureNoAsyncRead();
     (void)CdReadSync(0, NULL);
     return CdSearchFile(file, filename);
 }
 
 PS1File* ps1_fopen(const char* filename, const char* mode)
 {
+    if (!ps1CdEnsureNoAsyncRead())
+        return NULL;
+
     /* Find free file slot */
     PS1File* file = NULL;
     for (int i = 0; i < 4; i++) {
@@ -614,6 +781,7 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     if (!file) {
         return NULL;  /* No free slots */
     }
+    ps1FreeFileBuffer(file);
 
     /* Brief wait for CD to be ready */
     for (volatile int i = 0; i < 1000000; i++);
@@ -683,8 +851,9 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     int sync_result = CdReadSync(0, NULL);
 
     if (sync_result < 0) {
-        free(file->buffer);
-        file->buffer = NULL;
+        ps1FreeFileBuffer(file);
+        file->isOpen = 0;
+        file->filename[0] = '\0';
         return NULL;  /* Read error */
     }
 
@@ -704,9 +873,8 @@ PS1File* ps1_fopen_stream(const char* filename, uint32_t cacheBytes)
     PS1File *file = &streamFiles[streamSlot];
     streamSlot = (streamSlot + 1) % 4;
     /* Reset slot if it was in use */
-    if (file->isOpen && file->buffer) {
-        free(file->buffer);
-        file->buffer = NULL;
+    if (file->buffer) {
+        ps1FreeFileBuffer(file);
     }
     memset(file, 0, sizeof(*file));
 
@@ -752,6 +920,9 @@ static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
     uint32_t needEnd     = (uint32_t)file->currentPos + needBytes;
     uint32_t endSector   = (needEnd + SECTOR - 1u) / SECTOR;
     uint32_t numSectors  = endSector - startSector;
+    if (!ps1CdEnsureNoAsyncRead())
+        return 0;
+
     /* Clamp to cache capacity (full sectors only). */
     uint32_t capSectors  = file->bufferSize / SECTOR;
     if (capSectors == 0) return 0;
@@ -895,14 +1066,7 @@ int ps1_fclose(PS1File* file)
 
     /* Free preloaded buffer if it exists. Use the right allocator
      * based on how the buffer was obtained at fopen time. */
-    if (file->buffer) {
-        if (file->bufferFromRegion) {
-            memFree(MEM_REGION_CACHE, file->buffer);
-        } else {
-            free(file->buffer);
-        }
-        file->buffer = NULL;
-    }
+    ps1FreeFileBuffer(file);
 
     file->isOpen = 0;
     return 0;
@@ -935,12 +1099,24 @@ static int ps1CdReadSyncBounded(void)
     int syncResult;
     int fastPoll = 1000000;
 
+    syncResult = CdReadSync(1, NULL);
+    if (gPs1CdReadIdleHook != NULL) {
+        int vsyncWait = 240;
+        while (syncResult > 0 && --vsyncWait > 0) {
+            VSync(0);
+            syncResult = CdReadSync(1, NULL);
+        }
+        if (syncResult <= 0)
+            ps1CdPumpReadIdleHook();
+        return syncResult;
+    }
+
     /* Keep normal foreground reads on the old VBlank-free fast path. If the
      * non-blocking sync stays pending, fall back to a bounded VBlank wait so
      * long soaks can recover from a missed CD completion IRQ. */
-    do {
+    while (syncResult > 0 && --fastPoll > 0) {
         syncResult = CdReadSync(1, NULL);
-    } while (syncResult > 0 && --fastPoll > 0);
+    }
 
     if (syncResult <= 0)
         return syncResult;
@@ -1044,6 +1220,8 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
 
     if (cdfile == NULL || size == 0)
         return NULL;
+    if (!ps1CdEnsureNoAsyncRead())
+        return NULL;
 
     /* Calculate sector range needed
      * CD sectors are 2048 bytes each */
@@ -1090,8 +1268,12 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         uint32_t chunkSectors = numSectors - sectorsRead;
         uint8_t *chunkDst = sectorBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
@@ -1100,7 +1282,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
             return NULL;
         }
 
@@ -1111,7 +1293,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
             return NULL;
         }
 
@@ -1122,7 +1304,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
                                           0, perfFileLba, offset, 0);
-            free(sectorBuffer);
+            ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
             return NULL;  /* Read error or timeout */
         }
 
@@ -1140,11 +1322,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     } else {
         result = (uint8_t*)malloc(size);
         if (!result) {
-            if (sectorBufferFromRegion) {
-                memFree(MEM_REGION_TRANSIENT, sectorBuffer);
-            } else {
-                free(sectorBuffer);
-            }
+            ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
             return NULL;
         }
     }
@@ -1157,11 +1335,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
                                   1, perfFileLba, offset, 0);
-    if (sectorBufferFromRegion) {
-        memFree(MEM_REGION_CACHE, sectorBuffer);
-    } else {
-        free(sectorBuffer);
-    }
+    ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
     return result;
 }
 
@@ -1177,6 +1351,8 @@ static int ps1_streamReadFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, 
     int result;
 
     if (cdfile == NULL || size == 0 || dstBuffer == NULL)
+        return 0;
+    if (!ps1CdEnsureNoAsyncRead())
         return 0;
 
     startSector = offset / CD_SECTOR_SIZE;
@@ -1234,6 +1410,8 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
 
     if (cdfile == NULL || size == 0 || dstBuffer == NULL)
         return 0;
+    if (!ps1CdEnsureNoAsyncRead())
+        return 0;
 
     startSector = offset / CD_SECTOR_SIZE;
     endByte = offset + size;
@@ -1247,6 +1425,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         return 0;
     if (maxChunkSectors > PS1_CD_READ_CHUNK_SECTORS)
         maxChunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+    maxChunkSectors = ps1CdChunkLimitWithIdleHook(maxChunkSectors);
     requestStart = offset;
     requestEnd = offset + size;
 
@@ -1350,6 +1529,8 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         return 0;
     if ((offset % CD_SECTOR_SIZE) != 0)
         return 0;
+    if (!ps1CdEnsureNoAsyncRead())
+        return 0;
 
     startSector = offset / CD_SECTOR_SIZE;
     endByte = offset + size;
@@ -1368,8 +1549,12 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         uint32_t chunkSectors = numSectors - sectorsRead;
         uint8_t *chunkDst = dstBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
@@ -1424,6 +1609,8 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
 
     if (cdfile == NULL || size == 0)
         return NULL;
+    if (!ps1CdEnsureNoAsyncRead())
+        return NULL;
 
     fileSize = cdfile->size;
     if (offset > fileSize || size > fileSize || (offset + size) > fileSize)
@@ -1440,8 +1627,12 @@ static uint8_t* ps1_streamReadFromCdFileWhole(const CdlFILE *cdfile, uint32_t of
         uint32_t chunkSectors = totalSectors - sectorsRead;
         uint8_t *chunkDst = fileBuffer + (sectorsRead * CD_SECTOR_SIZE);
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        {
+            uint32_t chunkLimit =
+                ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+            if (chunkSectors > chunkLimit)
+                chunkSectors = chunkLimit;
+        }
 
         CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + sectorsRead, &loc);
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
@@ -1582,8 +1773,7 @@ static int ps1PilotBuildPackFile(const char *adsName, char *outPath, size_t outP
     if (stem[0] == '\0')
         return 0;
 
-    snprintf(outPath, outPathSize, "PACKS\\%s.PAK", stem);
-    return 1;
+    return ps1BuildPath3(outPath, outPathSize, "PACKS\\", stem, ".PAK");
 }
 
 static int ps1PilotRefreshPackFileInfo(struct TPs1ActivePack *pack)
@@ -1862,6 +2052,10 @@ uint8_t *ps1_loadRawFile(const char *path, uint32_t *outSize)
     int sectors = (fileSize + 2047) / 2048;
     uint8_t *buf = (uint8_t *)malloc(sectors * 2048);
     if (!buf) return NULL;
+    if (!ps1CdEnsureNoAsyncRead()) {
+        free(buf);
+        return NULL;
+    }
 
     CdControl(CdlSetloc, (uint8_t *)&fileInfo.pos, NULL);
     for (volatile int i = 0; i < 100000; i++);
@@ -2667,7 +2861,8 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
 
     /* Build path to pre-extracted file */
     char path[64];
-    snprintf(path, sizeof(path), "\\BMP\\%s;1", bmpResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "\\BMP\\", bmpResource->resName, ";1"))
+        return;
 
     /* Get actual file size from CD (may differ from metadata) */
     CdlFILE cdfile;
@@ -2682,7 +2877,8 @@ void ps1_loadBmpData(struct TBmpResource *bmpResource)
     readSize = (fileSize < bmpResource->uncompressedSize) ? fileSize : bmpResource->uncompressedSize;
 
     /* Build path for ps1_streamRead (without leading backslash and ;1) */
-    snprintf(path, sizeof(path), "BMP\\%s", bmpResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "BMP\\", bmpResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed, no processing needed */
     if (ps1PilotDbgFallbacks < 0xFFFFU)
@@ -2732,7 +2928,8 @@ void ps1_loadScrData(struct TScrResource *scrResource)
     /* Build path to pre-extracted file: "SCR/OCEAN00.SCR" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "SCR\\%s", scrResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "SCR\\", scrResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed, no processing needed
      * Trust the metadata uncompressedSize - the extracted files should match */
@@ -2773,7 +2970,8 @@ void ps1_loadTtmData(struct TTtmResource *ttmResource)
     /* Build path to pre-extracted file: "TTM/FISHWALK.TTM" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "TTM\\%s", ttmResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "TTM\\", ttmResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed bytecode */
     if (ps1PilotDbgFallbacks < 0xFFFFU)
@@ -2815,7 +3013,8 @@ void ps1_loadAdsData(struct TAdsResource *adsResource)
     /* Build path to pre-extracted file: "ADS/STAND.ADS" etc.
      * ps1_streamRead will prepend backslash and append ";1" */
     char path[32];
-    snprintf(path, sizeof(path), "ADS\\%s", adsResource->resName);
+    if (!ps1BuildPath3(path, sizeof(path), "ADS\\", adsResource->resName, ""))
+        return;
 
     /* Read entire file from CD - already decompressed bytecode */
     if (ps1PilotDbgFallbacks < 0xFFFFU)

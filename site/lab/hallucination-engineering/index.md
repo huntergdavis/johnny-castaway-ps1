@@ -40,7 +40,7 @@ to detect.
 The first rule is simple: the agent has to read the files.
 
 Not "you know C". Not "this is probably a Jekyll site". The actual files.
-[`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c).
+[`src/pause_menu/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu/pause_menu.c).
 [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c).
 [`CMakeLists.txt`]({{ site.github_url }}/blob/main/CMakeLists.txt).
 [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml).
@@ -117,7 +117,7 @@ The prompts that work here are ugly in the way good engineering documents are
 ugly:
 
 - "Only edit these files."
-- "Do not touch [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c)."
+- "Do not touch [`src/scene/holidays.c`]({{ site.github_url }}/blob/main/src/scene/holidays.c)."
 - "Index 0 is transparent."
 - "Build must pass."
 - "If you cannot find the function, say that."

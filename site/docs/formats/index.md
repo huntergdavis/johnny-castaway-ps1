@@ -39,7 +39,7 @@ If you paid for this, you were cheated. Open source and free.
 <ul class="doc-grid">
   <li>
     <a href="{{ '/docs/formats/pack-payload/' | relative_url }}">FG2 pack payload</a>
-    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <a href="{{ site.github_url }}/blob/main/src/foreground_pilot.c"><code>foreground_pilot.c</code></a>.</p>
+    <p>The on-disc binary form of one captured ADS scene. A 40-byte header, a palette, an entry table, and a stream of base-and-diff frames, padded to a 2048-byte CD sector. Read at runtime by <a href="{{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c"><code>foreground_pilot.c</code></a>.</p>
   </li>
   <li>
     <a href="{{ '/docs/formats/pack-manifest/' | relative_url }}">FG2 pack manifest</a>

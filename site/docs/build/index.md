@@ -96,16 +96,16 @@ walk family, and the holiday code-generated tables:
 
 ```cmake
 set(SOURCES
-    src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
-    src/foreground_pilot.c src/ps1_perf.c src/island.c
-    src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
-    src/ps1_pad_script.c
-    src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
-    src/spi.c src/memcard.c
-    src/scene_picker.c src/scene_freeplay.c
-    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
-    src/holidays.c src/holidays_table.c
-    src/ps1_stubs.c)
+    src/jc_reborn.c src/core/utils.c src/core/uncompress.c src/resource/resource.c
+    src/foreground_pilot/foreground_pilot.c src/platform/ps1/ps1_perf.c src/scene/island.c
+    src/graphics_ps1/graphics_ps1.c src/platform/ps1/sound_ps1.c src/platform/ps1/events_ps1.c src/cdrom_ps1.c
+    src/platform/ps1/ps1_pad_script.c
+    src/platform/ps1/ps1_debug.c src/pause_menu/pause_menu.c src/platform/ps1/ps1_captions.c
+    src/platform/ps1/spi.c src/platform/ps1/memcard.c
+    src/scene/scene_picker.c src/scene_freeplay/scene_freeplay.c
+    src/walk/walk.c src/walk_pilot.c src/walk/walk_render.c src/walk/calcpath.c
+    src/scene/holidays.c src/scene/holidays_table.c
+    src/platform/ps1/ps1_stubs.c)
 
 psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
 
@@ -117,8 +117,8 @@ target_link_libraries(jcreborn PRIVATE
     psxgpu psxgte psxspu psxcd c)
 ```
 
-The legacy `src/ads.c`, `src/ttm.c`, `src/story.c`, `src/config.c`, and
-`src/bench.c` source files still exist on disk but are not in the
+The legacy `src/ads/ads.c`, `src/host/ttm.c`, `src/host/story.c`, `src/host/config.c`, and
+`src/host/bench.c` source files still exist on disk but are not in the
 SOURCES list. The host build references them; the PS1 build doesn't.
 Section GC (`--gc-sections`) drops the dead code from cross-references
 the active modules still hold.

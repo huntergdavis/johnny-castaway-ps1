@@ -295,7 +295,7 @@ pack. If `version` is not 1, same thing.
 ## Where this is used
 
 - **Runtime consumer** —
-  [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)
   is the one and only PS1-side reader. It opens the file, validates the
   magic, walks the entry table, and presents one diff frame per
   `displayVBlanks` window. The base + diff format means it never has to
@@ -322,4 +322,4 @@ pack. If `version` is not 1, same thing.
 ## Source on GitHub
 
 - [`docs/ps1/research/PACK_PAYLOAD_LAYOUT.md`]({{ site.github_url }}/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md)
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+- [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c)

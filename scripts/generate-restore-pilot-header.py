@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 DEFAULT_SPEC = Path("docs/ps1/research/restore_pilot_spec_2026-03-18.json")
-DEFAULT_HEADER = Path("src/ps1_restore_pilot_spec.h")
+DEFAULT_HEADER = Path("src/foreground_pilot/ps1_restore_pilot_spec.h")
 
 
 def load_json(path: Path) -> dict:

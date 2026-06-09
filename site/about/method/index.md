@@ -101,12 +101,12 @@ Each stage:
   -- the executable, `RESOURCE.MAP`/`.001` for static metadata
   lookup, the SCR/PSB/SND assets the runtime still consults, and
   the title raw.
-- **PS1 replay.** [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) opens the matching pack
+- **PS1 replay.** [`src/foreground_pilot/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot/foreground_pilot.c) opens the matching pack
   for the selected scene+tide, decodes its header and per-frame
   index, and during the scene loop stamps each frame's diff spans
   on top of the prior composite. Background, wave animation, and
   holiday overlays come from the PS1's own narrow runtime;
-  sound events fire through [`src/sound_ps1.c`]({{ site.github_url }}/blob/main/src/sound_ps1.c) on a per-pack event
+  sound events fire through [`src/platform/ps1/sound_ps1.c`]({{ site.github_url }}/blob/main/src/platform/ps1/sound_ps1.c) on a per-pack event
   cursor with a fixed 3-frame delay so SPU key-on lines up with
   the visible trigger.
 
@@ -184,7 +184,7 @@ or the dated worklogs under
 pad driver (`InitPAD` / `StartPAD`) does not auto-poll under
 DuckStation in the project's runtime context. The fix was to lift
 the SPI controller driver from spicyjpeg's `pads` example and run
-it directly: timer-2 plus SIO0 IRQ at 250&nbsp;Hz, in [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c).
+it directly: timer-2 plus SIO0 IRQ at 250&nbsp;Hz, in [`src/platform/ps1/spi.c`]({{ site.github_url }}/blob/main/src/platform/ps1/spi.c).
 That driver, as published, sends a 4-byte poll TX. Under DuckStation
 the controller bytes never make it back; the read returns
 `0xFFFF`. The console only delivers button bytes when the full
@@ -205,7 +205,7 @@ atlas. New on-screen text should not regress to `FntFlush`.
 
 **VRAM corruption across scenes -- `grRestoreBgTiles` wipes
 `currDirty`.** The dirty-rectangle bookkeeping in
-[`src/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1.c) tracks per-frame dirty regions in `currDirty`
+[`src/graphics_ps1/graphics_ps1.c`]({{ site.github_url }}/blob/main/src/graphics_ps1/graphics_ps1.c) tracks per-frame dirty regions in `currDirty`
 and `prevDirty`. On a normal frame, `currDirty` is the spans the
 foreground touched this frame; `prevDirty` is what it touched last
 frame and now needs background restoration. The pause menu opens

@@ -31,7 +31,7 @@ fi
 
 # ----- Gate 2: MEM_REGION_* enum count matches decision-tree count.
 echo "Gate 2: MEM_REGION_* enum count match…"
-header_count=$(grep -oE "MEM_REGION_(BOOT|CACHE|TRANSIENT)\b" src/mem_region.h | sort -u | wc -l | tr -d '[:space:]')
+header_count=$(grep -oE "MEM_REGION_(BOOT|CACHE|TRANSIENT)\b" src/mem_region/mem_region.h | sort -u | wc -l | tr -d '[:space:]')
 tree_count=$(grep -oE "MEM_REGION_(BOOT|CACHE|TRANSIENT)\b" docs/ps1/mem-region-decision-tree.md 2>/dev/null | sort -u | wc -l | tr -d '[:space:]')
 if [ "$header_count" != "$tree_count" ] || [ -z "$header_count" ]; then
     echo "  FAIL: mem_region.h has $header_count unique MEM_REGION_* names; decision tree has $tree_count"

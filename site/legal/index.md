@@ -24,7 +24,7 @@ license + source.
 This project also includes code derived from
 **spicyjpeg's PSn00bSDK pad-poll example**, which is licensed
 under the **Mozilla Public License v2.0**. That's compatible with
-GPL-3.0 in the form used here (see [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c)).
+GPL-3.0 in the form used here (see [`src/platform/ps1/spi.c`]({{ site.github_url }}/blob/main/src/platform/ps1/spi.c)).
 
 ## Disclaimer (assets and character)
 

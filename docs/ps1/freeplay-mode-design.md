@@ -18,7 +18,7 @@ screensaver loop.
 Every ordinary PS1 scene is an `.FG2` foreground pack captured by the host
 tooling and replayed on the console. Freeplay cannot be a captured pack:
 controller input branches every frame. It is a live PS1 scene in
-`src/scene_freeplay.c`, built on the same background, clean-rect, wave,
+`src/scene_freeplay/scene_freeplay.c`, built on the same background, clean-rect, wave,
 holiday, caption, sound, and pause-menu infrastructure as the rest of the
 port.
 

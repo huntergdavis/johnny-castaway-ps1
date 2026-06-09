@@ -88,9 +88,10 @@ static TransientLibcEntry *g_transientLibcHead = NULL;
  * Forward declarations (internal)
  * ------------------------------------------------------------------- */
 
-static void  *cacheAllocInternal(size_t size);
+static void  *cacheAllocInternal(size_t size, const char *tag);
 static void   cacheFreeInternal(void *ptr);
 static size_t cacheUsedInternal(void);
+static void   cacheInit_(void);
 static void   memHaltFmt(const char *region, const char *what,
                          size_t required, size_t available);
 
@@ -148,9 +149,8 @@ void memHalt(const char *scene, const char *reason)
                 __FILE__, __LINE__);
         /* ps1Bsod is noreturn — compiler infers unreachable. */
     } else {
-        ps1DebugError("%s: %s",
-                      scene  ? scene  : "(boot)",
-                      reason ? reason : "(unspecified)");
+        (void)scene;
+        ps1DebugError(reason ? reason : "(unspecified)");
         for (;;) { /* halt forever — GCC infers non-returning */ }
     }
 }
@@ -159,27 +159,55 @@ void memHalt(const char *scene, const char *reason)
  * Re-entrancy guard: a depth counter prevents recursive halt-during-
  * halt from racing the buffer. Returns the same buffer or
  * "[concurrent fatal]" on re-entry. */
-static char        g_haltReason[160];
+static char        g_haltReason[256];
 static volatile int g_haltDepth = 0;
+
+static char *memAppendText(char *dst, char *end, const char *src)
+{
+    if (src == NULL)
+        src = "?";
+    while (dst < end && *src != '\0') {
+        *dst++ = *src++;
+    }
+    *dst = '\0';
+    return dst;
+}
+
+static char *memAppendUnsigned(char *dst, char *end, size_t value)
+{
+    char digits[24];
+    int count = 0;
+
+    do {
+        digits[count++] = (char)('0' + (value % 10u));
+        value /= 10u;
+    } while (value != 0 && count < (int)sizeof(digits));
+
+    while (count > 0 && dst < end)
+        *dst++ = digits[--count];
+    *dst = '\0';
+    return dst;
+}
 
 static const char *formatHaltReason(const char *region, const char *what,
                                     size_t required, size_t available)
 {
+    char *p;
+    char *end;
+
     if (g_haltDepth++ > 0) {
         return "[concurrent fatal]";
     }
-    /* PSX libc printf is non-allocating per project invariant. */
-#ifdef PS1_BUILD
-    extern int snprintf(char *, size_t, const char *, ...);
-#else
-    /* host stdio.h supplies snprintf */
-#endif
-    snprintf(g_haltReason, sizeof(g_haltReason),
-             "%s %s: req=%lu have=%lu",
-             region ? region : "?",
-             what   ? what   : "?",
-             (unsigned long)required,
-             (unsigned long)available);
+    p = g_haltReason;
+    end = g_haltReason + sizeof(g_haltReason) - 1;
+    *p = '\0';
+    p = memAppendText(p, end, region);
+    p = memAppendText(p, end, " ");
+    p = memAppendText(p, end, what);
+    p = memAppendText(p, end, ": req=");
+    p = memAppendUnsigned(p, end, required);
+    p = memAppendText(p, end, " have=");
+    p = memAppendUnsigned(p, end, available);
     return g_haltReason;
 }
 
@@ -226,8 +254,7 @@ void memInit(void)
     g_bootFrozen        = 0;
     g_memInited         = 1;
 
-    /* Initialize CACHE sub-allocator (segregated free-list). */
-    /* See cacheAllocInternal et al. — placeholder for now. */
+    cacheInit_();
 }
 
 void memFreezeBoot(void)
@@ -247,8 +274,6 @@ int memIsReady(void)
 
 void *memAlloc(MemRegion region, size_t size, const char *tag)
 {
-    (void)tag;  /* tag is for telemetry only; not stored */
-
     MEM_REQUIRE(g_memInited);
     MEM_REQUIRE(ps1IsMainContext());
 
@@ -322,11 +347,11 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
             printf("JCMEM cache-alloc-big size=%lu tag=%s\n",
                    (unsigned long)alignedSize, tag ? tag : "(?)");
         }
-        void *p = cacheAllocInternal(alignedSize);
+        void *p = cacheAllocInternal(alignedSize, tag);
         if (p == NULL) {
             extern void checkMemoryBudget(void);
             checkMemoryBudget();
-            p = cacheAllocInternal(alignedSize);
+            p = cacheAllocInternal(alignedSize, tag);
             if (p == NULL) {
                 /* R33-soak panic mode: drop ALL unpinned LRU
                  * resources, not just down-to-budget. The
@@ -340,7 +365,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                  * contiguous span now exists, we recover. */
                 extern void lruEvictAllUnpinned(void);
                 lruEvictAllUnpinned();
-                p = cacheAllocInternal(alignedSize);
+                p = cacheAllocInternal(alignedSize, tag);
                 if (p == NULL) {
                     /* CACHE region + panic eviction both insufficient
                      * — fall back to libc. memFree(CACHE) detects
@@ -520,15 +545,54 @@ typedef struct CacheFreeBlock {
 
 static unsigned char *g_cacheBumpTop;
 static CacheFreeBlock *g_cacheFreeList;  /* sorted by ascending address */
+static const void *g_cacheDiagFreePtr;
+static const void *g_cacheDiagUserPtr;
+static const void *g_cacheDiagNode;
+static const void *g_cacheDiagPrev;
+static const void *g_cacheDiagBlockBase;
+static size_t g_cacheDiagBlockSize;
+static const char *g_cacheDiagFreeTag;
+static const char *g_cacheDiagNodeTag;
+static size_t g_cacheDiagFreeBlockSize;
+static const char *g_cacheDiagOffset4Tag;
+static size_t g_cacheDiagOffset4Size;
 
 /* Minimum block size we'll leave behind when splitting a free block.
  * Must fit a 4-byte header plus a CacheFreeBlock (next pointer). */
-#define CACHE_MIN_SPLIT_BLOCK ((size_t)(CACHE_HEADER_BYTES + sizeof(void *) + MEM_REGION_ALIGN))
+#define CACHE_MIN_BLOCK_BYTES \
+    (((size_t)(CACHE_HEADER_BYTES + sizeof(void *) + MEM_REGION_ALIGN - 1)) & \
+     ~((size_t)MEM_REGION_ALIGN - 1))
+#define CACHE_MIN_SPLIT_BLOCK ((size_t)(CACHE_MIN_BLOCK_BYTES + MEM_REGION_ALIGN))
+#define CACHE_MAX_FREE_WALK ((size_t)((MEM_CACHE_BUDGET / CACHE_MIN_BLOCK_BYTES) + 8u))
 
 static void cacheInit_(void)
 {
     g_cacheBumpTop  = g_cacheBase;
     g_cacheFreeList = NULL;
+}
+
+static const char *cacheDiagTagForPtr_(const void *ptr)
+{
+    if (g_cacheBase != NULL &&
+        ptr == (const void *)(g_cacheBase + CACHE_HEADER_BYTES) &&
+        g_cacheDiagOffset4Tag != NULL)
+        return g_cacheDiagOffset4Tag;
+    return "?";
+}
+
+static void cacheDiagRememberAlloc_(const void *ptr, size_t size,
+                                    const char *tag)
+{
+    if (g_cacheBase != NULL &&
+        ptr == (const void *)(g_cacheBase + CACHE_HEADER_BYTES)) {
+        g_cacheDiagOffset4Tag = tag ? tag : "?";
+        g_cacheDiagOffset4Size = size;
+    }
+}
+
+static void cacheDiagRememberFree_(const void *ptr)
+{
+    (void)ptr;
 }
 
 static unsigned int cacheReadSize_(unsigned char *blockBase)
@@ -545,6 +609,171 @@ static void cacheWriteSize_(unsigned char *blockBase, unsigned int sz)
     memcpy(blockBase, &sz, sizeof(unsigned int));
 }
 
+static int cachePtrAligned_(const void *ptr)
+{
+    return (((unsigned long)ptr & (unsigned long)(MEM_REGION_ALIGN - 1u)) == 0u);
+}
+
+static char *memAppendCacheOffset(char *dst, char *end, const void *ptr)
+{
+    const unsigned char *p = (const unsigned char *)ptr;
+
+    if (ptr == NULL)
+        return memAppendText(dst, end, "nil");
+    if (g_cacheBase != NULL &&
+        p >= g_cacheBase &&
+        p <= g_cacheBase + MEM_CACHE_BUDGET)
+        return memAppendUnsigned(dst, end, (size_t)(p - g_cacheBase));
+    return memAppendText(dst, end, "out");
+}
+
+static const char *formatCacheCorruptReason(const char *what)
+{
+    char *p;
+    char *end;
+
+    if (g_haltDepth++ > 0)
+        return "[concurrent fatal]";
+    p = g_haltReason;
+    end = g_haltReason + sizeof(g_haltReason) - 1;
+    *p = '\0';
+    p = memAppendText(p, end, what);
+    p = memAppendText(p, end, " fp=");
+    p = memAppendCacheOffset(p, end, g_cacheDiagFreePtr);
+    p = memAppendText(p, end, " ft=");
+    p = memAppendText(p, end, g_cacheDiagFreeTag);
+    p = memAppendText(p, end, " fs=");
+    p = memAppendUnsigned(p, end, g_cacheDiagFreeBlockSize);
+    p = memAppendText(p, end, " up=");
+    p = memAppendCacheOffset(p, end, g_cacheDiagUserPtr);
+    p = memAppendText(p, end, " n=");
+    p = memAppendCacheOffset(p, end, g_cacheDiagNode);
+    p = memAppendText(p, end, " nt=");
+    p = memAppendText(p, end, g_cacheDiagNodeTag);
+    p = memAppendText(p, end, " pv=");
+    p = memAppendCacheOffset(p, end, g_cacheDiagPrev);
+    p = memAppendText(p, end, " bb=");
+    p = memAppendCacheOffset(p, end, g_cacheDiagBlockBase);
+    p = memAppendText(p, end, " sz=");
+    p = memAppendUnsigned(p, end, g_cacheDiagBlockSize);
+    p = memAppendText(p, end, " bump=");
+    p = memAppendCacheOffset(p, end, g_cacheBumpTop);
+    p = memAppendText(p, end, " used=");
+    p = memAppendUnsigned(p, end, g_cacheUsed);
+    return g_haltReason;
+}
+
+static void cacheCorrupt_(const char *what)
+{
+    memHalt("(allocator)", formatCacheCorruptReason(what));
+}
+
+static void cacheValidateUserPtr_(const void *ptr, const char *what)
+{
+    const unsigned char *p = (const unsigned char *)ptr;
+    g_cacheDiagUserPtr = ptr;
+
+    if (g_cacheBase == NULL || g_cacheBumpTop == NULL)
+        cacheCorrupt_(what);
+    if (p < g_cacheBase + CACHE_HEADER_BYTES ||
+        p >= g_cacheBumpTop ||
+        p >= g_cacheBase + MEM_CACHE_BUDGET)
+        cacheCorrupt_(what);
+    if (!cachePtrAligned_(p))
+        cacheCorrupt_("CACHE pointer unaligned");
+}
+
+static unsigned int cacheReadSizeChecked_(unsigned char *blockBase,
+                                          const char *what)
+{
+    unsigned int sz;
+
+    g_cacheDiagBlockBase = blockBase;
+    g_cacheDiagBlockSize = 0;
+    if (g_cacheBase == NULL || g_cacheBumpTop == NULL)
+        cacheCorrupt_(what);
+    if (blockBase < g_cacheBase ||
+        blockBase >= g_cacheBumpTop ||
+        blockBase >= g_cacheBase + MEM_CACHE_BUDGET)
+        cacheCorrupt_(what);
+    if (!cachePtrAligned_(blockBase))
+        cacheCorrupt_("CACHE header unaligned");
+    if ((size_t)(g_cacheBumpTop - blockBase) < CACHE_HEADER_BYTES)
+        cacheCorrupt_(what);
+
+    sz = cacheReadSize_(blockBase);
+    g_cacheDiagBlockSize = sz;
+    if (sz < CACHE_MIN_BLOCK_BYTES ||
+        sz > MEM_CACHE_BUDGET ||
+        (sz & (unsigned int)(MEM_REGION_ALIGN - 1u)) != 0u)
+        cacheCorrupt_("CACHE block size corrupt");
+    if ((size_t)(g_cacheBumpTop - blockBase) < (size_t)sz)
+        cacheCorrupt_("CACHE block overruns arena");
+
+    return sz;
+}
+
+static unsigned int cacheValidateNode_(CacheFreeBlock *fb,
+                                       const char *what)
+{
+    unsigned char *user = (unsigned char *)fb;
+    unsigned char *blockBase;
+
+    g_cacheDiagNode = fb;
+    g_cacheDiagNodeTag = cacheDiagTagForPtr_(fb);
+    cacheValidateUserPtr_(user, what);
+    blockBase = user - CACHE_HEADER_BYTES;
+    return cacheReadSizeChecked_(blockBase, what);
+}
+
+static int cacheFreeListOwnsPtr_(const void *ptr)
+{
+    const unsigned char *p = (const unsigned char *)ptr;
+    CacheFreeBlock *prev = NULL;
+    CacheFreeBlock *cur = g_cacheFreeList;
+    size_t guard = 0;
+
+    while (cur != NULL) {
+        unsigned char *curUser = (unsigned char *)cur;
+        unsigned char *curBase = curUser - CACHE_HEADER_BYTES;
+        g_cacheDiagPrev = prev;
+        unsigned int curSize = cacheValidateNode_(cur, "CACHE free-list corrupt");
+
+        if (prev != NULL && curUser <= (unsigned char *)prev)
+            cacheCorrupt_("CACHE free-list order");
+        if (p == curUser)
+            return 1;
+        if (p > curUser && p < curBase + curSize)
+            return 2;
+
+        prev = cur;
+        cur = cur->next;
+        if (++guard > CACHE_MAX_FREE_WALK)
+            cacheCorrupt_("CACHE free-list cycle");
+    }
+
+    return 0;
+}
+
+static void cacheValidateFreeList_(const char *what)
+{
+    CacheFreeBlock *prev = NULL;
+    CacheFreeBlock *cur = g_cacheFreeList;
+    size_t guard = 0;
+
+    while (cur != NULL) {
+        unsigned char *curUser = (unsigned char *)cur;
+        g_cacheDiagPrev = prev;
+        cacheValidateNode_(cur, what);
+        if (prev != NULL && curUser <= (unsigned char *)prev)
+            cacheCorrupt_("CACHE free-list order");
+        prev = cur;
+        cur = cur->next;
+        if (++guard > CACHE_MAX_FREE_WALK)
+            cacheCorrupt_("CACHE free-list cycle");
+    }
+}
+
 /* Insert fb into the free-list at the position that keeps the list
  * sorted by ascending address. Required for coalescing to find
  * adjacent blocks. */
@@ -552,9 +781,19 @@ static void cacheInsertSorted_(CacheFreeBlock *fb)
 {
     CacheFreeBlock **prev = &g_cacheFreeList;
     CacheFreeBlock *cur   = g_cacheFreeList;
+    size_t guard = 0;
+
+    cacheValidateNode_(fb, "CACHE insert bad node");
+    if (cacheFreeListOwnsPtr_(fb) != 0)
+        cacheCorrupt_("CACHE double free");
+
     while (cur != NULL && (unsigned char *)cur < (unsigned char *)fb) {
+        g_cacheDiagPrev = NULL;
+        cacheValidateNode_(cur, "CACHE insert list corrupt");
         prev = &cur->next;
         cur  = cur->next;
+        if (++guard > CACHE_MAX_FREE_WALK)
+            cacheCorrupt_("CACHE free-list cycle");
     }
     fb->next = cur;
     *prev = fb;
@@ -569,12 +808,24 @@ static void cacheInsertSorted_(CacheFreeBlock *fb)
 static void cacheCoalesce_(void)
 {
     CacheFreeBlock *cur = g_cacheFreeList;
+    size_t guard = 0;
+
+    cacheValidateFreeList_("CACHE coalesce list corrupt");
     while (cur != NULL && cur->next != NULL) {
         unsigned char *curBase  = (unsigned char *)cur  - CACHE_HEADER_BYTES;
         unsigned char *nextBase = (unsigned char *)cur->next - CACHE_HEADER_BYTES;
-        unsigned int   curSize  = cacheReadSize_(curBase);
+        unsigned int   curSize  = cacheReadSizeChecked_(curBase, "CACHE coalesce cur");
+        unsigned int   nextSize;
+
+        g_cacheDiagPrev = cur;
+        cacheValidateNode_(cur->next, "CACHE coalesce next");
+        if ((unsigned char *)cur->next <= (unsigned char *)cur)
+            cacheCorrupt_("CACHE free-list order");
+        if (curBase + curSize > nextBase)
+            cacheCorrupt_("CACHE free-list overlap");
+
         if (curBase + curSize == nextBase) {
-            unsigned int nextSize = cacheReadSize_(nextBase);
+            nextSize = cacheReadSizeChecked_(nextBase, "CACHE coalesce next size");
             cacheWriteSize_(curBase, curSize + nextSize);
             cur->next = cur->next->next;
             /* Don't advance; the merged block might be adjacent to
@@ -582,28 +833,42 @@ static void cacheCoalesce_(void)
         } else {
             cur = cur->next;
         }
+        if (++guard > CACHE_MAX_FREE_WALK)
+            cacheCorrupt_("CACHE free-list cycle");
     }
 }
 
-static void *cacheAllocInternal(size_t size)
+static void *cacheAllocInternal(size_t size, const char *tag)
 {
     /* Lazy init on first use. */
     if (g_cacheBumpTop == NULL) {
         cacheInit_();
     }
     /* Total block size includes the 4-byte header. Round up to align. */
-    const size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
-                              & ~((size_t)MEM_REGION_ALIGN - 1);
+    size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
+                        & ~((size_t)MEM_REGION_ALIGN - 1);
+    if (blockSize < CACHE_MIN_BLOCK_BYTES)
+        blockSize = CACHE_MIN_BLOCK_BYTES;
+    if (g_cacheBumpTop < g_cacheBase ||
+        g_cacheBumpTop > g_cacheBase + MEM_CACHE_BUDGET)
+        cacheCorrupt_("CACHE bump corrupt");
 
     /* Try free-list first (first-fit, with splitting). */
     CacheFreeBlock **prev = &g_cacheFreeList;
     CacheFreeBlock *cur = g_cacheFreeList;
+    size_t guard = 0;
+    cacheValidateFreeList_("CACHE alloc free-list corrupt");
     while (cur != NULL) {
         unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
-        unsigned int  freeSize   = cacheReadSize_(blockBase);
+        g_cacheDiagPrev = NULL;
+        g_cacheDiagNode = cur;
+        unsigned int  freeSize   = cacheReadSizeChecked_(blockBase,
+                                                         "CACHE alloc node");
         if (freeSize >= blockSize) {
+            CacheFreeBlock *next = cur->next;
+            size_t allocatedBlockSize;
             /* Remove from free-list. */
-            *prev = cur->next;
+            *prev = next;
             if (freeSize >= blockSize + CACHE_MIN_SPLIT_BLOCK) {
                 /* Split: keep front blockSize bytes; leave the tail
                  * as a new free block. */
@@ -615,14 +880,19 @@ static void *cacheAllocInternal(size_t size)
                     (CacheFreeBlock *)(tailBase + CACHE_HEADER_BYTES);
                 cacheInsertSorted_(tailFb);
                 g_cacheUsed += blockSize;
+                allocatedBlockSize = blockSize;
             } else {
                 /* Whole-block take — caller pays for the unused tail. */
                 g_cacheUsed += freeSize;
+                allocatedBlockSize = freeSize;
             }
+            cacheDiagRememberAlloc_(cur, allocatedBlockSize, tag);
             return (void *)cur;
         }
         prev = &cur->next;
         cur  = cur->next;
+        if (++guard > CACHE_MAX_FREE_WALK)
+            cacheCorrupt_("CACHE free-list cycle");
     }
 
     /* No free-list match; bump forward. */
@@ -636,21 +906,37 @@ static void *cacheAllocInternal(size_t size)
     cacheWriteSize_(blockBase, (unsigned int)blockSize);
     g_cacheBumpTop += blockSize;
     g_cacheUsed += blockSize;
+    cacheDiagRememberAlloc_(blockBase + CACHE_HEADER_BYTES, blockSize, tag);
     return (void *)(blockBase + CACHE_HEADER_BYTES);
 }
 
 static void cacheFreeInternal(void *ptr)
 {
     if (ptr == NULL) return;
+    g_cacheDiagFreePtr = ptr;
+    g_cacheDiagUserPtr = ptr;
+    g_cacheDiagNode = NULL;
+    g_cacheDiagPrev = NULL;
+    g_cacheDiagBlockBase = NULL;
+    g_cacheDiagBlockSize = 0;
+    g_cacheDiagFreeTag = cacheDiagTagForPtr_(ptr);
+    g_cacheDiagNodeTag = "?";
+    g_cacheDiagFreeBlockSize = 0;
     /* User pointer is +4 bytes from the block header. */
+    cacheValidateUserPtr_(ptr, "CACHE free bad pointer");
     unsigned char *blockBase = (unsigned char *)ptr - CACHE_HEADER_BYTES;
     /* Update g_cacheUsed by the block's size. */
-    unsigned int blockSize = cacheReadSize_(blockBase);
-    if (blockSize <= g_cacheUsed) {
-        g_cacheUsed -= blockSize;
-    } else {
-        g_cacheUsed = 0;  /* defensive on counter underflow */
-    }
+    unsigned int blockSize = cacheReadSizeChecked_(blockBase,
+                                                   "CACHE free bad block");
+    g_cacheDiagFreeBlockSize = blockSize;
+    int ownership = cacheFreeListOwnsPtr_(ptr);
+    if (ownership == 1)
+        cacheCorrupt_("CACHE double free");
+    if (ownership == 2)
+        cacheCorrupt_("CACHE stale interior free");
+    if ((size_t)blockSize > g_cacheUsed)
+        cacheCorrupt_("CACHE used underflow");
+    g_cacheUsed -= blockSize;
     /* Insert into the sorted free-list, then merge adjacent blocks.
      * Both ops are O(n) in the free-list length; n stays small (a
      * few hundred at most) so the cost is dwarfed by the CD read
@@ -658,6 +944,7 @@ static void cacheFreeInternal(void *ptr)
     CacheFreeBlock *fb = (CacheFreeBlock *)ptr;
     cacheInsertSorted_(fb);
     cacheCoalesce_();
+    cacheDiagRememberFree_(ptr);
 }
 
 static size_t cacheUsedInternal(void)
@@ -678,9 +965,11 @@ void memDumpCacheStats(const char *prefix)
     size_t freeListBlocks = 0;
     size_t freeListBytes = 0;
     CacheFreeBlock *cur = g_cacheFreeList;
+    cacheValidateFreeList_("CACHE stats free-list corrupt");
     while (cur != NULL) {
         unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
-        unsigned int blockSize = cacheReadSize_(blockBase);
+        unsigned int blockSize = cacheReadSizeChecked_(blockBase,
+                                                       "CACHE stats node");
         freeListBlocks++;
         freeListBytes += blockSize;
         cur = cur->next;
@@ -691,6 +980,27 @@ void memDumpCacheStats(const char *prefix)
            (unsigned long)freeListBytes,
            (unsigned long)freeListBlocks,
            (unsigned long)g_cacheUsed);
+}
+
+void memDebugValidateCache(const char *phase)
+{
+    if (!g_memInited || g_cacheBase == NULL || g_cacheBumpTop == NULL)
+        return;
+
+    g_cacheDiagFreePtr = g_cacheDiagOffset4Tag != NULL
+        ? (const void *)(g_cacheBase + CACHE_HEADER_BYTES)
+        : NULL;
+    g_cacheDiagFreeTag = g_cacheDiagOffset4Tag != NULL
+        ? g_cacheDiagOffset4Tag
+        : "?";
+    g_cacheDiagFreeBlockSize = g_cacheDiagOffset4Size;
+    g_cacheDiagUserPtr = NULL;
+    g_cacheDiagNode = NULL;
+    g_cacheDiagPrev = NULL;
+    g_cacheDiagBlockBase = NULL;
+    g_cacheDiagBlockSize = 0;
+    g_cacheDiagNodeTag = "?";
+    cacheValidateFreeList_(phase ? phase : "CACHE debug validate");
 }
 
 /* R33-soak final fix: rewind the CACHE bump pointer to base if there

@@ -47,4 +47,4 @@ This holiday has an emblem on the shared sheet at cell 14, pixel offset (192, 32
 ## Source
 
 - Row in [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) (search for `id: 18` or `short_name: "CINCO MAYO"`).
-- Generated row in [`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c).
+- Generated row in [`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c).

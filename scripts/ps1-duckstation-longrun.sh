@@ -129,6 +129,9 @@ cd "$project_root" || exit 1
 
 duck_log="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log"
 screenshot_dir="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
+screenshot_marker="$run_dir/.screenshot-marker"
+log_marker_bytes=$(stat -c %s "$duck_log" 2>/dev/null || printf 0)
+: > "$screenshot_marker"
 
 echo "long-run wrapper started at $(date -Is)"
 echo "run dir: $run_dir"
@@ -177,12 +180,21 @@ monitor_loop() {
         log_bytes=0
         if [ -f "$duck_log" ]; then
             log_bytes=$(stat -c %s "$duck_log" 2>/dev/null || printf 0)
-            tail -n 4000 "$duck_log" > "$run_dir/duckstation-tail.log" 2>/dev/null || true
-            tail -n 4000 "$duck_log" \
-                | grep -aEi 'JCPERF|fgpilot|foreground|scene|BSOD|panic|fatal|error|warn|heap|memory|alloc|assert' \
-                > "$run_dir/events-tail.log" 2>/dev/null || true
+            if [ "$log_bytes" -ge "$log_marker_bytes" ]; then
+                tail -c +"$((log_marker_bytes + 1))" "$duck_log" 2>/dev/null \
+                    | tail -n 4000 > "$run_dir/duckstation-tail.log" 2>/dev/null || true
+                tail -c +"$((log_marker_bytes + 1))" "$duck_log" 2>/dev/null \
+                    | tail -n 4000 \
+                    | grep -aEi 'JCPERF|JCPICK|JCWALK|JCSPU|JCMEM|JCBOOT|fgpilot|foreground|scene|BSOD|panic|fatal|error|warn|heap|memory|alloc|assert|UnknownReadHandler|Invalid .*read' \
+                    > "$run_dir/events-tail.log" 2>/dev/null || true
+            else
+                tail -n 4000 "$duck_log" > "$run_dir/duckstation-tail.log" 2>/dev/null || true
+                tail -n 4000 "$duck_log" \
+                    | grep -aEi 'JCPERF|JCPICK|JCWALK|JCSPU|JCMEM|JCBOOT|fgpilot|foreground|scene|BSOD|panic|fatal|error|warn|heap|memory|alloc|assert|UnknownReadHandler|Invalid .*read' \
+                    > "$run_dir/events-tail.log" 2>/dev/null || true
+            fi
         fi
-        latest=$(find "$screenshot_dir" -name '*.png' -printf '%T@ %p\n' 2>/dev/null \
+        latest=$(find "$screenshot_dir" -name '*.png' -newer "$screenshot_marker" -printf '%T@ %p\n' 2>/dev/null \
             | sort -n | tail -1 | cut -d' ' -f2-)
         printf '%s\t1\t%s\t%s\t%s\t%s\n' "$(date -Is)" "$pids" "$rss" "$log_bytes" "$latest" >> "$run_dir/monitor.tsv"
         sleep "$monitor_interval"

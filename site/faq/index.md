@@ -338,7 +338,7 @@ actually plays on PS1, confirmed during the
 [v0.8.4-ps1 chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }}).
 The **on-screen caption** that draws in the dark band at the bottom of
 the framebuffer is whatever `captionSceneMap[]` in
-[`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
+[`src/platform/ps1/ps1_captions.c`]({{ site.github_url }}/blob/main/src/platform/ps1/ps1_captions.c)
 routes that ADS+tag to.
 
 For most scenes those line up. For a few they don't, because the
@@ -366,7 +366,7 @@ pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
 for 100+ years. The full reference manual is at
 [/docs/holidays/]({{ '/docs/holidays/' | relative_url }}); see
-`holidays.yml` and `src/holidays.c` in the repository for the
+`holidays.yml` and `src/scene/holidays.c` in the repository for the
 source data and the codegen output.
 
 ### How do I jump to a specific scene?

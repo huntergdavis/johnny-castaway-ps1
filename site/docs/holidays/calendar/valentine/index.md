@@ -47,4 +47,4 @@ This holiday has an emblem on the shared sheet at cell 3, pixel offset (96, 0). 
 ## Source
 
 - Row in [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) (search for `id: 8` or `short_name: "VALENTINE"`).
-- Generated row in [`src/holidays_table.c`]({{ site.github_url }}/blob/main/src/holidays_table.c).
+- Generated row in [`src/scene/holidays_table.c`]({{ site.github_url }}/blob/main/src/scene/holidays_table.c).

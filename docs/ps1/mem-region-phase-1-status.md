@@ -10,7 +10,7 @@ Tracks the substantial implementation work landed across Phases 1, 2, and 3.
 
 ### Allocator infrastructure ✅
 
-- `src/mem_region.{c,h}` + `src/mem_region_extern.h` — full API
+- `src/mem_region.{c,h}` + `src/mem_region/mem_region_extern.h` — full API
   (memAlloc, memFree, memSceneReset, memHalt, memVerify*,
   memRegionUsed/Peak, memSafeRead, memCachePreEvictForNextScene,
   MEM_REQUIRE, ps1IsMainContext).

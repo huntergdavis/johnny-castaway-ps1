@@ -22,7 +22,7 @@ First person, plainspoken, often mildly self-deprecating about the artifact and 
 
 ## The drawCredits floor
 
-The irreducible voice sample is the four-line in-game Credits screen, in `src/pause_menu.c::drawCredits`:
+The irreducible voice sample is the four-line in-game Credits screen, in `src/pause_menu/pause_menu.c::drawCredits`:
 
 > A labor of love by Hunter Davis.
 >

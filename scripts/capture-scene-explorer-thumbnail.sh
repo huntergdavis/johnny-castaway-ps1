@@ -68,7 +68,7 @@ echo "=== Extracting 70%-mark thumbnail for $SLUG ==="
 python3 "$SCRIPT_DIR/build-scene-explorer-thumbnails.py" --slug "$SLUG"
 
 # Family abbreviation must match scripts/build-scene-explorer-thumbnails.py
-# FAMILY_ABBREV and src/graphics_ps1.c grLoadSceneExplorerThumbnail.
+# FAMILY_ABBREV and src/graphics_ps1/graphics_ps1.c grLoadSceneExplorerThumbnail.
 declare -A FAMILY_ABBREV=(
     [fishing]=FI [johnny]=JO [mary]=MA [visitor]=VI [activity]=AC
     [suzy]=SU [miscgag]=MG [stand]=ST [walkstuf]=WK [building]=BL

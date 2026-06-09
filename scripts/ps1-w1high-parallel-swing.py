@@ -39,7 +39,7 @@ DEFAULT_BASELINE = ROOT / (
     "20260523-065754-4032041/summary.json"
 )
 MUTABLE_PATHS = (
-    "src/foreground_pilot.c",
+    "src/foreground_pilot/foreground_pilot.c",
     "config/ps1/bootmode_embedded.h",
     "config/ps1/padscript_embedded.h",
 )
@@ -192,7 +192,7 @@ def replace_define(text: str, old_tail: str, new_tail: str) -> str:
 
 
 def apply_candidate(wt: Path, candidate: dict[str, Any]) -> None:
-    path = wt / "src/foreground_pilot.c"
+    path = wt / "src/foreground_pilot/foreground_pilot.c"
     break_hardlink(path)
     text = path.read_text()
 

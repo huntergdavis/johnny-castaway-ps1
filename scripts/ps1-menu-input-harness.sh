@@ -84,7 +84,7 @@ restore_files() {
 }
 
 write_pad_script() {
-    # Pause-main rows in the post-v0.8.4 menu (src/pause_menu.c::drawMainMenu):
+    # Pause-main rows in the post-v0.8.4 menu (src/pause_menu/pause_menu.c::drawMainMenu):
     #   0 Resume
     #   1 Scene Set Options...
     #   2 Scene Explorer

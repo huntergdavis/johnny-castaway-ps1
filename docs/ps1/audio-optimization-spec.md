@@ -402,10 +402,20 @@ fi
 | Trim silence only (keep all)     |    81,824 B  |       15.7% |         14,832 B   |
 | **Drop 17 + trim silence**       | **79,536 B** |   **15.3%** |     **17,120 B**   |
 
-All configurations leave >400 KB of SPU RAM free. The primary value of
-optimization is not space savings (which are unnecessary) but improved audio
-quality through silence removal -- sounds play without audible dead time at the
-start, making them feel more responsive.
+Those rows describe the SFX bank alone. The current shipped audio path also
+loads `OCEAN.VAG` after the SFX bank when ambience is enabled. With the current
+assets and the loader's 64-byte DMA alignment, measured residency is:
+
+| State | Used from SPU start | Free in 512 KB SPU RAM |
+|:------|--------------------:|-----------------------:|
+| SFX loaded, before `OCEAN.VAG` | 101,392 B | 422,896 B |
+| SFX plus `OCEAN.VAG` loaded | 227,408 B | 296,880 B |
+
+The primary value of SFX trimming is still improved responsiveness through
+silence removal. The remaining SPU headroom is large enough to consider as
+experimental async-loading cold storage, but it is not CPU-addressable heap:
+data must be DMA-written to SPU RAM and DMA-read back before CPU decode or GPU
+upload.
 
 ## 9. PSn00bSDK API Reference
 

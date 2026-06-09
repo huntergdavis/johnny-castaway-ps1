@@ -3,7 +3,7 @@
 Build Scene Explorer thumbnail SCR files from captured PS1 frames.
 
 Pipeline:
-1. For each scene in src/scene_explorer_data.h, find its capture directory
+1. For each scene in src/pause_menu/scene_explorer_data.h, find its capture directory
    under regtest-references/<ADS-NAME>-<TAG>/.
 2. Pick the captured PNG nearest the scene's 70%-of-FG2-frame-count mark.
    Per-scene overrides live in scripts/scene-explorer-overrides.json.
@@ -31,7 +31,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_HEADER = ROOT / "src/scene_explorer_data.h"
+DATA_HEADER = ROOT / "src/pause_menu/scene_explorer_data.h"
 CAPTURE_ROOT = ROOT / "regtest-references"
 OVERRIDES_PATH = ROOT / "scripts/scene-explorer-overrides.json"
 OUT_DIR = ROOT / "jc_resources/extracted/scr"
