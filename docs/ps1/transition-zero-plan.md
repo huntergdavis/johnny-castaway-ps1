@@ -76,6 +76,14 @@ Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
 - Without W0, every later phase is gated against the wrong path.
 
 ### W1. Land the loading-waves path properly  (the unfinished prerequisite)
+- ROOT CAUSE of silent adoption misses (FG_STAGE_DIAG_LOGS run, 2026-06-09):
+  staging for N+1 only starts once scene N's payload reads fully drain
+  (`stream_runtime.c.inc:542-546`), which for streaming scenes is the last
+  few held frames — `JCSTAGE S 65536` fires ~0.5 s before adoption, the read
+  is still in flight, `AdoptWindow` invalidates, `stage_adopt=0`. Fix
+  directions: start staging once the stream window covers the remaining
+  frames; make the bounded tail wait cover an in-flight stage at adoption;
+  or shrink the staged unit so it can complete in the available slack.
 - The 4s→1.5s win is currently a proof flag. Release blocker per branch plan:
   restore scene-boundary CACHE rewind or prove bounded single-owner lifetime
   for every retained buffer. This is a mem-region design round (red-team it),
