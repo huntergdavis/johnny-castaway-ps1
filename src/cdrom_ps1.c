@@ -938,9 +938,9 @@ static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
     /* Convert back to BCD MSF for CdControl. */
     CdlLOC seekLoc;
     CdIntToPos((int)targetLba, &seekLoc);
+    /* No settle delay between Setloc and CdRead (see chunked-stream fix:
+     * Setloc only stores the target; CdRead issues the seek). */
     CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL);
-    /* Brief seek wait. */
-    for (volatile int i = 0; i < 200000; i++);
     CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
     if (CdReadSync(0, NULL) < 0) {
         cdromResetState();
