@@ -558,14 +558,18 @@ const char *pickerNextScene(const char *explicitScene, int sceneSetIdx)
             (originalPath == ORIG_PATH_INTM)     ? "intm"     :
             (originalPath == ORIG_PATH_FINAL)    ? "final"    :
             (originalPath == ORIG_PATH_DEGRADED) ? "degraded" : "?";
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCPICK frame=%u policy=%d set=%d picked=%s retries=%u origpath=%s left=%d\n",
                (unsigned)gJcpickFrame++, policy, sceneSetIdx,
                slug, (unsigned)retries, pathLabel,
                (int)gIntermediatesRemaining);
+#endif
     } else {
+#if PS1_VERBOSE_DIAGNOSTICS
         printf("JCPICK frame=%u policy=%d set=%d picked=%s retries=%u\n",
                (unsigned)gJcpickFrame++, policy, sceneSetIdx,
                slug, (unsigned)retries);
+#endif
     }
 
     return slug;

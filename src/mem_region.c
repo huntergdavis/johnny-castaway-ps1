@@ -350,11 +350,15 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
     case MEM_REGION_CACHE: {
         /* R33o diagnostic: log large CACHE allocations so we can correlate
          * with scene events to find the 475 KB unaccounted residency. */
+#if PS1_VERBOSE_DIAGNOSTICS
+        /* Allocation tracing for memory-shape debugging. Soak verdicts
+         * key on cache-relief/JCBSOD lines, which stay unconditional. */
         if (alignedSize >= (32u * 1024u)) {
             extern int printf(const char *, ...);
             printf("JCMEM cache-alloc-big size=%lu tag=%s\n",
                    (unsigned long)alignedSize, tag ? tag : "(?)");
         }
+#endif
         void *p = cacheAllocInternal(alignedSize, tag);
         if (p == NULL) {
             extern void checkMemoryBudget(void);

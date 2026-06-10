@@ -2052,6 +2052,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                              islandState.yPos);
     }
     fgBackdropRelease((blackBackdrop || sceneSpecificBackdrop) ? 0 : 1);
+    /* Replace any floor slabs that relief or borrowing consumed —
+     * the boundary is the calmest CACHE moment. */
+    grTopUpCleanRectSlabFloor();
     fgHeapProbe("after_scene_cleanup", sceneName);
 }
 
@@ -2172,13 +2175,25 @@ static int fgCachePressureRelief(unsigned long requestBytes)
             return freed;
     }
 
+    /* Requests a floor slab can cover take the floor BEFORE the SCR
+     * cache: the 400b soak showed an 82 KB rect request burning the
+     * walk slab AND the 150 KB SCR (tier overkill) when a 96 KB floor
+     * hole would have served it. Bigger requests still go SCR first. */
+    if (requestBytes <= 98304UL) {
+        largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs */
+        if (largestSlab > 0)
+            freed = 1;
+        if ((unsigned long)largestSlab >= requestBytes)
+            return freed;
+    }
+
     largestSlab = grReliefFreeScrCache();      /* 150 KB SCR cache */
     if (largestSlab > 0)
         freed = 1;
     if ((unsigned long)largestSlab >= requestBytes)
         return freed;
 
-    largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs */
+    largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs (big reqs) */
     if (largestSlab > 0)
         freed = 1;
     if ((unsigned long)largestSlab >= requestBytes)

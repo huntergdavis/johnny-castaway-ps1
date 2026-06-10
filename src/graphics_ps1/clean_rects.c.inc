@@ -510,6 +510,51 @@ void grSetCleanBgRectsSlabRetain(int enabled)
         grCleanRectSlabPoolFlush();
 }
 
+void grTopUpCleanRectSlabFloor(void)
+{
+    /* Boundary top-up: relief tiers and slab-takes consume floor
+     * slabs; without replacement the pool degrades until a two-rect
+     * scene dies on fragmentation (scene-144 BSOD). At the scene
+     * boundary — the calmest CACHE moment — re-park until two floor
+     * slabs exist again. Allocation failure is tolerated silently:
+     * the next boundary tries again. */
+    int floors = 0;
+    int i;
+    if (!gGrCleanRectSlabRetain)
+        return;
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRectSlabPool[i].ptr != NULL &&
+            gGrCleanRectSlabPool[i].capacityBytes >= GR_CLEAN_SLAB_FLOOR_BYTES)
+            floors++;
+    }
+    /* Floor capacity CHECKED OUT to live rects (the remembered clean
+     * overlay holds one across boundaries by design) counts toward the
+     * invariant — the budget holds exactly two floor objects total,
+     * wherever they live. Counting only pooled floors made this
+     * function allocate a third 96 KB slab every boundary and fight
+     * the relief valve in a loop. */
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRects[i].pixels != NULL &&
+            gGrCleanRects[i].pixelsRegion == 1u &&
+            gGrCleanRects[i].capacityBytes >= GR_CLEAN_SLAB_FLOOR_BYTES)
+            floors++;
+    }
+    while (floors < 2) {
+        /* MEM_REGION_RATIONALE: floor-slab replacement, same lifetime
+         * contract as the boot pre-park. */
+        uint16 *slab = (uint16 *)memAlloc(MEM_REGION_CACHE,
+                                          GR_CLEAN_SLAB_FLOOR_BYTES,
+                                          "grCleanRectPixels");
+        if (slab == NULL ||
+            !grCleanRectSlabPoolPark(slab, GR_CLEAN_SLAB_FLOOR_BYTES)) {
+            if (slab != NULL)
+                memFree(MEM_REGION_CACHE, slab);
+            return;
+        }
+        floors++;
+    }
+}
+
 void grPreparkCleanRectSlabs(int count, unsigned long bytes)
 {
     /* Boot-time reservation: park `count` slabs of `bytes` each so the

@@ -277,6 +277,7 @@ int grFlushCleanBgRectSlabsAll(void);
 uint16 *grBorrowCleanRectSlab(unsigned long bytes, unsigned long *outCap);
 void grReturnCleanRectSlab(uint16 *ptr, unsigned long capacityBytes);
 void grPreparkCleanRectSlabs(int count, unsigned long bytes);
+void grTopUpCleanRectSlabFloor(void);
 int grReliefFreeScrCache(void);
 void grRestoreBgRectsFull(void);
 /* Capture/restore rectangles into a caller-owned buffer (dst/src sized
