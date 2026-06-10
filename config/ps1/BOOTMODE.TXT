@@ -1,1 +1,1 @@
-picker-original
+fgpilot picker-original perf-log seed 1

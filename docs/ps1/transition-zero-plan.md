@@ -1,5 +1,25 @@
 # Transition-Zero Plan (post red-team v1)
 
+## Fix-forward campaign toward the 23 h soak (2026-06-09 late night)
+
+Goal set by Hunter: staged transitions DEFAULT ON, 23 h soak with zero
+crashes/memory warnings, speed gains retained. Status:
+- Original mode (shipping picker, never previously soaked) BSOD'd
+  deterministically at scene 8. Root causes fixed structurally:
+  boot-reserved stable CACHE shape (window + 2 clean slabs + walk
+  slab, bottom band), direct sector-aligned CD reads (no 94 KB bounce
+  spike, no big memcpy), tiered size-aware relief (SCR cache first,
+  window last). 12/12 clean, zero relief events, 91% hits.
+- Static-image ceiling guard added after release-flavor boot hang;
+  debug buffers trimmed (prim 32->24 KB, text 2->1 KB).
+- Watched-run fixes: wave double-speed (timer pattern), Johnny
+  one-frame disappearance (timerLeft=0).
+- OPEN (perf, not stability): Original-mode transitions run 55-109 vb
+  vs RANDOM's 13-51 — ~43 vb/setup of backdrop work (12 vb = one
+  25,724-byte read; rest CPU, suspected per-setup wave-cache rebuild
+  under night/high-tide). Profile with perf-detail after soaks pass.
+- Soak ladder: 12 (pass) -> 40 (running) -> 100 -> multi-hour -> 23 h.
+
 ## MILESTONE 2 — 2026-06-09 late (W4 certified)
 
 20-scene certification soak passes with the 60 vb staged-hit ratchet
