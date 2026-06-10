@@ -15,6 +15,7 @@ static void grResetBmpSlotRefs(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
     ttmSlot->loadedBmp[bmpSlotNo] = NULL;
     ttmSlot->loadedBmpNames[bmpSlotNo] = NULL;
     ttmSlot->psbData[bmpSlotNo] = NULL;
+    ttmSlot->psbDataCallerOwned[bmpSlotNo] = 0;
 }
 
 static void grReleasePartialSprites(struct TTtmSlot *ttmSlot,
@@ -93,12 +94,18 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
          * range-checks the pointer and routes correctly to either the
          * CACHE free-list or libc free. The R33m diagnostic showed
          * cacheUsed=512 KB with LRU empty — that 512 KB was leaked PSB
-         * buffers from prior scenes. */
-        if (memIsReady())
-            memFree(MEM_REGION_CACHE, ttmSlot->psbData[bmpSlotNo]);
-        else
-            free(ttmSlot->psbData[bmpSlotNo]);
+         * buffers from prior scenes.
+         *
+         * Caller-owned buffers (walk_pilot's persistent JOHNWALK slab)
+         * are deliberately NOT freed here — only the reference drops. */
+        if (!ttmSlot->psbDataCallerOwned[bmpSlotNo]) {
+            if (memIsReady())
+                memFree(MEM_REGION_CACHE, ttmSlot->psbData[bmpSlotNo]);
+            else
+                free(ttmSlot->psbData[bmpSlotNo]);
+        }
         ttmSlot->psbData[bmpSlotNo] = NULL;
+        ttmSlot->psbDataCallerOwned[bmpSlotNo] = 0;
     }
 
     grResetBmpSlotRefs(ttmSlot, bmpSlotNo);
@@ -116,7 +123,8 @@ static void grFreePsbBuffer(uint8 *psbBuf)
 
 static int grInstallPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
                               struct TBmpResource *bmpResource,
-                              uint8 *psbBuf, uint32 psbSize)
+                              uint8 *psbBuf, uint32 psbSize,
+                              int callerOwned)
 {
     PSBHeader *hdr;
     PSBFrame *frames;
@@ -128,30 +136,35 @@ static int grInstallPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     if (ttmSlot == NULL || slotNo >= MAX_BMP_SLOTS ||
         bmpResource == NULL || psbBuf == NULL) {
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         return 0;
     }
 
     if (psbSize < sizeof(PSBHeader)) {
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         return 0;
     }
 
     hdr = (PSBHeader *)psbBuf;
     if (hdr->magic != PSB_MAGIC || hdr->version != PSB_VERSION) {
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         return 0;
     }
 
     if (hdr->numFrames == 0 || hdr->dataOffset > psbSize ||
         hdr->totalSize > psbSize) {
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         return 0;
     }
 
     frameTableEnd = sizeof(PSBHeader) + (uint32)hdr->numFrames * sizeof(PSBFrame);
     if (frameTableEnd > hdr->dataOffset) {
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         return 0;
     }
 
@@ -201,13 +214,15 @@ static int grInstallPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
 
     if (framesLoaded != numToLoad) {
         grReleasePartialSprites(ttmSlot, slotNo, framesLoaded);
-        grFreePsbBuffer(psbBuf);
+        if (!callerOwned)
+            grFreePsbBuffer(psbBuf);
         grResetBmpSlotRefs(ttmSlot, slotNo);
         return 0;
     }
 
     ttmSlot->numSprites[slotNo] = framesLoaded;
     ttmSlot->psbData[slotNo] = psbBuf;
+    ttmSlot->psbDataCallerOwned[slotNo] = (uint8)(callerOwned ? 1 : 0);
     ttmSlot->loadedBmp[slotNo] = bmpResource;
     ttmSlot->loadedBmpNames[slotNo] = bmpResource->resName;
     return 1;
@@ -221,7 +236,16 @@ int grLoadPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
         grFreePsbBuffer(psbBuf);
         return 0;
     }
-    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize);
+    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize, 0);
+}
+
+int grLoadPsbBufferCallerOwned(struct TTtmSlot *ttmSlot, uint16 slotNo,
+                               char *strArg, uint8 *psbBuf, uint32 psbSize)
+{
+    struct TBmpResource *bmpResource = findBmpResource(strArg);
+    if (bmpResource == NULL)
+        return 0;
+    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize, 1);
 }
 
 /*
@@ -283,7 +307,7 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
         if (psbBuf == NULL) return 0;
     }
 
-    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize);
+    return grInstallPsbBuffer(ttmSlot, slotNo, bmpResource, psbBuf, psbSize, 0);
 }
 
 /*

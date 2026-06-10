@@ -1167,6 +1167,7 @@ void foregroundPilotTeardownForFreeplay(void)
     fgCleanOverlayInvalidate();
     grSetFullScreenScrCacheEnabled(0);
     grSetCleanBgRectsForceCache(0);
+    grFlushCleanBgRectSlabs();
     fgBackdropRelease(0);
     grReleaseBackgroundTiles();
 }
@@ -2085,6 +2086,11 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
 {
     gFgLoadingWaveProofEnabled = enabled ? 1 : 0;
     grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled);
+    /* Retain CACHE-routed clean-rect slabs across boundaries while the
+     * proof is on: the proof's retained blocks block the boundary
+     * rewind anyway, and per-scene free/realloc of ~98 KB rects is the
+     * fragmentation source of the 3rd-transition CACHE BSOD. */
+    grSetCleanBgRectsSlabRetain(gFgLoadingWaveProofEnabled);
     if (!gFgLoadingWaveProofEnabled) {
         fgNextSceneStageInvalidate();
         fgCleanOverlayInvalidate();

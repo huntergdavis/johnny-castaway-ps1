@@ -445,11 +445,26 @@ int walkPilotPrimeSpuAssetsBlocking(void)
     return ok;
 }
 
+/* Persistent SPU->RAM load slab. The walk runs between every scene
+ * pair and loads the same 48 KB JOHNWALK.PSB each time; allocating and
+ * freeing that block per walk churns CACHE between long-lived blocks
+ * and was the residual fragmentation source after the clean-rect slab
+ * fix (4th-transition walk BSOD: req=49152, 97 KB free, none
+ * contiguous). Allocated grow-only on first use, handed to the sprite
+ * slot caller-owned so grReleaseBmp drops the reference without
+ * freeing. JOHNWALK only — MRAFT's 12 KB load is rarer, same-size, and
+ * its slot release point lives in scene code where the slab's busy
+ * flag cannot be cleared reliably. */
+static uint8 *gWalkPsbLoadSlab = NULL;
+static uint32 gWalkPsbLoadSlabSize = 0;
+static int gWalkPsbLoadSlabBusy = 0;
+
 static int walkPilotLoadPsbFromSpu(struct TWalkSpuPsbStage *stage,
                                    struct TTtmSlot *slot,
                                    uint16 slotNo)
 {
     uint8 *psbBuf;
+    int callerOwned = 0;
 
     if (stage == NULL || !gWalkSpuStageEnabled)
         return 0;
@@ -458,23 +473,62 @@ static int walkPilotLoadPsbFromSpu(struct TWalkSpuPsbStage *stage,
     if (stage->validBytes == 0 || stage->readBytes == 0)
         return 0;
 
-    if (memIsReady())
+    if (memIsReady() && !gWalkPsbLoadSlabBusy &&
+        stage == &gJohnwalkSpuStage) {
+        if (gWalkPsbLoadSlab != NULL &&
+            gWalkPsbLoadSlabSize < stage->readBytes) {
+            memFree(MEM_REGION_CACHE, gWalkPsbLoadSlab);
+            gWalkPsbLoadSlab = NULL;
+            gWalkPsbLoadSlabSize = 0;
+        }
+        if (gWalkPsbLoadSlab == NULL) {
+            /* MEM_REGION_RATIONALE: grow-only persistent slab; same
+             * block reused for every inter-scene walk PSB load to keep
+             * CACHE churn-free across boundaries. */
+            gWalkPsbLoadSlab = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                 stage->readBytes,
+                                                 stage->loadTag);
+            if (gWalkPsbLoadSlab != NULL)
+                gWalkPsbLoadSlabSize = stage->readBytes;
+        }
+    }
+
+    if (memIsReady() && gWalkPsbLoadSlab != NULL && !gWalkPsbLoadSlabBusy &&
+        stage == &gJohnwalkSpuStage &&
+        gWalkPsbLoadSlabSize >= stage->readBytes) {
+        psbBuf = gWalkPsbLoadSlab;
+        callerOwned = 1;
+    } else if (memIsReady()) {
         psbBuf = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                    stage->readBytes,
                                    stage->loadTag);
-    else
+    } else {
         psbBuf = (uint8 *)malloc(stage->readBytes);
+    }
     if (psbBuf == NULL)
         return 0;
 
     ps1SpuCacheInit();
     if (!ps1SpuCacheReady() ||
         !ps1SpuCacheRead(stage->spuOffset, psbBuf, stage->readBytes)) {
-        if (memIsReady())
-            memFree(MEM_REGION_CACHE, psbBuf);
-        else
-            free(psbBuf);
+        if (!callerOwned) {
+            if (memIsReady())
+                memFree(MEM_REGION_CACHE, psbBuf);
+            else
+                free(psbBuf);
+        }
         return 0;
+    }
+
+    if (callerOwned) {
+        int loaded = grLoadPsbBufferCallerOwned(slot, slotNo,
+                                                (char *)stage->bmpName,
+                                                psbBuf, stage->validBytes);
+        /* The slab stays "busy" while the walk sprite slot points into
+         * it so nothing can overwrite live sprite data;
+         * fgWalkRenderTeardown clears it at every scene boundary. */
+        gWalkPsbLoadSlabBusy = loaded ? 1 : 0;
+        return loaded;
     }
 
     return grLoadPsbBuffer(slot, slotNo, (char *)stage->bmpName,
@@ -608,6 +662,11 @@ void fgWalkRenderTeardown(void)
     if (!gWalkBmpLoaded) return;
     grReleaseBmp(&gWalkBmpSlot, 0);
     gWalkBmpLoaded = 0;
+#ifdef PS1_BUILD
+    /* The walk sprite slot no longer points into the persistent PSB
+     * load slab; the next walk's SPU load may reuse it. */
+    gWalkPsbLoadSlabBusy = 0;
+#endif
     walkRenderResetCache();
 }
 

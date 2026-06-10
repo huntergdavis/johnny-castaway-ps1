@@ -39,6 +39,81 @@ static int gGrCleanRectCount = 0;
 static int gGrCleanBgBlackMode = 0;
 static int gGrCleanBgRectsForceCache = 0;
 
+/* Slab retention for CACHE-routed clean rects. Under the loading-waves
+ * proof, clean rects land in CACHE either via the per-scene force-cache
+ * window or by spilling when TRANSIENT is tight (~98 KB rects with
+ * TRANSIENT at 716/768 KB). Freeing them every boundary and
+ * re-allocating a slightly different size next scene punches
+ * non-reusable holes between the proof path's retained blocks — the
+ * R33-class CACHE fragmentation BSOD (3rd transition: 98080-byte hole,
+ * 98276-byte request, 166 KB free but no contiguous fit). While retain
+ * mode is on, CACHE-routed slabs are parked here instead of freed and
+ * reused best-fit; sizes round up to 16 KB buckets so successive
+ * scenes' near-identical rects converge onto the same slab. The pool
+ * flushes when retain mode turns off (proof disabled / freeplay).
+ * Bound: GR_MAX_CLEAN_RECTS slabs, in practice one ~112 KB slab.
+ * Retention deliberately blocks the boundary CACHE rewind only in
+ * proof mode, where the rewind is already skipped. */
+#define GR_CLEAN_SLAB_ROUND_BYTES (16u * 1024u)
+struct TGrCleanRectSlab {
+    uint16 *ptr;
+    uint32 capacityBytes;
+};
+static struct TGrCleanRectSlab gGrCleanRectSlabPool[GR_MAX_CLEAN_RECTS];
+static int gGrCleanRectSlabRetain = 0;
+
+static void grCleanRectSlabPoolFlush(void)
+{
+    int i;
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRectSlabPool[i].ptr != NULL) {
+            memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
+            gGrCleanRectSlabPool[i].ptr = NULL;
+            gGrCleanRectSlabPool[i].capacityBytes = 0;
+        }
+    }
+}
+
+static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
+{
+    int i;
+    if (pixels == NULL || capacityBytes == 0)
+        return 0;
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRectSlabPool[i].ptr == NULL) {
+            gGrCleanRectSlabPool[i].ptr = pixels;
+            gGrCleanRectSlabPool[i].capacityBytes = capacityBytes;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static uint16 *grCleanRectSlabPoolTake(uint32 requiredBytes,
+                                       uint32 *outCapacity)
+{
+    int best = -1;
+    int i;
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRectSlabPool[i].ptr == NULL ||
+            gGrCleanRectSlabPool[i].capacityBytes < requiredBytes)
+            continue;
+        if (best < 0 ||
+            gGrCleanRectSlabPool[i].capacityBytes <
+                gGrCleanRectSlabPool[best].capacityBytes)
+            best = i;
+    }
+    if (best < 0)
+        return NULL;
+    {
+        uint16 *ptr = gGrCleanRectSlabPool[best].ptr;
+        *outCapacity = gGrCleanRectSlabPool[best].capacityBytes;
+        gGrCleanRectSlabPool[best].ptr = NULL;
+        gGrCleanRectSlabPool[best].capacityBytes = 0;
+        return ptr;
+    }
+}
+
 #define GR_SPU_RECT_ROW_SCRATCH_BYTES 1024u
 static uint32 gGrSpuRectRowScratch[GR_SPU_RECT_ROW_SCRATCH_BYTES /
                                    sizeof(uint32)];
@@ -322,7 +397,16 @@ static void grResetCleanBgRects(int releasePixels)
              * EITHER TRANSIENT or CACHE. */
             MemRegion freeRegion = gGrCleanRects[i].pixelsRegion
                 ? MEM_REGION_CACHE : MEM_REGION_TRANSIENT;
-            memFree(freeRegion, gGrCleanRects[i].pixels);
+            /* Retain mode: park CACHE slabs for reuse instead of
+             * freeing (see slab pool comment). */
+            if (freeRegion == MEM_REGION_CACHE &&
+                gGrCleanRectSlabRetain &&
+                grCleanRectSlabPoolPark(gGrCleanRects[i].pixels,
+                                        gGrCleanRects[i].capacityBytes)) {
+                /* parked, not freed */
+            } else {
+                memFree(freeRegion, gGrCleanRects[i].pixels);
+            }
             gGrCleanRects[i].pixels = NULL;
             gGrCleanRects[i].capacityBytes = 0;
             gGrCleanRects[i].pixelsRegion = 0;
@@ -375,6 +459,24 @@ int grCleanBgRectsCount(void)
 void grSetCleanBgRectsForceCache(int enabled)
 {
     gGrCleanBgRectsForceCache = enabled ? 1 : 0;
+}
+
+void grSetCleanBgRectsSlabRetain(int enabled)
+{
+    gGrCleanRectSlabRetain = enabled ? 1 : 0;
+    /* Leaving retain mode: the parked slabs lose their purpose (normal
+     * mode wants CACHE to drain to zero at boundaries so the rewind
+     * can fire). Return the bytes. */
+    if (!gGrCleanRectSlabRetain)
+        grCleanRectSlabPoolFlush();
+}
+
+void grFlushCleanBgRectSlabs(void)
+{
+    /* One-shot release of the parked slabs without changing retain
+     * mode — freeplay teardown wants the bytes back while the proof
+     * flag (and thus retention for post-freeplay scenes) stays on. */
+    grCleanRectSlabPoolFlush();
 }
 
 void grRestoreBgRectsFull(void)
@@ -702,12 +804,34 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         }
         /* MEM_REGION_RATIONALE: clean-rect pixels prefer TRANSIENT for
          * scene-lifetime snapshots and spill to CACHE only when needed. */
-        gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
-                                                     requiredBytes[idx],
-                                                     "grCleanRectPixels");
-        gGrCleanRects[idx].pixelsRegion =
-            (target == MEM_REGION_CACHE) ? 1u : 0u;
-        gGrCleanRects[idx].capacityBytes = requiredBytes[idx];
+        if (target == MEM_REGION_CACHE && gGrCleanRectSlabRetain) {
+            /* Retain mode: reuse a parked slab when one fits;
+             * otherwise allocate rounded up to the slab bucket size so
+             * the next scene's near-identical rect can reuse it. */
+            uint32 slabCapacity = 0;
+            uint16 *slab = grCleanRectSlabPoolTake(requiredBytes[idx],
+                                                   &slabCapacity);
+            if (slab != NULL) {
+                gGrCleanRects[idx].pixels = slab;
+                gGrCleanRects[idx].capacityBytes = slabCapacity;
+            } else {
+                uint32 bucketBytes =
+                    (requiredBytes[idx] + GR_CLEAN_SLAB_ROUND_BYTES - 1u) &
+                    ~(GR_CLEAN_SLAB_ROUND_BYTES - 1u);
+                gGrCleanRects[idx].pixels =
+                    (uint16 *)memAlloc(MEM_REGION_CACHE, bucketBytes,
+                                       "grCleanRectPixels");
+                gGrCleanRects[idx].capacityBytes = bucketBytes;
+            }
+            gGrCleanRects[idx].pixelsRegion = 1u;
+        } else {
+            gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
+                                                         requiredBytes[idx],
+                                                         "grCleanRectPixels");
+            gGrCleanRects[idx].pixelsRegion =
+                (target == MEM_REGION_CACHE) ? 1u : 0u;
+            gGrCleanRects[idx].capacityBytes = requiredBytes[idx];
+        }
         allocatedThisCall[idx] = 1;
     }
 

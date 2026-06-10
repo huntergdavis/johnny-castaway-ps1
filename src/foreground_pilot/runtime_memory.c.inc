@@ -410,7 +410,15 @@ static void fgReleaseStreamBuffersHard(void)
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
     }
-    if (gFgStreamWindowBuffer != NULL && !keepStagedWindow) {
+    if (gFgStreamWindowBuffer != NULL && !keepStagedWindow &&
+        !gFgLoadingWaveProofEnabled) {
+        /* Under the loading-waves proof the window is kept grow-only
+         * across boundaries: freeing it every scene and re-allocating
+         * next setup churns a 128 KB block between the proof path's
+         * retained CACHE blocks, which is the fragmentation source of
+         * the 3rd-transition CACHE-exhaustion BSOD. Normal mode keeps
+         * the historical free (boundary rewind depends on CACHE
+         * draining to zero). */
         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;

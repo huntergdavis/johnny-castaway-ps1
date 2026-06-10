@@ -74,6 +74,7 @@ struct TTtmSlot {
     struct TBmpResource *loadedBmp[MAX_BMP_SLOTS];
     const char  *loadedBmpNames[MAX_BMP_SLOTS];
     uint8       *psbData[MAX_BMP_SLOTS]; /* PSB buffer per-slot (sprites point into it) */
+    uint8       psbDataCallerOwned[MAX_BMP_SLOTS]; /* 1: release must NOT free psbData */
     PS1Surface  *sprites[MAX_BMP_SLOTS][MAX_SPRITES_PER_BMP];
     struct TTtmResource *ttmResource;  /* For LRU cache unpinning */
 };
@@ -192,6 +193,12 @@ void grLoadBmp(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg);
 void grLoadBmpRAM(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg);
 int grLoadPsbBuffer(struct TTtmSlot *ttmSlot, uint16 slotNo,
                     char *strArg, uint8 *psbBuf, uint32 psbSize);
+/* Like grLoadPsbBuffer, but the PSB buffer stays caller-owned:
+ * grReleaseBmp clears the slot reference without freeing the bytes.
+ * Used by walk_pilot's persistent JOHNWALK load buffer so the 48 KB
+ * block is not churned through CACHE on every inter-scene walk. */
+int grLoadPsbBufferCallerOwned(struct TTtmSlot *ttmSlot, uint16 slotNo,
+                               char *strArg, uint8 *psbBuf, uint32 psbSize);
 void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo);
 void grBlitToFramebuffer(PS1Surface *sprite, sint16 screenX, sint16 screenY);
 void grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY);
@@ -264,6 +271,8 @@ void grPreallocCleanBgRects(const uint32 *capBytes, int n);
 int  grCleanBgRectsCount(void);
 unsigned long grCleanBgRectsBytes(void);
 void grSetCleanBgRectsForceCache(int enabled);
+void grSetCleanBgRectsSlabRetain(int enabled);
+void grFlushCleanBgRectSlabs(void);
 void grRestoreBgRectsFull(void);
 /* Capture/restore rectangles into a caller-owned buffer (dst/src sized
  * w*h*sizeof(uint16)). Same per-tile splitting + dirty-rect gating as
