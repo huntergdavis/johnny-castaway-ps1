@@ -1,5 +1,15 @@
 # Transition-Zero Plan (post red-team v1)
 
+## MILESTONE 2 — 2026-06-09 late (W4 certified)
+
+20-scene certification soak passes with the 60 vb staged-hit ratchet
+gate enforced: 20/20 scenes, 89% staged hits, max hit 51 setup_vb
+(0.85 s), 13 of 17 hits at 13-26 vb (0.22-0.43 s), several with zero
+setup CD reads. Zero BSODs; relief valve recovered all pressure
+events. Remaining cold rows are documented content costs (suzy1's own
+custom SCR; boot). Next: ratchet the gate downward as wins land,
+>=2 h soak + real-hardware burn-in before release.
+
 ## W4 landed (2026-06-09 late) — island constants survive custom backdrops
 
 The worst staged hit (walkstuf2 after suzy1: 171 setup_vb, 361 KB of
