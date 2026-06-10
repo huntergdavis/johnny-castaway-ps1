@@ -2,18 +2,15 @@
  * Initialize visual debugging system
  */
 #define PS1_DEBUG_OT_LEN 8
-/* Verbose perf-schema builds carry ~4 KB of extra JCPERF2 format strings,
- * which since v0.9.3 pushes the libc heap below what the 2x32 KB GPU
- * primitive buffers need at graphics init ("Failed to allocate primitive
- * buffers" boot hang). Reclaim 8 KB from the debug prim buffer in those
- * instrumentation builds only; the renderer bounds-checks and drops prims
- * when full, so a denser debug panel degrades instead of corrupting.
- * Release builds (schema off) keep the original 32 KB. */
-#if defined(PS1_PERF_VERBOSE_SCHEMA) && PS1_PERF_VERBOSE_SCHEMA
+/* 24 KB (was 32 KB): the libc heap headroom after the 1440 KB region
+ * buffer is razor-thin, and exe growth pushes the 2x32 KB GPU primitive
+ * buffer allocation over the cliff ("Failed to allocate primitive
+ * buffers" boot hang) — first in verbose perf-schema builds (v0.9.3 +
+ * ~4 KB of JCPERF2 strings), then in release builds on the
+ * transition-zero branch. The debug renderer bounds-checks and drops
+ * prims when full, so a denser panel degrades instead of corrupting;
+ * 24 KB comfortably covers the BSOD text panel. */
 #define PS1_DEBUG_PRIM_BYTES 24576
-#else
-#define PS1_DEBUG_PRIM_BYTES 32768
-#endif
 #define PS1_DEBUG_TEXT_BUF_BYTES 2048
 
 static uint32_t ps1DebugOt[PS1_DEBUG_OT_LEN];

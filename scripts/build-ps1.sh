@@ -108,4 +108,27 @@ echo "=== Build complete ==="
 test -f build-ps1/jcreborn.exe
 ls -lh build-ps1/jcreborn.exe
 
+# Static-image ceiling guard. The libc heap (region buffer 1440 KB +
+# 2x32 KB GPU primitive buffers + boot catalog) lives between _end and
+# the stack, and the margin is ~2 KB: exe growth past this ceiling
+# boot-hangs with "Failed to allocate primitive buffers" (seen twice:
+# verbose-schema builds at v0.9.3, release builds on transition-zero).
+# If this fails, free static bytes instead of raising the ceiling:
+# shave BSS (PS1_DEBUG_PRIM_BYTES history), move text/data to disc
+# (see "Move PS1 ... to disc" commits), or rebalance region budgets.
+END_ADDR=$(awk '$1=="_end" && $2=="B" {gsub(/^ffffffff/, "", $3); print toupper($3)}' build-ps1/jcreborn.map | head -1)
+# Ceiling tracks the fattest flavor (verbose perf schema, _end
+# 0x80075250 boot-validated 2026-06-09) + 1 KB slack.
+END_CEILING="80075650"
+if [ -n "$END_ADDR" ]; then
+    if [ $((16#$END_ADDR)) -gt $((16#$END_CEILING)) ]; then
+        echo "ERROR: static image _end 0x$END_ADDR exceeds ceiling 0x$END_CEILING" >&2
+        echo "       (libc heap headroom cliff — see guard comment in build-ps1.sh)" >&2
+        exit 1
+    fi
+    echo "_end 0x$END_ADDR (ceiling 0x$END_CEILING)"
+else
+    echo "WARN: _end symbol not found in map; ceiling guard skipped" >&2
+fi
+
 exit 0
