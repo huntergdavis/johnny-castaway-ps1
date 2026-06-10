@@ -46,6 +46,27 @@ Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
   - One memory-shape change per branch, each behind its own boot token, each
     with its own ≥2h soak before the next stacks on it.
 
+## W1 landed (2026-06-09 evening) — staged-path results
+
+20-scene soak, `fgpilot perf-log spu-stage loading-waves seed 1`:
+20/20 scenes, zero BSODs, 89% staged hits, CACHE relief valve fired 3x
+and recovered each time. Transition distribution: best 13-15 setup_vb
+(~0.22 s, ZERO setup CD reads), typical 14-47, known heavy classes:
+custom-backdrop scenes (suzy1 cold 177, walkstuf2 hit 171 — backdrop
+reload class, W4 territory) and the no-walk-after-undrained-scene miss
+(johnny5->building6 cold 49). Mechanisms, in landing order:
+1. stage_adopt classification + --transitions harness (W0).
+2. Seek-spin removal (W2): ~8 vb per cold transition.
+3. Metadata-only stage publish + hard-release survival: adoption works.
+4. Slab retention (clean rects, stream window, walk PSB caller-owned
+   slab): fragmentation BSODs eliminated.
+5. Walk-window payload staging + walk-start: adopt=7 full hits common.
+6. memSetCacheReliefHook pressure valve: retention is droppable, BSOD
+   becomes one transition of churn.
+Remaining before release: >=2h soak, real-hardware burn-in (CD spins +
+async), pause-menu/freeplay-entry paths still clear lookahead (cold by
+design), boot scene is inherently cold (200 vb).
+
 ## Measured baselines (2026-06-09, W0 harness, seed 1, verbose schema)
 
 - Shipping default (`fgpilot perf-log seed 1`, 4 scenes): boot `setup_vb=205`;
