@@ -342,6 +342,18 @@ int walkPilotReliefFreePsbSlab(void)
     return 1;
 }
 
+void walkPilotReservePsbSlab(unsigned long bytes)
+{
+    if (!gWalkSpuStageEnabled || gWalkPsbLoadSlab != NULL || !memIsReady())
+        return;
+    /* MEM_REGION_RATIONALE: session-lifetime walk PSB load slab,
+     * reserved at boot as part of the stable CACHE shape. */
+    gWalkPsbLoadSlab = (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
+                                         "johnwalk_spu_load");
+    if (gWalkPsbLoadSlab != NULL)
+        gWalkPsbLoadSlabSize = (uint32)bytes;
+}
+
 static int walkPilotCompletePsbSpuRead(struct TWalkSpuPsbStage *stage)
 {
     if (stage == NULL ||
@@ -582,6 +594,11 @@ int walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo)
 int walkPilotReliefFreePsbSlab(void)
 {
     return 0;
+}
+
+void walkPilotReservePsbSlab(unsigned long bytes)
+{
+    (void)bytes;
 }
 #endif
 

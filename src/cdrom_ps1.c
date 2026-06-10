@@ -1238,6 +1238,59 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         perfTrack = 1;
     }
 
+    /* Sector-aligned reads skip the bounce buffer entirely: the
+     * result buffer is allocated at sector-rounded capacity and the
+     * chunks DMA straight into it. This removes the transient
+     * double-residency spike (a ~94 KB bounce beside a ~93 KB result
+     * for BACKGRND-class reads) that overflowed CACHE during the
+     * boot of the staged-transition stable shape, plus the full-size
+     * memcpy on every aligned big read. Unaligned offsets keep the
+     * legacy bounce path below. */
+    if (memIsReady() && (offset % CD_SECTOR_SIZE) == 0) {
+        /* MEM_REGION_RATIONALE: resource-data result buffer (direct
+         * read variant); caller owns lifetime. Capacity is sector-
+         * rounded so the final chunk's whole-sector DMA stays in
+         * bounds; callers see the requested size semantics. */
+        result = (uint8_t*)memAlloc(MEM_REGION_CACHE, bufferSize,
+                                    "cdrom_read_result");
+        sectorsRead = 0;
+        while (sectorsRead < numSectors) {
+            uint32_t chunkSectors = numSectors - sectorsRead;
+            uint8_t *chunkDst = result + sectorsRead * CD_SECTOR_SIZE;
+            {
+                uint32_t chunkLimit =
+                    ps1CdChunkLimitWithIdleHook(PS1_CD_READ_CHUNK_SECTORS);
+                if (chunkSectors > chunkLimit)
+                    chunkSectors = chunkLimit;
+            }
+            CdIntToPos(fileLba + startSector + sectorsRead, &loc);
+            if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0 ||
+                CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
+                if (perfTrack)
+                    ps1PerfMarkCdReadDetailed(size, numSectors,
+                                              ps1PerfElapsedVBlanks(perfStartTick),
+                                              0, perfFileLba, offset, 0);
+                memFree(MEM_REGION_CACHE, result);
+                return NULL;
+            }
+            syncResult = ps1CdReadSyncBounded();
+            if (syncResult > 0 || syncResult < 0) {
+                if (perfTrack)
+                    ps1PerfMarkCdReadDetailed(size, numSectors,
+                                              ps1PerfElapsedVBlanks(perfStartTick),
+                                              0, perfFileLba, offset, 0);
+                memFree(MEM_REGION_CACHE, result);
+                return NULL;
+            }
+            sectorsRead += chunkSectors;
+        }
+        if (perfTrack)
+            ps1PerfMarkCdReadDetailed(size, numSectors,
+                                      ps1PerfElapsedVBlanks(perfStartTick),
+                                      1, perfFileLba, offset, 0);
+        return result;
+    }
+
     /* Allocate sector-aligned scratch for the CD read. CACHE
      * region post-memInit: large streaming-window reads (up to
      * ~70 KB) consistently overflow TRANSIENT (which peaks at

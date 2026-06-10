@@ -11,7 +11,10 @@
  * prims when full, so a denser panel degrades instead of corrupting;
  * 24 KB comfortably covers the BSOD text panel. */
 #define PS1_DEBUG_PRIM_BYTES 24576
-#define PS1_DEBUG_TEXT_BUF_BYTES 2048
+/* 1 KB (was 2 KB): the BSOD panel emits ~15 lines x ~45 chars (~700 B);
+ * ps1DebugFlush appends with a hard end-pointer, so an oversized dump
+ * truncates instead of overflowing. Freed for libc heap headroom. */
+#define PS1_DEBUG_TEXT_BUF_BYTES 1024
 
 static uint32_t ps1DebugOt[PS1_DEBUG_OT_LEN];
 static uint8_t ps1DebugPrim[PS1_DEBUG_PRIM_BYTES];

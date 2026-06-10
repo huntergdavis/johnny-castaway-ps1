@@ -1,3 +1,22 @@
+int grReliefFreeScrCache(void)
+{
+    /* CACHE pressure relief tier 0: the packed SCR cache is the least
+     * valuable retained block (its loss costs one OCEAN00 re-read on
+     * the next custom-backdrop return, ~0.5 s, rare). Returns the
+     * bytes freed. It re-fills opportunistically on the next island
+     * screen load. */
+    int freedBytes = 0;
+    if (gFullScreenScrCache != NULL) {
+        freedBytes = (int)gFullScreenScrCacheBytes;
+        memFree(MEM_REGION_CACHE, gFullScreenScrCache);
+        gFullScreenScrCache = NULL;
+    }
+    gFullScreenScrCacheBytes = 0;
+    gFullScreenScrCacheValid = 0;
+    gFullScreenScrCacheName[0] = '\0';
+    return freedBytes;
+}
+
 void grSetFullScreenScrCacheEnabled(int enabled)
 {
     gFullScreenScrCacheEnabled = enabled ? 1 : 0;
@@ -65,16 +84,17 @@ static int gGrCleanRectSlabRetain = 0;
 static int grCleanRectSlabPoolFlush(void)
 {
     int i;
-    int freed = 0;
+    int largest = 0;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (gGrCleanRectSlabPool[i].ptr != NULL) {
             memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
+            if ((int)gGrCleanRectSlabPool[i].capacityBytes > largest)
+                largest = (int)gGrCleanRectSlabPool[i].capacityBytes;
             gGrCleanRectSlabPool[i].ptr = NULL;
             gGrCleanRectSlabPool[i].capacityBytes = 0;
-            freed++;
         }
     }
-    return freed;
+    return largest;
 }
 
 static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
@@ -474,12 +494,37 @@ void grSetCleanBgRectsSlabRetain(int enabled)
         grCleanRectSlabPoolFlush();
 }
 
+void grPreparkCleanRectSlabs(int count, unsigned long bytes)
+{
+    /* Boot-time reservation: park `count` slabs of `bytes` each so the
+     * recurring big clean rects live in a fixed bottom-of-CACHE band
+     * for the whole session instead of being carved from whatever
+     * fragmented space the scene history left. Part of the staged
+     * transition stable shape (foregroundPilotReserveStableShape). */
+    int i;
+    for (i = 0; i < count && i < GR_MAX_CLEAN_RECTS; i++) {
+        /* MEM_REGION_RATIONALE: session-lifetime parked clean-rect
+         * slab; reused via the slab pool, droppable only by the CACHE
+         * pressure-relief hook. */
+        uint16 *slab = (uint16 *)memAlloc(MEM_REGION_CACHE, bytes,
+                                          "grCleanRectPixels");
+        if (slab == NULL)
+            return;
+        if (!grCleanRectSlabPoolPark(slab, (uint32)bytes)) {
+            memFree(MEM_REGION_CACHE, slab);
+            return;
+        }
+    }
+}
+
 int grFlushCleanBgRectSlabs(void)
 {
     /* One-shot release of the parked slabs without changing retain
      * mode — freeplay teardown and the CACHE pressure-relief hook want
      * the bytes back while the proof flag (and thus retention for
-     * later scenes) stays on. Returns the number of slabs freed. */
+     * later scenes) stays on. Returns the LARGEST capacity freed (0 if
+     * the pool was empty) so tiered relief can stop as soon as the
+     * pending request is guaranteed satisfiable. */
     return grCleanRectSlabPoolFlush();
 }
 

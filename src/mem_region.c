@@ -375,7 +375,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                 lruEvictAllUnpinned();
                 p = cacheAllocInternal(alignedSize, tag);
                 if (p == NULL && g_cacheReliefHook != NULL &&
-                    g_cacheReliefHook()) {
+                    g_cacheReliefHook((unsigned long)alignedSize)) {
                     /* Optimization-only retention released (parked
                      * clean-rect slabs, idle grow-only buffers) —
                      * one more try before libc. */

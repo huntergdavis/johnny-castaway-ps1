@@ -182,7 +182,7 @@ void memInit(void);
  * The hook runs inside memAlloc: it may memFree but must not
  * allocate. Registered by the loading-waves proof, whose cross-scene
  * retention is the only consumer of this valve. */
-typedef int (*MemCacheReliefFn)(void);
+typedef int (*MemCacheReliefFn)(unsigned long requestBytes);
 void memSetCacheReliefHook(MemCacheReliefFn fn);
 
 /* Freeze the BOOT region. Called once all boot-time BOOT allocations

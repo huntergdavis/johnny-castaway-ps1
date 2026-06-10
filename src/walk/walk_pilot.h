@@ -92,6 +92,7 @@ void walkPilotSetSpuStage(int enabled);
  * when no sprite slot points into it. Returns nonzero if freed; the
  * next walk re-allocates it. */
 int  walkPilotReliefFreePsbSlab(void);
+void walkPilotReservePsbSlab(unsigned long bytes);
 int  walkPilotStageJohnwalkSpuTick(void);
 int  walkPilotPrimeSpuAssetsBlocking(void);
 int  walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo);

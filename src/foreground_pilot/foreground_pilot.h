@@ -12,6 +12,11 @@ void foregroundPilotSetStageScene(const char *sceneName);
  * No-op outside the loading-waves proof. Returns nonzero while work
  * is pending. */
 int foregroundPilotStageWalkTick(void);
+/* Boot-time reservation of the recurring big CACHE blocks (stream
+ * window, clean-rect slabs, walk PSB slab) into a stable bottom-of-
+ * CACHE band. Call once right after memInit; no-op when the staged
+ * transition path is disabled. */
+void foregroundPilotReserveStableShape(void);
 void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);

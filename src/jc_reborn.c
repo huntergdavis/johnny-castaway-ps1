@@ -2101,6 +2101,9 @@ int main(int argc, char **argv)
     memVerifyBootBudget();
     memVerifyAllScenesFitTransient();
     memVerifyAllScenesPinnedFitCache();
+    /* First CACHE allocations: the staged-transition stable shape
+     * claims the bottom band before any scene/teardown churn. */
+    foregroundPilotReserveStableShape();
 #ifdef JC_VERIFY_PACK_HASHES
     memVerifyPackHashes();
 #endif

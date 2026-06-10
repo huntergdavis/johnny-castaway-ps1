@@ -653,14 +653,24 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                      * already prevents them from being allocated.
                      * Mid-session: prior scenes grew the buffers,
                      * this free reclaims them. */
-                    if (!fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName) &&
+                    /* Under the staged-transition shape the recurring
+                     * big buffers must stay layout-stable: freeing the
+                     * window/prefetch here (activity-class scenes) and
+                     * re-allocating them next scene is what fragmented
+                     * CACHE into the Original-mode BSOD (264 KB free,
+                     * no contiguous 96 KB, relief already spent). The
+                     * relief valve reclaims them under genuine
+                     * pressure; per-scene tidiness frees are skipped. */
+                    if (!gFgLoadingWaveProofEnabled &&
+                        !fgSceneKeepsStage1UnderCleanMemoryRelief(sceneName) &&
                         gFgPrefetchFrameBuffer != NULL) {
                         fgQuiesceCdBeforeCacheBufferMutation();
                         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
                         gFgPrefetchFrameBuffer = NULL;
                         gFgPrefetchFrameBufferSize = 0;
                     }
-                    if (!fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName) &&
+                    if (!gFgLoadingWaveProofEnabled &&
+                        !fgSceneKeepsWindowUnderCleanMemoryRelief(sceneName) &&
                         gFgStreamWindowBuffer != NULL) {
                         fgNextSceneStageInvalidateIfBorrowingStreamWindow();
                         fgQuiesceCdBeforeCacheBufferMutation();
@@ -781,6 +791,32 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (streamReadGroupCount > 0 &&
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
+                /* Staged-transition shape: size the window at its
+                 * lifetime maximum on FIRST allocation. Growing it
+                 * later (Original mode boots on a small-window scene,
+                 * a bigger scene follows) allocates new-before-free —
+                 * 2x131 KB transient residency in a region whose
+                 * boundary rewind never fires, which is the
+                 * Original-mode BSOD (264 KB free, none contiguous).
+                 * One max-size block on a young, unfragmented CACHE
+                 * is layout-stable for the whole session. */
+                if (gFgLoadingWaveProofEnabled &&
+                    windowCapacityBytes < FG_NEXT_STAGE_SIDE_BYTES)
+                    windowCapacityBytes = FG_NEXT_STAGE_SIDE_BYTES;
+                /* ...and never ABOVE it either: visitor-class setup
+                 * primes (320-448 KB) would replace the stable window
+                 * with a fat one that starves the rest of the retained
+                 * shape (Original-mode BSOD two scenes later). Those
+                 * scenes stream through the standard window instead;
+                 * the prime fallback below already handles
+                 * setupPrimeWindowBytes = 0. */
+                if (gFgLoadingWaveProofEnabled &&
+                    windowCapacityBytes > FG_NEXT_STAGE_SIDE_BYTES) {
+                    gFgRuntime.setupPrimeWindowBytes = 0;
+                    windowCapacityBytes =
+                        (windowBytes > FG_NEXT_STAGE_SIDE_BYTES)
+                        ? windowBytes : FG_NEXT_STAGE_SIDE_BYTES;
+                }
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                     uint8 *newWindowBuffer;
 
@@ -2098,14 +2134,34 @@ void foregroundPilotSetHeapProbe(int enabled)
  * when neither the runtime nor the next-scene stage points into it.
  * Each is re-created on demand afterwards — the cost of a relief event
  * is one transition's worth of churn, not correctness. */
-static int fgCachePressureRelief(void)
+static int fgCachePressureRelief(unsigned long requestBytes)
 {
     int freed = 0;
+    int largestSlab;
 
-    if (grFlushCleanBgRectSlabs() > 0)
+    /* Tiered: stop as soon as the request is guaranteed satisfiable.
+     * Freeing MORE than needed is not harmless — the first relief
+     * design freed the retained stream window for a 96 KB clean-rect
+     * request that a slab flush alone covered; the forced window
+     * realloc next scene burned a second relief that flushed the
+     * parked slabs, and the layout unraveled into the Original-mode
+     * BSOD. Each tier's freed block coalesces or stands alone at >=
+     * its capacity, so capacity >= request guarantees the retry. */
+    largestSlab = grReliefFreeScrCache();
+    if (largestSlab > 0)
         freed = 1;
+    if ((unsigned long)largestSlab >= requestBytes)
+        return freed;
+
+    largestSlab = grFlushCleanBgRectSlabs();
+    if (largestSlab > 0)
+        freed = 1;
+    if ((unsigned long)largestSlab >= requestBytes)
+        return freed;
+
     if (walkPilotReliefFreePsbSlab())
         freed = 1;
+
     if (gFgStreamWindowBuffer != NULL &&
         gFgRuntime.streamWindowBuffer == NULL) {
         fgNextSceneStageInvalidateIfBorrowingStreamWindow();
@@ -2148,6 +2204,32 @@ void foregroundPilotSetSpuStage(int enabled)
 int foregroundPilotStageWalkTick(void)
 {
     return fgNextSceneStageWalkTick();
+}
+
+void foregroundPilotReserveStableShape(void)
+{
+    /* Boot-time reservation of the staged-transition stable shape:
+     * the recurring big CACHE blocks allocate ONCE, first, into a
+     * contiguous bottom-of-CACHE band — stream window, two parked
+     * clean-rect slabs (visitor-class scenes hold two 96 KB rects
+     * simultaneously), and the walk PSB slab (~376 KB total). Letting
+     * scene history place these on demand interleaved churn between
+     * pins and fragmented CACHE into the Original-mode BSOD (264 KB
+     * free, none contiguous). All four remain droppable by the
+     * pressure-relief hook in genuine emergencies. */
+    if (!gFgLoadingWaveProofEnabled || !memIsReady())
+        return;
+    if (gFgStreamWindowBuffer == NULL) {
+        /* MEM_REGION_RATIONALE: session-lifetime stream window,
+         * reserved at boot as part of the stable CACHE shape. */
+        gFgStreamWindowBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
+                                                  FG_NEXT_STAGE_SIDE_BYTES,
+                                                  "fg-stream-window");
+        if (gFgStreamWindowBuffer != NULL)
+            gFgStreamWindowBufferSize = FG_NEXT_STAGE_SIDE_BYTES;
+    }
+    grPreparkCleanRectSlabs(2, 98304UL);
+    walkPilotReservePsbSlab(49152UL);
 }
 
 void foregroundPilotSetStageScene(const char *sceneName)
@@ -2272,6 +2354,10 @@ void foregroundPilotSetSpuStage(int enabled)
 int foregroundPilotStageWalkTick(void)
 {
     return 0;
+}
+
+void foregroundPilotReserveStableShape(void)
+{
 }
 
 void foregroundPilotSetStageScene(const char *sceneName)

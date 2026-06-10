@@ -435,14 +435,27 @@ static void fgReleaseStreamBuffersHard(void)
 
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
 {
-    fgNextSceneStageInvalidate();
+    /* Staged-transition shape: the grow-only buffers stay allocated
+     * (layout stability is what keeps CACHE defragmented across the
+     * un-rewound boundary); only the runtime references detach, so the
+     * pressure-relieved scene runs without prefetch while the next
+     * scene re-attaches without an alloc. This free was the un-gated
+     * window teardown behind the Original-mode BSOD chain (visitor6
+     * frees -> stand7 realloc burns the relief valve -> valve flushes
+     * the parked 96 KB slabs -> stand5 #2 has neither slab nor
+     * contiguous space). True exhaustion still reclaims these via
+     * fgCachePressureRelief. SPU-parked stages survive too. */
+    if (gFgLoadingWaveProofEnabled)
+        fgNextSceneStageInvalidateIfBorrowingStreamWindow();
+    else
+        fgNextSceneStageInvalidate();
     fgQuiesceCdBeforeCacheBufferMutation();
-    if (gFgPrefetchFrameBuffer != NULL) {
+    if (!gFgLoadingWaveProofEnabled && gFgPrefetchFrameBuffer != NULL) {
         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
     }
-    if (gFgStreamWindowBuffer != NULL) {
+    if (!gFgLoadingWaveProofEnabled && gFgStreamWindowBuffer != NULL) {
         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;
