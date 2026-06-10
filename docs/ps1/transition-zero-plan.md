@@ -1,5 +1,27 @@
 # Transition-Zero Plan (post red-team v1)
 
+## Fix-forward campaign — ledger closed (2026-06-10 early)
+
+100/100 Original-mode scenes: ZERO BSODs, ZERO relief events, ZERO CD
+retries, max staged hit 37 vb / max cold 57 vb (best numbers of the
+campaign — most transitions do zero setup CD reads). Root-cause chain
+resolved across the night: boot-order hole under the SCR cache; the
+HOLIDAY.PSB sheet re-read+released EVERY setup during holiday windows
+(the hidden ~43 vb backdrop tax — perf was date-dependent!); frame/
+prefetch/scratch hard-release frees defeating the boot pre-grow; the
+relief-scene scratch shrink; and the retained-shape ledger itself
+(window trimmed 128->96 KB to fit: total ~651 KB of 672, peak
+679,980/688,128). Ladder: 12/40/100 clean; 400 (~8 h) running.
+
+WATCHLIST (not crashes/memory warnings, but tracked):
+- Walk vblank-caps ~3/100 scenes (pre-existing walkAnimate deadlock,
+  self-recovers after 10 s frozen pose; ~70 expected per 23 h).
+- trans_peak 785,836 of 786,432 — 600 BYTES from the TRANSIENT cliff;
+  beyond it is the designed silent libc spill. Monitor via the new
+  JCPERF2 regions line.
+- StoreImage (VRAM readback) confirmed broken in this SDK+emulator
+  combo — hang after the call; do not reattempt without SDK work.
+
 ## Fix-forward campaign toward the 23 h soak (2026-06-09 late night)
 
 Goal set by Hunter: staged transitions DEFAULT ON, 23 h soak with zero
