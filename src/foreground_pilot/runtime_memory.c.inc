@@ -713,26 +713,37 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
 #define fgHeapProbe(phase, sceneName) ((void)0)
 #endif
 
-static void fgRuntimeReset(void)
+static void fgRuntimeResetCore(int keepBackdropTiles)
 {
     fgQuiesceCdBeforeCacheBufferMutation();
 
-    /* Wipe the TRANSIENT region — all per-scene allocations made via
-     * memAlloc(MEM_REGION_TRANSIENT, ...) become unreachable. The bump
-     * pointer rewinds in one word write. Cheap in release; ~15 ms in
-     * MEM_POISON_TRANSIENT debug builds (250 KB 0xCD fill).
-     * See docs/ps1/memory-region-allocator-plan.md "Boot lifecycle". */
-    extern const char *fgLoopGetLastScene(void);
-    memSceneReset(fgLoopGetLastScene());
+    if (!keepBackdropTiles) {
+        /* Wipe the TRANSIENT region — all per-scene allocations made via
+         * memAlloc(MEM_REGION_TRANSIENT, ...) become unreachable. The bump
+         * pointer rewinds in one word write. Cheap in release; ~15 ms in
+         * MEM_POISON_TRANSIENT debug builds (250 KB 0xCD fill).
+         * See docs/ps1/memory-region-allocator-plan.md "Boot lifecycle". */
+        extern const char *fgLoopGetLastScene(void);
+        memSceneReset(fgLoopGetLastScene());
 
-    /* Round 33: bg-tile pixels + struct live in TRANSIENT (graphics_ps1.c
-     * createEmptyBgTileRAM / ensureBgTileRAM). memSceneReset just
-     * reclaimed those bytes, so the static bgTile0/1/3/4 slots (and
-     * grBackgroundSfc) now point at dangling addresses. NULL them
-     * before any subsequent code can dereference them. The next
-     * grLoadScreen / grInitEmptyBackground call sees the cleared
-     * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
-    grBackgroundTilesAssumeWiped();
+        /* Round 33: bg-tile pixels + struct live in TRANSIENT (graphics_ps1.c
+         * createEmptyBgTileRAM / ensureBgTileRAM). memSceneReset just
+         * reclaimed those bytes, so the static bgTile0/1/3/4 slots (and
+         * grBackgroundSfc) now point at dangling addresses. NULL them
+         * before any subsequent code can dereference them. The next
+         * grLoadScreen / grInitEmptyBackground call sees the cleared
+         * slots and re-allocates fresh tiles in the new TRANSIENT frame. */
+        grBackgroundTilesAssumeWiped();
+    }
+    /* keepBackdropTiles: the scene-end reset defers the TRANSIENT wipe to
+     * the next scene's setup-top reset so the bg tiles stay paintable
+     * through the inter-scene walk. The R33 wipe here is what made every
+     * walk invisible (Johnny composited into NULLed tiles; the screen
+     * froze on the last scene frame for the whole boundary). All the
+     * TRANSIENT memFree calls below are balance bookkeeping — the bytes
+     * are reclaimed by the deferred wipe, identically to before, and the
+     * balance now reaches zero BEFORE the wipe instead of after. Nothing
+     * allocates TRANSIENT between scene end and the next setup. */
 
     /* Note: the previous attempt to call fgReleaseStreamBuffersHard +
      * lruEvictAllUnpinned + memCacheRewindIfEmpty here fired on every
@@ -807,6 +818,16 @@ static void fgRuntimeReset(void)
     memset(&gFgRuntime, 0, sizeof(gFgRuntime));
     gFgRuntimeSceneId = FG_SCENE_UNKNOWN;
     fgTelemetryUpdate();
+}
+
+static void fgRuntimeReset(void)
+{
+    fgRuntimeResetCore(0);
+}
+
+static void fgRuntimeResetKeepBackdropTiles(void)
+{
+    fgRuntimeResetCore(1);
 }
 
 static int fgLoadSoundEvents(const CdlFILE *cdfile, const struct TFgPilotHeader *header,

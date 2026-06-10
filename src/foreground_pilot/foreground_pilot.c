@@ -1968,9 +1968,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * the heap before the next scene starts. Without this the fragmented
      * state accumulates and a later scene's large contiguous alloc
      * (clean-rect buffer ~270 KB, frame payload ~90 KB, BACKGRND PSB
-     * ~93 KB) fails silently after 2-3 iterations. */
+     * ~93 KB) fails silently after 2-3 iterations.
+     *
+     * Keep the bg tiles: the TRANSIENT wipe is deferred to the next
+     * scene's setup-top fgRuntimeReset so the inter-scene walk can
+     * actually paint (Johnny + waves). The full wipe here froze the
+     * screen for the entire 4-8 s boundary on every transition. */
     FG_CACHE_CHECK("fg-before-runtime-reset");
-    fgRuntimeReset();
+    fgRuntimeResetKeepBackdropTiles();
     fgReleaseStreamBuffers();
     if (blackBackdrop || sceneSpecificBackdrop ||
         largeCleanSnapshot || deferWalkCleanRecapture) {
