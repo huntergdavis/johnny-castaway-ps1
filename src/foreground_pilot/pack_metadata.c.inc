@@ -445,6 +445,11 @@ static void fgFreeEntryTable(struct TFgPilotEntryTable *table)
     table->count = 0;
 }
 
+/* Defined later in the foreground_pilot translation unit (the grow-only
+ * prefetch frame buffer, borrowed here as setup-time metadata scratch). */
+static uint8 *gFgPrefetchFrameBuffer;
+static uint32 gFgPrefetchFrameBufferSize;
+
 static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
                                           const CdlFILE *cdfile,
                                           struct TFgPilotHeader *outHeader,
@@ -466,15 +471,31 @@ static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
     for (i = 0; i < 256; i++)
         outPalette[i] = 0;
 
-    metadata = (uint8 *)memAlloc(MEM_REGION_CACHE, prefixBytes,
-                                 "fg-metadata-prefix");
+    /* Setup-scoped scratch: borrow the prefetch frame buffer when it
+     * can hold the whole metadata (it is stable-band resident and idle
+     * until the play loop starts). This removes three CACHE alloc/free
+     * pairs per cold setup — the small-band churn that, over ~90
+     * Original-mode scenes, left CACHE unable to serve a 14 KB request
+     * without the relief valve. CACHE fallback covers prefetch-less
+     * configurations. */
+    int metadataOwned = 1;
+    if (gFgPrefetchFrameBuffer != NULL &&
+        gFgPrefetchFrameBufferSize >= fgSectorAlignUp(prefixBytes) +
+                                      FG_CD_SECTOR_SIZE) {
+        metadata = gFgPrefetchFrameBuffer;
+        metadataOwned = 0;
+    } else {
+        metadata = (uint8 *)memAlloc(MEM_REGION_CACHE, prefixBytes,
+                                     "fg-metadata-prefix");
+    }
     if (!metadata)
         return 0;
 
     if (fgNextSceneStageReadMetadataPrefix(sceneName, metadata, prefixBytes)) {
         ps1PerfMarkStageAdopt(PS1_PERF_STAGE_ADOPT_METADATA);
     } else if (!ps1_streamReadAlignedIntoFile(cdfile, 0, prefixBytes, metadata)) {
-        memFree(MEM_REGION_CACHE, metadata);
+        if (metadataOwned)
+            memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -484,7 +505,8 @@ static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
          !fgHeaderIsPal4TemporalResidual(outHeader) &&
          !fgHeaderIsIndexed8TemporalResidual(outHeader)) ||
         outHeader->frameCount == 0) {
-        memFree(MEM_REGION_CACHE, metadata);
+        if (metadataOwned)
+            memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
@@ -493,41 +515,55 @@ static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
     metadataBytes = outHeader->tableOffset + tableSize;
     if (metadataBytes < FG_PACK_HEADER_SIZE + paletteBytes ||
         metadataBytes > outHeader->dataOffset) {
-        memFree(MEM_REGION_CACHE, metadata);
+        if (metadataOwned)
+            memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
     if (metadataBytes > prefixBytes) {
-        uint8 *expanded;
-        uint8 *tail;
         uint32 tailBytes = metadataBytes - prefixBytes;
 
-        /* MEM_REGION_RATIONALE: metadata expansion follows CACHE resource
-         * lifetime. Both alloc and free route through CACHE. ps1_streamRead returns
-         * CACHE-region memory post-memInit, so libc free() on metadata/tail
-         * silently leaked. Allocating `expanded` through CACHE too keeps
-         * the libc heap (only ~77 KB free) out of the metadata path. */
-        expanded = (uint8 *)memAlloc(MEM_REGION_CACHE, metadataBytes,
-                                     "fg-metadata-expanded");
-        if (!expanded) {
-            memFree(MEM_REGION_CACHE, metadata);
-            return 0;
-        }
-        memcpy(expanded, metadata, prefixBytes);
-        memFree(MEM_REGION_CACHE, metadata);
+        if (!metadataOwned &&
+            gFgPrefetchFrameBufferSize >= fgSectorAlignUp(metadataBytes) +
+                                          FG_CD_SECTOR_SIZE) {
+            /* Borrowed buffer is big enough for the whole metadata:
+             * read the tail directly into place (the spare sector of
+             * capacity absorbs the whole-sector DMA overrun on the
+             * final partial sector). No allocations at all. */
+            if (!ps1_streamReadIntoFile(cdfile, prefixBytes, tailBytes,
+                                        metadata + prefixBytes))
+                return 0;
+        } else {
+            uint8 *expanded;
+            uint8 *tail;
+            /* MEM_REGION_RATIONALE: metadata expansion follows CACHE
+             * resource lifetime (fallback when the prefetch buffer is
+             * absent or too small). */
+            expanded = (uint8 *)memAlloc(MEM_REGION_CACHE, metadataBytes,
+                                         "fg-metadata-expanded");
+            if (!expanded) {
+                if (metadataOwned)
+                    memFree(MEM_REGION_CACHE, metadata);
+                return 0;
+            }
+            memcpy(expanded, metadata, prefixBytes);
+            if (metadataOwned)
+                memFree(MEM_REGION_CACHE, metadata);
 
-        tail = (uint8 *)memAlloc(MEM_REGION_CACHE, tailBytes,
-                                 "fg-metadata-tail");
-        if (!tail ||
-            !ps1_streamReadIntoFile(cdfile, prefixBytes, tailBytes, tail)) {
-            if (tail)
-                memFree(MEM_REGION_CACHE, tail);
-            memFree(MEM_REGION_CACHE, expanded);
-            return 0;
+            tail = (uint8 *)memAlloc(MEM_REGION_CACHE, tailBytes,
+                                     "fg-metadata-tail");
+            if (!tail ||
+                !ps1_streamReadIntoFile(cdfile, prefixBytes, tailBytes, tail)) {
+                if (tail)
+                    memFree(MEM_REGION_CACHE, tail);
+                memFree(MEM_REGION_CACHE, expanded);
+                return 0;
+            }
+            memcpy(expanded + prefixBytes, tail, tailBytes);
+            memFree(MEM_REGION_CACHE, tail);
+            metadata = expanded;
+            metadataOwned = 1;
         }
-        memcpy(expanded + prefixBytes, tail, tailBytes);
-        memFree(MEM_REGION_CACHE, tail);
-        metadata = expanded;
     }
 
     paletteEntries = (uint16)(paletteBytes / 2u);
@@ -535,11 +571,13 @@ static int fgLoadMetadataPrefixFromCdFile(const char *sceneName,
         outPalette[i] = fgReadU16(metadata + FG_PACK_HEADER_SIZE + ((uint32)i * 2u));
 
     if (!fgParseEntryTable(metadata + outHeader->tableOffset, outHeader, outTable)) {
-        memFree(MEM_REGION_CACHE, metadata);
+        if (metadataOwned)
+            memFree(MEM_REGION_CACHE, metadata);
         return 0;
     }
 
-    memFree(MEM_REGION_CACHE, metadata);
+    if (metadataOwned)
+        memFree(MEM_REGION_CACHE, metadata);
     return 1;
 }
 
