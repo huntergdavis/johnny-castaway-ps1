@@ -1216,9 +1216,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int keepBackgrndForProof = 0;
     int reuseCleanOverlayForProof = 0;
 
-    grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled &&
-                                   !blackBackdrop &&
-                                   !sceneSpecificBackdrop);
+    /* The SCR cache stays enabled for the proof's lifetime: disabling
+     * it per custom-backdrop scene freed the 150 KB buffer and forced
+     * a full OCEAN00.SCR CD re-read on the next island scene
+     * (walkstuf2 after suzy1: screen_vb 85). Custom SCRs can no longer
+     * pollute the slot — grEnsureFullScreenScrCache only admits the
+     * island constants (OCEAN / NIGHT prefixes). */
+    grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled);
 
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (gFgLoadingWaveProofEnabled &&

@@ -1,7 +1,15 @@
 static void fgBackdropRelease(int keepBackgrnd)
 {
     int slot;
-    int firstSlot = keepBackgrnd ? 1 : 0;
+    /* Under the loading-waves proof, the BACKGRND sprite sheet (slot 0,
+     * ~93 KB PSB) is a scene-independent constant: every island scene
+     * needs it back. Keep it loaded even when a custom-backdrop scene
+     * drops the island (the wave thread and wave cache below still
+     * stop — there is no island on screen), so the return-to-island
+     * scene skips the CD re-read (walkstuf2 after suzy1:
+     * backdrop_vb 42). */
+    int keepSlot0 = keepBackgrnd || gFgLoadingWaveProofEnabled;
+    int firstSlot = keepSlot0 ? 1 : 0;
 
     /* When the backdrop is kept across the boundary, keep the wave
      * thread running too: islandAnimate touches only slot 0 (kept
@@ -21,7 +29,7 @@ static void fgBackdropRelease(int keepBackgrnd)
             grReleaseBmp(&gFgBackdropSlot, (uint8)slot);
     }
 
-    if (!keepBackgrnd)
+    if (!keepSlot0)
         memset(&gFgBackdropSlot, 0, sizeof(gFgBackdropSlot));
 }
 

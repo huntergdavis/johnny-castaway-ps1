@@ -387,11 +387,25 @@ static void grCopyFullScreenScrName(char *dst, uint32 dstBytes,
     dst[i] = '\0';
 }
 
+static int grScrNameIsIslandBackdrop(const char *resName)
+{
+    /* OCEAN00.SCR / NIGHT.SCR are the island constants every island
+     * scene reloads. Custom one-shot SCRs (suzy/building interiors)
+     * have no reuse value: the next scene reverts to the island, so
+     * letting them into the single cache slot evicts the constant and
+     * forces a full CD re-read on the way back (walkstuf2 after suzy1:
+     * screen_vb 85). */
+    return resName != NULL &&
+           (strncmp(resName, "OCEAN", 5) == 0 ||
+            strncmp(resName, "NIGHT", 5) == 0);
+}
+
 static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
 {
     if (!gFullScreenScrCacheEnabled ||
         resName == NULL ||
-        bytes == 0)
+        bytes == 0 ||
+        !grScrNameIsIslandBackdrop(resName))
         return 0;
 
     if (gFullScreenScrCache != NULL &&
