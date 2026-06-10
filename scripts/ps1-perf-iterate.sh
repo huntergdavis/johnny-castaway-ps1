@@ -1274,7 +1274,7 @@ run_headless_regtest() {
                 needed_correctness="$TRANSITIONS_SCENES"
             fi
             if [ "$EARLY_STOP_ON_JCPERF2" -eq 1 ] && \
-               [ "$(grep -c "JCPERF2 correctness" "$log_file" 2>/dev/null || printf '0')" -ge "$needed_correctness" ]; then
+               [ "$(grep -c "JCPERF2 correctness" "$log_file" 2>/dev/null; true)" -ge "$needed_correctness" ] 2>/dev/null; then
                 {
                     echo "reason=jcperf2_correctness"
                     echo "needed_correctness=$needed_correctness"
