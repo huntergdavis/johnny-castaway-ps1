@@ -1,5 +1,20 @@
 # Transition-Zero Plan (post red-team v1)
 
+## MILESTONE 1 — 2026-06-09 (branch ps1-transition-zero-20260609, 22 commits)
+
+W0+W2+W1+W5 landed, W4 first win landed. Staged transitions: 13-26
+setup_vb (0.22-0.43 s, best with ZERO setup CD reads) vs ~250 vb
+(~4.2 s) at session start; boundaries fully animated (visible walk +
+moving ocean) vs 5-8 s frozen screen; 20/20-scene soaks deterministic
+and BSOD-free with the CACHE relief valve recovering all pressure
+events; staged-hit rate 85-89%. Normal-mode canary green throughout.
+
+Next session entry points: setup-prime SEGMENT staging
+(walkstuf2-class, ~360 KB bypasses the stream window — segment offsets
+are already in the staged metadata), suzy1 position-reroll rebuild
+profile, waves during the setup window, >=2 h soak, real-hardware
+burn-in for the CD spin removals.
+
 Goal: drive scene transition latency from ~1.5s (common path, `setup_vb=86-87`)
 toward perceptual zero, and pull the cold path (`setup_vb=187-283`) down with it.
 Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
