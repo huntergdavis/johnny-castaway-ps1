@@ -1,5 +1,24 @@
 # Transition-Zero Plan (post red-team v1)
 
+## W4 landed (2026-06-09 late) — island constants survive custom backdrops
+
+The worst staged hit (walkstuf2 after suzy1: 171 setup_vb, 361 KB of
+CD re-reads) was the island constants being dropped on every
+custom-backdrop teardown: the SCR cache slot admitted (and a per-scene
+toggle freed) suzy1's one-shot screen, and fgBackdropRelease(0)
+dropped the BACKGRND sprite sheet. The cache now admits only
+OCEAN/NIGHT and lives for the proof's lifetime; slot 0 stays loaded
+through custom scenes (waves still stop). walkstuf2: 171 -> 51
+setup_vb; every staged hit passes the 60 vb ratchet gate. Also landed
+earlier: oversize stage windows publish in place (johnny3 42 -> 26).
+
+Residual cold costs, documented and accepted for now: suzy1-class
+scenes pay their own custom SCR load (~97 vb screen — per-scene
+content, would need a second staged file class); the
+undrained-predecessor no-walk miss (building6 49 vb, suzy1's
+pack_start 74 vb); boot (200 vb, once per session). W3's parse-work
+items are absorbed: full hits already run pack_start 1-5 vb.
+
 ## MILESTONE 1 — 2026-06-09 (branch ps1-transition-zero-20260609, 22 commits)
 
 W0+W2+W1+W5 landed, W4 first win landed. Staged transitions: 13-26
