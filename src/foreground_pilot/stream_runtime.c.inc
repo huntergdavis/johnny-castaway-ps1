@@ -675,7 +675,17 @@ fgNextSceneStagePublishLoadedWindow(void)
         gFgNextSceneStage.loadedBytes > gFgNextSceneStage.windowBytes)
         return 0;
 
-    if (gFgSpuStageEnabled && !fgNextSceneStageParkInSpu()) {
+    /* Windows that fit the SPU payload slot park there (frees the
+     * stream window for the next scene's own use). Bigger windows —
+     * the setup-prime-heavy scenes like walkstuf2 whose first reads
+     * run to ~360 KB — publish IN PLACE in the retained stream window
+     * instead of being thrown away: the window survives the boundary
+     * under the proof, fgNextSceneStageCanKeepStreamWindow shields it
+     * through the hard release, and AdoptWindow's in-place path
+     * ('JCSTAGE A') hands it to the next scene without a copy. */
+    if (gFgSpuStageEnabled &&
+        gFgNextSceneStage.loadedBytes <= PS1_SPU_CACHE_FG_PAYLOAD_BYTES &&
+        !fgNextSceneStageParkInSpu()) {
         fgNextSceneStageInvalidate();
         return 0;
     }
@@ -735,9 +745,10 @@ fgNextSceneStageCompleteHeaderRead(void)
         return 0;
     }
 
-    requestBytes = FG_NEXT_STAGE_TARGET_BYTES;
-    if (requestBytes > FG_NEXT_STAGE_SIDE_BYTES)
-        requestBytes = FG_NEXT_STAGE_SIDE_BYTES;
+    /* Request up to the full side budget; whether the loaded window
+     * later parks in SPU (<= payload slot) or publishes in place in
+     * the retained stream window (> slot) is decided at publish time. */
+    requestBytes = FG_NEXT_STAGE_SIDE_BYTES;
     if (requestBytes > gFgStreamWindowBufferSize)
         requestBytes = fgSectorAlignDown(gFgStreamWindowBufferSize);
     if (requestBytes < FG_CD_SECTOR_SIZE) {
