@@ -1537,7 +1537,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment4Buffer = gFgSetupSegment4OwnedBuffer;
             if (segment4Buffer == NULL) {
                 gFgSetupSegment4OwnedBufferSize = 0;
-                memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+                fgFreeSetupSegmentBuffer();
                 gFgSetupSegmentBuffer = NULL;
                 gFgSetupSegmentBufferSize = 0;
                 gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
@@ -1556,9 +1556,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         /* MEM_REGION_RATIONALE: targeted reusable read-cluster cache.
          * CACHE avoids libc fragmentation and the reduced footprint preserves
          * clean-rect + stream-window headroom under the region allocator. */
-        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                  allocationBytes,
-                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBuffer = fgAllocSetupSegmentCacheBuf(allocationBytes);
         gFgSetupSegmentBufferSize = allocationBytes;
         gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
         segmentBuffer = gFgSetupSegmentBuffer;
@@ -1580,9 +1578,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         /* MEM_REGION_RATIONALE: targeted low-tide BUILDING2 cluster cache.
          * The setup-prime window covers the early pack; this pays the next
          * dense active-loop read cluster without growing the main window. */
-        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                  allocationBytes,
-                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBuffer = fgAllocSetupSegmentCacheBuf(allocationBytes);
         gFgSetupSegmentBufferSize = allocationBytes;
         gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
         segmentBuffer = gFgSetupSegmentBuffer;
@@ -1600,9 +1596,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         allocationBytes = segmentBytes;
         /* MEM_REGION_RATIONALE: targeted reusable read-cluster cache.
          * Small CACHE allocation; BUILDING4 rows are CD-bound near 99%. */
-        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                  allocationBytes,
-                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBuffer = fgAllocSetupSegmentCacheBuf(allocationBytes);
         gFgSetupSegmentBufferSize = allocationBytes;
         gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
         segmentBuffer = gFgSetupSegmentBuffer;
@@ -1641,9 +1635,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
          * CACHE avoids the small libc heap for the main W1 residency. W1-low's
          * small trailing edge is split into TRANSIENT to avoid a large CACHE
          * cliff while still covering the active-loop boundary. */
-        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                  allocationBytes,
-                                                  "fgSetupSegmentBuffer");
+        gFgSetupSegmentBuffer = fgAllocSetupSegmentCacheBuf(allocationBytes);
         gFgSetupSegmentBufferSize = allocationBytes;
         gFgSetupSegmentBufferRegion = MEM_REGION_CACHE;
         segmentBuffer = gFgSetupSegmentBuffer;
@@ -1665,7 +1657,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                 segment2Buffer = gFgSetupSegment2OwnedBuffer;
                 if (segment2Buffer == NULL) {
                     gFgSetupSegment2OwnedBufferSize = 0;
-                    memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+                    fgFreeSetupSegmentBuffer();
                     gFgSetupSegmentBuffer = NULL;
                     gFgSetupSegmentBufferSize = 0;
                     gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
@@ -1688,7 +1680,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segment4Buffer = gFgSetupSegment4OwnedBuffer;
             if (segment4Buffer == NULL) {
                 gFgSetupSegment4OwnedBufferSize = 0;
-                memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+                fgFreeSetupSegmentBuffer();
                 gFgSetupSegmentBuffer = NULL;
                 gFgSetupSegmentBufferSize = 0;
                 gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;

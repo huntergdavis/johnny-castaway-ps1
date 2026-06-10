@@ -31,8 +31,11 @@ int fontID = -1;
 #define SCREEN_HEIGHT 480
 
 /* Text buffer for accumulating debug messages */
-#define MAX_DEBUG_LINES 20
-#define MAX_LINE_LENGTH 80
+/* 16x72 (was 20x80): the BSOD dump emits ~15 lines x ~60 chars; the
+ * copy helper truncates per line. 448 B of BSS returned to the libc
+ * heap headroom (static-image ceiling). */
+#define MAX_DEBUG_LINES 15
+#define MAX_LINE_LENGTH 72
 static char debugLines[MAX_DEBUG_LINES][MAX_LINE_LENGTH];
 static int numDebugLines = 0;
 

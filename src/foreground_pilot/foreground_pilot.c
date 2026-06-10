@@ -1212,7 +1212,7 @@ void foregroundPilotTeardownForFreeplay(void)
     fgCleanOverlayInvalidate();
     grSetFullScreenScrCacheEnabled(0);
     grSetCleanBgRectsForceCache(0);
-    grFlushCleanBgRectSlabs();
+    grFlushCleanBgRectSlabsAll();
     fgBackdropRelease(0);
     grReleaseBackgroundTiles();
 }
@@ -2156,22 +2156,35 @@ static int fgCachePressureRelief(unsigned long requestBytes)
      * parked slabs, and the layout unraveled into the Original-mode
      * BSOD. Each tier's freed block coalesces or stands alone at >=
      * its capacity, so capacity >= request guarantees the retry. */
-    largestSlab = grReliefFreeScrCache();
+    /* Tiers ordered by replacement cost (cheapest loss first); each
+     * stops the cascade as soon as the freed capacity guarantees the
+     * retry. The old scr-first order thrashed the 150 KB SCR cache
+     * (153600-refill ping-pong) for requests a small slab covered. */
+    largestSlab = grFlushCleanBgRectSlabs();   /* sub-floor slabs */
     if (largestSlab > 0)
         freed = 1;
     if ((unsigned long)largestSlab >= requestBytes)
         return freed;
 
-    largestSlab = grFlushCleanBgRectSlabs();
+    if (walkPilotReliefFreePsbSlab()) {        /* 48 KB walk slab */
+        freed = 1;
+        if (requestBytes <= 49152UL)
+            return freed;
+    }
+
+    largestSlab = grReliefFreeScrCache();      /* 150 KB SCR cache */
     if (largestSlab > 0)
         freed = 1;
     if ((unsigned long)largestSlab >= requestBytes)
         return freed;
 
-    if (walkPilotReliefFreePsbSlab())
+    largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs */
+    if (largestSlab > 0)
         freed = 1;
+    if ((unsigned long)largestSlab >= requestBytes)
+        return freed;
 
-    if (gFgStreamWindowBuffer != NULL &&
+    if (gFgStreamWindowBuffer != NULL &&        /* window, last */
         gFgRuntime.streamWindowBuffer == NULL) {
         fgNextSceneStageInvalidateIfBorrowingStreamWindow();
         memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);

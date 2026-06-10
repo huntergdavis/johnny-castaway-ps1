@@ -81,20 +81,36 @@ struct TGrCleanRectSlab {
 static struct TGrCleanRectSlab gGrCleanRectSlabPool[GR_MAX_CLEAN_RECTS];
 static int gGrCleanRectSlabRetain = 0;
 
-static int grCleanRectSlabPoolFlush(void)
+#define GR_CLEAN_SLAB_FLOOR_BYTES 98304u
+
+static int grCleanRectSlabPoolFlushEx(int includeFloor)
 {
+    /* The two boot pre-parked 96 KB floor slabs are stable-shape
+     * members: a relief flush that discards them degrades the pool
+     * permanently (small-rect scenes re-park 32 KB slabs in their
+     * place) and the next visitor-class scene dies on fragmentation —
+     * the scene-144 BSOD of the first 400-scene soak. Only the
+     * last-resort relief tier may take them. */
     int i;
     int largest = 0;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
-        if (gGrCleanRectSlabPool[i].ptr != NULL) {
-            memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
-            if ((int)gGrCleanRectSlabPool[i].capacityBytes > largest)
-                largest = (int)gGrCleanRectSlabPool[i].capacityBytes;
-            gGrCleanRectSlabPool[i].ptr = NULL;
-            gGrCleanRectSlabPool[i].capacityBytes = 0;
-        }
+        if (gGrCleanRectSlabPool[i].ptr == NULL)
+            continue;
+        if (!includeFloor &&
+            gGrCleanRectSlabPool[i].capacityBytes >= GR_CLEAN_SLAB_FLOOR_BYTES)
+            continue;
+        memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
+        if ((int)gGrCleanRectSlabPool[i].capacityBytes > largest)
+            largest = (int)gGrCleanRectSlabPool[i].capacityBytes;
+        gGrCleanRectSlabPool[i].ptr = NULL;
+        gGrCleanRectSlabPool[i].capacityBytes = 0;
     }
     return largest;
+}
+
+static int grCleanRectSlabPoolFlush(void)
+{
+    return grCleanRectSlabPoolFlushEx(1);
 }
 
 static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
@@ -519,13 +535,40 @@ void grPreparkCleanRectSlabs(int count, unsigned long bytes)
 
 int grFlushCleanBgRectSlabs(void)
 {
-    /* One-shot release of the parked slabs without changing retain
-     * mode — freeplay teardown and the CACHE pressure-relief hook want
-     * the bytes back while the proof flag (and thus retention for
-     * later scenes) stays on. Returns the LARGEST capacity freed (0 if
-     * the pool was empty) so tiered relief can stop as soon as the
-     * pending request is guaranteed satisfiable. */
-    return grCleanRectSlabPoolFlush();
+    /* Relief tier: frees only sub-floor slabs (see FlushEx). Returns
+     * the LARGEST capacity freed so tiered relief can stop as soon as
+     * the pending request is guaranteed satisfiable. */
+    return grCleanRectSlabPoolFlushEx(0);
+}
+
+int grFlushCleanBgRectSlabsAll(void)
+{
+    /* Last-resort relief tier and freeplay teardown: everything goes,
+     * floor included. */
+    return grCleanRectSlabPoolFlushEx(1);
+}
+
+uint16 *grBorrowCleanRectSlab(unsigned long bytes, unsigned long *outCap)
+{
+    /* Setup-segment borrowing: building/walkstuf-class scenes need an
+     * ~80 KB CACHE setup window for one scene's lifetime — exactly a
+     * floor slab's job. Borrowing instead of allocating removes the
+     * per-scene churn that triggered every relief cascade in the
+     * 400-scene soak (req=81920). Returned via grReturnCleanRectSlab
+     * at scene end. */
+    uint32 cap = 0;
+    uint16 *p = grCleanRectSlabPoolTake((uint32)bytes, &cap);
+    if (p != NULL && outCap != NULL)
+        *outCap = cap;
+    return p;
+}
+
+void grReturnCleanRectSlab(uint16 *ptr, unsigned long capacityBytes)
+{
+    if (ptr == NULL)
+        return;
+    if (!grCleanRectSlabPoolPark(ptr, (uint32)capacityBytes))
+        memFree(MEM_REGION_CACHE, ptr);
 }
 
 void grRestoreBgRectsFull(void)

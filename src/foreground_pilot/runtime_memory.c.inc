@@ -336,6 +336,45 @@ static void fgQuiesceCdBeforeCacheBufferMutation(void)
     (void)ps1_streamAsyncReadDrain();
 }
 
+/* Setup-segment CACHE buffer with floor-slab borrowing: the ~80 KB
+ * per-scene CACHE segment windows (building/walkstuf class) were the
+ * relief trigger of the 400-scene soak (req=81920). A floor slab
+ * covers them for the scene's lifetime with zero churn; the plain
+ * CACHE alloc remains as fallback (slab busy / segment too big /
+ * normal mode where the pool is empty). */
+static unsigned long gFgSetupSegmentBorrowedCap = 0;
+
+static uint8 *fgAllocSetupSegmentCacheBuf(uint32 bytes)
+{
+    unsigned long cap = 0;
+    uint16 *slab = grBorrowCleanRectSlab(bytes, &cap);
+    if (slab != NULL) {
+        gFgSetupSegmentBorrowedCap = cap;
+        return (uint8 *)slab;
+    }
+    gFgSetupSegmentBorrowedCap = 0;
+    /* MEM_REGION_RATIONALE: per-scene setup segment window (fallback
+     * when no floor slab is free); released at scene end. */
+    return (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
+                             "fgSetupSegmentBuffer");
+}
+
+static void fgFreeSetupSegmentBuffer(void)
+{
+    if (gFgSetupSegmentBuffer == NULL)
+        return;
+    if (gFgSetupSegmentBorrowedCap != 0) {
+        grReturnCleanRectSlab((uint16 *)gFgSetupSegmentBuffer,
+                              gFgSetupSegmentBorrowedCap);
+        gFgSetupSegmentBorrowedCap = 0;
+    } else {
+        memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
+    }
+    gFgSetupSegmentBuffer = NULL;
+    gFgSetupSegmentBufferSize = 0;
+    gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
+}
+
 static void fgReleaseStreamBuffers(void)
 {
     /* Grow-only buffers — DO NOT free here. The free+malloc cycle is
@@ -353,15 +392,10 @@ static void fgReleaseStreamBuffers(void)
      * gFgSetupSegmentBuffer is scene-segment-specific and bounded; we
      * still cycle it because it's low-cost and makes the failure path
      * easier to read. */
-    if (gFgSetupSegmentBuffer != NULL) {
-        /* Region-specific release: VISITOR3/fishing3 use TRANSIENT, while
-         * large building2/walkstuf1 setup windows use CACHE to avoid both
-         * libc fragmentation and TRANSIENT exhaustion. */
-        memFree(gFgSetupSegmentBufferRegion, gFgSetupSegmentBuffer);
-        gFgSetupSegmentBuffer = NULL;
-        gFgSetupSegmentBufferSize = 0;
-        gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
-    }
+    /* Region/borrow-aware release: VISITOR3/fishing3 use TRANSIENT,
+     * large building2/walkstuf1 setup windows borrow a floor slab or
+     * fall back to CACHE. */
+    fgFreeSetupSegmentBuffer();
     if (gFgSetupSegment2OwnedBuffer != NULL) {
         memFree(gFgSetupSegment2OwnedBufferRegion, gFgSetupSegment2OwnedBuffer);
         gFgSetupSegment2OwnedBuffer = NULL;
