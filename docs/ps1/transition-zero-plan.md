@@ -46,6 +46,29 @@ Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
   - One memory-shape change per branch, each behind its own boot token, each
     with its own ≥2h soak before the next stacks on it.
 
+## W5 landed (2026-06-09 night) — boundaries are content now
+
+Frame-dump archaeology found the real perceptual story: setup_vb was
+the tip of the iceberg. The full boundary (scene_end -> next
+scene_start) froze the screen for 5.2 s on the proof path and 8.3 s on
+defaults — every transition, every mode — because the scene-end
+fgRuntimeReset wiped TRANSIENT (where R33 put the bg tiles) BEFORE the
+walk ran. Johnny has been walking invisibly since R33. Fixes:
+1. Deferred TRANSIENT wipe (fgRuntimeResetCore(keepBackdropTiles)):
+   scene-end keeps tiles; the next setup-top reset wipes as before.
+   Walks paint again.
+2. VBlank-based walk pacing: visible walks cost 2+ VBlanks/frame and
+   iteration-counted pose timing doubled every pose (9-17 s walks).
+   Poses and the runaway cap now charge elapsed VBlanks.
+3. Wave thread survives keepBackgrnd boundaries: islandAnimate uses
+   only slot 0 + grBackgroundSfc, both boundary-safe now. Ocean keeps
+   moving through the walk and Johnny's arrival pause.
+4. gap_vb on the setup line + harness: the full-boundary metric that
+   setup_vb structurally missed; this is the regression tripwire.
+Result: transitions are scene -> ~1 s final pose (authentic content)
+-> animated walk with moving ocean -> 0.25-0.8 s setup -> scene. The
+only remaining frozen-wave window is the setup phase itself.
+
 ## W1 soak confirmation (2026-06-09, final stack)
 
 Second independent 20-scene soak on the committed stack: 20/20 scenes,
