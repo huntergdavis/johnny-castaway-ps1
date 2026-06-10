@@ -400,12 +400,18 @@ static void fgReleaseStreamBuffersHard(void)
         fgNextSceneStageInvalidate();
     }
 
-    if (gFgFrameBuffer != NULL) {
+    /* Staged-transition shape: the grow-only frame/prefetch pair stays
+     * resident like the window and scratch — the per-boundary frees
+     * here defeated the boot pre-grow (fg-frame realloc at every
+     * scene's setup; the 8 K diag run caught fg-frame 10240 firing
+     * relief at visitor6) and left the metadata borrow without its
+     * buffer. Normal mode keeps the historical frees. */
+    if (!gFgLoadingWaveProofEnabled && gFgFrameBuffer != NULL) {
         memFree(MEM_REGION_CACHE, gFgFrameBuffer);
         gFgFrameBuffer = NULL;
         gFgFrameBufferSize = 0;
     }
-    if (gFgPrefetchFrameBuffer != NULL) {
+    if (!gFgLoadingWaveProofEnabled && gFgPrefetchFrameBuffer != NULL) {
         memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
         gFgPrefetchFrameBuffer = NULL;
         gFgPrefetchFrameBufferSize = 0;
@@ -423,10 +429,19 @@ static void fgReleaseStreamBuffersHard(void)
         gFgStreamWindowBuffer = NULL;
         gFgStreamWindowBufferSize = 0;
     }
-    if (gFgStreamScratch != NULL) {
+    if (gFgStreamScratch != NULL && !gFgLoadingWaveProofEnabled) {
+        /* Staged-transition shape: the scratch is grow-only and stays
+         * resident (its per-boundary free/realloc churned a ~14 KB
+         * block under every scene's setup — the 100-scene soak's
+         * recurring relief event). Normal mode keeps the historical
+         * free for the boundary rewind. */
         memFree(MEM_REGION_CACHE, gFgStreamScratch);
         gFgStreamScratch = NULL;
         gFgStreamScratchSize = 0;
+        gFgRuntime.streamScratch = NULL;
+        gFgRuntime.streamScratchSize = 0;
+    }
+    if (gFgLoadingWaveProofEnabled) {
         gFgRuntime.streamScratch = NULL;
         gFgRuntime.streamScratchSize = 0;
     }

@@ -237,7 +237,12 @@ enum {
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 #define FG_NEXT_STAGE_METADATA_BYTES PS1_SPU_CACHE_FG_METADATA_BYTES
-#define FG_NEXT_STAGE_SIDE_BYTES (128UL * 1024UL)
+/* 96 KB (was 128): the retained-shape CACHE ledger must close —
+ * window + 2 clean slabs + walk slab + frame/prefetch/scratch + SCR
+ * cache + BACKGRND + holiday sheet = 688 KB budget. 96 KB still
+ * covers SPU-parked stages and most in-place big windows; oversize
+ * first-chunks stage partially. */
+#define FG_NEXT_STAGE_SIDE_BYTES (96UL * 1024UL)
 #define FG_NEXT_STAGE_TARGET_BYTES PS1_SPU_CACHE_FG_PAYLOAD_BYTES
 #define FG_NEXT_STAGE_CHUNK_BYTES (8UL * 1024UL)
 #define FG_NEXT_STAGE_PAYLOAD_SPU_OFFSET PS1_SPU_CACHE_FG_PAYLOAD_OFFSET
@@ -887,9 +892,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (cleanMemoryRelief &&
                     requiredScratch > FG_LOW_MEMORY_STREAM_SCRATCH_BYTES)
                     requiredScratch = FG_LOW_MEMORY_STREAM_SCRATCH_BYTES;
-                if (cleanMemoryRelief &&
+                if (!gFgLoadingWaveProofEnabled &&
+                    cleanMemoryRelief &&
                     gFgStreamScratch != NULL &&
                     gFgStreamScratchSize > requiredScratch) {
+                    /* Staged shape: keep the pre-grown scratch; the
+                     * shrink-for-relief churned a ~12-16 KB block on
+                     * every relief-class scene. */
                     fgQuiesceCdBeforeCacheBufferMutation();
                     memFree(MEM_REGION_CACHE, gFgStreamScratch);
                     gFgStreamScratch = NULL;
@@ -2240,18 +2249,28 @@ void foregroundPilotReserveStableShape(void)
     if (gFgFrameBuffer == NULL) {
         /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
          * frame payload buffer. */
-        gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 32768UL,
+        gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
                                            "fg-frame");
         if (gFgFrameBuffer != NULL)
-            gFgFrameBufferSize = 32768UL;
+            gFgFrameBufferSize = 16384UL;
     }
     if (gFgPrefetchFrameBuffer == NULL) {
         /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
          * prefetch frame buffer (also the setup metadata scratch). */
-        gFgPrefetchFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 32768UL,
+        gFgPrefetchFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
                                                    "fg-prefetch-frame");
         if (gFgPrefetchFrameBuffer != NULL)
-            gFgPrefetchFrameBufferSize = 32768UL;
+            gFgPrefetchFrameBufferSize = 16384UL;
+    }
+    if (gFgStreamScratch == NULL) {
+        /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
+         * stream alignment scratch — the third ratcheting buffer (the
+         * 100-scene soak's recurring relief: visitor4's first play
+         * requested exactly maxData+2K = 14,336). */
+        gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
+                                             "fg-stream-scratch");
+        if (gFgStreamScratch != NULL)
+            gFgStreamScratchSize = 16384UL;
     }
 }
 

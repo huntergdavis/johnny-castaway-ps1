@@ -1434,6 +1434,15 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.dirtyCapHits,
         (unsigned long)gPs1Perf.fullFallbacks
     );
+    {
+        extern size_t memRegionUsed(unsigned int region);
+        extern size_t memRegionPeak(unsigned int region);
+        printf(
+            "JCPERF2 regions cache_used=%lu cache_peak=%lu trans_peak=%lu\n",
+            (unsigned long)memRegionUsed(1u),   /* MEM_REGION_CACHE */
+            (unsigned long)memRegionPeak(1u),
+            (unsigned long)memRegionPeak(2u));  /* MEM_REGION_TRANSIENT */
+    }
     printf(
         "JCPERF2 heap start_free=0 end_free=0 min_free=0 largest_start=0 largest_end=0 framebuf=%lu scratch=%lu prefetch=%lu peak_prefetch=%lu alloc_fail=%lu alloc_fail_bytes=%lu\n",
         (unsigned long)gPs1Perf.frameBufferBytes,

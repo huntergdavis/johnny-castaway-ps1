@@ -25,6 +25,10 @@ static void fgBackdropRelease(int keepBackgrnd)
     }
 
     for (slot = firstSlot; slot < MAX_BMP_SLOTS; slot++) {
+        /* Slot 2 (holiday sheet) is retained with slot 0 under the
+         * proof — both are island constants for their lifetime. */
+        if (keepSlot0 && slot == 2)
+            continue;
         if (gFgBackdropSlot.numSprites[slot])
             grReleaseBmp(&gFgBackdropSlot, (uint8)slot);
     }
@@ -146,8 +150,17 @@ static void fgBackdropEnableWaveBackdrop(void)
         grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
     }
 
-    if (holidayById(islandState.holiday))
-        grLoadBmp(&gFgBackdropSlot, 2, "HOLIDAY.BMP");
+    if (holidayById(islandState.holiday)) {
+        /* The holiday sheet (25 KB PSB) is constant for the whole
+         * holiday window: load once and retain (release path keeps
+         * slot 2 under the proof). Reloading per setup cost a 13-
+         * sector CD read on EVERY transition during holiday periods
+         * and churned a 26 KB CACHE block. */
+        if (gFgBackdropSlot.numSprites[2] == 0)
+            grLoadBmp(&gFgBackdropSlot, 2, "HOLIDAY.BMP");
+    } else if (gFgBackdropSlot.numSprites[2] != 0) {
+        grReleaseBmp(&gFgBackdropSlot, 2);
+    }
 
     if (gFgLoadingWaveProofEnabled) {
         islandClearWaveCache();

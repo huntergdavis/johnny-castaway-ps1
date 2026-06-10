@@ -2101,9 +2101,6 @@ int main(int argc, char **argv)
     memVerifyBootBudget();
     memVerifyAllScenesFitTransient();
     memVerifyAllScenesPinnedFitCache();
-    /* First CACHE allocations: the staged-transition stable shape
-     * claims the bottom band before any scene/teardown churn. */
-    foregroundPilotReserveStableShape();
 #ifdef JC_VERIFY_PACK_HASHES
     memVerifyPackHashes();
 #endif
@@ -2216,6 +2213,13 @@ int main(int argc, char **argv)
             ps1SpuCacheProofHalt(cacheOk);
     }
     walkPilotPrimeSpuAssetsBlocking();
+    /* First persistent CACHE allocations: the staged-transition stable
+     * shape claims the bottom band before any scene/teardown churn.
+     * Deliberately AFTER the blocking SPU prime — its transient 48 KB
+     * stage bounce must allocate and free on the EMPTY region, or the
+     * hole it leaves splits free space and the 150 KB SCR cache can
+     * never sit contiguously (boot relief ping-pong). */
+    foregroundPilotReserveStableShape();
     ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
         hostForcedNight = bootNight;
