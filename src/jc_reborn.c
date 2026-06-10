@@ -969,13 +969,17 @@ static void ps1ResetBootArgs(void)
     grCaptureSetSceneLabel("");
 #endif
     foregroundPilotSetHeapProbe(0);
-    /* Transition-zero defaults: staged transitions + SPU staging are
-     * the shipping configuration (four 20-scene soaks + canaries green;
-     * transitions ~4 s -> 0.2-0.9 s behind a visible walk). BOOTMODE
-     * tokens loading-waves-off / no-spu-stage remain working opt-outs
-     * for A/B comparison and bisection. */
-    foregroundPilotSetLoadingWaveProof(1);
-    foregroundPilotSetSpuStage(1);
+    /* Staged-transition path: still token-gated (loading-waves +
+     * spu-stage), NOT default. The first default-on attempt BSOD'd at
+     * 224 s in a real GUI run under picker-original (policy=2):
+     * sequence-end reroll boundary (mary2 final -> stand1), relief
+     * valve fired but no contiguous 96 KB in 179 KB free, and the
+     * 130 KB walk-clean buffer had landed in libc instead of SPU.
+     * All prior soaks ran RANDOM seed 1 only — Original mode was never
+     * covered. Re-flip only after a 20+ scene Original-mode headless
+     * soak (--case "...picker-original spu-stage loading-waves...")
+     * and the walk-clean-in-libc anomaly are resolved. */
+    foregroundPilotSetLoadingWaveProof(0);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     freeplaySetTelemetryLevel(0);
