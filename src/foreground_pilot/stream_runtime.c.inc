@@ -517,32 +517,36 @@ fgNextSceneStageCanRun(void)
            gFgRuntime.active &&
            gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
            gFgRuntime.packCdFileValid &&
-           gFgRuntime.streamWindowReadSize >= FG_CD_SECTOR_SIZE;
+           /* The stage borrows the global stream window, so the scene
+            * must either share it (streaming scenes, and scenes that
+            * adopted a staged window — both wait for payload drain
+            * before the borrow) or run without one entirely
+            * (setup-primed packs; the global window is free all
+            * scene). The old streamWindowReadSize>=SECTOR arm excluded
+            * adopted-window scenes with no refills (readSize=0, e.g.
+            * johnny5), making their successors structural cold misses. */
+           (gFgRuntime.streamWindowBuffer == NULL ||
+            gFgRuntime.streamWindowBuffer == gFgStreamWindowBuffer);
 }
 
+/* Common stage-start body. The caller is responsible for the context
+ * gate: in-scene starts must wait for the current scene's payload
+ * reads to drain (the stage borrows the stream window); walk-time
+ * starts need no such gate because the CD is idle and the retained
+ * window has no other user during a walk. */
 static int __attribute__((noinline,optimize("Os")))
-fgNextSceneStageStart(const char *sceneName)
+fgNextSceneStageStartCommon(const char *sceneName)
 {
     const char *path;
     uint32 metadataBytes;
 
-    if (!fgNextSceneStageCanRun() ||
-        sceneName == NULL)
+    if (sceneName == NULL ||
+        gFgStreamWindowBuffer == NULL ||
+        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
         return 0;
 
     path = fgCompactOverlayPackPathForScene(sceneName);
     if (path == NULL)
-        return 0;
-
-    /* The first side-buffer proof staged early but malloc/free cycled an
-     * extra 128KB CACHE block under retained ocean state. That was fast, but
-     * it fragmented into a CACHE exhaustion BSOD. Borrow the existing stream
-     * window only after current-scene payload reads are finished; the window
-     * then survives fgRuntimeReset and can be adopted in place next scene. */
-    if (fgRuntimeNextPayloadEntry(NULL) != NULL ||
-        gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
-        gFgStreamWindowBuffer == NULL ||
-        gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
         return 0;
 
     fgNextSceneStageInvalidate();
@@ -586,6 +590,30 @@ fgNextSceneStageStart(const char *sceneName)
     gFgNextSceneStage.pendingBytes = metadataBytes;
     FG_STAGE_PRINTF("JCSTAGE H\n");
     return 1;
+}
+
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageStart(const char *sceneName)
+{
+    if (!fgNextSceneStageCanRun())
+        return 0;
+
+    /* Setup-primed scene (no adopted stream window): the retained
+     * global window has no other user; its payload entries are served
+     * from setup segments, not CD, so there is no read to wait out. */
+    if (gFgRuntime.streamWindowBuffer == NULL)
+        return fgNextSceneStageStartCommon(sceneName);
+
+    /* The first side-buffer proof staged early but malloc/free cycled an
+     * extra 128KB CACHE block under retained ocean state. That was fast, but
+     * it fragmented into a CACHE exhaustion BSOD. Borrow the existing stream
+     * window only after current-scene payload reads are finished; the window
+     * then survives fgRuntimeReset and can be adopted in place next scene. */
+    if (fgRuntimeNextPayloadEntry(NULL) != NULL ||
+        gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer)
+        return 0;
+
+    return fgNextSceneStageStartCommon(sceneName);
 }
 
 static int __attribute__((noinline,optimize("Os")))
@@ -773,7 +801,12 @@ fgNextSceneStageWorkStillValid(const char *sceneName)
         !fgSceneEquals(sceneName, gFgNextSceneStage.sceneName) ||
         gFgNextSceneStage.lowTide != (uint8)(islandState.lowTide ? 1 : 0) ||
         !gFgNextSceneStage.usesStreamWindow ||
-        gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer ||
+        /* Runtime either shares the global window (streaming scene) or
+         * never adopted one (setup-primed scene staging into the free
+         * global window) — anything else means the window changed
+         * owners under the stage. */
+        (gFgRuntime.streamWindowBuffer != gFgStreamWindowBuffer &&
+         gFgRuntime.streamWindowBuffer != NULL) ||
         gFgStreamWindowBuffer == NULL ||
         gFgStreamWindowBufferSize < FG_CD_SECTOR_SIZE)
         return 0;
@@ -1303,6 +1336,20 @@ fgNextSceneStageWalkTick(void)
                         (unsigned long)gFgNextSceneStage.windowBytes);
         return fgNextSceneStageBeginPayloadRead();
     }
+
+    /* Nothing staged at all: start from scratch for the scene the walk
+     * is leading into (gFgStageSceneName was primed before the previous
+     * scene played and still names the upcoming one). This covers
+     * scenes whose predecessor never ran a stream window (tiny
+     * setup-primed packs like johnny5), where the in-scene stage gate
+     * (fgNextSceneStageCanRun) is false for the whole scene — their
+     * successors were structural cold misses. The walk has no
+     * competing CD work, so the in-scene payload-drain gate does not
+     * apply. */
+    if (!gFgNextSceneStage.active &&
+        !gFgNextSceneStage.valid &&
+        gFgStageSceneName[0] != '\0')
+        return fgNextSceneStageStartCommon(gFgStageSceneName);
 
     return 0;
 }
