@@ -969,7 +969,13 @@ static void ps1ResetBootArgs(void)
     grCaptureSetSceneLabel("");
 #endif
     foregroundPilotSetHeapProbe(0);
-    foregroundPilotSetLoadingWaveProof(0);
+    /* Transition-zero defaults: staged transitions + SPU staging are
+     * the shipping configuration (four 20-scene soaks + canaries green;
+     * transitions ~4 s -> 0.2-0.9 s behind a visible walk). BOOTMODE
+     * tokens loading-waves-off / no-spu-stage remain working opt-outs
+     * for A/B comparison and bisection. */
+    foregroundPilotSetLoadingWaveProof(1);
+    foregroundPilotSetSpuStage(1);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     freeplaySetTelemetryLevel(0);
@@ -2064,7 +2070,8 @@ int main(int argc, char **argv)
 
     debugMode = 0;  /* Keep PS1 debug chatter opt-in; use BOOTMODE probes for logs. */
 
-    /* Load boot override BEFORE seeding RNG so "seed N" can override. */
+    /* Load boot override BEFORE seeding RNG so "seed N" can override.
+     * Staged-transition defaults live in ps1ResetBootArgs. */
     ps1LoadBootOverride();
     if (!argForegroundPilot) {
         argForegroundPilot = 1;

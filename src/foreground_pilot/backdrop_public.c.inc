@@ -14,11 +14,21 @@ void fgBackdropStampHolidayPublic(void)
 }
 
 /* Public wrapper for the wave animation tick. walk_pilot calls this
- * each frame so the ocean keeps moving during walks. */
+ * each frame so the ocean keeps moving during walks. Mirrors the
+ * in-scene timer pattern (stream_runtime prepare path): advance one
+ * wave frame every gFgBackdropThread.delay frames and redraw the last
+ * wave in between — calling islandAnimate unconditionally ran the
+ * waves at double speed during walks ("super speed" double-waving). */
 void fgBackdropTickWavesPublic(void)
 {
-    if (gFgBackdropThread.isRunning) {
+    if (!gFgBackdropThread.isRunning)
+        return;
+    if (gFgBackdropThread.timer == 0) {
+        gFgBackdropThread.timer = gFgBackdropThread.delay;
         islandAnimate(&gFgBackdropThread);
+    } else {
+        islandRedrawWave(&gFgBackdropThread);
+        gFgBackdropThread.timer--;
     }
 }
 

@@ -754,7 +754,13 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
         VSync(0);
     }
 
-    int timerLeft = 1;
+    /* timerLeft starts at 0 so the FIRST loop iteration calls
+     * walkAnimate and stamps walk pose 1 in the same frame whose
+     * restore wipes the scene's baked-in Johnny. Starting at 1 took
+     * the redraw-cached-pose branch with an empty cache: one visible
+     * frame with no Johnny at all (the single-frame "disappear" flash
+     * reported at the first watched transition). */
+    int timerLeft = 0;
     int walkDone  = 0;
     /* Hard cap on walk duration. A legitimate walk is bounded by Sierra's
      * pre-baked route (max ~8 spots × ~30 VBlanks per pose ≈ 240 VBlanks).
