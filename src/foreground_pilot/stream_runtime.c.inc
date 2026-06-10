@@ -1212,6 +1212,27 @@ fgNextSceneStageFinishPending(void)
     if (gFgSpuStageEnabled && gFgNextSceneStage.loadedBytes > 0)
         return fgNextSceneStagePublishLoadedWindow();
 
+    /* Header done but zero payload bytes loaded. This is the common case
+     * for streaming scenes: staging can only start once the current
+     * scene's payload reads drain (the last held frames), so the payload
+     * window rarely gets going before scene end. The metadata was parked
+     * in SPU by fgNextSceneStageCompleteHeaderRead a moment ago —
+     * publish a metadata-only stage instead of discarding it, so the
+     * next scene still skips CdSearchFile and the cold metadata read.
+     * AdoptWindow correctly reports no window (usesStreamWindow=0) and
+     * invalidates the stage after the metadata has been consumed. */
+    if (gFgNextSceneStage.metadataParkedInSpu) {
+        gFgNextSceneStage.active = 0;
+        gFgNextSceneStage.valid = 1;
+        gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
+        gFgNextSceneStage.usesStreamWindow = 0;
+        gFgNextSceneStage.windowBytes = 0;
+        gFgNextSceneStage.loadedBytes = 0;
+        FG_STAGE_PRINTF("JCSTAGE M %lu\n",
+                        (unsigned long)gFgNextSceneStage.metadataBytes);
+        return 1;
+    }
+
     fgNextSceneStageInvalidate();
     return 1;
 }

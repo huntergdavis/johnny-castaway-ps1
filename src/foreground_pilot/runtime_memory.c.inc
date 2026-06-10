@@ -390,7 +390,13 @@ static void fgReleaseStreamBuffersHard(void)
         (gFgNextSceneStage.active ||
          gFgNextSceneStage.readInFlight ||
          gFgNextSceneStage.usesStreamWindow ||
-         (gFgNextSceneStage.valid && !gFgNextSceneStage.parkedInSpu))) {
+         /* A published stage survives the hard release only when its
+          * bytes live entirely outside main RAM: payload parked in SPU,
+          * or the metadata-only shape (header parked in SPU, no window).
+          * Either way it holds no CACHE/TRANSIENT resources, so freeing
+          * the stream buffers below cannot strand it. */
+         (gFgNextSceneStage.valid && !gFgNextSceneStage.parkedInSpu &&
+          !gFgNextSceneStage.metadataParkedInSpu))) {
         fgNextSceneStageInvalidate();
     }
 
