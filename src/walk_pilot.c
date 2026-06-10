@@ -279,6 +279,20 @@ static void walkPilotInitSpuStageDescriptors(void)
     gMraftSpuStage.loadTag = "mraft_spu_load";
 }
 
+/* Persistent SPU->RAM load slab. The walk runs between every scene
+ * pair and loads the same 48 KB JOHNWALK.PSB each time; allocating and
+ * freeing that block per walk churns CACHE between long-lived blocks
+ * and was the residual fragmentation source after the clean-rect slab
+ * fix (4th-transition walk BSOD: req=49152, 97 KB free, none
+ * contiguous). Allocated grow-only on first use, handed to the sprite
+ * slot caller-owned so grReleaseBmp drops the reference without
+ * freeing. JOHNWALK only — MRAFT's 12 KB load is rarer, same-size, and
+ * its slot release point lives in scene code where the slab's busy
+ * flag cannot be cleared reliably. */
+static uint8 *gWalkPsbLoadSlab = NULL;
+static uint32 gWalkPsbLoadSlabSize = 0;
+static int gWalkPsbLoadSlabBusy = 0;
+
 static void walkPilotFreeSpuStageBuffer(struct TWalkSpuPsbStage *stage)
 {
     if (stage == NULL || stage->buffer == NULL)
@@ -316,6 +330,16 @@ void walkPilotSetSpuStage(int enabled)
         walkPilotInvalidateSpuStage(&gJohnwalkSpuStage, 1);
         walkPilotInvalidateSpuStage(&gMraftSpuStage, 1);
     }
+}
+
+int walkPilotReliefFreePsbSlab(void)
+{
+    if (gWalkPsbLoadSlab == NULL || gWalkPsbLoadSlabBusy)
+        return 0;
+    memFree(MEM_REGION_CACHE, gWalkPsbLoadSlab);
+    gWalkPsbLoadSlab = NULL;
+    gWalkPsbLoadSlabSize = 0;
+    return 1;
 }
 
 static int walkPilotCompletePsbSpuRead(struct TWalkSpuPsbStage *stage)
@@ -445,20 +469,6 @@ int walkPilotPrimeSpuAssetsBlocking(void)
     return ok;
 }
 
-/* Persistent SPU->RAM load slab. The walk runs between every scene
- * pair and loads the same 48 KB JOHNWALK.PSB each time; allocating and
- * freeing that block per walk churns CACHE between long-lived blocks
- * and was the residual fragmentation source after the clean-rect slab
- * fix (4th-transition walk BSOD: req=49152, 97 KB free, none
- * contiguous). Allocated grow-only on first use, handed to the sprite
- * slot caller-owned so grReleaseBmp drops the reference without
- * freeing. JOHNWALK only — MRAFT's 12 KB load is rarer, same-size, and
- * its slot release point lives in scene code where the slab's busy
- * flag cannot be cleared reliably. */
-static uint8 *gWalkPsbLoadSlab = NULL;
-static uint32 gWalkPsbLoadSlabSize = 0;
-static int gWalkPsbLoadSlabBusy = 0;
-
 static int walkPilotLoadPsbFromSpu(struct TWalkSpuPsbStage *stage,
                                    struct TTtmSlot *slot,
                                    uint16 slotNo)
@@ -566,6 +576,11 @@ int walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo)
 {
     (void)slot;
     (void)slotNo;
+    return 0;
+}
+
+int walkPilotReliefFreePsbSlab(void)
+{
     return 0;
 }
 #endif
@@ -733,6 +748,9 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
      * dwell, a turn-in-place walk reads as a hard pose-swap at the same
      * spot ("teleported into a new position"). */
     for (int dwell = 0; dwell < 12; dwell++) {
+        /* CD is idle for the whole walk: keep the next scene's stage
+         * payload read moving (one async chunk per frame). */
+        foregroundPilotStageWalkTick();
         VSync(0);
     }
 
@@ -797,6 +815,7 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
             timerLeft--;
         }
 
+        foregroundPilotStageWalkTick();
         grUpdateDisplay(NULL, NULL, NULL);
     }
 
@@ -815,6 +834,7 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
         fgBackdropTickWavesPublic();
         fgBackdropStampHolidayPublic();
         walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
+        foregroundPilotStageWalkTick();
         grUpdateDisplay(NULL, NULL, NULL);
     }
 

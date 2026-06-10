@@ -88,6 +88,10 @@ int           walkPilotJohnwalkSlotLoaded(void);    /* 0 / 1 */
  * are done; boot priming also stages MRAFT.PSB and the walk-clean snapshot
  * uses SPU cold storage when capacity is available. */
 void walkPilotSetSpuStage(int enabled);
+/* CACHE pressure relief: free the persistent JOHNWALK PSB load slab
+ * when no sprite slot points into it. Returns nonzero if freed; the
+ * next walk re-allocates it. */
+int  walkPilotReliefFreePsbSlab(void);
 int  walkPilotStageJohnwalkSpuTick(void);
 int  walkPilotPrimeSpuAssetsBlocking(void);
 int  walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo);

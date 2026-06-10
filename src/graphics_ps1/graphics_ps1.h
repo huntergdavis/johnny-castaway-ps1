@@ -272,7 +272,7 @@ int  grCleanBgRectsCount(void);
 unsigned long grCleanBgRectsBytes(void);
 void grSetCleanBgRectsForceCache(int enabled);
 void grSetCleanBgRectsSlabRetain(int enabled);
-void grFlushCleanBgRectSlabs(void);
+int grFlushCleanBgRectSlabs(void);
 void grRestoreBgRectsFull(void);
 /* Capture/restore rectangles into a caller-owned buffer (dst/src sized
  * w*h*sizeof(uint16)). Same per-tile splitting + dirty-rect gating as

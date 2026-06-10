@@ -62,16 +62,19 @@ struct TGrCleanRectSlab {
 static struct TGrCleanRectSlab gGrCleanRectSlabPool[GR_MAX_CLEAN_RECTS];
 static int gGrCleanRectSlabRetain = 0;
 
-static void grCleanRectSlabPoolFlush(void)
+static int grCleanRectSlabPoolFlush(void)
 {
     int i;
+    int freed = 0;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (gGrCleanRectSlabPool[i].ptr != NULL) {
             memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
             gGrCleanRectSlabPool[i].ptr = NULL;
             gGrCleanRectSlabPool[i].capacityBytes = 0;
+            freed++;
         }
     }
+    return freed;
 }
 
 static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
@@ -471,12 +474,13 @@ void grSetCleanBgRectsSlabRetain(int enabled)
         grCleanRectSlabPoolFlush();
 }
 
-void grFlushCleanBgRectSlabs(void)
+int grFlushCleanBgRectSlabs(void)
 {
     /* One-shot release of the parked slabs without changing retain
-     * mode — freeplay teardown wants the bytes back while the proof
-     * flag (and thus retention for post-freeplay scenes) stays on. */
-    grCleanRectSlabPoolFlush();
+     * mode — freeplay teardown and the CACHE pressure-relief hook want
+     * the bytes back while the proof flag (and thus retention for
+     * later scenes) stays on. Returns the number of slabs freed. */
+    return grCleanRectSlabPoolFlush();
 }
 
 void grRestoreBgRectsFull(void)

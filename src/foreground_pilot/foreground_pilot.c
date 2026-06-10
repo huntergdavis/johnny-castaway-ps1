@@ -2082,6 +2082,33 @@ void foregroundPilotSetHeapProbe(int enabled)
 #endif
 }
 
+/* CACHE pressure relief (mem_region last-resort hook). Releases the
+ * proof path's optimization-only retention so a failing allocation can
+ * succeed instead of BSODing: parked clean-rect slabs (unused by
+ * definition), the idle walk PSB slab, and the retained stream window
+ * when neither the runtime nor the next-scene stage points into it.
+ * Each is re-created on demand afterwards — the cost of a relief event
+ * is one transition's worth of churn, not correctness. */
+static int fgCachePressureRelief(void)
+{
+    int freed = 0;
+
+    if (grFlushCleanBgRectSlabs() > 0)
+        freed = 1;
+    if (walkPilotReliefFreePsbSlab())
+        freed = 1;
+    if (gFgStreamWindowBuffer != NULL &&
+        gFgRuntime.streamWindowBuffer == NULL) {
+        fgNextSceneStageInvalidateIfBorrowingStreamWindow();
+        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+        gFgStreamWindowBuffer = NULL;
+        gFgStreamWindowBufferSize = 0;
+        freed = 1;
+    }
+
+    return freed;
+}
+
 void foregroundPilotSetLoadingWaveProof(int enabled)
 {
     gFgLoadingWaveProofEnabled = enabled ? 1 : 0;
@@ -2091,6 +2118,9 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
      * rewind anyway, and per-scene free/realloc of ~98 KB rects is the
      * fragmentation source of the 3rd-transition CACHE BSOD. */
     grSetCleanBgRectsSlabRetain(gFgLoadingWaveProofEnabled);
+    /* Cross-scene retention needs the matching pressure valve. */
+    memSetCacheReliefHook(gFgLoadingWaveProofEnabled ?
+                          fgCachePressureRelief : NULL);
     if (!gFgLoadingWaveProofEnabled) {
         fgNextSceneStageInvalidate();
         fgCleanOverlayInvalidate();
@@ -2104,6 +2134,11 @@ void foregroundPilotSetSpuStage(int enabled)
     walkPilotSetSpuStage(gFgSpuStageEnabled);
     if (!gFgSpuStageEnabled)
         fgNextSceneStageInvalidate();
+}
+
+int foregroundPilotStageWalkTick(void)
+{
+    return fgNextSceneStageWalkTick();
 }
 
 void foregroundPilotSetStageScene(const char *sceneName)
@@ -2223,6 +2258,11 @@ void foregroundPilotSetLoadingWaveProof(int enabled)
 void foregroundPilotSetSpuStage(int enabled)
 {
     (void)enabled;
+}
+
+int foregroundPilotStageWalkTick(void)
+{
+    return 0;
 }
 
 void foregroundPilotSetStageScene(const char *sceneName)

@@ -84,6 +84,14 @@ typedef struct TransientLibcEntry {
 } TransientLibcEntry;
 static TransientLibcEntry *g_transientLibcHead = NULL;
 
+/* Last-resort CACHE relief hook; see mem_region.h. */
+static MemCacheReliefFn g_cacheReliefHook = NULL;
+
+void memSetCacheReliefHook(MemCacheReliefFn fn)
+{
+    g_cacheReliefHook = fn;
+}
+
 /* ---------------------------------------------------------------------
  * Forward declarations (internal)
  * ------------------------------------------------------------------- */
@@ -366,6 +374,16 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                 extern void lruEvictAllUnpinned(void);
                 lruEvictAllUnpinned();
                 p = cacheAllocInternal(alignedSize, tag);
+                if (p == NULL && g_cacheReliefHook != NULL &&
+                    g_cacheReliefHook()) {
+                    /* Optimization-only retention released (parked
+                     * clean-rect slabs, idle grow-only buffers) —
+                     * one more try before libc. */
+                    extern int printf(const char *, ...);
+                    printf("JCMEM cache-relief fired req=%lu\n",
+                           (unsigned long)alignedSize);
+                    p = cacheAllocInternal(alignedSize, tag);
+                }
                 if (p == NULL) {
                     /* CACHE region + panic eviction both insufficient
                      * — fall back to libc. memFree(CACHE) detects

@@ -173,6 +173,18 @@ _Static_assert(MEM_REGION_TOTAL <= (1450u * 1024u),
  * are safe; calls before memInit halt. */
 void memInit(void);
 
+/* Last-resort CACHE pressure relief. When a CACHE allocation has
+ * failed after both the LRU budget pass and the panic full-evict, the
+ * allocator invokes this hook (if set) and retries once before the
+ * libc fallback / BSOD. The hook should release optimization-only
+ * retention (parked slabs, retained grow-only buffers that nothing
+ * currently points into) and return nonzero if it freed anything.
+ * The hook runs inside memAlloc: it may memFree but must not
+ * allocate. Registered by the loading-waves proof, whose cross-scene
+ * retention is the only consumer of this valve. */
+typedef int (*MemCacheReliefFn)(void);
+void memSetCacheReliefHook(MemCacheReliefFn fn);
+
 /* Freeze the BOOT region. Called once all boot-time BOOT allocations
  * are complete (after audioInit, resourceCatalogParse, fontInit,
  * surfacePoolInit, walkPilotInit, pauseMenuInit). Subsequent BOOT

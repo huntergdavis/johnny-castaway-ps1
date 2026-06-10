@@ -7,6 +7,11 @@ void foregroundPilotSetHeapProbe(int enabled);
 void foregroundPilotSetLoadingWaveProof(int enabled);
 void foregroundPilotSetSpuStage(int enabled);
 void foregroundPilotSetStageScene(const char *sceneName);
+/* One async-chunk tick of the next-scene stage payload read, called
+ * per frame from the inter-scene walk loops where the CD is idle.
+ * No-op outside the loading-waves proof. Returns nonzero while work
+ * is pending. */
+int foregroundPilotStageWalkTick(void);
 void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);

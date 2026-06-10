@@ -1226,7 +1226,10 @@ fgNextSceneStageFinishPending(void)
         gFgNextSceneStage.valid = 1;
         gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_NONE;
         gFgNextSceneStage.usesStreamWindow = 0;
-        gFgNextSceneStage.windowBytes = 0;
+        /* windowStart/windowBytes survive (loadedBytes stays 0): the
+         * inter-scene walk tick can resume the payload read into the
+         * retained stream window (fgNextSceneStageWalkTick). AdoptWindow
+         * ignores them for a metadata-only stage (usesStreamWindow=0). */
         gFgNextSceneStage.loadedBytes = 0;
         FG_STAGE_PRINTF("JCSTAGE M %lu\n",
                         (unsigned long)gFgNextSceneStage.metadataBytes);
@@ -1235,6 +1238,73 @@ fgNextSceneStageFinishPending(void)
 
     fgNextSceneStageInvalidate();
     return 1;
+}
+
+/* Inter-scene walk tick: the walk between scene N and N+1 runs for
+ * hundreds of VBlanks with the CD idle, while the published
+ * metadata-only stage still knows the payload window it never got to
+ * read (streaming scenes drain their own payload reads right up to
+ * scene end, so the in-scene stage rarely progresses past the header).
+ * Resume the payload read into the retained stream window here, one
+ * async chunk per walk frame poll. Every ending is already handled:
+ * full window -> SPU park + publish; walk ends mid-chunk ->
+ * fgNextSceneStageFinishPending's bounded wait at the next scene's
+ * fgRuntimeReset publishes the partial window. Proof-mode only: the
+ * resume depends on the stream window surviving the boundary, which
+ * only the loading-waves shape guarantees. */
+static int __attribute__((noinline,optimize("Os")))
+fgNextSceneStageWalkTick(void)
+{
+    int asyncResult;
+
+    if (!gFgLoadingWaveProofEnabled || !gFgSpuStageEnabled)
+        return 0;
+
+    if (gFgNextSceneStage.readInFlight) {
+        asyncResult = ps1_streamAsyncReadPoll();
+        if (asyncResult == PS1_CD_ASYNC_PENDING)
+            return 1;
+        gFgNextSceneStage.readInFlight = 0;
+        if (asyncResult != PS1_CD_ASYNC_DONE) {
+            fgNextSceneStageInvalidate();
+            return 0;
+        }
+        if (gFgNextSceneStage.phase != FG_NEXT_STAGE_PHASE_PAYLOAD) {
+            fgNextSceneStageInvalidate();
+            return 0;
+        }
+        gFgNextSceneStage.loadedBytes += gFgNextSceneStage.pendingBytes;
+        gFgNextSceneStage.pendingBytes = 0;
+        if (gFgNextSceneStage.loadedBytes >= gFgNextSceneStage.windowBytes)
+            return fgNextSceneStageCompletePayloadRead();
+        return fgNextSceneStageBeginPayloadRead();
+    }
+
+    if (gFgNextSceneStage.active &&
+        gFgNextSceneStage.phase == FG_NEXT_STAGE_PHASE_PAYLOAD &&
+        gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes)
+        return fgNextSceneStageBeginPayloadRead();
+
+    /* Resume a published metadata-only stage whose payload window was
+     * computed but never read. */
+    if (gFgNextSceneStage.valid &&
+        gFgNextSceneStage.metadataParkedInSpu &&
+        !gFgNextSceneStage.parkedInSpu &&
+        !gFgNextSceneStage.usesStreamWindow &&
+        gFgNextSceneStage.windowBytes > 0 &&
+        gFgNextSceneStage.loadedBytes < gFgNextSceneStage.windowBytes &&
+        gFgStreamWindowBuffer != NULL &&
+        gFgStreamWindowBufferSize >= gFgNextSceneStage.windowBytes) {
+        gFgNextSceneStage.valid = 0;
+        gFgNextSceneStage.active = 1;
+        gFgNextSceneStage.usesStreamWindow = 1;
+        gFgNextSceneStage.phase = FG_NEXT_STAGE_PHASE_PAYLOAD;
+        FG_STAGE_PRINTF("JCSTAGE W %lu\n",
+                        (unsigned long)gFgNextSceneStage.windowBytes);
+        return fgNextSceneStageBeginPayloadRead();
+    }
+
+    return 0;
 }
 
 static int __attribute__((noinline,optimize("Os")))
