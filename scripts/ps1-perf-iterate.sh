@@ -804,6 +804,7 @@ if transitions_expected > 0:
             "first_frame_vb": bval("setup", "first_frame_vb", 0),
             "setup_reads": bval("setup", "setup_reads", 0),
             "setup_bytes": bval("setup", "setup_bytes", 0),
+            "gap_vb": bval("setup", "gap_vb", 0),
             "loop_vb": bval("timing", "loop_vb", 0),
             "target_vb": bval("timing", "target_vb", 0),
             "blocking_vb": bval("cd", "blocking_vb", 0),
@@ -1795,7 +1796,8 @@ for case in cases:
         for rec in trans.get("records", []):
             print(
                 f"    [{rec['index']:>2}] {rec['scene']:<14} {rec['kind']:<4} "
-                f"setup_vb={rec['setup_vb']:>4} adopt={rec['stage_adopt']} "
+                f"setup_vb={rec['setup_vb']:>4} gap_vb={rec.get('gap_vb', 0):>4} "
+                f"adopt={rec['stage_adopt']} "
                 f"screen={rec['screen_vb']} backdrop={rec['backdrop_vb']} "
                 f"pack_start={rec['pack_start_vb']} clean_rect={rec['clean_rect_vb']} "
                 f"reads={rec['setup_reads']} bytes={rec['setup_bytes']}"

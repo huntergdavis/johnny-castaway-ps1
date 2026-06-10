@@ -57,6 +57,7 @@ struct TPs1PerfCounters {
     uint32 packStartVBlanks;
     uint32 cleanRectVBlanks;
     uint32 firstFrameVBlanks;
+    uint32 gapVBlanks;
     uint8 stageAdoptFlags;
 
     uint32 renderedLoops;
@@ -365,6 +366,13 @@ uint16 ps1PerfElapsedVBlanks(uint32 startTick)
     return ps1PerfClampU16(ps1PerfCurrentElapsed(startTick));
 }
 
+/* End tick of the previous scene; survives the per-scene counter reset
+ * so the setup line can report the full inter-scene boundary gap
+ * (gap_vb = sceneStartTick - previous sceneEndTick) covering scene-end
+ * teardown, the walk, and the lookahead prime — everything setup_vb
+ * does not. 0 until the first scene completes. */
+static uint32 gPs1PerfPrevSceneEndTick;
+
 void ps1PerfBeginScene(const char *sceneName)
 {
     if (!ps1PerfEnabled)
@@ -376,6 +384,14 @@ void ps1PerfBeginScene(const char *sceneName)
     gPs1Perf.phase = PS1_PERF_PHASE_SETUP;
     gPs1Perf.packLba = PS1_PERF_UNKNOWN_LBA;
     gPs1Perf.sceneStartTick = ps1PerfTick();
+    /* Full boundary gap from the previous scene's end; computed here
+     * because the previous-end static is overwritten at this scene's
+     * own end before the setup line prints. */
+    gPs1Perf.gapVBlanks =
+        (gPs1PerfPrevSceneEndTick != 0 &&
+         gPs1Perf.sceneStartTick >= gPs1PerfPrevSceneEndTick)
+        ? (gPs1Perf.sceneStartTick - gPs1PerfPrevSceneEndTick)
+        : 0;
 }
 
 void ps1PerfMarkSetupPhase(uint8 phase, uint16 elapsedVBlanks)
@@ -1205,7 +1221,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned int)gPs1Perf.maxElapsedFrameIndex
     );
     printf(
-        "JCPERF2 setup setup_vb=%lu screen_vb=%lu backdrop_vb=%lu pack_start_vb=%lu clean_rect_vb=%lu first_frame_vb=%lu cleanup_vb=%lu setup_reads=%lu setup_bytes=%lu stage_adopt=%u\n",
+        "JCPERF2 setup setup_vb=%lu screen_vb=%lu backdrop_vb=%lu pack_start_vb=%lu clean_rect_vb=%lu first_frame_vb=%lu cleanup_vb=%lu setup_reads=%lu setup_bytes=%lu stage_adopt=%u gap_vb=%lu\n",
         (unsigned long)setupVBlanks,
         (unsigned long)gPs1Perf.screenVBlanks,
         (unsigned long)gPs1Perf.backdropVBlanks,
@@ -1215,7 +1231,8 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)cleanupVBlanks,
         (unsigned long)gPs1Perf.cdSetupReads,
         (unsigned long)gPs1Perf.cdSetupBytes,
-        (unsigned int)gPs1Perf.stageAdoptFlags
+        (unsigned int)gPs1Perf.stageAdoptFlags,
+        (unsigned long)gPs1Perf.gapVBlanks
     );
     printf(
         "JCPERF2 frame payload=%lu max_payload=%lu max_payload_idx=%u max_payload_src=%u rows=%lu spans=%lu pixels=%lu hold_max=%u hold_max_idx=%u hold_1=%lu hold_2_4=%lu hold_5_8=%lu hold_9p=%lu payload_0=%lu payload_1k=%lu payload_4k=%lu payload_16k=%lu payload_64k=%lu payload_64kp=%lu\n",
@@ -1533,6 +1550,7 @@ void __attribute__((optimize("Os"))) ps1PerfEndScene(const char *sceneName)
     if (sceneName != NULL && sceneName[0] != '\0')
         ps1PerfCopySceneName(sceneName);
     gPs1Perf.sceneEndTick = ps1PerfTick();
+    gPs1PerfPrevSceneEndTick = gPs1Perf.sceneEndTick;
 
     if (gPs1Perf.loopEndTick == 0)
         gPs1Perf.loopEndTick = gPs1Perf.sceneEndTick;

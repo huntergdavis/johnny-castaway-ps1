@@ -763,15 +763,22 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
      * grBeginFrame on certain transitions (observed: building7 →
      * activity9 at the 6th walk in a row, runtime ~444s); without a
      * cap the screensaver hangs forever. The visual cost on a real hang
-     * is a brief frozen pose; on legitimate walks the cap never fires. */
-    int walkFrameCount = 0;
-    const int WALK_FRAME_LIMIT = 600;
+     * is a brief frozen pose; on legitimate walks the cap never fires.
+     *
+     * Pose pacing and the cap both count ACTUAL elapsed VBlanks, not
+     * loop iterations: now that walks are visible (deferred TRANSIENT
+     * wipe), each iteration carries real composite+upload work and can
+     * span 2+ VBlanks. Counting iterations doubled every pose duration
+     * and stretched walks to 9-17 s. */
+    int walkVBlanksUsed = 0;
+    const int WALK_VBLANK_LIMIT = 600;
+    int walkPrevTick = VSync(-1);
 
     while (!walkDone) {
-        if (++walkFrameCount > WALK_FRAME_LIMIT) {
+        if (walkVBlanksUsed > WALK_VBLANK_LIMIT) {
             extern int printf(const char *, ...);
-            printf("JCWALK: frame-cap hit at %d frames, forcing walkDone\n",
-                   walkFrameCount);
+            printf("JCWALK: vblank-cap hit at %d, forcing walkDone\n",
+                   walkVBlanksUsed);
             walkDone = 1;
             break;
         }
@@ -807,16 +814,28 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
                 walkDone = 1;
                 timerLeft = 0;
             } else {
-                timerLeft = next - 1;   /* current frame counts as 1 */
+                timerLeft = next;
             }
         } else {
             /* Inter-tick frame: redraw the cached pose. */
             walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
-            timerLeft--;
         }
 
         foregroundPilotStageWalkTick();
         grUpdateDisplay(NULL, NULL, NULL);
+
+        {
+            /* Charge pose timing + the duration cap with the VBlanks
+             * this frame actually consumed (>= 1 after the VSync inside
+             * grUpdateDisplay). */
+            int nowTick = VSync(-1);
+            int took = nowTick - walkPrevTick;
+            if (took < 1)
+                took = 1;
+            walkPrevTick = nowTick;
+            timerLeft -= took;
+            walkVBlanksUsed += took;
+        }
     }
 
     /* Hold-frame: keep the final pose visible briefly before yielding
