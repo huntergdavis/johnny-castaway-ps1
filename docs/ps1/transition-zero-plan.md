@@ -46,6 +46,15 @@ Drafted 2026-06-09, red-teamed against code at 358ccda5bd (v0.9.3-ps1).
   - One memory-shape change per branch, each behind its own boot token, each
     with its own ≥2h soak before the next stacks on it.
 
+## W1 soak confirmation (2026-06-09, final stack)
+
+Second independent 20-scene soak on the committed stack: 20/20 scenes,
+zero BSODs, 89% staged hits, per-scene results byte-identical to the
+first soak (deterministic under seed 1). First ratchet gate active:
+`--gate-setup-hit 60` passes every transition except the documented
+custom-backdrop class (walkstuf2 171 vb), which is W4's work item.
+Normal-mode canary (fishing1-low explicit) green throughout.
+
 ## W1 landed (2026-06-09 evening) — staged-path results
 
 20-scene soak, `fgpilot perf-log spu-stage loading-waves seed 1`:
