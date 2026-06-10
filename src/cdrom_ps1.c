@@ -1263,24 +1263,32 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 if (chunkSectors > chunkLimit)
                     chunkSectors = chunkLimit;
             }
-            CdIntToPos(fileLba + startSector + sectorsRead, &loc);
-            if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0 ||
-                CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
-                if (perfTrack)
-                    ps1PerfMarkCdReadDetailed(size, numSectors,
-                                              ps1PerfElapsedVBlanks(perfStartTick),
-                                              0, perfFileLba, offset, 0);
-                memFree(MEM_REGION_CACHE, result);
-                return NULL;
-            }
-            syncResult = ps1CdReadSyncBounded();
-            if (syncResult > 0 || syncResult < 0) {
-                if (perfTrack)
-                    ps1PerfMarkCdReadDetailed(size, numSectors,
-                                              ps1PerfElapsedVBlanks(perfStartTick),
-                                              0, perfFileLba, offset, 0);
-                memFree(MEM_REGION_CACHE, result);
-                return NULL;
+            {
+                int attempt;
+                int chunkOk = 0;
+                for (attempt = 0; attempt < 2 && !chunkOk; attempt++) {
+                    if (attempt > 0) {
+                        (void)CdReadSync(0, NULL);
+                        printf("JCCD retry chunk lba=%lu\n",
+                               (unsigned long)(fileLba + startSector + sectorsRead));
+                    }
+                    CdIntToPos(fileLba + startSector + sectorsRead, &loc);
+                    if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0)
+                        continue;
+                    if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0)
+                        continue;
+                    syncResult = ps1CdReadSyncBounded();
+                    if (syncResult == 0)
+                        chunkOk = 1;
+                }
+                if (!chunkOk) {
+                    if (perfTrack)
+                        ps1PerfMarkCdReadDetailed(size, numSectors,
+                                                  ps1PerfElapsedVBlanks(perfStartTick),
+                                                  0, perfFileLba, offset, 0);
+                    memFree(MEM_REGION_CACHE, result);
+                    return NULL;
+                }
             }
             sectorsRead += chunkSectors;
         }
@@ -1617,32 +1625,36 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
                 chunkSectors = chunkLimit;
         }
 
-        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
-
-        if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
-            if (perfTrack)
-                ps1PerfMarkCdReadDetailed(size, numSectors,
-                                          ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 0);
-            return 0;
-        }
-
-        if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
-            if (perfTrack)
-                ps1PerfMarkCdReadDetailed(size, numSectors,
-                                          ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 0);
-            return 0;
-        }
-
-        syncResult = ps1CdReadSyncBounded();
-
-        if (syncResult > 0 || syncResult < 0) {
-            if (perfTrack)
-                ps1PerfMarkCdReadDetailed(size, numSectors,
-                                          ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 0);
-            return 0;
+        /* One bounded retry per chunk: a sync read issued right after
+         * an async stage read was cancelled can hit a one-command
+         * controller hiccup (observed once at scene 20 of the first
+         * Original-mode 40-scene soak: 1 failed read of 47 -> trip).
+         * Drain whatever is pending, then re-issue once. */
+        {
+            int attempt;
+            int chunkOk = 0;
+            for (attempt = 0; attempt < 2 && !chunkOk; attempt++) {
+                if (attempt > 0) {
+                    (void)CdReadSync(0, NULL);
+                    printf("JCCD retry chunk lba=%lu\n",
+                           (unsigned long)(fileLba + startSector + sectorsRead));
+                }
+                CdIntToPos(fileLba + startSector + sectorsRead, &loc);
+                if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0)
+                    continue;
+                if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0)
+                    continue;
+                syncResult = ps1CdReadSyncBounded();
+                if (syncResult == 0)
+                    chunkOk = 1;
+            }
+            if (!chunkOk) {
+                if (perfTrack)
+                    ps1PerfMarkCdReadDetailed(size, numSectors,
+                                              ps1PerfElapsedVBlanks(perfStartTick),
+                                              0, perfFileLba, offset, 0);
+                return 0;
+            }
         }
 
         sectorsRead += chunkSectors;
