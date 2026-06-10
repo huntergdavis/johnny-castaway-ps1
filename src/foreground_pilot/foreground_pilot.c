@@ -2031,9 +2031,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(0);
         fgCleanOverlayInvalidate();
-    } else if (fgCleanRectsNeedCacheForProof(sceneName)) {
-        fgCleanOverlayRemember(sceneName);
     } else if (gFgLoadingWaveProofEnabled) {
+        /* The remembered-overlay reuse is retired under the staged
+         * shape: its rebuild-skip value was superseded by the SCR
+         * cache (screen_vb 7 either way; re-saving rects costs ~5 vb),
+         * while holding a 96 KB floor slab checked out across every
+         * boundary over-determined the CACHE ledger — the boundary
+         * top-up and the relief valve fought in a 20-warning loop
+         * (400c soak). Invalidate: the rect slabs return to the pool
+         * at every boundary, so floors are always available for the
+         * next scene's rects, segment borrows, and building7-class
+         * 82 KB requests. */
         fgCleanOverlayInvalidate();
     } else {
         /* Deactivate the rect-snapshot — keep the buffer alive at its
