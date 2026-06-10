@@ -3,9 +3,18 @@ static void fgBackdropRelease(int keepBackgrnd)
     int slot;
     int firstSlot = keepBackgrnd ? 1 : 0;
 
-    gFgBackdropThread.isRunning = 0;
-    if (!keepBackgrnd)
+    /* When the backdrop is kept across the boundary, keep the wave
+     * thread running too: islandAnimate touches only slot 0 (kept
+     * below) and grBackgroundSfc, which now survives the boundary
+     * (deferred TRANSIENT wipe). This is what makes the ocean keep
+     * moving through the inter-scene walk — with the thread stopped,
+     * walk_pilot's fgBackdropTickWavesPublic was a no-op and the waves
+     * froze for the whole transition. Scenes that drop the backdrop
+     * (black / scene-specific) still stop the thread. */
+    if (!keepBackgrnd) {
+        gFgBackdropThread.isRunning = 0;
         islandClearWaveCache();
+    }
 
     for (slot = firstSlot; slot < MAX_BMP_SLOTS; slot++) {
         if (gFgBackdropSlot.numSprites[slot])
