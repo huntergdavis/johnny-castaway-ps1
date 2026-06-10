@@ -1252,12 +1252,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int keepBackgrndForProof = 0;
     int reuseCleanOverlayForProof = 0;
 
-    /* The SCR cache stays enabled for the proof's lifetime: disabling
-     * it per custom-backdrop scene freed the 150 KB buffer and forced
-     * a full OCEAN00.SCR CD re-read on the next island scene
-     * (walkstuf2 after suzy1: screen_vb 85). Custom SCRs can no longer
-     * pollute the slot — grEnsureFullScreenScrCache only admits the
-     * island constants (OCEAN / NIGHT prefixes). */
+    /* The SCR cache stays enabled for the proof's lifetime — it is
+     * the workhorse of every transition whose clean overlay was not
+     * remembered (screen_vb 7 vs 96): disabling it cost ~90 vb on
+     * EVERY night-rotation transition, not just custom-backdrop
+     * returns. Custom SCRs can't pollute the slot (island-constant
+     * name filter in grEnsureFullScreenScrCache). */
     grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled);
 
     if (!blackBackdrop && !sceneSpecificBackdrop) {
@@ -2230,6 +2230,29 @@ void foregroundPilotReserveStableShape(void)
     }
     grPreparkCleanRectSlabs(2, 98304UL);
     walkPilotReservePsbSlab(49152UL);
+
+    /* Pre-grow the frame/prefetch pair to the rotation's practical
+     * bound so their grow-only ratchets (first play of a new-biggest
+     * scene, e.g. visitor4 at scene 91 of the seed-1 rotation) happen
+     * here, on a young CACHE, instead of mid-soak. johnny1's 112 KB
+     * local-LZ class remains a once-per-session ratchet served by the
+     * tiered relief. */
+    if (gFgFrameBuffer == NULL) {
+        /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
+         * frame payload buffer. */
+        gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 32768UL,
+                                           "fg-frame");
+        if (gFgFrameBuffer != NULL)
+            gFgFrameBufferSize = 32768UL;
+    }
+    if (gFgPrefetchFrameBuffer == NULL) {
+        /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
+         * prefetch frame buffer (also the setup metadata scratch). */
+        gFgPrefetchFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 32768UL,
+                                                   "fg-prefetch-frame");
+        if (gFgPrefetchFrameBuffer != NULL)
+            gFgPrefetchFrameBufferSize = 32768UL;
+    }
 }
 
 void foregroundPilotSetStageScene(const char *sceneName)
