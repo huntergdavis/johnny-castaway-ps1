@@ -25,6 +25,17 @@
  */
 
 #include "mem_region.h"
+
+/* Memory forensics (heap maps, big alloc/free traces, relief dumps).
+ * Compiled in when PS1_MEM_FORENSICS=1 — implied by the full verbose
+ * build, or set alone for an image-budget-friendly forensic build. */
+#ifndef PS1_MEM_FORENSICS
+#ifdef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_MEM_FORENSICS 1
+#else
+#define PS1_MEM_FORENSICS 0
+#endif
+#endif
 #include "ps1_debug.h"          /* JC_BSOD, ps1DebugError */
 #include <string.h>             /* memset, memcpy */
 
@@ -350,7 +361,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
     case MEM_REGION_CACHE: {
         /* R33o diagnostic: log large CACHE allocations so we can correlate
          * with scene events to find the 475 KB unaccounted residency. */
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
         /* Allocation tracing for memory-shape debugging. Soak verdicts
          * key on cache-relief/JCBSOD lines, which stay unconditional. */
         if (alignedSize >= (32u * 1024u)) {
@@ -378,7 +389,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                 extern void lruEvictAllUnpinned(void);
                 lruEvictAllUnpinned();
                 p = cacheAllocInternal(alignedSize, tag);
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
                 if (p == NULL) {
                     /* Map the region at the moment a relief becomes
                      * necessary: the first few dumps show which live
@@ -413,7 +424,7 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                     extern void *malloc(size_t);
                     p = malloc(alignedSize);
                     if (p == NULL) {
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
                         extern void memDumpCacheMap(const char *why);
                         memDumpCacheMap("bsod");
 #endif
@@ -641,7 +652,7 @@ static const char *cacheDiagTagForPtr_(const void *ptr)
  * can attribute live CACHE blocks. Tags are string literals; storing
  * the pointer is safe. Best-effort: on table overflow new blocks just
  * show as "?" in the map. */
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
 #define CACHE_TAG_TABLE_ENTRIES 48
 static struct {
     const void *ptr;
@@ -1059,7 +1070,7 @@ static void cacheFreeInternal(void *ptr)
      * Both ops are O(n) in the free-list length; n stays small (a
      * few hundred at most) so the cost is dwarfed by the CD read
      * that motivated the alloc. */
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
     if (blockSize >= (32u * 1024u)) {
         extern int printf(const char *, ...);
         printf("JCMEM cache-free-big size=%lu tag=%s\n",
@@ -1114,7 +1125,7 @@ void memDumpCacheStats(const char *prefix)
  * can't wedge the dump. */
 void memDumpCacheMap(const char *why)
 {
-#if !PS1_VERBOSE_DIAGNOSTICS
+#if !PS1_MEM_FORENSICS
     /* Forensic heap map is verbose-build-only: its strings + walk code
      * do not fit under the static-image ceiling alongside the verbose
      * perf schema. Reproduce failures with a compact diag build. */

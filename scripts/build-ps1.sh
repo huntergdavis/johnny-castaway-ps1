@@ -12,6 +12,7 @@ docker_init
 PS1_PERF_DEEP_TRACE="${PS1_PERF_DEEP_TRACE:-OFF}"
 PS1_PERF_VERBOSE_SCHEMA="${PS1_PERF_VERBOSE_SCHEMA:-OFF}"
 PS1_VERBOSE_DIAGNOSTICS="${PS1_VERBOSE_DIAGNOSTICS:-OFF}"
+PS1_MEM_FORENSICS="${PS1_MEM_FORENSICS:-OFF}"
 
 python3 scripts/build-caption-data.py
 python3 scripts/build-menu-text-data.py
@@ -80,6 +81,7 @@ if [ "${1:-}" = "clean" ]; then
                 -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
                 -DPS1_PERF_VERBOSE_SCHEMA='"$PS1_PERF_VERBOSE_SCHEMA"' \
                 -DPS1_VERBOSE_DIAGNOSTICS='"$PS1_VERBOSE_DIAGNOSTICS"' \
+                -DPS1_MEM_FORENSICS='"$PS1_MEM_FORENSICS"' \
                 -S /project -B /project/build-ps1
         '
 fi
@@ -98,6 +100,7 @@ echo "=== Building PS1 executable ==="
             -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
             -DPS1_PERF_VERBOSE_SCHEMA='"$PS1_PERF_VERBOSE_SCHEMA"' \
             -DPS1_VERBOSE_DIAGNOSTICS='"$PS1_VERBOSE_DIAGNOSTICS"' \
+                -DPS1_MEM_FORENSICS='"$PS1_MEM_FORENSICS"' \
             -S /project -B /project/build-ps1
         cd /project/build-ps1
         make jcreborn

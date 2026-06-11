@@ -1,3 +1,13 @@
+/* See mem_region.c: forensic logging gate, independent of the full
+ * verbose build which no longer fits the static-image ceiling. */
+#ifndef PS1_MEM_FORENSICS
+#ifdef PS1_VERBOSE_DIAGNOSTICS
+#define PS1_MEM_FORENSICS 1
+#else
+#define PS1_MEM_FORENSICS 0
+#endif
+#endif
+
 int grScrCacheResidentBytes(void)
 {
     /* Yield query for the relief hook: bytes grReliefFreeScrCache
@@ -17,7 +27,7 @@ int grReliefFreeScrCache(void)
     int freedBytes = 0;
     if (gFullScreenScrCache != NULL) {
         freedBytes = (int)gFullScreenScrCacheBytes;
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
         {
             extern int printf(const char *, ...);
             printf("JCMEM scr-relief freed=%d\n", freedBytes);
@@ -122,7 +132,7 @@ static int grCleanRectSlabPoolFlushEx(int includeFloor, int dryRun)
         gGrCleanRectSlabPool[i].ptr = NULL;
         gGrCleanRectSlabPool[i].capacityBytes = 0;
     }
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
     if (largest > 0 && !dryRun) {
         extern int printf(const char *, ...);
         printf("JCMEM slab-flush floor=%d largest=%d\n",
@@ -169,7 +179,7 @@ static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
     }
     if (smallest >= 0 &&
         gGrCleanRectSlabPool[smallest].capacityBytes < capacityBytes) {
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
         {
             extern int printf(const char *, ...);
             printf("JCMEM park-evict small=%lu in=%lu\n",
@@ -182,7 +192,7 @@ static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
         gGrCleanRectSlabPool[smallest].capacityBytes = capacityBytes;
         return 1;
     }
-#if PS1_VERBOSE_DIAGNOSTICS
+#if PS1_MEM_FORENSICS
     if (capacityBytes >= (64u * 1024u)) {
         extern int printf(const char *, ...);
         printf("JCMEM park-reject size=%lu\n", (unsigned long)capacityBytes);

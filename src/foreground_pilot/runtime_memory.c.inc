@@ -354,9 +354,15 @@ static uint8 *fgAllocSetupSegmentCacheBuf(uint32 bytes)
     }
     gFgSetupSegmentBorrowedCap = 0;
     /* MEM_REGION_RATIONALE: per-scene setup segment window (fallback
-     * when no floor slab is free); released at scene end. */
-    return (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
-                             "fgSetupSegmentBuffer");
+     * when no floor slab is free); released at scene end.
+     * Opportunistic: segment staging is an optimization — every caller
+     * declines staging on NULL and the scene falls back to the cold
+     * setup path. memAlloc here BSODed the 400f soak at transition 232
+     * (WALK1.FG2's 212992-byte segment vs a fragmented region whose
+     * best post-relief hole was 196616) after last-resort relief
+     * demolished the floors and walk slab for nothing. */
+    return (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
+                                "fgSetupSegmentBuffer");
 }
 
 static void fgFreeSetupSegmentBuffer(void)

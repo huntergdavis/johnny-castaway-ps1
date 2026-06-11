@@ -19,6 +19,7 @@ project(
 option(PS1_PERF_DEEP_TRACE "Include large, diagnostic-only PS1 perf trace counters" OFF)
 option(PS1_PERF_VERBOSE_SCHEMA "Include full named JCPERF2 schema output strings" OFF)
 option(PS1_VERBOSE_DIAGNOSTICS "Include verbose PS1 diagnostic printf strings" OFF)
+option(PS1_MEM_FORENSICS "Include memory forensics (heap maps, alloc traces) without the full verbose build" OFF)
 
 # Set C standard
 set(CMAKE_C_STANDARD 99)
@@ -259,6 +260,9 @@ if(PS1_PERF_VERBOSE_SCHEMA)
 endif()
 if(PS1_VERBOSE_DIAGNOSTICS)
     target_compile_definitions(jcreborn PRIVATE PS1_VERBOSE_DIAGNOSTICS=1)
+endif()
+if(PS1_MEM_FORENSICS)
+    target_compile_definitions(jcreborn PRIVATE PS1_MEM_FORENSICS=1)
 endif()
 
 # Include directories
