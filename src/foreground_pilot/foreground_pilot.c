@@ -2159,28 +2159,29 @@ static int fgCachePressureRelief(unsigned long requestBytes)
     int freed = 0;
     int largestSlab;
 
-    /* Tiered: stop as soon as the request is guaranteed satisfiable.
-     * Freeing MORE than needed is not harmless — the first relief
-     * design freed the retained stream window for a 96 KB clean-rect
-     * request that a slab flush alone covered; the forced window
-     * realloc next scene burned a second relief that flushed the
-     * parked slabs, and the layout unraveled into the Original-mode
-     * BSOD. Each tier's freed block coalesces or stands alone at >=
-     * its capacity, so capacity >= request guarantees the retry. */
-    /* Tiers ordered by replacement cost (cheapest loss first); each
-     * stops the cascade as soon as the freed capacity guarantees the
-     * retry. The old scr-first order thrashed the 150 KB SCR cache
-     * (153600-refill ping-pong) for requests a small slab covered. */
-    largestSlab = grFlushCleanBgRectSlabs();   /* sub-floor slabs */
-    if (largestSlab > 0)
-        freed = 1;
-    if ((unsigned long)largestSlab >= requestBytes)
-        return freed;
+    /* Tiered: stop as soon as the request is guaranteed satisfiable —
+     * AND fire a tier only when its yield can cover the request by
+     * itself. Both halves matter. Freeing MORE than needed is not
+     * harmless (the first relief design freed the stream window for a
+     * 96 KB request a slab flush covered, and the layout unraveled);
+     * freeing what CANNOT help is not harmless either — the scene-105
+     * cascade of the 400c/d/e soaks started with an 81920 rect request
+     * freeing the 48 KB walk slab as pure collateral (it realloc'd
+     * into libc, the 130 KB anomaly) before the SCR tier actually
+     * served the request. A tier's freed block coalesces or stands
+     * alone at >= its capacity, so capacity >= request guarantees the
+     * retry. Tiers ordered by replacement cost (cheapest loss first).
+     * If no single tier suffices, the last-resort cascade below frees
+     * everything in the same order and relies on coalescing. */
+    largestSlab = grLargestPooledCleanRectSlabBytes(0);
+    if ((unsigned long)largestSlab >= requestBytes) {
+        grFlushCleanBgRectSlabs();             /* sub-floor slabs */
+        return 1;
+    }
 
-    if (walkPilotReliefFreePsbSlab()) {        /* 48 KB walk slab */
-        freed = 1;
-        if (requestBytes <= 49152UL)
-            return freed;
+    if (walkPilotPsbSlabIdleBytes() >= requestBytes) {
+        walkPilotReliefFreePsbSlab();          /* 48 KB walk slab */
+        return 1;
     }
 
     /* Requests a floor slab can cover take the floor BEFORE the SCR
@@ -2188,18 +2189,30 @@ static int fgCachePressureRelief(unsigned long requestBytes)
      * walk slab AND the 150 KB SCR (tier overkill) when a 96 KB floor
      * hole would have served it. Bigger requests still go SCR first. */
     if (requestBytes <= 98304UL) {
-        largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs */
-        if (largestSlab > 0)
-            freed = 1;
-        if ((unsigned long)largestSlab >= requestBytes)
-            return freed;
+        largestSlab = grLargestPooledCleanRectSlabBytes(1);
+        if ((unsigned long)largestSlab >= requestBytes) {
+            grFlushCleanBgRectSlabsAll();      /* floor slabs */
+            return 1;
+        }
     }
 
-    largestSlab = grReliefFreeScrCache();      /* 150 KB SCR cache */
+    if ((unsigned long)grScrCacheResidentBytes() >= requestBytes) {
+        grReliefFreeScrCache();                /* 150 KB SCR cache */
+        return 1;
+    }
+
+    /* Last resort: no single tier covers the request. Free everything
+     * cheapest-first and let cacheCoalesce_ assemble the hole. */
+    largestSlab = grFlushCleanBgRectSlabs();
     if (largestSlab > 0)
         freed = 1;
-    if ((unsigned long)largestSlab >= requestBytes)
-        return freed;
+
+    if (walkPilotReliefFreePsbSlab())
+        freed = 1;
+
+    largestSlab = grReliefFreeScrCache();
+    if (largestSlab > 0)
+        freed = 1;
 
     largestSlab = grFlushCleanBgRectSlabsAll(); /* floor slabs (big reqs) */
     if (largestSlab > 0)

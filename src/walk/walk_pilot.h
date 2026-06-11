@@ -92,6 +92,11 @@ void walkPilotSetSpuStage(int enabled);
  * when no sprite slot points into it. Returns nonzero if freed; the
  * next walk re-allocates it. */
 int  walkPilotReliefFreePsbSlab(void);
+
+/* Bytes the relief tier above could free right now (idle PSB slab
+ * size), or 0 — lets the relief hook skip the tier when its yield
+ * cannot cover the failing request. */
+unsigned long walkPilotPsbSlabIdleBytes(void);
 void walkPilotReservePsbSlab(unsigned long bytes);
 int  walkPilotStageJohnwalkSpuTick(void);
 int  walkPilotPrimeSpuAssetsBlocking(void);

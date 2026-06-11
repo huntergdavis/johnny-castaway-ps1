@@ -10,7 +10,11 @@
  * transition-zero branch. The debug renderer bounds-checks and drops
  * prims when full, so a denser panel degrades instead of corrupting;
  * 24 KB comfortably covers the BSOD text panel. */
-#define PS1_DEBUG_PRIM_BYTES 24576
+/* Shaved 24576 -> 23552 (2026-06-10) to keep _end under the libc
+ * heap ceiling after the relief tier-yield fix; the renderer
+ * truncates safely at the limit, so the cost is at most a few
+ * unrendered glyphs on a maximally full debug panel. */
+#define PS1_DEBUG_PRIM_BYTES 23552
 /* 1 KB (was 2 KB): the BSOD panel emits ~15 lines x ~45 chars (~700 B);
  * ps1DebugFlush appends with a hard end-pointer, so an oversized dump
  * truncates instead of overflowing. Freed for libc heap headroom. */

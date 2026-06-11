@@ -378,6 +378,23 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                 extern void lruEvictAllUnpinned(void);
                 lruEvictAllUnpinned();
                 p = cacheAllocInternal(alignedSize, tag);
+#if PS1_VERBOSE_DIAGNOSTICS
+                if (p == NULL) {
+                    /* Map the region at the moment a relief becomes
+                     * necessary: the first few dumps show which live
+                     * blocks deny the request a contiguous hole. */
+                    extern void memDumpCacheMap(const char *why);
+                    extern int printf(const char *, ...);
+                    static int s_reliefMapDumps = 0;
+                    if (s_reliefMapDumps < 4) {
+                        s_reliefMapDumps++;
+                        printf("JCMEM relief-req size=%lu tag=%s\n",
+                               (unsigned long)alignedSize,
+                               tag ? tag : "(?)");
+                        memDumpCacheMap("pre-relief");
+                    }
+                }
+#endif
                 if (p == NULL && g_cacheReliefHook != NULL &&
                     g_cacheReliefHook((unsigned long)alignedSize)) {
                     /* Optimization-only retention released (parked
@@ -396,6 +413,10 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                     extern void *malloc(size_t);
                     p = malloc(alignedSize);
                     if (p == NULL) {
+#if PS1_VERBOSE_DIAGNOSTICS
+                        extern void memDumpCacheMap(const char *why);
+                        memDumpCacheMap("bsod");
+#endif
                         memHaltFmt("CACHE", "exhausted (region+libc both)",
                                    alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
                     }
@@ -410,6 +431,20 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
 
     default:
         memHalt("(allocator)", "memAlloc: bad region");
+    }
+}
+
+void *memTryAlloc(MemRegion region, size_t size, const char *tag)
+{
+    /* Thin internal variant: caller is main-context post-init CACHE
+     * code (the SCR refill); cacheAllocInternal carries the
+     * corruption guards. */
+    (void)region;
+    {
+        void *p = cacheAllocInternal(alignUp(size), tag);
+        if (p != NULL && g_cacheUsed > g_cachePeak)
+            g_cachePeak = g_cacheUsed;
+        return p;
     }
 }
 
@@ -602,6 +637,66 @@ static const char *cacheDiagTagForPtr_(const void *ptr)
     return "?";
 }
 
+/* Soak-cascade diagnostic: per-block tag side-table so memDumpCacheMap
+ * can attribute live CACHE blocks. Tags are string literals; storing
+ * the pointer is safe. Best-effort: on table overflow new blocks just
+ * show as "?" in the map. */
+#if PS1_VERBOSE_DIAGNOSTICS
+#define CACHE_TAG_TABLE_ENTRIES 48
+static struct {
+    const void *ptr;
+    const char *tag;
+    unsigned int size;
+} g_cacheTagTable[CACHE_TAG_TABLE_ENTRIES];
+
+static void cacheDiagRememberAlloc_(const void *ptr, size_t size,
+                                    const char *tag)
+{
+    int i;
+    int empty = -1;
+    if (g_cacheBase != NULL &&
+        ptr == (const void *)(g_cacheBase + CACHE_HEADER_BYTES)) {
+        g_cacheDiagOffset4Tag = tag ? tag : "?";
+        g_cacheDiagOffset4Size = size;
+    }
+    for (i = 0; i < CACHE_TAG_TABLE_ENTRIES; i++) {
+        if (g_cacheTagTable[i].ptr == ptr) {
+            empty = i;
+            break;
+        }
+        if (empty < 0 && g_cacheTagTable[i].ptr == NULL)
+            empty = i;
+    }
+    if (empty >= 0) {
+        g_cacheTagTable[empty].ptr = ptr;
+        g_cacheTagTable[empty].tag = tag ? tag : "?";
+        g_cacheTagTable[empty].size = (unsigned int)size;
+    }
+}
+
+static void cacheDiagRememberFree_(const void *ptr)
+{
+    int i;
+    for (i = 0; i < CACHE_TAG_TABLE_ENTRIES; i++) {
+        if (g_cacheTagTable[i].ptr == ptr) {
+            g_cacheTagTable[i].ptr = NULL;
+            g_cacheTagTable[i].tag = NULL;
+            g_cacheTagTable[i].size = 0;
+            break;
+        }
+    }
+}
+
+static const char *cacheDiagTableTag_(const void *ptr)
+{
+    int i;
+    for (i = 0; i < CACHE_TAG_TABLE_ENTRIES; i++) {
+        if (g_cacheTagTable[i].ptr == ptr)
+            return g_cacheTagTable[i].tag ? g_cacheTagTable[i].tag : "?";
+    }
+    return "?";
+}
+#else
 static void cacheDiagRememberAlloc_(const void *ptr, size_t size,
                                     const char *tag)
 {
@@ -616,6 +711,7 @@ static void cacheDiagRememberFree_(const void *ptr)
 {
     (void)ptr;
 }
+#endif
 
 static unsigned int cacheReadSize_(unsigned char *blockBase)
 {
@@ -963,6 +1059,13 @@ static void cacheFreeInternal(void *ptr)
      * Both ops are O(n) in the free-list length; n stays small (a
      * few hundred at most) so the cost is dwarfed by the CD read
      * that motivated the alloc. */
+#if PS1_VERBOSE_DIAGNOSTICS
+    if (blockSize >= (32u * 1024u)) {
+        extern int printf(const char *, ...);
+        printf("JCMEM cache-free-big size=%lu tag=%s\n",
+               (unsigned long)blockSize, cacheDiagTableTag_(ptr));
+    }
+#endif
     CacheFreeBlock *fb = (CacheFreeBlock *)ptr;
     cacheInsertSorted_(fb);
     cacheCoalesce_();
@@ -1002,6 +1105,62 @@ void memDumpCacheStats(const char *prefix)
            (unsigned long)freeListBytes,
            (unsigned long)freeListBlocks,
            (unsigned long)g_cacheUsed);
+}
+
+/* Soak-cascade diagnostic: linear heap map of the CACHE region. One
+ * line per block (offset, size, free/live, tag) lets a failed-96K-alloc
+ * dump show exactly which live blocks interleave the free holes. Walk
+ * is header-chained; bails on an implausible size so a corrupt heap
+ * can't wedge the dump. */
+void memDumpCacheMap(const char *why)
+{
+#if !PS1_VERBOSE_DIAGNOSTICS
+    /* Forensic heap map is verbose-build-only: its strings + walk code
+     * do not fit under the static-image ceiling alongside the verbose
+     * perf schema. Reproduce failures with a compact diag build. */
+    (void)why;
+#else
+    extern int printf(const char *, ...);
+    unsigned char *block;
+    size_t guard = 0;
+    if (!g_memInited || g_cacheBase == NULL || g_cacheBumpTop == NULL)
+        return;
+    printf("JCMEM map-begin why=%s used=%lu bump=%lu\n",
+           why ? why : "?",
+           (unsigned long)g_cacheUsed,
+           (unsigned long)(g_cacheBumpTop - g_cacheBase));
+    block = g_cacheBase;
+    while (block < g_cacheBumpTop) {
+        unsigned int sz = cacheReadSize_(block);
+        const void *user = (const void *)(block + CACHE_HEADER_BYTES);
+        int isFree = 0;
+        CacheFreeBlock *cur = g_cacheFreeList;
+        while (cur != NULL) {
+            if ((const void *)cur == user) {
+                isFree = 1;
+                break;
+            }
+            cur = cur->next;
+        }
+        if (sz == 0 || sz > MEM_CACHE_BUDGET ||
+            block + sz > g_cacheBase + MEM_CACHE_BUDGET) {
+            printf("JCMEM map-corrupt off=%lu size=%lu\n",
+                   (unsigned long)(block - g_cacheBase),
+                   (unsigned long)sz);
+            break;
+        }
+        printf("JCMEM map off=%lu size=%lu %s tag=%s\n",
+               (unsigned long)(block - g_cacheBase),
+               (unsigned long)sz,
+               isFree ? "FREE" : "live",
+               isFree ? "-" : cacheDiagTableTag_(user));
+        block += sz;
+        if (++guard > CACHE_MAX_FREE_WALK)
+            break;
+    }
+    printf("JCMEM map-end tail=%lu\n",
+           (unsigned long)(g_cacheBase + MEM_CACHE_BUDGET - g_cacheBumpTop));
+#endif
 }
 
 void memDebugValidateCache(const char *phase)

@@ -225,6 +225,12 @@ void memDebugValidateCache(const char *phase);
  * Alignment: returned pointer is MEM_REGION_ALIGN-byte aligned. */
 void *memAlloc(MemRegion region, size_t size, const char *tag);
 
+/* CACHE-only opportunistic variant: one allocation attempt, NULL on
+ * miss. No LRU panic, no relief hook, no libc fallback — for
+ * optimization-only residents (e.g. the SCR cache refill) that must
+ * never evict higher-value retention to make room for themselves. */
+void *memTryAlloc(MemRegion region, size_t size, const char *tag);
+
 /* Free a previously-allocated pointer.
  *   BOOT:      no-op (allocations are permanent); halts post-freeze.
  *   CACHE:     real release; used by LRU evictor.

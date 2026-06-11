@@ -1,3 +1,12 @@
+int grScrCacheResidentBytes(void)
+{
+    /* Yield query for the relief hook: bytes grReliefFreeScrCache
+     * would free right now. */
+    if (gFullScreenScrCache == NULL)
+        return 0;
+    return (int)gFullScreenScrCacheBytes;
+}
+
 int grReliefFreeScrCache(void)
 {
     /* CACHE pressure relief tier 0: the packed SCR cache is the least
@@ -8,6 +17,12 @@ int grReliefFreeScrCache(void)
     int freedBytes = 0;
     if (gFullScreenScrCache != NULL) {
         freedBytes = (int)gFullScreenScrCacheBytes;
+#if PS1_VERBOSE_DIAGNOSTICS
+        {
+            extern int printf(const char *, ...);
+            printf("JCMEM scr-relief freed=%d\n", freedBytes);
+        }
+#endif
         memFree(MEM_REGION_CACHE, gFullScreenScrCache);
         gFullScreenScrCache = NULL;
     }
@@ -83,7 +98,7 @@ static int gGrCleanRectSlabRetain = 0;
 
 #define GR_CLEAN_SLAB_FLOOR_BYTES 98304u
 
-static int grCleanRectSlabPoolFlushEx(int includeFloor)
+static int grCleanRectSlabPoolFlushEx(int includeFloor, int dryRun)
 {
     /* The two boot pre-parked 96 KB floor slabs are stable-shape
      * members: a relief flush that discards them degrades the pool
@@ -99,23 +114,46 @@ static int grCleanRectSlabPoolFlushEx(int includeFloor)
         if (!includeFloor &&
             gGrCleanRectSlabPool[i].capacityBytes >= GR_CLEAN_SLAB_FLOOR_BYTES)
             continue;
-        memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
         if ((int)gGrCleanRectSlabPool[i].capacityBytes > largest)
             largest = (int)gGrCleanRectSlabPool[i].capacityBytes;
+        if (dryRun)
+            continue;
+        memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[i].ptr);
         gGrCleanRectSlabPool[i].ptr = NULL;
         gGrCleanRectSlabPool[i].capacityBytes = 0;
     }
+#if PS1_VERBOSE_DIAGNOSTICS
+    if (largest > 0 && !dryRun) {
+        extern int printf(const char *, ...);
+        printf("JCMEM slab-flush floor=%d largest=%d\n",
+               includeFloor, largest);
+    }
+#endif
     return largest;
 }
 
 static int grCleanRectSlabPoolFlush(void)
 {
-    return grCleanRectSlabPoolFlushEx(1);
+    return grCleanRectSlabPoolFlushEx(1, 0);
+}
+
+int grLargestPooledCleanRectSlabBytes(int includeFloor)
+{
+    return grCleanRectSlabPoolFlushEx(includeFloor, 1);
 }
 
 static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
 {
+    /* Priority parking: when all 8 slots are taken, evict the SMALLEST
+     * pooled slab if the incoming one is bigger, so a returning floor
+     * slab is never silently freed for lack of a slot while pebbles
+     * occupy the pool. (Hardening — soak heap maps showed the pool is
+     * rarely full in practice; the 400c/d/e scene-105 cascade was
+     * ledger overflow + relief collateral, fixed in the
+     * fgCachePressureRelief tier-yield checks and the memTryAlloc SCR
+     * refill.) */
     int i;
+    int smallest = -1;
     if (pixels == NULL || capacityBytes == 0)
         return 0;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
@@ -124,7 +162,32 @@ static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
             gGrCleanRectSlabPool[i].capacityBytes = capacityBytes;
             return 1;
         }
+        if (smallest < 0 ||
+            gGrCleanRectSlabPool[i].capacityBytes <
+                gGrCleanRectSlabPool[smallest].capacityBytes)
+            smallest = i;
     }
+    if (smallest >= 0 &&
+        gGrCleanRectSlabPool[smallest].capacityBytes < capacityBytes) {
+#if PS1_VERBOSE_DIAGNOSTICS
+        {
+            extern int printf(const char *, ...);
+            printf("JCMEM park-evict small=%lu in=%lu\n",
+                   (unsigned long)gGrCleanRectSlabPool[smallest].capacityBytes,
+                   (unsigned long)capacityBytes);
+        }
+#endif
+        memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[smallest].ptr);
+        gGrCleanRectSlabPool[smallest].ptr = pixels;
+        gGrCleanRectSlabPool[smallest].capacityBytes = capacityBytes;
+        return 1;
+    }
+#if PS1_VERBOSE_DIAGNOSTICS
+    if (capacityBytes >= (64u * 1024u)) {
+        extern int printf(const char *, ...);
+        printf("JCMEM park-reject size=%lu\n", (unsigned long)capacityBytes);
+    }
+#endif
     return 0;
 }
 
@@ -583,14 +646,14 @@ int grFlushCleanBgRectSlabs(void)
     /* Relief tier: frees only sub-floor slabs (see FlushEx). Returns
      * the LARGEST capacity freed so tiered relief can stop as soon as
      * the pending request is guaranteed satisfiable. */
-    return grCleanRectSlabPoolFlushEx(0);
+    return grCleanRectSlabPoolFlushEx(0, 0);
 }
 
 int grFlushCleanBgRectSlabsAll(void)
 {
     /* Last-resort relief tier and freeplay teardown: everything goes,
      * floor included. */
-    return grCleanRectSlabPoolFlushEx(1);
+    return grCleanRectSlabPoolFlushEx(1, 0);
 }
 
 uint16 *grBorrowCleanRectSlab(unsigned long bytes, unsigned long *outCap)

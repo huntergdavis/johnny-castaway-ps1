@@ -422,9 +422,26 @@ static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
 
     /* MEM_REGION_RATIONALE: optional packed full-screen SCR cache for the
      * async-loading branch. Stores 4bpp source bytes (150KB), not the 600KB
-     * expanded bg tiles, and is freed when the proof toggle is disabled. */
-    gFullScreenScrCache = (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
-                                            "gr-scr-cache");
+     * expanded bg tiles, and is freed when the proof toggle is disabled.
+     * Opportunistic alloc: the SCR cache is the LEAST valuable retained
+     * block, so its refill must never trigger relief — a 153600 refill
+     * request exceeds every relief tier's early-stop and demolishes the
+     * boot stable shape (walk slab, floors, window), which was the
+     * scene-105 cascade behind the 400c/d/e soak BSODs. No hole means
+     * no cache this round; retry on the next island screen load. */
+    gFullScreenScrCache = (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
+                                               "gr-scr-cache");
+    if (gFullScreenScrCache == NULL &&
+        grFlushCleanBgRectSlabs() > 0) {
+        /* Re-admission may take strictly CHEAPER retention: sub-floor
+         * parked slabs are re-creatable churn, while a permanently
+         * absent SCR cache costs ~90 vb on every island hit (the
+         * post-cascade steady state of the first fixed 150-soak:
+         * the one-time evicted rect squatted in the SCR hole forever).
+         * Floors and the boot stable shape stay untouched. */
+        gFullScreenScrCache = (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
+                                                   "gr-scr-cache");
+    }
     if (gFullScreenScrCache == NULL)
         return 0;
     gFullScreenScrCacheBytes = bytes;

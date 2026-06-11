@@ -274,6 +274,11 @@ void grSetCleanBgRectsForceCache(int enabled);
 void grSetCleanBgRectsSlabRetain(int enabled);
 int grFlushCleanBgRectSlabs(void);
 int grFlushCleanBgRectSlabsAll(void);
+/* Relief-yield queries: what the flush/free calls above would free
+ * right now, so the relief hook can skip tiers whose yield cannot
+ * cover the failing request. */
+int grLargestPooledCleanRectSlabBytes(int includeFloor);
+int grScrCacheResidentBytes(void);
 uint16 *grBorrowCleanRectSlab(unsigned long bytes, unsigned long *outCap);
 void grReturnCleanRectSlab(uint16 *ptr, unsigned long capacityBytes);
 void grPreparkCleanRectSlabs(int count, unsigned long bytes);

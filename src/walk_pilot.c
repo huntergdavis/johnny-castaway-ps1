@@ -342,6 +342,13 @@ int walkPilotReliefFreePsbSlab(void)
     return 1;
 }
 
+unsigned long walkPilotPsbSlabIdleBytes(void)
+{
+    if (gWalkPsbLoadSlab == NULL || gWalkPsbLoadSlabBusy)
+        return 0;
+    return (unsigned long)gWalkPsbLoadSlabSize;
+}
+
 void walkPilotReservePsbSlab(unsigned long bytes)
 {
     if (!gWalkSpuStageEnabled || gWalkPsbLoadSlab != NULL || !memIsReady())
@@ -592,6 +599,11 @@ int walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo)
 }
 
 int walkPilotReliefFreePsbSlab(void)
+{
+    return 0;
+}
+
+unsigned long walkPilotPsbSlabIdleBytes(void)
 {
     return 0;
 }
