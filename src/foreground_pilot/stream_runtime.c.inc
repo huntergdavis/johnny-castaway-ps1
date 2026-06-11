@@ -1458,6 +1458,14 @@ fgNextSceneStageAdoptWindow(const char *sceneName)
 
 static int fgRuntimePrimeSetupSegment(const char *sceneName)
 {
+    /* Returns 0 only for real I/O failures (CD read of a primed
+     * segment) — the caller BSODs on those by design. Allocation
+     * misses DECLINE instead (return 1 with no segment primed):
+     * segments are read-ahead caches and every consumer falls back to
+     * the on-demand stream path via fgRuntimeFindSetupSegmentForEntry.
+     * Declining costs a cold setup (~170 vb), not a halt — walkstuf1's
+     * 212992-byte W1 segment vs a soak-fragmented region BSOD'd 400f/g
+     * at transition 232 through the old fatal path. */
     uint32 segmentStart;
     uint32 segmentBytes;
     uint32 segment2Start = 0;
@@ -1520,7 +1528,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(allocationBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
         if (segment2Bytes > 0)
             segment2Buffer = segmentBuffer + segmentBytes;
@@ -1543,7 +1551,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                 gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
                 if (ps1PerfEnabled)
                     ps1PerfMarkAllocFail(segment4Bytes);
-                return 0;
+                return 1; /* decline staging: read-ahead only; stream on demand */
             }
         }
         gFgRuntime.setupSegmentReusable = 1;
@@ -1564,7 +1572,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(allocationBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
         segment2Buffer = segmentBuffer + segmentBytes;
         gFgRuntime.setupSegmentReusable = 1;
@@ -1586,7 +1594,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(allocationBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
         segment2Buffer = segmentBuffer + segmentBytes;
         gFgRuntime.setupSegmentReusable = 1;
@@ -1604,7 +1612,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(allocationBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
         gFgRuntime.setupSegmentReusable = 1;
     } else if (fgSceneEquals(sceneName, "walkstuf1")) {
@@ -1643,7 +1651,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(allocationBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
         if (segment2Bytes > 0) {
             if (islandState.lowTide) {
@@ -1663,7 +1671,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                     gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
                     if (ps1PerfEnabled)
                         ps1PerfMarkAllocFail(segment2Bytes);
-                    return 0;
+                    return 1; /* decline staging: read-ahead only; stream on demand */
                 }
             } else {
                 segment2Buffer = segmentBuffer + segmentBytes;
@@ -1686,7 +1694,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
                 gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
                 if (ps1PerfEnabled)
                     ps1PerfMarkAllocFail(segment4Bytes);
-                return 0;
+                return 1; /* decline staging: read-ahead only; stream on demand */
             }
         }
         gFgRuntime.setupSegmentReusable = 1;
@@ -1706,7 +1714,7 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             gFgSetupSegmentBufferSize = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkAllocFail(segmentBytes);
-            return 0;
+            return 1; /* decline staging: read-ahead only; stream on demand */
         }
     } else {
         segmentStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
