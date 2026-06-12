@@ -37,6 +37,20 @@ static void fgBackdropRelease(int keepBackgrnd)
         memset(&gFgBackdropSlot, 0, sizeof(gFgBackdropSlot));
 }
 
+static void fgBackdropPreloadHolidaySheet(void)
+{
+    /* Mirror of the lazy slot-2 load in fgBackdropEnableWaveBackdrop:
+     * used at boot (and after a scheduled cache rebuild) so the
+     * holiday sheet lands adjacent to the stable band instead of as a
+     * mid-region wedge. Holiday state is date-derived and stable for
+     * a session; a holiday window opening mid-session still loads
+     * lazily on the next backdrop enable. */
+    if (holidayById(islandState.holiday)) {
+        if (gFgBackdropSlot.numSprites[2] == 0)
+            grLoadBmp(&gFgBackdropSlot, 2, "HOLIDAY.BMP");
+    }
+}
+
 static void fgBackdropPreloadBackgrndBmp(void)
 {
     if (gFgBackdropSlot.numSprites[0] > 0 &&

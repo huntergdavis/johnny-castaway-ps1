@@ -54,7 +54,11 @@ extern int ps1SoftTimeEnabled;
 
 #define FP_CLEAN_RECT_COUNT 3
 #define FP_OVERLAY_OT_LEN  8
-#define FP_OVERLAY_PRIM_BYTES 24576
+/* Shaved 24576 -> 8192 (2026-06-12) for static-image/libc headroom:
+ * a frame's overlay is one DR_TPAGE + one POLY_F4 + text SPRTs
+ * (~700 bytes typical); the overflow guard in render.c.inc truncates
+ * safely, so 8 KB keeps >10x margin. */
+#define FP_OVERLAY_PRIM_BYTES 8192
 /* Flip threshold is the midpoint of the palm-tree trunk (the visual
  * center of the island). The trunk sprite is drawn at (442, 148) and is
  * 24 px wide (BACKGRND.BMP frame 13), so the trunk midpoint is x=454.

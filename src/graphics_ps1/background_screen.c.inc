@@ -402,6 +402,15 @@ static int grScrNameIsIslandBackdrop(const char *resName)
 
 static int (*gGrScrCacheReadmitHook)(void) = NULL;
 
+/* Consecutive island screen loads whose SCR refill could not get a
+ * buffer — the boundary rebuild trigger reads this. */
+static int gGrScrRefillFailStreak = 0;
+
+int grScrCacheRefillFailStreak(void)
+{
+    return gGrScrRefillFailStreak;
+}
+
 void grSetScrCacheReadmitHook(int (*fn)(void))
 {
     gGrScrCacheReadmitHook = fn;
@@ -416,8 +425,10 @@ static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
         return 0;
 
     if (gFullScreenScrCache != NULL &&
-        gFullScreenScrCacheBytes >= bytes)
+        gFullScreenScrCacheBytes >= bytes) {
+        gGrScrRefillFailStreak = 0;
         return 1;
+    }
 
     if (gFullScreenScrCache != NULL) {
         memFree(MEM_REGION_CACHE, gFullScreenScrCache);
@@ -467,8 +478,12 @@ static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
         gFullScreenScrCache = (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
                                                    "gr-scr-cache");
     }
-    if (gFullScreenScrCache == NULL)
+    if (gFullScreenScrCache == NULL) {
+        if (gGrScrRefillFailStreak < 1000)
+            gGrScrRefillFailStreak++;
         return 0;
+    }
+    gGrScrRefillFailStreak = 0;
     /* Resident again: the slot no longer needs protection. */
     memCacheClearReservedHole();
     gFullScreenScrCacheBytes = bytes;
@@ -639,5 +654,9 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 enum {
     SCENE_EXPLORER_THUMB_W = 320,
     SCENE_EXPLORER_THUMB_H = 240,
-    SCENE_EXPLORER_THUMB_ROWS_PER_READ = 16,
+    /* 16 -> 8 rows per read (2026-06-12): halves the static chunk
+     * buffer (10 KB -> 5 KB) for libc headroom at the cost of twice
+     * the CD chunk calls per thumbnail — explorer-only, not on the
+     * scene-transition hot path. */
+    SCENE_EXPLORER_THUMB_ROWS_PER_READ = 8,
 };

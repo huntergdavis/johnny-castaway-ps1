@@ -143,6 +143,15 @@ typedef enum MemRegion {
  * scene's heavy setup pattern has more contiguous room for the 64 KB
  * clean-rect that previously failed with 107 KB free-but-fragmented.
  * Total region budget stays at 1440 KB so libc headroom is unchanged. */
+/* 2026-06-12: a BOOT=136 KB region for the walk clean buffer was
+ * attempted and REVERTED same day: the grown region (1,613,824 B)
+ * failed its memInit malloc outright — the arena cannot fit it even
+ * though the walkclean libc demand disappears 13 lines later, because
+ * memInit needs the full buffer contiguously BEFORE that. The walk
+ * clean buffer stays a libc malloc, but is now allocated ONCE at
+ * walkPilotInit (boot, deterministic bottom-of-heap placement) and
+ * never freed — the mid-soak lazy malloc/free churn was the actual
+ * fragmentation driver behind "walkCleanKB=130" in soak BSODs. */
 #define MEM_BOOT_BUDGET      (   0u * 1024u)
 #define MEM_CACHE_BUDGET     ( 672u * 1024u)
 #define MEM_TRANSIENT_BUDGET ( 768u * 1024u)
@@ -206,6 +215,10 @@ int memCacheRewindIfEmpty(void);
 
 /* R33-soak diagnostic: dump CACHE bump high-water + free-list summary. */
 void memDumpCacheStats(const char *prefix);
+
+/* Largest currently-satisfiable CACHE allocation (free list + bump
+ * tail). Cheap boundary-time fragmentation metric. */
+size_t memCacheLargestFreeBlock(void);
 
 /* Temporary corruption triage: validates the CACHE free-list at a caller
  * supplied phase label. Remove or compile-gate once the soak fault is fixed. */

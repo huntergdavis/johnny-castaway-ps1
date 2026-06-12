@@ -2221,6 +2221,7 @@ int main(int argc, char **argv)
      * never sit contiguously (boot relief ping-pong). */
     foregroundPilotReserveStableShape();
     ps1PrintfProbe("sound-init", NULL);
+
     if (bootNightValid)
         hostForcedNight = bootNight;
     if (bootHolidayValid) {
@@ -2246,6 +2247,15 @@ int main(int argc, char **argv)
         islandState.xPos = hostForcedIslandX;
         islandState.yPos = hostForcedIslandY;
     }
+
+    /* Band the retained island sheets next to the stable shape so
+     * they cannot wedge the dynamic CACHE area at first island setup.
+     * The auto-derived holiday id is decided lazily per-iteration
+     * (function-local session state) — on holiday dates the lazy slot-2
+     * load lands unbanded once, and the scheduled cache rebuild
+     * re-bands it with the live islandState.holiday. Manual/forced
+     * holiday modes are already set above and band here. */
+    foregroundPilotPreloadIslandSheets();
 
     /* PS1 is now FG2-scene-playback only. Host ADS/TTM/story engines stay
      * available for capture tooling, but they are no longer linked into the

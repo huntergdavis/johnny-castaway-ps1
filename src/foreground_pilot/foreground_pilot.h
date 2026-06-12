@@ -17,6 +17,10 @@ int foregroundPilotStageWalkTick(void);
  * CACHE band. Call once right after memInit; no-op when the staged
  * transition path is disabled. */
 void foregroundPilotReserveStableShape(void);
+/* Boot-time load of the retained island sheets (BACKGRND + holiday)
+ * directly after the stable-shape reservation, so they extend the
+ * contiguous bottom band instead of wedging the dynamic CACHE area. */
+void foregroundPilotPreloadIslandSheets(void);
 void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);

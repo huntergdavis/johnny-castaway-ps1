@@ -483,6 +483,10 @@ static uint8 fgSceneIdForName(const char *sceneName);
 #include "foreground_pilot/runtime_memory.c.inc"
 #include "foreground_pilot/backdrop_clean.c.inc"
 #include "foreground_pilot/stream_runtime.c.inc"
+
+/* Defined below (after the proof-toggle machinery it reuses); called
+ * from the scene-boundary path above it. */
+static void fgMaybeScheduledCacheRebuild(void);
 #line 4277 "/project/src/foreground_pilot.c"
 static int fgCleanRectsNeedCacheForProof(const char *sceneName)
 {
@@ -1359,6 +1363,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         extern void lruEvictAllUnpinned(void);
         lruEvictAllUnpinned();
     }
+    fgMaybeScheduledCacheRebuild();
     {
         int rewound = memCacheRewindIfEmpty();
         if (!rewound) {
@@ -2260,6 +2265,86 @@ static int fgScrCacheReadmitRelief(void)
     return freed;
 }
 
+/* Scheduled CACHE rebuild — the deterministic answer to layout
+ * "flutter". Over a long soak the region drifts: the SCR cache loses
+ * its slot, refills fail, and a later heavy scene meets a region
+ * whose largest hole is below its needs (the 232/470-class BSODs).
+ * Instead of reactive mid-allocation relief, detect the drift at a
+ * SCENE BOUNDARY (cheap free-list metric + refill-fail streak) and
+ * rebuild: tear down ALL optimization-only retention via the
+ * already-validated proof-off paths, let memCacheRewindIfEmpty do an
+ * O(1) defrag, then re-establish the canonical stable shape and
+ * banded sheets. Cost: one slow transition (~window+sheet re-reads);
+ * a cooldown stops repeat fires if a rebuild cannot help. */
+static int gFgRebuildCooldown = 0;
+
+static void fgMaybeScheduledCacheRebuild(void)
+{
+    size_t largest;
+    int streak;
+    int scrAbsent;
+
+    if (!gFgLoadingWaveProofEnabled || !memIsReady())
+        return;
+    if (gFgRebuildCooldown > 0) {
+        gFgRebuildCooldown--;
+        return;
+    }
+    largest = memCacheLargestFreeBlock();
+    streak = grScrCacheRefillFailStreak();
+    scrAbsent = (grScrCacheResidentBytes() == 0);
+    if (!((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
+          largest < 104u * 1024u))
+        return;
+
+    {
+        extern int printf(const char *, ...);
+        printf("JCMEM rebuild-begin largest=%lu streak=%d\n",
+               (unsigned long)largest, streak);
+    }
+
+    /* Tear down through the validated proof-off paths: hooks off,
+     * stage/overlay invalidated, slab pool flushed (retain off), SCR
+     * freed + reservation cleared (cache disabled). */
+    foregroundPilotSetLoadingWaveProof(0);
+    fgReleaseStreamBuffersHard();
+    fgBackdropRelease(0);          /* stops wave thread, drops sheets */
+    walkPilotReliefFreePsbSlab();
+    {
+        extern void lruEvictAllUnpinned(void);
+        lruEvictAllUnpinned();
+    }
+    {
+        int rewound = memCacheRewindIfEmpty();
+        extern int printf(const char *, ...);
+        printf("JCMEM rebuild-done rewound=%d largest=%lu\n",
+               rewound, (unsigned long)memCacheLargestFreeBlock());
+    }
+
+    /* Re-establish the canonical layout on the (ideally pristine)
+     * region: hooks back on, stable band, banded sheets. */
+    foregroundPilotSetLoadingWaveProof(1);
+    foregroundPilotReserveStableShape();
+    fgBackdropPreloadBackgrndBmp();
+    fgBackdropPreloadHolidaySheet();
+    gFgRebuildCooldown = 20;
+}
+
+void foregroundPilotPreloadIslandSheets(void)
+{
+    /* Boot-time banding of the two retained island sheets. Loaded
+     * lazily (first island setup) they land mid-region and wedge the
+     * dynamic area — the soak heap maps showed BACKGRND (94K) and
+     * HOLIDAY (26K) capping every hole below the 153600 the SCR cache
+     * needs. Loaded here, right after foregroundPilotReserveStableShape,
+     * they extend the contiguous bottom band and the dynamic area
+     * stays one span. */
+    if (!gFgLoadingWaveProofEnabled || !memIsReady())
+        return;
+    fgBackdropPreloadBackgrndBmp();
+    fgBackdropPreloadHolidaySheet();
+}
+
 void foregroundPilotSetLoadingWaveProof(int enabled)
 {
     gFgLoadingWaveProofEnabled = enabled ? 1 : 0;
@@ -2468,6 +2553,10 @@ void foregroundPilotSetSceneDrawOffset(int x, int y)
 void foregroundPilotSetHeapProbe(int enabled)
 {
     (void)enabled;
+}
+
+void foregroundPilotPreloadIslandSheets(void)
+{
 }
 
 void foregroundPilotSetLoadingWaveProof(int enabled)

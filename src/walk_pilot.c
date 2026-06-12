@@ -109,6 +109,7 @@ static struct TTtmThread gWalkThread;
 #endif
 
 static uint16 *gWalkCleanBuf  = NULL;
+static int gWalkCleanInBootRegion = 0;
 #ifdef PS1_BUILD
 static uint8   gWalkCleanInSpu = 0;
 #endif
@@ -168,7 +169,10 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
 
 #ifdef PS1_BUILD
     if (walkPilotCleanSpuAvailable()) {
-        if (gWalkCleanBuf != NULL) {
+        /* Keep the BOOT-region buffer resident even when SPU capture
+         * serves (it cannot be returned to BOOT anyway); only a
+         * legacy libc buffer is worth releasing. */
+        if (gWalkCleanBuf != NULL && !gWalkCleanInBootRegion) {
             free(gWalkCleanBuf);
             gWalkCleanBuf = NULL;
         }
@@ -214,7 +218,7 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
 
 void walkPilotReleaseCleanWalkArea(void)
 {
-    if (gWalkCleanBuf) {
+    if (gWalkCleanBuf && !gWalkCleanInBootRegion) {
         free(gWalkCleanBuf);
         gWalkCleanBuf = NULL;
     }
@@ -619,16 +623,22 @@ int walkPilotInit(void)
 {
     int ok = 1;
 
-#ifdef PS1_BUILD
-    if (gWalkSpuStageEnabled) {
-        gWalkCleanValid = 0;
-        return ok;
-    }
-#endif
-
+    /* The clean buffer is allocated ONCE here, from the BOOT region,
+     * and never freed (BOOT freezes after boot; memFree(BOOT) is a
+     * no-op). It was previously a lazy libc malloc that the SPU-stage
+     * path skipped at init and re-created mid-soak whenever SPU
+     * capture was unavailable — the churning 130 KB libc resident
+     * ("walkCleanKB=130") that starved the CACHE libc-fallback path
+     * in every deep-soak BSOD. Allocating up front, before
+     * memFreezeBoot and graphicsInit, makes its placement
+     * deterministic and returns ~134 KB of contiguous libc headroom
+     * to the spike paths. */
     if (gWalkCleanBuf == NULL) {
         gWalkCleanBuf = (uint16 *)malloc(
             (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
+        gWalkCleanInBootRegion = 1;  /* persistent: allocated once at
+                                      * boot, never freed (see header
+                                      * comment at the declaration) */
         if (gWalkCleanBuf == NULL) {
             extern int printf(const char *, ...);
             printf("JCWALK: walkPilotInit clean-buf alloc failed\n");
@@ -639,6 +649,13 @@ int walkPilotInit(void)
          * before copying, so an early-walk attempt is a safe no-op. */
         gWalkCleanValid = 0;
     }
+
+#ifdef PS1_BUILD
+    if (gWalkSpuStageEnabled) {
+        gWalkCleanValid = 0;
+        return ok;
+    }
+#endif
 
     /* JOHNWALK.PSB is not pre-loaded into main RAM. Under spu-stage it is
      * cold-cached in SPU at boot and copied back only for a walk; without

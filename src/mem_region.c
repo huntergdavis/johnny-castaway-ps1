@@ -1142,6 +1142,27 @@ static size_t cacheUsedInternal(void)
 
 /* R33-soak diagnostic: dump CACHE bump high-water and free-list summary
  * to TTY. Helps identify CACHE residency not covered by LRU array walks. */
+/* Largest currently-satisfiable CACHE block: max of the free-list
+ * blocks and the bump tail. O(free-list length); used by the boundary
+ * rebuild trigger, where the list is short. */
+size_t memCacheLargestFreeBlock(void)
+{
+    size_t largest;
+    CacheFreeBlock *cur;
+    if (!g_memInited || g_cacheBumpTop == NULL)
+        return 0;
+    largest = (size_t)(g_cacheBase + MEM_CACHE_BUDGET - g_cacheBumpTop);
+    cur = g_cacheFreeList;
+    while (cur != NULL) {
+        unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
+        unsigned int sz = cacheReadSize_(blockBase);
+        if ((size_t)sz > largest)
+            largest = (size_t)sz;
+        cur = cur->next;
+    }
+    return largest;
+}
+
 void memDumpCacheStats(const char *prefix)
 {
     if (!g_memInited) return;
@@ -1403,6 +1424,18 @@ void memVerifyBootBudget(void)
      * budget and would silently halt (graphics not yet up → text
      * panel + infinite loop, no JCBSOD telemetry). Skip cleanly. */
     if (MEM_BOOT_BUDGET == 0u) {
+        return;
+    }
+    /* 2026-06-12: the only BOOT resident is the walk clean buffer
+     * (304x220x2 = 133,760 B, walk_pilot.c WALK_CLEAN_W/H). The
+     * pack-metrics sum below predates the frame/window CACHE
+     * migration and would spuriously halt against any realistic
+     * budget; verify the actual resident instead. */
+    {
+        const size_t walkCleanBytes = 304u * 220u * 2u;
+        if (walkCleanBytes + 1024u > MEM_BOOT_BUDGET)
+            memHaltFmt("BOOT", "verify-budget", walkCleanBytes + 1024u,
+                       MEM_BOOT_BUDGET);
         return;
     }
     /* Sum the worst-case BOOT-region footprints across all packs.

@@ -4,6 +4,7 @@
  *  Called in a tight VSync loop while paused.  Reads pad, updates state,
  *  draws text, uploads background.  Returns 1 to stay paused, 0 to resume.
  * ------------------------------------------------------------------------- */
+__attribute__((optimize("Os")))
 int pauseMenuUpdate(void)
 {
     int drawDim;
