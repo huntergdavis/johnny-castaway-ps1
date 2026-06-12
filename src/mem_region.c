@@ -967,32 +967,50 @@ static void cacheCoalesce_(void)
     }
 }
 
-static void *cacheAllocInternal(size_t size, const char *tag)
-{
-    /* Lazy init on first use. */
-    if (g_cacheBumpTop == NULL) {
-        cacheInit_();
-    }
-    /* Total block size includes the 4-byte header. Round up to align. */
-    size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
-                        & ~((size_t)MEM_REGION_ALIGN - 1);
-    if (blockSize < CACHE_MIN_BLOCK_BYTES)
-        blockSize = CACHE_MIN_BLOCK_BYTES;
-    if (g_cacheBumpTop < g_cacheBase ||
-        g_cacheBumpTop > g_cacheBase + MEM_CACHE_BUDGET)
-        cacheCorrupt_("CACHE bump corrupt");
+/* Reserved CACHE hole. When relief drops the SCR cache, its freed
+ * range is reserved: ordinary allocations skip overlapping free blocks
+ * on the first pass (and prefer the bump tail), consuming the hole
+ * only when nothing else fits. Re-admission then finds the slot
+ * intact instead of a floor or parked rect squatting it — the
+ * depth-drift that left islands at ~100 vb per hit after the first
+ * deep relief. Costs no relief capacity: under genuine pressure the
+ * second pass uses the hole exactly as before. */
+static unsigned char *g_cacheReservedBase = NULL;
+static size_t g_cacheReservedBytes = 0;
 
-    /* Try free-list first (first-fit, with splitting). */
+void memCacheReserveHole(void *base, size_t bytes)
+{
+    g_cacheReservedBase = (unsigned char *)base;
+    g_cacheReservedBytes = bytes;
+}
+
+void memCacheClearReservedHole(void)
+{
+    g_cacheReservedBase = NULL;
+    g_cacheReservedBytes = 0;
+}
+
+static void *cacheFreeListAlloc_(size_t blockSize, int skipReserved,
+                                 const char *tag)
+{
     CacheFreeBlock **prev = &g_cacheFreeList;
     CacheFreeBlock *cur = g_cacheFreeList;
     size_t guard = 0;
-    cacheValidateFreeList_("CACHE alloc free-list corrupt");
     while (cur != NULL) {
         unsigned char *blockBase = (unsigned char *)cur - CACHE_HEADER_BYTES;
         g_cacheDiagPrev = NULL;
         g_cacheDiagNode = cur;
         unsigned int  freeSize   = cacheReadSizeChecked_(blockBase,
                                                          "CACHE alloc node");
+        if (skipReserved && g_cacheReservedBytes != 0 &&
+            blockBase < g_cacheReservedBase + g_cacheReservedBytes &&
+            blockBase + freeSize > g_cacheReservedBase) {
+            prev = &cur->next;
+            cur  = cur->next;
+            if (++guard > CACHE_MAX_FREE_WALK)
+                cacheCorrupt_("CACHE free-list cycle");
+            continue;
+        }
         if (freeSize >= blockSize) {
             CacheFreeBlock *next = cur->next;
             size_t allocatedBlockSize;
@@ -1023,20 +1041,51 @@ static void *cacheAllocInternal(size_t size, const char *tag)
         if (++guard > CACHE_MAX_FREE_WALK)
             cacheCorrupt_("CACHE free-list cycle");
     }
+    return NULL;
+}
 
-    /* No free-list match; bump forward. */
+static void *cacheAllocInternal(size_t size, const char *tag)
+{
+    /* Lazy init on first use. */
+    if (g_cacheBumpTop == NULL) {
+        cacheInit_();
+    }
+    /* Total block size includes the 4-byte header. Round up to align. */
+    size_t blockSize = (size + CACHE_HEADER_BYTES + MEM_REGION_ALIGN - 1)
+                        & ~((size_t)MEM_REGION_ALIGN - 1);
+    if (blockSize < CACHE_MIN_BLOCK_BYTES)
+        blockSize = CACHE_MIN_BLOCK_BYTES;
+    if (g_cacheBumpTop < g_cacheBase ||
+        g_cacheBumpTop > g_cacheBase + MEM_CACHE_BUDGET)
+        cacheCorrupt_("CACHE bump corrupt");
+
+    /* Free-list first (first-fit with splitting), skipping the
+     * reserved hole; then the bump tail; the reserved hole is the
+     * last resort so it survives ordinary churn. */
+    cacheValidateFreeList_("CACHE alloc free-list corrupt");
+    {
+        void *p = cacheFreeListAlloc_(blockSize, 1, tag);
+        if (p != NULL)
+            return p;
+    }
+
+    /* No unreserved free-list match; bump forward. */
     const size_t used = (size_t)(g_cacheBumpTop - g_cacheBase);
     const size_t remaining = MEM_CACHE_BUDGET - used;
-    if (blockSize > remaining) {
-        /* CACHE exhausted. Caller invokes LRU evictor + retries. */
-        return NULL;
+    if (blockSize <= remaining) {
+        unsigned char *blockBase = g_cacheBumpTop;
+        cacheWriteSize_(blockBase, (unsigned int)blockSize);
+        g_cacheBumpTop += blockSize;
+        g_cacheUsed += blockSize;
+        cacheDiagRememberAlloc_(blockBase + CACHE_HEADER_BYTES, blockSize, tag);
+        return (void *)(blockBase + CACHE_HEADER_BYTES);
     }
-    unsigned char *blockBase = g_cacheBumpTop;
-    cacheWriteSize_(blockBase, (unsigned int)blockSize);
-    g_cacheBumpTop += blockSize;
-    g_cacheUsed += blockSize;
-    cacheDiagRememberAlloc_(blockBase + CACHE_HEADER_BYTES, blockSize, tag);
-    return (void *)(blockBase + CACHE_HEADER_BYTES);
+
+    /* Pressure: allow the reserved hole rather than fail. */
+    if (g_cacheReservedBytes != 0)
+        return cacheFreeListAlloc_(blockSize, 0, tag);
+    /* CACHE exhausted. Caller invokes LRU evictor + retries. */
+    return NULL;
 }
 
 static void cacheFreeInternal(void *ptr)

@@ -279,6 +279,10 @@ int grFlushCleanBgRectSlabsAll(void);
  * cover the failing request. */
 int grLargestPooledCleanRectSlabBytes(int includeFloor);
 int grScrCacheResidentBytes(void);
+/* SCR re-admission escalation: owner-layer hook that drops re-readable
+ * island sheets (BACKGRND/HOLIDAY) so the 153600 refill can assemble a
+ * hole. Returns nonzero if anything was freed. */
+void grSetScrCacheReadmitHook(int (*fn)(void));
 uint16 *grBorrowCleanRectSlab(unsigned long bytes, unsigned long *outCap);
 void grReturnCleanRectSlab(uint16 *ptr, unsigned long capacityBytes);
 void grPreparkCleanRectSlabs(int count, unsigned long bytes);

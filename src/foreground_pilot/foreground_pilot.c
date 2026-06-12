@@ -2232,10 +2232,48 @@ static int fgCachePressureRelief(unsigned long requestBytes)
     return freed;
 }
 
+/* SCR re-admission escalation (grSetScrCacheReadmitHook): drop the
+ * retained island sheets — BACKGRND slot 0 (94K) and HOLIDAY slot 2
+ * (26K) — so the 153600 SCR refill can assemble a contiguous hole
+ * around their wedges. Only called from the island screen-load path
+ * (boundary window, before this scene's backdrop phase), but the wave
+ * thread animates slot-0 sprites THROUGH boundaries, so it must stop
+ * first or it animates freed memory (the W5 lesson in reverse). The
+ * next backdrop phase reloads the sheets (~46+13 sectors) and
+ * restarts the waves; cost is one slow backdrop + frozen waves for
+ * the remainder of this one setup. */
+static int fgScrCacheReadmitRelief(void)
+{
+    int freed = 0;
+    if (gFgBackdropSlot.numSprites[0]) {
+        gFgBackdropThread.isRunning = 0;
+        islandClearWaveCache();
+        grReleaseBmp(&gFgBackdropSlot, 0);
+        gFgBackdropSlot.loadedBmpNames[0] = NULL;
+        freed = 1;
+    }
+    if (gFgBackdropSlot.numSprites[2]) {
+        grReleaseBmp(&gFgBackdropSlot, 2);
+        gFgBackdropSlot.loadedBmpNames[2] = NULL;
+        freed = 1;
+    }
+    return freed;
+}
+
 void foregroundPilotSetLoadingWaveProof(int enabled)
 {
     gFgLoadingWaveProofEnabled = enabled ? 1 : 0;
     grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled);
+    /* fgScrCacheReadmitRelief is deliberately NOT registered: in the
+     * trans-cap-300 soak it fired on a marginal refill at [170] and
+     * then thrashed — every island scene re-read BOTH the SCR (87 vb)
+     * and the just-reloaded BACKGRND sheet it kept re-dropping
+     * (49 vb, bytes=246776 rows to [299]). With the pool retention
+     * cap the SCR slot's hole reforms by itself, so the wedge drop is
+     * never needed in the steady state; revisit only with a fire-once
+     * + back-off design if a future ledger change reintroduces
+     * permanent SCR displacement. */
+    grSetScrCacheReadmitHook(NULL);
     /* Retain CACHE-routed clean-rect slabs across boundaries while the
      * proof is on: the proof's retained blocks block the boundary
      * rewind anyway, and per-scene free/realloc of ~98 KB rects is the

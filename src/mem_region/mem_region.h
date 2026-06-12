@@ -231,6 +231,13 @@ void *memAlloc(MemRegion region, size_t size, const char *tag);
  * never evict higher-value retention to make room for themselves. */
 void *memTryAlloc(MemRegion region, size_t size, const char *tag);
 
+/* Reserved CACHE hole (single range): ordinary allocations avoid it
+ * until nothing else fits; the protected resident (SCR cache) reclaims
+ * it on re-admission. Reserve on relief-drop, clear on re-admission
+ * or feature-disable. */
+void memCacheReserveHole(void *base, size_t bytes);
+void memCacheClearReservedHole(void);
+
 /* Free a previously-allocated pointer.
  *   BOOT:      no-op (allocations are permanent); halts post-freeze.
  *   CACHE:     real release; used by LRU evictor.

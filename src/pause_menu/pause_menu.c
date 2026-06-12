@@ -143,10 +143,12 @@ static int pendingSceneSet = 0;
 static int pauseMutedSound = 0;
 
 /* OT + primitive scratch. Sized for ~30 lines × ~32 chars ≈ 960
- * SPRTs × 20 bytes each = 19200 bytes. Round up to 24 KB. */
+ * SPRTs × 20 bytes each = 19200 bytes. Sized 20 KB (1.25 KB margin);
+ * was 24 KB until 2026-06-11 — reclaimed for static-image ceiling
+ * headroom (libc heap cliff guard in build-ps1.sh). */
 #define PAUSE_OT_LEN 8
 static uint32 pauseOt[PAUSE_OT_LEN];
-static uint8  pausePrimBuf[24576];
+static uint8  pausePrimBuf[20480];
 
 /* Cached heap-free probe value, refreshed once per pause-show. */
 static unsigned long pmCachedHeapKB = 0;

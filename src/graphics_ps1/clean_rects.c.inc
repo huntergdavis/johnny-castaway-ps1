@@ -34,6 +34,10 @@ int grReliefFreeScrCache(void)
         }
 #endif
         memFree(MEM_REGION_CACHE, gFullScreenScrCache);
+        /* Keep the slot findable for re-admission: ordinary allocs
+         * skip this range until nothing else fits. */
+        memCacheReserveHole(gFullScreenScrCache,
+                            (size_t)gFullScreenScrCacheBytes);
         gFullScreenScrCache = NULL;
     }
     gFullScreenScrCacheBytes = 0;
@@ -108,6 +112,12 @@ static int gGrCleanRectSlabRetain = 0;
 
 #define GR_CLEAN_SLAB_FLOOR_BYTES 98304u
 
+/* Pool retention budget: two boot floors (2 x 98308 block bytes) plus
+ * ~32 KB of small-slab reuse churn. Anything beyond this displaces
+ * dearer CACHE residents (the SCR cache slot) — see the cap logic in
+ * grCleanRectSlabPoolPark. */
+#define GR_CLEAN_SLAB_POOL_CAP_BYTES (2u * 98308u + 32768u)
+
 static int grCleanRectSlabPoolFlushEx(int includeFloor, int dryRun)
 {
     /* The two boot pre-parked 96 KB floor slabs are stable-shape
@@ -154,18 +164,52 @@ int grLargestPooledCleanRectSlabBytes(int includeFloor)
 
 static int grCleanRectSlabPoolPark(uint16 *pixels, uint32 capacityBytes)
 {
-    /* Priority parking: when all 8 slots are taken, evict the SMALLEST
-     * pooled slab if the incoming one is bigger, so a returning floor
-     * slab is never silently freed for lack of a slot while pebbles
-     * occupy the pool. (Hardening — soak heap maps showed the pool is
-     * rarely full in practice; the 400c/d/e scene-105 cascade was
-     * ledger overflow + relief collateral, fixed in the
-     * fgCachePressureRelief tier-yield checks and the memTryAlloc SCR
-     * refill.) */
+    /* Pool retention cap: the CACHE ledger affords the pool exactly
+     * the two boot floors plus small-slab churn. Without the cap, a
+     * heavy scene's THIRD floor-class rect parks at scene end, pool
+     * retention grows ~96K over budget, and that growth permanently
+     * displaces the SCR cache from its slot — the depth degradation
+     * of 400h ([155]+, islands ~100 vb) and the SCR-absent
+     * fragmentation BSOD of the all-day soak at scene 470. Declining
+     * the over-cap park frees the slab, the SCR-sized hole reforms,
+     * and the next island load re-admits the cache into FREE space —
+     * no evictions, no floor<->SCR ping-pong (the escalation that
+     * relief-stormed scrfix3 at scene 232).
+     *
+     * Priority parking below the cap: when all 8 slots are taken,
+     * evict the SMALLEST pooled slab if the incoming one is bigger,
+     * so a returning floor is never lost while pebbles hold slots. */
     int i;
     int smallest = -1;
+    uint32 pooledBytes = 0;
     if (pixels == NULL || capacityBytes == 0)
         return 0;
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (gGrCleanRectSlabPool[i].ptr != NULL)
+            pooledBytes += gGrCleanRectSlabPool[i].capacityBytes;
+    }
+    while (pooledBytes + capacityBytes > GR_CLEAN_SLAB_POOL_CAP_BYTES) {
+        smallest = -1;
+        for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+            if (gGrCleanRectSlabPool[i].ptr == NULL)
+                continue;
+            if (smallest < 0 ||
+                gGrCleanRectSlabPool[i].capacityBytes <
+                    gGrCleanRectSlabPool[smallest].capacityBytes)
+                smallest = i;
+        }
+        /* Evict pooled pebbles for a bigger incoming slab; if the
+         * smallest pooled slab is already >= the incoming one, the
+         * incoming slab is the least valuable — decline the park. */
+        if (smallest < 0 ||
+            gGrCleanRectSlabPool[smallest].capacityBytes >= capacityBytes)
+            return 0;
+        pooledBytes -= gGrCleanRectSlabPool[smallest].capacityBytes;
+        memFree(MEM_REGION_CACHE, gGrCleanRectSlabPool[smallest].ptr);
+        gGrCleanRectSlabPool[smallest].ptr = NULL;
+        gGrCleanRectSlabPool[smallest].capacityBytes = 0;
+    }
+    smallest = -1;
     for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
         if (gGrCleanRectSlabPool[i].ptr == NULL) {
             gGrCleanRectSlabPool[i].ptr = pixels;

@@ -400,6 +400,13 @@ static int grScrNameIsIslandBackdrop(const char *resName)
             strncmp(resName, "NIGHT", 5) == 0);
 }
 
+static int (*gGrScrCacheReadmitHook)(void) = NULL;
+
+void grSetScrCacheReadmitHook(int (*fn)(void))
+{
+    gGrScrCacheReadmitHook = fn;
+}
+
 static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
 {
     if (!gFullScreenScrCacheEnabled ||
@@ -433,6 +440,9 @@ static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
                                                "gr-scr-cache");
     if (gFullScreenScrCache == NULL &&
         grFlushCleanBgRectSlabs() > 0) {
+        /* (The reserved relief hole is allowed on the allocator's
+         * pressure pass, so this retry can land in the protected
+         * slot once the squatting parked slabs are flushed.) */
         /* Re-admission may take strictly CHEAPER retention: sub-floor
          * parked slabs are re-creatable churn, while a permanently
          * absent SCR cache costs ~90 vb on every island hit (the
@@ -442,8 +452,25 @@ static int grEnsureFullScreenScrCache(const char *resName, uint32 bytes)
         gFullScreenScrCache = (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
                                                    "gr-scr-cache");
     }
+    /* (Floor-flushing escalation removed: it caused a floor<->SCR
+     * ping-pong relief storm — 70x req=98304 — that fragmented the
+     * region and BSOD'd scrfix3 at scene 232. The pool retention cap
+     * in grCleanRectSlabPoolPark now keeps the SCR slot's hole free
+     * instead, so re-admission lands without evicting anything.) */
+    /* Escalation 2: ask the owner layer to drop the re-readable island
+     * sheets (BACKGRND 94K + HOLIDAY 26K) wedged beside the slot. Costs
+     * one sheet re-read in the next backdrop phase. Registered only
+     * while the proof is on. */
+    if (gFullScreenScrCache == NULL &&
+        gGrScrCacheReadmitHook != NULL &&
+        gGrScrCacheReadmitHook()) {
+        gFullScreenScrCache = (uint8 *)memTryAlloc(MEM_REGION_CACHE, bytes,
+                                                   "gr-scr-cache");
+    }
     if (gFullScreenScrCache == NULL)
         return 0;
+    /* Resident again: the slot no longer needs protection. */
+    memCacheClearReservedHole();
     gFullScreenScrCacheBytes = bytes;
     grCopyFullScreenScrName(gFullScreenScrCacheName,
                             sizeof(gFullScreenScrCacheName),
