@@ -2293,8 +2293,14 @@ static void fgMaybeScheduledCacheRebuild(void)
     largest = memCacheLargestFreeBlock();
     streak = grScrCacheRefillFailStreak();
     scrAbsent = (grScrCacheResidentBytes() == 0);
-    if (!((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
-          largest < 104u * 1024u))
+    /* Fire only on DEMONSTRATED dysfunction: the SCR cache is absent
+     * and its refills keep failing — the layout is provably unable to
+     * host it. A bare largest-free threshold is wrong here: in the
+     * healthy fully-resident steady state the largest hole is ~18K by
+     * design (everything retained), and a fullness-based trigger fired
+     * every cooldown expiry (4 spurious rebuilds in the first 75
+     * scenes of trans-4pass-300). */
+    if (!(scrAbsent && streak >= 3 && largest < 160u * 1024u))
         return;
 
     {
