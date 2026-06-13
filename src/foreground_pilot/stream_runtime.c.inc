@@ -1621,7 +1621,22 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
             segmentBytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT_BYTES;
             segment2Start = FG_WALKSTUF1_LOW_SETUP_SEGMENT2_START;
             segment2Bytes = FG_WALKSTUF1_LOW_SETUP_SEGMENT2_BYTES;
-            gFgCleanRectMaxBytes = 48UL * 1024UL;
+            /* 48K -> 96K (2026-06-13). walkstuf1-low's dirty region
+             * (wave band unioned with the low-tide foreground) is
+             * ~336 KB; at a 48K per-rect cap it splits into exactly 8
+             * strips at most positions and 9 at the worst island
+             * position, overflowing the 8-slot GR_MAX_CLEAN_RECTS array
+             * — which grSaveCleanBgRectsSplit reports as the (misnamed)
+             * "TRANSIENT budget shortfall" BSOD that killed the
+             * scene-612 all-day soak. 96K matches the cap every other
+             * heavy scene already uses; the census proved 96K-cap
+             * scenes place ~310 KB dirty regions in 4 strips, and the
+             * ~336 KB allocation itself fits (11/11 forced walkstuf1-low
+             * draws allocated cleanly at 8 strips — the strip count was
+             * the limit, never the bytes). At 96K the region is ~4
+             * strips: margin of 4 below the slot cap even at the worst
+             * island position. */
+            gFgCleanRectMaxBytes = 96UL * 1024UL;
         } else {
             segmentStart = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_START;
             segmentBytes = FG_WALKSTUF1_HIGH_SETUP_SEGMENT_BYTES;
