@@ -295,7 +295,12 @@ static long runSoak(unsigned seed, long scenes){
     memset(g_cuHist,0,sizeof(g_cuHist));
     g_band = memAlloc(MEM_REGION_CACHE, BAND_PINNED, "band");
     reestablish(1);
-    xs = seed?seed:1u;
+    /* splitmix32 scramble so sequential per-soak seeds (seed0+i) produce
+     * well-separated, decorrelated xorshift streams across billions of
+     * walks rather than near-identical adjacent sequences. */
+    { unsigned z = (seed?seed:1u) + 0x9E3779B9u;
+      z = (z ^ (z>>16)) * 0x85EBCA6Bu; z = (z ^ (z>>13)) * 0xC2B2AE35u; z ^= z>>16;
+      xs = z?z:1u; }
     long bsod=-1;
     if (setjmp(jb)){ return g_scenes; }
     for (long s=0;s<scenes;s++){
