@@ -67,7 +67,21 @@ void grSetFullScreenScrCacheEnabled(int enabled)
  *      screen (fishing1: wave strip + Johnny area ≈ 181 KB instead of 614
  *      KB for all four full-size clean tiles). */
 
-#define GR_MAX_CLEAN_RECTS 8
+/* 8 -> 16 (2026-06-13). The clean-rect dirty region of heavy scenes
+ * splits into strips of <= gFgCleanRectMaxBytes; at 8 slots,
+ * walkstuf1-low (336K @ 48K cap = 8 strips, 9 at worst position)
+ * slot-exhausted and BSOD'd the scene-612 soak, and the enumeration
+ * flags visitor3 (64K cap, ~6 strips, margin 2) and walkstuf1-high as
+ * the same latent class. The census proved these ~336K regions FIT
+ * memory (they allocate cleanly); only the strip COUNT was the limit.
+ * 16 slots covers every scene's worst-case strip count — including
+ * unenumerated ones — with small, fragmentation-friendly strips,
+ * eliminating the class rather than raising caps per-scene (bigger
+ * per-rect chunks are HARDER to place in a fragmented region). Cost:
+ * ~224 bytes BSS (gGrCleanRects + the slab pool, the only arrays
+ * sized to this; the pool is byte-capped so slot count adds no
+ * retention). */
+#define GR_MAX_CLEAN_RECTS 16
 
 struct TGrCleanRect {
     sint16 x, y;

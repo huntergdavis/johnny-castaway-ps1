@@ -2159,10 +2159,19 @@ void foregroundPilotSetHeapProbe(int enabled)
  * when neither the runtime nor the next-scene stage points into it.
  * Each is re-created on demand afterwards — the cost of a relief event
  * is one transition's worth of churn, not correctness. */
+/* Relief firings since the last scheduled rebuild. The rebuild reads
+ * and clears it: repeated relief is the general CACHE-fragmentation
+ * dysfunction signal that the SCR-only trigger missed (the scene-945
+ * soak BSOD'd on a 64K alloc with 88K free-but-fragmented while relief
+ * had fired ~24x and no rebuild ever triggered). */
+static int gFgReliefSinceRebuild = 0;
+
 static int fgCachePressureRelief(unsigned long requestBytes)
 {
     int freed = 0;
     int largestSlab;
+
+    gFgReliefSinceRebuild++;
 
     /* Tiered: stop as soon as the request is guaranteed satisfiable —
      * AND fire a tier only when its yield can cover the request by
@@ -2293,14 +2302,21 @@ static void fgMaybeScheduledCacheRebuild(void)
     largest = memCacheLargestFreeBlock();
     streak = grScrCacheRefillFailStreak();
     scrAbsent = (grScrCacheResidentBytes() == 0);
-    /* Fire only on DEMONSTRATED dysfunction: the SCR cache is absent
-     * and its refills keep failing — the layout is provably unable to
-     * host it. A bare largest-free threshold is wrong here: in the
-     * healthy fully-resident steady state the largest hole is ~18K by
-     * design (everything retained), and a fullness-based trigger fired
-     * every cooldown expiry (4 spurious rebuilds in the first 75
-     * scenes of trans-4pass-300). */
-    if (!(scrAbsent && streak >= 3 && largest < 160u * 1024u))
+    /* Two dysfunction triggers (NOT fullness — the healthy fully-
+     * resident steady state has a ~18K largest hole by design, so a
+     * bare largest-free threshold false-fires every cooldown):
+     *  (a) SCR cache absent and its refills keep failing — the layout
+     *      cannot re-host it; OR
+     *  (b) the relief hook has fired since the last rebuild AND the
+     *      largest contiguous hole is now below a floor-class alloc
+     *      (98304). Relief firing is real pressure; combined with a
+     *      sub-floor largest hole it means fragmentation is building
+     *      toward the 64K-alloc-fails-with-free-but-fragmented wall
+     *      that killed the scene-945 soak. The O(1) rewind defrag
+     *      resets the region to pristine before that wall is reached.
+     * Either way the 20-scene cooldown bounds rebuild frequency. */
+    if (!((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
+          (gFgReliefSinceRebuild >= 2 && largest < 98304u)))
         return;
 
     {
@@ -2333,6 +2349,7 @@ static void fgMaybeScheduledCacheRebuild(void)
     foregroundPilotReserveStableShape();
     fgBackdropPreloadBackgrndBmp();
     fgBackdropPreloadHolidaySheet();
+    gFgReliefSinceRebuild = 0;
     gFgRebuildCooldown = 20;
 }
 
