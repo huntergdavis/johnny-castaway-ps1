@@ -93,3 +93,5 @@ site/.jekyll-metadata
 site/vendor/
 site/Gemfile.lock
 site/.bundle/
+tests/mem_region_fuzz
+tests/mem_region_frag_regression
