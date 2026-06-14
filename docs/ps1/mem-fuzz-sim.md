@@ -68,6 +68,39 @@ exactly today; the residual transient values (596008, 612392, 634920,
 677932) are combined relief + per-scene clean-rect-residency states that
 need the scene-play engine (below).
 
+
+## Scene-sequence simulator (tests/mem_sim.c)
+
+Plays a stream of scenes through the real allocator with the faithful
+retained band, tiered relief, scheduled rebuild, and clean-rect strip
+routing (TRANSIENT-first, CACHE-spill, GR_MAX_CLEAN_RECTS slot cap).
+Two configs: `--historical` (8 slots, 48K walkstuf cap, no periodic
+rebuild = the pre-fix binary) and the default fixed config (16 slots,
+96K cap, periodic rebuild ceiling).
+
+Validation vs the real allday4 log (945 scenes):
+
+| Metric | Real allday4 | Simulator (fixed) |
+|---|---|---|
+| cache_used == 667688 (steady) | 914/945 | ~911/945 |
+| cache_used low state (relief) | ~31 | ~30 |
+| historical config outcome | BSOD@945 | BSODs at depth (40-540 range), 100% eventually |
+| fixed config outcome | (allday6+ target) | **0 BSODs / 20000 soaks (60M transitions, 6.2s)** |
+
+The byte-exact endpoints (heap-map layout, cache_used 667688 & 514084,
+the building7@945 have=88024) are covered by the heap-map and 945
+regressions; the simulator adds the full-soak behaviour: the cache_used
+oscillation, the historical-fails-at-depth vs fixed-survives divergence,
+and the speed to run tens of thousands of soak-equivalents per run.
+
+Headline: `./tests/mem_sim --scenes 3000 --soaks 20000` — 60M simulated
+scene transitions, 0 BSODs under the fix set, in ~6 s. That is the
+evidence the next all-day soak should be the last one needed.
+
+Remaining cadence gaps (relief count, exact BSOD depth) need the exact
+picker RNG sequence + per-scene foreground bounds — the documented
+frontier below.
+
 ## Fidelity status & roadmap
 
 Exact today: region budgets, retained-band sizes, relief tier logic,
