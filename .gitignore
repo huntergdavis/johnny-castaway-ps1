@@ -95,3 +95,4 @@ site/Gemfile.lock
 site/.bundle/
 tests/mem_region_fuzz
 tests/mem_region_frag_regression
+tests/mem_region_heapmap_validate
