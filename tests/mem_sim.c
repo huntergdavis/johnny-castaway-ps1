@@ -58,12 +58,63 @@ static long  g_reliefSinceRebuild, g_scenesSinceRebuild;
 static long  g_cuHist[8];
 static int   g_slots = (int)PS1_CLEANRECT_SLOTS;
 static int   g_periodic = 1;
+static int   g_norebuild = 0;
 
 static unsigned long cacheUsed(void){ return (unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE); }
 
+/* Clean-rect slab POOL: under the loading-waves proof, CACHE-routed
+ * clean-rect slabs are PARKED across scene boundaries (retained, reused
+ * best-fit) up to GR_CLEAN_SLAB_POOL_CAP_BYTES, not freed. This is the
+ * persistent, varying-size resident set that interleaves with the band
+ * and drifting residents to fragment the free-list across scenes — the
+ * mechanism behind the 470/945 fragmentation BSODs. (clean_rects.c.inc
+ * grCleanRectSlabPool / grCleanRectSlabPoolPark.) */
+static void  *g_poolPtr[64]; static unsigned g_poolSz[64]; static int g_npool;
+static unsigned long g_poolBytes;
+
+static void poolEvictSmallestIf(unsigned wantRoomFor){
+    /* keep total parked <= pool cap; evict smallest while over. */
+    while (g_npool>0 && g_poolBytes + wantRoomFor > PS1_SLAB_POOL_CAP_BYTES){
+        int sm=0; for(int i=1;i<g_npool;i++) if(g_poolSz[i]<g_poolSz[sm]) sm=i;
+        memFree(MEM_REGION_CACHE, g_poolPtr[sm]);
+        g_poolBytes -= g_poolSz[sm];
+        g_poolPtr[sm]=g_poolPtr[g_npool-1]; g_poolSz[sm]=g_poolSz[g_npool-1]; g_npool--;
+    }
+}
+static void *poolTake(unsigned sz, unsigned *outSz){  /* best-fit >= sz */
+    int best=-1;
+    for(int i=0;i<g_npool;i++) if(g_poolSz[i]>=sz && (best<0||g_poolSz[i]<g_poolSz[best])) best=i;
+    if(best<0) return NULL;
+    void *p=g_poolPtr[best]; if(outSz)*outSz=g_poolSz[best]; g_poolBytes-=g_poolSz[best];
+    g_poolPtr[best]=g_poolPtr[g_npool-1]; g_poolSz[best]=g_poolSz[g_npool-1]; g_npool--;
+    return p;
+}
+static void poolPark(void *p, unsigned sz){  /* retain across boundary */
+    if (g_npool>=64){ memFree(MEM_REGION_CACHE,p); return; }
+    poolEvictSmallestIf(sz);
+    if (g_poolBytes + sz > PS1_SLAB_POOL_CAP_BYTES){ memFree(MEM_REGION_CACHE,p); return; }
+    g_poolPtr[g_npool]=p; g_poolSz[g_npool]=sz; g_npool++; g_poolBytes+=sz;
+}
+static int   g_stripSz[PS1_CLEANRECT_SLOTS];
 static void freeStrips(void){
-    for(int i=0;i<g_nstrips;i++) if(g_strips[i]) memFree(MEM_REGION_CACHE,g_strips[i]);
+    /* Clean-rect slab retention. In the real soak the loading-waves
+     * proof shows most CACHE-routed slabs are returned (TRANSIENT
+     * absorbs the next scene), but a fraction are PARKED across the
+     * boundary (reused best-fit). That retained minority is the slow
+     * cross-scene fragmenter behind 470/945 — it accumulates over
+     * hundreds of scenes rather than dying immediately. We retain ~1 in
+     * 3 (the observed park rate that keeps steady-state cache_used at
+     * 667688 yet still strands an unprotected region at realistic
+     * depth); the rest free back. */
+    for(int i=0;i<g_nstrips;i++) if(g_strips[i]){
+        if ((rnd()%3)==0) poolPark(g_strips[i], g_stripSz[i]);
+        else              memFree(MEM_REGION_CACHE, g_strips[i]);
+    }
     g_nstrips=0;
+}
+static void poolFreeAll(void){
+    for(int i=0;i<g_npool;i++) memFree(MEM_REGION_CACHE,g_poolPtr[i]);
+    g_npool=0; g_poolBytes=0;
 }
 
 /* Faithful tiered relief (fgCachePressureRelief): free cheapest-first,
@@ -75,6 +126,10 @@ static int relief(unsigned req){
     /* count one relief EVENT per scene that needs it (matches the real
      * log's per-scene relief cadence), though it may free several tiers. */
     if (!g_reliefedThisScene){ g_relief++; g_reliefSinceRebuild++; g_reliefedThisScene=1; }
+    /* tier 1: pooled clean-rect slabs (evict one big enough) */
+    { int sm=-1; for(int i=0;i<g_npool;i++) if(g_poolSz[i]>=req && (sm<0||g_poolSz[i]<g_poolSz[sm])) sm=i;
+      if(sm>=0){ memFree(MEM_REGION_CACHE,g_poolPtr[sm]); g_poolBytes-=g_poolSz[sm];
+                 g_poolPtr[sm]=g_poolPtr[g_npool-1]; g_poolSz[sm]=g_poolSz[g_npool-1]; g_npool--; return 1; } }
     /* tier 2: walk slab (49156) */
     if (g_walk && 49156u >= req){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; return 1; }
     /* tier 3: floor slabs (98308) when req <= 98304 */
@@ -87,6 +142,7 @@ static int relief(unsigned req){
     if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; freed=1; }
     for (int i=0;i<2;i++) if (g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; freed=1; }
     if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; freed=1; }
+    while (g_npool>0){ memFree(MEM_REGION_CACHE,g_poolPtr[g_npool-1]); g_poolBytes-=g_poolSz[g_npool-1]; g_npool--; freed=1; }
     return freed;
 }
 
@@ -109,6 +165,7 @@ static void maybeRebuild(void){
     int periodic = g_periodic && (g_scenesSinceRebuild >= PS1_REBUILD_SCENE_CAP);
     int reliefdrv = (g_reliefSinceRebuild >= PS1_REBUILD_RELIEF_MIN &&
                      largest < PS1_REBUILD_RELIEF_LARGEST);
+    if (g_norebuild) return;
     if (!(periodic || reliefdrv)) return;
     /* teardown: free strips + SCR, leaving only the pinned band; rewind
      * cannot fire (band still live) but the free space is now contiguous
@@ -117,6 +174,7 @@ static void maybeRebuild(void){
     if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; }
     if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
     for (int i=0;i<2;i++) if (g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
+    poolFreeAll();
     g_rebuild++; g_reliefSinceRebuild=0; g_scenesSinceRebuild=0;
 }
 
@@ -125,44 +183,96 @@ static void maybeRebuild(void){
  * = GR_MAX_CLEAN_RECTS. Returns 0 on BSOD (a strip can't be placed). */
 #define PS1_BGTILES_BYTES (614400u)  /* 4 x 320x240x2, TRANSIENT-resident */
 
-static int playScene(int island, unsigned cleanBytes, unsigned cap){
-    g_scenes++; g_reliefedThisScene=0;
-    freeStrips();              /* prev scene's CACHE-spill strips released */
-    memSceneReset("sim");      /* wipe TRANSIENT (bg-tiles + transient strips) */
-    maybeRebuild();
-    reestablish(island);       /* re-admit floors/walk/SCR if absent */
+/* Clean-rect geometry (backdrop_clean.c.inc): wave band unioned with the
+ * foreground bbox (union bounds + island offset), split at y=190; each
+ * rect divides into <=cap strips of (width x rows x 2) — DIVERSE sizes,
+ * the real fragmenter (uniform cap chunks recoalesce). */
+static int clampi(int v,int lo,int hi){return v<lo?lo:v>hi?hi:v;}
+static int cleanRects(int fgx,int fgy,int fgw,int fgh,int rw[2],int rh[2]){
+    const int WMINX=129,WMINY=303,WENDX=608,WENDY=356,SPLIT=190,SW=640,SH=480;
+    int n=0, fgex=fgx+fgw, fgey=fgy+fgh;
+    int lx=fgx<WMINX?fgx:WMINX;
+    int ly0=(fgy>SPLIT?fgy:SPLIT), ly=ly0<WMINY?ly0:WMINY;
+    int ex=fgex>WENDX?fgex:WENDX, ey=fgey>WENDY?fgey:WENDY;
+    lx=clampi(lx,0,SW);ly=clampi(ly,0,SH);ex=clampi(ex,0,SW);ey=clampi(ey,0,SH);
+    if(ex>lx&&ey>ly){rw[n]=ex-lx;rh[n]=ey-ly;n++;}
+    if(fgy<SPLIT){
+        int ux=clampi(fgx,0,SW),uy=clampi(fgy,0,SH);
+        int uex=clampi(fgex,0,SW),uey=clampi(SPLIT,0,SH);
+        if(uex>ux&&uey>uy){rw[n]=uex-ux;rh[n]=uey-uy;n++;}
+    }
+    return n;
+}
 
-    /* bg-tiles occupy TRANSIENT; clean-rect strips route TRANSIENT-first
-     * and spill to CACHE only when TRANSIENT lacks room (the real
-     * grSaveCleanBgRects dynamic routing). */
+/* Play a scene: sample island position, compute the real clean-rect
+ * rects, split each into diverse-size strips (grSaveCleanBgRectsSplit),
+ * route TRANSIENT-first / CACHE-spill with tiered relief, count strips
+ * against the slot cap. Returns 0 on BSOD (slot exhaust or strand). */
+static int playSceneGeo(const SceneMem *sc, int posx, int posy, unsigned cap){
+    g_scenes++; g_reliefedThisScene=0;
+    freeStrips();
+    memSceneReset("sim");
+    maybeRebuild();
+    reestablish(1);
     memAlloc(MEM_REGION_TRANSIENT, PS1_BGTILES_BYTES, "bgtiles");
 
-    /* The clean-rect split (grSaveCleanBgRectsSplit) caps the TOTAL
-     * strip count at GR_MAX_CLEAN_RECTS regardless of region — exceeding
-     * it returns 0 -> the "TRANSIENT budget shortfall" BSOD (walkstuf1
-     * @612 was 8 strips of a 336640 region at a 48K cap). */
+    int rw[2],rh[2];
+    int nr = cleanRects(sc->ux+posx, sc->uy+posy, sc->uw, sc->uh, rw, rh);
+    g_nstrips=0; int totalStrips=0;
+    for (int r=0;r<nr;r++){
+        unsigned bpr = (unsigned)rw[r]*2u;          /* bytes per row */
+        unsigned maxRows = bpr ? cap/bpr : 1u; if(!maxRows) maxRows=1u;
+        int rem = rh[r];
+        while (rem > 0){
+            unsigned rows = (unsigned)rem > maxRows ? maxRows : (unsigned)rem;
+            unsigned sz = bpr * rows;               /* DIVERSE strip size */
+            if (++totalStrips > g_slots) return 0;  /* slot exhaustion */
+            unsigned long tu = (unsigned long)memRegionUsed((unsigned)MEM_REGION_TRANSIENT);
+            unsigned long tf = (tu<PS1_TRANSIENT_BUDGET)?(PS1_TRANSIENT_BUDGET-tu):0;
+            if (sz <= tf){
+                memAlloc(MEM_REGION_TRANSIENT, sz, "strip-t");
+            } else {
+                unsigned asz=sz; void *p = poolTake(sz,&asz);   /* reuse parked slab */
+                if (!p){ asz=sz; p = memTryAlloc(MEM_REGION_CACHE, sz, "strip-c");
+                    if (!p){ if(!relief(sz)) return 0; p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c"); if(!p) return 0; } }
+                if (g_nstrips < (int)PS1_CLEANRECT_SLOTS){ g_strips[g_nstrips]=p; g_stripSz[g_nstrips]=asz; g_nstrips++; }
+            }
+            rem -= (int)rows;
+        }
+    }
+    unsigned long cu = cacheUsed();
+    int b = cu<520000?0:cu<560000?1:cu<600000?2:cu<640000?3:cu<668000?4:cu<690000?5:6;
+    g_cuHist[b]++;
+    return 1;
+}
+
+/* cleanBytes-based scene play (slab-pool aware). Splits the clean rect
+ * into diverse strips (full-width 608 rows), TRANSIENT-first / CACHE-
+ * spill with pooled-slab reuse + tiered relief. */
+static int playSceneBytes(unsigned cleanBytes, unsigned cap){
+    g_scenes++; g_reliefedThisScene=0;
+    freeStrips();
+    memSceneReset("sim");
+    maybeRebuild();
+    reestablish(1);
+    memAlloc(MEM_REGION_TRANSIENT, PS1_BGTILES_BYTES, "bgtiles");
     unsigned remaining = cleanBytes; g_nstrips=0; int totalStrips=0;
     while (remaining > 0){
         unsigned sz = remaining > cap ? cap : remaining;
-        if (++totalStrips > g_slots) return 0;   /* slot exhaustion (all regions) */
-        unsigned long transUsed = (unsigned long)memRegionUsed((unsigned)MEM_REGION_TRANSIENT);
-        unsigned long transFree = (transUsed < PS1_TRANSIENT_BUDGET) ?
-                                  (PS1_TRANSIENT_BUDGET - transUsed) : 0;
-        if (sz <= transFree){
-            memAlloc(MEM_REGION_TRANSIENT, sz, "strip-t");  /* TRANSIENT-first */
+        if (++totalStrips > g_slots) return 0;       /* slot exhaustion */
+        unsigned long tu = (unsigned long)memRegionUsed((unsigned)MEM_REGION_TRANSIENT);
+        unsigned long tf = (tu<PS1_TRANSIENT_BUDGET)?(PS1_TRANSIENT_BUDGET-tu):0;
+        if (sz <= tf){
+            memAlloc(MEM_REGION_TRANSIENT, sz, "strip-t");
         } else {
-            void *p = memTryAlloc(MEM_REGION_CACHE, sz, "strip-c");  /* spill */
-            if (!p){
-                if (!relief(sz)) return 0;
-                p = memTryAlloc(MEM_REGION_CACHE, sz, "strip-c");
-                if (!p) return 0;
-            }
-            if (g_nstrips < (int)PS1_CLEANRECT_SLOTS) g_strips[g_nstrips++] = p;
+            unsigned asz=sz; void *p=poolTake(sz,&asz);
+            if(!p){ asz=sz; p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c");
+                if(!p){ if(!relief(sz)) return 0; p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c"); if(!p) return 0; } }
+            if (g_nstrips<(int)PS1_CLEANRECT_SLOTS){ g_strips[g_nstrips]=p; g_stripSz[g_nstrips]=asz; g_nstrips++; }
         }
         remaining -= sz;
     }
-
-    unsigned long cu = cacheUsed();
+    unsigned long cu=cacheUsed();
     int b = cu<520000?0:cu<560000?1:cu<600000?2:cu<640000?3:cu<668000?4:cu<690000?5:6;
     g_cuHist[b]++;
     return 1;
@@ -177,6 +287,7 @@ static long runSoak(unsigned seed, long scenes){
     if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
     for (int i=0;i<2;i++) if(g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
     if (g_band){ memFree(MEM_REGION_CACHE,g_band); g_band=NULL; }
+    poolFreeAll();
     memSceneReset("reset");
     memCacheRewindIfEmpty();
     g_scr=g_walk=NULL; g_floor[0]=g_floor[1]=NULL; g_nstrips=0;
@@ -191,15 +302,26 @@ static long runSoak(unsigned seed, long scenes){
         /* draw a REAL scene from the extracted FG2 table and use its
          * clean-rect demand at a sampled island position (position
          * factor scales the worst-case bytes; worst case is at 1.0). */
-        const SceneMem *sc = &SCENE_MEM[rnd() % SCENE_MEM_COUNT];
-        int island = 1;  /* the heavy clean-rect scenes are the island set */
-        unsigned posFactorPct = 35 + (rnd()%66);          /* 35..100% of worst */
-        unsigned cleanBytes = (unsigned)((unsigned long)sc->cleanBytes * posFactorPct / 100u);
-        /* historical walkstuf/visitor used a 48K/64K cap; the fix set
-         * uses 96K for all. */
-        unsigned cap = g_periodic ? 96u*1024u
-                     : (sc->strips48 > sc->strips64 ? 48u*1024u : 64u*1024u);
-        if (!playScene(island, cleanBytes, cap)){ bsod=g_scenes; break; }
+        /* Per-scene clean-rect demand calibrated to the REAL allday4
+         * cache_used histogram (914/945 scenes at 667688 == no CACHE
+         * spill, so clean rect < TRANSIENT's ~172K room; ~31 scenes dip
+         * == spill). The union-bounds header field is the whole-animation
+         * envelope and overestimates ~3-9x; the log's max_restore_bytes
+         * (median 12K, max 98K) is the real per-scene dirty region.
+         * Bimodal: ~96.7% light (12-150K, fits TRANSIENT), ~3.3% heavy
+         * (walkstuf1/building7-class, 300-360K, spills + can slot-exhaust
+         * at the historical 48K cap). */
+        unsigned cleanBytes; unsigned cap;
+        if ((rnd()%1000) < 33){          /* heavy island scene */
+            int bad = (rnd()%100) < 25;  /* worst island position */
+            cleanBytes = bad ? (400u*1024u + (rnd()%(45u*1024u)))
+                             : (300u*1024u + (rnd()%(40u*1024u)));
+            cap = g_periodic ? 96u*1024u : 48u*1024u;   /* walkstuf1-low cap */
+        } else {                         /* common light scene */
+            cleanBytes = 12u*1024u + (rnd()%(140u*1024u));
+            cap = 96u*1024u;
+        }
+        if (!playSceneBytes(cleanBytes, cap)){ bsod=g_scenes; break; }
     }
     return bsod;
 }
@@ -211,6 +333,7 @@ int main(int argc, char**argv){
         else if (!strcmp(argv[a],"--soaks")&&a+1<argc) soaks=atol(argv[++a]);
         else if (!strcmp(argv[a],"--seed")&&a+1<argc) seed0=(unsigned)strtoul(argv[++a],0,10);
         else if (!strcmp(argv[a],"--historical")){ g_slots=8; g_periodic=0; }
+        else if (!strcmp(argv[a],"--no-rebuild")){ g_norebuild=1; g_periodic=0; }
         else if (!strcmp(argv[a],"--slots")&&a+1<argc) g_slots=atoi(argv[++a]);
         else if (a==1) scenes=atol(argv[a]);   /* positional back-comat */
         else if (a==2) seed0=(unsigned)strtoul(argv[a],0,10);

@@ -121,6 +121,62 @@ class is impossible in the fixed config across the entire real scene
 catalog. mem_sim then drives soaks from this real table: 150M+ simulated
 scene transitions, 0 BSODs under the fix set.
 
+## Red-team: would this have caught every failure we saw? (2026-06-14)
+
+For each BSOD class observed during the transition-zero campaign, which
+tool catches it and how:
+
+| Soak failure | Class | Caught by | How |
+|---|---|---|---|
+| scene-105 | relief cascade (over-eviction) | mem_sim | tiered `relief()` mirrors `fgCachePressureRelief`; relief cadence 32 vs real ~24-31 |
+| scene-232 | clean-rect slot exhaustion (8 slots) | extract-scene-mem.py **+** mem_sim historical | proof: 51/126 scenes exceed 8 strips @48K cap; historical config BSODs 100% |
+| scene-470 | CACHE fragmentation | mem_sim **organic** + fuzzer | slab-pool retention strands an unprotected region at depth (≈1593, seed 1) |
+| scene-612 | walkstuf1 slot/spill | extract-scene-mem.py + mem_sim historical | walkstuf1-high marginal @64K, exhausts @48K — in the over-8 set |
+| scene-945 | building7 fragmentation | 945 regression (byte-exact) + mem_sim organic | `req=65536 have=88024 largest=50292` reproduced byte-for-byte |
+| setup-segment / pack-start tight region | transient decline | mem_sim | `reestablish()` uses `memTryAlloc` — a tight region leaves residents absent (non-fatal), matching the decline fix |
+
+**Verdict:** every observed failure *class* is now reproduced by the
+committed tooling — slot exhaustion as a *proof* over the whole catalog,
+fragmentation *organically* in the scene simulator (the gap the first
+red-team pass exposed), and the two byte-exact endpoints (heap map, 945)
+as deterministic regressions. The fix set turns each red: historical
+config dies 100%, fixed config survives 6M+ transitions, and the
+unprotected-vs-fixed divergence on the *same* sequence isolates the
+rebuild as the cure.
+
+**Honest residuals (picker-RNG-bound, documented frontier):** the exact
+BSOD *depth* (sim strands earlier/later than the specific real scene)
+and the exact dip *count* (56 vs 31 per 945) depend on the real
+`pickerNextScene` order and per-scene foreground bounds, which are
+sampled, not mirrored. The failure *classes*, relief cadence, steady
+state, and the byte-exact endpoints match; the per-scene sequence does
+not, and the "0 BSODs across N soaks" verdict is an envelope over
+sampled sequences, not the one real seed.
+
+### What the first red-team pass missed (and the fix)
+
+The scene simulator originally **did not** strand on fragmentation
+(200K scenes, 16 slots, no rebuild → no BSOD) because it freed every
+clean-rect slab at the scene boundary. Two corrections closed it:
+
+1. **Slab-pool retention** (`clean_rects.c.inc` slab pool): CACHE-routed
+   clean-rect slabs are *parked* and reused across scenes, not freed —
+   the persistent varying-size resident set that interleaves with the
+   band and fragments the free-list over hundreds of scenes.
+2. **Real demand calibration**: the FG2 header `unionW/H` is the
+   *whole-animation* sprite envelope (overestimates the per-scene
+   clean-rect 3-9x → falsely spills every scene). The real per-scene
+   dirty region (log `max_restore_bytes`: median 12K, max 98K) fits
+   TRANSIENT, which is why 914/945 real scenes never touch CACHE. The
+   simulator now drives a bimodal demand calibrated to the real
+   cache_used histogram (~96.7% light, fit TRANSIENT; ~3.3% heavy,
+   spill) with ~1-in-3 slab retention — reproducing both the
+   steady-state and the slow fragmentation.
+
+The union-bounds table is retained only for the slot-exhaustion *proof*
+(worst-case strip count is the right metric there); it is no longer used
+for steady-state demand.
+
 ## Fidelity status & roadmap
 
 Exact today: region budgets, retained-band sizes, relief tier logic,

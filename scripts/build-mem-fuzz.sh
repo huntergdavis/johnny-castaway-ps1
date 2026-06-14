@@ -38,5 +38,18 @@ echo "=== scene-sim: historical config (expect BSODs at depth) ==="
 ./tests/mem_sim --historical --scenes 3000 --soaks 200 2>/dev/null | grep config
 echo "=== scene-sim: FIXED config confidence (expect 0 BSODs) ==="
 ./tests/mem_sim --scenes 3000 --soaks 2000 2>/dev/null | grep config
+
+# Red-team property: the scene simulator must catch CACHE fragmentation
+# ORGANICALLY (slab-pool retention strands an unprotected region), AND
+# the deployed fix (periodic rebuild) must prevent it. An unprotected
+# run (16 slots, no periodic rebuild) must strand at depth; the same
+# sequence under the fix must survive.
+echo "=== scene-sim: organic-fragmentation capture (no-rebuild must strand) ==="
+FRAG=$(./tests/mem_sim --slots 16 --no-rebuild --scenes 200000 --seed 1 2>/dev/null | grep -oE 'bsod_scene=-?[0-9]+' | grep -oE '\-?[0-9]+')
+if [ "$FRAG" -gt 0 ]; then
+  echo "OK: unprotected region stranded on fragmentation at scene $FRAG (organic capture)"
+else
+  echo "FAIL: simulator did not reproduce fragmentation organically"; exit 1
+fi
 echo "=== deterministic regression ==="
 ./tests/mem_region_frag_regression
