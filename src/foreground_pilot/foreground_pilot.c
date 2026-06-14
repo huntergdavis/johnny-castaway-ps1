@@ -2286,6 +2286,16 @@ static int fgScrCacheReadmitRelief(void)
  * banded sheets. Cost: one slow transition (~window+sheet re-reads);
  * a cooldown stops repeat fires if a rebuild cannot help. */
 static int gFgRebuildCooldown = 0;
+/* Boundaries since the last rebuild. The scene-945 soak BSOD'd 141
+ * scenes after the last rebuild: slow fragmentation that never tripped
+ * the relief/SCR triggers at a boundary, then a heavy scene
+ * (building7) fragmented the drifted region to a 64K-alloc-fail
+ * WITHIN its own setup — no boundary between the spike and the halt
+ * for a reactive trigger to catch. A periodic ceiling bounds how
+ * drifted any scene's going-in region can be (building7 from a
+ * pristine region provably passes; from 141-scene drift it dies). */
+static int gFgScenesSinceRebuild = 0;
+#define FG_REBUILD_SCENE_CAP 40
 
 static void fgMaybeScheduledCacheRebuild(void)
 {
@@ -2295,6 +2305,7 @@ static void fgMaybeScheduledCacheRebuild(void)
 
     if (!gFgLoadingWaveProofEnabled || !memIsReady())
         return;
+    gFgScenesSinceRebuild++;
     if (gFgRebuildCooldown > 0) {
         gFgRebuildCooldown--;
         return;
@@ -2315,8 +2326,19 @@ static void fgMaybeScheduledCacheRebuild(void)
      *      that killed the scene-945 soak. The O(1) rewind defrag
      *      resets the region to pristine before that wall is reached.
      * Either way the 20-scene cooldown bounds rebuild frequency. */
+    /* Three triggers (cooldown above bounds frequency for the first two):
+     *  (a) SCR absent + refills failing — layout can't re-host it;
+     *  (b) relief fired since last rebuild AND largest hole sub-floor —
+     *      reactive fragmentation pressure; OR
+     *  (c) PERIODIC CEILING — too many boundaries since the last
+     *      rebuild. This is the backstop for slow drift that never
+     *      trips (a)/(b) at a boundary but leaves a heavy scene's
+     *      going-in region fragmented enough to self-fail mid-setup
+     *      (the scene-945 mechanism). Caps going-in drift at
+     *      FG_REBUILD_SCENE_CAP scenes regardless of relief activity. */
     if (!((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
-          (gFgReliefSinceRebuild >= 2 && largest < 98304u)))
+          (gFgReliefSinceRebuild >= 2 && largest < 98304u) ||
+          (gFgScenesSinceRebuild >= FG_REBUILD_SCENE_CAP)))
         return;
 
     {
@@ -2350,6 +2372,7 @@ static void fgMaybeScheduledCacheRebuild(void)
     fgBackdropPreloadBackgrndBmp();
     fgBackdropPreloadHolidaySheet();
     gFgReliefSinceRebuild = 0;
+    gFgScenesSinceRebuild = 0;
     gFgRebuildCooldown = 20;
 }
 
