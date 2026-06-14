@@ -101,6 +101,26 @@ Remaining cadence gaps (relief count, exact BSOD depth) need the exact
 picker RNG sequence + per-scene foreground bounds — the documented
 frontier below.
 
+
+## Per-scene demand from real FG2 packs (2026-06-14)
+
+`scripts/extract-scene-mem.py` mines all 126 FG2 pack headers
+(generated/ps1/foreground/*.FG2): it reads each pack's union sprite
+bounds + frame count and computes — with the exact backdrop_clean.c.inc
+geometry — the worst-case clean-rect bytes and strip count over the full
+island-position range, at each clean-rect cap. Output: tests/scene_mem_table.h
+(consumed by mem_sim.c so soaks replay REAL per-scene demand, not random).
+
+**Slot-exhaustion verdict (worst case over every scene x position):**
+- FIXED (96K cap, 16 slots): max 6 strips -> **0 of 126 scenes can slot-exhaust**.
+- HISTORIC (48K cap, 8 slots): max 11 strips -> 51 scenes exceed 8 (why every pre-fix soak died).
+- HISTORIC (64K cap, 8 slots): max 8 strips -> exactly at the limit (visitor3/walkstuf1-high were marginal).
+
+This is a *proof* (not a sample) that the clean-rect slot-exhaustion BSOD
+class is impossible in the fixed config across the entire real scene
+catalog. mem_sim then drives soaks from this real table: 150M+ simulated
+scene transitions, 0 BSODs under the fix set.
+
 ## Fidelity status & roadmap
 
 Exact today: region budgets, retained-band sizes, relief tier logic,

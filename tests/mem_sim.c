@@ -27,6 +27,7 @@
 #include <setjmp.h>
 #include "../src/mem_region/mem_region.h"
 #include "ps1_mem_model.h"
+#include "scene_mem_table.h"  /* real per-scene clean-rect demand (extract-scene-mem.py) */
 
 int graphicsIsInitialized(void){return 0;}
 void checkMemoryBudget(void){}
@@ -169,7 +170,15 @@ static int playScene(int island, unsigned cleanBytes, unsigned cap){
 
 /* one full soak; returns the BSOD scene (or -1 if it survived). */
 static long runSoak(unsigned seed, long scenes){
-    memInit();
+    /* reset allocator to pristine between soaks (memInit is called ONCE
+     * in main; re-calling it would leak 1.44MB/soak and OOM at scale). */
+    freeStrips();
+    if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; }
+    if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
+    for (int i=0;i<2;i++) if(g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
+    if (g_band){ memFree(MEM_REGION_CACHE,g_band); g_band=NULL; }
+    memSceneReset("reset");
+    memCacheRewindIfEmpty();
     g_scr=g_walk=NULL; g_floor[0]=g_floor[1]=NULL; g_nstrips=0;
     g_relief=g_rebuild=g_scenes=0; g_reliefSinceRebuild=0; g_scenesSinceRebuild=0;
     memset(g_cuHist,0,sizeof(g_cuHist));
@@ -179,24 +188,17 @@ static long runSoak(unsigned seed, long scenes){
     long bsod=-1;
     if (setjmp(jb)){ return g_scenes; }
     for (long s=0;s<scenes;s++){
-        int island = (rnd()%100) < 55;
-        unsigned cleanBytes; unsigned cap = PS1_CLEANRECT_CAP_DEFAULT;
-        int roll = rnd()%100;
-        if (roll < 2){
-            /* walkstuf1-low class. Cap was 48K historically (fix -> 96K).
-             * Most island positions give ~336K (7-8 strips @48K, fits the
-             * 8-slot limit); only a rare worst position pushes the dirty
-             * region past 393K -> 9 strips -> exceeds 8 slots
-             * (walkstuf1@612). At 96K it is ~4-5 strips regardless. */
-            int badPosition = (rnd()%100) < 20;        /* ~1 in 5 walkstuf1-low */
-            cleanBytes = badPosition ? (400u*1024u + (rnd()%(40u*1024u)))
-                                     : (320u*1024u + (rnd()%(30u*1024u)));
-            cap = g_periodic ? 96u*1024u : 48u*1024u;  /* periodic flag tracks the fix set */
-        } else if (roll < 7){
-            cleanBytes = 200u*1024u + (rnd()%(150u*1024u)); /* heavy (building7 class) */
-        } else {
-            cleanBytes = 40u*1024u  + (rnd()%(120u*1024u)); /* light */
-        }
+        /* draw a REAL scene from the extracted FG2 table and use its
+         * clean-rect demand at a sampled island position (position
+         * factor scales the worst-case bytes; worst case is at 1.0). */
+        const SceneMem *sc = &SCENE_MEM[rnd() % SCENE_MEM_COUNT];
+        int island = 1;  /* the heavy clean-rect scenes are the island set */
+        unsigned posFactorPct = 35 + (rnd()%66);          /* 35..100% of worst */
+        unsigned cleanBytes = (unsigned)((unsigned long)sc->cleanBytes * posFactorPct / 100u);
+        /* historical walkstuf/visitor used a 48K/64K cap; the fix set
+         * uses 96K for all. */
+        unsigned cap = g_periodic ? 96u*1024u
+                     : (sc->strips48 > sc->strips64 ? 48u*1024u : 64u*1024u);
         if (!playScene(island, cleanBytes, cap)){ bsod=g_scenes; break; }
     }
     return bsod;
@@ -213,6 +215,7 @@ int main(int argc, char**argv){
         else if (a==1) scenes=atol(argv[a]);   /* positional back-comat */
         else if (a==2) seed0=(unsigned)strtoul(argv[a],0,10);
     }
+    memInit();
     if (soaks==1){
         long b=runSoak(seed0,scenes);
         printf("config=%s slots=%d periodic=%d  seed=%u scenes=%ld relief=%ld rebuild=%ld bsod_scene=%ld\n",
