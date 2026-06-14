@@ -19,6 +19,9 @@ $CC $CFLAGS -o tests/mem_region_frag_regression tests/mem_region_frag_regression
 echo "=== building mem_region_heapmap_validate ==="
 $CC $CFLAGS -o tests/mem_region_heapmap_validate tests/mem_region_heapmap_validate.c $SRC $INC
 
+echo "=== building mem_region_945_regression ==="
+$CC $CFLAGS -o tests/mem_region_945_regression tests/mem_region_945_regression.c $SRC $INC
+
 RUNS="${1:-1000000}"
 echo "=== fuzz: $RUNS layouts (disease) ==="
 ./tests/mem_region_fuzz "$RUNS" 2>/dev/null | grep -E 'runs=|histogram|first repro'
@@ -26,5 +29,7 @@ echo "=== fuzz: $RUNS layouts (--fixed, segregation) ==="
 ./tests/mem_region_fuzz "$RUNS" --fixed 2>/dev/null | grep -E 'runs=|histogram'
 echo "=== heap-map validation (model == real soak layout) ==="
 ./tests/mem_region_heapmap_validate
+echo "=== building7@945 byte-exact regression ==="
+./tests/mem_region_945_regression
 echo "=== deterministic regression ==="
 ./tests/mem_region_frag_regression

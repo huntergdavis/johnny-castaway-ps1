@@ -154,8 +154,35 @@ static int runOnce(unsigned seed, RunLog *log){
 
 int main(int argc, char **argv){
     long N = (argc>1)? atol(argv[1]) : 1000000L;
-    for (int a=2;a<argc;a++) if (!strcmp(argv[a],"--fixed")) g_fixSegregate=1;
+    long targetHave = 0;   /* --have N: hunt a layout with free ~= N */
+    for (int a=2;a<argc;a++){
+        if (!strcmp(argv[a],"--fixed")) g_fixSegregate=1;
+        else if (!strcmp(argv[a],"--have") && a+1<argc) targetHave=atol(argv[++a]);
+    }
     memInit();
+    if (targetHave){
+        /* Hunt the closest reproduction to a target total-free (e.g. the
+         * real building7@945 have=88024) and print its replayable blob. */
+        if (setjmp(g_haltJmp)){ fprintf(stderr,"halt\n"); return 2; }
+        RunLog log, best; long bestSeed=0, bestDelta=1L<<30;
+        for (long s=1;s<=N;s++){
+            if (runOnce((unsigned)s,&log)){
+                size_t tot = MEM_CACHE_BUDGET - memRegionUsed((unsigned)MEM_REGION_CACHE);
+                long d = (long)tot - targetHave; if(d<0)d=-d;
+                if (d<bestDelta){ bestDelta=d; bestSeed=s; best=log;
+                    if (d==0) break; }
+            }
+        }
+        size_t largest;
+        runOnce((unsigned)bestSeed,&best); /* re-run to leave that state */
+        largest = memCacheLargestFreeBlock();
+        size_t tot = MEM_CACHE_BUDGET - memRegionUsed((unsigned)MEM_REGION_CACHE);
+        printf("closest to have=%ld: seed=%ld totalfree=%lu largest=%lu nblocks=%d\n",
+               targetHave,bestSeed,(unsigned long)tot,(unsigned long)largest,best.n);
+        printf("blob="); for(int i=0;i<best.n;i++) printf("%u%s ",best.size[i],best.evict[i]?"E":"P");
+        printf("\n");
+        return 0;
+    }
     if (setjmp(g_haltJmp)){ fprintf(stderr,"HALT during fuzz: %s\n", g_haltReason); return 2; }
 
     long repros=0; unsigned firstSeed=0; RunLog log, firstLog;
