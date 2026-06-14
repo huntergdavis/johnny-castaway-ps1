@@ -70,11 +70,29 @@ int main(void){
                BAND[i].tag, BAND[i].bytes, cum, EXPECT_CUM[i], ok);
         if (cum!=EXPECT_CUM[i]) fail=1;
     }
+    void *ptr[BAND_N]; /* (re-track for relief-state checks below) */
     unsigned long used = (unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE);
-    printf("final cache_used=%lu (real soak steady state=667688) %s\n",
+    printf("final cache_used=%lu (real soak steady state=667688, 914/945 scenes) %s\n",
            used, used==667688?"MATCH":"MISMATCH");
     if (used!=667688) fail=1;
 
-    printf(fail?"HEAPMAP VALIDATION FAILED\n":"HEAPMAP VALIDATION PASSED (model == real soak layout)\n");
+    /* --- Relief-state telemetry match ---
+     * The real allday4 log's cache_used histogram (the memory log we're
+     * reproducing) shows, besides 667688: 514084 x12 and 634920 x2.
+     * These are the retained band minus specific relief evictions.
+     * Re-run a clean band tracking pointers, free the SCR cache, and
+     * assert the resulting cache_used equals the real 514084 — i.e. the
+     * model reproduces the real log's #2 value byte-for-byte. */
+    memInit();  /* fresh region */
+    for (int i=0;i<BAND_N;i++) ptr[i]=memAlloc(MEM_REGION_CACHE, BAND[i].bytes, BAND[i].tag);
+    /* index 8 = gr-scr-cache */
+    memFree(MEM_REGION_CACHE, ptr[8]);
+    unsigned long usedScrEvicted = (unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE);
+    printf("relief drops SCR -> cache_used=%lu (real log 514084 x12) %s\n",
+           usedScrEvicted, usedScrEvicted==514084?"MATCH":"MISMATCH");
+    if (usedScrEvicted!=514084) fail=1;
+
+    printf(fail?"HEAPMAP VALIDATION FAILED\n"
+               :"HEAPMAP VALIDATION PASSED (model reproduces real soak layout + relief-state cache_used values)\n");
     return fail;
 }

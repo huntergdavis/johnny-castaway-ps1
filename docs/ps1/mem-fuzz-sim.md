@@ -50,6 +50,24 @@ failure. No emulator, no CD image, no 6-hour wait.
   (vs interleaved with pinned) drops reproductions 272,424 → 1,901
   (27% → 0.19%); a guaranteed ≥64K evictable arena makes it exactly 0.
 
+## Validation against real soak telemetry (2026-06-14)
+
+The model is checked against the live `trans-allday4` soak log
+(945 scenes to the building7 BSOD):
+
+| Real telemetry | Model | Status |
+|---|---|---|
+| retained heap map (10 blocks, offsets 0..641060) | allocated through real allocator | **byte-exact** |
+| `cache_used=667688` (914/945 scenes, steady state) | retained band sum | **byte-exact** |
+| `cache_used=514084` (12 scenes) | 667688 − 153604 (relief drops SCR cache) | **byte-exact** |
+| building7@945 BSOD `req=65536 have=88024` | seed-847560 layout, post-relief free=88024, largest 50292 | **byte-exact** |
+| relief fired 24x, 4 rebuilds, BSOD@945 | (cadence — scene-play engine, in progress) | envelope/roadmap |
+
+926/945 scenes (98%) of the real `cache_used` series are reproduced
+exactly today; the residual transient values (596008, 612392, 634920,
+677932) are combined relief + per-scene clean-rect-residency states that
+need the scene-play engine (below).
+
 ## Fidelity status & roadmap
 
 Exact today: region budgets, retained-band sizes, relief tier logic,
