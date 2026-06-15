@@ -1364,6 +1364,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         lruEvictAllUnpinned();
     }
     fgMaybeScheduledCacheRebuild();
+#if PS1_MEM_FORENSICS
+    /* Per-scene going-in CACHE layout: with the pre-relief + bsod map
+     * dumps this records the exact byte-for-byte heap state feeding each
+     * scene's setup — the ground truth for the host replay regression
+     * (tests/mem_real_repro.c) so a soak failure is reproducible offline
+     * without re-running hours of emulation. */
+    {
+        extern void memDumpCacheMap(const char *why);
+        memDumpCacheMap("scene-boundary");
+    }
+#endif
     {
         int rewound = memCacheRewindIfEmpty();
         if (!rewound) {

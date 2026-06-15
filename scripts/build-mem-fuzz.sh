@@ -51,5 +51,17 @@ if [ "$FRAG" -gt 0 ]; then
 else
   echo "FAIL: simulator did not reproduce fragmentation organically"; exit 1
 fi
+echo "=== building mem_map_replay (byte-exact layout reconstruction) ==="
+$CC $CFLAGS -o tests/mem_map_replay tests/mem_map_replay.c $SRC $INC
+echo "=== byte-exact scene-945 BSOD replay (the real captured console layout) ==="
+# Replays the forensic-captured 945 BSOD heap map through the real allocator
+# and asserts the byte-exact console signature: have=88024, largest<65536.
+R=$(./tests/mem_map_replay tests/fixtures/soak945_bsod.map 2>/dev/null)
+echo "$R" | grep -E 'cache_used|have|STRAND'
+if echo "$R" | grep -q 'have)=88024' && echo "$R" | grep -q 'STRANDS'; then
+  echo "OK: scene-945 BSOD reproduced byte-exact (have=88024, 65536 strands) — no emulator"
+else
+  echo "FAIL: scene-945 byte-exact replay regressed"; exit 1
+fi
 echo "=== deterministic regression ==="
 ./tests/mem_region_frag_regression

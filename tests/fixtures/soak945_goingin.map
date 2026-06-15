@@ -1,0 +1,13 @@
+JCMEM map-begin why=scene-boundary used=667688 bump=679980
+JCMEM map off=0 size=98308 live tag=fg-stream-window
+JCMEM map off=98308 size=98308 live tag=grCleanRectPixels
+JCMEM map off=196616 size=98308 live tag=grCleanRectPixels
+JCMEM map off=294924 size=49156 live tag=johnwalk_spu_load
+JCMEM map off=344080 size=16388 live tag=fg-frame
+JCMEM map off=360468 size=16388 live tag=fg-prefetch-frame
+JCMEM map off=376856 size=16388 live tag=fg-stream-scratch
+JCMEM map off=393244 size=94212 live tag=cdrom_read_result
+JCMEM map off=487456 size=26628 live tag=cdrom_read_result
+JCMEM map off=514084 size=153604 live tag=gr-scr-cache
+JCMEM map off=667688 size=12292 FREE tag=-
+JCMEM map-end tail=8148

@@ -1,0 +1,14 @@
+JCMEM map-begin why=bsod used=600104 bump=679980
+JCMEM map off=0 size=98308 live tag=fg-stream-window
+JCMEM map off=98308 size=98308 live tag=grCleanRectPixels
+JCMEM map off=196616 size=98308 live tag=grCleanRectPixels
+JCMEM map off=294924 size=18436 live tag=fg-frame
+JCMEM map off=313360 size=18436 live tag=fg-prefetch-frame
+JCMEM map off=331796 size=45060 FREE tag=-
+JCMEM map off=376856 size=16388 live tag=fg-stream-scratch
+JCMEM map off=393244 size=94212 live tag=cdrom_read_result
+JCMEM map off=487456 size=26628 live tag=cdrom_read_result
+JCMEM map off=514084 size=65540 live tag=grCleanRectPixels
+JCMEM map off=579624 size=65540 live tag=grCleanRectPixels
+JCMEM map off=645164 size=34816 FREE tag=-
+JCMEM map-end tail=8148
