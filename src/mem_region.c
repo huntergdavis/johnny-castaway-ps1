@@ -1044,6 +1044,24 @@ static void *cacheFreeListAlloc_(size_t blockSize, int skipReserved,
     return NULL;
 }
 
+#if PS1_MEM_FORENSICS
+/* Per-allocation trace: logs every CACHE alloc/free as op + byte offset
+ * + size + tag, so a forensic soak captures the exact allocation PATH
+ * (not just per-scene snapshots). Replaying this op stream through the
+ * allocator on the host reproduces any layout byte-for-byte and lets a
+ * candidate fix be validated offline. */
+static void cacheTrace_(char op, void *userptr, size_t size, const char *tag)
+{
+    extern int printf(const char *, ...);
+    long off = (long)((unsigned char *)userptr - CACHE_HEADER_BYTES - g_cacheBase);
+    printf("JCMEM %c off=%ld sz=%lu t=%s\n", op, off,
+           (unsigned long)size, tag ? tag : "?");
+}
+#define CTRACE(op,p,sz,tag) do { if ((p) != NULL) cacheTrace_(op,(p),(sz),(tag)); } while (0)
+#else
+#define CTRACE(op,p,sz,tag) ((void)0)
+#endif
+
 static void *cacheAllocInternal(size_t size, const char *tag)
 {
     /* Lazy init on first use. */
@@ -1065,8 +1083,10 @@ static void *cacheAllocInternal(size_t size, const char *tag)
     cacheValidateFreeList_("CACHE alloc free-list corrupt");
     {
         void *p = cacheFreeListAlloc_(blockSize, 1, tag);
-        if (p != NULL)
+        if (p != NULL) {
+            CTRACE('A', p, size, tag);
             return p;
+        }
     }
 
     /* No unreserved free-list match; bump forward. */
@@ -1078,12 +1098,16 @@ static void *cacheAllocInternal(size_t size, const char *tag)
         g_cacheBumpTop += blockSize;
         g_cacheUsed += blockSize;
         cacheDiagRememberAlloc_(blockBase + CACHE_HEADER_BYTES, blockSize, tag);
+        CTRACE('A', (void *)(blockBase + CACHE_HEADER_BYTES), size, tag);
         return (void *)(blockBase + CACHE_HEADER_BYTES);
     }
 
     /* Pressure: allow the reserved hole rather than fail. */
-    if (g_cacheReservedBytes != 0)
-        return cacheFreeListAlloc_(blockSize, 0, tag);
+    if (g_cacheReservedBytes != 0) {
+        void *p = cacheFreeListAlloc_(blockSize, 0, tag);
+        CTRACE('A', p, size, tag);
+        return p;
+    }
     /* CACHE exhausted. Caller invokes LRU evictor + retries. */
     return NULL;
 }
@@ -1106,6 +1130,7 @@ static void cacheFreeInternal(void *ptr)
     /* Update g_cacheUsed by the block's size. */
     unsigned int blockSize = cacheReadSizeChecked_(blockBase,
                                                    "CACHE free bad block");
+    CTRACE('F', ptr, blockSize, g_cacheDiagFreeTag);
     g_cacheDiagFreeBlockSize = blockSize;
     int ownership = cacheFreeListOwnsPtr_(ptr);
     if (ownership == 1)
