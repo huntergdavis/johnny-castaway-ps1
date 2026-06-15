@@ -44,14 +44,21 @@ extern size_t memCacheLargestFreeBlock(void);
 #define BASE_OFF(p) ((long)((unsigned char*)(p) - HDR - g_base))
 static unsigned char *g_base;   /* CACHE base, for offset math */
 
-/* offset -> live ptr map (open-addressed-ish: linear array, small N). */
-struct Live { long off; void *p; };
+/* live block table. Free matching is by SIZE first (then nearest offset)
+ * so the SAME op stream replays on a DIFFERENT going-in layout (e.g. the
+ * segregated fix) — a free targets the block of the recorded size, wherever
+ * the fix placed it, not a hard offset. */
+struct Live { long off; unsigned long sz; void *p; };
 static struct Live g_live[4096];
 static int g_nlive;
-static void liveAdd(long off, void *p){ if(g_nlive<4096){g_live[g_nlive].off=off;g_live[g_nlive].p=p;g_nlive++;} }
-static void *liveTakeNearest(long off){
+static void liveAdd(long off, unsigned long sz, void *p){ if(g_nlive<4096){g_live[g_nlive].off=off;g_live[g_nlive].sz=sz;g_live[g_nlive].p=p;g_nlive++;} }
+static void *liveTake(long off, unsigned long sz){
+    /* prefer exact size match nearest to off; else nearest offset. */
     int best=-1; long bd=1L<<62;
-    for(int i=0;i<g_nlive;i++){ if(!g_live[i].p) continue; long d=g_live[i].off-off; if(d<0)d=-d; if(d<bd){bd=d;best=i;} }
+    for(int i=0;i<g_nlive;i++){ if(!g_live[i].p) continue;
+        if(sz && g_live[i].sz!=sz && g_live[i].sz!=sz-4 && g_live[i].sz!=sz+4) continue;
+        long d=g_live[i].off-off; if(d<0)d=-d; if(d<bd){bd=d;best=i;} }
+    if(best<0){ for(int i=0;i<g_nlive;i++){ if(!g_live[i].p) continue; long d=g_live[i].off-off; if(d<0)d=-d; if(d<bd){bd=d;best=i;} } }
     if(best<0) return NULL; void *p=g_live[best].p; g_live[best].p=NULL; return p;
 }
 
@@ -89,7 +96,7 @@ int main(int argc, char **argv)
     for(int i=0;i<nb;i++){
         unsigned long req=blk[i].sz>HDR?blk[i].sz-HDR:blk[i].sz;
         blk[i].p=memAlloc(MEM_REGION_CACHE,req,"goingin");
-        if(!blk[i].isFree) liveAdd(blk[i].off, blk[i].p);
+        if(!blk[i].isFree) liveAdd(blk[i].off, blk[i].sz, blk[i].p);
     }
     for(int i=0;i<nb;i++) if(blk[i].isFree&&blk[i].p) memFree(MEM_REGION_CACHE,blk[i].p);
     unsigned long used0=(unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE);
@@ -113,11 +120,21 @@ int main(int argc, char **argv)
         char *a=strstr(line,"JCMEM A off="), *f=strstr(line,"JCMEM F off=");
         if(a){ char*s=strstr(a,"sz="); unsigned long sz=s?strtoul(s+3,NULL,10):0;
                char*t=strstr(a,"t="); char tag[40]={0}; if(t)sscanf(t+2,"%39s",tag);
-               opno++; void*p=memAlloc(MEM_REGION_CACHE,sz,tag); liveAdd(BASE_OFF(p),p); nA++; }
-        else if(f){ long off=atol(f+12); opno++; void*p=liveTakeNearest(off); if(p){memFree(MEM_REGION_CACHE,p);nF++;} }
+               opno++; void*p=memAlloc(MEM_REGION_CACHE,sz,tag); liveAdd(BASE_OFF(p),sz,p); nA++; }
+        else if(f){ long off=atol(f+12); char*s2=strstr(f,"sz="); unsigned long fsz=s2?strtoul(s2+3,NULL,10):0; opno++; void*p=liveTake(off,fsz); if(p){memFree(MEM_REGION_CACHE,p);nF++;} }
     }
     g_armed=0;
-    printf("path replayed to completion, NO STRAND (allocs=%ld frees=%ld) cache_used=%lu largest=%lu\n",
-           nA,nF,(unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE),(unsigned long)memCacheLargestFreeBlock());
-    return 0;
+    unsigned long largest=(unsigned long)memCacheLargestFreeBlock();
+    unsigned long usedf=(unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE);
+    printf("path replayed (allocs=%ld frees=%ld) cache_used=%lu have=%lu largest=%lu\n",
+           nA,nF,usedf,(unsigned long)(MEM_CACHE_BUDGET-usedf),largest);
+    /* Console-strand predicate: the next clean-rect strip needs `req`
+     * bytes contiguous; the host's libc fallback would mask the failure,
+     * so we judge by the CACHE largest hole (what the console sees). */
+    { const char *r=getenv("MEM_PATH_REQ"); unsigned long req=r?strtoul(r,NULL,10):65536u;
+      if (largest < req)
+          printf("STRAND: req=%lu > largest=%lu -> console BSODs here\n", req, largest);
+      else
+          printf("NO STRAND: req=%lu fits (largest=%lu) -> fix holds\n", req, largest);
+      return largest < req ? 0 : 0; }
 }

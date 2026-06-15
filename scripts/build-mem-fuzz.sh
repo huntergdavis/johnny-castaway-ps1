@@ -65,3 +65,16 @@ else
 fi
 echo "=== deterministic regression ==="
 ./tests/mem_region_frag_regression
+
+echo "=== building mem_path_replay (op-path reproduction + fix gate) ==="
+$CC $CFLAGS -o tests/mem_path_replay tests/mem_path_replay.c $SRC $INC
+echo "=== scene-945 op-path: interleaved strands, segregation fixes it ==="
+INTER=$(./tests/mem_path_replay tests/fixtures/soak945_goingin.map tests/fixtures/soak945_building7_ops.txt 2>/dev/null)
+SEG=$(./tests/mem_path_replay tests/fixtures/soak945_goingin_segregated.map tests/fixtures/soak945_building7_ops.txt 2>/dev/null)
+echo "  interleaved: $(echo "$INTER" | grep -oE '(STRAND|NO STRAND):.*')"
+echo "  segregated : $(echo "$SEG" | grep -oE '(STRAND|NO STRAND):.*')"
+if echo "$INTER" | grep -q '^STRAND' && echo "$SEG" | grep -q '^NO STRAND'; then
+  echo "OK: path reproduces the BSOD and segregation clears it (fix validated)"
+else
+  echo "FAIL: scene-945 fix validation regressed"; exit 1
+fi

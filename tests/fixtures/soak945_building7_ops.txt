@@ -1,0 +1,12 @@
+[27028.4844] I/TTY: JCMEM A off=667688 sz=32 t=fg-sound-events-raw
+[27028.5000] I/TTY: JCMEM A off=667724 sz=2048 t=cdrom_sectorBuffer_into
+[27028.6016] I/TTY: JCMEM F off=667724 sz=2052 t=?
+[27028.6016] I/TTY: JCMEM F off=667688 sz=36 t=?
+[27028.6172] I/TTY: JCMEM F off=344080 sz=16388 t=?
+[27028.6172] I/TTY: JCMEM F off=294924 sz=49156 t=?
+[27028.6172] I/TTY: JCMEM A off=294924 sz=18432 t=fg-frame
+[27028.6172] I/TTY: JCMEM F off=360468 sz=16388 t=?
+[27028.6172] I/TTY: JCMEM A off=313360 sz=18432 t=fg-prefetch-frame
+[27029.7715] I/TTY: JCMEM F off=514084 sz=153604 t=?
+[27029.7715] I/TTY: JCMEM A off=514084 sz=65536 t=grCleanRectPixels
+[27029.7871] I/TTY: JCMEM A off=579624 sz=65536 t=grCleanRectPixels
