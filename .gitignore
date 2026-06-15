@@ -98,3 +98,5 @@ tests/mem_region_frag_regression
 tests/mem_region_heapmap_validate
 tests/mem_region_945_regression
 tests/mem_sim
+tests/mem_map_replay
+tests/mem_real_repro
