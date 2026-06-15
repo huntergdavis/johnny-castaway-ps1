@@ -426,6 +426,9 @@ static void walkSlabTryReadmit(void)
 /* per-scene clean-rect cap override (ps1_mem_model.h PS1_SCENES). */
 static uint32 sceneCap(const char *name, int lowtide)
 {
+    /* test hook: emulate the stale-cap leak (walkstuf1-high left 64K and
+     * a staged-hit building7 inherited it instead of resetting to 96K). */
+    if (getenv("MEM_REPRO_CAP64")) return 64u * 1024u;
     if (strcmp(name, "visitor3") == 0 && !lowtide) return 64u * 1024u;
     if (strcmp(name, "building2") == 0 && lowtide)  return 80u * 1024u;
     return 96u * 1024u;
@@ -554,6 +557,61 @@ int main(void)
      * spill cadence. */
     {
         { const char *nr = getenv("MEM_REPRO_NOREBUILD"); if (nr && nr[0]=='1') g_noRebuild = 1; }
+        /* 945PATH: reconstruct the EXACT scene-945 going-in layout (band
+         * in the real map order, 2 floors parked, SCR resident) then play
+         * building7-high's clean rect through the real grSaveCleanBgRects
+         * — the organic reproduction. Tests a fix when MEM_REPRO_FIX set. */
+        if (getenv("MEM_REPRO_945PATH")) {
+            extern size_t memCacheLargestFreeBlock(void);
+            /* main already established the canonical band + hook; tear it
+             * down to pristine so we can build the EXACT going-in order. */
+            memSetCacheReliefHook(NULL);
+            engineTeardownRebuild();   /* frees all + rewinds + re-establishes... */
+            /* ...then free that re-established band back to truly pristine */
+            if (g_streamWindow){memFree(MEM_REGION_CACHE,g_streamWindow);g_streamWindow=NULL;}
+            if (g_walkSlab){memFree(MEM_REGION_CACHE,g_walkSlab);g_walkSlab=NULL;}
+            if (g_frameBuf){memFree(MEM_REGION_CACHE,g_frameBuf);g_frameBuf=NULL;g_frameBufSize=0;}
+            if (g_scratch){memFree(MEM_REGION_CACHE,g_scratch);g_scratch=NULL;g_scratchSize=0;}
+            if (g_prefetch){memFree(MEM_REGION_CACHE,g_prefetch);g_prefetch=NULL;}
+            if (g_backgrnd){memFree(MEM_REGION_CACHE,g_backgrnd);g_backgrnd=NULL;}
+            if (g_holiday){memFree(MEM_REGION_CACHE,g_holiday);g_holiday=NULL;}
+            grReliefFreeScrCache(); grCleanRectSlabPoolFlush(); grFreeCleanBgRects();
+            memCacheRewindIfEmpty();
+            /* going-in order (tests/fixtures/soak945_goingin.map), user bytes */
+            g_streamWindow = (uint16*)memAlloc(MEM_REGION_CACHE, PS1_STREAM_WINDOW_BYTES, "fg-stream-window");
+            grPreparkCleanRectSlabs(2, GR_CLEAN_SLAB_FLOOR_BYTES);     /* 2 floors -> pool */
+            g_walkSlab = (uint16*)memAlloc(MEM_REGION_CACHE, PS1_WALK_PSB_BYTES, "johnwalk_spu_load");
+            g_walkSlabBytes = PS1_WALK_PSB_BYTES+4u;
+            g_frameBuf = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_FRAME_BYTES, "fg-frame"); g_frameBufSize=PS1_FRAME_BYTES;
+            g_prefetch = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_PREFETCH_BYTES, "fg-prefetch-frame");
+            g_scratch  = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_SCRATCH_BYTES, "fg-stream-scratch"); g_scratchSize=PS1_SCRATCH_BYTES;
+            g_backgrnd = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_BACKGRND_PSB_BYTES, "cdrom_read_result");
+            g_holiday  = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_HOLIDAY_PSB_BYTES, "cdrom_read_result");
+            gFullScreenScrCache = (uint8*)memAlloc(MEM_REGION_CACHE, PS1_SCR_CACHE_BYTES, "gr-scr-cache");
+            gFullScreenScrCacheBytes=PS1_SCR_CACHE_BYTES; gFullScreenScrCacheValid=1; strcpy(gFullScreenScrCacheName,"OCEAN");
+            grSetCleanBgRectsSlabRetain(1); memSetCacheReliefHook(fgCachePressureRelief);
+            printf("945PATH going-in: cache_used=%lu largest=%lu (expect 667688 / 12292)\n",
+                   cacheUsed(), (unsigned long)memCacheLargestFreeBlock());
+            /* building7-high draw bounds (per-entry union) + real island pos */
+            Soak945Bounds b = SOAK945_BOUNDS[944];
+            Soak945Scene  s = SOAK945_SEQ[944];
+            memSceneReset("945path-scene");
+            growFrameBuffers((unsigned)b.maxDataSize);     /* frame growth (16388->?) */
+            occupyTransientToHeadroom();
+            g_haltArmed=1;
+            if (setjmp(g_haltJmp)) {
+                printf("945PATH: BSOD reproduced — building7 clean rect stranded (reason=%s)\n", g_lastHaltReason);
+                printf("  cache_used=%lu have=%lu largest=%lu\n", cacheUsed(),
+                       (unsigned long)(MEM_CACHE_BUDGET-cacheUsed()), (unsigned long)memCacheLargestFreeBlock());
+                return 0;
+            }
+            int rc = sceneSaveCleanRects(b.ux+s.posx, b.uy+s.posy, b.uw, b.uh, sceneCap(s.name,s.lowtide));
+            printf("945PATH: building7 clean rect SAVED rc=%d nrects=%d cache_used=%lu largest=%lu have=%lu reliefFires=%d\n",
+                   rc, grCleanBgRectsCount(), cacheUsed(), (unsigned long)memCacheLargestFreeBlock(),
+                   (unsigned long)(MEM_CACHE_BUDGET-cacheUsed()), g_reliefFires);
+            printf("945PATH: NO STRAND (building7 placed its clean rect)\n");
+            return 0;
+        }
         /* PROBE: play one heavy scene (johnny4-class, 4 big strips at the
          * worst position) from the canonical band, tracing every step:
          * TRANSIENT occupancy, per-strip routing, CACHE largest hole. */
