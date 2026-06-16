@@ -2220,6 +2220,15 @@ int main(int argc, char **argv)
      * hole it leaves splits free space and the 150 KB SCR cache can
      * never sit contiguously (boot relief ping-pong). */
     foregroundPilotReserveStableShape();
+    /* Walk PSB slab reserved AFTER the stable shape (it's an evictable
+     * block, now segregated near the SCR cache — see
+     * foregroundPilotReserveStableShape). Boot places it after the frame
+     * buffers; the first scheduled rebuild re-establishes it contiguous
+     * with SCR at the top of CACHE (scene-945 segregation fix). */
+    {
+        extern void walkPilotReservePsbSlab(unsigned long bytes);
+        walkPilotReservePsbSlab(49152UL);
+    }
     ps1PrintfProbe("sound-init", NULL);
 
     if (bootNightValid)

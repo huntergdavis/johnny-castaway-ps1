@@ -305,12 +305,17 @@ static int sceneSaveCleanRects(int fgX, int fgY, int fgW, int fgH, uint32 cap)
 static unsigned long cacheUsed(void)
 { return (unsigned long)memRegionUsed((unsigned)MEM_REGION_CACHE); }
 
+/* MEM_REPRO_SEGREGATED=1 lays the band in the FIXED order — walk PSB
+ * reserved AFTER the sheets, contiguous with the SCR cache at the top
+ * (the scene-945 segregation fix). Default = the old interleaved order
+ * (walk early/low) that strands. */
+static int g_segregated = 0;
 static void establishBand(void)
 {
-    g_walkSlab = (uint16 *)memAlloc(MEM_REGION_CACHE, PS1_WALK_PSB_BYTES,
-                                    "johnwalk_spu_load");
-    g_walkSlabBytes = PS1_WALK_PSB_BYTES + 4u;
-
+    if (!g_segregated) {
+        g_walkSlab = (uint16 *)memAlloc(MEM_REGION_CACHE, PS1_WALK_PSB_BYTES, "johnwalk_spu_load");
+        g_walkSlabBytes = PS1_WALK_PSB_BYTES + 4u;
+    }
     g_streamWindow = (uint16 *)memAlloc(MEM_REGION_CACHE,
                                         PS1_STREAM_WINDOW_BYTES, "fg-stream-window");
     g_streamWindowBytes = PS1_STREAM_WINDOW_BYTES + 4u;
@@ -324,14 +329,17 @@ static void establishBand(void)
     g_scratch = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_SCRATCH_BYTES, "fg-stream-scratch");
     g_scratchSize = PS1_SCRATCH_BYTES;
     g_backgrnd = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_BACKGRND_PSB_BYTES, "cdrom_read_result");
+    g_holiday = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_HOLIDAY_PSB_BYTES, "cdrom_read_result");
 
+    if (g_segregated) {   /* walk reserved last -> adjacent to SCR (the fix) */
+        g_walkSlab = (uint16 *)memAlloc(MEM_REGION_CACHE, PS1_WALK_PSB_BYTES, "johnwalk_spu_load");
+        g_walkSlabBytes = PS1_WALK_PSB_BYTES + 4u;
+    }
     gFullScreenScrCache = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                             PS1_SCR_CACHE_BYTES, "gr-scr-cache");
     gFullScreenScrCacheBytes = PS1_SCR_CACHE_BYTES;
     gFullScreenScrCacheValid = 1;
     strcpy(gFullScreenScrCacheName, "OCEAN");
-
-    g_holiday = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_HOLIDAY_PSB_BYTES, "cdrom_read_result");
 }
 
 /* Teardown to pristine + re-establish the band — the body of the
@@ -527,6 +535,7 @@ int main(void)
 {
     memInit();
 
+    { const char *e = getenv("MEM_REPRO_SEGREGATED"); if (e && e[0]=='1') g_segregated = 1; }
     establishBand();
     unsigned long steady = cacheUsed();
     printf("=== BAND ESTABLISHED cache_used=%lu (expect 667688) %s ===\n",

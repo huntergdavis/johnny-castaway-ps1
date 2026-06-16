@@ -2382,6 +2382,11 @@ static void fgMaybeScheduledCacheRebuild(void)
     foregroundPilotReserveStableShape();
     fgBackdropPreloadBackgrndBmp();
     fgBackdropPreloadHolidaySheet();
+    /* Reserve the evictable walk slab LAST so it lands contiguous with the
+     * SCR cache (admitted next island scene) at the top of CACHE — the
+     * segregation that lets relief free one big arena for building7-high's
+     * 3x 64K clean-rect strips (scene-945 BSOD fix). */
+    walkPilotReservePsbSlab(49152UL);
     gFgReliefSinceRebuild = 0;
     gFgScenesSinceRebuild = 0;
     gFgRebuildCooldown = 20;
@@ -2467,7 +2472,15 @@ void foregroundPilotReserveStableShape(void)
             gFgStreamWindowBufferSize = FG_NEXT_STAGE_SIDE_BYTES;
     }
     grPreparkCleanRectSlabs(2, 98304UL);
-    walkPilotReservePsbSlab(49152UL);
+    /* NOTE: the walk PSB slab is NOT reserved here. It is an EVICTABLE
+     * block (relief tier 1) and is now reserved AFTER the BACKGRND/HOLIDAY
+     * sheets (see callers) so it lands contiguous with the SCR cache — the
+     * other big evictable — at the top of CACHE. That segregation lets a
+     * relief pass free a single >=196 KB contiguous arena, which the
+     * scene-945 building7-high clean rect (2 floor reuses + 3x 64K strips)
+     * needs; with walk and SCR scattered, relief yielded only fragments
+     * (largest 45060 < 65536 -> the BSOD). Validated byte-exact via
+     * tests/mem_path_replay against the captured op path. */
 
     /* Pre-grow the frame/prefetch pair to the rotation's practical
      * bound so their grow-only ratchets (first play of a new-biggest
