@@ -605,6 +605,43 @@ int main(void)
             Soak945Bounds b = SOAK945_BOUNDS[944];
             Soak945Scene  s = SOAK945_SEQ[944];
             memSceneReset("945path-scene");
+
+            /* THEORY C — demand-gated proactive defrag at the boundary.
+             * building7-high's fresh CACHE clean-rect demand is ~3x 64K =
+             * 196608 contiguous. If the largest contiguous hole can't
+             * serve it, rewind to pristine and re-band MANDATORY blocks
+             * only, WITHHOLDING the optional evictables (SCR/walk/HOLIDAY)
+             * so the remaining contiguous hole covers the demand. Safe
+             * here: it's the boundary, nothing of this scene is live, so
+             * memCacheRewindIfEmpty can reach a true O(1) defrag. SCR/walk
+             * re-admit next boundary. */
+            if (getenv("MEM_REPRO_FIX")) {
+                const unsigned long FRESH_DEMAND = 196608u;  /* 3x 64K */
+                if ((unsigned long)memCacheLargestFreeBlock() < FRESH_DEMAND) {
+                    unsigned long before = (unsigned long)memCacheLargestFreeBlock();
+                    grFreeCleanBgRects();
+                    if (g_streamWindow){memFree(MEM_REGION_CACHE,g_streamWindow);g_streamWindow=NULL;}
+                    if (g_frameBuf){memFree(MEM_REGION_CACHE,g_frameBuf);g_frameBuf=NULL;g_frameBufSize=0;}
+                    if (g_scratch){memFree(MEM_REGION_CACHE,g_scratch);g_scratch=NULL;g_scratchSize=0;}
+                    if (g_prefetch){memFree(MEM_REGION_CACHE,g_prefetch);g_prefetch=NULL;}
+                    if (g_backgrnd){memFree(MEM_REGION_CACHE,g_backgrnd);g_backgrnd=NULL;}
+                    if (g_holiday){memFree(MEM_REGION_CACHE,g_holiday);g_holiday=NULL;}
+                    if (g_walkSlab){memFree(MEM_REGION_CACHE,g_walkSlab);g_walkSlab=NULL;g_walkSlabBytes=0;}
+                    grReliefFreeScrCache(); grCleanRectSlabPoolFlush();
+                    memCacheRewindIfEmpty();           /* O(1) defrag -> pristine */
+                    /* re-band MANDATORY only; withhold SCR/walk/HOLIDAY */
+                    g_streamWindow=(uint16*)memAlloc(MEM_REGION_CACHE,PS1_STREAM_WINDOW_BYTES,"fg-stream-window");
+                    grPreparkCleanRectSlabs(2,GR_CLEAN_SLAB_FLOOR_BYTES);
+                    g_frameBuf=(uint8*)memAlloc(MEM_REGION_CACHE,PS1_FRAME_BYTES,"fg-frame");g_frameBufSize=PS1_FRAME_BYTES;
+                    g_prefetch=(uint8*)memAlloc(MEM_REGION_CACHE,PS1_PREFETCH_BYTES,"fg-prefetch-frame");
+                    g_scratch=(uint8*)memAlloc(MEM_REGION_CACHE,PS1_SCRATCH_BYTES,"fg-stream-scratch");g_scratchSize=PS1_SCRATCH_BYTES;
+                    g_backgrnd=(uint8*)memAlloc(MEM_REGION_CACHE,PS1_BACKGRND_PSB_BYTES,"cdrom_read_result");
+                    gFullScreenScrCache=NULL; gFullScreenScrCacheValid=0;  /* SCR withheld */
+                    printf("945PATH FIX: demand=%lu largest %lu -> %lu (withhold SCR/walk/HOLIDAY)\n",
+                           FRESH_DEMAND, before, (unsigned long)memCacheLargestFreeBlock());
+                }
+            }
+
             growFrameBuffers((unsigned)b.maxDataSize);     /* frame growth (16388->?) */
             occupyTransientToHeadroom();
             g_haltArmed=1;

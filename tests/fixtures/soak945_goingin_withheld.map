@@ -1,0 +1,10 @@
+JCMEM map-begin why=withheld used=438300 bump=688128
+JCMEM map off=0 size=98308 live tag=fg-stream-window
+JCMEM map off=98308 size=98308 live tag=grCleanRectPixels
+JCMEM map off=196616 size=98308 live tag=grCleanRectPixels
+JCMEM map off=294924 size=16388 live tag=fg-frame
+JCMEM map off=311312 size=16388 live tag=fg-prefetch-frame
+JCMEM map off=327700 size=16388 live tag=fg-stream-scratch
+JCMEM map off=344088 size=94212 live tag=cdrom_read_result
+JCMEM map off=438300 size=249828 FREE tag=-
+JCMEM map-end tail=0

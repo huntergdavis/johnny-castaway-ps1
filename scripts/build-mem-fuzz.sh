@@ -78,3 +78,14 @@ if echo "$INTER" | grep -q '^STRAND' && echo "$SEG" | grep -q '^NO STRAND'; then
 else
   echo "FAIL: scene-945 fix validation regressed"; exit 1
 fi
+
+echo "=== scene-945 fix (Theory C): withhold-rebuild clears the strand ==="
+BASE=$(./tests/mem_path_replay tests/fixtures/soak945_goingin.map tests/fixtures/soak945_building7_ops.txt 2>/dev/null)
+FIX=$(./tests/mem_path_replay tests/fixtures/soak945_goingin_withheld.map tests/fixtures/soak945_building7_ops.txt 2>/dev/null)
+echo "  baseline:  $(echo "$BASE" | grep -oE '(STRAND|NO STRAND):.*')"
+echo "  withhold:  $(echo "$FIX" | grep -oE '(STRAND|NO STRAND):.*')"
+if echo "$BASE" | grep -q '^STRAND' && echo "$FIX" | grep -q '^NO STRAND'; then
+  echo "OK: real building7 op path strands on the interleaved band, fits after the withhold-rebuild (Theory C)"
+else
+  echo "FAIL: Theory-C fix validation regressed"; exit 1
+fi
