@@ -974,6 +974,7 @@ static int __attribute__((noinline, optimize("Os")))
 fgRuntimePresentAndConsumeFirstFrameForW1High(void)
 {
     grBeginResidualCleanBgFirstFrame();
+    if (gFgBackdropThread.isRunning) islandRedrawWave(&gFgBackdropThread);
     grUpdateDisplay(NULL, NULL, NULL);
     fgRuntimeMarkFrameRendered();
     gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
@@ -995,6 +996,7 @@ static int __attribute__((noinline, optimize("Os")))
 fgRuntimePresentFirstFrameNoWait(void)
 {
     grBeginResidualCleanBgFirstFrame();
+    if (gFgBackdropThread.isRunning) islandRedrawWave(&gFgBackdropThread);
     grUpdateDisplay(NULL, NULL, NULL);
     fgRuntimeMarkFrameRendered();
     gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
@@ -1010,6 +1012,7 @@ static int __attribute__((noinline, optimize("Os")))
 fgRuntimePresentNextStagedAndAdvance(void)
 {
     grBeginResidualCleanBgFrame();
+    if (gFgBackdropThread.isRunning) islandRedrawWave(&gFgBackdropThread);
     grUpdateDisplay(NULL, NULL, NULL);
     gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
                                            gFgRuntime.displayVBlanks);

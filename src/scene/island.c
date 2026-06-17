@@ -45,9 +45,19 @@ struct TIslandState islandState = { 0, 0, 0, 0, 0, 0 };
 static int gIslandSuppressBackdropTrunk = 0;
 static int gIslandSuppressBackdropLeafs = 0;
 
-/* Track last-drawn wave sprite for replay on non-firing frames */
-static PS1Surface *lastWaveSprite = NULL;
-static sint16 lastWaveX = 0, lastWaveY = 0;
+/* Wave foam cache. The ocean shows 3 foam positions (high tide) / 4 (low
+ * tide) simultaneously; islandAnimate advances ONE position per tick. The
+ * per-frame clean-rect restore (grRestoreBgFromRects) wipes the foam
+ * region every frame, so every position must be RE-DRAWN each frame or
+ * only the most-recently-advanced one survives (the "only the small wave,
+ * flickering on/off" regression — the slow delay just made it visible;
+ * fast delay refreshed all positions before the eye noticed). Cache each
+ * position's last sprite+screen-pos, indexed by wave position, and redraw
+ * the whole set every frame. */
+#define WAVE_CACHE_MAX 4
+static PS1Surface *gWaveCacheSprite[WAVE_CACHE_MAX] = { NULL };
+static sint16 gWaveCacheX[WAVE_CACHE_MAX] = { 0 };
+static sint16 gWaveCacheY[WAVE_CACHE_MAX] = { 0 };
 static int gIslandWaveCounter1 = 0;
 static int gIslandWaveCounter2 = 0;
 
@@ -223,12 +233,18 @@ void islandAnimate(struct TTtmThread *ttmThread)
 
     grDrawSprite(grBackgroundSfc, ttmSlot, waveX, waveY, waveSpriteNo, 0);
 
-    /* Save last-drawn wave for replay on non-firing frames */
+    /* Cache this position's sprite (indexed by wave position) so the
+     * per-frame redraw can repaint the WHOLE ocean, not just this one. */
     uint16 actualSpriteNo = waveSpriteNo % ttmSlot->numSprites[0];
-    lastWaveSprite = ttmSlot->sprites[0][actualSpriteNo];
-    lastWaveX = waveX + grDx;
-    lastWaveY = waveY + grDy;
-
+    int pos = gIslandWaveCounter2;
+    if (pos >= 0 && pos < WAVE_CACHE_MAX) {
+        gWaveCacheSprite[pos] = ttmSlot->sprites[0][actualSpriteNo];
+        gWaveCacheX[pos] = waveX + grDx;
+        gWaveCacheY[pos] = waveY + grDy;
+    }
+    /* Repaint the full foam set this frame (the other positions were
+     * wiped by the clean-rect restore). */
+    islandRedrawWave(ttmThread);
 }
 
 
@@ -238,8 +254,17 @@ void islandAnimate(struct TTtmThread *ttmThread)
  */
 void islandRedrawWave(struct TTtmThread *ttmThread)
 {
-    if (lastWaveSprite) {
-        grCompositeToBackground(lastWaveSprite, lastWaveX, lastWaveY);
+    (void)ttmThread;
+    /* Redraw the WHOLE foam set (all cached positions), not just the last
+     * one — the clean-rect restore wiped the foam region this frame. Bound
+     * to the current tide's position count (3 high / 4 low) so a stale
+     * 4th-position sprite from a prior low-tide scene can't paint a ghost
+     * wave after switching to high tide. */
+    int n = islandState.lowTide ? 4 : 3;
+    if (n > WAVE_CACHE_MAX) n = WAVE_CACHE_MAX;
+    for (int i = 0; i < n; i++) {
+        if (gWaveCacheSprite[i])
+            grCompositeToBackground(gWaveCacheSprite[i], gWaveCacheX[i], gWaveCacheY[i]);
     }
 }
 
@@ -251,7 +276,8 @@ void islandRedrawWave(struct TTtmThread *ttmThread)
  */
 void islandClearWaveCache(void)
 {
-    lastWaveSprite = NULL;
+    for (int i = 0; i < WAVE_CACHE_MAX; i++)
+        gWaveCacheSprite[i] = NULL;
 }
 
 

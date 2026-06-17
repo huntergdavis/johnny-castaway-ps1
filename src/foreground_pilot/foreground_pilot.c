@@ -1989,6 +1989,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             } else {
                 grRestoreBgFromRects();
             }
+            /* Repaint the ocean foam on due-render (held) frames. The
+             * restore above wiped the foam region, and the wave ADVANCE
+             * (islandAnimate) only runs in the prepare path — so without
+             * this redraw the foam vanishes on every held frame, popping
+             * full<->empty in-scene. Redraw only (no timer advance) so the
+             * cadence stays driven by the prepare-path tick. */
+            if (gFgBackdropThread.isRunning)
+                islandRedrawWave(&gFgBackdropThread);
             if (perfDetail)
                 ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                        ps1PerfElapsedVBlanks(perfDetailTick));

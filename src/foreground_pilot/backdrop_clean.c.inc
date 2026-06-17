@@ -133,7 +133,12 @@ static void fgBackdropEnableWaveBackdrop(void)
     gFgBackdropThread.ttmSlot   = &gFgBackdropSlot;
     gFgBackdropThread.ttmLayer  = grBackgroundSfc;
     gFgBackdropThread.isRunning = 3;
-    gFgBackdropThread.delay     = 2;
+    /* Wave cadence: advance one wave frame every (delay+1) ticks. delay=2
+     * (advance every ~3 frames) looked 2x too fast; delay=40 was far too
+     * slow (foam barely populated/moved). delay=5 read as slightly too
+     * slow; delay=3 -> advance every ~4 frames, between the old 2 (too
+     * fast) and 5 (too slow). Tuned by eye against a real run. */
+    gFgBackdropThread.delay     = 3;
     gFgBackdropThread.timer     = 0;
 
     if (gFgBackdropSlot.numSprites[0] == 0) {
