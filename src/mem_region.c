@@ -75,6 +75,11 @@ static unsigned char *g_transientNext;  /* next TRANSIENT alloc here (grows DOWN
 /* High-water marks. */
 static size_t g_bootPeak;
 static size_t g_cacheUsed;
+/* When set, a CACHE alloc that the region+LRU+relief cannot satisfy
+ * returns NULL instead of libc-fallback/halt — lets the clean-rect spill
+ * catch a strand and trigger the withhold-rebuild + retry. */
+static int g_cacheAllocNoHalt = 0;
+void memSetCacheAllocNoHalt(int enabled){ g_cacheAllocNoHalt = enabled ? 1 : 0; }
 static size_t g_cachePeak;
 static size_t g_transientPeak;
 
@@ -415,6 +420,15 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                     printf("JCMEM cache-relief fired req=%lu\n",
                            (unsigned long)alignedSize);
                     p = cacheAllocInternal(alignedSize, tag);
+                }
+                if (p == NULL && g_cacheAllocNoHalt) {
+                    /* Recoverable mode (clean-rect spill): the CACHE
+                     * region + LRU + relief could not place a contiguous
+                     * block. Return NULL so the caller can defrag (the
+                     * withhold-rebuild) and retry — instead of masking the
+                     * strand via libc (which the console has none of) or
+                     * halting. This is the reactive scene-945-class fix. */
+                    return NULL;
                 }
                 if (p == NULL) {
                     /* CACHE region + panic eviction both insufficient

@@ -1037,6 +1037,10 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     }
     /* Allocate in size-descending order. The rect at original index
      * `idx` is still stored at gGrCleanRects[idx]. */
+    /* Recoverable CACHE spill: a strand returns NULL (-> goto fail ->
+     * the caller defrags via the withhold-rebuild and retries) instead
+     * of libc-masking or halting. */
+    memSetCacheAllocNoHalt(1);
     for (int s = 0; s < n; s++) {
         int idx = sortedIdx[s];
         /* MEM_REGION_RATIONALE: per-scene clean-rect snapshot (one of
@@ -1089,6 +1093,7 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
                 gGrCleanRects[idx].pixels =
                     (uint16 *)memAlloc(MEM_REGION_CACHE, bucketBytes,
                                        "grCleanRectPixels");
+                if (gGrCleanRects[idx].pixels == NULL) goto fail; /* recoverable strand */
                 gGrCleanRects[idx].capacityBytes = bucketBytes;
             }
             gGrCleanRects[idx].pixelsRegion = 1u;
@@ -1096,6 +1101,7 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
             gGrCleanRects[idx].pixels = (uint16 *)memAlloc(target,
                                                          requiredBytes[idx],
                                                          "grCleanRectPixels");
+            if (gGrCleanRects[idx].pixels == NULL) goto fail; /* recoverable strand */
             gGrCleanRects[idx].pixelsRegion =
                 (target == MEM_REGION_CACHE) ? 1u : 0u;
             gGrCleanRects[idx].capacityBytes = requiredBytes[idx];
@@ -1116,9 +1122,11 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
      * but static pixels outside those rects still need an initial refresh. */
     grMarkAllTilesDirty();
     grMarkPrevAllTilesDirty();
+    memSetCacheAllocNoHalt(0);
     return gGrCleanRectCount;
 
 fail:
+    memSetCacheAllocNoHalt(0);
     for (i = 0; i < n; i++) {
         if (allocatedThisCall[i] && gGrCleanRects[i].pixels != NULL) {
             /* Use the recorded region (dynamic routing). */

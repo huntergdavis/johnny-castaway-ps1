@@ -212,6 +212,7 @@ int memIsReady(void);
  * resets the bump and clears the free-list — defragmenting in O(1).
  * Returns 1 on rewind, 0 if live bytes remain. */
 int memCacheRewindIfEmpty(void);
+void memSetCacheAllocNoHalt(int enabled);
 
 /* R33-soak diagnostic: dump CACHE bump high-water + free-list summary. */
 void memDumpCacheStats(const char *prefix);

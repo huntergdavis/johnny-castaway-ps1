@@ -1248,6 +1248,15 @@ static void fgPlayOceanTest(void)
 }
 #endif
 
+/* Reactive scene-945-class fix: set by the clean-rect-save strand handler
+ * to force the NEXT fgMaybeScheduledCacheRebuild to fire unconditionally
+ * and re-band MANDATORY-ONLY (window/floors/frames/BACKGRND), withholding
+ * the optional SCR/walk/HOLIDAY band. That yields the proven ~249 KB
+ * contiguous hole the heavy scene's clean-rect needs; the withheld pieces
+ * re-admit lazily this scene (graceful, memTryAlloc/no-halt) or next
+ * boundary. Cleared by the rebuild once honored. */
+static int gFgForceWithholdRebuild = 0;
+
 static void fgPlayOceanRuntimeScene(const char *sceneName)
 {
     sint16 fgBoundsX = 0;
@@ -1264,6 +1273,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
     int keepBackgrndForProof = 0;
     int reuseCleanOverlayForProof = 0;
+    int fgSetupAttempt = 0;
 
     /* The SCR cache stays enabled for the proof's lifetime — it is
      * the workhorse of every transition whose clean overlay was not
@@ -1273,13 +1283,23 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * name filter in grEnsureFullScreenScrCache). */
     grSetFullScreenScrCacheEnabled(gFgLoadingWaveProofEnabled);
 
+    /* Re-entry point for the reactive clean-rect-strand recovery: a
+     * forced withhold-rebuild at fgMaybeScheduledCacheRebuild (below)
+     * re-bands mandatory-only, then the full setup re-runs on the
+     * contiguous region so the clean-rect save fits. */
+fg_setup_retry:
+    keepBackgrndForProof = 0;
+    reuseCleanOverlayForProof = 0;
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (gFgLoadingWaveProofEnabled &&
             gFgBackdropSlot.numSprites[0] > 0 &&
             gFgBackdropSlot.loadedBmpNames[0] != NULL &&
             strcmp(gFgBackdropSlot.loadedBmpNames[0], "BACKGRND.BMP") == 0)
             keepBackgrndForProof = 1;
-        if (keepBackgrndForProof && fgCleanOverlayMatches(sceneName))
+        /* On the retry the clean overlay must be re-saved fresh into the
+         * rebuilt band — never reuse a stale snapshot. */
+        if (keepBackgrndForProof && fgSetupAttempt == 0 &&
+            fgCleanOverlayMatches(sceneName))
             reuseCleanOverlayForProof = 1;
     } else {
         fgCleanOverlayInvalidate();
@@ -1579,10 +1599,25 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                                             fgBoundsH,
                                                             cleanRectEstimate,
                                                             &deferWalkCleanRecapture)) {
-            /* Phase 2 manifest item #3: clean-rect alloc is now first
-             * in TRANSIENT setup order (plan v9 PR11/PR12). The full
-             * 250 KB TRANSIENT region is available; if allocation
-             * still fails, the budget is wrong — halt for tuning. */
+            /* Reactive scene-945-class recovery: the clean-rect spill
+             * stranded CACHE (no contiguous hole for a 64K strip even
+             * after relief). Recoverable now (memSetCacheAllocNoHalt in
+             * grSaveCleanBgRects returns NULL instead of halting), so
+             * re-enter setup ONCE with a forced withhold-rebuild: it
+             * re-bands mandatory-only (window/floors/frames/BACKGRND),
+             * yielding the path-replay-proven ~249 KB contiguous hole the
+             * heavy scene's clean-rect needs. SCR/walk/HOLIDAY re-admit
+             * lazily. If the retry also strands, the band budget is wrong
+             * — halt for tuning (strictly no worse than before). */
+            if (fgSetupAttempt == 0 && gFgLoadingWaveProofEnabled) {
+                extern int printf(const char *, ...);
+                printf("JCMEM clean-rect strand: withhold-rebuild + retry scene=%s\n",
+                       sceneName ? sceneName : "(?)");
+                fgSetupAttempt = 1;
+                gFgForceWithholdRebuild = 1;
+                grSetCleanBgRectsForceCache(0);
+                goto fg_setup_retry;
+            }
             JC_BSOD(sceneName, "clean-rect alloc failed (TRANSIENT budget shortfall)");
         }
         grSetCleanBgRectsForceCache(0);
@@ -2321,13 +2356,19 @@ static void fgMaybeScheduledCacheRebuild(void)
     size_t largest;
     int streak;
     int scrAbsent;
+    int forceWithhold = gFgForceWithholdRebuild;
 
     if (!gFgLoadingWaveProofEnabled || !memIsReady())
         return;
-    gFgScenesSinceRebuild++;
-    if (gFgRebuildCooldown > 0) {
-        gFgRebuildCooldown--;
-        return;
+    /* A forced withhold-rebuild (clean-rect strand recovery) fires
+     * unconditionally — bypass the per-boundary cooldown and the
+     * dysfunction triggers; the strand IS the trigger. */
+    if (!forceWithhold) {
+        gFgScenesSinceRebuild++;
+        if (gFgRebuildCooldown > 0) {
+            gFgRebuildCooldown--;
+            return;
+        }
     }
     largest = memCacheLargestFreeBlock();
     streak = grScrCacheRefillFailStreak();
@@ -2355,7 +2396,8 @@ static void fgMaybeScheduledCacheRebuild(void)
      *      going-in region fragmented enough to self-fail mid-setup
      *      (the scene-945 mechanism). Caps going-in drift at
      *      FG_REBUILD_SCENE_CAP scenes regardless of relief activity. */
-    if (!((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
+    if (!forceWithhold &&
+        !((scrAbsent && streak >= 3 && largest < 160u * 1024u) ||
           (gFgReliefSinceRebuild >= 2 && largest < 98304u) ||
           (gFgScenesSinceRebuild >= FG_REBUILD_SCENE_CAP)))
         return;
@@ -2389,15 +2431,27 @@ static void fgMaybeScheduledCacheRebuild(void)
     foregroundPilotSetLoadingWaveProof(1);
     foregroundPilotReserveStableShape();
     fgBackdropPreloadBackgrndBmp();
-    fgBackdropPreloadHolidaySheet();
-    /* Reserve the evictable walk slab LAST so it lands contiguous with the
-     * SCR cache (admitted next island scene) at the top of CACHE — the
-     * segregation that lets relief free one big arena for building7-high's
-     * 3x 64K clean-rect strips (scene-945 BSOD fix). */
-    walkPilotReservePsbSlab(49152UL);
+    if (!forceWithhold) {
+        fgBackdropPreloadHolidaySheet();
+        /* Reserve the evictable walk slab LAST so it lands contiguous with the
+         * SCR cache (admitted next island scene) at the top of CACHE — the
+         * segregation that lets relief free one big arena for building7-high's
+         * 3x 64K clean-rect strips (scene-945 BSOD fix). */
+        walkPilotReservePsbSlab(49152UL);
+    } else {
+        /* WITHHOLD: leave HOLIDAY and the walk slab out of the band so the
+         * heavy scene's clean-rect gets the full contiguous hole. Both
+         * re-admit lazily (islandInitHoliday / walkPilotEnsureBmp) this
+         * scene if room remains, else at the next boundary's normal
+         * rebuild. */
+        extern int printf(const char *, ...);
+        printf("JCMEM withhold-rebuild done largest=%lu\n",
+               (unsigned long)memCacheLargestFreeBlock());
+    }
     gFgReliefSinceRebuild = 0;
     gFgScenesSinceRebuild = 0;
     gFgRebuildCooldown = 20;
+    gFgForceWithholdRebuild = 0;
 }
 
 void foregroundPilotPreloadIslandSheets(void)
