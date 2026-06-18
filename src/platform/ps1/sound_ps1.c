@@ -109,6 +109,10 @@ static void soundStopAllVoices(void)
 {
     volatile uint16_t *keyOff1 = (volatile uint16_t *)0xBF801D8C;
     volatile uint16_t *keyOff2 = (volatile uint16_t *)0xBF801D8E;
+    /* Diagnostic: trace what silences the ocean ambient ("waves audio
+     * stopped" report). If this fires unexpectedly the ocean loop dies
+     * with no restart. */
+    { extern int printf(const char *, ...); printf("JCSND stop-all-voices (ocean off)\n"); }
     *keyOff1 = 0xFFFFu;
     *keyOff2 = 0x00FFu;
     oceanPlaying = 0;
@@ -305,6 +309,7 @@ void oceanAmbientStop(void)
 {
     if (!oceanPlaying)
         return;
+    { extern int printf(const char *, ...); printf("JCSND ocean-ambient-stop\n"); }
     int ch = OCEAN_AMBIENT_VOICE;
     SpuSetKey(0, 1 << ch);
     oceanPlaying = 0;
