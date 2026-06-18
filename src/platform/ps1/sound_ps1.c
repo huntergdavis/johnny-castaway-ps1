@@ -234,9 +234,11 @@ void soundInit()
          * empty here — read the VAG straight into it and DMA from there.
          * Falls back to libc only for a mid-session re-init when CACHE is
          * occupied (boot, the path that matters, always uses CACHE). */
+        /* ps1_streamResolveFile prepends '\' and appends ";1" itself, so
+         * pass the BARE path (not the decorated "\SND\OCEAN.VAG;1"). */
         CdlFILE ocf;
-        if (!ps1_streamResolveFile("\\SND\\OCEAN.VAG;1", &ocf)) {
-            SOUND_DIAG_PRINTF("SPU: OCEAN.VAG not found\n");
+        if (!ps1_streamResolveFile("SND\\OCEAN.VAG", &ocf)) {
+            printf("SPU: OCEAN.VAG resolve failed\n");
             break;
         }
         uint32_t vagSize = (uint32_t)ocf.size;
