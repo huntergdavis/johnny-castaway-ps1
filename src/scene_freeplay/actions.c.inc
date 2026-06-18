@@ -222,7 +222,15 @@ static void fpOpenPauseMenu(void)
     if (pauseMenuRequestExitFreeplay ||
         pauseMenuRequestNextScene ||
         pauseMenuRequestResetLoop ||
-        pauseMenuRequestSceneSetCycle) {
+        pauseMenuRequestSceneSetCycle ||
+        pauseMenuRequestPlayScene >= 0 ||
+        pauseMenuRequestLoopScene >= 0) {
+        /* Scene Explorer picks (Cross/Triangle) set RequestPlay/LoopScene.
+         * Those are consumed by the MAIN loop (jc_reborn.c), which never
+         * runs while freeplay owns the frame — so without exiting here the
+         * pick was silently dropped ("selected a scene, it didn't switch").
+         * Exit freeplay and LEAVE the request flags set so the main loop
+         * plays the chosen scene on its next iteration. */
         pauseMenuRequestExitFreeplay = 0;
         pauseMenuRequestFreeplayWorldRefresh = 0;
         gFreeplayExitRequested = 1;

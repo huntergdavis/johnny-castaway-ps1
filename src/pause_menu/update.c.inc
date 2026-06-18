@@ -173,6 +173,24 @@ int pauseMenuUpdate(void)
         return 0;
     }
 
+    /* Scene Explorer is a STATIC screen: a thumbnail (LoadImage'd once) plus
+     * two opaque purple chrome bands + text. The thumbnail stays rock-stable
+     * because it's written to the single framebuffer exactly once; redrawing
+     * the bands+text EVERY frame, by contrast, rewrites the live framebuffer
+     * each interlaced field and makes the solid purple bands flicker while
+     * the write-once thumbnail does not (the reported "purple flashes, image
+     * doesn't" bug). Once this cursor's chrome is on screen — same state as
+     * last frame, framebuffer primed, and the thumbnail already loaded for
+     * the current cursor — skip the redraw. Input was handled above, so a
+     * cursor change (which resets sceneExplorerLoadedCursor) still triggers a
+     * fresh draw on the next frame. */
+    if (menuState == PAUSE_MENU_SCENE_EXPLORER &&
+        oldState == PAUSE_MENU_SCENE_EXPLORER &&
+        menuFramebufferPrimed &&
+        pauseMenuExplorerCursor == sceneExplorerLoadedCursor) {
+        return 1;
+    }
+
     /* Build panel quads NOW (post-input-handler) so the menu state we
      * transition into this frame controls the panel layout, not the
      * outgoing state. */

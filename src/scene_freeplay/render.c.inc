@@ -280,11 +280,16 @@ static void fpFrame(void)
 {
     grBeginFrame();
     grRestoreBgFromRects();
-    /* Wave tick rate matches the FG2 backdrop thread (delay=8 in
-     * islandInit), i.e. once every 8 frames. The previous & 3UL
-     * (every 4 frames) ran the ocean at 2x speed in freeplay. */
-    if ((gFp.frame & 7UL) == 0)
-        fgBackdropTickWavesPublic();
+    /* Tick the waves EVERY frame, exactly like normal play. The clean-rect
+     * restore above wipes the foam region each frame, so the foam must be
+     * repainted each frame or it only survives on tick frames (the "flashes
+     * too fast / barely animates" freeplay regression). fgBackdropTickWaves-
+     * Public self-throttles internally: it advances one wave frame every
+     * gFgBackdropThread.delay (3) frames and REDRAWS the cached foam on the
+     * in-between frames. Gating the whole call to every 8th frame both
+     * dropped the foam 7 frames out of 8 (the flash) and slowed the
+     * advance to once per ~32 frames. */
+    fgBackdropTickWavesPublic();
     fpDrawFire();
     fpDrawAsset(&gFp.summon);
     fpDrawJohnny();
