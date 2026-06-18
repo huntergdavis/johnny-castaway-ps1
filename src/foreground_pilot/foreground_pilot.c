@@ -1290,6 +1290,18 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 fg_setup_retry:
     keepBackgrndForProof = 0;
     reuseCleanOverlayForProof = 0;
+    if (fgSetupAttempt > 0) {
+        /* visitor3 BSOD (2026-06-17 soak): the withhold-rebuild cleared a
+         * ~249828 contiguous hole, but islandInit then re-loaded the
+         * OCEAN*.SCR backdrop's 153600-byte CACHE cache copy straight into
+         * it, re-stranding the clean-rect save. Disable the SCR cache for
+         * the retry setup so the backdrop streams transiently to the bg
+         * tiles (grLoadFullScreenScrStreamed) and the hole stays clear for
+         * the clean-rect strips. The cache re-admits at the next scene
+         * boundary (grSetFullScreenScrCacheEnabled is re-armed at the top
+         * of the next fgPlayOceanRuntimeScene). */
+        grSetFullScreenScrCacheEnabled(0);
+    }
     if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (gFgLoadingWaveProofEnabled &&
             gFgBackdropSlot.numSprites[0] > 0 &&

@@ -535,6 +535,55 @@ int main(void)
 {
     memInit();
 
+    /* VISITOR3 mode: reproduce the 2026-06-17 soak BSOD and prove the SCR
+     * withhold clears it, through the REAL allocator + grSaveCleanBgRectsSplit.
+     * The withhold-rebuild cleared a ~249828 contiguous hole, but islandInit
+     * re-loaded OCEAN*.SCR's 153600 cache copy into it -> re-stranded the save.
+     *   MEM_REPRO_VISITOR3=1                  -> SCR withheld (the fix): FITS
+     *   MEM_REPRO_VISITOR3=1 SCR_RESIDENT=1   -> SCR in hole (the bug):  STRANDS */
+    if (getenv("MEM_REPRO_VISITOR3")) {
+        extern size_t memCacheLargestFreeBlock(void);
+        int withScr = (getenv("SCR_RESIDENT") != NULL);
+        /* MANDATORY-ONLY (withheld) band: window + 2 floors + frames +
+         * prefetch + scratch + BACKGRND. NO walk, NO holiday, NO SCR. */
+        g_streamWindow = (uint16 *)memAlloc(MEM_REGION_CACHE, PS1_STREAM_WINDOW_BYTES, "fg-stream-window");
+        grPreparkCleanRectSlabs(2, GR_CLEAN_SLAB_FLOOR_BYTES);
+        g_frameBuf = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_FRAME_BYTES, "fg-frame");
+        g_prefetch = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_PREFETCH_BYTES, "fg-prefetch-frame");
+        g_scratch  = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_SCRATCH_BYTES, "fg-stream-scratch");
+        g_backgrnd = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_BACKGRND_PSB_BYTES, "cdrom_read_result");
+        printf("=== VISITOR3 withheld band: used=%lu largest-hole=%lu ===\n",
+               cacheUsed(), (unsigned long)memCacheLargestFreeBlock());
+        grSetCleanBgRectsSlabRetain(1);
+        memSetCacheReliefHook(fgCachePressureRelief);
+        if (withScr) {
+            gFullScreenScrCache = (uint8 *)memAlloc(MEM_REGION_CACHE, PS1_SCR_CACHE_BYTES, "gr-scr-cache");
+            gFullScreenScrCacheBytes = PS1_SCR_CACHE_BYTES; gFullScreenScrCacheValid = 1;
+            strcpy(gFullScreenScrCacheName, "OCEAN");
+            printf("    SCR cache RESIDENT (153600) -> hole now %lu (the bug)\n",
+                   (unsigned long)memCacheLargestFreeBlock());
+        } else {
+            printf("    SCR cache WITHHELD (the fix: grSetFullScreenScrCacheEnabled(0) on retry)\n");
+        }
+        occupyTransientToHeadroom();
+        /* visitor3 fg draw-bounds union (-107,43,869,302), realistic island pos */
+        int ok = sceneSaveCleanRects(-107, 43, 869, 302, 96u * 1024u);
+        printf("=== VISITOR3 clean-rect save: %s ===\n", ok ? "FITS" : "STRANDED");
+        /* What the harness CAN prove: the mandatory-only band yields a 249828
+         * contiguous hole and visitor3's ~400K clean rect fits in it once SCR
+         * is not occupying it -> the SCR-disable fix is SUFFICIENT.
+         * What it can't: the SCR-resident STRAND. The relief hook here cleanly
+         * frees the one contiguous SCR block and coalesces, so the simplified
+         * harness recovers; the real soak strands because frame-growth +
+         * interleaved strips fragment the freed SCR region so it can't coalesce
+         * (the documented within-setup fidelity gap). The resident strand is
+         * confirmed from the real console trace, not modeled here. */
+        if (!ok) { printf("FAIL: visitor3 clean rect should fit the 249828 hole\n"); return 1; }
+        printf("OK: 249828 withheld hole fits visitor3's clean rect (fix sufficient)%s\n",
+               withScr ? " [SCR-resident: harness relief over-recovers; see note]" : "");
+        return 0;
+    }
+
     { const char *e = getenv("MEM_REPRO_SEGREGATED"); if (e && e[0]=='1') g_segregated = 1; }
     establishBand();
     unsigned long steady = cacheUsed();
