@@ -83,6 +83,12 @@ static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 heigh
             ? (PS1Surface*)memAlloc(MEM_REGION_TRANSIENT, sizeof(PS1Surface), "bgtile-struct")
             : (PS1Surface*)safe_malloc(sizeof(PS1Surface));
         resetBgTileRAMFields(*slot, width, height);
+        /* Diagnostic: trace bg-tile pixel allocs to pin the explorer-launch
+         * TRANSIENT overflow (a 5th bgtile-pixels orphaning churn). */
+        { extern int printf(const char *, ...);
+          printf("JCTILE alloc slot=%p w=%u h=%u bytes=%lu\n",
+                 (void*)slot, (unsigned)width, (unsigned)height,
+                 (unsigned long)((uint32)width * height * 2u)); }
         /* MEM_REGION_RATIONALE: TRANSIENT background tile pixels, same
          * per-scene lifetime as createEmptyBgTileRAM. */
         (*slot)->pixels = memIsReady()
