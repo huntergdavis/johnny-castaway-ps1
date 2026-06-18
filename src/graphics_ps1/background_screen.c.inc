@@ -654,9 +654,14 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 enum {
     SCENE_EXPLORER_THUMB_W = 320,
     SCENE_EXPLORER_THUMB_H = 240,
-    /* 16 -> 8 rows per read (2026-06-12): halves the static chunk
-     * buffer (10 KB -> 5 KB) for libc headroom at the cost of twice
-     * the CD chunk calls per thumbnail — explorer-only, not on the
-     * scene-transition hot path. */
-    SCENE_EXPLORER_THUMB_ROWS_PER_READ = 8,
+    /* MUST keep each chunk's byte offset sector-aligned (multiple of
+     * 2048): ps1_streamReadAlignedFromCdFileInto rejects unaligned reads
+     * (returns 0). Chunk offset = chunkIndex * ROWS_PER_READ * (320*2).
+     * ROWS_PER_READ=16 -> 10240 bytes = 5 sectors (aligned). The
+     * 2026-06-12 change to 8 (5120 bytes = 2.5 sectors) made every odd
+     * chunk unaligned, so the read failed and grLoadSceneExplorerThumbnail
+     * returned 0 EVERY frame — the explorer re-cleared its chrome bands to
+     * black on each retry, which read as the "purple bands flash" bug. The
+     * 10 KB static chunk buffer is worth a working thumbnail. */
+    SCENE_EXPLORER_THUMB_ROWS_PER_READ = 16,
 };

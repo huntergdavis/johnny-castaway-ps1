@@ -339,6 +339,12 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
             extern void *malloc(size_t);
             void *p = malloc(alignedSize);
             if (p == NULL) {
+                /* Name the failing allocation so a TRANSIENT-exhaustion
+                 * BSOD is self-diagnosing (which buffer overflowed). */
+                extern int printf(const char *, ...);
+                printf("JCMEM TRANSIENT-FAIL tag=%s req=%lu used=%lu remaining=%lu\n",
+                       tag ? tag : "(?)", (unsigned long)alignedSize,
+                       (unsigned long)used, (unsigned long)remaining);
                 memHaltFmt("TRANSIENT", "region+libc both exhausted",
                            alignedSize, remaining);
             }
