@@ -121,6 +121,10 @@ static int menuFreeplayActive = 0;
  * index and pauseMenuRequestSceneSetCycle fires on each cycle so the
  * main loop knows to re-randomize. */
 int pauseMenuRequestSceneSetCycle = 0;
+/* Set when the scene-picker policy changes so the main loop drops the
+ * already-staged lookahead scene (picked under the old policy) and the new
+ * policy takes effect on the very next scene. */
+int pauseMenuRequestPickerReset = 0;
 int pauseMenuSceneSet = 0;
 
 /* Scene Explorer — pin a scene for one-shot play (Cross) or loop

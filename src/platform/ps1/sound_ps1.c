@@ -110,10 +110,6 @@ static void soundStopAllVoices(void)
 {
     volatile uint16_t *keyOff1 = (volatile uint16_t *)0xBF801D8C;
     volatile uint16_t *keyOff2 = (volatile uint16_t *)0xBF801D8E;
-    /* Diagnostic: trace what silences the ocean ambient ("waves audio
-     * stopped" report). If this fires unexpectedly the ocean loop dies
-     * with no restart. */
-    { extern int printf(const char *, ...); printf("JCSND stop-all-voices (ocean off)\n"); }
     *keyOff1 = 0xFFFFu;
     *keyOff2 = 0x00FFu;
     oceanPlaying = 0;
@@ -295,8 +291,8 @@ void soundInit()
 
         if (vagRegion == (int)MEM_REGION_CACHE) memFree(MEM_REGION_CACHE, vagData);
         else free(vagData);
-        printf("JCSND OCEAN.VAG loaded adpcm=%lu @0x%lx region=%d\n",
-               (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr, vagRegion);
+        SOUND_DIAG_PRINTF("SPU: OCEAN.VAG loaded (%lu bytes ADPCM @ 0x%lx)\n",
+                          (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr);
     } while (0);
 
     soundUpdateSpuCacheWindow(spuAddr);
@@ -309,10 +305,6 @@ void soundInit()
 
 void oceanAmbientStart(void)
 {
-    { extern int printf(const char *, ...);
-      printf("JCSND ocean-start req: loaded=%d playing=%d muted=%d enabled=%d addr=0x%lx\n",
-             oceanLoaded, oceanPlaying, soundMuted, oceanAmbientEnabled,
-             (unsigned long)oceanSpuAddr); }
     if (!oceanLoaded || oceanPlaying || soundMuted)
         return;
     int ch = OCEAN_AMBIENT_VOICE;
@@ -343,7 +335,6 @@ void oceanAmbientStop(void)
 {
     if (!oceanPlaying)
         return;
-    { extern int printf(const char *, ...); printf("JCSND ocean-ambient-stop\n"); }
     int ch = OCEAN_AMBIENT_VOICE;
     SpuSetKey(0, 1 << ch);
     oceanPlaying = 0;

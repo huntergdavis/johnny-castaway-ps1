@@ -228,10 +228,12 @@ static int handleSceneSetOptionsInput(uint16 pressed)
         if (pressed & PAD_LEFT) {
             policy = (policy + SCENE_PICKER_COUNT - 1) % SCENE_PICKER_COUNT;
             pickerSetPolicy(policy);
+            pauseMenuRequestPickerReset = 1;
         }
         if (pressed & PAD_RIGHT) {
             policy = (policy + 1) % SCENE_PICKER_COUNT;
             pickerSetPolicy(policy);
+            pauseMenuRequestPickerReset = 1;
         }
     }
 

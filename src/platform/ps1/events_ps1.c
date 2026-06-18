@@ -732,6 +732,17 @@ void eventsWaitTick(uint16 delay)
                 printf("JCPAD START PATH EXITED\n");
 #endif
         }
+
+        /* SELECT skips directly to the next scene (no menu). The FG2 scene
+         * loop breaks on pauseMenuRequestNextScene and jc_reborn's outer loop
+         * advances. Debounce until release so one press skips one scene. */
+        if (buttons & PAD_SELECT) {
+            pauseMenuRequestNextScene = 1;
+            while (ps1PadButtonsWithAnalog((PADTYPE*)pad_buff[0]) & PAD_SELECT)
+                VSync(0);
+            lastFrameTick = (uint32)VSync(-1);
+            return;
+        }
     }
 
     {

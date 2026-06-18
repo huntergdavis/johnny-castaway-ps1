@@ -106,6 +106,7 @@ extern int pauseMenuRequestFreeplayWorldRefresh;
  * jc_reborn reads it via the picker. The "request" flag fires on a
  * cycle so the consumer can re-randomize from the new pool. */
 extern int pauseMenuRequestSceneSetCycle;
+extern int pauseMenuRequestPickerReset;
 extern int pauseMenuSceneSet;            /* current set index, see jc_reborn.c */
 
 /* Scene Explorer — pin a specific scene by index (0..62 into

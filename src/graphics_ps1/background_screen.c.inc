@@ -215,9 +215,6 @@ void grFadeOut()
 static void freeBgTile(PS1Surface **tile)
 {
     if (*tile != NULL) {
-        { extern int printf(const char *, ...);
-          printf("JCTILE free slot=%p pixels=%p\n", (void*)tile,
-                 (void*)((*tile)->pixels)); }
         if ((*tile)->pixels) {
             if (memIsReady()) memFree(MEM_REGION_TRANSIENT, (*tile)->pixels);
             else free((*tile)->pixels);

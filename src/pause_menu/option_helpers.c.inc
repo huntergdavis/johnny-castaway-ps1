@@ -228,45 +228,88 @@ static void drawMainMenu(void)
     pmPrintf(pmText(PMT_MAIN_TITLE));
     drawSeparator();
 
-    /* Below the header: the paused scene's catalog number + family on one
-     * line and its display name on the next, so a viewer can identify (and
-     * look up) what's on screen. The runtime scene name uses the same slugs
-     * as the explorer catalog. Kept to two lines + a separator so the main
-     * menu still fits the panel. */
+    /* Below the header: three rows identifying what's on screen —
+     *   row 1: catalog number + current animation frame (Scene N/M  Frame X/Y)
+     *   row 2: scene name
+     *   row 3: scene description
+     * The display name is stored as "NAME - description"; we split it at the
+     * " - " separator. When Johnny is walking between scenes the FG2 runtime
+     * is idle (empty scene name), so show a walking indicator instead. */
     {
         const char *slug = foregroundPilotRuntimeSceneName();
-        int sceneIdx = -1;
-        if (slug != NULL && slug[0] != '\0') {
+        if (slug == NULL || slug[0] == '\0') {
+            pmPrintf("Walking between scenes...");
+            drawSeparator();
+        } else {
+            int sceneIdx = -1;
             for (int i = 0; i < gSceneExplorerCount; i++) {
                 if (strcmp(gSceneExplorer[i].slug, slug) == 0) {
                     sceneIdx = i;
                     break;
                 }
             }
-        }
-        if (sceneIdx >= 0) {
-            const struct TSceneExplorerEntry *e = &gSceneExplorer[sceneIdx];
-            const char *name = sceneExplorerDisplayName(sceneIdx);
-            /* Truncate to the panel width (~31 glyphs) with an ellipsis. */
-            char nameBuf[31];
-            int n = 0;
-            while (name[n] != '\0' && n < (int)sizeof(nameBuf) - 1) {
-                nameBuf[n] = name[n];
-                n++;
+            unsigned fIdx = (unsigned)foregroundPilotRuntimeFrameIndex();
+            unsigned fCnt = (unsigned)foregroundPilotRuntimeFrameCount();
+            if (sceneIdx >= 0) {
+                const char *name = sceneExplorerDisplayName(sceneIdx);
+                /* Find the " - " separator splitting name from description. */
+                const char *desc = NULL;
+                int nameLen = 0;
+                {
+                    int i = 0;
+                    while (name[i] != '\0') {
+                        if (name[i] == ' ' && name[i + 1] == '-' &&
+                            name[i + 2] == ' ') {
+                            desc = name + i + 3;
+                            break;
+                        }
+                        i++;
+                    }
+                    nameLen = i;
+                }
+                /* Row 1: number + current frame, same line. */
+                if (fCnt > 0)
+                    pmPrintf("Scene %d/%d   Frame %u/%u", sceneIdx + 1,
+                             gSceneExplorerCount, fIdx + 1u, fCnt);
+                else
+                    pmPrintf("Scene %d/%d", sceneIdx + 1, gSceneExplorerCount);
+                /* Row 2: name (ellipsis-truncated to the panel width). */
+                {
+                    char nameBuf[31];
+                    int n = nameLen;
+                    if (n > (int)sizeof(nameBuf) - 1) n = sizeof(nameBuf) - 1;
+                    for (int i = 0; i < n; i++) nameBuf[i] = name[i];
+                    if (nameLen > (int)sizeof(nameBuf) - 1 && n >= 4) {
+                        nameBuf[n - 3] = '.'; nameBuf[n - 2] = '.'; nameBuf[n - 1] = '.';
+                    }
+                    nameBuf[n] = '\0';
+                    pmPrintf("%s", nameBuf);
+                }
+                /* Row 3: description (or family name if the title had none). */
+                if (desc != NULL && desc[0] != '\0') {
+                    char descBuf[31];
+                    int n = 0;
+                    while (desc[n] != '\0' && n < (int)sizeof(descBuf) - 1) {
+                        descBuf[n] = desc[n];
+                        n++;
+                    }
+                    if (desc[n] != '\0' && n >= 4) {
+                        descBuf[n - 3] = '.'; descBuf[n - 2] = '.'; descBuf[n - 1] = '.';
+                    }
+                    descBuf[n] = '\0';
+                    pmPrintf("%s", descBuf);
+                } else {
+                    pmPrintf("%s",
+                             sceneExplorerFamilyName(gSceneExplorer[sceneIdx].family_index));
+                }
+                drawSeparator();
+            } else {
+                if (fCnt > 0)
+                    pmPrintf("Scene: %s   Frame %u/%u", slug, fIdx + 1u, fCnt);
+                else
+                    pmPrintf("Scene: %s", slug);
+                drawSeparator();
             }
-            if (name[n] != '\0' && n >= 4) {
-                nameBuf[n - 3] = '.';
-                nameBuf[n - 2] = '.';
-                nameBuf[n - 1] = '.';
-            }
-            nameBuf[n] = '\0';
-            pmPrintf("Scene %d/%d  %s", sceneIdx + 1, gSceneExplorerCount,
-                     sceneExplorerFamilyName(e->family_index));
-            pmPrintf("%s", nameBuf);
-            drawSeparator();
-        } else if (slug != NULL && slug[0] != '\0') {
-            pmPrintf("Scene: %s", slug);
-            drawSeparator();
         }
     }
 

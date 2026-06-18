@@ -1665,6 +1665,21 @@ fg_setup_retry:
                                              islandState.yPos);
     }
     FG_CACHE_CHECK("fg-after-walk-clean");
+
+    /* Seed the initial surf so the scene's FIRST visible frame already shows
+     * foam. The proof path's fgBackdropEnableWaveBackdrop only CLEARS the
+     * foam cache (it must — the clean-rect snapshot and walk-clean baseline
+     * have to stay wave-less so the animated foam composites on top rather
+     * than baking in). Both captures are done now, so advancing a full wave
+     * cycle here populates the foam cache that the per-frame islandRedrawWave
+     * repaints from. Without this the island starts wave-less ("fake and
+     * jagged") until the wave thread's first advance ~16 frames in. */
+    if (gFgBackdropThread.isRunning && gFgLoadingWaveProofEnabled) {
+        int waveSeeds = islandState.lowTide ? 4 : 3;
+        for (int s = 0; s < waveSeeds; s++)
+            islandAnimate(&gFgBackdropThread);
+    }
+
     /* Force a full-tile framebuffer upload on the FIRST scene-frame
      * upload. Without this, scene N+1's first grDrawBackground only
      * uploads its dirty-row union, so any framebuffer pixels left from

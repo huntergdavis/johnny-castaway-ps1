@@ -149,6 +149,20 @@ static void ps1PrepareSceneExplorerLaunch(void)
     walkPilotReleaseCleanWalkArea();
     foregroundPilotTeardownForFreeplay();
     walkRenderResetCache();
+
+    /* Start fresh. Launching directly from freeplay (or the explorer) leaves
+     * the previous mode's residency scattered across CACHE/TRANSIENT; a heavy
+     * scene's setup then over-subscribes the region and blue-screens. Drain
+     * every unpinned cache, rewind CACHE to a pristine bump base, and rebuild
+     * the canonical stable-shape band + island sheets so the selected scene
+     * sees the same clean memory state as a normal boot. */
+    {
+        extern void lruEvictAllUnpinned(void);
+        lruEvictAllUnpinned();
+        memCacheRewindIfEmpty();
+        foregroundPilotReserveStableShape();
+        foregroundPilotPreloadIslandSheets();
+    }
 }
 #endif
 
@@ -2317,6 +2331,20 @@ int main(int argc, char **argv)
             fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
             skipWalkThisIteration = 1;
+        }
+
+        /* Scene-picker policy changed in the pause menu. Drop the lookahead
+         * (which was picked under the OLD policy) and reset the sequence so
+         * the new policy takes effect on the very NEXT scene rather than one
+         * or two scenes later — that lag made Sequential look broken. */
+        if (pauseMenuRequestPickerReset) {
+            extern void pickerOnSceneSetCycle(void);
+            pauseMenuRequestPickerReset = 0;
+            explicitScene = NULL;
+            fgLoopClearStageLookahead();
+            pickerOnSceneSetCycle();
+            fgLoopForgetWalkContext();
+            fgLoopSequenceJustReset = 1;
         }
 
         /* Scene Explorer pins — Cross plays once and reverts; Triangle
