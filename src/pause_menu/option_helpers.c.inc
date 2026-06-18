@@ -228,6 +228,48 @@ static void drawMainMenu(void)
     pmPrintf(pmText(PMT_MAIN_TITLE));
     drawSeparator();
 
+    /* Below the header: the paused scene's catalog number + family on one
+     * line and its display name on the next, so a viewer can identify (and
+     * look up) what's on screen. The runtime scene name uses the same slugs
+     * as the explorer catalog. Kept to two lines + a separator so the main
+     * menu still fits the panel. */
+    {
+        const char *slug = foregroundPilotRuntimeSceneName();
+        int sceneIdx = -1;
+        if (slug != NULL && slug[0] != '\0') {
+            for (int i = 0; i < gSceneExplorerCount; i++) {
+                if (strcmp(gSceneExplorer[i].slug, slug) == 0) {
+                    sceneIdx = i;
+                    break;
+                }
+            }
+        }
+        if (sceneIdx >= 0) {
+            const struct TSceneExplorerEntry *e = &gSceneExplorer[sceneIdx];
+            const char *name = sceneExplorerDisplayName(sceneIdx);
+            /* Truncate to the panel width (~31 glyphs) with an ellipsis. */
+            char nameBuf[31];
+            int n = 0;
+            while (name[n] != '\0' && n < (int)sizeof(nameBuf) - 1) {
+                nameBuf[n] = name[n];
+                n++;
+            }
+            if (name[n] != '\0' && n >= 4) {
+                nameBuf[n - 3] = '.';
+                nameBuf[n - 2] = '.';
+                nameBuf[n - 1] = '.';
+            }
+            nameBuf[n] = '\0';
+            pmPrintf("Scene %d/%d  %s", sceneIdx + 1, gSceneExplorerCount,
+                     sceneExplorerFamilyName(e->family_index));
+            pmPrintf("%s", nameBuf);
+            drawSeparator();
+        } else if (slug != NULL && slug[0] != '\0') {
+            pmPrintf("Scene: %s", slug);
+            drawSeparator();
+        }
+    }
+
     pmPrintf(pmText(PMT_MAIN_RESUME),
              menuCursor == MENU_RESUME ? ">" : " ");
     /* Scene Set Options is a sub-screen; the inline cycler moved into
