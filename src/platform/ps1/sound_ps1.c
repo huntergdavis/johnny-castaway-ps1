@@ -31,6 +31,7 @@
 #include "config.h"
 #include "utils.h"
 #include "cdrom_ps1.h"
+#include "mem_region.h"
 
 #ifndef SOUND_PS1_DIAG_LOGS
 #define SOUND_PS1_DIAG_LOGS 0
@@ -223,17 +224,25 @@ void soundInit()
      * data block, 0x03 on last) so the SPU loops in hardware with
      * no need to set SPU_CH_LOOP_ADDR from the C side. */
     do {
-        uint32_t vagSize = 0;
-        uint8_t *vagData = ps1_loadRawFile("\\SND\\OCEAN.VAG;1", &vagSize);
-        if (!vagData) {
+        /* OCEAN.VAG is ~123 KB — far larger than the SFX (<=6 KB). The old
+         * ps1_loadRawFile path malloc'd the whole file from the libc heap,
+         * which is too tight at boot (the 1440 KB region buffer leaves
+         * little) -> the malloc returned NULL, the ambience never loaded
+         * (oceanLoaded stayed 0), and the "wave sounds" toggle was a silent
+         * no-op (oceanAmbientStart bails on !oceanLoaded). soundInit runs
+         * BEFORE the stable-shape band is reserved, so the CACHE region is
+         * empty here — read the VAG straight into it and DMA from there.
+         * Falls back to libc only for a mid-session re-init when CACHE is
+         * occupied (boot, the path that matters, always uses CACHE). */
+        CdlFILE ocf;
+        if (!ps1_streamResolveFile("\\SND\\OCEAN.VAG;1", &ocf)) {
             SOUND_DIAG_PRINTF("SPU: OCEAN.VAG not found\n");
             break;
         }
-        if (vagSize <= VAG_HEADER_SIZE) {
-            free(vagData);
+        uint32_t vagSize = (uint32_t)ocf.size;
+        if (vagSize <= VAG_HEADER_SIZE)
             break;
-        }
-        uint16_t sampleRate = (uint16_t)readBE32(vagData + 16);
+        uint16_t sampleRate;
         uint32_t adpcmSize = vagSize - VAG_HEADER_SIZE;
         uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
 
@@ -241,21 +250,40 @@ void soundInit()
             printf("SPU: out of RAM for OCEAN.VAG (need %lu, have %lu)\n",
                    (unsigned long)dmaSize,
                    (unsigned long)(SPU_RAM_SIZE_BYTES - spuAddr));
-            free(vagData);
             break;
         }
 
-        uint8_t *dmaBuf = (uint8_t *)malloc(dmaSize);
-        if (!dmaBuf) { free(vagData); break; }
-        memcpy(dmaBuf, vagData + VAG_HEADER_SIZE, adpcmSize);
+        /* Sector-rounded buffer covering the header + DMA range, for the
+         * sector-aligned CD read. */
+        uint32_t bufBytes = (VAG_HEADER_SIZE + dmaSize + 2047u) & ~2047u;
+        int vagRegion = (int)MEM_REGION_CACHE;
+        uint8_t *vagData = (uint8_t *)memTryAlloc(MEM_REGION_CACHE, bufBytes,
+                                                  "ocean-vag-load");
+        if (vagData == NULL) {
+            vagData = (uint8_t *)malloc(bufBytes);
+            vagRegion = -1;
+        }
+        if (vagData == NULL) {
+            SOUND_DIAG_PRINTF("SPU: OCEAN.VAG no buffer (%lu)\n",
+                              (unsigned long)bufBytes);
+            break;
+        }
+        if (!ps1_streamReadAlignedIntoFile(&ocf, 0, bufBytes, vagData)) {
+            if (vagRegion == (int)MEM_REGION_CACHE) memFree(MEM_REGION_CACHE, vagData);
+            else free(vagData);
+            break;
+        }
+
+        sampleRate = (uint16_t)readBE32(vagData + 16);
+        /* Zero the DMA padding tail beyond the ADPCM (in bounds: bufBytes is
+         * sector-rounded above VAG_HEADER_SIZE + dmaSize). */
         if (dmaSize > adpcmSize)
-            memset(dmaBuf + adpcmSize, 0, dmaSize - adpcmSize);
+            memset(vagData + VAG_HEADER_SIZE + adpcmSize, 0, dmaSize - adpcmSize);
 
         SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
         SpuSetTransferStartAddr(spuAddr);
-        SpuWrite((uint32_t *)dmaBuf, dmaSize);
+        SpuWrite((uint32_t *)(vagData + VAG_HEADER_SIZE), dmaSize);
         SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
-        free(dmaBuf);
 
         oceanSpuAddr   = spuAddr;
         oceanAdpcmSize = adpcmSize;
@@ -263,10 +291,10 @@ void soundInit()
         oceanLoaded    = 1;
         spuAddr += dmaSize;
 
-        free(vagData);
-        SOUND_DIAG_PRINTF("SPU: OCEAN.VAG loaded (%lu bytes ADPCM @ 0x%lx, %u Hz)\n",
-                          (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr,
-                          (unsigned)sampleRate);
+        if (vagRegion == (int)MEM_REGION_CACHE) memFree(MEM_REGION_CACHE, vagData);
+        else free(vagData);
+        printf("JCSND OCEAN.VAG loaded adpcm=%lu @0x%lx region=%d\n",
+               (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr, vagRegion);
     } while (0);
 
     soundUpdateSpuCacheWindow(spuAddr);
