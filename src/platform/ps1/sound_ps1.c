@@ -279,6 +279,10 @@ void soundInit()
 
 void oceanAmbientStart(void)
 {
+    { extern int printf(const char *, ...);
+      printf("JCSND ocean-start req: loaded=%d playing=%d muted=%d enabled=%d addr=0x%lx\n",
+             oceanLoaded, oceanPlaying, soundMuted, oceanAmbientEnabled,
+             (unsigned long)oceanSpuAddr); }
     if (!oceanLoaded || oceanPlaying || soundMuted)
         return;
     int ch = OCEAN_AMBIENT_VOICE;

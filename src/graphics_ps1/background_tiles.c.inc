@@ -29,6 +29,10 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     tile->nextTile = NULL;
     /* MEM_REGION_RATIONALE: TRANSIENT background tile pixels, overwritten
      * by each scene's screen load and not reused across scene boundaries. */
+    { extern int printf(const char *, ...);
+      printf("JCTILE empty-alloc w=%u h=%u bytes=%lu\n",
+             (unsigned)width, (unsigned)height,
+             (unsigned long)((uint32)width * height * 2u)); }
     tile->pixels = memIsReady()
         ? (uint16*)memAlloc(MEM_REGION_TRANSIENT, (size_t)width * height * 2u, "bgtile-pixels")
         : (uint16*)safe_malloc(width * height * 2);
