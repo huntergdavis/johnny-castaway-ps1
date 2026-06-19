@@ -2525,6 +2525,11 @@ int main(int argc, char **argv)
             ps1PerfBeginScene("freeplay");
             freeplayRun();
             ps1PerfEndScene("freeplay");
+            /* Belt-and-suspenders teardown after freeplay: freeplayRun's own
+             * cleanup already wipes TRANSIENT before its loading frame; this
+             * also drains the CACHE-side residency (stream buffers, backdrop)
+             * so the scene loop resumes from a fully fresh boundary. */
+            foregroundPilotTeardownForFreeplay();
             freeplayClearExitRequest();
             explicitScene = NULL;
             fgLoopClearStageLookahead();

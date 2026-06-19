@@ -116,6 +116,22 @@ void freeplayRun(void)
     fgBackdropReleasePublic(1);
     walkRenderResetCache();
     captionsClear();
+    /* WIPE TRANSIENT before anything reloads. Freeplay's 4 backdrop tiles
+     * (~600 KB) + working set stay resident in TRANSIENT through this
+     * cleanup; the very next tile allocation (the meanwhile frame's
+     * grInitEmptyBackground, and the scene loaded afterward) then over-
+     * subscribes the 768 KB region and blue-screens. Rewind the TRANSIENT
+     * bump to empty and NULL the bg-tile slots so every following alloc
+     * starts from a pristine region — exactly like a normal scene boundary.
+     * Load speed from the menu is not a concern. */
+    {
+        extern void memSceneReset(const char *);
+        extern void grReleaseBackgroundTiles(void);
+        extern void grBackgroundTilesAssumeWiped(void);
+        grReleaseBackgroundTiles();
+        memSceneReset("freeplay-exit");
+        grBackgroundTilesAssumeWiped();
+    }
     grShowMeanwhileLoadingFrame((uint16)(gFp.frame & 7UL));
     pauseMenuSetFreeplayActive(0);
     grForceFullRedrawNextFrame();
