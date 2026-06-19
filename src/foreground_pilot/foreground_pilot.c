@@ -1274,6 +1274,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int keepBackgrndForProof = 0;
     int reuseCleanOverlayForProof = 0;
     int fgSetupAttempt = 0;
+    int cleanRectsDeclined = 0;
 
     /* The SCR cache stays enabled for the proof's lifetime — it is
      * the workhorse of every transition whose clean overlay was not
@@ -1639,7 +1640,20 @@ fg_setup_retry:
                 grSetCleanBgRectsForceCache(0);
                 goto fg_setup_retry;
             }
-            JC_BSOD(sceneName, "clean-rect alloc failed (TRANSIENT budget shortfall)");
+            /* Both the first attempt and the withhold-rebuild retry stranded:
+             * a ceiling scene (visitor3) whose ~400 KB clean rect can't fit
+             * even the defragged hole because the scene's own setup allocs
+             * re-fragment it. Rather than BSOD, DECLINE the clean-rect
+             * snapshot and render this one scene with a full background redraw
+             * every frame (slower, but correct and crash-free). The cleared
+             * partial rects are freed; the loop below forces the redraw. */
+            {
+                extern int printf(const char *, ...);
+                printf("JCMEM clean-rect declined (no crash): scene=%s\n",
+                       sceneName ? sceneName : "(?)");
+            }
+            grFreeCleanBgRects();
+            cleanRectsDeclined = 1;
         }
         grSetCleanBgRectsForceCache(0);
         FG_CACHE_CHECK("fg-clean-saved");
@@ -2052,7 +2066,18 @@ fg_setup_retry:
                 perfRenderTick = ps1PerfTick();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
-            if (fgRuntimeUsesTemporalResidual()) {
+            if (cleanRectsDeclined) {
+                /* Ceiling scene that declined its clean-rect snapshot
+                 * (no pristine per-frame restore source survives). Force
+                 * a full bg-tile re-upload each frame so the composite is
+                 * never left half-stale. Last-resort anti-BSOD net: the
+                 * backdrop under the moving sprite isn't re-cleaned (may
+                 * trail), but the scene stays alive and bounded. Real
+                 * ceiling scenes are made to FIT by the withhold-rebuild +
+                 * SCR-disable retry; decline only catches a hypothetical
+                 * clean rect larger than the whole CACHE+TRANSIENT budget. */
+                grForceFullRedrawNextFrame();
+            } else if (fgRuntimeUsesTemporalResidual()) {
                 if (gFgRuntime.frameRendered)
                     grBeginResidualCleanBgFrame();
                 else
