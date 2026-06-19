@@ -232,6 +232,10 @@ void grMarkAllTilesDirty(void)
  * range. Mirrors the pattern in grFadeOut / grFreeCleanBgTiles. */
 void grForceFullRedrawNextFrame(void)
 {
+    /* Latch a pending full upload that survives any dirty-state clear before
+     * the next grDrawBackground (the dirty arrays below can be wiped by a
+     * residual-clean present path; the flag cannot). */
+    grForcedFullRedrawPending = 1;
     grEnsureDirtyRowState();
     grClearDirtyRows(currDirtyRowMinX, currDirtyRowMaxX);
     grClearDirtyRows(prevDirtyRowMinX, prevDirtyRowMaxX);

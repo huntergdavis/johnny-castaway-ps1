@@ -157,6 +157,16 @@ static sint16 prevDirtyRowMinX[4][BG_TILE_HEIGHT];
 static sint16 prevDirtyRowMaxX[4][BG_TILE_HEIGHT];
 static int dirtyRowStateInitialized = 0;
 
+/* One-shot "the next framebuffer upload MUST be all 4 tiles in full" flag.
+ * grForceFullRedrawNextFrame sets it; grDrawBackground honors it with an
+ * unconditional full-tile LoadImage and clears it. This makes the forced
+ * full upload immune to any intervening dirty-state clear — notably the
+ * residual-clean present paths (grBeginResidualCleanBgFrame) that wipe
+ * prevDirty/currDirty between the force call and the actual upload, which
+ * otherwise leaves a stale backdrop (e.g. the previous island surviving a
+ * transition into an all-black scene like johnny6 "the end"). */
+static int grForcedFullRedrawPending = 0;
+
 /* Byte-pair palette lookup tables (256 entries × 4 bytes = 1KB each).
  * Each entry packs two resolved 16-bit colors for a packed byte:
  *   low16 = even pixel color, high16 = odd pixel color.

@@ -34,6 +34,25 @@ void grDrawBackground(void)
     uint32 uploadBytes = 0;
     uint32 perfStartTick = 0;
 
+    /* Pending forced full redraw: upload all 4 tiles in full regardless of the
+     * curr/prev dirty arrays (which a residual-clean present path may have
+     * wiped after grForceFullRedrawNextFrame ran). This guarantees the "next
+     * upload is full" contract and fixes the stale-backdrop-on-black-scene
+     * transition. One-shot: cleared here so subsequent frames stay incremental. */
+    if (grForcedFullRedrawPending) {
+        grForcedFullRedrawPending = 0;
+        for (int i = 0; i < 4; i++) {
+            if (!tiles[i] || !tiles[i]->pixels)
+                continue;
+            setRECT(&rect, (i & 1) ? 320 : 0, (i & 2) ? 240 : 0,
+                    tiles[i]->width, tiles[i]->height);
+            LoadImage(&rect, (uint32 *)tiles[i]->pixels);
+        }
+        DrawSync(0);
+        grPromoteCurrDirtyToPrev();
+        return;
+    }
+
     for (int i = 0; i < 4; i++) {
         int minY = -1;
         int maxY = -1;
