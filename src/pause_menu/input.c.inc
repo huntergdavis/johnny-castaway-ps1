@@ -566,6 +566,14 @@ static int handleSystemInput(uint16 pressed)
         case SYSTEM_NEXT_SCENE:
             pauseMenuRequestNextScene = 1;
             return 0;
+        case SYSTEM_SCENE_INFO:
+            menuState   = PAUSE_MENU_SCENE_INFO;
+            prevButtons = 0xFFFF;
+            break;
+        case SYSTEM_CREDITS:
+            menuState   = PAUSE_MENU_CREDITS;
+            prevButtons = 0xFFFF;
+            break;
         }
     }
     return 1;
@@ -582,11 +590,17 @@ static int handleSubInput(uint16 pressed)
             prevButtons = 0xFFFF;
             return 1;
         }
+        /* Scene Info and Credits are reached from the System menu — return
+         * there with the cursor on the row that opened them. */
+        if (fromState == PAUSE_MENU_SCENE_INFO || fromState == PAUSE_MENU_CREDITS) {
+            menuState = PAUSE_MENU_SYSTEM;
+            systemCursor = (fromState == PAUSE_MENU_CREDITS) ? SYSTEM_CREDITS
+                                                            : SYSTEM_SCENE_INFO;
+            prevButtons = 0xFFFF;
+            return 1;
+        }
         menuState = PAUSE_MENU_MAIN;
-        if (fromState == PAUSE_MENU_CREDITS)
-            menuCursor = MENU_SYSTEM;
-        else
-            menuCursor = MENU_RESUME;
+        menuCursor = MENU_RESUME;
         prevButtons = 0xFFFF;
         return 1;
     }

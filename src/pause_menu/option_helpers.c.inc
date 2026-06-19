@@ -473,6 +473,10 @@ static void drawSystemMenu(void)
              systemCursor == SYSTEM_RESET_LOOP ? ">" : " ");
     pmPrintf(pmText(PMT_SYSTEM_NEXT_SCENE),
              systemCursor == SYSTEM_NEXT_SCENE ? ">" : " ");
+    pmPrintf("%s Scene Info",
+             systemCursor == SYSTEM_SCENE_INFO ? ">" : " ");
+    pmPrintf("%s Credits",
+             systemCursor == SYSTEM_CREDITS ? ">" : " ");
     drawSeparator();
     pmPrintf(pmText(PMT_O_START_BACK));
 }

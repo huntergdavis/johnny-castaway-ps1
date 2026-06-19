@@ -665,6 +665,8 @@ enum {
     SYSTEM_STORY_DAY,        /* force storyCurrentDay 1..11 — exercises Original mode dayNo gates */
     SYSTEM_RESET_LOOP,
     SYSTEM_NEXT_SCENE,
+    SYSTEM_SCENE_INFO,       /* wires the previously-orphaned Scene Info screen */
+    SYSTEM_CREDITS,          /* wires the previously-orphaned Credits screen */
     SYSTEM_COUNT
 };
 
