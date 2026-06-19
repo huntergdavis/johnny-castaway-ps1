@@ -144,6 +144,16 @@ const char *sceneExplorerDisplayName(int index)
     return (const char *)&sceneExplorerStringData[sceneExplorerStringBase + offset];
 }
 
+/* Catalog slug at a given explorer-order index. Lets the scene picker walk
+ * scenes in the same order the pause menu numbers them ("Scene N/M"), so
+ * Sequential advances 1,2,3,4 in displayed order. */
+const char *sceneExplorerSlugAt(int index)
+{
+    if (index < 0 || index >= gSceneExplorerCount)
+        return NULL;
+    return gSceneExplorer[index].slug;
+}
+
 static void sceneExplorerRememberLaunchName(int index)
 {
     sceneExplorerCopyText(sceneExplorerLaunchName,

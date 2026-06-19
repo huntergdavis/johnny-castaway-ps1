@@ -37,6 +37,10 @@ extern int   fgLoopGetPoolCount(int sceneSetIdx);
 extern const char *fgLoopGetPoolSlug(int sceneSetIdx, int index);
 extern int   fgLoopGetAllCount(void);
 extern const char *fgLoopGetAllSlug(int index);
+/* Explorer catalog (pause_menu) — Sequential walks this so it advances in
+ * the same order the pause menu numbers scenes ("Scene N/M"). */
+extern const int   gSceneExplorerCount;
+extern const char *sceneExplorerSlugAt(int index);
 
 /* Slug → storyScenes[] entry lookup, owned by jc_reborn.c. We need the
  * full struct visibility from story_data.h above so we can dereference
@@ -312,19 +316,50 @@ static const char *pickRandom(int sceneSetIdx, uint8 *outRetries)
 }
 
 /* Sequential: cycle through the pool in authored order. */
+/* Is `slug` a member of the active scene set's pool? A pool count of 0 means
+ * the "All" set (no sub-pool), where every catalog scene qualifies. */
+static int slugInActivePool(int sceneSetIdx, const char *slug)
+{
+    int n = fgLoopGetPoolCount(sceneSetIdx);
+    if (n <= 0)
+        return 1;
+    for (int i = 0; i < n; i++) {
+        const char *p = fgLoopGetPoolSlug(sceneSetIdx, i);
+        if (p != NULL && slug != NULL && strcmp(p, slug) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 static const char *pickSequential(int sceneSetIdx, uint8 *outRetries)
 {
-    int n = activePoolCount(sceneSetIdx);
-    if (n <= 0) {
-        *outRetries = 0;
-        return NULL;
-    }
-    if (gSequentialCursor >= n)
-        gSequentialCursor = 0;
-    const char *slug = activePoolSlug(sceneSetIdx, gSequentialCursor);
-    gSequentialCursor = (uint16)((gSequentialCursor + 1) % n);
     *outRetries = 0;
-    return slug;
+
+    /* Walk the explorer catalog in DISPLAYED order (the "Scene N/M" the pause
+     * menu shows), skipping entries not in the active set. This makes
+     * Sequential advance 1,2,3,4… as the user expects, instead of the
+     * scene-set pool's internal ordering (which jumped, e.g. 26 -> 33).
+     * gSequentialCursor now indexes the catalog; pickerOnSceneSetCycle resets
+     * it to 0. Falls back to the pool order if the catalog is unavailable. */
+    int catN = gSceneExplorerCount;
+    if (catN <= 0) {
+        int n = activePoolCount(sceneSetIdx);
+        if (n <= 0) return NULL;
+        if (gSequentialCursor >= n) gSequentialCursor = 0;
+        const char *slug = activePoolSlug(sceneSetIdx, gSequentialCursor);
+        gSequentialCursor = (uint16)((gSequentialCursor + 1) % n);
+        return slug;
+    }
+
+    for (int tries = 0; tries < catN; tries++) {
+        if (gSequentialCursor >= catN)
+            gSequentialCursor = 0;
+        const char *slug = sceneExplorerSlugAt((int)gSequentialCursor);
+        gSequentialCursor = (uint16)((gSequentialCursor + 1) % catN);
+        if (slug != NULL && slugInActivePool(sceneSetIdx, slug))
+            return slug;
+    }
+    return NULL;
 }
 
 /* ---------------------------------------------------------------------------
