@@ -77,7 +77,7 @@ Options:
   --overlay-mask   Append capture-overlay-mask to the boot string
   --pad-script NAME Use a fixture from "pad scripts/", or a direct file path
   --pad-script-log  Use pad-script-log instead of pad-script
-  --skip-build     Skip CD image rebuild (use existing jcreborn.cue)
+  --skip-build     Skip CD image rebuild (use existing johnnycastawayps1.cue)
   --quiet          Suppress progress messages on stderr
   --vram-write-dumps  Enable DuckStation CPU->VRAM / VRAM-write dump capture
   -h, --help       Show this help
@@ -433,7 +433,7 @@ else
     log "Skipping build (--skip-build)."
 fi
 
-CUE_FILE="$PROJECT_ROOT/jcreborn.cue"
+CUE_FILE="$PROJECT_ROOT/johnnycastawayps1.cue"
 if [ ! -f "$CUE_FILE" ]; then
     echo "ERROR: $CUE_FILE not found. Run make-cd-image.sh first." >&2
     exit 1

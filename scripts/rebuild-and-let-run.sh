@@ -171,7 +171,7 @@ fi
 echo "=== Launching DuckStation (will keep running) ==="
 
 SCREENSHOT_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
-CUE_FILE="$PWD/jcreborn.cue"
+CUE_FILE="$PWD/johnnycastawayps1.cue"
 CAPTURE_INTERVAL=${PS1_CAPTURE_INTERVAL:-5}
 INITIAL_CAPTURE_WAIT=${PS1_INITIAL_CAPTURE_WAIT:-35}
 CAPTURE_COUNT=${PS1_CAPTURE_COUNT:-4}

@@ -62,7 +62,7 @@ Options:
                              it failed (default: PS1_PERF_CASE_RETRIES or 1).
   --jobs N                   Run up to N cases in parallel. Values greater
                              than 1 use --skip-build --case-local-cd so cases
-                             do not share root BOOTMODE.TXT or jcreborn.cue.
+                             do not share root BOOTMODE.TXT or johnnycastawayps1.cue.
   --resume-output            Skip cases that already have a passing
                              perf-summary.json under --output.
   --continue-on-fail         Keep running later cases if one case fails.

@@ -32,10 +32,10 @@ Latest release → **[Releases page](https://github.com/huntergdavis/johnny-cast
 
 Direct download (auto-tracks the latest tag):
 
-- **[jcreborn.bin](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/jcreborn.bin)** — PS1 CD image
-- **[jcreborn.cue](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/jcreborn.cue)** — cuesheet
+- **[johnnycastawayps1.bin](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/johnnycastawayps1.bin)** — PS1 CD image
+- **[johnnycastawayps1.cue](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/johnnycastawayps1.cue)** — cuesheet
 
-Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 emulator). Boots straight into the screensaver loop; press **Start** for the pause menu.
+Load `johnnycastawayps1.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 emulator). Boots straight into the screensaver loop; press **Start** for the pause menu.
 
 ## Status
 
@@ -496,7 +496,7 @@ Full release history at **[/releases/](https://hunterdavis.com/johnny-castaway-p
 ./scripts/rebuild-and-let-run.sh noclean
 ```
 
-Builds the PS1 EXE, packs `jcreborn.bin` / `jcreborn.cue` via `mkpsxiso`, launches DuckStation, and boots into `FISHING 1` via `BOOTMODE.TXT`. Default mode is the screensaver loop (each replay randomizes night / low-tide / raft / holiday). Add `noloop` to the boot string for a single-shot play.
+Builds the PS1 EXE, packs `johnnycastawayps1.bin` / `johnnycastawayps1.cue` via `mkpsxiso`, launches DuckStation, and boots into `FISHING 1` via `BOOTMODE.TXT`. Default mode is the screensaver loop (each replay randomizes night / low-tide / raft / holiday). Add `noloop` to the boot string for a single-shot play.
 
 A watchdog (`RUN_TIMEOUT_SECONDS`, default 300s) kills the emulator if it's left running; override with `RUN_TIMEOUT_SECONDS=<n>` or `0` to disable.
 

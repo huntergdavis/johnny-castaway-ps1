@@ -1,5 +1,5 @@
 #!/bin/bash
-# PS1 Build Script - Builds jcreborn.exe using Docker and PSn00bSDK
+# PS1 Build Script - Builds johnnycastawayps1.exe using Docker and PSn00bSDK
 # Usage: ./build-ps1.sh [clean]
 
 set -euo pipefail
@@ -92,9 +92,9 @@ echo "=== Building PS1 executable ==="
     jc-reborn-ps1-dev:amd64 \
     bash -lc '
         set -e
-        rm -f /project/build-ps1/jcreborn.exe \
-              /project/build-ps1/jcreborn.elf \
-              /project/build-ps1/jcreborn.map
+        rm -f /project/build-ps1/johnnycastawayps1.exe \
+              /project/build-ps1/johnnycastawayps1.elf \
+              /project/build-ps1/johnnycastawayps1.map
         cmake -G "Unix Makefiles" \
             -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
             -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
@@ -103,13 +103,13 @@ echo "=== Building PS1 executable ==="
                 -DPS1_MEM_FORENSICS='"$PS1_MEM_FORENSICS"' \
             -S /project -B /project/build-ps1
         cd /project/build-ps1
-        make jcreborn
+        make johnnycastawayps1
     '
 
 echo ""
 echo "=== Build complete ==="
-test -f build-ps1/jcreborn.exe
-ls -lh build-ps1/jcreborn.exe
+test -f build-ps1/johnnycastawayps1.exe
+ls -lh build-ps1/johnnycastawayps1.exe
 
 # Static-image ceiling guard. The libc heap (region buffer 1440 KB +
 # 2x32 KB GPU primitive buffers + boot catalog) lives between _end and
@@ -119,7 +119,7 @@ ls -lh build-ps1/jcreborn.exe
 # If this fails, free static bytes instead of raising the ceiling:
 # shave BSS (PS1_DEBUG_PRIM_BYTES history), move text/data to disc
 # (see "Move PS1 ... to disc" commits), or rebalance region budgets.
-END_ADDR=$(awk '$1=="_end" && $2=="B" {gsub(/^ffffffff/, "", $3); print toupper($3)}' build-ps1/jcreborn.map | head -1)
+END_ADDR=$(awk '$1=="_end" && $2=="B" {gsub(/^ffffffff/, "", $3); print toupper($3)}' build-ps1/johnnycastawayps1.map | head -1)
 # Ceiling tracks the fattest flavor (verbose perf schema, _end
 # 0x80075250 boot-validated 2026-06-09) + 1 KB slack.
 END_CEILING="80075650"

@@ -20,7 +20,7 @@ mkdir -p "$SCRATCH_DIR"
 
 SCREENSHOT_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
 DUCK_SETTINGS="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/settings.ini"
-CUE_FILE="$PWD/jcreborn.cue"
+CUE_FILE="$PWD/johnnycastawayps1.cue"
 WAIT_TIME=${1:-35}  # Default waits through title screen and first scene setup
 CAPTURE_INTERVAL=${PS1_CAPTURE_INTERVAL:-6}
 CAPTURE_COUNT=${PS1_CAPTURE_COUNT:-4}

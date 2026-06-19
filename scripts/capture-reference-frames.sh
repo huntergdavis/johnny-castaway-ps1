@@ -116,8 +116,8 @@ done
 # ── Prerequisite Checks ─────────────────────────────────────────────────────
 
 # Check for CD image
-if [ ! -f "$PROJECT_ROOT/jcreborn.cue" ]; then
-    echo "ERROR: jcreborn.cue not found in project root." >&2
+if [ ! -f "$PROJECT_ROOT/johnnycastawayps1.cue" ]; then
+    echo "ERROR: johnnycastawayps1.cue not found in project root." >&2
     echo "" >&2
     echo "The CD image must be built first. Run:" >&2
     echo "  ./scripts/make-cd-image.sh" >&2

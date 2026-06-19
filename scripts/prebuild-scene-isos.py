@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
 Build one .bin/.cue per scene, each with BOOTMODE.TXT pinned to that
-scene. Then validation = "load scratch/scene-isos/<slug>/jcreborn.cue
+scene. Then validation = "load scratch/scene-isos/<slug>/johnnycastawayps1.cue
 in DuckStation, see scene N pinned at boot, sign off, next." No
 per-scene CD rebuild.
 
 For each target scene:
   1. Stage config/ps1/BOOTMODE.TXT = "fgpilot <slug> <route>"
   2. Run scripts/build-ps1.sh (re-bakes bootmode_embedded.h, recompiles)
-  3. Run scripts/make-cd-image.sh (produces jcreborn.bin/.cue at repo root)
+  3. Run scripts/make-cd-image.sh (produces johnnycastawayps1.bin/.cue at repo root)
   4. Move the .bin/.cue into scratch/scene-isos/<slug>/
 
 Restores the original BOOTMODE.TXT + bootmode_embedded.h on exit.
 
 Each ISO is ~144 MB; budget ~3.2 GB for all 22 unvalidated scenes.
 After this script finishes, the per-scene cue files live at:
-   scratch/scene-isos/<slug>/jcreborn-<slug>.cue
+   scratch/scene-isos/<slug>/johnnycastawayps1-<slug>.cue
 
 Usage:
   scripts/prebuild-scene-isos.py                       # all unvalidated
@@ -74,8 +74,8 @@ def restore_bootmode(bootmode_path: Path, original: str) -> None:
 def build_one(project_root: Path, slug: str, route: str,
               out_dir: Path, dry_run: bool) -> int:
     boot_str = f"fgpilot {slug} {route}".strip()
-    target_cue = out_dir / f"jcreborn-{slug}.cue"
-    target_bin = out_dir / f"jcreborn-{slug}.bin"
+    target_cue = out_dir / f"johnnycastawayps1-{slug}.cue"
+    target_bin = out_dir / f"johnnycastawayps1-{slug}.bin"
 
     print(f"\n=== {slug} ===")
     print(f"  BOOTMODE.TXT = {boot_str}")
@@ -101,10 +101,10 @@ def build_one(project_root: Path, slug: str, route: str,
             print(f"  !! make-cd-image.sh exited rc={rc}")
             return rc
 
-        repo_bin = project_root / "jcreborn.bin"
-        repo_cue = project_root / "jcreborn.cue"
+        repo_bin = project_root / "johnnycastawayps1.bin"
+        repo_cue = project_root / "johnnycastawayps1.cue"
         if not repo_bin.is_file() or not repo_cue.is_file():
-            print(f"  !! expected jcreborn.bin/.cue at repo root after make-cd-image.sh")
+            print(f"  !! expected johnnycastawayps1.bin/.cue at repo root after make-cd-image.sh")
             return 1
 
         shutil.move(str(repo_bin), str(target_bin))

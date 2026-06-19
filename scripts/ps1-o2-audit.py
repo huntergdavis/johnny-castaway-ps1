@@ -16,9 +16,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMPILE_COMMANDS = REPO_ROOT / "build-ps1" / "compile_commands.json"
-DEFAULT_MAP = REPO_ROOT / "build-ps1" / "jcreborn.map"
-DEFAULT_EXE = REPO_ROOT / "build-ps1" / "jcreborn.exe"
-DEFAULT_ELF = REPO_ROOT / "build-ps1" / "jcreborn.elf"
+DEFAULT_MAP = REPO_ROOT / "build-ps1" / "johnnycastawayps1.map"
+DEFAULT_EXE = REPO_ROOT / "build-ps1" / "johnnycastawayps1.exe"
+DEFAULT_ELF = REPO_ROOT / "build-ps1" / "johnnycastawayps1.elf"
 DEFAULT_MD = REPO_ROOT / "docs" / "ps1" / "performance-o2-audit.md"
 DEFAULT_CSV = REPO_ROOT / "docs" / "ps1" / "performance-o2-audit.csv"
 

@@ -120,7 +120,7 @@ Options:
                            reads BOOTMODE.TXT from the disc before the
                            embedded fallback.
   --case-local-cd          Build the case CD image under the case output
-                           directory instead of mutating root jcreborn.bin/cue
+                           directory instead of mutating root johnnycastawayps1.bin/cue
                            and config/ps1/BOOTMODE.TXT. Implies --skip-build
                            and skips the global perf lock, so parallel matrix
                            jobs can run safely.
@@ -635,7 +635,7 @@ if transitions_expected > 0 and scene_blocks:
     sections = dict(scene_blocks[-1])
 
 symbols = {}
-map_path = Path("build-ps1/jcreborn.map")
+map_path = Path("build-ps1/johnnycastawayps1.map")
 if map_path.is_file():
     for raw in map_path.read_text(encoding="utf-8", errors="ignore").splitlines():
         parts = raw.split(None, 4)
@@ -906,17 +906,17 @@ summary = {
     },
     "build": {
         "ps_exe": {
-            "path": "build-ps1/jcreborn.exe",
+            "path": "build-ps1/johnnycastawayps1.exe",
             "bytes": ps_exe_bytes,
             "sector_bucket_bytes": ps_exe_bucket_bytes,
             "sectors": ps_exe_sectors,
         },
         "elf": {
-            "path": "build-ps1/jcreborn.elf",
+            "path": "build-ps1/johnnycastawayps1.elf",
             "bytes": elf_bytes,
         },
         "map": {
-            "path": "build-ps1/jcreborn.map",
+            "path": "build-ps1/johnnycastawayps1.map",
             "bytes": map_bytes,
             "symbols": symbols,
         },
@@ -1323,17 +1323,17 @@ for i in "${!CASE_LABELS[@]}"; do
     echo "BOOTMODE: $boot"
     echo "======================================"
 
-    cue_for_case="$PROJECT_ROOT/jcreborn.cue"
+    cue_for_case="$PROJECT_ROOT/johnnycastawayps1.cue"
     build_log="$case_dir/build.log"
 
     if [ "$CASE_LOCAL_CD" -eq 1 ]; then
-        if [ ! -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
-            echo "ERROR: --case-local-cd requires build-ps1/jcreborn.exe. Run ./scripts/build-ps1.sh once first." >&2
+        if [ ! -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.exe" ]; then
+            echo "ERROR: --case-local-cd requires build-ps1/johnnycastawayps1.exe. Run ./scripts/build-ps1.sh once first." >&2
             exit 1
         fi
         : > "$build_log"
         make_case_cd_image "$case_dir/cd" "$boot" "$build_log"
-        cue_for_case="$case_dir/cd/jcreborn.cue"
+        cue_for_case="$case_dir/cd/johnnycastawayps1.cue"
     else
         printf '%s\n' "$boot" > "$BOOTMODE_FILE"
     fi
@@ -1341,8 +1341,8 @@ for i in "${!CASE_LABELS[@]}"; do
     if [ "$CASE_LOCAL_CD" -eq 1 ]; then
         :
     elif [ "$BUILD_MODE" = "skip" ]; then
-        if [ ! -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
-            echo "ERROR: --skip-build requires build-ps1/jcreborn.exe. Run ./scripts/build-ps1.sh once first." >&2
+        if [ ! -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.exe" ]; then
+            echo "ERROR: --skip-build requires build-ps1/johnnycastawayps1.exe. Run ./scripts/build-ps1.sh once first." >&2
             exit 1
         fi
         {
@@ -1364,16 +1364,16 @@ for i in "${!CASE_LABELS[@]}"; do
     ps_exe_sectors=0
     elf_bytes=0
     map_bytes=0
-    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
-        ps_exe_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.exe")"
+    if [ -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.exe" ]; then
+        ps_exe_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/johnnycastawayps1.exe")"
         ps_exe_sectors=$(( (ps_exe_bytes + 2047) / 2048 ))
         ps_exe_bucket_bytes=$(( ps_exe_sectors * 2048 ))
     fi
-    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.elf" ]; then
-        elf_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.elf")"
+    if [ -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.elf" ]; then
+        elf_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/johnnycastawayps1.elf")"
     fi
-    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.map" ]; then
-        map_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.map")"
+    if [ -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.map" ]; then
+        map_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/johnnycastawayps1.map")"
     fi
 
     headless_root="$case_dir/headless"

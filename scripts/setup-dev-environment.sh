@@ -199,8 +199,8 @@ fi
 section "PS1 build"
 # ---------------------------------------------------------------------------
 
-if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
-    ok "PS1 executable exists (build-ps1/jcreborn.exe)"
+if [ -f "$PROJECT_ROOT/build-ps1/johnnycastawayps1.exe" ]; then
+    ok "PS1 executable exists (build-ps1/johnnycastawayps1.exe)"
 else
     fail "PS1 executable not built"
     if [ "$CHECK_ONLY" -eq 0 ]; then

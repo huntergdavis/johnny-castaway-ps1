@@ -1,5 +1,5 @@
 #!/bin/bash
-# Create PS1 CD Image - Uses mkpsxiso to create jcreborn.bin/.cue
+# Create PS1 CD Image - Uses mkpsxiso to create johnnycastawayps1.bin/.cue
 # Usage: ./make-cd-image.sh
 
 set -e  # Exit on error
@@ -11,7 +11,7 @@ docker_init
 
 # Remove old CD image files to prevent mkpsxiso hang
 echo "=== Removing old CD image files ==="
-rm -f jcreborn.bin jcreborn.cue
+rm -f johnnycastawayps1.bin johnnycastawayps1.cue
 
 echo "=== Creating PS1 CD image with mkpsxiso ==="
 "${DOCKER_CMD[@]}" run --rm --platform linux/amd64 \
@@ -21,6 +21,6 @@ echo "=== Creating PS1 CD image with mkpsxiso ==="
 
 echo ""
 echo "=== CD image created ==="
-ls -lh jcreborn.bin jcreborn.cue
+ls -lh johnnycastawayps1.bin johnnycastawayps1.cue
 
 exit 0

@@ -12,7 +12,7 @@ fi
 
 cd "$(dirname "$0")/.."  # Change to project root
 
-ELF_FILE="${1:-build-ps1/jcreborn.elf}"
+ELF_FILE="${1:-build-ps1/johnnycastawayps1.elf}"
 
 echo "======================================"
 echo "PS1 Build Analysis"
@@ -23,7 +23,7 @@ if [ ! -f "$ELF_FILE" ]; then
     echo "ERROR: ELF file not found: $ELF_FILE"
     echo ""
     echo "Usage: ./analyze-build.sh [path-to-elf]"
-    echo "Example: ./analyze-build.sh build-ps1/jcreborn.elf"
+    echo "Example: ./analyze-build.sh build-ps1/johnnycastawayps1.elf"
     exit 1
 fi
 

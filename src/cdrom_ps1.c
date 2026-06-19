@@ -218,8 +218,8 @@ int cdromTestPure(void)
         return 51;  /* Found system file */
     }
 
-    /* Test 2: JCREBORN.EXE (our own executable) */
-    if (CdSearchFile(&file, "JCREBORN.EXE") != NULL) {
+    /* Test 2: JCAST.EXE (our own executable) */
+    if (CdSearchFile(&file, "JCAST.EXE") != NULL) {
         return 50;  /* Found our own exe file */
     }
 
@@ -342,9 +342,9 @@ int cdromFirstFunction(void)
 
     checkpoint(255, 0, 0);      /* RED = SYSTEM.CNF not found */
 
-    /* Test 2: JCREBORN.EXE (our own executable) */
-    if (CdSearchFile(&file, "JCREBORN.EXE") != NULL) {
-        checkpoint(0, 255, 0);    /* GREEN = JCREBORN.EXE found! */
+    /* Test 2: JCAST.EXE (our own executable) */
+    if (CdSearchFile(&file, "JCAST.EXE") != NULL) {
+        checkpoint(0, 255, 0);    /* GREEN = JCAST.EXE found! */
         return 50;  /* Found our own exe file */
     }
 

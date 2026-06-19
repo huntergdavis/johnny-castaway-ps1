@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 SLUG="${1:?usage: launch-scene-iso.sh <slug>}"
-CUE="$PROJECT_ROOT/scratch/scene-isos/$SLUG/jcreborn-$SLUG.cue"
+CUE="$PROJECT_ROOT/scratch/scene-isos/$SLUG/johnnycastawayps1-$SLUG.cue"
 
 if [ ! -f "$CUE" ]; then
     echo "no ISO at $CUE" >&2

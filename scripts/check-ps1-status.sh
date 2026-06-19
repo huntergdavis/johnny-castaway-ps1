@@ -63,23 +63,23 @@ echo ""
 # 4. Check build artifacts
 echo "=== Build Artifacts ==="
 
-if [ -f "build-ps1/jcreborn.elf" ]; then
-    echo "✓ jcreborn.elf exists"
-    ls -lh build-ps1/jcreborn.elf
+if [ -f "build-ps1/johnnycastawayps1.elf" ]; then
+    echo "✓ johnnycastawayps1.elf exists"
+    ls -lh build-ps1/johnnycastawayps1.elf
 else
-    echo "✗ jcreborn.elf NOT found - run: ./scripts/build-ps1.sh"
+    echo "✗ johnnycastawayps1.elf NOT found - run: ./scripts/build-ps1.sh"
 fi
 
-if [ -f "build-ps1/jcreborn.exe" ]; then
-    echo "✓ jcreborn.exe exists"
-    ls -lh build-ps1/jcreborn.exe
+if [ -f "build-ps1/johnnycastawayps1.exe" ]; then
+    echo "✓ johnnycastawayps1.exe exists"
+    ls -lh build-ps1/johnnycastawayps1.exe
 else
-    echo "✗ jcreborn.exe NOT found - run: ./scripts/build-ps1.sh"
+    echo "✗ johnnycastawayps1.exe NOT found - run: ./scripts/build-ps1.sh"
 fi
 
-if [ -f "jcreborn.cue" ] && [ -f "jcreborn.bin" ]; then
+if [ -f "johnnycastawayps1.cue" ] && [ -f "johnnycastawayps1.bin" ]; then
     echo "✓ CD image exists"
-    ls -lh jcreborn.cue jcreborn.bin
+    ls -lh johnnycastawayps1.cue johnnycastawayps1.bin
 else
     echo "✗ CD image NOT found - run: ./scripts/make-cd-image.sh"
 fi
@@ -101,9 +101,9 @@ fi
 echo ""
 
 # 6. Run build analysis if executable exists
-if [ -f "build-ps1/jcreborn.elf" ] && docker images | grep -q "jc-reborn-ps1-dev"; then
+if [ -f "build-ps1/johnnycastawayps1.elf" ] && docker images | grep -q "jc-reborn-ps1-dev"; then
     echo "=== Build Analysis ==="
-    ./scripts/analyze-build.sh build-ps1/jcreborn.elf 2>/dev/null || echo "Unable to run analysis"
+    ./scripts/analyze-build.sh build-ps1/johnnycastawayps1.elf 2>/dev/null || echo "Unable to run analysis"
     echo ""
 fi
 
@@ -125,12 +125,12 @@ if ! docker images | grep -q "jc-reborn-ps1-dev"; then
     READY=false
 fi
 
-if [ ! -f "build-ps1/jcreborn.exe" ]; then
+if [ ! -f "build-ps1/johnnycastawayps1.exe" ]; then
     echo "⚠️  Build executable: ./scripts/build-ps1.sh"
     READY=false
 fi
 
-if [ ! -f "jcreborn.cue" ]; then
+if [ ! -f "johnnycastawayps1.cue" ]; then
     echo "⚠️  Create CD image: ./scripts/make-cd-image.sh"
     READY=false
 fi

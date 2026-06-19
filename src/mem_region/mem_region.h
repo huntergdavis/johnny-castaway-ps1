@@ -157,7 +157,7 @@ typedef enum MemRegion {
 #define MEM_TRANSIENT_BUDGET ( 768u * 1024u)
 #define MEM_REGION_TOTAL     (MEM_BOOT_BUDGET + MEM_CACHE_BUDGET + MEM_TRANSIENT_BUDGET)
 
-/* Hard ceiling against the linker map (build-ps1/jcreborn.map):
+/* Hard ceiling against the linker map (build-ps1/johnnycastawayps1.map):
  *   _end = 0x800ad4fc → exe+BSS = 629 KB
  *   usable RAM = 1.92 MB - 629 KB exe/BSS - 64 KB stack = ~1.26 MB
  * Keep the total comfortably under 1.2 MB so other dynamic state

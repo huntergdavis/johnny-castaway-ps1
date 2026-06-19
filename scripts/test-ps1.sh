@@ -1,5 +1,5 @@
 #!/bin/bash
-# Launch DuckStation - Runs the PS1 emulator with jcreborn.cue
+# Launch DuckStation - Runs the PS1 emulator with johnnycastawayps1.cue
 # Usage: ./test-ps1.sh
 
 set -e  # Exit on error
@@ -11,14 +11,14 @@ fi
 
 cd "$(dirname "$0")/.."  # Change to project root
 
-if [ ! -f "jcreborn.cue" ]; then
-    echo "ERROR: jcreborn.cue not found. Run ./scripts/make-cd-image.sh first."
+if [ ! -f "johnnycastawayps1.cue" ]; then
+    echo "ERROR: johnnycastawayps1.cue not found. Run ./scripts/make-cd-image.sh first."
     exit 1
 fi
 
-echo "=== Launching DuckStation with jcreborn.cue ==="
+echo "=== Launching DuckStation with johnnycastawayps1.cue ==="
 # Grant filesystem access to workspace directory
-flatpak run --filesystem="$PWD" org.duckstation.DuckStation "$PWD/jcreborn.cue" &
+flatpak run --filesystem="$PWD" org.duckstation.DuckStation "$PWD/johnnycastawayps1.cue" &
 
 echo "DuckStation launched in background"
 exit 0

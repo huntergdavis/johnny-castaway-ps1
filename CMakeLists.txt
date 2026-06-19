@@ -240,35 +240,35 @@ set_source_files_properties(
 
 # Create PS1 executable
 # Note: GPREL = use GP-relative addressing for faster data access
-psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
-target_sources(jcreborn PRIVATE ${INCLUDE_FRAGMENTS})
+psn00bsdk_add_executable(johnnycastawayps1 GPREL ${SOURCES})
+target_sources(johnnycastawayps1 PRIVATE ${INCLUDE_FRAGMENTS})
 
 # Keep PS1 release builds tight: each function/data object gets its own
 # section so the linker can drop unused legacy support paths.
-target_compile_options(jcreborn PRIVATE
+target_compile_options(johnnycastawayps1 PRIVATE
     -ffunction-sections
     -fdata-sections
 )
-target_link_options(jcreborn PRIVATE
+target_link_options(johnnycastawayps1 PRIVATE
     -Wl,--gc-sections
 )
 if(PS1_PERF_DEEP_TRACE)
-    target_compile_definitions(jcreborn PRIVATE PS1_PERF_DEEP_TRACE=1)
+    target_compile_definitions(johnnycastawayps1 PRIVATE PS1_PERF_DEEP_TRACE=1)
 endif()
 if(PS1_PERF_VERBOSE_SCHEMA)
-    target_compile_definitions(jcreborn PRIVATE PS1_PERF_VERBOSE_SCHEMA=1)
+    target_compile_definitions(johnnycastawayps1 PRIVATE PS1_PERF_VERBOSE_SCHEMA=1)
 endif()
 if(PS1_VERBOSE_DIAGNOSTICS)
-    target_compile_definitions(jcreborn PRIVATE PS1_VERBOSE_DIAGNOSTICS=1)
+    target_compile_definitions(johnnycastawayps1 PRIVATE PS1_VERBOSE_DIAGNOSTICS=1)
 endif()
 if(PS1_MEM_FORENSICS)
-    target_compile_definitions(jcreborn PRIVATE PS1_MEM_FORENSICS=1)
+    target_compile_definitions(johnnycastawayps1 PRIVATE PS1_MEM_FORENSICS=1)
 endif()
 
 # Include directories
 # - src/ for the main translation units' own headers
 # - project root so `#include "config/ps1/bootmode_embedded.h"` still resolves
-target_include_directories(jcreborn
+target_include_directories(johnnycastawayps1
     BEFORE PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ads
@@ -288,7 +288,7 @@ target_include_directories(jcreborn
 )
 
 # Link PSn00bSDK libraries explicitly
-target_link_libraries(jcreborn PRIVATE
+target_link_libraries(johnnycastawayps1 PRIVATE
     psxgpu
     psxgte
     psxspu
@@ -300,4 +300,4 @@ target_link_libraries(jcreborn PRIVATE
 # (POST_BUILD mkpsxiso was causing hangs when trying to overwrite existing files)
 
 # Install target
-install(TARGETS jcreborn)
+install(TARGETS johnnycastawayps1)

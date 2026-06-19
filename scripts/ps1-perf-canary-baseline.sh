@@ -29,7 +29,7 @@ Options:
   --output DIR     Output root (default: scratch/ps1-perf-iterate).
   --label LABEL    Output subdirectory label (default: canary-baseline-<timestamp>).
   --seed N         Seed appended to boot strings (default: REGTEST_SEED or 1).
-  --skip-build     Reuse build-ps1/jcreborn.exe.
+  --skip-build     Reuse build-ps1/johnnycastawayps1.exe.
   --dry-run        Print the ps1-perf-iterate command without running it.
   -h, --help       Show this help.
 USAGE

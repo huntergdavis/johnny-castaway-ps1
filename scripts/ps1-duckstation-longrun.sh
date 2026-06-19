@@ -102,7 +102,7 @@ build_mode=$BUILD_MODE
 kill_existing=$KILL_EXISTING
 bootmode_file=$BOOTMODE
 boot_override=${BOOT_OVERRIDE[*]:-}
-cue=$PROJECT_ROOT/jcreborn.cue
+cue=$PROJECT_ROOT/johnnycastawayps1.cue
 duck_log=$DUCK_LOG
 screenshot_dir=$SCREENSHOT_DIR
 EOF

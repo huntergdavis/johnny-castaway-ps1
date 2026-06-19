@@ -105,7 +105,7 @@ BOOTMODE_BACKUP=""
 DUCK_SETTINGS="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/settings.ini"
 DUCK_SETTINGS_BACKUP=""
 SCREENSHOT_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
-CUE_FILE="$PROJECT_ROOT/jcreborn.cue"
+CUE_FILE="$PROJECT_ROOT/johnnycastawayps1.cue"
 
 restore_boot_override() {
     if [ -n "$BOOTMODE_BACKUP" ] && [ -f "$BOOTMODE_BACKUP" ]; then

@@ -120,8 +120,8 @@ echo -e "${YELLOW}=== Step 1: Building PS1 executable ===${NC}"
 "$SCRIPT_DIR/make-cd-image.sh"
 
 # Check build artifacts exist
-if [[ ! -f "$PROJECT_DIR/jcreborn.bin" ]] || [[ ! -f "$PROJECT_DIR/jcreborn.cue" ]]; then
-    echo -e "${RED}ERROR: Build artifacts not found (jcreborn.bin/cue)${NC}"
+if [[ ! -f "$PROJECT_DIR/johnnycastawayps1.bin" ]] || [[ ! -f "$PROJECT_DIR/johnnycastawayps1.cue" ]]; then
+    echo -e "${RED}ERROR: Build artifacts not found (johnnycastawayps1.bin/cue)${NC}"
     exit 1
 fi
 
@@ -129,15 +129,15 @@ fi
 echo ""
 echo -e "${YELLOW}=== Step 2: Copying build artifacts to release/ ===${NC}"
 mkdir -p "$RELEASE_DIR"
-cp "$PROJECT_DIR/jcreborn.bin" "$RELEASE_DIR/"
-cp "$PROJECT_DIR/jcreborn.cue" "$RELEASE_DIR/"
-echo "Copied jcreborn.bin and jcreborn.cue to release/"
+cp "$PROJECT_DIR/johnnycastawayps1.bin" "$RELEASE_DIR/"
+cp "$PROJECT_DIR/johnnycastawayps1.cue" "$RELEASE_DIR/"
+echo "Copied johnnycastawayps1.bin and johnnycastawayps1.cue to release/"
 
-SHA256_BIN=$(sha256sum "$RELEASE_DIR/jcreborn.bin" | awk '{print $1}')
-SHA256_CUE=$(sha256sum "$RELEASE_DIR/jcreborn.cue" | awk '{print $1}')
+SHA256_BIN=$(sha256sum "$RELEASE_DIR/johnnycastawayps1.bin" | awk '{print $1}')
+SHA256_CUE=$(sha256sum "$RELEASE_DIR/johnnycastawayps1.cue" | awk '{print $1}')
 RELEASE_DATE=$(date +%F)
-echo "jcreborn.bin sha256: $SHA256_BIN"
-echo "jcreborn.cue sha256: $SHA256_CUE"
+echo "johnnycastawayps1.bin sha256: $SHA256_BIN"
+echo "johnnycastawayps1.cue sha256: $SHA256_CUE"
 
 # Step 3: Update VERSION file
 echo ""
@@ -226,7 +226,7 @@ EOF
 )"
 
 # Step 7: Create a normal annotated source tag. The ISO is larger than
-# GitHub's 100 MB Git blob limit, so jcreborn.bin/cue are uploaded as
+# GitHub's 100 MB Git blob limit, so johnnycastawayps1.bin/cue are uploaded as
 # GitHub Release assets in Step 9 instead of being placed in the tag tree.
 echo ""
 echo -e "${YELLOW}=== Step 7: Creating source release tag ===${NC}"
@@ -240,7 +240,7 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$CURRENT_BRANCH"
 git push origin "$TAG_NAME"
 
-# Step 9: Publish a GitHub Release with jcreborn.bin + jcreborn.cue as
+# Step 9: Publish a GitHub Release with johnnycastawayps1.bin + johnnycastawayps1.cue as
 # direct-download assets. The release assets are the canonical binary
 # distribution because the ISO is too large to store as a Git blob.
 echo ""
@@ -249,18 +249,18 @@ GH_BIN="$(command -v gh 2>/dev/null || echo "$HOME/bin/gh")"
 if [ -x "$GH_BIN" ] && "$GH_BIN" auth status >/dev/null 2>&1; then
     RELEASE_NOTES="$RELEASE_MSG
 
-Download \`jcreborn.bin\` and \`jcreborn.cue\` from this release's
-attached assets, then load \`jcreborn.cue\` in DuckStation or another
+Download \`johnnycastawayps1.bin\` and \`johnnycastawayps1.cue\` from this release's
+attached assets, then load \`johnnycastawayps1.cue\` in DuckStation or another
 PS1 emulator."
     "$GH_BIN" release create "$TAG_NAME" \
-        "$RELEASE_DIR/jcreborn.bin" \
-        "$RELEASE_DIR/jcreborn.cue" \
+        "$RELEASE_DIR/johnnycastawayps1.bin" \
+        "$RELEASE_DIR/johnnycastawayps1.cue" \
         --title "$TAG_NAME" \
         --notes "$RELEASE_NOTES"
 else
     echo -e "${YELLOW}gh not available or not authed — skipping GitHub Release.${NC}"
     echo -e "${YELLOW}The tag was pushed, but the large ISO assets still need a GitHub Release upload:${NC}"
-    echo -e "${YELLOW}  gh release create $TAG_NAME $RELEASE_DIR/jcreborn.bin $RELEASE_DIR/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
+    echo -e "${YELLOW}  gh release create $TAG_NAME $RELEASE_DIR/johnnycastawayps1.bin $RELEASE_DIR/johnnycastawayps1.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
 fi
 
 echo ""

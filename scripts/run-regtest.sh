@@ -13,7 +13,7 @@
 #   ./scripts/run-regtest.sh
 #
 #   # Run a specific .cue for 60 seconds, dump every 30th frame
-#   ./scripts/run-regtest.sh --cue build-ps1/jcreborn.cue --frames 3600 --dumpinterval 30
+#   ./scripts/run-regtest.sh --cue build-ps1/johnnycastawayps1.cue --frames 3600 --dumpinterval 30
 #
 #   # Run with explicit BIOS directory
 #   ./scripts/run-regtest.sh --bios ~/ps1-bios/
@@ -65,7 +65,7 @@ Options:
   --start-frame N     Keep only dumped frames at or after frame N (default: 0)
   --dumpinterval N    Capture every Nth frame (default: 60 = 1 per second)
   --dumpdir DIR       Output directory for frames and logs (default: regtest-results/)
-  --cue FILE          Path to .cue file (default: auto-detect jcreborn.cue)
+  --cue FILE          Path to .cue file (default: auto-detect johnnycastawayps1.cue)
   --bios DIR          Path to directory containing PS1 BIOS files
   --renderer NAME     Renderer: Software, Vulkan, OpenGL (default: Software)
   --log LEVEL         Log level: Error, Warning, Info, Verbose, Debug (default: Info)
@@ -144,9 +144,9 @@ fi
 if [ -z "$CUE_FILE" ]; then
     # Try common locations.
     for candidate in \
-        "jcreborn.cue" \
-        "build-ps1/jcreborn.cue" \
-        "cd-image/jcreborn.cue"; do
+        "johnnycastawayps1.cue" \
+        "build-ps1/johnnycastawayps1.cue" \
+        "cd-image/johnnycastawayps1.cue"; do
         if [ -f "$candidate" ]; then
             CUE_FILE="$candidate"
             break

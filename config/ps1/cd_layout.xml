@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Johnny Reborn PS1 CD-ROM Layout -->
-<iso_project image_name="jcreborn.bin" cue_sheet="jcreborn.cue">
+<!-- Johnny Castaway PS1 CD-ROM Layout -->
+<iso_project image_name="johnnycastawayps1.bin" cue_sheet="johnnycastawayps1.cue">
     <track type="data">
         <identifiers
             system="PLAYSTATION"
-            application="JOHNNY_REBORN"
-            volume="JOHNNY_REBORN"
+            application="JOHNNY_CASTAWAY"
+            volume="JOHNNY_CASTAWAY"
             publisher="OPEN_SOURCE"
             preparer="PSN00BSDK"
         />
 
         <directory_tree>
             <file name="SYSTEM.CNF" type="data" source="../../config/ps1/SYSTEM.CNF"/>
-            <file name="JCREBORN.EXE" type="data" source="../../build-ps1/jcreborn.exe"/>
+            <file name="JCAST.EXE" type="data" source="../../build-ps1/johnnycastawayps1.exe"/>
             <file name="TITLE.RAW" type="data" source="../../generated/ps1/foreground/TITLE.RAW"/>
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
             <file name="SCEXPL.DAT" type="data" source="../../generated/ps1/SCEXPL.DAT"/>
