@@ -174,6 +174,14 @@ if [ -z "$KEYED_OVERLAY_RECT" ] &&
   # frame-wide.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "activity10" ]; then
+  # ACTIVITY 10 (reads-seagull-steals-book): the static-Johnny base-diff
+  # leaves a ghosted standing-Johnny pose on the RIGHT side of the island
+  # (visible as a dark Johnny silhouette while the real Johnny sits reading).
+  # Same residue activity7/activity11 hit; replace base-diff with keyed
+  # foreground-only across the whole frame so no stale pose survives.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # FISHING 5's shark/Johnny interaction contaminates the full host surface
   # with stale moving pixels. The current foreground ledger is the source of
