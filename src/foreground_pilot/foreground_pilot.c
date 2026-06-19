@@ -1396,6 +1396,15 @@ fg_setup_retry:
         lruEvictAllUnpinned();
     }
     fgMaybeScheduledCacheRebuild();
+    /* On the clean-rect-strand retry, RE-disable the SCR cache here: the
+     * withhold-rebuild above calls foregroundPilotSetLoadingWaveProof(1),
+     * which re-enables the SCR cache and undid the disable set at the retry
+     * label. Without this, islandInit's grLoadScreen re-caches the 153600
+     * ocean SCR straight into the freshly-cleared contiguous hole and the
+     * clean-rect save strands AGAIN (the recurring visitor3 BSOD). The cache
+     * re-arms normally at the next scene's setup top. */
+    if (fgSetupAttempt > 0)
+        grSetFullScreenScrCacheEnabled(0);
 #if PS1_MEM_FORENSICS
     /* Per-scene going-in CACHE layout: with the pre-relief + bsod map
      * dumps this records the exact byte-for-byte heap state feeding each
