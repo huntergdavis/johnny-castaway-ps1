@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 374 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 377 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -48,6 +48,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/holidays-implementation-plan/' | relative_url }}">Holiday Art Implementation Plan</a><p><code>docs/ps1/holidays-implementation-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-pipeline/' | relative_url }}">Holiday emblem sheet pipeline</a><p><code>docs/ps1/holidays-pipeline.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-style-guide/' | relative_url }}">Holiday Emblem Style Guide</a><p><code>docs/ps1/holidays-style-guide.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/mem-fuzz-sim/' | relative_url }}">PS1 CACHE memory fuzzer & simulator</a><p><code>docs/ps1/mem-fuzz-sim.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/mem-region-decision-tree/' | relative_url }}">Memory region decision tree</a><p><code>docs/ps1/mem-region-decision-tree.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/mem-region-phase-1-checklist/' | relative_url }}">Memory region allocator — Phase 1 implementation checklist</a><p><code>docs/ps1/mem-region-phase-1-checklist.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/mem-region-phase-1-status/' | relative_url }}">Memory region allocator — implementation status</a><p><code>docs/ps1/mem-region-phase-1-status.md</code></p></li>
@@ -74,6 +75,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/README/' | relative_url }}">Johnny Reborn — PlayStation 1 Port</a><p><code>docs/ps1/README.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-quickstart/' | relative_url }}">PS1 Headless Regression Testing Harness</a><p><code>docs/ps1/regtest-quickstart.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-0.9.4-and-next-branch-plan/' | relative_url }}">Release 0.9.4 (ps1) + next-branch plan</a><p><code>docs/ps1/release-0.9.4-and-next-branch-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.4.20/' | relative_url }}">v0.4.20-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.4.20.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.5.0/' | relative_url }}">v0.5.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.5.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.7.0/' | relative_url }}">v0.7.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.7.0.md</code></p></li>
@@ -107,6 +109,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/TESTING/' | relative_url }}">PS1 Port Testing Guide</a><p><code>docs/ps1/TESTING.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TODO/' | relative_url }}">PS1 Port TODO</a><p><code>docs/ps1/TODO.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/toolchain-setup/' | relative_url }}">PS1 Toolchain Setup</a><p><code>docs/ps1/toolchain-setup.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/transition-zero-plan/' | relative_url }}">Transition-Zero Plan (post red-team v1)</a><p><code>docs/ps1/transition-zero-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/visual-detection-spec/' | relative_url }}">Visual Detection Spec: Screenshot-Based Scene and Sprite Identification</a><p><code>docs/ps1/visual-detection-spec.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/walk-implementation-plan/' | relative_url }}">Walk-Connected Story Loop — Implementation Plan</a><p><code>docs/ps1/walk-implementation-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/walk-spot-coordinates/' | relative_url }}">Walk Subsystem — Spot Coordinates and Pre-Flight Audit</a><p><code>docs/ps1/walk-spot-coordinates.md</code></p></li>

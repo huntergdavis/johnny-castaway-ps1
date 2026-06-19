@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Method — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.3; built 2026-06-09" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.4; built 2026-06-18" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -386,14 +386,14 @@ precisely because static arrays push BSS into the danger zone.</li>
 work – runs the real engine, captures the real frames, encodes the
 diffs, lays out the disc – and the PS1 just plays back. That is
 why 63 scenes can fit on a single CD-ROM at all, why the
-executable is around 208 KiB at <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> after
+executable is around 208 KiB at <code class="language-plaintext highlighter-rouge">v0.9.4-ps1</code> after
 the dead ADS/TTM/FG1 paths were stripped (down from a much larger
 pre-strip ELF), and why scene continuity bugs stopped being a
 runtime concern: the
 runtime no longer carries the state that those bugs lived in.</p>
 
 <p>The cost is that every scene needs a verified host capture before
-it joins the validated count. At <code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> that
+it joins the validated count. At <code class="language-plaintext highlighter-rouge">v0.9.4-ps1</code> that
 count is <code class="language-plaintext highlighter-rouge">63 / 63</code> —
 every routed scene the original game had now plays pixel-perfect
 on the PS1 with synced SFX across every applicable variant. The
@@ -411,7 +411,7 @@ the project was reaching for.</p>
 own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <a href="../../docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">87.1%</code> target
 speed</a> at the compact full-matrix baseline to
 <code class="language-plaintext highlighter-rouge">99.8%</code> target speed at
-<code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> — closed without changing pixels, sound
+<code class="language-plaintext highlighter-rouge">v0.9.4-ps1</code> — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
 <a href="../../docs/performance/">reference manual</a>
 explains what each column means; the
@@ -476,7 +476,7 @@ actually looked like, including the last-cluster hard cases.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.3-ps1</a>)
+          (<a href="../../releases/">v0.9.4-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
