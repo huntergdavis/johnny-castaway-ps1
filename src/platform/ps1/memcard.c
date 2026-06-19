@@ -49,9 +49,23 @@ extern void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, s
 extern void oceanAmbientStart(void);
 extern void oceanAmbientStop(void);
 extern int  oceanAmbientLoaded(void);
+/* MC_VERSION 7 settings (previously unpersisted). */
+extern int  ps1CaptionsEnabled;          /* ps1_captions.c */
+extern void captionsSetEnabled(int enabled);
+extern int  hostForcedLowTide;           /* jc_reborn.c World overrides */
+extern int  hostForcedRaftStage;
+extern int  hostForcedIslandX;
+extern int  hostForcedIslandY;
+extern int  hostForcedIslandPosValid;
+extern volatile uint8 ps1PerfLevel;      /* ps1_perf.c (0..3) */
+extern void ps1PerfSetLevel(int level);
+extern int  pauseMenuSceneSet;           /* pause_menu.c */
+extern int  pauseMenuSceneSetCount(void);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     6  /* v6 adds holidayMode so auto policy and manual id
+#define MC_VERSION     7  /* v7 adds captions, tide, raft, perf level, scene
+                           * set, and island position (previously unpersisted).
+                           * v6 adds holidayMode so auto policy and manual id
                            * are stored separately.
                            * v5 adds pickerPolicy (Random/Sequential/Original).
                            * v4 drops the unused footstepsEnabled toggle.
@@ -285,6 +299,18 @@ typedef struct {
                                 * RANDOM by the version-gated load below. */
     uint8  holidayMode;        /* added in MC_VERSION 6 — enum HolidayMode.
                                 * v2..v5 derive this from holidayOverride. */
+    /* MC_VERSION 7 — all-uint8/sint8 (no struct padding); v2..v6 saves
+     * leave these defaulted (load gates them on loadedVersion >= 7). */
+    uint8  captionsEnabled;    /* ps1CaptionsEnabled */
+    sint8  tideOverride;       /* hostForcedLowTide: -1 auto / 0 / 1 */
+    sint8  raftOverride;       /* hostForcedRaftStage: -1 auto / 0..5 */
+    uint8  perfLevel;          /* ps1PerfLevel: 0..3 */
+    uint8  sceneSet;           /* pauseMenuSceneSet index */
+    uint8  islandPosValid;     /* hostForcedIslandPosValid */
+    uint8  islandXLo;          /* hostForcedIslandX as little-endian sint16 */
+    uint8  islandXHi;
+    uint8  islandYLo;          /* hostForcedIslandY as little-endian sint16 */
+    uint8  islandYHi;
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -388,11 +414,7 @@ int memcardLoadSettings(void)
      * load and zeroed on save. v3 added oceanAmbientEnabled; v2 saves
      * get that defaulted to ON. Reject v < 2 — those were transient
      * and never released. */
-    if (s->version != MC_VERSION
-        && s->version != 2
-        && s->version != 3
-        && s->version != 4
-        && s->version != 5) {
+    if (s->version < 2 || s->version > MC_VERSION) {
         memcardLastStatus = "version mismatch";
         return 0;
     }
@@ -456,6 +478,39 @@ int memcardLoadSettings(void)
         pickerSetPolicy(policy);
     }
 
+    /* v7 settings. v < 7 saves leave these at their compiled defaults
+     * (captions off, tide/raft auto, perf off, scene set 0, island pos
+     * invalid) — exactly as before they were persisted. Range-validated
+     * and applied through the proper setters. */
+    if (loadedVersion >= 7) {
+        captionsSetEnabled(s->captionsEnabled ? 1 : 0);
+        hostForcedLowTide = (s->tideOverride >= -1 && s->tideOverride <= 1)
+                            ? s->tideOverride : -1;
+        hostForcedRaftStage = (s->raftOverride >= -1 && s->raftOverride <= 5)
+                              ? s->raftOverride : -1;
+        {
+            int lvl = (int)s->perfLevel;
+            if (lvl < 0 || lvl > 3) lvl = 0;
+            ps1PerfSetLevel(lvl);
+        }
+        {
+            int set = (int)s->sceneSet;
+            if (set < 0 || set >= pauseMenuSceneSetCount()) set = 0;
+            pauseMenuSceneSet = set;
+        }
+        hostForcedIslandPosValid = s->islandPosValid ? 1 : 0;
+        {
+            sint16 ix = (sint16)((uint16)s->islandXLo |
+                                 ((uint16)s->islandXHi << 8));
+            sint16 iy = (sint16)((uint16)s->islandYLo |
+                                 ((uint16)s->islandYHi << 8));
+            if (ix < -250) ix = -250; else if (ix > 250) ix = 250;
+            if (iy < -100) iy = -100; else if (iy > 200) iy = 200;
+            hostForcedIslandX = ix;
+            hostForcedIslandY = iy;
+        }
+    }
+
     /* Sync the ocean ambience SPU voice to the loaded toggle value when
      * settings are loaded after SPU init. Normal boot loads memcard first,
      * so this block is a no-op until soundInit has uploaded OCEAN.VAG. */
@@ -504,6 +559,17 @@ int memcardSaveSettings(void)
     s->softYearLo       = (uint8)(ps1SoftYear & 0xFF);
     s->softYearHi       = (uint8)((ps1SoftYear >> 8) & 0xFF);
     s->pickerPolicy     = (uint8)pickerGetPolicy();
+    /* v7 */
+    s->captionsEnabled  = (uint8)(ps1CaptionsEnabled ? 1 : 0);
+    s->tideOverride     = (sint8)hostForcedLowTide;
+    s->raftOverride     = (sint8)hostForcedRaftStage;
+    s->perfLevel        = (uint8)(ps1PerfLevel & 0x3);
+    s->sceneSet         = (uint8)pauseMenuSceneSet;
+    s->islandPosValid   = (uint8)(hostForcedIslandPosValid ? 1 : 0);
+    s->islandXLo        = (uint8)(hostForcedIslandX & 0xFF);
+    s->islandXHi        = (uint8)((hostForcedIslandX >> 8) & 0xFF);
+    s->islandYLo        = (uint8)(hostForcedIslandY & 0xFF);
+    s->islandYHi        = (uint8)((hostForcedIslandY >> 8) & 0xFF);
 
     mcardSlowPoll();
 

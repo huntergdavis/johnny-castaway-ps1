@@ -617,6 +617,11 @@ const char *pauseMenuSceneSetName(int idx)
     return kSceneSetNames[idx];
 }
 
+int pauseMenuSceneSetCount(void)
+{
+    return NUM_SCENE_SETS;
+}
+
 enum {
     WORLD_DAYNIGHT,
     WORLD_TIDE,
