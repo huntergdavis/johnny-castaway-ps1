@@ -39,6 +39,24 @@ echo "=== scene-sim: historical config (expect BSODs at depth) ==="
 echo "=== scene-sim: FIXED config confidence (expect 0 BSODs) ==="
 ./tests/mem_sim --scenes 3000 --soaks 2000 2>/dev/null | grep config
 
+# Frame-buffer-demand regression gate (added after the 2026-06-20 johnny6
+# ~116K grow-only frame-buffer BSOD that the sim was previously BLIND to —
+# it modeled frame buffers as fixed pinned blocks). The sim now extracts each
+# scene's real max per-frame data_size (extract-scene-mem.py) and models the
+# grow-only fg-frame buffer + the withhold-rebuild recovery. Property: the
+# SHIPPING max frame (~116K, johnny6) survives, but a pack change that enlarges
+# a frame buffer past the ~420K band-only recovery hole (e.g. the suzy1
+# base-diff carve that bloated 830K->14MB) MUST strand and be caught.
+echo "=== scene-sim: frame-buffer regression gate ==="
+BASE=$(./tests/mem_sim --scenes 8000 --soaks 100 2>/dev/null | grep -oE 'BSODs=[0-9]+' | grep -oE '[0-9]+')
+REGR=$(./tests/mem_sim --scenes 8000 --soaks 50 --bigframe 14336 2>/dev/null | grep -oE 'BSODs=[0-9]+' | grep -oE '[0-9]+')
+echo "shipping frame buffers: BSODs=$BASE/100 soaks ; 14MB-carve regression: BSODs=$REGR/50 soaks"
+if [ "${BASE:-1}" -eq 0 ] && [ "${REGR:-0}" -gt 0 ]; then
+  echo "OK: sim survives shipping frame buffers AND catches an enlarged-frame-buffer regression"
+else
+  echo "FAIL: frame-buffer gate (expected BASE=0 and REGR>0)"; exit 1
+fi
+
 # Red-team property: the scene simulator must catch CACHE fragmentation
 # ORGANICALLY (slab-pool retention strands an unprotected region), AND
 # the deployed fix (periodic rebuild) must prevent it. An unprotected

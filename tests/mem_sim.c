@@ -51,9 +51,12 @@ static void *g_band;            /* pinned 268312 */
 static void *g_scr;             /* SCR cache 153604 (evictable, island) */
 static void *g_walk;            /* walk PSB slab 49156 (evictable) */
 static void *g_floor[2];        /* floor slabs 98308 each (evictable) */
+static void *g_frame;           /* grow-only fg-frame CACHE buffer (sized to */
+static unsigned g_frameSz;      /* the scene's max per-frame data_size) */
 static void *g_strips[PS1_CLEANRECT_SLOTS];
 static int   g_nstrips;
-static long  g_relief, g_rebuild, g_scenes;
+static long  g_relief, g_rebuild, g_scenes, g_declines, g_withhold;
+static unsigned g_bigframe=0;  /* --bigframe KB: inject an enlarged frame buffer (regression test) */
 static long  g_reliefSinceRebuild, g_scenesSinceRebuild;
 static long  g_cuHist[8];
 static int   g_slots = (int)PS1_CLEANRECT_SLOTS;
@@ -174,6 +177,11 @@ static void maybeRebuild(void){
     if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; }
     if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
     for (int i=0;i<2;i++) if (g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
+    /* The grow-only frame buffer is layout-stable across rebuilds in production
+     * (the staged-transition shape skips per-scene frees, foreground_pilot.c
+     * ~665), so the rebuild's rewind does NOT reclaim it — it stays resident at
+     * its high-water size. It is reclaimed only on full soak reset. Modeling it
+     * as freed-per-rebuild over-fires (constant 116K re-growth vs SCR+band). */
     poolFreeAll();
     g_rebuild++; g_reliefSinceRebuild=0; g_scenesSinceRebuild=0;
 }
@@ -208,6 +216,19 @@ static int cleanRects(int fgx,int fgy,int fgw,int fgh,int rw[2],int rh[2]){
  * rects, split each into diverse-size strips (grSaveCleanBgRectsSplit),
  * route TRANSIENT-first / CACHE-spill with tiered relief, count strips
  * against the slot cap. Returns 0 on BSOD (slot exhaust or strand). */
+/* Withhold-rebuild: the production deep-strand recovery (foreground_pilot.c
+ * fg_setup_retry — clean-rect strand AND, this revision, frame-buffer strand).
+ * Drop ALL evictables (SCR/walk/floors/strips/pool) and rewind, leaving only
+ * the pinned band -> a ~420K contiguous hole above it for the retry. */
+static void withholdRebuild(void){
+    freeStrips();
+    if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; }
+    if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
+    for (int i=0;i<2;i++) if (g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
+    poolFreeAll();
+    g_withhold++; g_rebuild++; g_reliefSinceRebuild=0; g_scenesSinceRebuild=0;
+}
+
 static int playSceneGeo(const SceneMem *sc, int posx, int posy, unsigned cap){
     g_scenes++; g_reliefedThisScene=0;
     freeStrips();
@@ -249,13 +270,51 @@ static int playSceneGeo(const SceneMem *sc, int posx, int posy, unsigned cap){
 /* cleanBytes-based scene play (slab-pool aware). Splits the clean rect
  * into diverse strips (full-width 608 rows), TRANSIENT-first / CACHE-
  * spill with pooled-slab reuse + tiered relief. */
-static int playSceneBytes(unsigned cleanBytes, unsigned cap){
+static int playSceneBytes(unsigned cleanBytes, unsigned cap, unsigned maxFrame){
     g_scenes++; g_reliefedThisScene=0;
     freeStrips();
     memSceneReset("sim");
     maybeRebuild();
     reestablish(1);
     memAlloc(MEM_REGION_TRANSIENT, PS1_BGTILES_BYTES, "bgtiles");
+    /* Grow-only CACHE frame buffer (fg-frame), sized to the scene's max frame
+     * data_size — the per-scene demand the sim was previously blind to. A
+     * johnny6-class scene (maxFrame ~112K -> ~116K sector-aligned) grows it;
+     * if that grow lands on a fragmented region (deep-soak strip churn since
+     * the last rebuild) the contiguous block is unavailable -> STRAND. This is
+     * the real BSOD class: req=118784, ~334K free but no 116K contiguous. */
+    if (maxFrame) {
+        unsigned fbBytes = (maxFrame + 2047u) & ~2047u;   /* sector align */
+        if (fbBytes > g_frameSz) {
+            if (g_frame){ memFree(MEM_REGION_CACHE,g_frame); g_frame=NULL; g_frameSz=0; }
+            void *p = memTryAlloc(MEM_REGION_CACHE, fbBytes, "fg-frame");
+            if (!p){ if (relief(fbBytes)) p = memTryAlloc(MEM_REGION_CACHE, fbBytes, "fg-frame"); }
+            if (!p) {
+                /* Frame-buffer strand -> the real recovery (foreground_pilot.c
+                 * fg_setup_retry, this revision): a forced WITHHOLD-REBUILD that
+                 * re-bands MANDATORY-ONLY — drop SCR/walk/floors/strips/pool and
+                 * rewind, leaving only the pinned band, then retry. The band
+                 * (268K) + frame (<=~116K) fit easily, so the current config
+                 * recovers; a frame buffer larger than (CACHE - band) ~= 420K
+                 * (e.g. a suzy1-style 14MB base-diff regression) still strands
+                 * and is correctly caught. */
+                /* The withhold-rebuild is a FIX mechanism — gated off under
+                 * --no-rebuild (the unfixed config) so the organic strand is
+                 * still captured there. */
+                if (!g_norebuild){ withholdRebuild(); p = memTryAlloc(MEM_REGION_CACHE, fbBytes, "fg-frame"); }
+            }
+            if (!p) {
+#ifdef SIM_DEBUG_STRAND
+                fprintf(stderr,"STRAND scene=%ld fb=%u used=%lu largest=%lu scr=%d walk=%d fl=%d,%d\n",
+                        g_scenes, fbBytes, (unsigned long)cacheUsed(),
+                        (unsigned long)memCacheLargestFreeBlock(),
+                        g_scr!=0,g_walk!=0,g_floor[0]!=0,g_floor[1]!=0);
+#endif
+                return 0;     /* frame-buffer strand == the johnny6 deep-soak BSOD */
+            }
+            g_frame = p; g_frameSz = fbBytes;
+        }
+    }
     unsigned remaining = cleanBytes; g_nstrips=0; int totalStrips=0;
     while (remaining > 0){
         unsigned sz = remaining > cap ? cap : remaining;
@@ -267,7 +326,20 @@ static int playSceneBytes(unsigned cleanBytes, unsigned cap){
         } else {
             unsigned asz=sz; void *p=poolTake(sz,&asz);
             if(!p){ asz=sz; p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c");
-                if(!p){ if(!relief(sz)) return 0; p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c"); if(!p) return 0; } }
+                if(!p){
+                    if(relief(sz)) p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c");
+                    /* withhold-rebuild + graceful decline are FIX mechanisms —
+                     * gated off under --no-rebuild so the organic clean-rect
+                     * strand is still captured there (return 0 = BSOD). */
+                    if(!p && g_norebuild) return 0;
+                    if(!p){ withholdRebuild(); p=memTryAlloc(MEM_REGION_CACHE,sz,"strip-c"); }
+                    /* Still stranded after withhold-rebuild -> production
+                     * GRACEFULLY DECLINES the clean rect (renders full-redraw,
+                     * no BSOD). A clean-rect strand is never fatal; only an
+                     * unrecoverable FRAME-buffer strand BSODs. Count + bail. */
+                    if(!p){ g_declines++; return 1; }
+                }
+            }
             if (g_nstrips<(int)PS1_CLEANRECT_SLOTS){ g_strips[g_nstrips]=p; g_stripSz[g_nstrips]=asz; g_nstrips++; }
         }
         remaining -= sz;
@@ -286,12 +358,14 @@ static long runSoak(unsigned seed, long scenes){
     if (g_scr){ memFree(MEM_REGION_CACHE,g_scr); g_scr=NULL; }
     if (g_walk){ memFree(MEM_REGION_CACHE,g_walk); g_walk=NULL; }
     for (int i=0;i<2;i++) if(g_floor[i]){ memFree(MEM_REGION_CACHE,g_floor[i]); g_floor[i]=NULL; }
+    if (g_frame){ memFree(MEM_REGION_CACHE,g_frame); g_frame=NULL; g_frameSz=0; }
     if (g_band){ memFree(MEM_REGION_CACHE,g_band); g_band=NULL; }
     poolFreeAll();
     memSceneReset("reset");
     memCacheRewindIfEmpty();
     g_scr=g_walk=NULL; g_floor[0]=g_floor[1]=NULL; g_nstrips=0;
     g_relief=g_rebuild=g_scenes=0; g_reliefSinceRebuild=0; g_scenesSinceRebuild=0;
+    g_declines=0; g_withhold=0;
     memset(g_cuHist,0,sizeof(g_cuHist));
     g_band = memAlloc(MEM_REGION_CACHE, BAND_PINNED, "band");
     reestablish(1);
@@ -326,7 +400,23 @@ static long runSoak(unsigned seed, long scenes){
             cleanBytes = 12u*1024u + (rnd()%(140u*1024u));
             cap = 96u*1024u;
         }
-        if (!playSceneBytes(cleanBytes, cap)){ bsod=g_scenes; break; }
+        /* Draw the per-scene max-frame from the REAL extracted table so the
+         * grow-only frame buffer sees the true distribution (johnny6/JOHN6LOW
+         * ~112K appear at their real ~1.6% frequency). CORRELATION: the big-
+         * frame scenes (johnny6/johnny1) are BLACK-backdrop scenes that carry
+         * essentially NO clean rect — so when a large frame is drawn, override
+         * the clean demand to ~0. Pairing a 116K frame with an independently-
+         * drawn 400K clean rect would invent a scene that never exists and
+         * over-fire. */
+        unsigned maxFrame = SCENE_MEM[rnd()%SCENE_MEM_COUNT].maxFrame;
+        if (maxFrame > 64u*1024u){ cleanBytes = rnd()%(8u*1024u); cap = 96u*1024u; }
+        /* Regression injection (--bigframe KB): simulate a pack change that
+         * enlarges a frame buffer (e.g. the suzy1 base-diff carve that bloated
+         * 830K->14MB, or any scene whose max frame grows past what the withhold-
+         * rebuild's ~420K band-only hole can place). Proves the sim now CATCHES
+         * this class instead of being blind to frame-buffer demand. */
+        if (g_bigframe && maxFrame > 64u*1024u) maxFrame = g_bigframe;
+        if (!playSceneBytes(cleanBytes, cap, maxFrame)){ bsod=g_scenes; break; }
     }
     return bsod;
 }
@@ -340,15 +430,16 @@ int main(int argc, char**argv){
         else if (!strcmp(argv[a],"--historical")){ g_slots=8; g_periodic=0; }
         else if (!strcmp(argv[a],"--no-rebuild")){ g_norebuild=1; g_periodic=0; }
         else if (!strcmp(argv[a],"--slots")&&a+1<argc) g_slots=atoi(argv[++a]);
+        else if (!strcmp(argv[a],"--bigframe")&&a+1<argc) g_bigframe=(unsigned)strtoul(argv[++a],0,10)*1024u;
         else if (a==1) scenes=atol(argv[a]);   /* positional back-comat */
         else if (a==2) seed0=(unsigned)strtoul(argv[a],0,10);
     }
     memInit();
     if (soaks==1){
         long b=runSoak(seed0,scenes);
-        printf("config=%s slots=%d periodic=%d  seed=%u scenes=%ld relief=%ld rebuild=%ld bsod_scene=%ld\n",
+        printf("config=%s slots=%d periodic=%d  seed=%u scenes=%ld relief=%ld rebuild=%ld withhold=%ld declines=%ld bsod_scene=%ld\n",
                g_periodic?"fixed":"historical", g_slots, g_periodic,
-               seed0, g_scenes, g_relief, g_rebuild, b);
+               seed0, g_scenes, g_relief, g_rebuild, g_withhold, g_declines, b);
         printf("cache_used: <520k=%ld <560k=%ld <600k=%ld <640k=%ld 667688=%ld <690k=%ld 690k+=%ld\n",
                g_cuHist[0],g_cuHist[1],g_cuHist[2],g_cuHist[3],g_cuHist[4],g_cuHist[5],g_cuHist[6]);
         return b>=0?1:0;

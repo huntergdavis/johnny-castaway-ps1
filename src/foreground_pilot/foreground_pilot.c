@@ -180,6 +180,11 @@ static char gFgStageSceneName[16] = "";
 static sint16 gFgSceneDrawOffsetX = 0;
 static sint16 gFgSceneDrawOffsetY = 0;
 static uint32 gFgCleanRectMaxBytes = 96UL * 1024UL;
+/* Set by foregroundPilotRuntimeStart when a CACHE frame-buffer alloc strands
+ * (under no-halt mode) rather than failing for an I/O/data reason. Lets the
+ * setup caller distinguish a recoverable deep-soak-fragmentation strand (retry
+ * via withhold-rebuild) from a genuine pack-start bug (halt). */
+static int gFgRuntimeStartCacheStrand = 0;
 #ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 #define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
 #endif
@@ -510,6 +515,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
     if (sceneName == NULL)
         return 0;
 
+    gFgRuntimeStartCacheStrand = 0;
+
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(sceneName, "testcard")) {
         gFgRuntime.active = 1;
@@ -619,10 +626,16 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 }
                 /* MEM_REGION_RATIONALE: grow-only frame buffer, persistent
                  * across scenes; not LRU-tracked. CACHE region. */
+                /* No-halt: a deep-soak-fragmentation strand on this grow-only
+                 * realloc must be recoverable (the caller retries via withhold-
+                 * rebuild) instead of a fatal CACHE halt. */
+                memSetCacheAllocNoHalt(1);
                 gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                                    frameBufferBytes,
                                                    "fg-frame");
+                memSetCacheAllocNoHalt(0);
                 if (gFgFrameBuffer == NULL) {
+                    gFgRuntimeStartCacheStrand = 1;
                     if (ps1PerfEnabled)
                         ps1PerfMarkAllocFail(frameBufferBytes);
                     gFgFrameBufferSize = 0;
@@ -699,9 +712,12 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     }
                     /* MEM_REGION_RATIONALE: grow-only prefetch frame
                      * buffer, peer of gFgFrameBuffer. CACHE region. */
+                    memSetCacheAllocNoHalt(1);
                     gFgPrefetchFrameBuffer = (uint8 *)memAlloc(
                         MEM_REGION_CACHE, frameBufferBytes, "fg-prefetch-frame");
+                    memSetCacheAllocNoHalt(0);
                     if (gFgPrefetchFrameBuffer == NULL) {
+                        gFgRuntimeStartCacheStrand = 1;
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(frameBufferBytes);
                         gFgPrefetchFrameBufferSize = 0;
@@ -1546,14 +1562,24 @@ fg_setup_retry:
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
-        /* Phase 2 of mem-region rollout deletes the JCSKIP/graceful-
-         * skip pattern: under the deterministic allocator, allocations
-         * cannot fail, so this branch should be unreachable in a
-         * well-formed build. If it does fire, the failure is a real
-         * bug (likely a non-allocator I/O issue — CD read or pack
-         * format problem) and halting via JC_BSOD surfaces it for
-         * triage instead of papering over it. See plan v9 manifest
-         * item #1. */
+        /* A grow-only frame-buffer realloc (fg-frame / fg-prefetch-frame,
+         * ~maxFrame bytes) can STRAND on deep-soak CACHE fragmentation —
+         * observed at ~15.5 h: req=118784, ~334 KB free but no contiguous
+         * block. That is recoverable exactly like a clean-rect strand: re-enter
+         * setup ONCE with a forced withhold-rebuild (re-bands mandatory-only ->
+         * ~249 KB contiguous hole), which lets the frame buffer place. Only the
+         * frame-buffer strand sets gFgRuntimeStartCacheStrand; any OTHER return-0
+         * is a genuine I/O/pack-data bug and still halts for triage. */
+        if (gFgRuntimeStartCacheStrand && fgSetupAttempt == 0 &&
+            gFgLoadingWaveProofEnabled) {
+            extern int printf(const char *, ...);
+            printf("JCMEM frame-buffer strand: withhold-rebuild + retry scene=%s\n",
+                   sceneName ? sceneName : "(?)");
+            fgSetupAttempt = 1;
+            gFgForceWithholdRebuild = 1;
+            grSetCleanBgRectsForceCache(0);
+            goto fg_setup_retry;
+        }
         JC_BSOD(sceneName, "pack-start failed (non-recoverable I/O or data bug)");
     }
     if (ps1PerfEnabled)
