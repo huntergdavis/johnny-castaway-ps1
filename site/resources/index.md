@@ -471,7 +471,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>ACTIVITY1.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY10.FG2</code></td><td>280,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY10.FG2</code></td><td>313,613</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY11.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY12.FG2</code></td><td>338,314</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY4.FG2</code></td><td>295,098</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY4.FG2">source</a></td></tr>
@@ -480,7 +480,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>ACTIVITY7.FG2</code></td><td>75,793</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY7.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY8.FG2</code></td><td>131,995</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY9.FG2</code></td><td>1,745,484</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY9.FG2">source</a></td></tr>
-<tr><td><code>ACTV10L.FG2</code></td><td>302,878</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
+<tr><td><code>ACTV10L.FG2</code></td><td>313,613</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
 <tr><td><code>ACTV11L.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
 <tr><td><code>ACTV12L.FG2</code></td><td>363,249</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
 <tr><td><code>ACTV1LOW.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
@@ -522,13 +522,13 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>FISHING8.FG2</code></td><td>269,304</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING8.FG2">source</a></td></tr>
 <tr><td><code>JOHN1LOW.FG2</code></td><td>448,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN1LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN2LOW.FG2</code></td><td>288,637</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN2LOW.FG2">source</a></td></tr>
-<tr><td><code>JOHN3LOW.FG2</code></td><td>217,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN3LOW.FG2">source</a></td></tr>
+<tr><td><code>JOHN3LOW.FG2</code></td><td>303,696</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN3LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN4LOW.FG2</code></td><td>185,402</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN4LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN5LOW.FG2</code></td><td>155,674</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN5LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN6LOW.FG2</code></td><td>402,498</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN6LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY1.FG2</code></td><td>448,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY1.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY2.FG2</code></td><td>288,637</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY2.FG2">source</a></td></tr>
-<tr><td><code>JOHNNY3.FG2</code></td><td>321,686</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY3.FG2">source</a></td></tr>
+<tr><td><code>JOHNNY3.FG2</code></td><td>303,696</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY3.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY4.FG2</code></td><td>185,402</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY4.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY5.FG2</code></td><td>155,674</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY5.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY6.FG2</code></td><td>402,498</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY6.FG2">source</a></td></tr>
@@ -547,7 +547,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>MISCGAG1.FG2</code></td><td>109,109</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISCGAG1.FG2">source</a></td></tr>
 <tr><td><code>MISCGAG2.FG2</code></td><td>181,655</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISCGAG2.FG2">source</a></td></tr>
 <tr><td><code>STAND1.FG2</code></td><td>26,906</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND1.FG2">source</a></td></tr>
-<tr><td><code>STAND10.FG2</code></td><td>96,712</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND10.FG2">source</a></td></tr>
+<tr><td><code>STAND10.FG2</code></td><td>60,288</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND10.FG2">source</a></td></tr>
 <tr><td><code>STAND11.FG2</code></td><td>95,506</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND11.FG2">source</a></td></tr>
 <tr><td><code>STAND12.FG2</code></td><td>275,785</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND12.FG2">source</a></td></tr>
 <tr><td><code>STAND15.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND15.FG2">source</a></td></tr>
@@ -560,7 +560,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>STAND7.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND7.FG2">source</a></td></tr>
 <tr><td><code>STAND8.FG2</code></td><td>54,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND8.FG2">source</a></td></tr>
 <tr><td><code>STAND9.FG2</code></td><td>60,408</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND9.FG2">source</a></td></tr>
-<tr><td><code>STND10L.FG2</code></td><td>49,022</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND10L.FG2">source</a></td></tr>
+<tr><td><code>STND10L.FG2</code></td><td>60,288</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND10L.FG2">source</a></td></tr>
 <tr><td><code>STND11L.FG2</code></td><td>47,816</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND11L.FG2">source</a></td></tr>
 <tr><td><code>STND12L.FG2</code></td><td>145,924</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND12L.FG2">source</a></td></tr>
 <tr><td><code>STND15L.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND15L.FG2">source</a></td></tr>
