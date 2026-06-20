@@ -166,6 +166,22 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "mary2" ]; then
   # pack build because the merged foreground canvas is already the pack source.
   KEYED_OVERLAY_RECT="0,235,640,245"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny3" ]; then
+  # JOHNNY 3 thought-bubble (clock/embrace daydream). The bubble shell +
+  # contents survive frame-wide keyed, but the thin connector-dot trail linking
+  # Johnny to the bubble fails the keyed visibility mask's byte-exact match and
+  # drops out. Mirror johnny2/activity5: keep the lower actor band (y>=320) on
+  # keyed foreground-only and let the upper band (bubble + dots + Johnny's
+  # near-static head) ride base-diff. Measured: bubble+dots above y~310, moving
+  # body below y320. johnny3's upper band is mostly static sky/ocean so the
+  # base-diff cost is small (~303 KB pack).
+  #
+  # NOTE: suzy1 was tried here too but REVERTED — its big island-cutaway thought
+  # bubble fills the upper band with high-entropy changing pixels, so base-diff
+  # ballooned the pack 830 KB -> 14 MB (would not fit PS1 RAM). suzy1's dots are
+  # left dropped (cosmetic); its bubble shell ships fine via keyed.
+  KEYED_OVERLAY_RECT="0,320,640,160"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] &&
    { [ "$SCENE_SLUG" = "johnny4" ] || [ "$SCENE_SLUG" = "johnny5" ]; }; then
   # These letter-message full host surfaces can contaminate bubbles/letters
