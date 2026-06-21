@@ -448,6 +448,15 @@ void *memAlloc(MemRegion region, size_t size, const char *tag)
                         extern void memDumpCacheMap(const char *why);
                         memDumpCacheMap("bsod");
 #endif
+                        /* Always-on: name the failing allocation so a CACHE-
+                         * exhaustion BSOD is self-diagnosing (which buffer
+                         * stranded). Mirrors the TRANSIENT-FAIL tag line. */
+                        {
+                            extern int printf(const char *, ...);
+                            printf("JCMEM CACHE-FAIL tag=%s req=%lu have=%lu\n",
+                                   tag ? tag : "(?)", (unsigned long)alignedSize,
+                                   (unsigned long)(MEM_CACHE_BUDGET - g_cacheUsed));
+                        }
                         memHaltFmt("CACHE", "exhausted (region+libc both)",
                                    alignedSize, MEM_CACHE_BUDGET - g_cacheUsed);
                     }
