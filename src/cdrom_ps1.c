@@ -753,15 +753,45 @@ void cdromResetState(void)
     }
 }
 
+/* CD drive error recovery (0.9.6). A deep-soak DuckStation run can latch the
+ * emulated drive into an error state (status=0x03, code=0x20) after which every
+ * CdControl / CdRead fails with an acknowledge timeout. The game's scene-load
+ * retry then re-issues the resolve+read forever and freezes on the inter-scene
+ * loading animation (observed: STAND1.FG2 wedged ~21h, ~7h into a soak). Track
+ * consecutive CD failures across the resolve + read paths; after a few in a row,
+ * re-init the controller (the existing cdromResetState) which clears the latched
+ * error, so the next retry can make progress instead of hanging indefinitely. */
+#define PS1_CD_FAIL_RESET_THRESHOLD 4
+static int gCdFailStreak = 0;
+static void ps1CdNoteReadSuccess(void) { gCdFailStreak = 0; }
+static void ps1CdNoteReadFailure(void)
+{
+    if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
+        extern int printf(const char *, ...);
+        printf("JCCD drive-recover: CdInit reset after %d consecutive failures\n",
+               gCdFailStreak);
+        cdromResetState();   /* drain + CdInit + file-pool reset clears status=0x03 */
+        gCdFailStreak = 0;
+    }
+}
+
 CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
 {
+    CdlFILE *found;
     /* PSn00bSDK's CdRead path completes the data transfer, then issues an
      * async CdlPause. Our fast read polling can return before that pause's
      * completion IRQ, and that IRQ resets the CD parameter FIFO. Drain it
      * before CdSearchFile, whose directory walk issues CdlSetloc commands. */
     (void)ps1CdEnsureNoAsyncRead();
     (void)CdReadSync(0, NULL);
-    return CdSearchFile(file, filename);
+    found = CdSearchFile(file, filename);
+    /* Feed the drive-recovery tracker: a failing locate is the first symptom of
+     * a latched drive error, and a reset here unblocks the caller's retry. */
+    if (found != NULL)
+        ps1CdNoteReadSuccess();
+    else
+        ps1CdNoteReadFailure();
+    return found;
 }
 
 PS1File* ps1_fopen(const char* filename, const char* mode)
@@ -1649,12 +1679,17 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
                     chunkOk = 1;
             }
             if (!chunkOk) {
+                /* Persistent chunk failure feeds the drive-recovery tracker so a
+                 * latched drive error gets a CdInit reset instead of an endless
+                 * caller retry. */
+                ps1CdNoteReadFailure();
                 if (perfTrack)
                     ps1PerfMarkCdReadDetailed(size, numSectors,
                                               ps1PerfElapsedVBlanks(perfStartTick),
                                               0, perfFileLba, offset, 0);
                 return 0;
             }
+            ps1CdNoteReadSuccess();
         }
 
         sectorsRead += chunkSectors;
