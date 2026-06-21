@@ -860,14 +860,18 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                      * return-0 → JC_BSOD "pack-start failed" at
                      * visitor6 around 247s in random rotation.
                      *
-                     * memAlloc(MEM_REGION_CACHE, ...) halts on
-                     * exhaustion (region + libc both) instead of
-                     * silently returning NULL — making this path
-                     * deterministic. Setup-prime fallback still tries
-                     * the smaller window size on alloc failure to
-                     * keep visitor3-class behavior. */
+                     * No-halt + strand flag (the original "halt for
+                     * determinism" rationale was wrong for deep soak): a
+                     * fragmentation strand on this ~96 KB grow-only window must
+                     * be RECOVERABLE via the caller's withhold-rebuild retry,
+                     * not a fatal halt (observed BSOD: tag=fg-stream-window
+                     * req=98304 in stand16 setup after johnny6's 116 KB frame
+                     * buffer). memTryAlloc returns NULL from the REGION (no libc
+                     * silent failure), and the setup-prime fallback below still
+                     * tries the smaller window first. */
                     /* MEM_REGION_RATIONALE: grow-only prefetch window.
                      * CACHE region. */
+                    memSetCacheAllocNoHalt(1);
                     newWindowBuffer = (uint8 *)memAlloc(
                         MEM_REGION_CACHE,
                         windowCapacityBytes,
@@ -886,8 +890,10 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                 "fg-stream-window");
                         }
                     }
+                    memSetCacheAllocNoHalt(0);
                     if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                         if (newWindowBuffer == NULL) {
+                            gFgRuntimeStartCacheStrand = 1;
                             if (ps1PerfEnabled)
                                 ps1PerfMarkAllocFail(windowCapacityBytes);
                             gFgStreamWindowBufferSize = 0;
