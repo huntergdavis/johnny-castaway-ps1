@@ -672,10 +672,16 @@ void grTopUpCleanRectSlabFloor(void)
     }
     while (floors < 2) {
         /* MEM_REGION_RATIONALE: floor-slab replacement, same lifetime
-         * contract as the boot pre-park. */
-        uint16 *slab = (uint16 *)memAlloc(MEM_REGION_CACHE,
-                                          GR_CLEAN_SLAB_FLOOR_BYTES,
-                                          "grCleanRectPixels");
+         * contract as the boot pre-park. memTryAlloc (NOT memAlloc): this
+         * top-up is explicitly best-effort ("Allocation failure is tolerated
+         * silently" above), so a fragmented deep-soak CACHE must return NULL
+         * here — not halt. memAlloc would BSOD (mem_region.c:173, observed at
+         * req=98304 after johnny6's ~116K frame buffer consumed CACHE); a
+         * skipped top-up only degrades the floor pool, and the next big clean
+         * rect then declines gracefully (no crash). */
+        uint16 *slab = (uint16 *)memTryAlloc(MEM_REGION_CACHE,
+                                             GR_CLEAN_SLAB_FLOOR_BYTES,
+                                             "grCleanRectPixels");
         if (slab == NULL ||
             !grCleanRectSlabPoolPark(slab, GR_CLEAN_SLAB_FLOOR_BYTES)) {
             if (slab != NULL)
@@ -697,9 +703,11 @@ void grPreparkCleanRectSlabs(int count, unsigned long bytes)
     for (i = 0; i < count && i < GR_MAX_CLEAN_RECTS; i++) {
         /* MEM_REGION_RATIONALE: session-lifetime parked clean-rect
          * slab; reused via the slab pool, droppable only by the CACHE
-         * pressure-relief hook. */
-        uint16 *slab = (uint16 *)memAlloc(MEM_REGION_CACHE, bytes,
-                                          "grCleanRectPixels");
+         * pressure-relief hook. memTryAlloc (NOT memAlloc) so a fragmented
+         * CACHE returns NULL and we stop pre-parking gracefully instead of
+         * halting — matches the NULL guard below, which memAlloc made dead. */
+        uint16 *slab = (uint16 *)memTryAlloc(MEM_REGION_CACHE, bytes,
+                                             "grCleanRectPixels");
         if (slab == NULL)
             return;
         if (!grCleanRectSlabPoolPark(slab, (uint32)bytes)) {

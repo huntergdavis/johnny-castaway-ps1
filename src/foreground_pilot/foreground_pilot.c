@@ -930,11 +930,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                         memFree(MEM_REGION_CACHE, gFgStreamScratch);
                     }
                     /* MEM_REGION_RATIONALE: grow-only alignment scratch.
-                     * CACHE region. */
+                     * CACHE region. No-halt + strand flag (sibling of the
+                     * fg-frame / fg-prefetch-frame reallocs): a deep-soak
+                     * fragmentation strand here must be recoverable via the
+                     * caller's withhold-rebuild retry, not a fatal halt. */
+                    memSetCacheAllocNoHalt(1);
                     gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                                           requiredScratch,
                                                           "fg-stream-scratch");
+                    memSetCacheAllocNoHalt(0);
                     if (gFgStreamScratch == NULL) {
+                        gFgRuntimeStartCacheStrand = 1;
                         if (ps1PerfEnabled)
                             ps1PerfMarkAllocFail(requiredScratch);
                         gFgStreamScratchSize = 0;
@@ -2614,9 +2620,9 @@ void foregroundPilotReserveStableShape(void)
     if (gFgStreamWindowBuffer == NULL) {
         /* MEM_REGION_RATIONALE: session-lifetime stream window,
          * reserved at boot as part of the stable CACHE shape. */
-        gFgStreamWindowBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                  FG_NEXT_STAGE_SIDE_BYTES,
-                                                  "fg-stream-window");
+        gFgStreamWindowBuffer = (uint8 *)memTryAlloc(MEM_REGION_CACHE,
+                                                     FG_NEXT_STAGE_SIDE_BYTES,
+                                                     "fg-stream-window");
         if (gFgStreamWindowBuffer != NULL)
             gFgStreamWindowBufferSize = FG_NEXT_STAGE_SIDE_BYTES;
     }
@@ -2640,16 +2646,16 @@ void foregroundPilotReserveStableShape(void)
     if (gFgFrameBuffer == NULL) {
         /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
          * frame payload buffer. */
-        gFgFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
-                                           "fg-frame");
+        gFgFrameBuffer = (uint8 *)memTryAlloc(MEM_REGION_CACHE, 16384UL,
+                                              "fg-frame");
         if (gFgFrameBuffer != NULL)
             gFgFrameBufferSize = 16384UL;
     }
     if (gFgPrefetchFrameBuffer == NULL) {
         /* MEM_REGION_RATIONALE: stable-shape pre-grow of the grow-only
          * prefetch frame buffer (also the setup metadata scratch). */
-        gFgPrefetchFrameBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
-                                                   "fg-prefetch-frame");
+        gFgPrefetchFrameBuffer = (uint8 *)memTryAlloc(MEM_REGION_CACHE, 16384UL,
+                                                      "fg-prefetch-frame");
         if (gFgPrefetchFrameBuffer != NULL)
             gFgPrefetchFrameBufferSize = 16384UL;
     }
@@ -2658,8 +2664,8 @@ void foregroundPilotReserveStableShape(void)
          * stream alignment scratch — the third ratcheting buffer (the
          * 100-scene soak's recurring relief: visitor4's first play
          * requested exactly maxData+2K = 14,336). */
-        gFgStreamScratch = (uint8 *)memAlloc(MEM_REGION_CACHE, 16384UL,
-                                             "fg-stream-scratch");
+        gFgStreamScratch = (uint8 *)memTryAlloc(MEM_REGION_CACHE, 16384UL,
+                                                "fg-stream-scratch");
         if (gFgStreamScratch != NULL)
             gFgStreamScratchSize = 16384UL;
     }
