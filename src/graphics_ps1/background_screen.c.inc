@@ -568,6 +568,20 @@ static void grUploadFullScreenBgTilesIfNeeded(void)
     DrawSync(0);
 }
 
+/* Repaint all 4 bg tiles from the resident full-screen SCR cache. Public so the
+ * foreground pilot can restore a DECLINED scene's backdrop every frame: a
+ * ceiling scene (visitor3) whose clean-rect snapshot couldn't be placed has no
+ * per-frame restore source, so the full-redraw fallback otherwise accumulates
+ * sprite trails. Repainting the pristine backdrop from the cache before each
+ * frame's foreground composite removes the trails. Returns 1 if repainted. */
+int grRepaintBackdropFromScrCache(void)
+{
+    if (!gFullScreenScrCacheValid || gFullScreenScrCache == NULL)
+        return 0;
+    grExpandFullScreenScrPackedToTiles(gFullScreenScrCache);
+    return 1;
+}
+
 static int grLoadFullScreenScrCached(struct TScrResource *scrResource)
 {
     if (!grIsFullScreenScrResource(scrResource) ||

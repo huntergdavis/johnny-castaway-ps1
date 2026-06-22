@@ -1692,6 +1692,22 @@ fg_setup_retry:
             }
             grFreeCleanBgRects();
             cleanRectsDeclined = 1;
+            /* Give the declined scene a per-frame backdrop source so the
+             * full-redraw fallback doesn't accumulate sprite trails (observed
+             * on a deep-soak visitor3: the boat + island sprites smear every
+             * frame). The withhold-retry disabled the SCR cache to free the
+             * hole; declining just freed the ~400 KB clean-rect attempt, so the
+             * 153 KB cache fits now. Re-enable it and reload the island backdrop
+             * (caching on, but NOT the 600 KB full clean-tile save) so the
+             * render loop can grRepaintBackdropFromScrCache() each frame. Island
+             * scenes only — black/scene-specific backdrops keep the plain
+             * full-redraw (no SCR backdrop to repaint, no trail to fix). */
+            if (!blackBackdrop && !sceneSpecificBackdrop) {
+                grSetFullScreenScrCacheEnabled(1);
+                grSetSaveCleanOnScreenLoad(0);
+                grLoadScreen((char *)(islandState.night ? "NIGHT.SCR"
+                                                        : "OCEAN00.SCR"));
+            }
         }
         grSetCleanBgRectsForceCache(0);
         FG_CACHE_CHECK("fg-clean-saved");
@@ -2105,15 +2121,14 @@ fg_setup_retry:
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
             if (cleanRectsDeclined) {
-                /* Ceiling scene that declined its clean-rect snapshot
-                 * (no pristine per-frame restore source survives). Force
-                 * a full bg-tile re-upload each frame so the composite is
-                 * never left half-stale. Last-resort anti-BSOD net: the
-                 * backdrop under the moving sprite isn't re-cleaned (may
-                 * trail), but the scene stays alive and bounded. Real
-                 * ceiling scenes are made to FIT by the withhold-rebuild +
-                 * SCR-disable retry; decline only catches a hypothetical
-                 * clean rect larger than the whole CACHE+TRANSIENT budget. */
+                /* Ceiling scene that declined its clean-rect snapshot. Repaint
+                 * the pristine backdrop from the SCR cache (repopulated at the
+                 * decline above) so the moving sprites composite on a clean
+                 * backdrop instead of accumulating trails, then force a full
+                 * upload. If the cache isn't available (black/scene-specific),
+                 * grRepaintBackdropFromScrCache() returns 0 and we fall back to
+                 * the plain full redraw (bounded, crash-free). */
+                grRepaintBackdropFromScrCache();
                 grForceFullRedrawNextFrame();
             } else if (fgRuntimeUsesTemporalResidual()) {
                 if (gFgRuntime.frameRendered)
