@@ -137,18 +137,43 @@ ps1_streamAsyncReadAlignedBegin(const CdlFILE *cdfile,
     return 1;
 }
 
+/* Stall watchdog: callers poll this once per VSync (while loops VSync(0) between
+ * polls), so ~60 polls/sec. A healthy read completes in well under a second
+ * (<~120 polls). A deep-soak DuckStation drive can instead stall a read PENDING
+ * forever (read 1 sector, pause, never complete — no error to surface), wedging
+ * the caller's `while (poll == PENDING) VSync(0);` loop indefinitely (observed:
+ * MARY4LOW read frozen ~2h into a soak). After ~15s of PENDING, re-init the
+ * controller to clear the latched stall and return ERROR so every poll loop
+ * exits and the scene re-stages (drive now reset). */
+#define PS1_CD_ASYNC_PENDING_POLL_LIMIT 900u
+static unsigned gPs1CdAsyncPendingPolls = 0;
+
 int __attribute__((noinline,optimize("Os")))
 ps1_streamAsyncReadPoll(void)
 {
     int syncResult;
 
-    if (!gPs1CdAsyncRead.active)
+    if (!gPs1CdAsyncRead.active) {
+        gPs1CdAsyncPendingPolls = 0;
         return PS1_CD_ASYNC_ERROR;
+    }
 
     syncResult = CdReadSync(1, NULL);
-    if (syncResult > 0)
+    if (syncResult > 0) {
+        if (++gPs1CdAsyncPendingPolls >= PS1_CD_ASYNC_PENDING_POLL_LIMIT) {
+            extern int printf(const char *, ...);
+            printf("JCCD async-stall: CdInit reset after %u PENDING polls (~stalled read)\n",
+                   gPs1CdAsyncPendingPolls);
+            gPs1CdAsyncPendingPolls = 0;
+            (void)CdReadSync(0, NULL);
+            gPs1CdAsyncRead.active = 0;
+            CdInit();   /* clear the latched emulated-drive stall */
+            return PS1_CD_ASYNC_ERROR;
+        }
         return PS1_CD_ASYNC_PENDING;
+    }
 
+    gPs1CdAsyncPendingPolls = 0;
     gPs1CdAsyncRead.active = 0;
     if (syncResult == 0)
         return PS1_CD_ASYNC_DONE;
