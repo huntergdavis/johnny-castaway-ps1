@@ -358,9 +358,15 @@ void walkPilotReservePsbSlab(unsigned long bytes)
     if (!gWalkSpuStageEnabled || gWalkPsbLoadSlab != NULL || !memIsReady())
         return;
     /* MEM_REGION_RATIONALE: session-lifetime walk PSB load slab,
-     * reserved at boot as part of the stable CACHE shape. */
+     * reserved at boot as part of the stable CACHE shape. No-halt: a
+     * relief cycle can free this slab and ask to re-reserve it under a
+     * fragmented CACHE (deep-soak BSOD 2026-06-23: req=49152 have=98268,
+     * none contiguous). A failed reservation leaves the slab NULL and
+     * the consume path retries / the walk degrades to a teleport. */
+    memSetCacheAllocNoHalt(1);
     gWalkPsbLoadSlab = (uint8 *)memAlloc(MEM_REGION_CACHE, bytes,
                                          "johnwalk_spu_load");
+    memSetCacheAllocNoHalt(0);
     if (gWalkPsbLoadSlab != NULL)
         gWalkPsbLoadSlabSize = (uint32)bytes;
 }
@@ -517,10 +523,14 @@ static int walkPilotLoadPsbFromSpu(struct TWalkSpuPsbStage *stage,
         if (gWalkPsbLoadSlab == NULL) {
             /* MEM_REGION_RATIONALE: grow-only persistent slab; same
              * block reused for every inter-scene walk PSB load to keep
-             * CACHE churn-free across boundaries. */
+             * CACHE churn-free across boundaries. No-halt: under deep-soak
+             * fragmentation a NULL leaves the slab unset so we fall to the
+             * per-load alloc below and ultimately to a teleport. */
+            memSetCacheAllocNoHalt(1);
             gWalkPsbLoadSlab = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                                  stage->readBytes,
                                                  stage->loadTag);
+            memSetCacheAllocNoHalt(0);
             if (gWalkPsbLoadSlab != NULL)
                 gWalkPsbLoadSlabSize = stage->readBytes;
         }
@@ -532,9 +542,14 @@ static int walkPilotLoadPsbFromSpu(struct TWalkSpuPsbStage *stage,
         psbBuf = gWalkPsbLoadSlab;
         callerOwned = 1;
     } else if (memIsReady()) {
+        /* No-halt: a fragmented deep-soak CACHE returns NULL here and the
+         * walk/raft load degrades gracefully (return 0) rather than
+         * BSOD'ing the allocator. */
+        memSetCacheAllocNoHalt(1);
         psbBuf = (uint8 *)memAlloc(MEM_REGION_CACHE,
                                    stage->readBytes,
                                    stage->loadTag);
+        memSetCacheAllocNoHalt(0);
     } else {
         psbBuf = (uint8 *)malloc(stage->readBytes);
     }
@@ -701,12 +716,21 @@ static int walkPilotEnsureBmp(void)
 {
     if (gWalkBmpLoaded) return 1;
 #ifdef PS1_BUILD
+    /* A deep-soak CACHE can be too fragmented for the 48 KB JOHNWALK load
+     * (SPU slab or BMP fallback) to find a contiguous run. Arm no-halt so
+     * a failed load returns an empty slot and we degrade to a teleport
+     * (skip-walk) instead of halting the allocator. */
+    memSetCacheAllocNoHalt(1);
     if (walkPilotLoadJohnwalkFromSpu()) {
+        memSetCacheAllocNoHalt(0);
         gWalkBmpLoaded = 1;
         return 1;
     }
 #endif
     grLoadBmp(&gWalkBmpSlot, 0, "JOHNWALK.BMP");
+#ifdef PS1_BUILD
+    memSetCacheAllocNoHalt(0);
+#endif
     if (gWalkBmpSlot.numSprites[0] == 0) {
         extern int printf(const char *, ...);
         printf("JCWALK: ensureBmp JOHNWALK load failed numSprites=0; "

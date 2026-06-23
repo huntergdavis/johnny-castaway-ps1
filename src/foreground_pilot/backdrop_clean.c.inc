@@ -153,8 +153,14 @@ static void fgBackdropEnableWaveBackdrop(void)
     if (islandState.raft >= 1 && islandState.raft <= 5) {
         int xRaft = islandState.lowTide ? 529 : 512;
         int yRaft = islandState.lowTide ? 281 : 266;
-        if (!walkPilotLoadMraftFromSpu(&gFgBackdropSlot, 1))
+        if (!walkPilotLoadMraftFromSpu(&gFgBackdropSlot, 1)) {
+            /* No-halt: under deep-soak fragmentation the raft sprite load
+             * may fail; an empty slot just skips the raft draw rather than
+             * BSOD'ing. */
+            memSetCacheAllocNoHalt(1);
             grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
+            memSetCacheAllocNoHalt(0);
+        }
         grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
                      xRaft, yRaft, (uint16)(islandState.raft - 1), 1);
         grReleaseBmp(&gFgBackdropSlot, 1);
