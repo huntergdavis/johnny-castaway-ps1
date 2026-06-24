@@ -1269,32 +1269,48 @@ void foregroundPilotTeardownForFreeplay(void)
 static void fgFullCacheReset(const char *sceneName)
 {
     extern int printf(const char *, ...);
+    extern void lruEvictAllUnpinned(void);
+    int rewound;
     printf("JCMEM full-cache-reset (defrag) scene=%s\n",
            sceneName ? sceneName : "(?)");
 
-    /* 1. Free every heavy CACHE resident first -- this both clears the
-     *    fragmentation and makes room for the frog-clock's MEANWHIL.BMP load
-     *    (we stranded a moment ago, so CACHE is tight until these are freed). */
+    /* 1. Turn the loading-wave proof OFF first — exactly as the scheduled
+     *    rebuild does. This UNPINS the proof-pinned residents (notably the
+     *    LRU-cached block at ~344088 that otherwise survives lruEvictAllUnpinned
+     *    — it blocked the rewind, and the old blind wipe orphaned it into the
+     *    deterministic "CACHE block size corrupt fp=344092"). */
+    foregroundPilotSetLoadingWaveProof(0);
+
+    /* 2. Free every CACHE resident (with the proof off, fgReleaseStreamBuffersHard
+     *    also drops the grow-only frame buffers). */
     foregroundPilotTeardownForFreeplay(); /* stages, stream bufs, band, bg tiles,
                                            * clean-rect slab pool, SCR-enable off */
     grFreeCleanBgRects();
     grFreeCleanBgTiles();
     grReliefFreeScrCache();               /* 150 KB full-screen SCR cache */
-    walkPilotReliefFreePsbSlab();         /* 48 KB walk PSB slab */
-    fgForceDropGrowOnlyCacheBuffers();    /* frame/prefetch/window/scratch (memFree) */
+    walkPilotForceDropPsbSlab();          /* 48 KB walk PSB slab (unconditional) */
+    fgForceDropGrowOnlyCacheBuffers();    /* frame/prefetch/window/scratch */
 
-    /* 2. Play the frog-clock loading animation. It re-allocs bgTile + a
-     *    transient MEANWHIL slot (released internally) and presents to VRAM,
-     *    so it stays on screen through the blocking reload that follows. */
+    /* 3. Frog-clock loading animation on the freed heap (masks the reload);
+     *    re-allocs bgTile + a transient MEANWHIL slot, presents to VRAM. */
     grShowMeanwhileLoadingFrame(0);
+    grReleaseBackgroundTiles();           /* drop the frog's bgTile */
 
-    /* 3. Drop the bgTile the frog left allocated so nothing in CACHE survives
-     *    the wipe. */
-    grReleaseBackgroundTiles();
+    /* 4. Evict everything now unpinned (the proof residents freed by step 1
+     *    plus the frog's MEANWHIL LRU residue), then SAFELY rewind: rewinds the
+     *    bump to base ONLY if the region is truly empty — conditional, so a
+     *    surviving resident yields a (crash-free) decline rather than the blind
+     *    wipe's orphan corruption. */
+    lruEvictAllUnpinned();
+    rewound = memCacheRewindIfEmpty();
+    printf("JCMEM full-reset rewound=%d largest=%lu\n",
+           rewound, (unsigned long)memCacheLargestFreeBlock());
 
-    /* 4. Wipe the allocator to pristine. Every owner above dropped its
-     *    pointer, so nothing dangles; the retry reloads into a clean region. */
-    memCacheFullReset();
+    /* 5. Re-enable the proof for the retry. The retry runs PLAIN setup on the
+     *    pristine bump=base heap — NOT a forced rebuild, whose normal re-band
+     *    reserves HOLIDAY + the walk slab up front and re-strands the clean
+     *    rect. Plain setup on a pristine heap is what places visitor3. */
+    foregroundPilotSetLoadingWaveProof(1);
 }
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
@@ -1663,7 +1679,8 @@ fg_setup_retry:
             printf("JCMEM frame-buffer strand #2: full-cache-reset + retry scene=%s\n",
                    sceneName ? sceneName : "(?)");
             triedFullReset = 1;
-            fgSetupAttempt = 0;          /* retry as a fresh NORMAL attempt */
+            fgSetupAttempt = 0;          /* retry as a fresh NORMAL attempt (plain setup,
+                                          * pristine heap from fgFullCacheReset's rewind) */
             fgFullCacheReset(sceneName);
             grSetCleanBgRectsForceCache(0);
             goto fg_setup_retry;
@@ -1784,7 +1801,8 @@ fg_setup_retry:
                 printf("JCMEM clean-rect strand #2: full-cache-reset + retry scene=%s\n",
                        sceneName ? sceneName : "(?)");
                 triedFullReset = 1;
-                fgSetupAttempt = 0;          /* retry as a fresh NORMAL attempt */
+                fgSetupAttempt = 0;          /* retry as a fresh NORMAL attempt (plain setup,
+                                              * pristine heap from fgFullCacheReset's rewind) */
                 fgFullCacheReset(sceneName);
                 grSetCleanBgRectsForceCache(0);
                 goto fg_setup_retry;
@@ -1812,11 +1830,6 @@ fg_setup_retry:
         grSetCleanBgRectsForceCache(0);
         FG_CACHE_CHECK("fg-clean-saved");
     }
-    /* The CACHE shape is re-established for this scene; any full-cache-reset
-     * stale-free tolerance window opened during the retry's teardown/rebuild
-     * has served its purpose. Close it so strict free validation resumes for
-     * the rest of the session (no-op when no reset happened). */
-    memCacheEndFullResetTolerance();
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_CLEAN_RECT,
                               ps1PerfElapsedVBlanks(perfPhaseTick));
@@ -2227,13 +2240,19 @@ fg_setup_retry:
                 perfDetailTick = ps1PerfTick();
             if (cleanRectsDeclined) {
                 /* Ceiling scene that declined its clean-rect snapshot. Repaint
-                 * the pristine backdrop from the SCR cache (repopulated at the
-                 * decline above) so the moving sprites composite on a clean
-                 * backdrop instead of accumulating trails, then force a full
-                 * upload. If the cache isn't available (black/scene-specific),
-                 * grRepaintBackdropFromScrCache() returns 0 and we fall back to
-                 * the plain full redraw (bounded, crash-free). */
-                grRepaintBackdropFromScrCache();
+                 * the pristine OCEAN backdrop from the SCR cache, then re-composite
+                 * the island sprites + raft + holiday on top of it every frame, so
+                 * the declined scene shows the FULL backdrop (not the ocean-only
+                 * "island missing, ship partial" frame the old decline produced).
+                 * The moving foreground sprites then draw on this clean composite
+                 * instead of accumulating trails. grForceFullRedrawNextFrame uploads
+                 * it. If the SCR cache isn't available (black/scene-specific),
+                 * grRepaintBackdropFromScrCache() returns 0 and the island re-draw
+                 * is skipped (numSprites guard) — bounded, crash-free. */
+                if (grRepaintBackdropFromScrCache()) {
+                    fgBackdropDrawIslandSprites();
+                    fgBackdropStampHoliday();
+                }
                 grForceFullRedrawNextFrame();
             } else if (fgRuntimeUsesTemporalResidual()) {
                 if (gFgRuntime.frameRendered)
@@ -2580,8 +2599,8 @@ static void fgMaybeScheduledCacheRebuild(void)
     if (!gFgLoadingWaveProofEnabled || !memIsReady())
         return;
     /* A forced withhold-rebuild (clean-rect strand recovery) fires
-     * unconditionally — bypass the per-boundary cooldown and the
-     * dysfunction triggers; the strand IS the trigger. */
+     * unconditionally — bypass the per-boundary cooldown and the dysfunction
+     * triggers; the strand IS the trigger. */
     if (!forceWithhold) {
         gFgScenesSinceRebuild++;
         if (gFgRebuildCooldown > 0) {

@@ -93,6 +93,12 @@ void walkPilotSetSpuStage(int enabled);
  * next walk re-allocates it. */
 int  walkPilotReliefFreePsbSlab(void);
 
+/* Unconditional walk-slab teardown for the full-cache-reset: drops the
+ * sprite slot, clears busy, frees + NULLs the slab regardless of busy state.
+ * The relief variant above honors busy and would leave a dangling slab the
+ * subsequent CACHE wipe orphans. */
+void walkPilotForceDropPsbSlab(void);
+
 /* Bytes the relief tier above could free right now (idle PSB slab
  * size), or 0 — lets the relief hook skip the tier when its yield
  * cannot cover the failing request. */

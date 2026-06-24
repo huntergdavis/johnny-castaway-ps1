@@ -252,15 +252,6 @@ void *memTryAlloc(MemRegion region, size_t size, const char *tag);
 void memCacheReserveHole(void *base, size_t bytes);
 void memCacheClearReservedHole(void);
 
-/* Full-reset the CACHE sub-allocator to pristine (bump at base, empty
- * free-list, no reserved hole). Deepest defrag the region supports. The
- * caller MUST drop every live CACHE pointer first or it dangles. Opens a
- * stale-free tolerance window (frees of now-above-bump pointers become no-ops)
- * that the caller closes with memCacheEndFullResetTolerance once the scene has
- * re-established its CACHE shape. */
-void memCacheFullReset(void);
-void memCacheEndFullResetTolerance(void);
-
 /* Free a previously-allocated pointer.
  *   BOOT:      no-op (allocations are permanent); halts post-freeze.
  *   CACHE:     real release; used by LRU evictor.

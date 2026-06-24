@@ -492,9 +492,9 @@ static void fgReleaseStreamBuffersHard(void)
  * staged-transition retention gates that fgReleaseStreamBuffersHard honors
  * under gFgLoadingWaveProofEnabled. Used ONLY by the full-cache-reset
  * escalation (fgFullCacheReset). We memFree (not just detach) so the freed
- * bytes are available to the frog-clock loading frame that plays before the
- * subsequent memCacheFullReset wipe. These grow-only buffers, kept resident
- * at their soak high-water by every other rebuild, are the residual
+ * bytes are available to the frog-clock loading frame, and so the empty region
+ * lets memCacheRewindIfEmpty rewind to pristine. These grow-only buffers, kept
+ * resident at their soak high-water by every other rebuild, are the residual
  * fragmenter the full reset exists to clear. */
 static void fgForceDropGrowOnlyCacheBuffers(void)
 {

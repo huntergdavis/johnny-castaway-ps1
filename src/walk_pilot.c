@@ -346,6 +346,29 @@ int walkPilotReliefFreePsbSlab(void)
     return 1;
 }
 
+/* Unconditional walk-slab teardown for the full-cache-reset. Unlike the relief
+ * variant above, this does NOT honor the busy flag: the entire CACHE region is
+ * about to be wiped, so the sprite slot that points into the slab must be
+ * dropped (grReleaseBmp on the caller-owned slot detaches without freeing the
+ * slab), busy cleared, and the slab freed + NULLed here. If left busy-gated,
+ * gWalkPsbLoadSlab survives the wipe as a dangling pointer that a later free
+ * corrupts — the deep-soak BSOD signature (fp=344092, johnwalkSlotLoaded=0,
+ * CACHE block size corrupt ~12 min after a reset). */
+void walkPilotForceDropPsbSlab(void)
+{
+    if (gWalkBmpLoaded) {
+        grReleaseBmp(&gWalkBmpSlot, 0);
+        gWalkBmpLoaded = 0;
+    }
+    gWalkPsbLoadSlabBusy = 0;
+    if (gWalkPsbLoadSlab != NULL) {
+        memFree(MEM_REGION_CACHE, gWalkPsbLoadSlab);
+        gWalkPsbLoadSlab = NULL;
+        gWalkPsbLoadSlabSize = 0;
+    }
+    walkRenderResetCache();
+}
+
 unsigned long walkPilotPsbSlabIdleBytes(void)
 {
     if (gWalkPsbLoadSlab == NULL || gWalkPsbLoadSlabBusy)
@@ -620,6 +643,10 @@ int walkPilotLoadMraftFromSpu(struct TTtmSlot *slot, uint16 slotNo)
 int walkPilotReliefFreePsbSlab(void)
 {
     return 0;
+}
+
+void walkPilotForceDropPsbSlab(void)
+{
 }
 
 unsigned long walkPilotPsbSlabIdleBytes(void)
