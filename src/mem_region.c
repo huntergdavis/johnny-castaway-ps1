@@ -87,6 +87,15 @@ static size_t g_transientPeak;
 static int g_memInited      = 0;
 static int g_bootFrozen     = 0;
 
+/* Set by memCacheFullReset, cleared at the next memSceneReset. While set, a
+ * CACHE free of a pointer at-or-above the (just-rewound) bump is treated as a
+ * harmless no-op rather than a corruption halt: the full reset already
+ * reclaimed every byte, so the retry's setup-cleanup frees of stale pre-reset
+ * pointers (transient pack/segment buffers we don't individually track) are
+ * expected. Pointers BELOW the bump still validate normally (real corruption
+ * is still caught), and pointers outside the region still halt. */
+static int g_cacheFullResetPending = 0;
+
 /* TRANSIENT outstanding-allocation balance. */
 static int g_sceneAllocBalance = 0;
 
@@ -1019,6 +1028,44 @@ void memCacheClearReservedHole(void)
     g_cacheReservedBytes = 0;
 }
 
+/* Full-reset the CACHE sub-allocator to its pristine boot state: bump rewound
+ * to base, empty free-list, no reserved hole. This is the deepest defrag the
+ * region supports -- it reclaims even the grow-only buffers (frame/window) that
+ * the scheduled/withhold rebuilds deliberately leave resident at their high
+ * water, which is the residual fragmenter behind the ceiling-scene (visitor3)
+ * strand that survives the withhold-rebuild.
+ *
+ * DANGER: this only rewinds the bookkeeping. Any live pointer into CACHE
+ * dangles after this call. The CALLER MUST have dropped every CACHE resident
+ * first -- fgFullCacheReset() does exactly that (frame/prefetch/window/scratch,
+ * BACKGRND/HOLIDAY band, bg tiles, clean rects, SCR cache, walk slab, floor
+ * slabs). At a scene-setup strand point those are the only live CACHE owners
+ * (sound VAGs are transient + SPU-resident; ps1_fopen buffers are not held
+ * across setup; CD reads are quiesced before the teardown). */
+void memCacheFullReset(void)
+{
+    MEM_REQUIRE(g_memInited);
+    MEM_REQUIRE(ps1IsMainContext());
+    cacheInit_();
+    memCacheClearReservedHole();
+    /* The region is empty after the bump rewind — zero the live-bytes counter
+     * so accounting/relief don't see phantom usage from the wiped allocations.
+     * (Ignored stale frees below won't decrement it, which is correct: their
+     * bytes are already accounted as freed here.) */
+    g_cacheUsed = 0;
+    g_cacheFullResetPending = 1;
+}
+
+/* Close the full-cache-reset stale-free tolerance window. Called once the
+ * scene that triggered the reset has finished re-establishing its CACHE shape
+ * (after the clean-rect save), by which point every stale pre-reset pointer has
+ * been freed (and ignored) during the retry's teardown/rebuild. Restores strict
+ * free validation for the rest of the session. Idempotent. */
+void memCacheEndFullResetTolerance(void)
+{
+    g_cacheFullResetPending = 0;
+}
+
 static void *cacheFreeListAlloc_(size_t blockSize, int skipReserved,
                                  const char *tag)
 {
@@ -1144,6 +1191,23 @@ static void *cacheAllocInternal(size_t size, const char *tag)
 static void cacheFreeInternal(void *ptr)
 {
     if (ptr == NULL) return;
+    /* Full-cache-reset tolerance: after the bump is rewound to base, a pointer
+     * at-or-above the bump (but inside the region) is already-reclaimed memory
+     * — a stale pre-reset pointer the retry is cleaning up. Freeing it is a
+     * harmless no-op; ignore it rather than halting. A pointer BELOW the bump
+     * falls through to normal validation (so a real double/aliased free of a
+     * freshly-allocated block is still caught), and a pointer outside the
+     * region also falls through (genuine corruption still halts). */
+    if (g_cacheFullResetPending && g_cacheBase != NULL) {
+        const unsigned char *p = (const unsigned char *)ptr;
+        if (p >= g_cacheBumpTop &&
+            p <  g_cacheBase + MEM_CACHE_BUDGET) {
+            extern int printf(const char *, ...);
+            printf("JCMEM stale-free-after-reset off=%ld (ignored)\n",
+                   (long)(p - g_cacheBase));
+            return;
+        }
+    }
     g_cacheDiagFreePtr = ptr;
     g_cacheDiagUserPtr = ptr;
     g_cacheDiagNode = NULL;

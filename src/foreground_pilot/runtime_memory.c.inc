@@ -488,6 +488,43 @@ static void fgReleaseStreamBuffersHard(void)
     fgReleaseStreamBuffers();
 }
 
+/* Unconditional teardown of the grow-only CACHE buffers, bypassing the
+ * staged-transition retention gates that fgReleaseStreamBuffersHard honors
+ * under gFgLoadingWaveProofEnabled. Used ONLY by the full-cache-reset
+ * escalation (fgFullCacheReset). We memFree (not just detach) so the freed
+ * bytes are available to the frog-clock loading frame that plays before the
+ * subsequent memCacheFullReset wipe. These grow-only buffers, kept resident
+ * at their soak high-water by every other rebuild, are the residual
+ * fragmenter the full reset exists to clear. */
+static void fgForceDropGrowOnlyCacheBuffers(void)
+{
+    fgQuiesceCdBeforeCacheBufferMutation();
+    if (gFgFrameBuffer != NULL)
+        memFree(MEM_REGION_CACHE, gFgFrameBuffer);
+    if (gFgPrefetchFrameBuffer != NULL)
+        memFree(MEM_REGION_CACHE, gFgPrefetchFrameBuffer);
+    if (gFgStreamWindowBuffer != NULL)
+        memFree(MEM_REGION_CACHE, gFgStreamWindowBuffer);
+    if (gFgStreamScratch != NULL)
+        memFree(MEM_REGION_CACHE, gFgStreamScratch);
+    gFgFrameBuffer = NULL;
+    gFgFrameBufferSize = 0;
+    gFgPrefetchFrameBuffer = NULL;
+    gFgPrefetchFrameBufferSize = 0;
+    gFgStreamWindowBuffer = NULL;
+    gFgStreamWindowBufferSize = 0;
+    gFgStreamScratch = NULL;
+    gFgStreamScratchSize = 0;
+    gFgRuntime.frameBuffer = NULL;
+    gFgRuntime.frameBufferSize = 0;
+    gFgRuntime.prefetchFrameBuffer = NULL;
+    gFgRuntime.prefetchFrameBufferSize = 0;
+    gFgRuntime.streamWindowBuffer = NULL;
+    gFgRuntime.streamWindowSize = 0;
+    gFgRuntime.streamScratch = NULL;
+    gFgRuntime.streamScratchSize = 0;
+}
+
 static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
 {
     /* Staged-transition shape: the grow-only buffers stay allocated
