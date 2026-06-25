@@ -128,6 +128,44 @@ static void fgCleanOverlayRemember(const char *sceneName)
     fgOverlayKeyFill(&gFgCleanOverlayKey, sceneName);
 }
 
+/* Composite the island backdrop sprites — island body, raft (if afloat),
+ * low-tide rocks — from the resident gFgBackdropSlot onto the current backdrop
+ * surface at the live island offset. Factored out of fgBackdropEnableWaveBackdrop
+ * so the decline-render fallback can re-draw the island every frame on top of
+ * the ocean repaint: without this the declined ceiling scene rendered ocean
+ * only (the "island missing, ship partial" frame). Sprite 0 is the island; the
+ * raft load is no-halt (a failed deep-soak load just skips the raft, no BSOD). */
+static void fgBackdropDrawIslandSprites(void)
+{
+    if (gFgBackdropSlot.numSprites[0] == 0)
+        return;
+
+    grDx = islandState.xPos;
+    grDy = islandState.yPos;
+
+    if (islandState.raft >= 1 && islandState.raft <= 5) {
+        int xRaft = islandState.lowTide ? 529 : 512;
+        int yRaft = islandState.lowTide ? 281 : 266;
+        if (!walkPilotLoadMraftFromSpu(&gFgBackdropSlot, 1)) {
+            memSetCacheAllocNoHalt(1);
+            grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
+            memSetCacheAllocNoHalt(0);
+        }
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
+                     xRaft, yRaft, (uint16)(islandState.raft - 1), 1);
+        grReleaseBmp(&gFgBackdropSlot, 1);
+    }
+
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 288, 279,  0, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 442, 148, 13, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 365, 122, 12, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 396, 279, 14, 0);
+    if (islandState.lowTide) {
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 249, 303,  1, 0);
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
+    }
+}
+
 static void fgBackdropEnableWaveBackdrop(void)
 {
     gFgBackdropThread.ttmSlot   = &gFgBackdropSlot;
@@ -147,27 +185,7 @@ static void fgBackdropEnableWaveBackdrop(void)
         return;
     }
 
-    grDx = islandState.xPos;
-    grDy = islandState.yPos;
-
-    if (islandState.raft >= 1 && islandState.raft <= 5) {
-        int xRaft = islandState.lowTide ? 529 : 512;
-        int yRaft = islandState.lowTide ? 281 : 266;
-        if (!walkPilotLoadMraftFromSpu(&gFgBackdropSlot, 1))
-            grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
-                     xRaft, yRaft, (uint16)(islandState.raft - 1), 1);
-        grReleaseBmp(&gFgBackdropSlot, 1);
-    }
-
-    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 288, 279,  0, 0);
-    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 442, 148, 13, 0);
-    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 365, 122, 12, 0);
-    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 396, 279, 14, 0);
-    if (islandState.lowTide) {
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 249, 303,  1, 0);
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
-    }
+    fgBackdropDrawIslandSprites();
 
     if (holidayById(islandState.holiday)) {
         /* The holiday sheet (25 KB PSB) is constant for the whole

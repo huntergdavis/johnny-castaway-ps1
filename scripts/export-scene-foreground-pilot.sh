@@ -70,6 +70,22 @@ else
   LOWTIDE_PACK_BASENAME="${7:-}"
 fi
 
+# Static-idle scenes whose host capture draws NO foreground for the first few
+# frames (scene-setup delay): the island briefly shows without Johnny, then he
+# pops in (the audit's opening empty-stage / base-flash class). Skip the blank
+# lead-in so the pack opens already composed. Counts measured from the host
+# fgonly captures (frame N is the first with Johnny). Applied only when no
+# explicit start-frame was passed (START_FRAME==0, the batch default); an
+# explicit positional arg still wins. NOTE: do NOT add boat/ski edge-entry
+# scenes here — their empty opening is the intended off-frame entrance.
+if [ "$START_FRAME" = "0" ]; then
+  case "$SCENE_SLUG" in
+    stand1)                                START_FRAME=1 ;;
+    stand15)                               START_FRAME=2 ;;
+    stand3|stand4|stand5|stand8|stand9|stand10) START_FRAME=3 ;;
+  esac
+fi
+
 if [ -z "$OUTPUT_DIR" ]; then
   OUTPUT_DIR="$PROJECT_ROOT/host-results/${SCENE_SLUG}-foreground-pilot"
 fi

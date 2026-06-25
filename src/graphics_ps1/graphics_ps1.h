@@ -244,6 +244,7 @@ void grShowMeanwhileLoadingFrame(uint16 tick);
 void grSaveCleanBgTiles(void);
 void grSetSaveCleanOnScreenLoad(int enabled);
 void grSetFullScreenScrCacheEnabled(int enabled);
+int grRepaintBackdropFromScrCache(void);
 void grFreeCleanBgTiles(void);
 void grReleaseBackgroundTiles(void);
 /* Round 33: called from fgRuntimeReset immediately after memSceneReset.
