@@ -14,9 +14,10 @@ a pixel-perfect render every time** (zero degraded declines).
 The 48 KB JOHNWALK / MRAFT load (slab reserve, slab re-alloc, per-load alloc,
 and the `.BMP` fallbacks) used the *halting* `memAlloc`, so a deep-soak
 fragmentation strand BSOD'd (`JCMEM CACHE-FAIL tag=johnwalk_spu_load`, observed
-~28 h into a soak) instead of degrading. All five chokepoints are now no-halt;
-a fragmented CACHE makes the walk gracefully skip (a teleport) and the raft draw
-skip — never a crash.
+~28 h into a soak) instead of degrading. All five chokepoints are now no-halt:
+when deep-soak fragmentation starves the walk load, the walk degrades to a
+teleport (the walk and the raft draw are skipped) rather than halting the
+allocator — the failure mode that ended a multi-day soak run at ~28 h.
 
 ### visitor3: pixel-perfect even under extreme deep-soak pressure
 visitor3 (the game's most memory-demanding scene, ~400 KB clean rect) could

@@ -21,8 +21,8 @@ A visual-confidence + deep-soak release. 0.9.6 closed the memory-exhaustion BSOD
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.9.7.md` |
-| Lines | 49 |
-| Approx. words | 373 |
+| Lines | 50 |
+| Approx. words | 393 |
 | Code fences | 0 |
 
 ## Outline

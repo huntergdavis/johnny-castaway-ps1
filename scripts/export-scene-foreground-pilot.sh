@@ -78,6 +78,16 @@ fi
 # explicit start-frame was passed (START_FRAME==0, the batch default); an
 # explicit positional arg still wins. NOTE: do NOT add boat/ski edge-entry
 # scenes here — their empty opening is the intended off-frame entrance.
+#
+# stand10 reconciliation (release-0.9.7 red-team item): stand10 ships from
+# commit 30ae0e81bf (the visual-audit first-frame fix), which used exactly this
+# start-frame=3 — the SAME mechanism as its stand siblings, NOT a separate one.
+# So this case entry is consistent with the shipped STAND10/STND10L packs
+# (FGP2, start-frame=3, Johnny present in frame 0) and a re-export through this
+# path reproduces them. CAVEAT: STND10L once carried a manual compact-FGP3 perf
+# pass (perf plan P5-219, 49022 B); the 30ae0e81bf re-export reverted it to FGP2
+# (60288 B), so re-exporting here does NOT restore that perf optimization —
+# re-apply the FGP3 compaction separately if STND10L perf matters.
 if [ "$START_FRAME" = "0" ]; then
   case "$SCENE_SLUG" in
     stand1)                                START_FRAME=1 ;;
