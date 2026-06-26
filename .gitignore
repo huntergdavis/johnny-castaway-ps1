@@ -100,3 +100,4 @@ tests/mem_region_945_regression
 tests/mem_sim
 tests/mem_map_replay
 tests/mem_real_repro
+tests/mem_path_replay

@@ -35,8 +35,8 @@ description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pa
     { "@type": "HowToTool", "name": "PlayStation 1 BIOS file (e.g. scph1001.bin) — required by DuckStation, not shipped by this project" }
   ],
   "supply": [
-    { "@type": "HowToSupply", "name": "jcreborn.bin (~76 MiB disc image)" },
-    { "@type": "HowToSupply", "name": "jcreborn.cue (71 B cue sheet)" }
+    { "@type": "HowToSupply", "name": "johnnycastawayps1.bin (~76 MiB disc image)" },
+    { "@type": "HowToSupply", "name": "johnnycastawayps1.cue (71 B cue sheet)" }
   ],
   "step": [
     {
@@ -50,14 +50,14 @@ description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pa
       "@type": "HowToStep",
       "position": 2,
       "name": "Place files",
-      "text": "Drop jcreborn.cue and jcreborn.bin into the same folder.",
+      "text": "Drop johnnycastawayps1.cue and johnnycastawayps1.bin into the same folder.",
       "url": {{ play_quickstart_url | jsonify }}
     },
     {
       "@type": "HowToStep",
       "position": 3,
       "name": "Open the disc image",
-      "text": "In DuckStation: File → Start File… → pick jcreborn.cue.",
+      "text": "In DuckStation: File → Start File… → pick johnnycastawayps1.cue.",
       "url": {{ play_quickstart_url | jsonify }}
     },
     {
@@ -133,8 +133,8 @@ the GitHub release pages are at
 [{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
 <p class="hero-cta" markdown="0">
-  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download <code>.bin</code> <small>(~76&nbsp;MiB)</small></a>
-  <a class="btn"              href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.cue">Download <code>.cue</code> <small>(71&nbsp;B)</small></a>
+  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/johnnycastawayps1.bin">Download <code>.bin</code> <small>(~76&nbsp;MiB)</small></a>
+  <a class="btn"              href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/johnnycastawayps1.cue">Download <code>.cue</code> <small>(71&nbsp;B)</small></a>
   <a class="btn btn--small"   href="{{ '/releases/' | relative_url }}">Release notes</a>
 </p>
 
@@ -148,8 +148,8 @@ payload routed onto the disc.
 
 1. Install [DuckStation](https://www.duckstation.org/) on your
    platform of choice.
-2. Drop `jcreborn.cue` and `jcreborn.bin` into a folder.
-3. In DuckStation: *File → Start File…* → pick `jcreborn.cue`.
+2. Drop `johnnycastawayps1.cue` and `johnnycastawayps1.bin` into a folder.
+3. In DuckStation: *File → Start File…* → pick `johnnycastawayps1.cue`.
 4. Hit start. The game runs as a screensaver — let it idle and the
    scenes will cycle on their own.
 
@@ -167,8 +167,8 @@ requirement, see [/docs/devices/]({{ '/docs/devices/' | relative_url }}).
   On every milestone release tag bump (release_date / tag / version),
   recompute via:
 
-      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.bin | sha256sum
-      curl -sL https://github.com/.../releases/download/<tag>/jcreborn.cue | sha256sum
+      curl -sL https://github.com/.../releases/download/<tag>/johnnycastawayps1.bin | sha256sum
+      curl -sL https://github.com/.../releases/download/<tag>/johnnycastawayps1.cue | sha256sum
 
   and update those two fields in _config.yml's release: block.
   Future improvement: scripts/release.sh writes a sidecar `.sha256`
@@ -181,17 +181,17 @@ For **`{{ site.release.tag }}`** the SHA-256 hashes are:
 
 | File          | SHA-256                                                            |
 | ------------- | ------------------------------------------------------------------ |
-| `jcreborn.bin` | `{{ site.release.sha256_bin }}` |
-| `jcreborn.cue` | `{{ site.release.sha256_cue }}` |
+| `johnnycastawayps1.bin` | `{{ site.release.sha256_bin }}` |
+| `johnnycastawayps1.cue` | `{{ site.release.sha256_cue }}` |
 
 To check your local copies, run:
 
 ```bash
-sha256sum jcreborn.bin jcreborn.cue
+sha256sum johnnycastawayps1.bin johnnycastawayps1.cue
 ```
 
-(macOS: `shasum -a 256 jcreborn.bin jcreborn.cue`. Windows PowerShell:
-`Get-FileHash jcreborn.bin -Algorithm SHA256`.)
+(macOS: `shasum -a 256 johnnycastawayps1.bin johnnycastawayps1.cue`. Windows PowerShell:
+`Get-FileHash johnnycastawayps1.bin -Algorithm SHA256`.)
 
 If a hash differs from the values above, the file was altered in
 transit or by a mirror — re-download from the GitHub release page

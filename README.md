@@ -41,14 +41,14 @@ Load `johnnycastawayps1.cue` in [DuckStation](https://www.duckstation.org/) (or 
 
 | | |
 |---|---|
-| Current release | **`v0.9.3-ps1`** — SPU async staging and Original-order soak release |
+| Current release | **`v0.9.7-ps1`** — visitor3 pixel-perfect under deep-soak pressure (frog-clock full-reset) + walk-slab crash fix; validated by a 24h / 12,512-scene zero-crash soak |
 | Reference bar | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes validated | **63 / 63** — see the live [scene ledger](https://hunterdavis.com/johnny-castaway-ps1/scenes/) or [`docs/ps1/scene-status.md`](docs/ps1/scene-status.md) |
 | Headless perf | **126 / 126** scene/tide rows are routed and timing-bearing — **ALL ROWS GREEN at >= 99% target speed** with refreshed public-capped average **+0.1571% over target / 99.8440% target speed** after the floor-lift multi-scene promotion (WALKSTUF1-low 99.04%→99.72%, BUILDING2-high 99.02%→99.77%, BUILDING4-high 99.05%→99.43%, BUILDING4-low 99.05%→99.61%), the JOHNNY6 double-preload promotion (lifted the floor — johnny6 high/low were the lowest green at 99.011%, now 99.43%), the VISITOR3-high double-preload + phase-2 promotion (moved V3-high into green at 99.34% — last yellow), the VISITOR3-low double-preload + VISITOR3-high phase-4 layout-shift release (moved V3-low into green at 99.24%), the WALKSTUF1-high double-preload-3-wait promotion (moved W1-high into green), the WALKSTUF1-high helper-3-wait retime, the VISITOR3-high pre-loop phase-1 retime, the WALKSTUF1-high frame0 consume speed promotion, the WALKSTUF1-high `200..215` previous-visible cleanup headroom pass, the VISITOR3-low phase1 / segment4 `38..79` promotion, the WALKSTUF1-high prep2 frame-gate promotion, the WALKSTUF1-high `185..191` direct-stage rescue, the WALKSTUF1-high `383..399` transient setup-slice / clean-cap speed pass, the WALKSTUF1-high `183..199` late-layout / `372..384` owner refill-headroom pass, the WALKSTUF1-high `372..388` fresh-owner retarget speed pass, the WALKSTUF1-high late direct-stage headroom pass, the WALKSTUF1-high entry134 same-speed screen-clip headroom pass, the WALKSTUF1-high `{108..124}` same-speed CD-pressure headroom pass, the WALKSTUF1-high `62..66` screen-clip plus `{92..108}`/`{272..284}` read-group speed promotion, the W1-high no-`144` mid-cluster/frame138/active-loop/early offscreen clip headroom passes, the W1-high entry `58..61` tail-trim/phase-3 speed promotion, the BUILDING2-high fixed-footprint physical compaction speed promotion moved B2-high into green, the VISITOR3-low additive `55..79` CACHE setup-segment headroom pass, the VISITOR3-low frame134 D4 data-shape headroom pass, the VISITOR3-low one-VBlank phase retime, the VISITOR3-low slack-knee speed promotion, the W1-low compact trim/retarget phase promotion moved WALKSTUF1 low into green, plus the W1-high one-VBlank phase retime, the BUILDING2-high entries `89..91` fixed-layout trim headroom pass, the BUILDING2-high one-VBlank phase retime, the VISITOR3-high segment3 `48..55` exact-clean/phase3 speed promotion, the local-LZ and D4 decoder inline code-headroom passes, the W1-high entries `183..191` fixed-layout previous-visible cleanup headroom pass, the VISITOR3-low fixed-layout cleanup/canonicalization passes, the WALKSTUF1 and BUILDING2 screen-clip/data-shape headroom passes, the VISITOR3-low D4/read-group speed promotions, and the allocator-era retained setup/CD-pressure promotions. Live battle card at [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) · CSV at [`performance-scene-matrix.csv`](docs/ps1/performance-scene-matrix.csv) |
 | Perf harness | `--require-improvement` gates now fail if the supplied baseline summary has no matching case label, preventing false-pass optimization promotions. |
 | Acceptance gate | human visual + audible signoff |
 
-The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current mainline builds on `v0.9.3-ps1` with the memory-region allocator, the long-run soak fixes, and the SPU-backed async staging path promoted: BOOT allocations seal after startup, CACHE allocations use free-list/LRU reuse for long-lived resource data, TRANSIENT scene allocations can be wiped between major scene loads, CD file searches are quiesced before directory walks, next-scene staging uses non-blocking CD reads, and the walk clean buffer can live in SPU cold storage instead of scarce main RAM.
+The mainline shifted from "prove every scene" to **performance polish, stability, and content** at `v0.7.0-ps1`. Current mainline builds on `v0.9.7-ps1` with the memory-region allocator, the long-run soak fixes, the SPU-backed async staging path, and the deep-soak CACHE-exhaustion recovery ladder (no-halt allocs → withhold-rebuild → frog-clock full-reset → graceful decline) all promoted: BOOT allocations seal after startup, CACHE allocations use free-list/LRU reuse for long-lived resource data, TRANSIENT scene allocations can be wiped between major scene loads, CD file searches are quiesced before directory walks, next-scene staging uses non-blocking CD reads, and the walk clean buffer can live in SPU cold storage instead of scarce main RAM.
 
 The latest full matrix remains `126 / 126` routed and timing-bearing with 0 BSODs in the R34 allocator validation run; the latest promotion gate is `scratch/ps1-perf-iterate/floor-lift-batch-canary-20260523-143829/20260523-143829-2816468/summary.json`. Public rollup is `+0.1571%` over target / `99.8440%` target speed and raw signed rollup is `-0.5598%` / `100.5744%`; bands are **`126` green, `0` yellow, `0` orange, and `0` red — every routed/timing-bearing row is at or above 99% target speed**. That is about `17.24` public over-target points removed and `12.74` public target-speed points added since the compact full-matrix baseline.
 
@@ -310,6 +310,30 @@ The v0.8.13 checkpoint also extended BUILDING2 high preserve-offset payload trim
 
 Recent releases:
 
+- `v0.9.7-ps1` — visitor3 pixel-perfect under deep-soak pressure + walk-slab
+  crash fix. Adds the deepest CACHE-exhaustion recovery rung: a frog-clock-
+  masked full-cache-reset (safe conditional rewind, not a blind wipe) that
+  defragments to a pristine pool so the ceiling scene (visitor3, ~400 KB clean
+  rect) reloads and renders the normal pixel-perfect path; the rare capacity-
+  ceiling decline now re-composites the island/raft/holiday instead of showing
+  ocean only. Also no-halts the inter-scene walk/raft load (a fragmented CACHE
+  degrades to a teleport, not a BSOD) and fixes the stand-family opening flash.
+  Validated by a 24h / 12,512-scene continuous soak: 26 visitor3 full-resets,
+  all recovered pixel-perfect, 0 declines, 0 BSOD, 0 CACHE-FAIL.
+- `v0.9.6-ps1` — deep-soak stability. Makes the whole best-effort CACHE-alloc
+  class graceful (no-halt + recover-via-withhold-rebuild): per-scene stream
+  window, clean-rect floor slabs, alignment scratch, reserve-stable-shape
+  buffers. Adds CD drive-error and silent-read-stall recovery, and self-naming
+  CACHE BSODs. Validated by a ~15h / 7,800-scene zero-crash soak (65 graceful
+  recoveries).
+- `v0.9.5-ps1` — stability + rename + visual polish. Deep-soak BSOD fixes
+  (visitor3 / black-scene / frame-buffer / graceful decline), the rename to
+  `johnnycastawayps1`, memcard v7, the sequential scene picker, ghost-Johnny /
+  bubble-dot / stand-family fixes, plus a 126-variant visual-audit harness and
+  a frame-buffer-aware memory simulator.
+- `v0.9.4-ps1` — memory-exhaustion (scene-945) campaign fixes, wave visuals,
+  the freeplay→scene BSOD fix, and release-final UI (production boot,
+  surf-at-start, pause scene info + frame counter, SELECT = next scene).
 - `v0.9.3-ps1` — SPU async staging and Original-order soak release. Unused
   SPU RAM is promoted to a cold-cache surface for next-scene metadata/payload
   windows, walk PSBs, and the walk clean buffer; foreground transition staging

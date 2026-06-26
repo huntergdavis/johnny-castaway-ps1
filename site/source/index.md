@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 380 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 381 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -76,6 +76,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-quickstart/' | relative_url }}">PS1 Headless Regression Testing Harness</a><p><code>docs/ps1/regtest-quickstart.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-0.9.4-and-next-branch-plan/' | relative_url }}">Release 0.9.4 (ps1) + next-branch plan</a><p><code>docs/ps1/release-0.9.4-and-next-branch-plan.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-0.9.7-redteam/' | relative_url }}">v0.9.7-ps1 — Final Pre-Release Red-Team Pass</a><p><code>docs/ps1/release-0.9.7-redteam.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.4.20/' | relative_url }}">v0.4.20-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.4.20.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.5.0/' | relative_url }}">v0.5.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.5.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.7.0/' | relative_url }}">v0.7.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.7.0.md</code></p></li>

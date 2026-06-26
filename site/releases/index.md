@@ -22,6 +22,95 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.9.7-ps1` - visitor3 pixel-perfect under deep-soak pressure
+<time datetime="2026-06-25"><em>2026-06-25</em></time>
+
+A visual-confidence and deep-soak release. It closes the last walk-slab crash
+class and makes the most memory-demanding scene render correctly even under
+extreme deep-soak fragmentation.
+
+- **visitor3 full-reset.** When the ceiling scene (~400 KB clean rect) strands
+  even after the withhold-rebuild, a frog-clock-masked full-cache-reset
+  defragments the pool to pristine via a *conditional* rewind (not a blind
+  wipe — no orphaned pointers) and the scene reloads on the normal
+  pixel-perfect path. It doubles as a periodic whole-soak defragmentation.
+- **Correct decline fallback.** If even a pristine pool can't fit the scene
+  (a TRANSIENT+CACHE capacity ceiling), it now re-composites the island, raft,
+  and holiday every frame instead of showing ocean only — crash-free *and*
+  correct-looking.
+- **Walk/raft no-halt + stand-family flash.** The inter-scene 48 KB walk load
+  degrades to a teleport on a fragmented CACHE instead of BSOD'ing, and STAND
+  scenes no longer flash the empty island on their first frame.
+- **24h soak.** 12,512 scenes, all 126 variants, 26 visitor3 full-resets all
+  recovered pixel-perfect — 0 declines, 0 BSOD, 0 CACHE-FAIL.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.9.7/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.7-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.6-ps1` - deep-soak stability
+<time datetime="2026-06-22"><em>2026-06-22</em></time>
+
+A deep-soak stability release. Where `v0.9.5-ps1` fixed the first wave of
+CACHE-exhaustion BSODs, `v0.9.6-ps1` closes the remaining deep-soak failure
+classes.
+
+- **The whole best-effort CACHE-alloc class is now graceful.** Allocations
+  that NULL-checked their result but used the *halting* allocator (dead-code
+  guards) now use no-halt + recover-via-withhold-rebuild: the per-scene stream
+  window, clean-rect floor slabs, alignment scratch, and the reserve-stable-
+  shape buffers.
+- **CD-ROM recovers instead of freezing.** An explicit drive error re-inits
+  the controller after a few failures; a silent read stall self-heals after
+  ~15 s instead of spinning forever.
+- **Self-naming BSODs.** A CACHE-exhaustion halt now names the failing
+  allocation, and the memory simulator models the per-scene frame buffer.
+- **~15h / 7,800-scene zero-crash soak** with ~65 graceful recoveries.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.9.6/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.6-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.5-ps1` - stability, rename, and visual polish
+<time datetime="2026-06-20"><em>2026-06-20</em></time>
+
+A stability and polish release that also renamed the project artifacts to
+`johnnycastawayps1`.
+
+- **Deep-soak BSOD fixes.** visitor3, black-scene, and frame-buffer
+  exhaustion strands now recover or decline gracefully.
+- **Rename to `johnnycastawayps1`** (binary, ISO, and the DuckStation window
+  title), plus memory-card format v7 and a sequential scene picker.
+- **Visual fixes** — ghost Johnny, the bubble dot, and stand-family scenes —
+  backed by a new 126-variant visual-audit harness and a frame-buffer-aware
+  memory simulator.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.9.5/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.5-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.4-ps1` - scene-945 memory campaign and release-final UI
+<time datetime="2026-06-18"><em>2026-06-18</em></time>
+
+A memory-exhaustion and UI release.
+
+- **scene-945 campaign fixes** for the multi-hour memory-exhaustion BSOD,
+  plus a freeplay→scene BSOD fix and refreshed wave visuals.
+- **Release-final UI** — production boot, surf-at-start, pause-menu scene info
+  with a frame counter, and SELECT to advance to the next scene.
+
+[Full notes]({{ '/source/docs/ps1/release-0.9.4-and-next-branch-plan/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.9.4-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.9.3-ps1` - SPU async staging and Original-order soak release
 <time datetime="2026-06-09"><em>2026-06-09</em></time>
 

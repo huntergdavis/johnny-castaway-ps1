@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Releases — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.7; built 2026-06-25" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.7; built 2026-06-26" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -120,6 +120,10 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
+      <li><a href="#v097-ps1---visitor3-pixel-perfect-under-deep-soak-pressure" id="markdown-toc-v097-ps1---visitor3-pixel-perfect-under-deep-soak-pressure"><code class="language-plaintext highlighter-rouge">v0.9.7-ps1</code> - visitor3 pixel-perfect under deep-soak pressure</a></li>
+      <li><a href="#v096-ps1---deep-soak-stability" id="markdown-toc-v096-ps1---deep-soak-stability"><code class="language-plaintext highlighter-rouge">v0.9.6-ps1</code> - deep-soak stability</a></li>
+      <li><a href="#v095-ps1---stability-rename-and-visual-polish" id="markdown-toc-v095-ps1---stability-rename-and-visual-polish"><code class="language-plaintext highlighter-rouge">v0.9.5-ps1</code> - stability, rename, and visual polish</a></li>
+      <li><a href="#v094-ps1---scene-945-memory-campaign-and-release-final-ui" id="markdown-toc-v094-ps1---scene-945-memory-campaign-and-release-final-ui"><code class="language-plaintext highlighter-rouge">v0.9.4-ps1</code> - scene-945 memory campaign and release-final UI</a></li>
       <li><a href="#v093-ps1---spu-async-staging-and-original-order-soak-release" id="markdown-toc-v093-ps1---spu-async-staging-and-original-order-soak-release"><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> - SPU async staging and Original-order soak release</a></li>
       <li><a href="#v092-ps1---long-run-cd-and-visitor3-low-stability-release" id="markdown-toc-v092-ps1---long-run-cd-and-visitor3-low-stability-release"><code class="language-plaintext highlighter-rouge">v0.9.2-ps1</code> - long-run CD and VISITOR3-low stability release</a></li>
       <li><a href="#v091-ps1---longevity-testing-improvements" id="markdown-toc-v091-ps1---longevity-testing-improvements"><code class="language-plaintext highlighter-rouge">v0.9.1-ps1</code> - longevity testing improvements</a></li>
@@ -157,6 +161,103 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v097-ps1---visitor3-pixel-perfect-under-deep-soak-pressure"><code class="language-plaintext highlighter-rouge">v0.9.7-ps1</code> - visitor3 pixel-perfect under deep-soak pressure</h3>
+<p><time datetime="2026-06-25"><em>2026-06-25</em></time></p>
+
+<p>A visual-confidence and deep-soak release. It closes the last walk-slab crash
+class and makes the most memory-demanding scene render correctly even under
+extreme deep-soak fragmentation.</p>
+
+<ul>
+  <li><strong>visitor3 full-reset.</strong> When the ceiling scene (~400 KB clean rect) strands
+even after the withhold-rebuild, a frog-clock-masked full-cache-reset
+defragments the pool to pristine via a <em>conditional</em> rewind (not a blind
+wipe — no orphaned pointers) and the scene reloads on the normal
+pixel-perfect path. It doubles as a periodic whole-soak defragmentation.</li>
+  <li><strong>Correct decline fallback.</strong> If even a pristine pool can’t fit the scene
+(a TRANSIENT+CACHE capacity ceiling), it now re-composites the island, raft,
+and holiday every frame instead of showing ocean only — crash-free <em>and</em>
+correct-looking.</li>
+  <li><strong>Walk/raft no-halt + stand-family flash.</strong> The inter-scene 48 KB walk load
+degrades to a teleport on a fragmented CACHE instead of BSOD’ing, and STAND
+scenes no longer flash the empty island on their first frame.</li>
+  <li><strong>24h soak.</strong> 12,512 scenes, all 126 variants, 26 visitor3 full-resets all
+recovered pixel-perfect — 0 declines, 0 BSOD, 0 CACHE-FAIL.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.9.7/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.7-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v096-ps1---deep-soak-stability"><code class="language-plaintext highlighter-rouge">v0.9.6-ps1</code> - deep-soak stability</h3>
+<p><time datetime="2026-06-22"><em>2026-06-22</em></time></p>
+
+<p>A deep-soak stability release. Where <code class="language-plaintext highlighter-rouge">v0.9.5-ps1</code> fixed the first wave of
+CACHE-exhaustion BSODs, <code class="language-plaintext highlighter-rouge">v0.9.6-ps1</code> closes the remaining deep-soak failure
+classes.</p>
+
+<ul>
+  <li><strong>The whole best-effort CACHE-alloc class is now graceful.</strong> Allocations
+that NULL-checked their result but used the <em>halting</em> allocator (dead-code
+guards) now use no-halt + recover-via-withhold-rebuild: the per-scene stream
+window, clean-rect floor slabs, alignment scratch, and the reserve-stable-
+shape buffers.</li>
+  <li><strong>CD-ROM recovers instead of freezing.</strong> An explicit drive error re-inits
+the controller after a few failures; a silent read stall self-heals after
+~15 s instead of spinning forever.</li>
+  <li><strong>Self-naming BSODs.</strong> A CACHE-exhaustion halt now names the failing
+allocation, and the memory simulator models the per-scene frame buffer.</li>
+  <li><strong>~15h / 7,800-scene zero-crash soak</strong> with ~65 graceful recoveries.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.9.6/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.6-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v095-ps1---stability-rename-and-visual-polish"><code class="language-plaintext highlighter-rouge">v0.9.5-ps1</code> - stability, rename, and visual polish</h3>
+<p><time datetime="2026-06-20"><em>2026-06-20</em></time></p>
+
+<p>A stability and polish release that also renamed the project artifacts to
+<code class="language-plaintext highlighter-rouge">johnnycastawayps1</code>.</p>
+
+<ul>
+  <li><strong>Deep-soak BSOD fixes.</strong> visitor3, black-scene, and frame-buffer
+exhaustion strands now recover or decline gracefully.</li>
+  <li><strong>Rename to <code class="language-plaintext highlighter-rouge">johnnycastawayps1</code></strong> (binary, ISO, and the DuckStation window
+title), plus memory-card format v7 and a sequential scene picker.</li>
+  <li><strong>Visual fixes</strong> — ghost Johnny, the bubble dot, and stand-family scenes —
+backed by a new 126-variant visual-audit harness and a frame-buffer-aware
+memory simulator.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.9.5/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.5-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h3 id="v094-ps1---scene-945-memory-campaign-and-release-final-ui"><code class="language-plaintext highlighter-rouge">v0.9.4-ps1</code> - scene-945 memory campaign and release-final UI</h3>
+<p><time datetime="2026-06-18"><em>2026-06-18</em></time></p>
+
+<p>A memory-exhaustion and UI release.</p>
+
+<ul>
+  <li><strong>scene-945 campaign fixes</strong> for the multi-hour memory-exhaustion BSOD,
+plus a freeplay→scene BSOD fix and refreshed wave visuals.</li>
+  <li><strong>Release-final UI</strong> — production boot, surf-at-start, pause-menu scene info
+with a frame counter, and SELECT to advance to the next scene.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-0.9.4-and-next-branch-plan/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.4-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v093-ps1---spu-async-staging-and-original-order-soak-release"><code class="language-plaintext highlighter-rouge">v0.9.3-ps1</code> - SPU async staging and Original-order soak release</h3>
 <p><time datetime="2026-06-09"><em>2026-06-09</em></time></p>

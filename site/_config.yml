@@ -39,8 +39,8 @@ release:
   # SHA-256 of the disc-image artifacts on the tagged GitHub release.
   # Surfaced on /play/#verify so downloaders can verify mirror integrity.
   # Compute on each release tag via:
-  #   curl -sL <repo>/releases/download/<tag>/jcreborn.bin | sha256sum
-  #   curl -sL <repo>/releases/download/<tag>/jcreborn.cue | sha256sum
+  #   curl -sL <repo>/releases/download/<tag>/johnnycastawayps1.bin | sha256sum
+  #   curl -sL <repo>/releases/download/<tag>/johnnycastawayps1.cue | sha256sum
   # scripts/release.sh rewrites these from the release artifacts.
   sha256_bin: "37982803d44510147c9a45c6ca99c49b9f8ace1ce86de267300920b77cf4e872"
   sha256_cue: "c2f59b4cf37bd9eef60004d7536e1ef1ae0151b9f7b78d4311f6f31b41b34b7e"
