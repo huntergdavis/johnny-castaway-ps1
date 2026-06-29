@@ -810,11 +810,16 @@ CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
     (void)ps1CdEnsureNoAsyncRead();
     (void)CdReadSync(0, NULL);
     found = CdSearchFile(file, filename);
-    /* Feed the drive-recovery tracker: a failing locate is the first symptom of
-     * a latched drive error, and a reset here unblocks the caller's retry. */
-    if (found != NULL)
-        ps1CdNoteReadSuccess();
-    else
+    /* Feed the drive-recovery tracker on a FAILING locate (first symptom of a
+     * latched drive error). Do NOT reset the streak on a SUCCESSFUL locate: the
+     * directory walk keeps succeeding while a data read is wedged (CdRead "too
+     * many attempts" + CdControl acknowledge timeout), so resetting here let the
+     * caller spin locate(ok) -> read(fail) -> locate(ok) -> ... forever without
+     * the streak ever reaching the reset threshold — the johnny3-low hang ~33 h
+     * into the week soak. The streak is cleared only by an actual successful
+     * READ (ps1CdNoteReadSuccess in the chunk-read path), which is the true
+     * "drive can read" signal; a working locate is not. */
+    if (found == NULL)
         ps1CdNoteReadFailure();
     return found;
 }
