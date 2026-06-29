@@ -2239,17 +2239,26 @@ fg_setup_retry:
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
             if (cleanRectsDeclined) {
-                /* Ceiling scene that declined its clean-rect snapshot. Repaint
-                 * the pristine OCEAN backdrop from the SCR cache, then re-composite
-                 * the island sprites + raft + holiday on top of it every frame, so
-                 * the declined scene shows the FULL backdrop (not the ocean-only
-                 * "island missing, ship partial" frame the old decline produced).
-                 * The moving foreground sprites then draw on this clean composite
-                 * instead of accumulating trails. grForceFullRedrawNextFrame uploads
-                 * it. If the SCR cache isn't available (black/scene-specific),
-                 * grRepaintBackdropFromScrCache() returns 0 and the island re-draw
-                 * is skipped (numSprites guard) — bounded, crash-free. */
-                if (grRepaintBackdropFromScrCache()) {
+                /* Ceiling scene that declined its clean-rect snapshot: rebuild a
+                 * CLEAN backdrop every frame so the moving foreground composites on
+                 * it instead of accumulating stale strips, then force a full upload.
+                 * Island scenes get the full backdrop (ocean/night + island + raft +
+                 * holiday); black/scene-specific scenes fall through to the plain
+                 * full redraw. */
+                if (!blackBackdrop && !sceneSpecificBackdrop) {
+                    /* Repaint the cached full-screen SCR (cheap). But the cache has
+                     * to be ALLOCATED at decline time — and a scene tight enough to
+                     * decline can be tight enough that the 150 KB cache never
+                     * populated, so grRepaintBackdropFromScrCache() returns 0. The
+                     * old code then left the prior frame's tiles in place and the
+                     * foreground smeared over them (the sand-strip artifact). Now we
+                     * re-stream the backdrop on a cache miss so the tiles are always
+                     * clean. Slower (a CD stream per frame) but correct, and only the
+                     * worst-case ceiling scene that can't even cache its backdrop
+                     * reaches the re-stream path. */
+                    if (!grRepaintBackdropFromScrCache())
+                        grLoadScreen((char *)(islandState.night ? "NIGHT.SCR"
+                                                                : "OCEAN00.SCR"));
                     fgBackdropDrawIslandSprites();
                     fgBackdropStampHoliday();
                 }
