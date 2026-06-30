@@ -1311,8 +1311,18 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
          * read variant); caller owns lifetime. Capacity is sector-
          * rounded so the final chunk's whole-sector DMA stays in
          * bounds; callers see the requested size semantics. */
+        /* No-halt: on a deep-soak-fragmented CACHE this 48 KB result buffer can
+         * fail to find a contiguous block (week-soak BSOD ~15 h:
+         * tag=cdrom_read_result req=49152 have=71640). Relief still fires first;
+         * if it's still NULL, fail the READ gracefully (the caller handles a NULL
+         * read like any CD glitch and retries — CACHE drains at the next scene
+         * boundary) instead of halting the allocator. */
+        memSetCacheAllocNoHalt(1);
         result = (uint8_t*)memAlloc(MEM_REGION_CACHE, bufferSize,
                                     "cdrom_read_result");
+        memSetCacheAllocNoHalt(0);
+        if (result == NULL)
+            return NULL;
         sectorsRead = 0;
         while (sectorsRead < numSectors) {
             uint32_t chunkSectors = numSectors - sectorsRead;
@@ -1372,9 +1382,15 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
      * size can exceed TRANSIENT budget. */
     int sectorBufferFromRegion = 0;
     if (memIsReady()) {
+        /* No-halt: same deep-soak fragmentation guard as the result buffer —
+         * fail the read gracefully rather than BSOD on a fragmented CACHE. */
+        memSetCacheAllocNoHalt(1);
         sectorBuffer = (uint8_t*)memAlloc(MEM_REGION_CACHE,
                                           bufferSize,
                                           "cdrom_sectorBuffer");
+        memSetCacheAllocNoHalt(0);
+        if (sectorBuffer == NULL)
+            return NULL;
         sectorBufferFromRegion = 1;
     } else {
         sectorBuffer = (uint8_t*)malloc(bufferSize);
@@ -1446,14 +1462,17 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
      * MEM_REGION_RATIONALE: resource-data result buffer; caller
      * is responsible for its lifetime. */
     if (memIsReady()) {
+        /* No-halt: graceful read failure on a fragmented CACHE (not a BSOD). */
+        memSetCacheAllocNoHalt(1);
         result = (uint8_t*)memAlloc(MEM_REGION_CACHE, size,
                                     "cdrom_read_result");
+        memSetCacheAllocNoHalt(0);
     } else {
         result = (uint8_t*)malloc(size);
-        if (!result) {
-            ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
-            return NULL;
-        }
+    }
+    if (!result) {
+        ps1FreeCdBuffer(sectorBuffer, sectorBufferFromRegion);
+        return NULL;
     }
 
     /* Copy from sector buffer at the correct offset */
