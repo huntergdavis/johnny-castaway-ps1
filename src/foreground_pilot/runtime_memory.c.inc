@@ -106,6 +106,25 @@ static int fgSceneKeepsStage1UnderCleanMemoryRelief(const char *sceneName)
     return fgSceneEquals(sceneName, "visitor3");
 }
 
+/* VISITOR3-low primes its non-contiguous ship-reveal and boat-approach frames
+ * into dedicated setup segments precisely because low tide drops the clean
+ * window (see fgSceneKeepsWindowUnderCleanMemoryRelief), so those segments are
+ * the ONLY in-memory copy of those frames. If clean-snapshot relief frees them
+ * (fgDropSetupResidencyForCleanSnapshot), the sliding stream window can never
+ * re-reach the frames: playback holds the ship's last drawn frame -- a
+ * screen-filling red hull that reads as a "paint-over" -- and the approach
+ * slice never draws (the "missing boat"). So VISITOR3-low must NOT drop its
+ * setup residency under clean pressure; it falls through to the proven
+ * escalation ladder (withhold-rebuild -> full-cache-reset -> graceful decline)
+ * instead, which defrags to a pristine heap that fits both the ~400 KB clean
+ * rect and the setup residency and replays the gag pixel-perfectly. High tide
+ * keeps an 80 KB clean window that can re-reach the dropped frames, so it is
+ * left on the cheaper setup-drop path. */
+static int fgSceneKeepsSetupSegmentsUnderCleanMemoryRelief(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "visitor3") && islandState.lowTide;
+}
+
 static int fgSceneKeepsWindowUnderCleanMemoryRelief(const char *sceneName)
 {
     /* VISITOR3-high still benefits from a small clean-relief window. VISITOR3-low

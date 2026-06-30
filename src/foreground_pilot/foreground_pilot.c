@@ -1724,7 +1724,8 @@ fg_setup_retry:
 #endif
             fgDropPressureCachesForCleanSnapshot(sceneName, cleanRectEstimate);
         }
-        fgDropSetupResidencyForCleanSnapshot(sceneName, cleanRectEstimate);
+        if (!fgSceneKeepsSetupSegmentsUnderCleanMemoryRelief(sceneName))
+            fgDropSetupResidencyForCleanSnapshot(sceneName, cleanRectEstimate);
     }
     if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
 #if PS1_VERBOSE_DIAGNOSTICS
