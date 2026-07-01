@@ -86,8 +86,15 @@ RUN_TS="$(date +%Y%m%d-%H%M%S)"
 RUN_DIR="$PROJECT_ROOT/scratch/duckstation-longrun-$RUN_TS"
 mkdir -p "$RUN_DIR"
 
-DUCK_LOG="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log"
-SCREENSHOT_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
+if [ -n "${DUCKSTATION_CONFIG_DIR:-}" ]; then
+    DUCK_CONFIG_DIR="$DUCKSTATION_CONFIG_DIR"
+elif command -v flatpak >/dev/null 2>&1 && flatpak info org.duckstation.DuckStation >/dev/null 2>&1; then
+    DUCK_CONFIG_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation"
+else
+    DUCK_CONFIG_DIR="$HOME/.local/share/duckstation"
+fi
+DUCK_LOG="$DUCK_CONFIG_DIR/duckstation.log"
+SCREENSHOT_DIR="$DUCK_CONFIG_DIR/screenshots"
 BOOTMODE="$(tr '\n' ' ' < "$PROJECT_ROOT/config/ps1/BOOTMODE.TXT" 2>/dev/null || true)"
 
 cat > "$RUN_DIR/meta.txt" <<EOF
@@ -127,8 +134,15 @@ boot_override=("$@")
 
 cd "$project_root" || exit 1
 
-duck_log="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log"
-screenshot_dir="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
+if [ -n "${DUCKSTATION_CONFIG_DIR:-}" ]; then
+    duck_config_dir="$DUCKSTATION_CONFIG_DIR"
+elif command -v flatpak >/dev/null 2>&1 && flatpak info org.duckstation.DuckStation >/dev/null 2>&1; then
+    duck_config_dir="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation"
+else
+    duck_config_dir="$HOME/.local/share/duckstation"
+fi
+duck_log="$duck_config_dir/duckstation.log"
+screenshot_dir="$duck_config_dir/screenshots"
 screenshot_marker="$run_dir/.screenshot-marker"
 log_marker_bytes=$(stat -c %s "$duck_log" 2>/dev/null || printf 0)
 : > "$screenshot_marker"
@@ -147,7 +161,7 @@ fi
 
 if [ "$kill_existing" = "1" ]; then
     echo "=== Cleaning up old DuckStation instances ==="
-    pkill -9 -f '([d]uckstation-qt|org[.]duckstation[.]DuckStation)' 2>/dev/null || true
+    pkill -9 -f '([d]uckstation-qt|[D]uckStation[^[:space:]]*|org[.]duckstation[.]DuckStation)' 2>/dev/null || true
     sleep 1
 fi
 
@@ -167,7 +181,7 @@ rm -f "$monitor_stop"
 
 monitor_loop() {
     while [ ! -f "$monitor_stop" ]; do
-        pids=$(pgrep -f '([d]uckstation-qt|org[.]duckstation[.]DuckStation)' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+        pids=$(pgrep -f '([d]uckstation-qt|[D]uckStation[^[:space:]]*|org[.]duckstation[.]DuckStation)' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
         rss=0
         if [ -n "$pids" ]; then
             for p in $pids; do
@@ -217,7 +231,7 @@ if [ -f "$duck_log" ]; then
 fi
 ps aux > "$run_dir/ps-final.txt" 2>/dev/null || true
 printf 'finished=%s\nexit_code=%s\n' "$(date -Is)" "$rc" >> "$run_dir/meta.txt"
-pids=$(pgrep -f '([d]uckstation-qt|org[.]duckstation[.]DuckStation)' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+pids=$(pgrep -f '([d]uckstation-qt|[D]uckStation[^[:space:]]*|org[.]duckstation[.]DuckStation)' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
 printf '%s\t0\t%s\t0\t0\t\n' "$(date -Is)" "$pids" >> "$run_dir/monitor.tsv"
 exit "$rc"
 EOF

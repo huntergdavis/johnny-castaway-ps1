@@ -16,8 +16,15 @@ mkdir -p "$SCRATCH_DIR"
 
 BOOTMODE_FILE="$PWD/config/ps1/BOOTMODE.TXT"
 BOOTMODE_HEADER="$PWD/config/ps1/bootmode_embedded.h"
-DUCK_SETTINGS="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/settings.ini"
-DUCK_LOG_FILE="${DUCKSTATION_LOG_FILE:-$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log}"
+if [ -n "${DUCKSTATION_CONFIG_DIR:-}" ]; then
+    DUCK_CONFIG_DIR="$DUCKSTATION_CONFIG_DIR"
+elif command -v flatpak >/dev/null 2>&1 && flatpak info org.duckstation.DuckStation >/dev/null 2>&1; then
+    DUCK_CONFIG_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation"
+else
+    DUCK_CONFIG_DIR="$HOME/.local/share/duckstation"
+fi
+DUCK_SETTINGS="$DUCK_CONFIG_DIR/settings.ini"
+DUCK_LOG_FILE="${DUCKSTATION_LOG_FILE:-$DUCK_CONFIG_DIR/duckstation.log}"
 DUCK_LOG_MAX_BYTES="${DUCKSTATION_LOG_MAX_BYTES:-2147483648}"
 DUCK_SETTINGS_BACKUP=""
 BOOTMODE_BACKUP=""
@@ -25,13 +32,36 @@ BOOTMODE_HEADER_BACKUP=""
 BOOT_OVERRIDE=""
 LOG_WATCHDOG_PID=""
 
-prepare_duckstation_test_settings() {
-    if [ ! -f "$DUCK_SETTINGS" ]; then
+start_duckstation() {
+    if [ -n "${DUCKSTATION_LAUNCHER:-}" ]; then
+        read -r -a duckstation_launcher <<< "$DUCKSTATION_LAUNCHER"
+        "${duckstation_launcher[@]}" "$CUE_FILE" &
+        DUCK_PID=$!
         return
     fi
 
-    DUCK_SETTINGS_BACKUP="$SCRATCH_DIR/duckstation-settings-$$.ini"
-    cp "$DUCK_SETTINGS" "$DUCK_SETTINGS_BACKUP"
+    if command -v flatpak >/dev/null 2>&1 && flatpak info org.duckstation.DuckStation >/dev/null 2>&1; then
+        flatpak run --filesystem="$(dirname "$CUE_FILE")" org.duckstation.DuckStation "$CUE_FILE" &
+        DUCK_PID=$!
+        return
+    fi
+
+    if command -v duckstation >/dev/null 2>&1; then
+        duckstation "$CUE_FILE" &
+        DUCK_PID=$!
+        return
+    fi
+
+    echo "ERROR: DuckStation launcher not found. Install the Flatpak or set DUCKSTATION_LAUNCHER." >&2
+    exit 127
+}
+
+prepare_duckstation_test_settings() {
+    mkdir -p "$(dirname "$DUCK_SETTINGS")"
+    if [ -f "$DUCK_SETTINGS" ]; then
+        DUCK_SETTINGS_BACKUP="$SCRATCH_DIR/duckstation-settings-$$.ini"
+        cp "$DUCK_SETTINGS" "$DUCK_SETTINGS_BACKUP"
+    fi
 
     python3 - "$DUCK_SETTINGS" <<'PY'
 import configparser
@@ -41,7 +71,8 @@ from pathlib import Path
 settings = Path(sys.argv[1])
 cp = configparser.ConfigParser()
 cp.optionxform = str
-cp.read(settings, encoding="utf-8")
+if settings.is_file():
+    cp.read(settings, encoding="utf-8")
 for section in ("BIOS", "SIO", "Logging"):
     if section not in cp:
         cp[section] = {}
@@ -170,7 +201,7 @@ fi
 # Step 4: Launch DuckStation and let it run
 echo "=== Launching DuckStation (will keep running) ==="
 
-SCREENSHOT_DIR="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots"
+SCREENSHOT_DIR="$DUCK_CONFIG_DIR/screenshots"
 CUE_FILE="$PWD/johnnycastawayps1.cue"
 CAPTURE_INTERVAL=${PS1_CAPTURE_INTERVAL:-5}
 INITIAL_CAPTURE_WAIT=${PS1_INITIAL_CAPTURE_WAIT:-35}
@@ -242,17 +273,16 @@ sleep_while_duckstation_alive() {
 
 terminate_duckstation_for_cue() {
     kill -TERM "$DUCK_PID" 2>/dev/null || true
-    pkill -TERM -f "[d]uckstation-qt $CUE_FILE" 2>/dev/null || true
+    pkill -TERM -f "([d]uckstation-qt|[D]uckStation[^[:space:]]*|org[.]duckstation[.]DuckStation).*${CUE_FILE}" 2>/dev/null || true
     sleep 5
     kill -KILL "$DUCK_PID" 2>/dev/null || true
-    pkill -KILL -f "[d]uckstation-qt $CUE_FILE" 2>/dev/null || true
+    pkill -KILL -f "([d]uckstation-qt|[D]uckStation[^[:space:]]*|org[.]duckstation[.]DuckStation).*${CUE_FILE}" 2>/dev/null || true
 }
 
 # Launch DuckStation with fast boot
 cap_duckstation_log
 prepare_duckstation_test_settings
-flatpak run --filesystem="$(dirname "$CUE_FILE")" org.duckstation.DuckStation "$CUE_FILE" &
-DUCK_PID=$!
+start_duckstation
 
 if [ "${DUCK_LOG_MAX_BYTES:-0}" -gt 0 ] 2>/dev/null; then
     (
