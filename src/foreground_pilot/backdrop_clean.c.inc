@@ -403,8 +403,8 @@ static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
     (void)sceneName;
     (void)cleanBytes;
     (void)deferWalkCleanRecapture;
-    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3 && !islandState.lowTide)
-        return fgBackdropSaveVisitor3HighCleanBgRects();
+    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3)
+        return fgBackdropSaveVisitor3CleanBgRects();
     return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
 }
 

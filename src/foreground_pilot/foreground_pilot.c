@@ -459,7 +459,7 @@ static sint16 fgReadS16(const uint8 *p);
 static void fgBackdropPreloadBackgrndBmp(void);
 static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
-static int fgBackdropSaveVisitor3HighCleanBgRects(void);
+static int fgBackdropSaveVisitor3CleanBgRects(void);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 static void fgCleanOverlayInvalidate(void);
@@ -2374,26 +2374,34 @@ fg_setup_retry:
 }
 
 static int __attribute__((noinline, optimize("Os")))
-fgBackdropSaveVisitor3HighCleanBgRects(void)
+fgBackdropSaveVisitor3CleanBgRects(void)
 {
-    const sint16 dx = gFgSceneDrawOffsetX;
-    const sint16 dy = gFgSceneDrawOffsetY;
-    sint16 xs[6];
-    sint16 ys[6];
-    uint16 ws[6];
-    uint16 hs[6];
+    sint16 xs[11];
+    sint16 ys[11];
+    uint16 ws[11];
+    uint16 hs[11];
 
-    /* VISITOR3 high's header bbox overstates the visible ship/cleanup area.
-     * These rects cover the validated foreground extent plus the high-tide
-     * wave band while keeping every allocation below the 64 KiB clean cap. */
-    xs[0] = dx;                  ys[0] = (sint16)(dy + 97);  ws[0] = 522; hs[0] = 62;
-    xs[1] = dx;                  ys[1] = (sint16)(dy + 159); ws[1] = 522; hs[1] = 62;
-    xs[2] = dx;                  ys[2] = (sint16)(dy + 221); ws[2] = 522; hs[2] = 62;
-    xs[3] = dx;                  ys[3] = (sint16)(dy + 283); ws[3] = 522; hs[3] = 62;
-    xs[4] = dx;                  ys[4] = (sint16)(dy + 345); ws[4] = 522; hs[4] = 54;
-    xs[5] = (sint16)(dx + 522);  ys[5] = (sint16)(dy + 97);  ws[5] = 86;  hs[5] = 259;
+    /* VISITOR3's FGP3 header union is deliberately conservative
+     * (869x302), so the generic clean snapshot grabs nearly the full
+     * screen, still stops above the boat/wake tail, and strands under
+     * deep-soak pressure. These screen-space strips cover the observed
+     * dirty footprint for both tides: clipped red stern at the far left,
+     * giant hull sweep on the right, and the lower wake band. The right hull
+     * is intentionally split into 48-pixel strips so deep-soak fragmentation
+     * never needs to place a near-64 KiB clean-rect slab. */
+    xs[0] = 0;    ys[0] = 40;  ws[0] = 160; hs[0] = 92;  /* clipped stern */
+    xs[1] = 224;  ys[1] = 40;  ws[1] = 416; hs[1] = 48;  /* right hull */
+    xs[2] = 224;  ys[2] = 88;  ws[2] = 416; hs[2] = 48;
+    xs[3] = 224;  ys[3] = 136; ws[3] = 416; hs[3] = 48;
+    xs[4] = 224;  ys[4] = 184; ws[4] = 416; hs[4] = 48;
+    xs[5] = 224;  ys[5] = 232; ws[5] = 416; hs[5] = 48;
+    xs[6] = 224;  ys[6] = 280; ws[6] = 416; hs[6] = 48;
+    xs[7] = 224;  ys[7] = 328; ws[7] = 416; hs[7] = 48;
+    xs[8] = 224;  ys[8] = 376; ws[8] = 416; hs[8] = 48;
+    xs[9] = 224;  ys[9] = 424; ws[9] = 416; hs[9] = 48;  /* hull/wake tail */
+    xs[10] = 120; ys[10] = 256; ws[10] = 104; hs[10] = 216; /* wake tail */
 
-    return grSaveCleanBgRects(xs, ys, ws, hs, 6) > 0;
+    return grSaveCleanBgRects(xs, ys, ws, hs, 11) > 0;
 }
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
