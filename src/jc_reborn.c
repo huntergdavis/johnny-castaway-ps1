@@ -799,18 +799,6 @@ static void fgLoopRandomVarPos(int *outX, int *outY)
     }
 }
 
-static int fgLoopRandomHolidayAll(void)
-{
-    int roll = rand() % (gHolidayCount + 1);
-    return (roll == 0) ? 0 : gHolidays[roll - 1].id;
-}
-
-static int fgLoopRandomHolidayOriginal4(void)
-{
-    int roll = rand() % 5; /* none + the four Sierra-era holiday ids */
-    return (roll == 0 || !holidayIsOriginalId(roll)) ? 0 : roll;
-}
-
 /* Set islandState variant fields for one iteration. Fields explicitly
  * forced via BOOTMODE (hostForced* >= 0) stay forced; unforced fields
  * get a fresh random value each call. Position policy is scene-specific:
@@ -857,8 +845,14 @@ static void fgLoopApplyVariant(const char *sceneName)
 
     if (!sessionValid) {
         sessionNight = (rand() & 1);
-        sessionHoliday = fgLoopRandomHolidayAll();
-        sessionHolidayOriginal4 = fgLoopRandomHolidayOriginal4();
+        /* Holidays are DATE-derived decorations. Without a saved date
+         * (no memcard save yet -> ps1SoftTimeEnabled == 0) there is no
+         * date to derive from, so show none rather than a random one —
+         * a Christmas tree in July reads as a bug. Once the player
+         * saves and the soft clock is restored, ps1HolidayFromDate
+         * takes over in the holiday selection below. */
+        sessionHoliday = 0;
+        sessionHolidayOriginal4 = 0;
         sessionValid = 1;
     }
 

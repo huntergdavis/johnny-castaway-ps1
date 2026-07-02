@@ -57,11 +57,12 @@ start_duckstation() {
 }
 
 prepare_duckstation_test_settings() {
+    # Patch the needed test keys IN PLACE — no backup/restore round-trip.
+    # The old exit-time restore reverted EVERYTHING the user (or DuckStation
+    # itself) changed during the session: controller bindings, the completed
+    # setup wizard, renderer choices. The keys below are idempotent and
+    # harmless to leave set between sessions.
     mkdir -p "$(dirname "$DUCK_SETTINGS")"
-    if [ -f "$DUCK_SETTINGS" ]; then
-        DUCK_SETTINGS_BACKUP="$SCRATCH_DIR/duckstation-settings-$$.ini"
-        cp "$DUCK_SETTINGS" "$DUCK_SETTINGS_BACKUP"
-    fi
 
     python3 - "$DUCK_SETTINGS" <<'PY'
 import configparser
@@ -92,10 +93,10 @@ PY
 }
 
 restore_duckstation_test_settings() {
-    if [ -n "$DUCK_SETTINGS_BACKUP" ] && [ -f "$DUCK_SETTINGS_BACKUP" ]; then
-        cp "$DUCK_SETTINGS_BACKUP" "$DUCK_SETTINGS"
-        rm -f "$DUCK_SETTINGS_BACKUP"
-    fi
+    # Intentionally a no-op (see prepare_duckstation_test_settings): restoring
+    # a launch-time snapshot clobbered controller bindings and wizard
+    # completion the user saved during the session.
+    :
 }
 
 stop_duckstation_log_watchdog() {
