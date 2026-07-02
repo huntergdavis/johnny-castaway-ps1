@@ -60,6 +60,25 @@ static sint16 gWaveCacheX[WAVE_CACHE_MAX] = { 0 };
 static sint16 gWaveCacheY[WAVE_CACHE_MAX] = { 0 };
 static int gIslandWaveCounter1 = 0;
 static int gIslandWaveCounter2 = 0;
+/* Which backdrop islandInit last streamed: 0..2 = OCEAN00..02, 3 = NIGHT.
+ * The day ocean is re-rolled per scene, so anything holding a pixel
+ * snapshot of the backdrop (the walk-clean erase baseline) must key on
+ * this — restoring OCEAN-A water into an OCEAN-B scene painted a
+ * Johnny-shaped patch of mismatched ocean at his walk-end pose. */
+static int gIslandBackdropVariant = -1;
+
+int islandBackdropVariant(void)
+{
+    return gIslandBackdropVariant;
+}
+
+/* For callers that stream a backdrop SCR without going through islandInit
+ * (the fgpilot decline-render re-arm loads OCEAN00/NIGHT directly), so the
+ * variant tracker keeps matching the pixels actually on screen. */
+void islandNoteBackdropLoaded(int variant)
+{
+    gIslandBackdropVariant = variant;
+}
 
 void islandInit(struct TTtmThread *ttmThread)
 {
@@ -68,11 +87,14 @@ void islandInit(struct TTtmThread *ttmThread)
 
     if (islandState.night) {
         grLoadScreen("NIGHT.SCR");
+        gIslandBackdropVariant = 3;
     }
     else {
         char scrName[] = "OCEAN00.SCR";
-        scrName[6] = (char)('0' + (rand() % 3));
+        int variant = rand() % 3;
+        scrName[6] = (char)('0' + variant);
         grLoadScreen(scrName);
+        gIslandBackdropVariant = variant;
     }
 
     ttmThread->ttmLayer = grBackgroundSfc;

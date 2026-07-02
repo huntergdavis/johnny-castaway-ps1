@@ -1,0 +1,29 @@
+# Open the pause menu, enter Scene Explorer, and screenshot a few
+# entries — used to eyeball the two-line description layout, the
+# pack-line scene index, and zero-padded display names.
+
+wait 36s
+tap START
+wait 30
+tap DOWN
+tap DOWN
+tap CROSS
+wait 40
+shot explorer-first 30
+tap RIGHT
+wait 30
+tap RIGHT
+wait 30
+shot explorer-third 30
+tap R1
+wait 30
+tap R1
+wait 30
+tap R1
+wait 30
+tap R1
+wait 30
+shot explorer-activities 30
+tap RIGHT
+wait 30
+shot explorer-activities-2 30

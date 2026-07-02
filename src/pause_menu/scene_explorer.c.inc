@@ -239,39 +239,64 @@ static void drawSceneExplorer(void)
     displayName = sceneExplorerDisplayName(cur);
     sceneExplorerBuildPackLabel(cur, packLabel, sizeof(packLabel));
 
-    /* Truncate display name so it fits in the 38-char top-band budget
-     * (640 logical px / 16 logical per char ≈ 40 chars; we leave a
-     * small right margin). */
-    char title[40];
+    /* Wrap the display name across two 38-char top-band lines (640
+     * logical px / 16 logical per char ≈ 40 chars; we leave a small
+     * right margin). Break at the last space that fits; a remainder
+     * longer than the second line still ends in "...". */
+    char titleLine1[40];
+    char titleLine2[40];
     int max = 38;
     int len = 0;
+    int split = 0;
     while (displayName[len] != '\0' && len < max) {
-        title[len] = displayName[len];
+        titleLine1[len] = displayName[len];
         len++;
     }
-    if (displayName[len] != '\0' && len > 3) {
-        title[len-3] = '.'; title[len-2] = '.'; title[len-1] = '.';
+    split = len;
+    if (displayName[len] != '\0') {
+        int back = len;
+        while (back > 0 && displayName[back] != ' ')
+            back--;
+        if (back > 0)
+            split = back;
+        len = split;
     }
-    title[len] = '\0';
+    titleLine1[len] = '\0';
+    {
+        const char *rest = displayName + split;
+        int len2 = 0;
+        while (*rest == ' ')
+            rest++;
+        while (rest[len2] != '\0' && len2 < max) {
+            titleLine2[len2] = rest[len2];
+            len2++;
+        }
+        if (rest[len2] != '\0' && len2 > 3) {
+            titleLine2[len2-3] = '.';
+            titleLine2[len2-2] = '.';
+            titleLine2[len2-1] = '.';
+        }
+        titleLine2[len2] = '\0';
+    }
 
-    /* Top band — title + position + display name + family/frames.
-     * First line starts at y=24 logical so the title isn't clipped by
-     * NTSC overscan at the very top of the framebuffer. */
+    /* Top band — title, separator, two description lines, family/frames.
+     * The scene index moved down to the pack line and the validated
+     * marker was retired to free the second description line. First
+     * line starts at y=24 logical so the title isn't clipped by NTSC
+     * overscan at the very top of the framebuffer. */
     pmTextStart(pmPrintfX, 24);
     pmPrintf(pmText(PMT_SCENE_EXPLORER_TITLE));
     drawSeparator();
-    pmPrintf(pmText(PMT_SCENE_EXPLORER_COUNT),
-             cur + 1, gSceneExplorerCount,
-             e->validated ? pmText(PMT_VALIDATED) : pmText(PMT_PENDING));
-    pmPrintf(pmText(PMT_LINE_STRING), title);
+    pmPrintf(pmText(PMT_LINE_STRING), titleLine1);
+    pmPrintf(pmText(PMT_LINE_STRING), titleLine2);
     pmPrintf(pmText(PMT_SCENE_FAMILY_FRAMES),
              sceneExplorerFamilyName(e->family_index), (unsigned)e->frame_count);
 
-    /* Bottom band — pack name, separator, nav hints (X/△/O on one
-     * line so the band fits in 4 lines instead of 5 and we stay clear
-     * of bottom NTSC overscan). */
+    /* Bottom band — pack name + scene index, separator, nav hints
+     * (X/△/O on one line so the band fits in 4 lines instead of 5 and
+     * we stay clear of bottom NTSC overscan). */
     pmTextStart(pmPrintfX, 376);
-    pmPrintf(pmText(PMT_SCENE_PACK), packLabel);
+    pmPrintf(pmText(PMT_SCENE_PACK), packLabel, cur + 1, gSceneExplorerCount);
     drawSeparator();
     pmPrintf(pmText(PMT_SCENE_NAV));
     pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));

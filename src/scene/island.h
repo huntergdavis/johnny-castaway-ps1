@@ -38,6 +38,10 @@ struct TTtmSlot;
 struct PS1Surface;
 
 void islandInit(struct TTtmThread *ttmThread);
+/* Backdrop islandInit last streamed: 0..2 = OCEAN00..02, 3 = NIGHT, -1 =
+ * none yet. Snapshot-holders (walk-clean erase baseline) key on this. */
+int islandBackdropVariant(void);
+void islandNoteBackdropLoaded(int variant);
 void islandAnimate(struct TTtmThread *ttmThread);
 void islandRedrawWave(struct TTtmThread *ttmThread);
 void islandClearWaveCache(void);

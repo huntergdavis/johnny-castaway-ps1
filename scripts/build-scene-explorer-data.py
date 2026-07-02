@@ -156,7 +156,33 @@ def main():
     def family_rank(name):
         return FAMILY_ORDER.index(name) if name in FAMILY_ORDER else 99
 
-    entries.sort(key=lambda e: (family_rank(e["family"]), e["slug"]))
+    def slug_number(slug):
+        m = re.search(r"(\d+)$", slug)
+        return int(m.group(1)) if m else 0
+
+    def slug_stem(slug):
+        return re.sub(r"\d+$", "", slug)
+
+    # Natural sort: activity2 before activity10 (a plain slug sort ordered
+    # the list 1, 10, 11, 12, 2, 3, ...).
+    entries.sort(key=lambda e: (family_rank(e["family"]),
+                                slug_stem(e["slug"]),
+                                slug_number(e["slug"])))
+
+    # Zero-pad single-digit scene numbers in display names for families
+    # that reach double digits ("ACTIVITY 01" next to "ACTIVITY 10"), so
+    # the on-screen list reads uniformly in the sorted order.
+    max_by_stem = {}
+    for e in entries:
+        stem = slug_stem(e["slug"])
+        max_by_stem[stem] = max(max_by_stem.get(stem, 0), slug_number(e["slug"]))
+    for e in entries:
+        if max_by_stem[slug_stem(e["slug"])] >= 10:
+            e["display_name"] = re.sub(
+                r"^([A-Z][A-Z ]*?) (\d)\b",
+                lambda m: f"{m.group(1)} 0{m.group(2)}",
+                e["display_name"],
+            )
 
     # Family-start index table for L1/R1 jumps.
     family_starts = []

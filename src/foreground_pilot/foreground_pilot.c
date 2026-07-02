@@ -1861,6 +1861,7 @@ fg_setup_retry:
                 grSetSaveCleanOnScreenLoad(0);
                 grLoadScreen((char *)(islandState.night ? "NIGHT.SCR"
                                                         : "OCEAN00.SCR"));
+                islandNoteBackdropLoaded(islandState.night ? 3 : 0);
             }
         }
         grSetCleanBgRectsForceCache(0);
@@ -2292,9 +2293,11 @@ fg_setup_retry:
                      * clean. Slower (a CD stream per frame) but correct, and only the
                      * worst-case ceiling scene that can't even cache its backdrop
                      * reaches the re-stream path. */
-                    if (!grRepaintBackdropFromScrCache())
+                    if (!grRepaintBackdropFromScrCache()) {
                         grLoadScreen((char *)(islandState.night ? "NIGHT.SCR"
                                                                 : "OCEAN00.SCR"));
+                        islandNoteBackdropLoaded(islandState.night ? 3 : 0);
+                    }
                     fgBackdropDrawIslandSprites();
                     fgBackdropStampHoliday();
                 }

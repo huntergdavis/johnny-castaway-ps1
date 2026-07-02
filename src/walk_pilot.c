@@ -123,6 +123,11 @@ static int gWalkCleanNight    = -1;
 static int gWalkCleanHoliday  = -1;
 static int gWalkCleanXPos     = -32768;
 static int gWalkCleanYPos     = -32768;
+/* The day ocean backdrop is one of THREE randomly-rolled SCRs per scene
+ * (islandInit OCEAN00..02). A baseline captured over one variant and
+ * restored over another paints a Johnny-shaped patch of mismatched
+ * water at his walk-end pose (the "ghost Johnny" water silhouette). */
+static int gWalkCleanBackdrop = -2;
 
 static int walkPilotCleanStateMatches(int raft, int lowTide, int night,
                                       int holidayId, int xPos, int yPos)
@@ -132,7 +137,8 @@ static int walkPilotCleanStateMatches(int raft, int lowTide, int night,
            gWalkCleanNight == night &&
            gWalkCleanHoliday == holidayId &&
            gWalkCleanXPos == xPos &&
-           gWalkCleanYPos == yPos;
+           gWalkCleanYPos == yPos &&
+           gWalkCleanBackdrop == islandBackdropVariant();
 }
 
 
@@ -213,6 +219,7 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
     gWalkCleanHoliday  = holidayId;
     gWalkCleanXPos     = xPos;
     gWalkCleanYPos     = yPos;
+    gWalkCleanBackdrop = islandBackdropVariant();
 }
 
 
