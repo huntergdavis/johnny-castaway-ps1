@@ -1498,66 +1498,23 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     gFgRuntime.setupSegment4Bytes = 0;
     gFgRuntime.setupSegment4Primed = 0;
     if (fgSceneEquals(sceneName, "visitor3")) {
-        if (islandState.lowTide) {
-            segmentStart = FG_VISITOR3_LOW_SETUP_SEGMENT_START;
-            segmentBytes = FG_VISITOR3_LOW_SETUP_SEGMENT_BYTES;
-            segment2Start = FG_VISITOR3_LOW_SETUP_SEGMENT2_START;
-            segment2Bytes = FG_VISITOR3_LOW_SETUP_SEGMENT2_BYTES;
-            segment3Start = FG_VISITOR3_LOW_SETUP_SEGMENT3_START;
-            segment3Bytes = FG_VISITOR3_LOW_SETUP_SEGMENT3_BYTES;
-            segment4Start = FG_VISITOR3_LOW_SETUP_SEGMENT4_START;
-            segment4Bytes = FG_VISITOR3_LOW_SETUP_SEGMENT4_BYTES;
-        } else {
-            segmentStart = FG_VISITOR3_HIGH_SETUP_SEGMENT_START;
-            segmentBytes = FG_VISITOR3_HIGH_SETUP_SEGMENT_BYTES;
-            segment2Start = FG_VISITOR3_HIGH_SETUP_SEGMENT2_START;
-            segment2Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT2_BYTES;
-            segment3Start = FG_VISITOR3_HIGH_SETUP_SEGMENT3_START;
-            segment3Bytes = FG_VISITOR3_HIGH_SETUP_SEGMENT3_BYTES;
-            gFgCleanRectMaxBytes = 64UL * 1024UL;
-        }
-        allocationBytes = segmentBytes + segment2Bytes + segment3Bytes;
-        /* MEM_REGION_RATIONALE: per-scene segment-decode scratch.
-         * Reclaimed wholesale by memSceneReset. The old "if big
-         * enough, reuse" logic is unnecessary under TRANSIENT
-         * semantics — every scene gets a fresh buffer. */
-        gFgSetupSegmentBuffer = (uint8 *)memAlloc(MEM_REGION_TRANSIENT,
-                                                  allocationBytes,
-                                                  "fgSetupSegmentBuffer");
-        gFgSetupSegmentBufferSize = allocationBytes;
-        gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
-        segmentBuffer = gFgSetupSegmentBuffer;
-        if (segmentBuffer == NULL) {
-            gFgSetupSegmentBufferSize = 0;
-            if (ps1PerfEnabled)
-                ps1PerfMarkAllocFail(allocationBytes);
-            return 1; /* decline staging: read-ahead only; stream on demand */
-        }
-        if (segment2Bytes > 0)
-            segment2Buffer = segmentBuffer + segmentBytes;
-        if (segment3Bytes > 0)
-            segment3Buffer = segmentBuffer + segmentBytes + segment2Bytes;
-        if (segment4Bytes > 0) {
-            /* MEM_REGION_RATIONALE: VISITOR3-low fourth setup slice.
-             * CACHE keeps the paid low-tail residency alive past setup. */
-            gFgSetupSegment4OwnedBuffer = (uint8 *)memAlloc(MEM_REGION_CACHE,
-                                                            segment4Bytes,
-                                                            "fgSetupSegment4Buffer");
-            gFgSetupSegment4OwnedBufferSize = segment4Bytes;
-            gFgSetupSegment4OwnedBufferRegion = MEM_REGION_CACHE;
-            segment4Buffer = gFgSetupSegment4OwnedBuffer;
-            if (segment4Buffer == NULL) {
-                gFgSetupSegment4OwnedBufferSize = 0;
-                fgFreeSetupSegmentBuffer();
-                gFgSetupSegmentBuffer = NULL;
-                gFgSetupSegmentBufferSize = 0;
-                gFgSetupSegmentBufferRegion = MEM_REGION_TRANSIENT;
-                if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(segment4Bytes);
-                return 1; /* decline staging: read-ahead only; stream on demand */
-            }
-        }
-        gFgRuntime.setupSegmentReusable = 1;
+        /* 2026-07-02 pack-rebuild note: the FG_VISITOR3_* segment sector
+         * ranges were tuned to the pre-rebuild pack layout (the packs were
+         * replaced wholesale after the broken-cleanup discovery), so priming
+         * them would cache the wrong sectors while their 158 KB TRANSIENT +
+         * 84 KB CACHE residency is exactly the headroom the ~400 KB
+         * full-coverage clean snapshot needs — with them resident the save
+         * strands even on the pristine post-full-reset heap and the scene
+         * sinks into the decline render, which cannot reproduce the
+         * accumulative hull reveal. Skip staging entirely: the rebuilt pack
+         * is strictly sequential, so the sliding stream window re-reaches
+         * every frame on demand (the documented decline-staging contract).
+         * If live runs show reveal-window CD pressure, re-tune the ranges to
+         * the new layout instead of re-enabling these. Keep the 64K strip
+         * cap: full-coverage strips must pack into fragmented deep-soak
+         * holes. */
+        gFgCleanRectMaxBytes = 64UL * 1024UL;
+        return 1; /* decline staging: read-ahead only; stream on demand */
     } else if (!islandState.lowTide && fgSceneEquals(sceneName, "building2")) {
         segmentStart = FG_BUILDING2_HIGH_SETUP_SEGMENT_START;
         segmentBytes = FG_BUILDING2_HIGH_SETUP_SEGMENT_BYTES;

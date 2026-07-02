@@ -156,12 +156,18 @@ def host_ship_pixels(
     for y in range(max(0, min_y - expand), min(full.height, max_y + expand + 1)):
         for x in range(max(0, min_x - expand), min(full.width, max_x + expand + 1)):
             rgb = full_pixels[x, y]
-            if rgb == base_pixels[x, y]:
-                continue
-            if (x, y) not in ship_points and (
-                y > max_y or not near_red(red_by_y, x, y, expand)
-            ):
-                continue
+            if (x, y) not in ship_points:
+                # The base-equality and near-red gates exist to keep the
+                # dither fringe without grabbing backdrop. Core component
+                # pixels bypass them: a hull pixel that coincidentally
+                # equals the base (e.g. the island's exact-red tree pixels
+                # behind the hull in an offset reference view) is still
+                # ship, and dropping it shipped a 2px vertical seam at the
+                # reference-blind-edge boundary.
+                if rgb == base_pixels[x, y]:
+                    continue
+                if y > max_y or not near_red(red_by_y, x, y, expand):
+                    continue
             out[(x - offset_x, y - offset_y)] = rgb
 
     return out
@@ -270,6 +276,7 @@ def write_visitor3_foreground(
     splash_start: int,
     splash_end: int,
     splash_rect: tuple[int, int, int, int],
+    extra_reference_capture_dirs: list[Path] | None = None,
 ) -> None:
     out_frames = output_dir / "frames"
     out_meta = output_dir / "frame-meta"
@@ -281,6 +288,20 @@ def write_visitor3_foreground(
     frames: list[tuple[Path, dict, dict[tuple[int, int], tuple[int, int, int]]]] = []
     base_full_path = reference_capture_dir / "frames" / "frame_00000.bmp"
     base_full = Image.open(base_full_path).convert("RGB") if base_full_path.exists() else None
+    # Extra full-host references at other island positions widen the
+    # accumulated-hull coverage: the primary reference (island-x -154) is
+    # blind to scene-local x < 154, which shipped as a hard vertical hull
+    # truncation on PS1. Each extra maps through its own frame-meta offsets,
+    # so overlapping regions land at the same scene-local coordinates; the
+    # primary reference and foreground-only views take precedence.
+    extra_refs: list[tuple[Path, Image.Image | None]] = []
+    for extra_dir in extra_reference_capture_dirs or []:
+        extra_base_path = extra_dir / "frames" / "frame_00000.bmp"
+        extra_base = (
+            Image.open(extra_base_path).convert("RGB")
+            if extra_base_path.exists() else None
+        )
+        extra_refs.append((extra_dir, extra_base))
     global_min_x: int | None = None
     global_min_y: int | None = None
     global_max_x: int | None = None
@@ -295,11 +316,23 @@ def write_visitor3_foreground(
         local_pixels = collect_local_pixels(ref_frame.name, source_fg_dirs)
 
         if ship_start <= number <= ship_end or ship_start <= number <= ship_keep_until:
-            output_pixels = host_ship_pixels(
-                reference_capture_dir,
-                ref_frame.name,
-                base_full,
-                ship_expand,
+            output_pixels = {}
+            for extra_dir, extra_base in extra_refs:
+                output_pixels.update(
+                    host_ship_pixels(
+                        extra_dir,
+                        ref_frame.name,
+                        extra_base,
+                        ship_expand,
+                    )
+                )
+            output_pixels.update(
+                host_ship_pixels(
+                    reference_capture_dir,
+                    ref_frame.name,
+                    base_full,
+                    ship_expand,
+                )
             )
             output_pixels.update(local_pixels)
         else:
@@ -379,6 +412,17 @@ def main() -> None:
         description="Merge VISITOR3 foreground-only views and accumulate the red ship crash."
     )
     parser.add_argument("--reference-capture", required=True, type=Path)
+    parser.add_argument(
+        "--extra-reference-capture",
+        action="append",
+        type=Path,
+        default=[],
+        help=(
+            "Additional full-host capture at another island position; its "
+            "accumulated ship pixels fill regions the primary reference "
+            "cannot see (e.g. scene-local x < 154 at the -154 capture position)."
+        ),
+    )
     parser.add_argument("--source-fg-dir", action="append", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--ship-start", type=int, default=160)
@@ -407,6 +451,7 @@ def main() -> None:
         args.splash_start,
         args.splash_end,
         splash_rect,  # type: ignore[arg-type]
+        extra_reference_capture_dirs=args.extra_reference_capture,
     )
 
 

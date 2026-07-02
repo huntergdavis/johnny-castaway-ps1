@@ -403,8 +403,14 @@ static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
     (void)sceneName;
     (void)cleanBytes;
     (void)deferWalkCleanRecapture;
-    if (gFgRuntimeSceneId == FG_SCENE_VISITOR3)
-        return fgBackdropSaveVisitor3CleanBgRects();
+    /* VISITOR3 uses this generic path too (both tides). Its FGP3 temporal-
+     * residual cleanup spans restore FROM the saved rect set, and the island
+     * draw offset is variable (x -222..+19, y -73..+84), so any hand-anchored
+     * rect subset leaves screen bands the per-frame cleanup can never
+     * restore — permanent ship trails. The pack-bounds union is the only
+     * footprint that is a superset of every cleanup span at every island
+     * position; allocation pressure is the escalation ladder's job
+     * (withhold-rebuild -> full-cache-reset -> decline), not the footprint's. */
     return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
 }
 

@@ -926,6 +926,16 @@ static void fgLoopApplyVariant(const char *sceneName)
         islandState.xPos = 0;
         islandState.yPos = 0;
     }
+
+    /* Mirror the host story path (story.c HOLIDAY_NOK): VISITOR 3's hull
+     * fills the screen and the holiday emblem is re-stamped above the
+     * foreground every compose, so it would draw over the ship. The
+     * original suppresses holiday items for this scene. */
+    {
+        const struct TStoryScene *holidayScene = fgLoopFindStorySceneBySlug(sceneName);
+        if (holidayScene && (holidayScene->flags & HOLIDAY_NOK))
+            islandState.holiday = 0;
+    }
 }
 
 #ifdef PS1_BUILD

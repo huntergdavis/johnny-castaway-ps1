@@ -73,9 +73,13 @@ cp = configparser.ConfigParser()
 cp.optionxform = str
 if settings.is_file():
     cp.read(settings, encoding="utf-8")
-for section in ("BIOS", "SIO", "Logging"):
+for section in ("Main", "BIOS", "SIO", "Logging"):
     if section not in cp:
         cp[section] = {}
+# The prepare/restore round-trip previously dropped the wizard-completion
+# flag, so every launch re-ran the DuckStation setup wizard (and a completion
+# during the session was reverted by the exit-time settings restore).
+cp["Main"]["SetupWizardIncomplete"] = "false"
 cp["BIOS"]["TTYLogging"] = "true"
 cp["SIO"]["RedirectToTTY"] = "true"
 cp["Logging"]["LogLevel"] = "Dev"

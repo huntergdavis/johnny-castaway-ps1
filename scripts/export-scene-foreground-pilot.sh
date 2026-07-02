@@ -887,8 +887,43 @@ PY
       # a clean synthesized source that accumulates only the ship slice, then
       # convert to FGP3 so the post-crash blank frame explicitly restores the
       # red hull instead of being treated as a hold frame.
+      #
+      # The primary reference (island-x -154) is blind to scene-local
+      # x < 154, which shipped as a hard vertical truncation of the hull's
+      # left side on PS1 (2026-07-02). Capture an extra FULL-host view at the
+      # far-right stitch position so the merge can fill the accumulated hull
+      # across the whole scene-local sweep.
+      "$SCRIPT_DIR/capture-host-scene.sh" \
+        --scene "$SCENE_NAME" \
+        --mode story-single \
+        --seed 1 \
+        --start-frame "$START_FRAME" \
+        --interval 1 \
+        "${capture_stop_args[@]}" \
+        --no-stamp \
+        --lowtide 0 \
+        --raft-stage "$CAPTURE_RAFT_STAGE" \
+        --island-x "$STITCH_RIGHT_ISLAND_X" \
+        --island-y "$CAPTURE_ISLAND_Y" \
+        --output "$OUTPUT_DIR/host-capture-high-far-stitch-full"
+
+      "$SCRIPT_DIR/capture-host-scene.sh" \
+        --scene "$SCENE_NAME" \
+        --mode story-single \
+        --seed 1 \
+        --start-frame "$START_FRAME" \
+        --interval 1 \
+        "${capture_stop_args[@]}" \
+        --no-stamp \
+        --lowtide 1 \
+        --raft-stage "$CAPTURE_RAFT_STAGE" \
+        --island-x "$STITCH_RIGHT_ISLAND_X" \
+        --island-y "$CAPTURE_ISLAND_Y" \
+        --output "$OUTPUT_DIR/host-capture-low-far-stitch-full"
+
       python3 "$SCRIPT_DIR/merge-visitor3-ship-foreground.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
+        --extra-reference-capture "$OUTPUT_DIR/host-capture-high-far-stitch-full" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
@@ -896,6 +931,7 @@ PY
 
       python3 "$SCRIPT_DIR/merge-visitor3-ship-foreground.py" \
         --reference-capture "$HOST_CAPTURE_LOW_DIR" \
+        --extra-reference-capture "$OUTPUT_DIR/host-capture-low-far-stitch-full" \
         --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \

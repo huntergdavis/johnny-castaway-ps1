@@ -459,7 +459,6 @@ static sint16 fgReadS16(const uint8 *p);
 static void fgBackdropPreloadBackgrndBmp(void);
 static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
-static int fgBackdropSaveVisitor3CleanBgRects(void);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 static void fgCleanOverlayInvalidate(void);
@@ -1393,7 +1392,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 fg_setup_retry:
     keepBackgrndForProof = 0;
     reuseCleanOverlayForProof = 0;
-    if (fgSetupAttempt > 0) {
+    if (fgSetupAttempt > 0 || fgSceneForcesCleanMemoryRelief(sceneName)) {
         /* visitor3 BSOD (2026-06-17 soak): the withhold-rebuild cleared a
          * ~249828 contiguous hole, but islandInit then re-loaded the
          * OCEAN*.SCR backdrop's 153600-byte CACHE cache copy straight into
@@ -1402,7 +1401,16 @@ fg_setup_retry:
          * tiles (grLoadFullScreenScrStreamed) and the hole stays clear for
          * the clean-rect strips. The cache re-admits at the next scene
          * boundary (grSetFullScreenScrCacheEnabled is re-armed at the top
-         * of the next fgPlayOceanRuntimeScene). */
+         * of the next fgPlayOceanRuntimeScene).
+         *
+         * Ceiling scenes (fgSceneForcesCleanMemoryRelief — visitor3 both
+         * tides) disable it on EVERY attempt, not just retries: since the
+         * low-tide setup segments became residency-retained (242 KB) the
+         * full-coverage clean snapshot (~400 KB) no longer coexists with
+         * the 153600 SCR copy even on a pristine post-full-reset heap, so
+         * attempt 0 and the full-reset retry (fgSetupAttempt back at 0)
+         * both stranded and the scene sank into the per-frame decline
+         * repaint on every play. */
         grSetFullScreenScrCacheEnabled(0);
     }
     if (!blackBackdrop && !sceneSpecificBackdrop) {
@@ -1506,7 +1514,7 @@ fg_setup_retry:
      * ocean SCR straight into the freshly-cleared contiguous hole and the
      * clean-rect save strands AGAIN (the recurring visitor3 BSOD). The cache
      * re-arms normally at the next scene's setup top. */
-    if (fgSetupAttempt > 0)
+    if (fgSetupAttempt > 0 || fgSceneForcesCleanMemoryRelief(sceneName))
         grSetFullScreenScrCacheEnabled(0);
 #if PS1_MEM_FORENSICS
     /* Per-scene going-in CACHE layout: with the pre-relief + bsod map
@@ -1745,6 +1753,33 @@ fg_setup_retry:
             !blackBackdrop &&
             !sceneSpecificBackdrop &&
             !largeCleanSnapshot;
+        if (fgSceneForcesCleanMemoryRelief(sceneName)) {
+            /* Ceiling scene: the corrected (self-cleaning) visitor3 packs
+             * carry ~40 KB hull-slice frames, so the two frame buffers grew
+             * ~46 KB over the old (broken-cleanup) pack's profile and the
+             * full-coverage snapshot went back over capacity even on the
+             * pristine post-full-reset heap. Give the save the idle 48 KB
+             * walk slab up front; the boundary top-up re-reserves it and a
+             * missing slab only degrades the next inter-scene walk to the
+             * existing teleport fallback. */
+            walkPilotForceDropPsbSlab();
+            /* Freeze the shore animation for VISITOR 3, like the original
+             * (see the host story.c HOLIDAY_NOK comment): the per-frame foam
+             * repaint draws ABOVE the foreground, so it would animate over
+             * the accumulated hull once the ship fills the screen, and each
+             * foam cell restore would punch pre-hull island pixels through
+             * it. Seed one wave cycle NOW so the shore has static foam, let
+             * the clean snapshot below bake it in (pack cleanup spans then
+             * restore the same static shore), and stop the wave thread for
+             * the scene. The next scene's fgBackdropEnableWaveBackdrop
+             * restarts the thread. */
+            if (gFgBackdropThread.isRunning) {
+                int waveSeeds = islandState.lowTide ? 4 : 3;
+                for (int s = 0; s < waveSeeds; s++)
+                    islandAnimate(&gFgBackdropThread);
+                gFgBackdropThread.isRunning = 0;
+            }
+        }
         grSetCleanBgRectsForceCache(forceCleanCacheForProof);
         int fgCleanSaveOk = fgBackdropSaveCleanBgRectsWithPressureFallback(
                                 sceneName, fgBoundsX, fgBoundsY, fgBoundsW,
@@ -2371,37 +2406,6 @@ fg_setup_retry:
      * the boundary is the calmest CACHE moment. */
     grTopUpCleanRectSlabFloor();
     fgHeapProbe("after_scene_cleanup", sceneName);
-}
-
-static int __attribute__((noinline, optimize("Os")))
-fgBackdropSaveVisitor3CleanBgRects(void)
-{
-    sint16 xs[11];
-    sint16 ys[11];
-    uint16 ws[11];
-    uint16 hs[11];
-
-    /* VISITOR3's FGP3 header union is deliberately conservative
-     * (869x302), so the generic clean snapshot grabs nearly the full
-     * screen, still stops above the boat/wake tail, and strands under
-     * deep-soak pressure. These screen-space strips cover the observed
-     * dirty footprint for both tides: clipped red stern at the far left,
-     * giant hull sweep on the right, and the lower wake band. The right hull
-     * is intentionally split into 48-pixel strips so deep-soak fragmentation
-     * never needs to place a near-64 KiB clean-rect slab. */
-    xs[0] = 0;    ys[0] = 40;  ws[0] = 160; hs[0] = 92;  /* clipped stern */
-    xs[1] = 224;  ys[1] = 40;  ws[1] = 416; hs[1] = 48;  /* right hull */
-    xs[2] = 224;  ys[2] = 88;  ws[2] = 416; hs[2] = 48;
-    xs[3] = 224;  ys[3] = 136; ws[3] = 416; hs[3] = 48;
-    xs[4] = 224;  ys[4] = 184; ws[4] = 416; hs[4] = 48;
-    xs[5] = 224;  ys[5] = 232; ws[5] = 416; hs[5] = 48;
-    xs[6] = 224;  ys[6] = 280; ws[6] = 416; hs[6] = 48;
-    xs[7] = 224;  ys[7] = 328; ws[7] = 416; hs[7] = 48;
-    xs[8] = 224;  ys[8] = 376; ws[8] = 416; hs[8] = 48;
-    xs[9] = 224;  ys[9] = 424; ws[9] = 416; hs[9] = 48;  /* hull/wake tail */
-    xs[10] = 120; ys[10] = 256; ws[10] = 104; hs[10] = 216; /* wake tail */
-
-    return grSaveCleanBgRects(xs, ys, ws, hs, 11) > 0;
 }
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
