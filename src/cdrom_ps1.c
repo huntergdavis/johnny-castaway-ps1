@@ -788,9 +788,42 @@ void cdromResetState(void)
  * error, so the next retry can make progress instead of hanging indefinitely. */
 #define PS1_CD_FAIL_RESET_THRESHOLD 4
 static int gCdFailStreak = 0;
+static int gCdFailTotal  = 0;
 static void ps1CdNoteReadSuccess(void) { gCdFailStreak = 0; }
+
+int ps1CdReadFailureCount(void)
+{
+    return gCdFailTotal;
+}
+
+/* On-console CD-failure pips. Real-hardware CD-R reads fail in ways the
+ * emulator never shows, and most failure paths degrade silently (missing
+ * menu text, silent SFX, black backdrop). Every failure stamps a red pip
+ * row at the top-right — one pip per failure, capped at 16 — so a photo
+ * reveals both THAT reads are failing and roughly how often. Scenes
+ * repaint over the pips; repeated failures re-stamp them. */
+static void ps1CdStampFailurePips(void)
+{
+    FILL fill;
+    int pips = gCdFailTotal > 16 ? 16 : gCdFailTotal;
+    int i;
+
+    setFill(&fill);
+    setRGB0(&fill, 255, 0, 0);
+    fill.y0 = 16;
+    fill.w = 6;
+    fill.h = 6;
+    for (i = 0; i < pips; i++) {
+        fill.x0 = (uint16)(624 - i * 10);
+        DrawPrim((uint32_t *)&fill);
+    }
+    DrawSync(0);
+}
+
 static void ps1CdNoteReadFailure(void)
 {
+    gCdFailTotal++;
+    ps1CdStampFailurePips();
     if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
         extern int printf(const char *, ...);
         printf("JCCD drive-recover: CdInit reset after %d consecutive failures\n",
@@ -2211,20 +2244,34 @@ uint8_t *ps1_loadRawFile(const char *path, uint32_t *outSize)
     if (!buf) return NULL;
     if (!ps1CdEnsureNoAsyncRead()) {
         free(buf);
+        ps1CdNoteReadFailure();
         return NULL;
     }
 
-    /* No settle delay between Setloc and CdRead (see chunked-stream fix:
-     * Setloc only stores the target; CdRead issues the seek). */
-    CdControl(CdlSetloc, (uint8_t *)&fileInfo.pos, NULL);
-    CdRead(sectors, (uint32_t *)buf, CdlModeSpeed);
-    if (CdReadSync(0, NULL) < 0) {
-        free(buf);
-        return NULL;
+    /* Real drives on burned media fail single-shot reads transiently far
+     * more often than any emulator — these lazy loads (menu text,
+     * captions, explorer strings) degrade silently on failure, so give
+     * them three attempts with a re-locate and a short settle between. */
+    for (int attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) {
+            for (int v = 0; v < 10; v++)
+                VSync(0);
+            if (ps1_cdSearchFileQuiesced(&fileInfo, path) == NULL)
+                continue;
+        }
+        /* No settle delay between Setloc and CdRead (see chunked-stream
+         * fix: Setloc only stores the target; CdRead issues the seek). */
+        CdControl(CdlSetloc, (uint8_t *)&fileInfo.pos, NULL);
+        CdRead(sectors, (uint32_t *)buf, CdlModeSpeed);
+        if (CdReadSync(0, NULL) >= 0) {
+            *outSize = fileSize;
+            return buf;
+        }
+        ps1CdNoteReadFailure();
     }
 
-    *outSize = fileSize;
-    return buf;
+    free(buf);
+    return NULL;
 }
 
 /* ============================================================================
