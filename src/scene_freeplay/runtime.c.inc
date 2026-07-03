@@ -37,13 +37,24 @@ void freeplayRun(void)
     FP_LOG(1, ("JCFREE rebuild backdrop begin heapKB=%lu\n",
                fgProbeLargestAlloc() / 1024UL));
     if (!fpRebuildBackdrop()) {
-        gFreeplayExitRequested = 1;
+        /* First-entry pressure: the failure cleanup below releases
+         * strictly more memory than the first attempt had to work
+         * with, so one retry after a full release is meaningful.
+         * Without it a transient failure silently returns to the
+         * scene loop — on console this read as "selecting Freeplay
+         * does nothing". */
         fpReleaseSlots();
         grFreeCleanBgRects();
         fgBackdropReleasePublic(1);
-        captionsClear();
-        pauseMenuSetFreeplayActive(0);
-        return;
+        if (!fpRebuildBackdrop()) {
+            gFreeplayExitRequested = 1;
+            fpReleaseSlots();
+            grFreeCleanBgRects();
+            fgBackdropReleasePublic(1);
+            captionsShowText(kFpCaptionLoadFailed, 240);
+            pauseMenuSetFreeplayActive(0);
+            return;
+        }
     }
     FP_LOG(1, ("JCFREE backdrop ready heapKB=%lu rectKB=%lu\n",
                fgProbeLargestAlloc() / 1024UL,
@@ -54,13 +65,14 @@ void freeplayRun(void)
 
     FP_LOG(1, ("JCFREE load johnwalk heapKB=%lu\n",
                fgProbeLargestAlloc() / 1024UL));
-    if (!fpLoadSlot(FP_SLOT_JOHN, "JOHNWALK.BMP")) {
+    if (!fpLoadSlot(FP_SLOT_JOHN, "JOHNWALK.BMP") &&
+        !fpLoadSlot(FP_SLOT_JOHN, "JOHNWALK.BMP")) {  /* one retry: transient CD read */
         FP_LOG(1, ("JCFREE fatal missing JOHNWALK\n"));
         gFreeplayExitRequested = 1;
         fpReleaseSlots();
         grFreeCleanBgRects();
         fgBackdropReleasePublic(1);
-        captionsClear();
+        captionsShowText(kFpCaptionLoadFailed, 240);
         pauseMenuSetFreeplayActive(0);
         return;
     }

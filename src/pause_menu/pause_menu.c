@@ -650,11 +650,15 @@ enum {
 
 enum {
     FPO_GAGS,
-    FPO_VISITORS,
-    FPO_CONTROLS,
     FPO_CLEAR,
     FPO_BACK,
-    FPO_COUNT
+    FPO_COUNT,
+    /* Hidden for the 0.9.x release: visitor spawning has never worked on
+     * the pack-replay runtime, and the controls sheet promises inputs the
+     * runtime doesn't deliver. Values kept past FPO_COUNT so the states
+     * still compile; restore them into the cycle when the features land. */
+    FPO_VISITORS,
+    FPO_CONTROLS
 };
 
 enum {

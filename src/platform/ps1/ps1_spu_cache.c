@@ -106,11 +106,20 @@ uint32 ps1SpuCacheCapacity(void)
  *
  * Phase 1 waits on DMA4 CHCR.24 instead — set at kick time with no assert
  * delay, so it can never be observed clear before the transfer started.
- * Phase 2 then covers the SPU's FIFO-drain tail via SPUSTAT (for writes;
- * for reads the DMA delivering the last word IS completion). All waits
- * are bounded (~2s ceilings) so a wedged SPU degrades instead of hanging. */
+ * Phase 2 then covers the SPU's FIFO-drain tail via SPUSTAT (writes only;
+ * for reads the DMA delivering the last word IS completion). Phase 3
+ * parks the transfer state machine back at Stop: the SDK's _dma_transfer
+ * leaves SPUCNT in DMA-read/-write mode after a transfer, and a real SPU
+ * idling in DMA-read mode services voice/key register writes unreliably
+ * (emulators don't model this) — an SPU parked in read mode after the
+ * first walk/staging read silently ate every later SpuSetKey: SFX and
+ * sound-test key-ons, and the ambience toggle's key-off. All waits are
+ * bounded (~2s ceilings) so a wedged SPU degrades instead of hanging. */
 int ps1SpuTransferWaitBounded(int isWrite)
 {
+    volatile uint16_t *spucnt  = (volatile uint16_t *)0xBF801DAA;
+    volatile uint16_t *spustat = (volatile uint16_t *)0xBF801DAE;
+    int ok = 1;
     int i;
 
     if (SPU_DMA4_CHCR & (1u << 24)) {
@@ -125,18 +134,31 @@ int ps1SpuTransferWaitBounded(int isWrite)
     }
 
     if (isWrite) {
-        for (i = 0; i < 200000; i++) {
-            if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
-                return 1;
+        /* Tiny transfers can complete the DMA before SPUSTAT.10 has even
+         * asserted, making "clear" ambiguous (drained vs not-yet-started).
+         * Give the flag a short window to assert; if it never does within
+         * the window the FIFO tail (<=64 bytes) has long since drained. */
+        for (i = 0; i < 256; i++) {
+            if (!SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+                break;
         }
-        for (i = 0; i < 120; i++) {
+        ok = 0;
+        for (i = 0; i < 200000 && !ok; i++)
+            ok = SpuIsTransferCompleted(SPU_TRANSFER_PEEK);
+        for (i = 0; i < 120 && !ok; i++) {
             VSync(0);
-            if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
-                return 1;
+            ok = SpuIsTransferCompleted(SPU_TRANSFER_PEEK);
         }
-        return 0;
     }
-    return 1;
+
+    /* Park the transfer state machine at Stop and wait for the mode ack
+     * (SPUSTAT bits 4-5 mirror the applied SPUCNT mode). */
+    *spucnt = (uint16_t)(*spucnt & ~0x0030u);
+    for (i = 0; i < 200000; i++) {
+        if ((*spustat & 0x0030u) == 0u)
+            break;
+    }
+    return ok;
 }
 
 static int spuCacheWaitTransferBounded(int isWrite)

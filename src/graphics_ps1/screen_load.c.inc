@@ -2,6 +2,24 @@ static uint16 gSceneExplorerThumbChunk[
     SCENE_EXPLORER_THUMB_W * SCENE_EXPLORER_THUMB_ROWS_PER_READ
 ];
 
+/* DrawSync alone can return before the GPU has fully consumed a queued
+ * CPU->VRAM transfer on real silicon (emulators complete transfers
+ * synchronously, so this never shows there). The thumbnail streamer
+ * refills its chunk buffer from CD right after DrawSync — if the GPU is
+ * still draining the previous strip, its tail is fed from the NEW data
+ * and every later row shifts sideways ("jumbled strips"). Poll the
+ * GPUSTAT ready bits before letting the buffer be reused. Bounded. */
+static void grWaitGpuTransferReady(void)
+{
+    volatile uint32 *gpustat = (volatile uint32 *)0xBF801814;
+    int i;
+    for (i = 0; i < 200000; i++) {
+        uint32 s = *gpustat;
+        if ((s & (1u << 26)) != 0u && (s & (1u << 28)) != 0u)
+            break;
+    }
+}
+
 static void grClearSceneExplorerRect(int x, int y, int w, int h)
 {
     RECT rect;
@@ -107,6 +125,7 @@ int grLoadSceneExplorerThumbnail(const char *slug)
                 SCENE_EXPLORER_THUMB_ROWS_PER_READ);
         LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
         DrawSync(0);
+        grWaitGpuTransferReady();
     }
 
     return 1;

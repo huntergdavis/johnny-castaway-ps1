@@ -293,7 +293,7 @@ static int handleFreeplayVisitorInput(uint16 pressed)
         count = 1;
     if (pressed & (PAD_START | PAD_CIRCLE)) {
         menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
-        freeplayOptionsCursor = FPO_VISITORS;
+        freeplayOptionsCursor = FPO_GAGS;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -586,7 +586,7 @@ static int handleSubInput(uint16 pressed)
         enum PauseMenuState fromState = menuState;
         if (fromState == PAUSE_MENU_CONTROLS) {
             menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
-            freeplayOptionsCursor = FPO_CONTROLS;
+            freeplayOptionsCursor = FPO_GAGS;
             prevButtons = 0xFFFF;
             return 1;
         }

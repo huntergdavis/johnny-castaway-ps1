@@ -216,6 +216,8 @@ static const char kFpCaptionPause[] =
     "Freeplay is paused.";
 static const char kFpCaptionClear[] =
     "Freeplay screen cleared.";
+static const char kFpCaptionLoadFailed[] =
+    "Freeplay could not load.\nPlease try again.";
 
 static uint32 fpOverlayOt[FP_OVERLAY_OT_LEN];
 static uint8  fpOverlayPrim[FP_OVERLAY_PRIM_BYTES];

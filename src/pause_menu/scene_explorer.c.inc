@@ -200,12 +200,40 @@ static void sceneExplorerBuildPackLabel(int index, char *dst, int dstSize)
  * explorer state so the first cursor lands fresh; then advances on
  * each cursor change. */
 static int sceneExplorerLoadedCursor = -1;
+static int sceneExplorerFailedCursor = -1;
+static int sceneExplorerSettleFrames = 0;
 
 static void sceneExplorerEnsureThumbnail(void)
 {
+    static int lastSeenCursor = -1;
     int cur = pauseMenuExplorerCursor;
     if (cur < 0 || cur >= gSceneExplorerCount) return;
+
+    if (cur != lastSeenCursor) {
+        lastSeenCursor = cur;
+        sceneExplorerSettleFrames = 0;
+        sceneExplorerFailedCursor = -1;
+        return;
+    }
     if (cur == sceneExplorerLoadedCursor) return;
+
+    /* A failed load (missing thumbnail on disc, transient read error)
+     * must NOT retry every frame: per-frame CdSearchFile + read streams
+     * hammer a real drive until it latches an error and the recovery
+     * reset stalls the menu for seconds. Latch the failure; the cursor
+     * moving away and back clears it. */
+    if (cur == sceneExplorerFailedCursor) return;
+
+    /* Debounce rapid paging: each thumbnail is a full synchronous CD
+     * stream (~15 Setloc/Read cycles), so hammering left/right on a
+     * real drive queues seconds of seeking. Stream only once the
+     * cursor has been still for a few frames — the chrome text still
+     * updates instantly, emulator behavior is unchanged apart from a
+     * ~200 ms settle. */
+    if (sceneExplorerSettleFrames < 12) {
+        sceneExplorerSettleFrames++;
+        return;
+    }
 
     /* grLoadSceneExplorerThumbnail LoadImages the new thumbnail to the
      * centered framebuffer rect immediately. We do NOT touch
@@ -215,11 +243,12 @@ static void sceneExplorerEnsureThumbnail(void)
      * frame. */
     if (grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug)) {
         sceneExplorerLoadedCursor = cur;
+    } else {
+        /* Leave fb alone (chrome strip + text still communicate the
+         * metadata; the previous thumbnail shows above) and latch so
+         * this slug isn't re-streamed every frame. */
+        sceneExplorerFailedCursor = cur;
     }
-    /* If the load failed (missing thumbnail file on disc — e.g., a
-     * not-yet-captured scene), leave fb alone. The chrome strip + text
-     * still communicate the metadata; the previous thumbnail (or main
-     * menu's bg) shows above. */
 }
 
 static void drawSceneExplorer(void)

@@ -23,10 +23,6 @@ static void drawFreeplayOptions(void)
     drawSeparator();
     pmPrintf(pmText(PMT_FPO_GAGS),
              freeplayOptionsCursor == FPO_GAGS ? ">" : " ");
-    pmPrintf(pmText(PMT_FPO_VISITORS),
-             freeplayOptionsCursor == FPO_VISITORS ? ">" : " ");
-    pmPrintf(pmText(PMT_FPO_CONTROLS),
-             freeplayOptionsCursor == FPO_CONTROLS ? ">" : " ");
     pmPrintf(pmText(PMT_FPO_CLEAR),
              freeplayOptionsCursor == FPO_CLEAR ? ">" : " ");
     pmPrintf(pmText(PMT_MENU_BACK),
