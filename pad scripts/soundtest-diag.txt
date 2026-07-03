@@ -1,0 +1,38 @@
+# Visit the sound-test screen (with its SPU diag lines), play a sample,
+# then jump to the scene explorer and trigger the SQUARE GPU test
+# pattern. Used to verify the on-console diagnostics actually render.
+
+wait 36s
+tap START
+wait 30
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap DOWN
+tap CROSS
+wait 30
+tap DOWN
+tap DOWN
+tap DOWN
+tap CROSS
+wait 30
+shot soundtest-diag 30
+tap CROSS
+wait 30
+shot soundtest-played 30
+tap CIRCLE
+wait 15
+tap CIRCLE
+wait 15
+tap UP
+tap UP
+tap UP
+tap UP
+tap CROSS
+wait 60
+shot explorer-real 30
+tap SQUARE
+wait 30
+shot explorer-pattern 30

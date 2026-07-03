@@ -52,6 +52,13 @@ unsigned long soundSpuCacheBytes(void);
  * is exposed for boot-time auto-start. */
 extern int oceanAmbientEnabled;
 
+/* On-console diagnostics (sound-test screen): raw SPUCNT/SPUSTAT, a
+ * voice's live envelope (ENVX), and the verified-write failure counters. */
+int  soundDiagSpuCnt(void);
+int  soundDiagSpuStat(void);
+int  soundDiagEnvx(int ch);
+void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad);
+
 void oceanAmbientStart(void);
 void oceanAmbientStop(void);
 int  oceanAmbientLoaded(void);   /* 1 if VAG was uploaded to SPU RAM */

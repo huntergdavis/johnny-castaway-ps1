@@ -116,6 +116,115 @@ static void soundStopAllVoices(void)
     oceanPlaying = 0;
 }
 
+/* --- Hardware-truth helpers -------------------------------------------
+ * Console rounds 3-5 showed SPU voice/key register writes being lost on
+ * real silicon in ways emulators never reproduce (emulators apply every
+ * register write unconditionally). Rather than keep modelling the exact
+ * drop window, every write that matters is verified — voice registers by
+ * reading them back, key-on/off through SPU_CH_ADSR_VOL (ENVX), the
+ * SPU's live envelope, which is ground truth for "is this voice keyed".
+ * Every loop is bounded; counters feed the sound-test screen so the
+ * console itself reports what failed. */
+
+static uint16_t gSndDiagProgFail   = 0;
+static uint16_t gSndDiagKeyFail    = 0;
+static uint16_t gSndDiagUploadRetry = 0;
+static uint16_t gSndDiagUploadBad  = 0;
+
+static int spuVoiceProgramVerified(int ch, uint16_t pitch, uint32_t addrBytes,
+                                   uint16_t volL, uint16_t volR,
+                                   uint16_t adsr1, uint16_t adsr2)
+{
+    uint16_t wantAddr = (uint16_t)getSPUAddr(addrBytes);
+    int attempt;
+
+    for (attempt = 0; attempt < 4; attempt++) {
+        SPU_CH_FREQ(ch)  = pitch;
+        SPU_CH_ADDR(ch)  = wantAddr;
+        SPU_CH_VOL_L(ch) = volL;
+        SPU_CH_VOL_R(ch) = volR;
+        SPU_CH_ADSR1(ch) = adsr1;
+        SPU_CH_ADSR2(ch) = adsr2;
+        /* Voice regs read back their programmed value (volumes read the
+         * live sweep value, so they are not compared). */
+        if (SPU_CH_FREQ(ch) == pitch &&
+            SPU_CH_ADDR(ch) == wantAddr &&
+            SPU_CH_ADSR1(ch) == adsr1 &&
+            SPU_CH_ADSR2(ch) == adsr2)
+            return 1;
+    }
+    gSndDiagProgFail++;
+    return 0;
+}
+
+static int spuVoiceKeyOnVerified(int ch)
+{
+    int attempt, i;
+
+    for (attempt = 0; attempt < 4; attempt++) {
+        SpuSetKey(1, 1 << ch);
+        /* Instant attack -> ENVX rises within a few 44.1 kHz envelope
+         * ticks (~23 us each); ~300 uncached reads span plenty. If the
+         * envelope never moves, the key-on write was swallowed. */
+        for (i = 0; i < 300; i++) {
+            if (SPU_CH_ADSR_VOL(ch) != 0)
+                return 1;
+        }
+    }
+    gSndDiagKeyFail++;
+    return 0;
+}
+
+static int spuVoiceKeyOffVerified(int ch)
+{
+    int attempt, i;
+
+    for (attempt = 0; attempt < 8; attempt++) {
+        SpuSetKey(0, 1 << ch);
+        /* Release rate 0 -> envelope collapses within a few ticks. */
+        for (i = 0; i < 300; i++) {
+            if (SPU_CH_ADSR_VOL(ch) == 0)
+                return 1;
+        }
+    }
+    gSndDiagKeyFail++;
+    return 0;
+}
+
+/* Windowed SPU RAM readback compare for uploads. 2 KB window keeps the
+ * scratch static; sizes here are always 64-byte aligned. */
+static uint8_t gSndVerifyWin[2048];
+static int spuUploadVerify(uint32_t spuAddr, const uint8_t *src, uint32_t size)
+{
+    uint32_t off = 0;
+
+    while (off < size) {
+        uint32_t chunk = size - off;
+        if (chunk > sizeof(gSndVerifyWin))
+            chunk = sizeof(gSndVerifyWin);
+        SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
+        SpuSetTransferStartAddr(spuAddr + off);
+        SpuRead((uint32_t *)gSndVerifyWin, chunk);
+        if (!ps1SpuTransferWaitBounded(0))
+            return 0;
+        if (memcmp(gSndVerifyWin, src + off, chunk) != 0)
+            return 0;
+        off += chunk;
+    }
+    return 1;
+}
+
+int soundDiagSpuCnt(void)  { return (int)SPU_CTRL; }
+int soundDiagSpuStat(void) { return (int)SPU_STAT; }
+int soundDiagEnvx(int ch)  { return (int)SPU_CH_ADSR_VOL(ch); }
+void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad)
+{
+    *progFail = gSndDiagProgFail;
+    *keyFail  = gSndDiagKeyFail;
+    *upRetry  = gSndDiagUploadRetry;
+    *upBad    = gSndDiagUploadBad;
+}
+
 /* Read big-endian uint32 from VAG header */
 static uint32_t readBE32(const uint8_t *p)
 {
@@ -188,16 +297,31 @@ void soundInit()
         if (dmaSize > adpcmSize)
             memset(dmaBuf + adpcmSize, 0, dmaSize - adpcmSize);
 
-        /* Upload ADPCM data (skip VAG header) to SPU RAM */
-        SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-        SpuSetTransferStartAddr(spuAddr);
-        SpuWrite((uint32_t *)dmaBuf, dmaSize);
-        /* Bounded two-phase wait: SPU_TRANSFER_WAIT races the real-silicon
-         * SPUSTAT assert delay, letting the NEXT upload reprogram the SPU
-         * mid-DMA — back-to-back VAG uploads came out corrupted (silent
-         * SFX) on console while emulators were unaffected. */
-        ps1SpuTransferWaitBounded(1);
-        free(dmaBuf);
+        /* Upload ADPCM data (skip VAG header) to SPU RAM, then read it
+         * back and compare. Console rounds showed uploads landing
+         * corrupted in ways no completion wait fully excludes; a sample
+         * that never verifies is dropped (shows as MISSING in the sound
+         * test) instead of shipping corrupt. */
+        {
+            int attempt, uploadOk = 0;
+            for (attempt = 0; attempt < 3 && !uploadOk; attempt++) {
+                if (attempt > 0)
+                    gSndDiagUploadRetry++;
+                SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
+                SpuSetTransferStartAddr(spuAddr);
+                SpuWrite((uint32_t *)dmaBuf, dmaSize);
+                if (!ps1SpuTransferWaitBounded(1))
+                    continue;
+                uploadOk = spuUploadVerify(spuAddr, dmaBuf, dmaSize);
+            }
+            free(dmaBuf);
+            free(vagData);
+            if (!uploadOk) {
+                gSndDiagUploadBad++;
+                continue;   /* soundAddresses[i] stays 0 -> MISSING */
+            }
+            VSync(0);   /* settle between back-to-back uploads */
+        }
 
         soundAddresses[i] = spuAddr;
         soundSizes[i] = adpcmSize;
@@ -207,8 +331,6 @@ void soundInit()
         /* Advance by the DMA-aligned amount so the next sample does not
          * overlap the padding tail of this one. */
         spuAddr += dmaSize;
-
-        free(vagData);
         loaded++;
     }
 
@@ -283,10 +405,22 @@ void soundInit()
         if (dmaSize > adpcmSize)
             memset(vagData + VAG_HEADER_SIZE + adpcmSize, 0, dmaSize - adpcmSize);
 
-        SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-        SpuSetTransferStartAddr(spuAddr);
-        SpuWrite((uint32_t *)(vagData + VAG_HEADER_SIZE), dmaSize);
-        ps1SpuTransferWaitBounded(1);  /* see SFX upload note above */
+        {
+            int attempt, uploadOk = 0;
+            for (attempt = 0; attempt < 2 && !uploadOk; attempt++) {
+                if (attempt > 0)
+                    gSndDiagUploadRetry++;
+                SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
+                SpuSetTransferStartAddr(spuAddr);
+                SpuWrite((uint32_t *)(vagData + VAG_HEADER_SIZE), dmaSize);
+                if (!ps1SpuTransferWaitBounded(1))
+                    continue;
+                uploadOk = spuUploadVerify(spuAddr, vagData + VAG_HEADER_SIZE,
+                                           dmaSize);
+            }
+            if (!uploadOk)
+                gSndDiagUploadBad++;
+        }
 
         oceanSpuAddr   = spuAddr;
         oceanAdpcmSize = adpcmSize;
@@ -315,33 +449,31 @@ void oceanAmbientStart(void)
     int ch = OCEAN_AMBIENT_VOICE;
 
     /* Key-off first so a re-keyed channel stops cleanly before the
-     * new program write. (Mirrors the SFX path's pre-key-off
-     * convention.) */
-    SpuSetKey(0, 1 << ch);
-
-    SPU_CH_FREQ(ch)  = oceanPitch;
-    SPU_CH_ADDR(ch)  = getSPUAddr(oceanSpuAddr);
-    SPU_CH_VOL_L(ch) = OCEAN_AMBIENT_VOLUME;
-    SPU_CH_VOL_R(ch) = OCEAN_AMBIENT_VOLUME;
-    /* ADSR1=0x00FF: attack 0 (instant), no decay. Same envelope as SFX
-     * for now — a slow attack via ADSR1's AR field would soften the
-     * key-on, but on ocean material the audible difference is
-     * negligible because the loop's first sec is itself a crossfade
-     * tail with low amplitude. */
-    SPU_CH_ADSR1(ch) = 0x00FF;
-    SPU_CH_ADSR2(ch) = 0x0000;
-
-    SpuSetKey(1, 1 << ch);
+     * new program write, then program + key with hardware verification
+     * (see hardware-truth helpers above). ADSR1=0x00FF: instant attack,
+     * no decay. */
+    spuVoiceKeyOffVerified(ch);
+    spuVoiceProgramVerified(ch, oceanPitch, oceanSpuAddr,
+                            OCEAN_AMBIENT_VOLUME, OCEAN_AMBIENT_VOLUME,
+                            0x00FF, 0x0000);
+    spuVoiceKeyOnVerified(ch);
     oceanPlaying = 1;
 }
 
 
 void oceanAmbientStop(void)
 {
-    if (!oceanPlaying)
-        return;
     int ch = OCEAN_AMBIENT_VOICE;
-    SpuSetKey(0, 1 << ch);
+    /* Deliberately NO oceanPlaying early-out: a swallowed key-off in a
+     * stop-all path can leave the voice audibly keyed while the flag
+     * says stopped, and Stop must always mean silence (the ENVX check
+     * makes the already-silent case a fast no-op anyway).
+     * Volume to zero first: even if the key-off write is swallowed the
+     * voice goes inaudible immediately; the verified key-off then
+     * retires it for real. */
+    SPU_CH_VOL_L(ch) = 0;
+    SPU_CH_VOL_R(ch) = 0;
+    spuVoiceKeyOffVerified(ch);
     oceanPlaying = 0;
 }
 
@@ -384,22 +516,14 @@ void soundPlay(int nb)
     int ch = nextChannel;
     nextChannel = (nextChannel + 1) % NUM_CHANNELS;
 
-    /* Key-off first so a reused channel stops cleanly before we reprogram it. */
-    SpuSetKey(0, 1 << ch);
-
-    /* Direct register writes mirroring PSn00bSDK's vagsample example.
-     * ADSR1=0x00FF (AR=0 → instant attack; without this, short samples
-     * finish before the envelope ramps up and you hear nothing).
-     * ADSR2=0x0000 (no sustain/release curve). */
-    SPU_CH_FREQ(ch)  = soundPitches[nb];
-    SPU_CH_ADDR(ch)  = getSPUAddr(soundAddresses[nb]);
-    SPU_CH_VOL_L(ch) = SFX_VOLUME;
-    SPU_CH_VOL_R(ch) = SFX_VOLUME;
-    SPU_CH_ADSR1(ch) = 0x00FF;
-    SPU_CH_ADSR2(ch) = 0x0000;
-
-    /* Start playback */
-    SpuSetKey(1, 1 << ch);
+    /* Key-off first so a reused channel stops cleanly, then program and
+     * key with hardware verification (see hardware-truth helpers above).
+     * ADSR1=0x00FF: AR=0 -> instant attack; without it short samples
+     * finish before the envelope ramps and you hear nothing. */
+    spuVoiceKeyOffVerified(ch);
+    spuVoiceProgramVerified(ch, soundPitches[nb], soundAddresses[nb],
+                            SFX_VOLUME, SFX_VOLUME, 0x00FF, 0x0000);
+    spuVoiceKeyOnVerified(ch);
 }
 
 /*

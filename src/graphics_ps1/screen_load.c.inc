@@ -20,6 +20,8 @@ static void grWaitGpuTransferReady(void)
     }
 }
 
+static void grVerifySceneExplorerStrip(const RECT *strip);
+
 static void grClearSceneExplorerRect(int x, int y, int w, int h)
 {
     RECT rect;
@@ -42,6 +44,10 @@ static void grClearSceneExplorerRect(int x, int y, int w, int h)
             setRECT(&rect, clearX, y, chunkW, rows);
             LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
             DrawSync(0);
+            /* Same buffer-reuse hazard as the strips: the last clear's
+             * transfer must be fully consumed before the first CD chunk
+             * refills this buffer. */
+            grWaitGpuTransferReady();
 
             clearX += chunkW;
             remainingW -= chunkW;
@@ -126,6 +132,81 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
         DrawSync(0);
         grWaitGpuTransferReady();
+        grVerifySceneExplorerStrip(&rect);
+    }
+
+    return 1;
+}
+
+/* Read the strip's first and last rows back out of VRAM and compare
+ * with the source; a shifted/corrupt upload differs and gets
+ * re-uploaded (bounded). A shift can begin mid-strip, hence both ends.
+ * This makes the console-only "jumbled strips" self-healing regardless
+ * of which side (GPU timing, DMA contention) drops the ball — and if
+ * the CD data itself arrives shifted, VRAM matches the buffer, the
+ * verify passes, and the SQUARE test pattern pins the blame instead. */
+static void grVerifySceneExplorerStrip(const RECT *strip)
+{
+    static uint16 verifyRow[SCENE_EXPLORER_THUMB_W];
+    RECT rowRect;
+    int tries;
+
+    for (tries = 0; tries < 3; tries++) {
+        int lastRow = strip->h - 1;
+        int ok;
+        setRECT(&rowRect, strip->x, strip->y, strip->w, 1);
+        StoreImage(&rowRect, (uint32 *)verifyRow);
+        DrawSync(0);
+        ok = memcmp(verifyRow, gSceneExplorerThumbChunk,
+                    sizeof(verifyRow)) == 0;
+        if (ok && lastRow > 0) {
+            setRECT(&rowRect, strip->x, strip->y + lastRow, strip->w, 1);
+            StoreImage(&rowRect, (uint32 *)verifyRow);
+            DrawSync(0);
+            ok = memcmp(verifyRow,
+                        gSceneExplorerThumbChunk +
+                            (size_t)lastRow * SCENE_EXPLORER_THUMB_W,
+                        sizeof(verifyRow)) == 0;
+        }
+        if (ok)
+            return;
+        LoadImage((RECT *)strip, (uint32 *)gSceneExplorerThumbChunk);
+        DrawSync(0);
+        grWaitGpuTransferReady();
+    }
+}
+
+/* Diagnostic: stream a computed pattern through the exact same chunked
+ * upload path the CD thumbnails use, but with RAM-generated data. On
+ * console: pattern clean but CD thumbs jumbled -> the CD data path is
+ * corrupting; pattern jumbled too -> the GPU upload path is. Green/red
+ * 16 px bars with a white marker column stepping 20 px right per strip
+ * and a distinct first row make any horizontal shift obvious and
+ * attributable to a specific strip. */
+int grLoadSceneExplorerTestPattern(void)
+{
+    RECT rect;
+    int strip = 0;
+
+    for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
+         y += SCENE_EXPLORER_THUMB_ROWS_PER_READ, strip++) {
+        for (int r = 0; r < SCENE_EXPLORER_THUMB_ROWS_PER_READ; r++) {
+            for (int x = 0; x < SCENE_EXPLORER_THUMB_W; x++) {
+                uint16 c = ((x >> 4) & 1) ? 0x001F : 0x03E0; /* red/green */
+                if (x == (strip * 20) % SCENE_EXPLORER_THUMB_W)
+                    c = 0x7FFF;                               /* white marker */
+                if (r == 0)
+                    c |= 0x7C00;                              /* first row tint */
+                gSceneExplorerThumbChunk[r * SCENE_EXPLORER_THUMB_W + x] = c;
+            }
+        }
+        setRECT(&rect, 160, 120 + y,
+                SCENE_EXPLORER_THUMB_W,
+                SCENE_EXPLORER_THUMB_ROWS_PER_READ);
+        LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
+        DrawSync(0);
+        grWaitGpuTransferReady();
+        grVerifySceneExplorerStrip(&rect);
     }
 
     return 1;

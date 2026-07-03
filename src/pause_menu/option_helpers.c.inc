@@ -444,6 +444,37 @@ static void drawSoundTestMenu(void)
              soundEffectSampleRate(soundTestCursor));
     pmPrintf(pmText(PMT_OUTPUT_LINE), soundMuted ? pmText(PMT_MUTED) : pmText(PMT_ON));
     drawSeparator();
+    /* On-console SPU diagnostics (literal strings by design — this screen
+     * is the debugging instrument for hardware-only sound bugs). AMB =
+     * ambience voice envelope (nonzero while the ocean loop is keyed).
+     * BAD/RTY = boot uploads failed / retried. PRG/KEY = verified voice
+     * program / key writes that exhausted their retries. */
+    {
+        /* pmPrintf supports only %s/%d/%u, and sprintf costs ~15 KB of
+         * static image — hand-roll the three hex fields instead. */
+        char diagLine[32];
+        char *w = diagLine;
+        static const char *tag[3] = { " CNT ", " STA ", " AMB " };
+        unsigned val[3];
+        int progFail, keyFail, upRetry, upBad;
+        int f, n;
+        val[0] = (unsigned)soundDiagSpuCnt() & 0xFFFFu;
+        val[1] = (unsigned)soundDiagSpuStat() & 0xFFFFu;
+        val[2] = (unsigned)soundDiagEnvx(23) & 0xFFFFu;
+        for (f = 0; f < 3; f++) {
+            const char *t = tag[f];
+            while (*t) *w++ = *t++;
+            for (n = 3; n >= 0; n--) {
+                unsigned nib = (val[f] >> (n * 4)) & 0xFu;
+                *w++ = (char)(nib < 10 ? '0' + nib : 'a' + (nib - 10));
+            }
+        }
+        *w = '\0';
+        soundDiagCounters(&progFail, &keyFail, &upRetry, &upBad);
+        pmPrintf("%s\n", diagLine);
+        pmPrintf(" BAD %d RTY %d PRG %d KEY %d\n",
+                 upBad, upRetry, progFail, keyFail);
+    }
     pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
     pmPrintf(pmText(PMT_X_PLAY_BACK));
 }
