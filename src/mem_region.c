@@ -259,6 +259,13 @@ void memInit(void)
                (unsigned long)MEM_REGION_TOTAL);
         memHalt("(boot)", "memInit: libc malloc for region buffer failed");
     }
+    /* Chainloader hygiene: a BIOS cold boot hands us zeroed RAM; a
+     * loader (tonyhax etc.) hands us whatever it left behind. Region
+     * allocations follow a write-before-read convention, but zeroing
+     * up front removes the whole "works on the emulator because RAM
+     * starts at zero" class. ~1.4 MB memset costs a few dozen ms,
+     * once, at boot. */
+    memset(g_memRegionBuf, 0, MEM_REGION_TOTAL);
     g_bootBase      = &g_memRegionBuf[0];
     g_cacheBase     = g_bootBase  + MEM_BOOT_BUDGET;
     g_transientBase = g_cacheBase + MEM_CACHE_BUDGET;

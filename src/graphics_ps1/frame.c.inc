@@ -453,6 +453,24 @@ void graphicsInit()
         ResetGraph(0);
         SetVideoMode(MODE_NTSC);
 
+        /* Chainloader hygiene: only a BIOS cold boot guarantees zeroed
+         * VRAM. When this path runs first (early title skipped), clear
+         * the framebuffer before the display is unmasked below so a
+         * loader's leftover screen (tonyhax etc.) can't show through. */
+        {
+            FILL fill;
+            setFill(&fill);
+            setRGB0(&fill, 0, 0, 0);
+            /* GPU fill masks height to 9 bits (512 wraps to 0), so
+             * clear in 512x256 quadrants. */
+            fill.w = 512; fill.h = 256;
+            fill.x0 = 0;   fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+            fill.x0 = 512; fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+            fill.x0 = 0;   fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+            fill.x0 = 512; fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+            DrawSync(0);
+        }
+
         GR_DIAG_PRINTF("GPU: Initializing GTE...\n");
 
         /* Initialize geometry transformation engine */

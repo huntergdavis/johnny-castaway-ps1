@@ -936,6 +936,7 @@ static void fgLoopApplyVariant(const char *sceneName)
 #define PS1_BOOT_OVERRIDE_FILE "BOOTMODE.TXT"
 
 static int ps1BootForcedSeed = -1;  /* -1 = use hardware RNG */
+static int ps1BootDirtyBootTest = 0;
 static char ps1BootArgStorage[3][32];
 static char ps1BootOverrideSource[16];
 static char ps1BootOverrideText[128];
@@ -1142,6 +1143,7 @@ static int ps1IsFgPilotOptionToken(const char *token)
 #endif
 
     return !strcmp(token, "fgoverlay") ||
+           !strcmp(token, "dirty-boot-test") ||
            !strcmp(token, "island-pos") ||
            !strcmp(token, "lowtide") ||
            !strcmp(token, "raft-stage") ||
@@ -1320,6 +1322,12 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             hostHolidayMode = holidayModeFromOverride(hostForcedHoliday);
             hostBootForcedHolidayValid = 1;
             i++;
+        } else if (!strcmp(tokens[i], "dirty-boot-test")) {
+            /* Chainloader simulation: before the game's own graphics
+             * init, fill VRAM with a loud pattern and unmask the
+             * display — the state a tonyhax-style loader hands us.
+             * The boot path must come up clean anyway. */
+            ps1BootDirtyBootTest = 1;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
 #if PS1_VERBOSE_DIAGNOSTICS
@@ -1605,6 +1613,27 @@ static void initTitleDisplayEarly(void)
     SetVideoMode(MODE_NTSC);
     grGpuAlreadyInitialized = 1;
 
+    /* Chainloader hygiene (tonyhax / Unirom / FreePSXBoot): a BIOS cold
+     * boot hands us zeroed VRAM, but a loader jumps straight to the EXE
+     * with ITS OWN screen still in the framebuffer. Clear ALL of VRAM
+     * BEFORE the display is unmasked, or the loader's UI shows through
+     * until the title finishes streaming (reported on tonyhax as the
+     * logo "flashing" against the loader screen). Two halves — the GPU
+     * fill primitive tops out below 1024 wide. */
+    {
+        FILL fill;
+        setFill(&fill);
+        setRGB0(&fill, 0, 0, 0);
+        /* GPU fill masks height to 9 bits (512 wraps to 0), so
+         * clear in 512x256 quadrants. */
+        fill.w = 512; fill.h = 256;
+        fill.x0 = 0;   fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+        fill.x0 = 512; fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+        fill.x0 = 0;   fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+        fill.x0 = 512; fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+        DrawSync(0);
+    }
+
     /* Set up display environment for 640x480 */
     DISPENV disp;
     DRAWENV draw;
@@ -1615,7 +1644,7 @@ static void initTitleDisplayEarly(void)
     PutDispEnv(&disp);
     PutDrawEnv(&draw);
 
-    /* Enable display */
+    /* Enable display only now that VRAM is clean. */
     SetDispMask(1);
 }
 
@@ -2100,6 +2129,37 @@ int main(int argc, char **argv)
             : ((numArgs >= 1) ? args[0] : NULL)
     );
     ps1PrintfProbe("boot-override-loaded", NULL);
+
+    if (ps1BootDirtyBootTest) {
+        /* Simulate a chainloader handoff (tonyhax/Unirom): GPU already
+         * up, VRAM full of the loader's screen, display unmasked. The
+         * real boot path below must recover to a clean title. */
+        DISPENV dirtyDisp;
+        ResetGraph(0);
+        SetVideoMode(MODE_NTSC);
+        {
+            FILL fill;
+            setFill(&fill);
+            /* GPU fill masks height to 9 bits — use 256-tall bands. */
+            setRGB0(&fill, 255, 0, 255);
+            fill.w = 512; fill.h = 256;
+            fill.x0 = 0;   fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+            fill.x0 = 0;   fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+            setRGB0(&fill, 0, 255, 0);
+            fill.x0 = 512; fill.y0 = 0;   DrawPrim((uint32_t *)&fill);
+            fill.x0 = 512; fill.y0 = 256; DrawPrim((uint32_t *)&fill);
+            setRGB0(&fill, 255, 255, 0);
+            fill.x0 = 64;  fill.y0 = 64;
+            fill.w  = 384; fill.h  = 128;
+            DrawPrim((uint32_t *)&fill);
+            DrawSync(0);
+        }
+        SetDefDispEnv(&dirtyDisp, 0, 0, 320, 240);
+        PutDispEnv(&dirtyDisp);
+        SetDispMask(1);
+        VSync(0); VSync(0); VSync(0);
+        printf("JCBOOT dirty-boot-test: VRAM dirtied, display unmasked\n");
+    }
 
     loadTitleScreenEarly();
     ps1PrintfProbe("title-loaded", NULL);
