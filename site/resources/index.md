@@ -473,7 +473,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>ACTIVITY1.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY10.FG2</code></td><td>313,613</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY11.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY12.FG2</code></td><td>338,314</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY12.FG2</code></td><td>199,876</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY4.FG2</code></td><td>295,098</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY4.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY5.FG2</code></td><td>385,793</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY5.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY6.FG2</code></td><td>170,404</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY6.FG2">source</a></td></tr>
@@ -482,7 +482,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>ACTIVITY9.FG2</code></td><td>1,745,484</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY9.FG2">source</a></td></tr>
 <tr><td><code>ACTV10L.FG2</code></td><td>313,613</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
 <tr><td><code>ACTV11L.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
-<tr><td><code>ACTV12L.FG2</code></td><td>363,249</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
+<tr><td><code>ACTV12L.FG2</code></td><td>199,876</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
 <tr><td><code>ACTV1LOW.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV4LOW.FG2</code></td><td>200,222</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV4LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV5LOW.FG2</code></td><td>385,793</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV5LOW.FG2">source</a></td></tr>
@@ -579,13 +579,13 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>SUZY2.FG2</code></td><td>557,299</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY2.FG2">source</a></td></tr>
 <tr><td><code>SUZY2LOW.FG2</code></td><td>557,299</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY2LOW.FG2">source</a></td></tr>
 <tr><td><code>VISITOR1.FG2</code></td><td>195,749</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR1.FG2">source</a></td></tr>
-<tr><td><code>VISITOR3.FG2</code></td><td>1,555,450</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR3.FG2">source</a></td></tr>
+<tr><td><code>VISITOR3.FG2</code></td><td>1,557,088</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR3.FG2">source</a></td></tr>
 <tr><td><code>VISITOR4.FG2</code></td><td>91,205</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR4.FG2">source</a></td></tr>
 <tr><td><code>VISITOR5.FG2</code></td><td>354,227</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR5.FG2">source</a></td></tr>
 <tr><td><code>VISITOR6.FG2</code></td><td>187,017</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR6.FG2">source</a></td></tr>
 <tr><td><code>VISITOR7.FG2</code></td><td>134,088</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR7.FG2">source</a></td></tr>
 <tr><td><code>VIST1LOW.FG2</code></td><td>195,749</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST1LOW.FG2">source</a></td></tr>
-<tr><td><code>VIST3LOW.FG2</code></td><td>1,555,450</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST3LOW.FG2">source</a></td></tr>
+<tr><td><code>VIST3LOW.FG2</code></td><td>1,557,088</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST3LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST4LOW.FG2</code></td><td>91,205</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST4LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST5LOW.FG2</code></td><td>354,227</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST5LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST6LOW.FG2</code></td><td>187,017</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST6LOW.FG2">source</a></td></tr>

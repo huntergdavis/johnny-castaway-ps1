@@ -1,6 +1,6 @@
 Contact: https://github.com/huntergdavis/johnny-castaway-ps1/issues
 Contact: https://github.com/huntergdavis/johnny-castaway-ps1/security/advisories/new
-Expires: 2027-06-26T00:00:00Z
+Expires: 2027-07-02T00:00:00Z
 Preferred-Languages: en
 Canonical: https://hunterdavis.com/johnny-castaway-ps1/.well-known/security.txt
 Policy: https://hunterdavis.com/johnny-castaway-ps1/legal/

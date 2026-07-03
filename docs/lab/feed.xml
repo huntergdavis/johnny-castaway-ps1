@@ -34,17 +34,6 @@
     </author>
     <summary>A retrospective on the v0.8.4 chapter-select-thumbnail loop — what it took to ship a custom on-PS1 thumbnail for every scene and reconcile the website against the packs that actually play.</summary>
   </entry><entry>
-    <title>From 87 to 99.7: the post-validation performance loop</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/</id>
-    <published>2026-05-06T00:00:00-04:00</published>
-    <updated>2026-05-06T00:00:00-04:00</updated>
-    <author>
-      <name>Hunter Davis</name>
-      <uri>https://hunterdavis.com/</uri>
-    </author>
-    <summary>A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.</summary>
-  </entry><entry>
     <title>v0.8.1 — what the soak found that the matrix didn&apos;t</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/"/>
     <id>https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/</id>
@@ -55,6 +44,17 @@
       <uri>https://hunterdavis.com/</uri>
     </author>
     <summary>How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it.</summary>
+  </entry><entry>
+    <title>From 87 to 99.7: the post-validation performance loop</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/</id>
+    <published>2026-05-06T00:00:00-04:00</published>
+    <updated>2026-05-06T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.</summary>
   </entry><entry>
     <title>The site itself, as a small program</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/"/>
@@ -78,28 +78,6 @@
     </author>
     <summary>A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure.</summary>
   </entry><entry>
-    <title>Why I keep porting Johnny Castaway</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/why-i-keep-porting-johnny/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/why-i-keep-porting-johnny/</id>
-    <published>2026-04-26T00:00:00-04:00</published>
-    <updated>2026-04-26T00:00:00-04:00</updated>
-    <author>
-      <name>Hunter Davis</name>
-      <uri>https://hunterdavis.com/</uri>
-    </author>
-    <summary>A personal retrospective on Hunter Davis repeatedly porting Johnny Castaway across Dreamcast, embedded Linux, picture frames, text editions, and now PlayStation 1.</summary>
-  </entry><entry>
-    <title>Regression as a lifestyle</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/</id>
-    <published>2026-04-26T00:00:00-04:00</published>
-    <updated>2026-04-26T00:00:00-04:00</updated>
-    <author>
-      <name>Hunter Davis</name>
-      <uri>https://hunterdavis.com/</uri>
-    </author>
-    <summary>A methodology essay about the Johnny Castaway PS1 regression suite: host references, DuckStation capture, frame metadata, perf logs, and human review.</summary>
-  </entry><entry>
     <title>The LLM pass</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/llm-pass/"/>
     <id>https://hunterdavis.com/johnny-castaway-ps1/lab/llm-pass/</id>
@@ -122,38 +100,16 @@
     </author>
     <summary>A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.</summary>
   </entry><entry>
-    <title>The two-day SPI bug</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/two-day-spi-bug/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/two-day-spi-bug/</id>
+    <title>Regression as a lifestyle</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/</id>
     <published>2026-04-26T00:00:00-04:00</published>
     <updated>2026-04-26T00:00:00-04:00</updated>
     <author>
       <name>Hunter Davis</name>
       <uri>https://hunterdavis.com/</uri>
     </author>
-    <summary>A debugging war story about the PS1 controller SPI/SIO0 polling bug that blocked the Johnny Castaway PS1 pause menu.</summary>
-  </entry><entry>
-    <title>35 holidays in 4 weeks</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/35-holidays-codegen/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/35-holidays-codegen/</id>
-    <published>2026-04-26T00:00:00-04:00</published>
-    <updated>2026-04-26T00:00:00-04:00</updated>
-    <author>
-      <name>Hunter Davis</name>
-      <uri>https://hunterdavis.com/</uri>
-    </author>
-    <summary>A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites.</summary>
-  </entry><entry>
-    <title>The dunking bird</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/dunking-bird/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/dunking-bird/</id>
-    <published>2026-04-26T00:00:00-04:00</published>
-    <updated>2026-04-26T00:00:00-04:00</updated>
-    <author>
-      <name>Hunter Davis</name>
-      <uri>https://hunterdavis.com/</uri>
-    </author>
-    <summary>Dunking bird is a small piece of software the author wrote to keep long-running unattended jobs alive. It got used a lot during the Johnny Castaway PS1 port.</summary>
+    <summary>A methodology essay about the Johnny Castaway PS1 regression suite: host references, DuckStation capture, frame metadata, perf logs, and human review.</summary>
   </entry><entry>
     <title>Hallucination engineering</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/hallucination-engineering/"/>
@@ -166,16 +122,16 @@
     </author>
     <summary>A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline.</summary>
   </entry><entry>
-    <title>The voice anchor problem</title>
-    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/voice-anchor-problem/"/>
-    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/voice-anchor-problem/</id>
+    <title>35 holidays in 4 weeks</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/35-holidays-codegen/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/35-holidays-codegen/</id>
     <published>2026-04-26T00:00:00-04:00</published>
     <updated>2026-04-26T00:00:00-04:00</updated>
     <author>
       <name>Hunter Davis</name>
       <uri>https://hunterdavis.com/</uri>
     </author>
-    <summary>A prose-process essay about the Johnny Castaway PS1 site&apos;s voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review.</summary>
+    <summary>A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites.</summary>
   </entry><entry>
     <title>The pivot that almost did not happen</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/"/>
@@ -187,6 +143,50 @@
       <uri>https://hunterdavis.com/</uri>
     </author>
     <summary>A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay.</summary>
+  </entry><entry>
+    <title>The dunking bird</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/dunking-bird/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/dunking-bird/</id>
+    <published>2026-04-26T00:00:00-04:00</published>
+    <updated>2026-04-26T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>Dunking bird is a small piece of software the author wrote to keep long-running unattended jobs alive. It got used a lot during the Johnny Castaway PS1 port.</summary>
+  </entry><entry>
+    <title>The two-day SPI bug</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/two-day-spi-bug/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/two-day-spi-bug/</id>
+    <published>2026-04-26T00:00:00-04:00</published>
+    <updated>2026-04-26T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>A debugging war story about the PS1 controller SPI/SIO0 polling bug that blocked the Johnny Castaway PS1 pause menu.</summary>
+  </entry><entry>
+    <title>Why I keep porting Johnny Castaway</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/why-i-keep-porting-johnny/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/why-i-keep-porting-johnny/</id>
+    <published>2026-04-26T00:00:00-04:00</published>
+    <updated>2026-04-26T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>A personal retrospective on Hunter Davis repeatedly porting Johnny Castaway across Dreamcast, embedded Linux, picture frames, text editions, and now PlayStation 1.</summary>
+  </entry><entry>
+    <title>The voice anchor problem</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/voice-anchor-problem/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/lab/voice-anchor-problem/</id>
+    <published>2026-04-26T00:00:00-04:00</published>
+    <updated>2026-04-26T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>A prose-process essay about the Johnny Castaway PS1 site&apos;s voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review.</summary>
   </entry><entry>
     <title>Building a fan port in public</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/lab/fan-port-in-public/"/>

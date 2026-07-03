@@ -21,13 +21,13 @@ canonical_baseurl: "/johnny-castaway-ps1"
 # Pinned values for P1. Phase P3 will replace these via _data/release.yml
 # written by the GitHub Actions workflow at build time.
 release:
-  version: "0.9.7"
-  tag: "v0.9.7-ps1"
+  version: "0.9.8"
+  tag: "v0.9.8-ps1"
   # ISO date the current `tag` shipped (matches the date on
   # /releases/). Surfaced on the home status strip and in the
   # SoftwareApplication JSON-LD `dateModified` field. Update
   # alongside `version` and `tag` on each milestone release.
-  release_date: "2026-06-25"
+  release_date: "2026-07-02"
   scenes_validated: 63
   scenes_total: 63
   # Headless-perf battle-card snapshot at the current release tag.
@@ -42,7 +42,7 @@ release:
   #   curl -sL <repo>/releases/download/<tag>/johnnycastawayps1.bin | sha256sum
   #   curl -sL <repo>/releases/download/<tag>/johnnycastawayps1.cue | sha256sum
   # scripts/release.sh rewrites these from the release artifacts.
-  sha256_bin: "37982803d44510147c9a45c6ca99c49b9f8ace1ce86de267300920b77cf4e872"
+  sha256_bin: "e48ce75e2fcc5f85c635dc3afc9c6da9b8282908b468b303fa007d3c85b4749c"
   sha256_cue: "c2f59b4cf37bd9eef60004d7536e1ef1ae0151b9f7b78d4311f6f31b41b34b7e"
 
 repo: "huntergdavis/johnny-castaway-ps1"
