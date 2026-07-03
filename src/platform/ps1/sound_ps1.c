@@ -31,6 +31,7 @@
 #include "config.h"
 #include "utils.h"
 #include "cdrom_ps1.h"
+#include "ps1_spu_cache.h"
 #include "mem_region.h"
 
 #ifndef SOUND_PS1_DIAG_LOGS
@@ -191,7 +192,11 @@ void soundInit()
         SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
         SpuSetTransferStartAddr(spuAddr);
         SpuWrite((uint32_t *)dmaBuf, dmaSize);
-        SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
+        /* Bounded two-phase wait: SPU_TRANSFER_WAIT races the real-silicon
+         * SPUSTAT assert delay, letting the NEXT upload reprogram the SPU
+         * mid-DMA — back-to-back VAG uploads came out corrupted (silent
+         * SFX) on console while emulators were unaffected. */
+        ps1SpuTransferWaitBounded(1);
         free(dmaBuf);
 
         soundAddresses[i] = spuAddr;
@@ -281,7 +286,7 @@ void soundInit()
         SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
         SpuSetTransferStartAddr(spuAddr);
         SpuWrite((uint32_t *)(vagData + VAG_HEADER_SIZE), dmaSize);
-        SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
+        ps1SpuTransferWaitBounded(1);  /* see SFX upload note above */
 
         oceanSpuAddr   = spuAddr;
         oceanAdpcmSize = adpcmSize;

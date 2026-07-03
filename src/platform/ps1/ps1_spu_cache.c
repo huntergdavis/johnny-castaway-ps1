@@ -89,22 +89,65 @@ uint32 ps1SpuCacheCapacity(void)
     return gSpuCacheBytes;
 }
 
-/* Bounded SPU transfer wait. PSn00bSDK's SPU_TRANSFER_WAIT spins on the
- * transfer-busy status with no upper bound — fine on emulators (transfers
- * complete instantly) but a real SPU handed over by a chainloader with
- * voices keyed on can leave the busy flag in a state the wait never
- * exits, freezing boot right after the ambience starts. Poll with a
- * ~2 second ceiling; on timeout, mark the SPU cache unusable so every
- * caller takes its documented CD-fallback path instead of hanging. */
-static int spuCacheWaitTransferBounded(void)
+/* DMA4 (SPU) channel control register. Bit 24 is the channel-busy flag,
+ * set synchronously by the very CHCR write that kicks the transfer. */
+#define SPU_DMA4_CHCR (*(volatile uint32_t *)0xBF8010C8)
+
+/* Bounded two-phase SPU transfer wait, safe on real silicon.
+ *
+ * SPUSTAT bit 10 — the flag SpuIsTransferCompleted polls — ASSERTS WITH A
+ * DELAY after a transfer kicks off on real hardware, while emulators
+ * complete transfers synchronously. Polling it alone can therefore report
+ * "completed" in the window before the flag asserts, letting the caller
+ * reprogram the transfer registers while the previous DMA is still in
+ * flight. Emulators never show the window, which is why boot VAG uploads,
+ * walk-clean row captures and staging transfers were corrupted ONLY on
+ * console (silent SFX, walk ghosts, dead ambience, staging fallbacks).
+ *
+ * Phase 1 waits on DMA4 CHCR.24 instead — set at kick time with no assert
+ * delay, so it can never be observed clear before the transfer started.
+ * Phase 2 then covers the SPU's FIFO-drain tail via SPUSTAT (for writes;
+ * for reads the DMA delivering the last word IS completion). All waits
+ * are bounded (~2s ceilings) so a wedged SPU degrades instead of hanging. */
+int ps1SpuTransferWaitBounded(int isWrite)
 {
-    for (int i = 0; i < 120; i++) {
-        if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
-            return 1;
-        VSync(0);
+    int i;
+
+    if (SPU_DMA4_CHCR & (1u << 24)) {
+        for (i = 0; i < 200000; i++) {
+            if ((SPU_DMA4_CHCR & (1u << 24)) == 0u)
+                break;
+        }
+        for (i = 0; i < 120 && (SPU_DMA4_CHCR & (1u << 24)); i++)
+            VSync(0);
+        if (SPU_DMA4_CHCR & (1u << 24))
+            return 0;
     }
-    gSpuCacheReady = 0;
-    return 0;
+
+    if (isWrite) {
+        for (i = 0; i < 200000; i++) {
+            if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+                return 1;
+        }
+        for (i = 0; i < 120; i++) {
+            VSync(0);
+            if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+                return 1;
+        }
+        return 0;
+    }
+    return 1;
+}
+
+static int spuCacheWaitTransferBounded(int isWrite)
+{
+    if (!ps1SpuTransferWaitBounded(isWrite)) {
+        /* Mark the cache unusable so every caller takes its documented
+         * CD-fallback path instead of piling onto a wedged SPU. */
+        gSpuCacheReady = 0;
+        return 0;
+    }
+    return 1;
 }
 
 int ps1SpuCacheWrite(uint32 offset, const void *src, uint32 size)
@@ -115,7 +158,7 @@ int ps1SpuCacheWrite(uint32 offset, const void *src, uint32 size)
     SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
     SpuSetTransferStartAddr(gSpuCacheBase + offset);
     SpuWrite((uint32_t *)src, size);
-    return spuCacheWaitTransferBounded();
+    return spuCacheWaitTransferBounded(1);
 }
 
 int ps1SpuCacheRead(uint32 offset, void *dst, uint32 size)
@@ -126,7 +169,7 @@ int ps1SpuCacheRead(uint32 offset, void *dst, uint32 size)
     SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
     SpuSetTransferStartAddr(gSpuCacheBase + offset);
     SpuRead((uint32_t *)dst, size);
-    return spuCacheWaitTransferBounded();
+    return spuCacheWaitTransferBounded(0);
 }
 
 int ps1SpuCacheSelfTest(void)

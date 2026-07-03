@@ -19,6 +19,11 @@
     (PS1_SPU_CACHE_WALK_CLEAN_OFFSET + PS1_SPU_CACHE_WALK_CLEAN_BYTES)
 #define PS1_SPU_CACHE_MRAFT_PSB_BYTES (12u * 1024u)
 
+/* Two-phase bounded wait for the in-flight SPU transfer (DMA4 CHCR drain,
+ * then SPUSTAT FIFO drain for writes). Safe against the real-silicon
+ * SPUSTAT busy-flag assert delay that SpuIsTransferCompleted races. */
+int ps1SpuTransferWaitBounded(int isWrite);
+
 void ps1SpuCacheInit(void);
 int ps1SpuCacheReady(void);
 uint32 ps1SpuCacheBase(void);
