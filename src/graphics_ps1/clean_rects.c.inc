@@ -878,6 +878,25 @@ int grCaptureBgRectToSpu(uint32 spuOffset, sint16 x, sint16 y,
                               rowStrideBytes))
             return 0;
     }
+
+    /* Verify the capture by reading the LAST row back and comparing to
+     * what was just written (still in the scratch buffer). SPU RAM
+     * read-back is exact on emulators but temperamental on real silicon
+     * (real-hardware walks showed partial Johnny ghosts = a corrupt
+     * erase baseline restored over him). A failed verify rejects the
+     * capture so the caller degrades to its teleport path instead of
+     * smearing every walk. */
+    {
+        static uint8 verifyRow[GR_SPU_RECT_ROW_SCRATCH_BYTES];
+        if (!ps1SpuCacheRead(spuOffset + rowStrideBytes * (uint32)(h - 1u),
+                             verifyRow, rowStrideBytes))
+            return 0;
+        if (memcmp(verifyRow, gGrSpuRectRowScratch, rowStrideBytes) != 0) {
+            printf("JCWALK: SPU walk-clean capture verify FAILED — "
+                   "rejecting baseline (walks degrade to teleport)\n");
+            return 0;
+        }
+    }
     return 1;
 }
 

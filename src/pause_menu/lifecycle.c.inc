@@ -33,6 +33,15 @@ void pauseMenuShow(void)
 {
     pmMenuTextEnsure();
 
+    /* Re-upload the font + CLUT on EVERY open. The one-shot boot upload
+     * left the glyph texture at VRAM (640,256) exposed to any scene
+     * sprite sheet that lands in the same texture region — on hardware
+     * with the full random scene mix this showed as menu panels with no
+     * text. The upload is ~12 KB (sub-millisecond); re-stamping per
+     * open makes the menu immune to whoever stomped the area. */
+    pmFontUploaded = 0;
+    pmUploadFont();
+
     menuVisible           = 1;
     menuCursor            = 0;
     optionsCursor         = 0;

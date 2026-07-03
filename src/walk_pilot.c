@@ -800,6 +800,18 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
     if (fromSpot == toSpot && fromHdg == toHdg)
         return 0;
 
+    /* No valid clean-walk baseline -> no eraser for Johnny's previous
+     * pose -> every step smears (the real-hardware "paint-over" report:
+     * the SPU capture verify can reject the baseline, and the RAM
+     * fallback buffer does not fit the current heap layout). Degrade to
+     * the teleport path, which is already the contract for a missing
+     * JOHNWALK asset. */
+    if (!gWalkCleanValid) {
+        extern int printf(const char *, ...);
+        printf("JCWALK: no clean-walk baseline; skipping walk (teleport)\n");
+        return 0;
+    }
+
     if (!walkPilotEnsureBmp()) {
         /* Plan v9 manifest item #19. Under the deterministic allocator,
          * walkPilotEnsureBmp can only fail on a data bug (missing or
