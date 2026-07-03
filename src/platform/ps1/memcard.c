@@ -132,6 +132,13 @@ static int mcardWaitDone(void)
 static void mcardSlowPoll(void)  { SPI_SetPollRate(50); }
 static void mcardFastPoll(void)  { SPI_SetPollRate(250); }
 
+/* Active memcard slot (SPI port): 0 = slot 1, 1 = slot 2, -1 = not yet
+ * probed. Boot loaders like FreePSXBoot/tonyhax occupy (or require an
+ * empty) slot 1, so real consoles commonly run with the save card in
+ * slot 2 — probe slot 1 first, then fall back to slot 2, and remember
+ * whichever answered for every later read/write. */
+static int gMcardActivePort = -1;
+
 /* PS1 memcard READ protocol (140 bytes total per nocash).
  * After spi.c discards the first response byte (open-bus from addr),
  * rx_buff layout is:
@@ -163,7 +170,7 @@ static int mcardSpiReadSector(int sector, uint8_t *out128)
     tx[5] = (uint8_t)(sector & 0xFF);
     /* tx[6..139] = 0 — rest of clocks just for receive */
     req->len = 140;
-    req->port = 0;
+    req->port = (uint32_t)((gMcardActivePort > 0) ? 1 : 0);
     req->callback = (SPI_Callback)mcardSpiCallback;
     req->next = NULL;
     mcardOpDone = 0;
@@ -219,7 +226,7 @@ static int mcardSpiWriteSector(int sector, const uint8_t *data128)
     tx[134] = chk;
     /* tx[135..137] = 0 — slots for ack1/ack2/end-byte responses */
     req->len = 138;
-    req->port = 0;
+    req->port = (uint32_t)((gMcardActivePort > 0) ? 1 : 0);
     req->callback = (SPI_Callback)mcardSpiCallback;
     req->next = NULL;
     mcardOpDone = 0;
@@ -377,13 +384,28 @@ int memcardLoadSettings(void)
     JCMC_DIAG_PRINTF("JCMC load: starting (slow poll, MemCardRequest path)\n");
     mcardSlowPoll();
 
-    /* Read directory entry first to verify the file is present. */
+    /* Read directory entry first to verify the file is present.
+     * Probe slot 1, then slot 2 (boot exploits live in / require an
+     * empty slot 1, so the save card is often in slot 2). */
     uint8 dirEntry[MC_SECTOR_SIZE];
-    if (!mcardSpiReadSector(MC_BLOCK, dirEntry)) {
+    if (gMcardActivePort <= 0) {
+        gMcardActivePort = 0;
+        if (!mcardSpiReadSector(MC_BLOCK, dirEntry)) {
+            JCMC_DIAG_PRINTF("JCMC load: slot 1 not answering, trying slot 2\n");
+            gMcardActivePort = 1;
+            if (!mcardSpiReadSector(MC_BLOCK, dirEntry)) {
+                gMcardActivePort = -1;
+                memcardLastStatus = "no card";
+                mcardFastPoll();
+                return 0;
+            }
+        }
+    } else if (!mcardSpiReadSector(MC_BLOCK, dirEntry)) {
         memcardLastStatus = "no card";
         mcardFastPoll();
         return 0;
     }
+    JCMC_DIAG_PRINTF("JCMC load: using slot %d\n", gMcardActivePort + 1);
     if (dirEntry[0] != 0x53 || memcmp(&dirEntry[10], "BASLUS-99999JCREB", 17) != 0) {
         memcardLastStatus = "no save";
         mcardFastPoll();
@@ -530,6 +552,26 @@ int memcardLoadSettings(void)
 
 int memcardSaveSettings(void)
 {
+    /* If no slot answered at load time (or we never loaded), probe
+     * again before writing — the user may have inserted a card since,
+     * and boot-exploit consoles keep the save card in slot 2. */
+    if (gMcardActivePort < 0) {
+        uint8 probe[MC_SECTOR_SIZE];
+        mcardSlowPoll();
+        gMcardActivePort = 0;
+        if (!mcardSpiReadSector(0, probe)) {
+            gMcardActivePort = 1;
+            if (!mcardSpiReadSector(0, probe)) {
+                gMcardActivePort = -1;
+                mcardFastPoll();
+                memcardLastStatus = "no card";
+                return 0;
+            }
+        }
+        mcardFastPoll();
+        JCMC_DIAG_PRINTF("JCMC save: probed slot %d\n", gMcardActivePort + 1);
+    }
+
     /* Build the 8KB save frame: SC header, icon, settings struct. */
     memset(mcardFrame, 0, MC_FRAME_SIZE);
     mcardWriteSCHeader(mcardFrame);

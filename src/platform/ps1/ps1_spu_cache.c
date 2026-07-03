@@ -8,6 +8,7 @@
  */
 
 #include <psxspu.h>
+#include <psxgpu.h> /* VSync — bounded SPU transfer wait */
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -88,28 +89,44 @@ uint32 ps1SpuCacheCapacity(void)
     return gSpuCacheBytes;
 }
 
+/* Bounded SPU transfer wait. PSn00bSDK's SPU_TRANSFER_WAIT spins on the
+ * transfer-busy status with no upper bound — fine on emulators (transfers
+ * complete instantly) but a real SPU handed over by a chainloader with
+ * voices keyed on can leave the busy flag in a state the wait never
+ * exits, freezing boot right after the ambience starts. Poll with a
+ * ~2 second ceiling; on timeout, mark the SPU cache unusable so every
+ * caller takes its documented CD-fallback path instead of hanging. */
+static int spuCacheWaitTransferBounded(void)
+{
+    for (int i = 0; i < 120; i++) {
+        if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+            return 1;
+        VSync(0);
+    }
+    gSpuCacheReady = 0;
+    return 0;
+}
+
 int ps1SpuCacheWrite(uint32 offset, const void *src, uint32 size)
 {
-    if (!src || !ps1SpuCacheRangeOk(offset, size))
+    if (!gSpuCacheReady || !src || !ps1SpuCacheRangeOk(offset, size))
         return 0;
 
     SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
     SpuSetTransferStartAddr(gSpuCacheBase + offset);
     SpuWrite((uint32_t *)src, size);
-    SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
-    return 1;
+    return spuCacheWaitTransferBounded();
 }
 
 int ps1SpuCacheRead(uint32 offset, void *dst, uint32 size)
 {
-    if (!dst || !ps1SpuCacheRangeOk(offset, size))
+    if (!gSpuCacheReady || !dst || !ps1SpuCacheRangeOk(offset, size))
         return 0;
 
     SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
     SpuSetTransferStartAddr(gSpuCacheBase + offset);
     SpuRead((uint32_t *)dst, size);
-    SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
-    return 1;
+    return spuCacheWaitTransferBounded();
 }
 
 int ps1SpuCacheSelfTest(void)

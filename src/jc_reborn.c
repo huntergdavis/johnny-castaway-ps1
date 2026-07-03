@@ -2092,6 +2092,27 @@ static void parseArgs(int argc, char **argv)
 #endif
 
 
+#ifdef PS1_BUILD
+/* On-console boot progress breadcrumbs. TTY is invisible on real
+ * hardware, so each boot phase stamps a small colored square along a
+ * strip near the top-left (y=16 clears CRT overscan). A stalled boot
+ * leaves the last stamped square on screen, localizing the hang from a
+ * photo. The scene backdrop paints over the strip once playback starts.
+ * Requires the GPU to be up (any phase after loadTitleScreenEarly). */
+static void ps1BootBreadcrumb(int stage, uint8 r, uint8 g, uint8 b)
+{
+    FILL fill;
+    setFill(&fill);
+    setRGB0(&fill, r, g, b);
+    fill.x0 = (uint16)(16 + stage * 12);
+    fill.y0 = 16;
+    fill.w  = 8;
+    fill.h  = 6;
+    DrawPrim((uint32_t *)&fill);
+    DrawSync(0);
+}
+#endif
+
 int main(int argc, char **argv)
 {
 #ifdef PS1_BUILD
@@ -2165,8 +2186,10 @@ int main(int argc, char **argv)
     ps1PrintfProbe("title-loaded", NULL);
 
     /* Parse resource files from CD - needed for background and sprites */
+    ps1BootBreadcrumb(0, 255, 255, 255);   /* title up, parsing resources */
     parseResourceFiles("RESOURCE.MAP");
     ps1PrintfProbe("resources-loaded", NULL);
+    ps1BootBreadcrumb(1, 0, 255, 0);       /* resources parsed */
 
     /* Now that parseResourceFiles has closed RESOURCE.001 and returned
      * its temp buffer to libc, libc has the headroom for the
@@ -2183,6 +2206,7 @@ int main(int argc, char **argv)
     memVerifyPackHashes();
 #endif
     ps1PrintfProbe("mem-region-ready", NULL);
+    ps1BootBreadcrumb(2, 0, 255, 255);     /* memory regions verified */
 
     /* Reserve the walk clean buffer before boot-time SPU staging or other
      * optional caches take transient bites out of libc heap. */
@@ -2252,6 +2276,7 @@ int main(int argc, char **argv)
 
     graphicsInit();
     ps1PrintfProbe("graphics-init", NULL);
+    ps1BootBreadcrumb(3, 255, 255, 0);     /* graphics init done */
     /* Keep FG2 stream buffers lazy. A boot-time 192 KB frame pin plus
      * 64 KB scratch pin starves large clean-rect scenes like WALKSTUF1 low
      * after the static CD sector pool is reserved. The runtime can still
@@ -2271,6 +2296,7 @@ int main(int argc, char **argv)
      * boot-time ambience from keying on. Explicit BOOTMODE parameters are
      * launch-time intent and must win over saved defaults. */
     memcardSettingsLoaded = memcardLoadSettings();
+    ps1BootBreadcrumb(4, 255, 128, 0);     /* memcard settings probed */
     if (ps1BootPickerPolicy >= 0)
         pickerSetPolicy(ps1BootPickerPolicy);
     memcardRequestedMute = soundMuted;
@@ -2290,7 +2316,9 @@ int main(int argc, char **argv)
             ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof"))
             ps1SpuCacheProofHalt(cacheOk);
     }
+    ps1BootBreadcrumb(5, 255, 0, 255);     /* sound up, SPU staging next */
     walkPilotPrimeSpuAssetsBlocking();
+    ps1BootBreadcrumb(6, 128, 128, 255);   /* SPU assets staged */
     /* First persistent CACHE allocations: the staged-transition stable
      * shape claims the bottom band before any scene/teardown churn.
      * Deliberately AFTER the blocking SPU prime — its transient 48 KB
@@ -2361,6 +2389,7 @@ int main(int argc, char **argv)
      * Graphics surface descriptors (grNewEmptyBackground, PSB/BMP
      * frames) stay on libc — they're scene-runtime, not BOOT lifetime. */
     memFreezeBoot();
+    ps1BootBreadcrumb(7, 0, 0, 255);       /* boot frozen, entering scene loop */
 
     do {
         int skipWalkThisIteration = 0;
