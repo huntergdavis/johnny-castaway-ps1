@@ -1250,7 +1250,40 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
 
     /* Scan for trailing "seed N" parameter anywhere in the token list */
     for (int i = 0; i + 1 < tokenCount; i++) {
-        if (!strcmp(tokens[i], "seed")) {
+        if (!strcmp(tokens[i], "story") && (i + 2) < tokenCount &&
+            (!strcmp(tokens[i + 1], "scene") ||
+             !strcmp(tokens[i + 1], "index") ||
+             !strcmp(tokens[i + 1], "single") ||
+             !strcmp(tokens[i + 1], "direct"))) {
+            /* "story scene N" (and the host-only single/direct spellings)
+             * pin scene N on PS1 by resolving storyScenes[N] to its
+             * fgpilot slug. This token was silently IGNORED here for who
+             * knows how long: every regtest fixture "pinned" a scene and
+             * actually played the seed-1 rotation — fishing-first, which
+             * made the FISHING fixtures look correct by coincidence. */
+            int idx = atoi(tokens[i + 2]);
+            if (idx >= 0 && idx < NUM_SCENES) {
+                char slug[32];
+                const struct TStoryScene *sc = &storyScenes[idx];
+                int j = 0, k;
+                for (k = 0; k < 13 && sc->adsName[k] &&
+                            sc->adsName[k] != '.' &&
+                            j < (int)sizeof(slug) - 4; k++) {
+                    char c = sc->adsName[k];
+                    if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                    slug[j++] = c;
+                }
+                if (sc->adsTagNo >= 10)
+                    slug[j++] = (char)('0' + (sc->adsTagNo / 10) % 10);
+                slug[j++] = (char)('0' + sc->adsTagNo % 10);
+                slug[j] = ' ';
+                ps1CopyBootString(ps1BootForegroundOverlayScene,
+                                  sizeof(ps1BootForegroundOverlayScene),
+                                  slug);
+            }
+            i += 2;
+        }
+        else if (!strcmp(tokens[i], "seed")) {
             ps1BootForcedSeed = atoi(tokens[i + 1]);
             break;
         }
