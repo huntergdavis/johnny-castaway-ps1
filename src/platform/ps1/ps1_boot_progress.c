@@ -153,20 +153,30 @@ void ps1BootProgress(uint8 pct)
     /* Progress bar: left edge to the bowsprit. */
     bootFill(0, BAR_Y, bow > 640 ? 640 : bow, BAR_H, BAR_R, BAR_G, BAR_B);
 
-    /* Ship first, THEN the trail erase: a tick's redraw takes visible
-     * time, so erase-first blinks the whole ship out for a beat.
-     * Width forced even: the GPU transfers pixel pairs. */
+    /* Erase the trail the ship vacated BEFORE redrawing. This must be
+     * an exact pixel upload, not a GPU FILL: FILL operates on 16px-
+     * aligned columns only, and the per-tick trail is ~12px — FILL
+     * rounded it to zero width and never erased, leaving the previous
+     * stern slice visible at the ship's left ("drawn twice"). Erasing
+     * first is safe because the ship redraw stamps over any overlap. */
     xs = (x < 0) ? 0 : x;
+    if (gBootBarPrevX > -32768 && x > gBootBarPrevX) {
+        int es = ((gBootBarPrevX < 0) ? 0 : gBootBarPrevX) & ~1;
+        int ew = (xs - es + 1) & ~1;
+        if (ew > PS1_SHIP_SPRITE_W)
+            ew = PS1_SHIP_SPRITE_W;
+        if (ew > 0) {
+            int r;
+            memset(gShipSlice, 0, (uint32)ew * 2u);
+            for (r = 0; r < PS1_SHIP_SPRITE_H; r++)
+                bootBlitRow(es, SHIP_Y + r, ew, gShipSlice);
+        }
+    }
+
+    /* Ship, width forced even (the GPU transfers pixel pairs). */
     wVis = (x + PS1_SHIP_SPRITE_W - xs) & ~1;
     if (wVis > 0)
         bootDrawShip(xs, wVis, xs - x);
-
-    /* Erase the trail the ship vacated (strictly left of the redraw). */
-    if (gBootBarPrevX > -32768 && x > gBootBarPrevX) {
-        int es = (gBootBarPrevX < 0) ? 0 : gBootBarPrevX;
-        int ee = (x < 0) ? 0 : x;
-        bootFill(es, SHIP_Y, ee - es, PS1_SHIP_SPRITE_H, 0, 0, 0);
-    }
     bootGpuPace(1u << 26);              /* last command fully consumed */
 
     gBootBarPrevX = x;

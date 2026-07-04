@@ -756,6 +756,15 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
      * Now we just need to upload and display.
      */
 
+    /* First frame actually reaching the display: dock the boot ship and
+     * clear its band (both no-op after the first call / before boot). */
+    {
+        extern void ps1BootProgress(uint8 pct);
+        extern void ps1BootProgressFinish(void);
+        ps1BootProgress(100);
+        ps1BootProgressFinish();
+    }
+
     ps1FrameCount++;
 
     /* Wait for VSync BEFORE uploading to framebuffer.

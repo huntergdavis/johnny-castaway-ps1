@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DIMS = [(32, 8), (24, 8), (32, 10), (160, 34), (160, 34), (160, 34),
         (160, 34), (168, 102), (168, 136), (168, 136)]
 FRAME = 9
+TARGET_H = 107  # scale the whole galleon (flags intact) down from 136
+                # so its top edge clears the bottom of the title artwork
 
 def main():
     data = (ROOT / 'jc_resources/extracted/bmp/SHIPS.BMP').read_bytes()
@@ -23,6 +25,32 @@ def main():
     off = sum(w * h // 2 for w, h in DIMS[:FRAME])
     w, h = DIMS[FRAME]
     raw = data[off:off + w * h // 2]
+
+    # Box-sample with majority vote per destination pixel (keeps the
+    # 16-color indexed stream crisp — no anti-aliased inbetweens).
+    nyb = []
+    for b in raw:
+        nyb += [(b >> 4) & 0xF, b & 0xF]
+    H = TARGET_H
+    W = (w * TARGET_H // h) & ~1
+    small = []
+    for Y in range(H):
+        y0, y1 = Y * h // H, max(Y * h // H + 1, (Y + 1) * h // H)
+        for X in range(W):
+            x0, x1 = X * w // W, max(X * w // W + 1, (X + 1) * w // W)
+            counts = {}
+            for sy in range(y0, y1):
+                for sx in range(x0, x1):
+                    v = nyb[sy * w + sx]
+                    if v:
+                        counts[v] = counts.get(v, 0) + 1
+            area = (y1 - y0) * (x1 - x0)
+            if sum(counts.values()) * 2 >= area:
+                small.append(max(counts, key=counts.get))
+            else:
+                small.append(0)
+    raw = bytes((small[i] << 4) | small[i + 1] for i in range(0, len(small), 2))
+    w, h = W, H
 
     rle = bytearray()
     i = 0

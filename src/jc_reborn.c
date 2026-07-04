@@ -2548,8 +2548,10 @@ int main(int argc, char **argv)
             foregroundPilotSetScene(loopScene);
             ps1PerfBeginScene(loopScene);
             ps1PrintfProbe("scene-start", loopScene);
-            ps1BootProgress(100);
-            ps1BootProgressFinish();
+            /* 96, not 100: the first scene still has ~2 s of CD staging
+             * ahead; the ship docks (100 + band clear) on the first
+             * actually-presented frame, in grUpdateDisplay. */
+            ps1BootProgress(96);
             foregroundPilotPlay();
             ps1PerfEndScene(loopScene);
             ps1PrintfProbe("scene-end", loopScene);

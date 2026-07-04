@@ -74,7 +74,7 @@ cp = configparser.ConfigParser()
 cp.optionxform = str
 if settings.is_file():
     cp.read(settings, encoding="utf-8")
-for section in ("Main", "BIOS", "SIO", "Logging"):
+for section in ("Main", "BIOS", "SIO", "Logging", "GPU", "Display"):
     if section not in cp:
         cp[section] = {}
 # The prepare/restore round-trip previously dropped the wizard-completion
@@ -87,6 +87,15 @@ cp["Logging"]["LogLevel"] = "Dev"
 cp["Logging"]["LogToFile"] = "true"
 cp["Logging"]["LogTimestamps"] = "true"
 cp["Logging"]["LogFileTimestamps"] = "true"
+# CPU-friendly renderer settings, ENFORCED every launch so nothing (the
+# wizard, a stray restore, DuckStation itself) can quietly revert them.
+# Vulkan under Wayland spins a core per instance; OpenGL + VSync idles
+# properly, and OptimalFramePacing busy-waits for sub-frame precision we
+# don't need. This is what makes several parallel DuckStations viable
+# without pegging every CPU.
+cp["GPU"]["Renderer"] = "OpenGL"
+cp["Display"]["VSync"] = "true"
+cp["Display"]["OptimalFramePacing"] = "false"
 with settings.open("w", encoding="utf-8") as f:
     cp.write(f)
 PY
