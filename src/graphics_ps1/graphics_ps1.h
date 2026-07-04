@@ -332,6 +332,7 @@ void grLoadPalette();
 void grLoadScreen(char *strArg);
 int  grLoadSceneExplorerThumbnail(const char *slug);
 int  grLoadSceneExplorerTestPattern(void);
+void *grSceneExplorerChunkBorrow(uint32 *bytesOut);
 void grFreeSceneExplorerThumbnailBuffer(void);
 void grSetPresentDuringScreenLoad(int enabled);
 int grGetCurrentFrame(void);

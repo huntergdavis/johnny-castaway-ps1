@@ -472,9 +472,9 @@ static void drawSoundTestMenu(void)
         *w = '\0';
         soundDiagCounters(&progFail, &keyFail, &upRetry, &upBad);
         pmPrintf("%s\n", diagLine);
-        pmPrintf(" BAD %d RTY %d PRG %d KEY %d R%d\n",
+        pmPrintf(" BAD %d RTY %d PRG %d KEY %d R%d W%d\n",
                  upBad, upRetry, progFail, keyFail,
-                 soundDiagRegReadsOk());
+                 soundDiagRegReadsOk(), soundDiagAmbRekeys());
     }
     pmPrintf(pmText(PMT_UP_DOWN_CHOOSE));
     pmPrintf(pmText(PMT_X_PLAY_BACK));

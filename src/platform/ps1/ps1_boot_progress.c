@@ -29,6 +29,8 @@
 #include "mytypes.h"
 #include "ps1_boot_progress.h"
 #include "ps1_ship_sprite.h"
+#include "graphics_ps1.h"
+#include "cdrom_ps1.h"
 
 #define BAR_H        8
 #define BAR_R        40
@@ -47,8 +49,17 @@ static int    gBootBarPrevX  = -32768;    /* ship-left of previous draw */
  * indicator lives across parseResourceFiles and memInit, and holding
  * heap blocks there fragments the arena right where memInit needs its
  * contiguous 1.44 MB region buffer (that failure shipped once). */
-static uint16 gShipRow[PS1_SHIP_SPRITE_W];
-static uint16 gShipSlice[PS1_SHIP_SPRITE_W];
+/* All ship working memory lives in the borrowed 10240-byte explorer
+ * chunk buffer (idle during boot; see grSceneExplorerChunkBorrow):
+ *   [0    .. 4902)  SHIP.DAT RLE payload
+ *   [6144 .. 6408)  row decode scratch   (132 px * 2)
+ *   [6656 .. 6920)  aligned upload slice (132 px * 2)
+ *   [8192 .. 10240) sound-upload verify window (sound_ps1.c)
+ * Keeping these out of BSS matters: the diagnostics-heavy regtest
+ * builds sit ~2 KB under the static-image ceiling. NULL = bar-only. */
+static const uint8 *gShipRle   = NULL;
+static uint16     *gShipRow    = NULL;
+static uint16     *gShipSlice  = NULL;
 
 /* The indicator drives the GPU DIRECTLY through GP0 port writes — no
  * PSn00bSDK draw queue, no DMA2. Mixing immediate DrawPrim fills with
@@ -110,8 +121,8 @@ static void bootDrawShip(int xs, int wVis, int srcOff)
 
     for (i = 0; i + 1u < PS1_SHIP_SPRITE_RLE_LEN && row < PS1_SHIP_SPRITE_H;
          i += 2) {
-        uint8 count = gPs1ShipRle[i];
-        uint8 value = gPs1ShipRle[i + 1];
+        uint8 count = gShipRle[i];
+        uint8 value = gShipRle[i + 1];
         uint8 c;
         for (c = 0; c < count; c++) {
             gShipRow[col++] = gPs1ShipPalette[(value >> 4) & 0xF];
@@ -130,6 +141,23 @@ static void bootDrawShip(int xs, int wVis, int srcOff)
 
 void ps1BootProgressBegin(void)
 {
+    uint32 bufBytes = 0;
+    void *buf = grSceneExplorerChunkBorrow(&bufBytes);
+    CdlFILE f;
+
+    gShipRle = NULL;
+    if (bufBytes >= 8192u &&
+        (PS1_SHIP_SPRITE_RLE_LEN + 2047u & ~2047u) <= 6144u &&
+        ps1_streamResolveFile("SHIP.DAT", &f) &&
+        ps1_streamReadAlignedIntoFile(&f, 0,
+                                      (PS1_SHIP_SPRITE_RLE_LEN + 2047u) & ~2047u,
+                                      (uint8 *)buf)) {
+        gShipRle   = (const uint8 *)buf;
+        gShipRow   = (uint16 *)((uint8 *)buf + 6144u);
+        gShipSlice = (uint16 *)((uint8 *)buf + 6656u);
+    }
+    /* Load failure -> bar-only indicator; never block boot on the ship. */
+
     gBootBarActive = 1;
     gBootBarPrevX  = -32768;
     ps1BootProgress(1);
@@ -175,7 +203,7 @@ void ps1BootProgress(uint8 pct)
 
     /* Ship, width forced even (the GPU transfers pixel pairs). */
     wVis = (x + PS1_SHIP_SPRITE_W - xs) & ~1;
-    if (wVis > 0)
+    if (wVis > 0 && gShipRle != NULL)
         bootDrawShip(xs, wVis, xs - x);
     bootGpuPace(1u << 26);              /* last command fully consumed */
 
