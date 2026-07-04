@@ -59,8 +59,6 @@ int  soundDiagSpuStat(void);
 int  soundDiagEnvx(int ch);
 void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad);
 int  soundDiagRegReadsOk(void);   /* 0 = SPU register reads are bus garbage */
-int  soundDiagAmbRekeys(void);    /* watchdog re-keys of the ambience voice */
-void soundAmbienceWatchdog(void); /* call ~once per displayed frame */
 
 void oceanAmbientStart(void);
 void oceanAmbientStop(void);

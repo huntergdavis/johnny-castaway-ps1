@@ -2,15 +2,6 @@ static uint16 gSceneExplorerThumbChunk[
     SCENE_EXPLORER_THUMB_W * SCENE_EXPLORER_THUMB_ROWS_PER_READ
 ];
 
-/* The boot loading indicator borrows this buffer for its RLE sprite
- * (SHIP.DAT): during boot the explorer is untouched, and the indicator
- * is finished before the pause menu can open. 10240 bytes. */
-void *grSceneExplorerChunkBorrow(uint32 *bytesOut)
-{
-    *bytesOut = sizeof(gSceneExplorerThumbChunk);
-    return gSceneExplorerThumbChunk;
-}
-
 /* DrawSync alone can return before the GPU has fully consumed a queued
  * CPU->VRAM transfer on real silicon (emulators complete transfers
  * synchronously, so this never shows there). The thumbnail streamer
@@ -131,29 +122,9 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         uint32 bytes = SCENE_EXPLORER_THUMB_W *
                        SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
 
-        /* Double-read with checksum compare: single ~5px strips arrived
-         * corrupted IN THE BUFFER on console (so the VRAM verify below
-         * passes — VRAM faithfully matches bad data). Re-read until two
-         * consecutive reads agree; no second buffer (EXE is at its
-         * static ceiling), a running sum is enough to catch a torn
-         * chunk. Bounded. */
-        {
-            uint32 sumPrev = 0, sum;
-            int tries;
-            for (tries = 0; tries < 4; tries++) {
-                uint32 k;
-                if (!ps1_streamReadAlignedIntoFile(
-                        &cdfile, offset, bytes,
-                        (uint8 *)gSceneExplorerThumbChunk))
-                    return 0;
-                sum = 0;
-                for (k = 0; k < bytes / 2u; k++)
-                    sum = sum * 31u + gSceneExplorerThumbChunk[k];
-                if (tries > 0 && sum == sumPrev)
-                    break;
-                sumPrev = sum;
-            }
-        }
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           (uint8 *)gSceneExplorerThumbChunk))
+            return 0;
 
         setRECT(&rect, 160, 120 + y,
                 SCENE_EXPLORER_THUMB_W,

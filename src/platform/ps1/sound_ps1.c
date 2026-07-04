@@ -215,32 +215,23 @@ static int spuVoiceKeyOffVerified(int ch)
     return 0;
 }
 
-/* Windowed SPU RAM readback compare for uploads. The 2 KB window lives
- * in the tail of the borrowed scene-explorer chunk buffer (idle during
- * boot — layout documented in ps1_boot_progress.c); uploads only happen
- * in soundInit, squarely inside the boot window. Sizes are always
- * 64-byte aligned. */
-#define SND_VERIFY_WIN_BYTES 2048u
+/* Windowed SPU RAM readback compare for uploads. 2 KB window keeps the
+ * scratch static; sizes here are always 64-byte aligned. */
+static uint8_t gSndVerifyWin[2048];
 static int spuUploadVerify(uint32_t spuAddr, const uint8_t *src, uint32_t size)
 {
-    extern void *grSceneExplorerChunkBorrow(uint32 *bytesOut);
-    uint32 bufBytes = 0;
-    uint8_t *win;
     uint32_t off = 0;
 
     if (!ps1SpuRegReadsOk())
         return 1;   /* readback would be garbage — trust the write */
-    win = (uint8_t *)grSceneExplorerChunkBorrow(&bufBytes) + 8192u;
-    if (bufBytes < 8192u + SND_VERIFY_WIN_BYTES)
-        return 1;   /* no scratch — trust the write */
 
     while (off < size) {
         uint32_t chunk = size - off;
-        if (chunk > SND_VERIFY_WIN_BYTES)
-            chunk = SND_VERIFY_WIN_BYTES;
-        if (!ps1SpuDmaRead(spuAddr + off, win, chunk))
+        if (chunk > sizeof(gSndVerifyWin))
+            chunk = sizeof(gSndVerifyWin);
+        if (!ps1SpuDmaRead(spuAddr + off, gSndVerifyWin, chunk))
             return 0;
-        if (memcmp(win, src + off, chunk) != 0)
+        if (memcmp(gSndVerifyWin, src + off, chunk) != 0)
             return 0;
         off += chunk;
     }
@@ -261,33 +252,6 @@ void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad)
 int soundDiagRegReadsOk(void)
 {
     return ps1SpuRegReadsOk();
-}
-
-/* Ambience self-heal: the ocean loop occasionally dies mid-session on
- * console (cause not yet pinned — the re-key counter on the sound-test
- * screen measures how often this fires so the underlying bug stays
- * visible). Called once per displayed frame from the scene and pause
- * loops; checks every ~2 s. ENVX is ground truth for "voice alive". */
-static uint16_t gSndDiagAmbRekey = 0;
-
-int soundDiagAmbRekeys(void) { return gSndDiagAmbRekey; }
-
-void soundAmbienceWatchdog(void)
-{
-    static uint32_t throttle = 0;
-
-    if (!oceanLoaded || !oceanAmbientEnabled || soundMuted || !oceanPlaying)
-        return;
-    if (++throttle < 120)
-        return;
-    throttle = 0;
-    if (!ps1SpuRegReadsOk())
-        return;             /* envelope unreadable on this unit */
-    if (SPU_CH_ADSR_VOL(OCEAN_AMBIENT_VOICE) != 0)
-        return;
-    gSndDiagAmbRekey++;
-    oceanPlaying = 0;       /* force oceanAmbientStart through its guard */
-    oceanAmbientStart();
 }
 
 /* Read big-endian uint32 from VAG header */

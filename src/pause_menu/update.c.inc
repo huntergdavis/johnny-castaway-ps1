@@ -7,10 +7,6 @@
 __attribute__((optimize("Os")))
 int pauseMenuUpdate(void)
 {
-    /* The menu has its own frame loop; keep the ambience watchdog fed
-     * here too (it self-throttles to ~2 s checks). */
-    soundAmbienceWatchdog();
-
     int drawDim;
 
     if (!menuVisible) return 0;
