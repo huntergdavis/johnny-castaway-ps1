@@ -58,6 +58,7 @@ int  soundDiagSpuCnt(void);
 int  soundDiagSpuStat(void);
 int  soundDiagEnvx(int ch);
 void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad);
+int  soundDiagRegReadsOk(void);   /* 0 = SPU register reads are bus garbage */
 
 void oceanAmbientStart(void);
 void oceanAmbientStop(void);

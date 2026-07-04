@@ -798,32 +798,13 @@ int ps1CdReadFailureCount(void)
 
 /* On-console CD-failure pips. Real-hardware CD-R reads fail in ways the
  * emulator never shows, and most failure paths degrade silently (missing
- * menu text, silent SFX, black backdrop). Every failure stamps a red pip
- * row at the top-right — one pip per failure, capped at 16 — so a photo
- * reveals both THAT reads are failing and roughly how often. Scenes
- * repaint over the pips; repeated failures re-stamp them. */
-static void ps1CdStampFailurePips(void)
-{
-    FILL fill;
-    int pips = gCdFailTotal > 16 ? 16 : gCdFailTotal;
-    int i;
-
-    setFill(&fill);
-    setRGB0(&fill, 255, 0, 0);
-    fill.y0 = 16;
-    fill.w = 6;
-    fill.h = 6;
-    for (i = 0; i < pips; i++) {
-        fill.x0 = (uint16)(624 - i * 10);
-        DrawPrim((uint32_t *)&fill);
-    }
-    DrawSync(0);
-}
-
+ * menu text, silent SFX, black backdrop). The red on-screen pips this
+ * total once fed served their diagnostic purpose (they proved the CD
+ * layer healthy on console) and have been retired — boot-time probes of
+ * absent files were stamping pips on perfectly healthy drives. */
 static void ps1CdNoteReadFailure(void)
 {
     gCdFailTotal++;
-    ps1CdStampFailurePips();
     if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
         extern int printf(const char *, ...);
         printf("JCCD drive-recover: CdInit reset after %d consecutive failures\n",

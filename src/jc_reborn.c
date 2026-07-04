@@ -74,6 +74,7 @@ int fclose(FILE *stream);
 #include "events_ps1.h"
 #include "sound_ps1.h"
 #include "ps1_spu_cache.h"
+#include "ps1_boot_progress.h"
 #include "memcard.h"
 #include "mem_region.h"
 #include "cdrom_ps1.h"
@@ -2092,9 +2093,36 @@ static void parseArgs(int argc, char **argv)
 #endif
 
 
+#ifdef PS1_BUILD
+static void ps1BusTimingReset(void)
+{
+    /* BIOS-standard Memory Control 1 (bus timing) values, per psx-spx.
+     * A chainloader (tonyhax) can hand us a machine where this block is
+     * not at BIOS defaults. Console symptom that led here: every SPU
+     * register READ returned 0xFFFF (writes worked — ambience played),
+     * plus marginal DMA behaviour under load; wrong SPU/COM bus delays
+     * are the canonical cause of exactly that. Writing the canonical
+     * values is a no-op on a clean boot. RAM_SIZE (0x1F801060) is
+     * deliberately untouched — resizing memory mid-run is not safe. */
+    *(volatile uint32_t *)0xBF801000 = 0x1F000000u; /* EXP1 base */
+    *(volatile uint32_t *)0xBF801004 = 0x1F802000u; /* EXP2 base */
+    *(volatile uint32_t *)0xBF801008 = 0x0013243Fu; /* EXP1 delay */
+    *(volatile uint32_t *)0xBF80100Cu = 0x00003022u; /* EXP3 delay */
+    *(volatile uint32_t *)0xBF801010 = 0x0013243Fu; /* BIOS ROM delay */
+    *(volatile uint32_t *)0xBF801014 = 0x200931E1u; /* SPU delay */
+    *(volatile uint32_t *)0xBF801018 = 0x00020843u; /* CDROM delay */
+    *(volatile uint32_t *)0xBF80101C = 0x00070777u; /* EXP2 delay */
+    *(volatile uint32_t *)0xBF801020 = 0x00031125u; /* COM delay */
+}
+#endif
+
 int main(int argc, char **argv)
 {
 #ifdef PS1_BUILD
+    /* Bus timing FIRST: everything after this (CD, GPU, SPU) depends on
+     * sane peripheral bus delays, and a chainloader may not provide them. */
+    ps1BusTimingReset();
+
     /* Initialize debug system FIRST, before any CD operations */
     /* FntLoad must happen before CdInit or it causes hangs */
     ps1DebugInit();
@@ -2163,10 +2191,13 @@ int main(int argc, char **argv)
 
     loadTitleScreenEarly();
     ps1PrintfProbe("title-loaded", NULL);
+    ps1BootProgressBegin();
+    ps1BootProgress(6);
 
     /* Parse resource files from CD - needed for background and sprites */
     parseResourceFiles("RESOURCE.MAP");
     ps1PrintfProbe("resources-loaded", NULL);
+    ps1BootProgress(10);
 
     /* Now that parseResourceFiles has closed RESOURCE.001 and returned
      * its temp buffer to libc, libc has the headroom for the
@@ -2183,6 +2214,7 @@ int main(int argc, char **argv)
     memVerifyPackHashes();
 #endif
     ps1PrintfProbe("mem-region-ready", NULL);
+    ps1BootProgress(14);
 
     /* Reserve the walk clean buffer before boot-time SPU staging or other
      * optional caches take transient bites out of libc heap. */
@@ -2271,6 +2303,7 @@ int main(int argc, char **argv)
      * boot-time ambience from keying on. Explicit BOOTMODE parameters are
      * launch-time intent and must win over saved defaults. */
     memcardSettingsLoaded = memcardLoadSettings();
+    ps1BootProgress(18);
     if (ps1BootPickerPolicy >= 0)
         pickerSetPolicy(ps1BootPickerPolicy);
     memcardRequestedMute = soundMuted;
@@ -2290,7 +2323,9 @@ int main(int argc, char **argv)
             ps1BootStringHasToken(PS1_EMBEDDED_BOOT_OVERRIDE, "spu-cache-proof"))
             ps1SpuCacheProofHalt(cacheOk);
     }
+    ps1BootProgress(76);
     walkPilotPrimeSpuAssetsBlocking();
+    ps1BootProgress(80);
     /* First persistent CACHE allocations: the staged-transition stable
      * shape claims the bottom band before any scene/teardown churn.
      * Deliberately AFTER the blocking SPU prime — its transient 48 KB
@@ -2308,6 +2343,7 @@ int main(int argc, char **argv)
         walkPilotReservePsbSlab(49152UL);
     }
     ps1PrintfProbe("sound-init", NULL);
+    ps1BootProgress(86);
 
     if (bootNightValid)
         hostForcedNight = bootNight;
@@ -2343,6 +2379,8 @@ int main(int argc, char **argv)
      * re-bands it with the live islandState.holiday. Manual/forced
      * holiday modes are already set above and band here. */
     foregroundPilotPreloadIslandSheets();
+
+    ps1BootProgress(92);
 
     /* PS1 is now FG2-scene-playback only. Host ADS/TTM/story engines stay
      * available for capture tooling, but they are no longer linked into the
@@ -2510,6 +2548,8 @@ int main(int argc, char **argv)
             foregroundPilotSetScene(loopScene);
             ps1PerfBeginScene(loopScene);
             ps1PrintfProbe("scene-start", loopScene);
+            ps1BootProgress(100);
+            ps1BootProgressFinish();
             foregroundPilotPlay();
             ps1PerfEndScene(loopScene);
             ps1PrintfProbe("scene-end", loopScene);

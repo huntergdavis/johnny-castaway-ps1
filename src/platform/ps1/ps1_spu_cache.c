@@ -89,81 +89,144 @@ uint32 ps1SpuCacheCapacity(void)
     return gSpuCacheBytes;
 }
 
-/* DMA4 (SPU) channel control register. Bit 24 is the channel-busy flag,
- * set synchronously by the very CHCR write that kicks the transfer. */
+/* DMA4 (SPU) channel registers. CHCR bit 24 is the channel-busy flag,
+ * set synchronously by the very CHCR write that kicks the transfer.
+ * These are CPU-side registers: readable even on consoles whose SPU
+ * register reads are broken (see gSpuRegReadsOk). */
+#define SPU_DMA4_MADR (*(volatile uint32_t *)0xBF8010C0)
+#define SPU_DMA4_BCR  (*(volatile uint32_t *)0xBF8010C4)
 #define SPU_DMA4_CHCR (*(volatile uint32_t *)0xBF8010C8)
 
-/* Bounded two-phase SPU transfer wait, safe on real silicon.
- *
- * SPUSTAT bit 10 — the flag SpuIsTransferCompleted polls — ASSERTS WITH A
- * DELAY after a transfer kicks off on real hardware, while emulators
- * complete transfers synchronously. Polling it alone can therefore report
- * "completed" in the window before the flag asserts, letting the caller
- * reprogram the transfer registers while the previous DMA is still in
- * flight. Emulators never show the window, which is why boot VAG uploads,
- * walk-clean row captures and staging transfers were corrupted ONLY on
- * console (silent SFX, walk ghosts, dead ambience, staging fallbacks).
- *
- * Phase 1 waits on DMA4 CHCR.24 instead — set at kick time with no assert
- * delay, so it can never be observed clear before the transfer started.
- * Phase 2 then covers the SPU's FIFO-drain tail via SPUSTAT (writes only;
- * for reads the DMA delivering the last word IS completion). Phase 3
- * parks the transfer state machine back at Stop: the SDK's _dma_transfer
- * leaves SPUCNT in DMA-read/-write mode after a transfer, and a real SPU
- * idling in DMA-read mode services voice/key register writes unreliably
- * (emulators don't model this) — an SPU parked in read mode after the
- * first walk/staging read silently ate every later SpuSetKey: SFX and
- * sound-test key-ons, and the ambience toggle's key-off. All waits are
- * bounded (~2s ceilings) so a wedged SPU degrades instead of hanging. */
-int ps1SpuTransferWaitBounded(int isWrite)
+/* Raw SPU registers used by the write-only transfer core. */
+#define JC_SPU_ADDR_REG  (*(volatile uint16_t *)0xBF801DA6)
+#define JC_SPU_CTRL_REG  (*(volatile uint16_t *)0xBF801DAA)
+#define JC_SPU_STAT_REG  (*(volatile uint16_t *)0xBF801DAE)
+#define JC_SPU_DELAY_REG (*(volatile uint32_t *)0xBF801014)
+
+/* Console truth, learned in the burntest rounds: on (at least) tonyhax-
+ * chainloaded units, SPU register READS can return bus garbage (0xFFFF)
+ * while writes work fine. Every read-modify-write and every status poll
+ * on an SPU register is then poison: the SDK's _dma_transfer RMWs
+ * SPUCNT (writing garbage back) and polls SPUSTAT (never "completes").
+ * The transfer core below is WRITE-ONLY w.r.t. SPU registers: SPUCNT
+ * goes through a software shadow, completion is tracked on the DMA4
+ * CHCR (CPU-side, always readable), and SPUSTAT is polled only when a
+ * boot-time probe said reads are healthy. */
+static uint16 gSpuCntShadow = 0xC001;
+static int gSpuRegReadsOk = 1;
+
+void ps1SpuNoteInitDone(void)
 {
-    volatile uint16_t *spucnt  = (volatile uint16_t *)0xBF801DAA;
-    volatile uint16_t *spustat = (volatile uint16_t *)0xBF801DAE;
-    int ok = 1;
+    /* Called right after SpuInit() (which leaves SPUCNT = 0xC001).
+     * If reading it back doesn't match, this unit's SPU register reads
+     * are broken and all read-dependent logic must stand down. */
+    gSpuCntShadow = 0xC001;
+    gSpuRegReadsOk = (JC_SPU_CTRL_REG == 0xC001) ? 1 : 0;
+}
+
+int ps1SpuRegReadsOk(void)
+{
+    return gSpuRegReadsOk;
+}
+
+/* Wait for SPUSTAT to acknowledge a transfer-mode change when reads are
+ * healthy; a short fixed settle otherwise (the ack takes microseconds). */
+static void spuModeSettle(uint16 wantMode)
+{
+    int i;
+    if (gSpuRegReadsOk) {
+        for (i = 0; i < 200000; i++) {
+            if ((JC_SPU_STAT_REG & 0x0030u) == wantMode)
+                return;
+        }
+    } else {
+        for (i = 0; i < 3000; i++)
+            (void)SPU_DMA4_CHCR;   /* uncached bus reads as a delay */
+    }
+}
+
+/* Write-only SPU DMA transfer. bytes must be 64-aligned (16-word DMA
+ * blocks — the SPU FIFO handshake requirement). Returns 0 on a wedged
+ * channel (aborted via CHCR so the next transfer starts clean). */
+static int spuDmaTransfer(uint32 spuByteAddr, void *ram, uint32 bytes,
+                          int isWrite)
+{
     int i;
 
+    if (bytes == 0u || (bytes & 63u) != 0u || ((uint32)ram & 3u) != 0u)
+        return 0;
+
+    /* Park at Stop from the shadow, never from a register read. */
+    JC_SPU_CTRL_REG = (uint16)(gSpuCntShadow & ~0x0030u);
+    spuModeSettle(0x0000);
+
+    /* SPU bus delay: absolute canonical values; DMA reads need the
+     * read-direction pattern in bits 24-27 (what the SDK derives by
+     * RMW — garbage when reads are broken). */
+    JC_SPU_DELAY_REG = isWrite ? 0x200931E1u : 0x220931E1u;
+
+    JC_SPU_ADDR_REG = (uint16)(spuByteAddr >> 3);
+    JC_SPU_CTRL_REG = (uint16)((gSpuCntShadow & ~0x0030u) |
+                               (isWrite ? 0x0020u : 0x0030u));
+    spuModeSettle(isWrite ? 0x0020u : 0x0030u);
+
+    SPU_DMA4_MADR = (uint32)ram & 0x00FFFFFFu;
+    SPU_DMA4_BCR  = 16u | ((bytes >> 6) << 16);
+    SPU_DMA4_CHCR = isWrite ? 0x01000201u : 0x01000200u;
+
+    for (i = 0; i < 400000 && (SPU_DMA4_CHCR & (1u << 24)); i++)
+        ;
+    for (i = 0; i < 120 && (SPU_DMA4_CHCR & (1u << 24)); i++)
+        VSync(0);
     if (SPU_DMA4_CHCR & (1u << 24)) {
-        for (i = 0; i < 200000; i++) {
-            if ((SPU_DMA4_CHCR & (1u << 24)) == 0u)
-                break;
-        }
-        for (i = 0; i < 120 && (SPU_DMA4_CHCR & (1u << 24)); i++)
-            VSync(0);
-        if (SPU_DMA4_CHCR & (1u << 24))
-            return 0;
+        /* Wedged: abort the channel so the NEXT transfer isn't kicked
+         * on top of a busy one (that cascade is what killed all audio
+         * in burntest6). */
+        SPU_DMA4_CHCR = 0x00000201u;
+        JC_SPU_CTRL_REG = (uint16)(gSpuCntShadow & ~0x0030u);
+        JC_SPU_DELAY_REG = 0x200931E1u;
+        return 0;
     }
 
     if (isWrite) {
-        /* Tiny transfers can complete the DMA before SPUSTAT.10 has even
-         * asserted, making "clear" ambiguous (drained vs not-yet-started).
-         * Give the flag a short window to assert; if it never does within
-         * the window the FIFO tail (<=64 bytes) has long since drained. */
-        for (i = 0; i < 256; i++) {
-            if (!SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
-                break;
-        }
-        ok = 0;
-        for (i = 0; i < 200000 && !ok; i++)
-            ok = SpuIsTransferCompleted(SPU_TRANSFER_PEEK);
-        for (i = 0; i < 120 && !ok; i++) {
-            VSync(0);
-            ok = SpuIsTransferCompleted(SPU_TRANSFER_PEEK);
+        /* FIFO drain tail (<=64 bytes past DMA completion). */
+        if (gSpuRegReadsOk) {
+            for (i = 0; i < 256; i++) {
+                if (!SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+                    break;
+            }
+            for (i = 0; i < 200000; i++) {
+                if (SpuIsTransferCompleted(SPU_TRANSFER_PEEK))
+                    break;
+            }
+        } else {
+            for (i = 0; i < 4000; i++)
+                (void)SPU_DMA4_CHCR;
         }
     }
 
-    /* Park the transfer state machine at Stop and wait for the mode ack
-     * (SPUSTAT bits 4-5 mirror the applied SPUCNT mode). */
-    *spucnt = (uint16_t)(*spucnt & ~0x0030u);
-    for (i = 0; i < 200000; i++) {
-        if ((*spustat & 0x0030u) == 0u)
-            break;
-    }
-    return ok;
+    JC_SPU_CTRL_REG = (uint16)(gSpuCntShadow & ~0x0030u);
+    spuModeSettle(0x0000);
+    JC_SPU_DELAY_REG = 0x200931E1u;
+    return 1;
 }
 
-static int spuCacheWaitTransferBounded(int isWrite)
+int ps1SpuDmaWrite(uint32 spuByteAddr, const void *src, uint32 bytes)
 {
-    if (!ps1SpuTransferWaitBounded(isWrite)) {
+    return spuDmaTransfer(spuByteAddr, (void *)src, bytes, 1);
+}
+
+int ps1SpuDmaRead(uint32 spuByteAddr, void *dst, uint32 bytes)
+{
+    return spuDmaTransfer(spuByteAddr, dst, bytes, 0);
+}
+
+int ps1SpuCacheWrite(uint32 offset, const void *src, uint32 size)
+{
+    if (!gSpuCacheReady || !src || !ps1SpuCacheRangeOk(offset, size))
+        return 0;
+
+    if (!ps1SpuDmaWrite(gSpuCacheBase + offset, src, size)) {
         /* Mark the cache unusable so every caller takes its documented
          * CD-fallback path instead of piling onto a wedged SPU. */
         gSpuCacheReady = 0;
@@ -172,26 +235,16 @@ static int spuCacheWaitTransferBounded(int isWrite)
     return 1;
 }
 
-int ps1SpuCacheWrite(uint32 offset, const void *src, uint32 size)
-{
-    if (!gSpuCacheReady || !src || !ps1SpuCacheRangeOk(offset, size))
-        return 0;
-
-    SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-    SpuSetTransferStartAddr(gSpuCacheBase + offset);
-    SpuWrite((uint32_t *)src, size);
-    return spuCacheWaitTransferBounded(1);
-}
-
 int ps1SpuCacheRead(uint32 offset, void *dst, uint32 size)
 {
     if (!gSpuCacheReady || !dst || !ps1SpuCacheRangeOk(offset, size))
         return 0;
 
-    SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-    SpuSetTransferStartAddr(gSpuCacheBase + offset);
-    SpuRead((uint32_t *)dst, size);
-    return spuCacheWaitTransferBounded(0);
+    if (!ps1SpuDmaRead(gSpuCacheBase + offset, dst, size)) {
+        gSpuCacheReady = 0;
+        return 0;
+    }
+    return 1;
 }
 
 int ps1SpuCacheSelfTest(void)

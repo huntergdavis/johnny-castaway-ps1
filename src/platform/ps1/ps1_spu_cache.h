@@ -19,10 +19,14 @@
     (PS1_SPU_CACHE_WALK_CLEAN_OFFSET + PS1_SPU_CACHE_WALK_CLEAN_BYTES)
 #define PS1_SPU_CACHE_MRAFT_PSB_BYTES (12u * 1024u)
 
-/* Two-phase bounded wait for the in-flight SPU transfer (DMA4 CHCR drain,
- * then SPUSTAT FIFO drain for writes). Safe against the real-silicon
- * SPUSTAT busy-flag assert delay that SpuIsTransferCompleted races. */
-int ps1SpuTransferWaitBounded(int isWrite);
+/* Write-only SPU DMA (no SPU register reads — safe on consoles whose SPU
+ * register reads return bus garbage, e.g. some chainloaded units).
+ * bytes must be 64-aligned. ps1SpuNoteInitDone() must run right after
+ * SpuInit() to probe register-read health; ps1SpuRegReadsOk() reports it. */
+int  ps1SpuDmaWrite(uint32 spuByteAddr, const void *src, uint32 bytes);
+int  ps1SpuDmaRead(uint32 spuByteAddr, void *dst, uint32 bytes);
+void ps1SpuNoteInitDone(void);
+int  ps1SpuRegReadsOk(void);
 
 void ps1SpuCacheInit(void);
 int ps1SpuCacheReady(void);

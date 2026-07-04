@@ -32,6 +32,7 @@
 #include "utils.h"
 #include "cdrom_ps1.h"
 #include "ps1_spu_cache.h"
+#include "ps1_boot_progress.h"
 #include "mem_region.h"
 
 #ifndef SOUND_PS1_DIAG_LOGS
@@ -138,6 +139,19 @@ static int spuVoiceProgramVerified(int ch, uint16_t pitch, uint32_t addrBytes,
     uint16_t wantAddr = (uint16_t)getSPUAddr(addrBytes);
     int attempt;
 
+    if (!ps1SpuRegReadsOk()) {
+        /* Register reads are bus garbage on this unit: readback
+         * verification is meaningless. Plain writes (writes work —
+         * the boot ambience proves it). */
+        SPU_CH_FREQ(ch)  = pitch;
+        SPU_CH_ADDR(ch)  = wantAddr;
+        SPU_CH_VOL_L(ch) = volL;
+        SPU_CH_VOL_R(ch) = volR;
+        SPU_CH_ADSR1(ch) = adsr1;
+        SPU_CH_ADSR2(ch) = adsr2;
+        return 1;
+    }
+
     for (attempt = 0; attempt < 4; attempt++) {
         SPU_CH_FREQ(ch)  = pitch;
         SPU_CH_ADDR(ch)  = wantAddr;
@@ -161,6 +175,11 @@ static int spuVoiceKeyOnVerified(int ch)
 {
     int attempt, i;
 
+    if (!ps1SpuRegReadsOk()) {
+        SpuSetKey(1, 1 << ch);
+        return 1;
+    }
+
     for (attempt = 0; attempt < 4; attempt++) {
         SpuSetKey(1, 1 << ch);
         /* Instant attack -> ENVX rises within a few 44.1 kHz envelope
@@ -178,6 +197,11 @@ static int spuVoiceKeyOnVerified(int ch)
 static int spuVoiceKeyOffVerified(int ch)
 {
     int attempt, i;
+
+    if (!ps1SpuRegReadsOk()) {
+        SpuSetKey(0, 1 << ch);
+        return 1;
+    }
 
     for (attempt = 0; attempt < 8; attempt++) {
         SpuSetKey(0, 1 << ch);
@@ -198,14 +222,14 @@ static int spuUploadVerify(uint32_t spuAddr, const uint8_t *src, uint32_t size)
 {
     uint32_t off = 0;
 
+    if (!ps1SpuRegReadsOk())
+        return 1;   /* readback would be garbage — trust the write */
+
     while (off < size) {
         uint32_t chunk = size - off;
         if (chunk > sizeof(gSndVerifyWin))
             chunk = sizeof(gSndVerifyWin);
-        SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-        SpuSetTransferStartAddr(spuAddr + off);
-        SpuRead((uint32_t *)gSndVerifyWin, chunk);
-        if (!ps1SpuTransferWaitBounded(0))
+        if (!ps1SpuDmaRead(spuAddr + off, gSndVerifyWin, chunk))
             return 0;
         if (memcmp(gSndVerifyWin, src + off, chunk) != 0)
             return 0;
@@ -223,6 +247,11 @@ void soundDiagCounters(int *progFail, int *keyFail, int *upRetry, int *upBad)
     *keyFail  = gSndDiagKeyFail;
     *upRetry  = gSndDiagUploadRetry;
     *upBad    = gSndDiagUploadBad;
+}
+
+int soundDiagRegReadsOk(void)
+{
+    return ps1SpuRegReadsOk();
 }
 
 /* Read big-endian uint32 from VAG header */
@@ -244,6 +273,8 @@ void soundInit()
 
     /* Initialize SPU */
     SpuInit();
+    ps1SpuNoteInitDone();   /* probe SPU register-read health (gates all
+                             * read-dependent verification below) */
 
     /* Set master volume */
     SpuSetCommonMasterVolume(0x3FFF, 0x3FFF);
@@ -261,6 +292,13 @@ void soundInit()
 
     for (int i = 0; i < MAX_SOUND_EFFECTS; i++) {
         char filename[] = "\\SND\\SOUND00.VAG;1";
+
+        /* SOUND11/SOUND13 do not exist in the original game data (see
+         * config/ps1/cd_layout.xml). Probing them anyway meant two
+         * guaranteed lookup failures EVERY boot, feeding the CD
+         * failure counters and the drive-recovery streak for nothing. */
+        if (i == 11 || i == 13)
+            continue;
         filename[10] = (char)('0' + ((i / 10) % 10));
         filename[11] = (char)('0' + (i % 10));
 
@@ -302,15 +340,13 @@ void soundInit()
          * corrupted in ways no completion wait fully excludes; a sample
          * that never verifies is dropped (shows as MISSING in the sound
          * test) instead of shipping corrupt. */
+        ps1BootProgress((uint8)(20 + i * 2));
         {
             int attempt, uploadOk = 0;
             for (attempt = 0; attempt < 3 && !uploadOk; attempt++) {
                 if (attempt > 0)
                     gSndDiagUploadRetry++;
-                SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-                SpuSetTransferStartAddr(spuAddr);
-                SpuWrite((uint32_t *)dmaBuf, dmaSize);
-                if (!ps1SpuTransferWaitBounded(1))
+                if (!ps1SpuDmaWrite(spuAddr, dmaBuf, dmaSize))
                     continue;
                 uploadOk = spuUploadVerify(spuAddr, dmaBuf, dmaSize);
             }
@@ -320,7 +356,6 @@ void soundInit()
                 gSndDiagUploadBad++;
                 continue;   /* soundAddresses[i] stays 0 -> MISSING */
             }
-            VSync(0);   /* settle between back-to-back uploads */
         }
 
         soundAddresses[i] = spuAddr;
@@ -410,10 +445,8 @@ void soundInit()
             for (attempt = 0; attempt < 2 && !uploadOk; attempt++) {
                 if (attempt > 0)
                     gSndDiagUploadRetry++;
-                SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
-                SpuSetTransferStartAddr(spuAddr);
-                SpuWrite((uint32_t *)(vagData + VAG_HEADER_SIZE), dmaSize);
-                if (!ps1SpuTransferWaitBounded(1))
+                if (!ps1SpuDmaWrite(spuAddr, vagData + VAG_HEADER_SIZE,
+                                    dmaSize))
                     continue;
                 uploadOk = spuUploadVerify(spuAddr, vagData + VAG_HEADER_SIZE,
                                            dmaSize);
@@ -421,6 +454,7 @@ void soundInit()
             if (!uploadOk)
                 gSndDiagUploadBad++;
         }
+        ps1BootProgress(74);
 
         oceanSpuAddr   = spuAddr;
         oceanAdpcmSize = adpcmSize;
