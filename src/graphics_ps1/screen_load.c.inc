@@ -131,29 +131,9 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         uint32 bytes = SCENE_EXPLORER_THUMB_W *
                        SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
 
-        /* Double-read with checksum compare: single ~5px strips arrived
-         * corrupted IN THE BUFFER on console (so the VRAM verify below
-         * passes — VRAM faithfully matches bad data). Re-read until two
-         * consecutive reads agree; no second buffer (EXE is at its
-         * static ceiling), a running sum is enough to catch a torn
-         * chunk. Bounded. */
-        {
-            uint32 sumPrev = 0, sum;
-            int tries;
-            for (tries = 0; tries < 4; tries++) {
-                uint32 k;
-                if (!ps1_streamReadAlignedIntoFile(
-                        &cdfile, offset, bytes,
-                        (uint8 *)gSceneExplorerThumbChunk))
-                    return 0;
-                sum = 0;
-                for (k = 0; k < bytes / 2u; k++)
-                    sum = sum * 31u + gSceneExplorerThumbChunk[k];
-                if (tries > 0 && sum == sumPrev)
-                    break;
-                sumPrev = sum;
-            }
-        }
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           (uint8 *)gSceneExplorerThumbChunk))
+            return 0;
 
         setRECT(&rect, 160, 120 + y,
                 SCENE_EXPLORER_THUMB_W,
@@ -162,6 +142,44 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         DrawSync(0);
         grWaitGpuTransferReady();
         grVerifySceneExplorerStrip(&rect);
+    }
+
+    /* Second LINEAR pass: single strips arrived corrupted IN THE BUFFER
+     * on console (VRAM verify passes — it faithfully matches bad data).
+     * The first cut re-read every chunk back-to-back, which made real
+     * drives ping-pong seek and stall the menu; a sequential second
+     * sweep is one clean linear read. Chunks whose re-read differs from
+     * what VRAM holds get re-uploaded (majority of the time this pass
+     * confirms and touches nothing). */
+    for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
+         y += SCENE_EXPLORER_THUMB_ROWS_PER_READ) {
+        uint32 offset = (uint32)y * SCENE_EXPLORER_THUMB_W * 2UL;
+        uint32 bytes = SCENE_EXPLORER_THUMB_W *
+                       SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
+        static uint16 vrow[SCENE_EXPLORER_THUMB_W];
+        RECT rr;
+        int rows = SCENE_EXPLORER_THUMB_ROWS_PER_READ, r, diff = 0;
+
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           (uint8 *)gSceneExplorerThumbChunk))
+            break;
+        for (r = 0; r < rows && !diff; r += rows - 1) {
+            setRECT(&rr, 160, (sint16)(120 + y + r),
+                    SCENE_EXPLORER_THUMB_W, 1);
+            StoreImage(&rr, (uint32 *)vrow);
+            DrawSync(0);
+            diff = memcmp(vrow,
+                          gSceneExplorerThumbChunk +
+                              (uint32)r * SCENE_EXPLORER_THUMB_W,
+                          sizeof(vrow)) != 0;
+        }
+        if (diff) {
+            setRECT(&rect, 160, (sint16)(120 + y),
+                    SCENE_EXPLORER_THUMB_W, (sint16)rows);
+            LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
+            DrawSync(0);
+            grWaitGpuTransferReady();
+        }
     }
 
     return 1;
