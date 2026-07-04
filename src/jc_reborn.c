@@ -1283,6 +1283,29 @@ static int ps1ApplyBootOverride(char *buffer, const char *source)
             }
             i += 2;
         }
+        else if (!strcmp(tokens[i], "ads") && (i + 2) < tokenCount) {
+            /* "ads NAME[.ADS] TAG" — the other fixture spelling (used by
+             * the island-mode scene list). Same silent-ignore history as
+             * "story scene N": pin by building the fgpilot slug. */
+            char slug[32];
+            const char *nm = tokens[i + 1];
+            int tag = atoi(tokens[i + 2]);
+            int j = 0;
+            while (*nm && *nm != '.' && j < (int)sizeof(slug) - 4) {
+                char c = *nm++;
+                if (c >= 'A' && c <= 'Z') c = (char)(c - 'A' + 'a');
+                slug[j++] = c;
+            }
+            if (tag >= 10)
+                slug[j++] = (char)('0' + (tag / 10) % 10);
+            slug[j++] = (char)('0' + tag % 10);
+            slug[j] = ' ';
+            if (tag > 0)
+                ps1CopyBootString(ps1BootForegroundOverlayScene,
+                                  sizeof(ps1BootForegroundOverlayScene),
+                                  slug);
+            i += 2;
+        }
         else if (!strcmp(tokens[i], "seed")) {
             ps1BootForcedSeed = atoi(tokens[i + 1]);
             break;
