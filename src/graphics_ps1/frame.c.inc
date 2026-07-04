@@ -764,6 +764,10 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
         ps1BootProgress(100);
         ps1BootProgressFinish();
     }
+    {
+        extern void soundAmbienceWatchdog(void);
+        soundAmbienceWatchdog();
+    }
 
     ps1FrameCount++;
 

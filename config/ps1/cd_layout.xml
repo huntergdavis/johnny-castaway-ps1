@@ -15,6 +15,7 @@
             <file name="JCAST.EXE" type="data" source="../../build-ps1/johnnycastawayps1.exe"/>
             <file name="TITLE.RAW" type="data" source="../../generated/ps1/foreground/TITLE.RAW"/>
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
+            <file name="SHIP.DAT"    type="data" source="../../jc_resources/SHIP.DAT"/>
             <file name="SCEXPL.DAT" type="data" source="../../generated/ps1/SCEXPL.DAT"/>
             <file name="CAPTION.DAT" type="data" source="../../generated/ps1/CAPTION.DAT"/>
             <file name="MENUTEXT.DAT" type="data" source="../../generated/ps1/MENUTEXT.DAT"/>
