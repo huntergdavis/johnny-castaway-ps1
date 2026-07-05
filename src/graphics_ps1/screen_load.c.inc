@@ -246,10 +246,18 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     grClearSceneExplorerRect(0, 120, 160, 240);
     grClearSceneExplorerRect(480, 120, 160, 240);
 
-    /* Drive-gentle path first: ONE seek + continuous CdlReadN for all
-     * 75 sectors instead of 15 seek + stop/restart chunk cycles. On
-     * any error/overrun it returns 0 and the legacy chunked loop below
-     * re-reads from the top (drawing over whatever partially landed). */
+    /* Continuous CdlReadN path: DISABLED for 0.9.13. On real silicon it
+     * produced deterministic band corruption (console: a wrong band in
+     * most previews, content repeated from ~halfway up, ALL diag
+     * counters clean, position audit passing) — the SDK's data-ready
+     * callback does not reliably map 1 event = 1 sector under IRQ
+     * latency, so the pixel stream slips behind the sector count with
+     * no detectable signature. Re-enable only with per-sector header
+     * verification (2340-byte read mode). The chunked loop below is
+     * seek-exact and months-proven; browse-time drive-gentleness comes
+     * from the adaptive settle + retry latch + locate cache instead. */
+#define SX_CONTINUOUS_THUMB_READ 0
+#if SX_CONTINUOUS_THUMB_READ
     {
         uint32 thumbBytes = (uint32)SCENE_EXPLORER_THUMB_W *
                             SCENE_EXPLORER_THUMB_H * 2u;
@@ -265,6 +273,7 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         gSxCurrentChunk = -1;
         printf("JCSX cont-read fallback %s\n", slug ? slug : "?");
     }
+#endif
 
     for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
          y += SCENE_EXPLORER_THUMB_ROWS_PER_READ) {

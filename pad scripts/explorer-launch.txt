@@ -1,0 +1,36 @@
+# Reproduce the console "suzy city debris at screen bottom after
+# launching a scene from the explorer": browse into the Misc/Suzy
+# family (city-skyline thumbnails), let the preview load, hop one
+# family further, then CROSS-launch that scene and watch playback.
+
+wait 36s
+tap START
+wait 30
+tap DOWN
+tap DOWN
+tap CROSS
+wait 90
+# jump families until Misc/Suzy (family index 5)
+tap R1
+wait 30
+tap R1
+wait 30
+tap R1
+wait 30
+tap R1
+wait 30
+tap R1
+wait 150
+shot suzy-preview 10
+# one more family, let its preview load
+tap R1
+wait 150
+shot launch-preview 10
+# launch it
+tap CROSS
+wait 300
+shot playback-early 10
+wait 600
+shot playback-mid 10
+wait 600
+shot playback-late 10

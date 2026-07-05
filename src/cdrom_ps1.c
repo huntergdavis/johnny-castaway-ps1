@@ -1587,7 +1587,13 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
      * Return 0 so the caller repaints via the seek-exact chunked path.
      * (Position PAST the end is normal read-ahead.) */
     if (ok) {
-        uint8_t locl[8];
+        /* STATIC, not stack: CdControl's result is written by the
+         * completion IRQ, which can land after the bounded CdSync wait
+         * below gives up — a stack buffer would then be a dead frame
+         * and the IRQ writes 8 bytes of "bad memory data" into whoever
+         * owns it next (console bt17: garbage clean-rect strips painting
+         * debris bands that followed each scene's action area). */
+        static uint8_t locl[8];
         if (CdControl(CdlGetlocL, NULL, locl) != 0) {
             int j;
             CdlIntrResult s = CdlNoIntr;
