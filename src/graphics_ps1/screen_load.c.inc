@@ -1,6 +1,9 @@
-static uint16 gSceneExplorerThumbChunk[
-    SCENE_EXPLORER_THUMB_W * SCENE_EXPLORER_THUMB_ROWS_PER_READ
-];
+/* Sized for BOTH uses: 16 thumbnail rows of pixels (10240 bytes,
+ * chunked path) and 5 RAW 2340-byte sectors (11700, verified
+ * continuous path — headers included so each sector can prove its
+ * address; see ps1CdReadContinuousInto). */
+#define SCENE_EXPLORER_CHUNK_BYTES 11712u
+static uint16 gSceneExplorerThumbChunk[SCENE_EXPLORER_CHUNK_BYTES / 2u];
 
 /* The boot loading indicator borrows this buffer for its RLE sprite
  * (SHIP.DAT): during boot the explorer is untouched, and the indicator
@@ -246,23 +249,22 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     grClearSceneExplorerRect(0, 120, 160, 240);
     grClearSceneExplorerRect(480, 120, 160, 240);
 
-    /* Continuous CdlReadN path: DISABLED for 0.9.13. On real silicon it
-     * produced deterministic band corruption (console: a wrong band in
-     * most previews, content repeated from ~halfway up, ALL diag
-     * counters clean, position audit passing) — the SDK's data-ready
-     * callback does not reliably map 1 event = 1 sector under IRQ
-     * latency, so the pixel stream slips behind the sector count with
-     * no detectable signature. Re-enable only with per-sector header
-     * verification (2340-byte read mode). The chunked loop below is
-     * seek-exact and months-proven; browse-time drive-gentleness comes
-     * from the adaptive settle + retry latch + locate cache instead. */
-#define SX_CONTINUOUS_THUMB_READ 0
+    /* Continuous CdlReadN path, 0.9.14 VERIFIED edition. The 0.9.13-era
+     * version trusted "1 data-ready event = 1 sector, in order" and real
+     * silicon broke that silently (bands with every counter clean). Now
+     * sectors arrive RAW (2340 bytes) carrying their own MSF address;
+     * ps1CdReadContinuousInto verifies every sector's self-declared
+     * position and compacts the 2048-byte payloads before the group
+     * blit. A sector that lies aborts the read and the seek-exact
+     * chunked loop below repaints — corruption is structurally unable
+     * to reach VRAM. */
+#define SX_CONTINUOUS_THUMB_READ 1
 #if SX_CONTINUOUS_THUMB_READ
     {
         uint32 thumbBytes = (uint32)SCENE_EXPLORER_THUMB_W *
                             SCENE_EXPLORER_THUMB_H * 2u;
         uint32 thumbSectors = (thumbBytes + 2047u) / 2048u;
-        uint32 ringSectors = sizeof(gSceneExplorerThumbChunk) / 2048u;
+        uint32 ringSectors = sizeof(gSceneExplorerThumbChunk) / 2340u;
 
         if (ps1CdReadContinuousInto(&cdfile, thumbSectors,
                                     (uint8 *)gSceneExplorerThumbChunk,

@@ -1510,6 +1510,16 @@ static uint8  *gCdContRing = NULL;
 static uint32  gCdContRingSectors = 0;
 static uint32  gCdContTotal = 0;
 
+/* RAW delivery (CdlModeSize): 2340 bytes/sector = 4-byte header
+ * (min/sec/frame BCD + mode) + 8-byte subheader + 2048 data + EDC/ECC.
+ * The header is the whole point of 0.9.14's verified reader: every
+ * sector carries its own address, so coalesced / duplicated /
+ * silently re-delivered sectors are DETECTED instead of trusted (the
+ * 0.9.13-era 2048-mode reader had no way to know — console bands with
+ * every counter clean). */
+#define PS1_CD_RAW_SECTOR_BYTES 2340u
+#define PS1_CD_RAW_DATA_OFFSET  12u
+
 static void ps1CdContReadyCb(CdlIntrResult event, uint8_t *payload)
 {
     (void)payload;
@@ -1521,8 +1531,9 @@ static void ps1CdContReadyCb(CdlIntrResult event, uint8_t *payload)
             return;
         }
         CdGetSector(gCdContRing +
-                        (gCdContSectors % gCdContRingSectors) * 2048u,
-                    512);
+                        (gCdContSectors % gCdContRingSectors) *
+                            PS1_CD_RAW_SECTOR_BYTES,
+                    (int)(PS1_CD_RAW_SECTOR_BYTES / 4u));
         gCdContSectors++;
     } else if (event == CdlDiskError) {
         gCdContError = 1;
@@ -1538,7 +1549,7 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
 {
     CdlLOC loc;
     CdlCB oldCb;
-    uint8_t mode = CdlModeSpeed;
+    uint8_t mode = (uint8_t)(CdlModeSpeed | CdlModeSize);
     int ok = 1;
     uint32_t done = 0;
     int i;
@@ -1585,6 +1596,38 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
             ok = 0;
             break;
         }
+        /* VERIFY every sector's self-declared address, then compact the
+         * 2048-byte payloads to the ring start so onGroup sees the same
+         * contiguous pixel layout as the chunked path. A sector whose
+         * header disagrees with the expected LBA = the drive lied
+         * (silent retry re-delivery, coalesced IRQ) — abort, chunked
+         * fallback repaints. Verification happens BEFORE compaction so
+         * the headers are still in place. */
+        {
+            uint32_t j;
+            uint32_t base = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
+            for (j = 0; j < target - done; j++) {
+                const uint8_t *sec = ring + j * PS1_CD_RAW_SECTOR_BYTES;
+                CdlLOC want;
+                CdIntToPos((int)(base + done + j), &want);
+                if (sec[0] != want.minute || sec[1] != want.second ||
+                    sec[2] != want.sector) {
+                    printf("JCCD cont-verify: sector %lu header %02x:%02x:%02x want %02x:%02x:%02x\n",
+                           (unsigned long)(done + j),
+                           sec[0], sec[1], sec[2],
+                           want.minute, want.second, want.sector);
+                    ok = 0;
+                    break;
+                }
+            }
+            if (!ok)
+                break;
+            for (j = 0; j < target - done; j++)
+                memmove(ring + j * 2048u,
+                        ring + j * PS1_CD_RAW_SECTOR_BYTES +
+                            PS1_CD_RAW_DATA_OFFSET,
+                        2048u);
+        }
         if (!onGroup(ud, ring, done, target - done)) {
             ok = 0;
             break;
@@ -1593,10 +1636,16 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
         gCdContConsumed = target;
     }
 
-    /* Stop the read and restore the SDK's callback in every exit path. */
+    /* Stop the read and restore the SDK's callback in every exit path.
+     * Also restore 2048-byte mode: the SDK's own CdRead sets mode per
+     * call, but belt-and-suspenders for any raw-mode leak. */
     gCdContRing = NULL;
     CdReadyCallback(oldCb);
     (void)CdControl(CdlPause, NULL, NULL);
+    {
+        uint8_t normalMode = CdlModeSpeed;
+        (void)CdControl(CdlSetmode, &normalMode, NULL);
+    }
     {
         int j;
         for (j = 0; j < 1000000; j++) {
