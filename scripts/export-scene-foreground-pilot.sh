@@ -170,7 +170,16 @@ if [ -z "${FG_EXPORT_ANCHOR_Y_DELTA:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
   # shore. Uniform 12px drop restores that relative look.
   FG_EXPORT_ANCHOR_Y_DELTA=12
 fi
+if [ -z "${FG_EXPORT_ANCHOR_Y_DELTA_LOW:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
+  # The low-tide island sits ~12px lower than high tide and the packs are
+  # otherwise tide-identical, so one uniform anchor cannot serve both
+  # backdrops (console report: farewell group floating over the sand at
+  # low tide with the verified high-tide 12). Verified at the goodbye
+  # beat: 24 puts the group at the low-tide waterline.
+  FG_EXPORT_ANCHOR_Y_DELTA_LOW=24
+fi
 export FG_EXPORT_ANCHOR_Y_DELTA
+export FG_EXPORT_ANCHOR_Y_DELTA_LOW
 if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
   # MARY 5 is flagged NORAFT in story_data.h and carries its own raft art.
   # Capture with the generic raft off so the pack/backdrop match runtime.
@@ -710,7 +719,8 @@ def mary2_full_host_bubble_pixels(reference_capture_dir, frame_name, base_full):
     return candidates if len(candidates) >= MARY2_BUBBLE_MIN_PIXELS else {}
 
 
-def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir):
+def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir,
+                            anchor_env="FG_EXPORT_ANCHOR_Y_DELTA"):
     out = Path(out_dir)
     out_frames = out / "frames"
     out_meta = out / "frame-meta"
@@ -781,7 +791,13 @@ def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir):
     # carry canvas coordinates, so this is the lever that actually moves
     # actors at runtime — a metadata-only offset tweak leaves the pack
     # bytes untouched.
-    anchor_dy = int(os.environ.get("FG_EXPORT_ANCHOR_Y_DELTA", "0") or 0)
+    # Per-tide override: the LOW canvas may need a deeper drop than HIGH
+    # (mary5: low island sits lower -> 24 vs 12). anchor_env selects which
+    # env var this invocation honors; LOW falls back to the shared value.
+    anchor_raw = os.environ.get(anchor_env)
+    if anchor_raw is None and anchor_env != "FG_EXPORT_ANCHOR_Y_DELTA":
+        anchor_raw = os.environ.get("FG_EXPORT_ANCHOR_Y_DELTA")
+    anchor_dy = int(anchor_raw or 0)
     canvas_h += anchor_dy
 
     for ref_frame, ref_meta, local_pixels in frames:
@@ -812,7 +828,8 @@ def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir):
 patch_pair(Path(sys.argv[1]) / "frames", Path(sys.argv[2]) / "frames")
 patch_pair(Path(sys.argv[6]) / "frames", Path(sys.argv[7]) / "frames")
 write_merged_foreground(sys.argv[1], [sys.argv[2], sys.argv[3], sys.argv[4]], sys.argv[5])
-write_merged_foreground(sys.argv[6], [sys.argv[7], sys.argv[8], sys.argv[9]], sys.argv[10])
+write_merged_foreground(sys.argv[6], [sys.argv[7], sys.argv[8], sys.argv[9]], sys.argv[10],
+                        anchor_env="FG_EXPORT_ANCHOR_Y_DELTA_LOW")
 PY
 
     if [ -f "$HOST_CAPTURE_HIGH_DIR/sound-events.jsonl" ]; then

@@ -39,9 +39,11 @@ void *grSceneExplorerChunkBorrow(uint32 *bytesOut)
 static int gSxPaceCeilingHits = 0;
 static int gSxLastStallChunk = -1;
 static int gSxCurrentChunk = -1;
+static int gSxQuiesceExpired = 0;
 
-int grSxDiagCeilingHits(void)  { return gSxPaceCeilingHits; }
-int grSxDiagStallChunk(void)   { return gSxLastStallChunk; }
+int grSxDiagCeilingHits(void)    { return gSxPaceCeilingHits; }
+int grSxDiagStallChunk(void)     { return gSxLastStallChunk; }
+int grSxDiagQuiesceExpired(void) { return gSxQuiesceExpired; }
 
 static void grSxGpuPace(uint32 readyBit)
 {
@@ -69,6 +71,14 @@ static void grSxQuiesce(void)
     DrawSync(0);
     for (i = 0; i < 400000 && (GR_SX_D2_CHCR & (1u << 24)); i++)
         ;
+    /* Drain expiry is the P0-invisible failure mode: DMA2 still busy
+     * after the bound means our direct writes WILL interleave with the
+     * in-flight linked-list walk. Count it (Q on the diag line) —
+     * gSxGpuPace's P counter never sees this path. */
+    if (GR_SX_D2_CHCR & (1u << 24)) {
+        gSxQuiesceExpired++;
+        gSxLastStallChunk = gSxCurrentChunk;
+    }
     grSxGpuPace((1u << 26) | (1u << 28));
 }
 
@@ -178,15 +188,25 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         uint32 bytes = SCENE_EXPLORER_THUMB_W *
                        SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
 
-        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
-                                           (uint8 *)gSceneExplorerThumbChunk))
-            return 0;
+        gSxCurrentChunk = y / SCENE_EXPLORER_THUMB_ROWS_PER_READ;
 
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           (uint8 *)gSceneExplorerThumbChunk)) {
+            gSxCurrentChunk = -1;
+            return 0;
+        }
+
+        /* Re-quiesce per chunk, not just at entry: each CD read above is
+         * many ms with interrupts live, and anything that touched the GPU
+         * in that window (ISR-side or otherwise) would inject into the
+         * next blit. Entry-only quiesce left this door open. */
+        grSxQuiesce();
         grSxBlitRect(160, 120 + y,
                      SCENE_EXPLORER_THUMB_W,
                      SCENE_EXPLORER_THUMB_ROWS_PER_READ,
                      gSceneExplorerThumbChunk);
     }
+    gSxCurrentChunk = -1;
 
     return 1;
 }

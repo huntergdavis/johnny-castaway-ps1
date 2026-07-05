@@ -358,12 +358,14 @@ static void drawSceneExplorer(void)
 {
         extern int grSxDiagCeilingHits(void);
         extern int grSxDiagStallChunk(void);
+        extern int grSxDiagQuiesceExpired(void);
         extern int ps1CdReadFailureCount(void);
         extern int gPmShowCount;
-        if (grSxDiagCeilingHits() > 0 || ps1CdReadFailureCount() > 0 ||
-            gPmShowCount > 1)
-            pmPrintf(" P%d c%d D%d S%d\n",
-                     grSxDiagCeilingHits(), grSxDiagStallChunk(),
+        if (grSxDiagCeilingHits() > 0 || grSxDiagQuiesceExpired() > 0 ||
+            ps1CdReadFailureCount() > 0 || gPmShowCount > 1)
+            pmPrintf(" P%d Q%d c%d D%d S%d\n",
+                     grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
+                     grSxDiagStallChunk(),
                      ps1CdReadFailureCount(), gPmShowCount);
     }
         pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));

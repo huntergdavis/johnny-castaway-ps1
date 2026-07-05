@@ -38,6 +38,9 @@
 static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
 static void *gPs1CdReadIdleHookUserData = NULL;
 
+/* Definition near ps1CdReadSyncBounded; see rationale there. */
+static void ps1CdDmaDrainBounded(void);
+
 static int ps1BuildPath3(char *out, size_t outSize,
                          const char *a, const char *b, const char *c)
 {
@@ -191,6 +194,8 @@ ps1_streamAsyncReadDrain(void)
 
     syncResult = CdReadSync(0, NULL);
     gPs1CdAsyncRead.active = 0;
+    if (syncResult == 0)
+        ps1CdDmaDrainBounded();
     return (syncResult == 0) ? 1 : 0;
 }
 
@@ -996,6 +1001,8 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
 
     /* Wait for read to complete (blocking) */
     int sync_result = CdReadSync(0, NULL);
+    if (sync_result >= 0)
+        ps1CdDmaDrainBounded();
 
     if (sync_result < 0) {
         ps1FreeFileBuffer(file);
@@ -1241,7 +1248,36 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
 static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, uint32_t size,
                                                uint8_t *dstBuffer);
 
+/* CD-sector DMA channel (DMA3) control — bit 24 is channel-busy. Same
+ * CPU-side-register pattern as the SPU-transfer and GPU-DMA2 fixes: on
+ * real silicon the completion IRQ (and thus CdReadSync) can assert
+ * while the final sector's DMA into the destination buffer is still
+ * draining. Consuming the buffer in that window reads stale bytes —
+ * the explorer's one-chunk "strip" (RAM test pattern clean, CD loads
+ * striped). Bounded so a wedged channel can't hang us. */
+#define PS1_CD_D3_CHCR (*(volatile uint32_t *)0xBF8010B0)
+
+static void ps1CdDmaDrainBounded(void)
+{
+    int i;
+    for (i = 0; i < 400000 && (PS1_CD_D3_CHCR & (1u << 24)); i++)
+        ;
+}
+
+static int ps1CdReadSyncBoundedInner(void);
+
 static int ps1CdReadSyncBounded(void)
+{
+    int syncResult = ps1CdReadSyncBoundedInner();
+
+    /* Read reported complete: make the completion TRUE before any
+     * caller touches the destination buffer. */
+    if (syncResult == 0)
+        ps1CdDmaDrainBounded();
+    return syncResult;
+}
+
+static int ps1CdReadSyncBoundedInner(void)
 {
     int syncResult;
     int fastPoll = 1000000;
