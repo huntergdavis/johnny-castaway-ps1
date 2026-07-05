@@ -268,13 +268,23 @@ static void sceneExplorerEnsureThumbnail(void)
      * repaint the paused scene's bgTile* over our thumbnail. The chrome
      * strip's OT primitives draw on top of the LoadImage'd pixels each
      * frame. */
-    if (grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug)) {
-        sceneExplorerLoadedCursor = cur;
-    } else {
-        /* Leave fb alone (chrome strip + text still communicate the
-         * metadata; the previous thumbnail shows above) and latch so
-         * this slug isn't re-streamed every frame. */
-        sceneExplorerFailedCursor = cur;
+    {
+        /* Cosmetic mode: browse failures are latched locally and must
+         * not feed the scene-abort streak (post-menu kick-out) or the
+         * freeze beacon (red bar over the live menu). */
+        extern void ps1CdSetCosmeticReads(int);
+        int ok;
+        ps1CdSetCosmeticReads(1);
+        ok = grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug);
+        ps1CdSetCosmeticReads(0);
+        if (ok) {
+            sceneExplorerLoadedCursor = cur;
+        } else {
+            /* Leave fb alone (chrome strip + text still communicate the
+             * metadata; the previous thumbnail shows above) and latch so
+             * this slug isn't re-streamed every frame. */
+            sceneExplorerFailedCursor = cur;
+        }
     }
 }
 
@@ -360,11 +370,14 @@ static void drawSceneExplorer(void)
         extern int grSxDiagStallChunk(void);
         extern int grSxDiagQuiesceExpired(void);
         extern int ps1CdReadFailureCount(void);
+        extern int ps1CdDmaDrainExpiredCount(void);
         extern int gPmShowCount;
         if (grSxDiagCeilingHits() > 0 || grSxDiagQuiesceExpired() > 0 ||
-            ps1CdReadFailureCount() > 0 || gPmShowCount > 1)
-            pmPrintf(" P%d Q%d c%d D%d S%d\n",
+            ps1CdReadFailureCount() > 0 || ps1CdDmaDrainExpiredCount() > 0 ||
+            gPmShowCount > 1)
+            pmPrintf(" P%d Q%d R%d c%d D%d S%d\n",
                      grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
+                     ps1CdDmaDrainExpiredCount(),
                      grSxDiagStallChunk(),
                      ps1CdReadFailureCount(), gPmShowCount);
     }

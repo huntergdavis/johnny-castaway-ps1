@@ -1693,7 +1693,23 @@ fg_setup_retry:
             grSetCleanBgRectsForceCache(0);
             goto fg_setup_retry;
         }
-        JC_BSOD(sceneName, "pack-start failed (non-recoverable I/O or data bug)");
+        /* Non-strand pack-start failure = I/O, not memory (console
+         * proof: boot BSOD at building7 with the panel footer showing
+         * a HEALTHY heap, largest free block 600 KB — the halt threw
+         * away a perfectly recoverable session because the just-
+         * chainloaded drive fumbled the first pack reads). Policy is
+         * the same as every other CD failure: force the loop reset +
+         * scene change with a memory wipe, never halt. The doomed-
+         * scene gate + warm-up at foregroundPilotPlay entry keep a
+         * genuinely dead drive from looping here forever. */
+        {
+            extern int printf(const char *, ...);
+            printf("JCCD pack-start failed scene=%s: loop reset (no halt)\n",
+                   sceneName ? sceneName : "(?)");
+        }
+        fgRuntimeReset();
+        pauseMenuRequestResetLoop = 1;
+        return;
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,

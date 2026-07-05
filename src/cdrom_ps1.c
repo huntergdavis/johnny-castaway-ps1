@@ -864,23 +864,43 @@ int ps1CdReadFailureCount(void)
  * total once fed served their diagnostic purpose (they proved the CD
  * layer healthy on console) and have been retired — boot-time probes of
  * absent files were stamping pips on perfectly healthy drives. */
+/* Cosmetic-read mode: set around EXPLORER thumbnail browsing, where
+ * transient failures are expected (family jumps = long seeks on a worn
+ * drive) and already handled by the per-cursor latch + breaker. Console
+ * proof this matters (burntest6): browse failures fed the SCENE abort
+ * streak, so (a) the freeze beacon painted its red bar over the live
+ * menu ("a strip higher up"), and (b) the poisoned streak fired the
+ * play loop's scene abort the moment the menu closed — the "kicked
+ * back out by loading" flap. The 0.9.12 explorer never crashed because
+ * none of this transition-freeze machinery ran back then. Drive
+ * recovery (CdInit on a hard failure streak) stays active — drive
+ * health is real either way. */
+static int gCdCosmeticReads = 0;
+
+void ps1CdSetCosmeticReads(int on)
+{
+    gCdCosmeticReads = on;
+}
+
 static void ps1CdNoteReadFailure(void)
 {
     gCdFailTotal++;
-    gCdSceneAbortStreak++;
-    /* Freeze beacon: a console frozen at a scene transition with music
-     * playing looks identical for CD-retry spins and other stalls. From
-     * streak 3 on, grow a red bar at the top-left via direct GP0 (safe:
-     * rendering has already stalled by the time a streak this long
-     * builds). Frozen + red bar = CD retry storm; frozen without it =
-     * different bug, tell the debugger. */
-    if (gCdSceneAbortStreak >= 3) {
-        volatile uint32 *gp0 = (volatile uint32 *)0xBF801810;
-        int w = gCdSceneAbortStreak * 12;
-        if (w > 192) w = 192;
-        *gp0 = 0x02000040u;                       /* fill, red-ish */
-        *gp0 = 0;                                 /* x=0,y=0 */
-        *gp0 = ((uint32)8 << 16) | (uint32)w;     /* h=8, w */
+    if (!gCdCosmeticReads) {
+        gCdSceneAbortStreak++;
+        /* Freeze beacon: a console frozen at a scene transition with music
+         * playing looks identical for CD-retry spins and other stalls. From
+         * streak 3 on, grow a red bar at the top-left via direct GP0 (safe:
+         * rendering has already stalled by the time a streak this long
+         * builds). Frozen + red bar = CD retry storm; frozen without it =
+         * different bug, tell the debugger. */
+        if (gCdSceneAbortStreak >= 3) {
+            volatile uint32 *gp0 = (volatile uint32 *)0xBF801810;
+            int w = gCdSceneAbortStreak * 12;
+            if (w > 192) w = 192;
+            *gp0 = 0x02000040u;                       /* fill, red-ish */
+            *gp0 = 0;                                 /* x=0,y=0 */
+            *gp0 = ((uint32)8 << 16) | (uint32)w;     /* h=8, w */
+        }
     }
     if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
         extern int printf(const char *, ...);
@@ -1257,11 +1277,22 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
  * striped). Bounded so a wedged channel can't hang us. */
 #define PS1_CD_D3_CHCR (*(volatile uint32_t *)0xBF8010B0)
 
+static int gCdDmaDrainExpired = 0;
+
+int ps1CdDmaDrainExpiredCount(void)
+{
+    return gCdDmaDrainExpired;
+}
+
 static void ps1CdDmaDrainBounded(void)
 {
     int i;
     for (i = 0; i < 400000 && (PS1_CD_D3_CHCR & (1u << 24)); i++)
         ;
+    /* Expiry = the stale-tail race window is still open for this read;
+     * surfaced as R on the explorer diag line. */
+    if (PS1_CD_D3_CHCR & (1u << 24))
+        gCdDmaDrainExpired++;
 }
 
 static int ps1CdReadSyncBoundedInner(void);

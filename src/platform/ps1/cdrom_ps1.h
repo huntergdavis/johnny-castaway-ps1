@@ -206,4 +206,10 @@ void ps1CdWarmUp(void);   /* wake a spun-down drive before transition reads */
 int  ps1CdSceneAbortNeeded(void);
 void ps1CdSceneAbortAck(void);
 
+/* Cosmetic-read mode: browse-time reads (explorer thumbnails) whose
+ * failures must not feed the scene-abort streak or paint the freeze
+ * beacon. Drive recovery still applies. */
+void ps1CdSetCosmeticReads(int on);
+int  ps1CdDmaDrainExpiredCount(void);   /* R diag: DMA3 drain bound expiries */
+
 #endif /* CDROM_PS1_H */

@@ -111,6 +111,16 @@ void pauseMenuHide(void)
         extern void sceneExplorerReleaseStringDataPublic(void);
         sceneExplorerReleaseStringDataPublic();
     }
+    {
+        /* Belt for the cosmetic-read mode: whatever abort streak
+         * accumulated while the menu was open (browse blips, warm-up),
+         * the RESUMING scene starts clean. Without this the play loop's
+         * abort poll fired the instant the menu closed and force-reset a
+         * perfectly healthy scene — the console "kicked back out by
+         * loading" report. */
+        extern void ps1CdSceneAbortAck(void);
+        ps1CdSceneAbortAck();
+    }
 }
 
 int pauseMenuIsVisible(void)
