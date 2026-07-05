@@ -29,8 +29,11 @@ void pauseMenuSetFreeplayActive(int active)
     menuFreeplayActive = active ? 1 : 0;
 }
 
+int gPmShowCount = 0;   /* diag: console flap = hide/reshow cycles? */
+
 void pauseMenuShow(void)
 {
+    gPmShowCount++;
     pmMenuTextEnsure();
 
     /* Re-upload the font + CLUT on EVERY open. The one-shot boot upload

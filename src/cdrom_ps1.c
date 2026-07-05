@@ -808,9 +808,18 @@ static int ps1CdReadSyncBounded(void);
 
 void ps1CdWarmUp(void)
 {
-    static uint8_t warmBuf[2048];
+    /* Sector scratch borrowed from the scene-explorer chunk buffer —
+     * the menu is closed during scene transitions, and a dedicated
+     * 2 KB static pushed the diagnostics-heavy test builds over the
+     * EXE ceiling. */
+    extern void *grSceneExplorerChunkBorrow(unsigned long *bytesOut);
+    unsigned long bufBytes = 0;
+    uint8_t *warmBuf = (uint8_t *)grSceneExplorerChunkBorrow(&bufBytes);
     CdlLOC loc;
     int attempt;
+
+    if (warmBuf == NULL || bufBytes < 2048)
+        return;
 
     for (attempt = 0; attempt < 3; attempt++) {
         CdIntToPos(16, &loc);

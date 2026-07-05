@@ -354,10 +354,12 @@ static void drawSceneExplorer(void)
         extern int grSxDiagCeilingHits(void);
         extern int grSxDiagStallChunk(void);
         extern int ps1CdReadFailureCount(void);
-        if (grSxDiagCeilingHits() > 0 || ps1CdReadFailureCount() > 0)
-            pmPrintf(" P%d c%d D%d\n",
+        extern int gPmShowCount;
+        if (grSxDiagCeilingHits() > 0 || ps1CdReadFailureCount() > 0 ||
+            gPmShowCount > 1)
+            pmPrintf(" P%d c%d D%d S%d\n",
                      grSxDiagCeilingHits(), grSxDiagStallChunk(),
-                     ps1CdReadFailureCount());
+                     ps1CdReadFailureCount(), gPmShowCount);
     }
         pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }

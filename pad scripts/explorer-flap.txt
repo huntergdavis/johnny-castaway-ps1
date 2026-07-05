@@ -1,0 +1,32 @@
+wait 36s
+tap START
+wait 30
+tap DOWN
+tap DOWN
+tap CROSS
+wait 90
+tap R1
+wait 100
+tap R1
+wait 100
+tap R1
+wait 100
+tap L1
+wait 100
+tap RIGHT
+wait 100
+shot flap1 5
+tap RIGHT
+wait 100
+shot flap2 5
+tap R1
+wait 100
+tap RIGHT
+wait 100
+shot flap3 5
+tap RIGHT
+wait 30
+shot flap4 5
+tap RIGHT
+wait 30
+shot flap5 5
