@@ -11,71 +11,74 @@ void *grSceneExplorerChunkBorrow(uint32 *bytesOut)
     return gSceneExplorerThumbChunk;
 }
 
-/* DrawSync alone can return before the GPU has fully consumed a queued
- * CPU->VRAM transfer on real silicon (emulators complete transfers
- * synchronously, so this never shows there). The thumbnail streamer
- * refills its chunk buffer from CD right after DrawSync — if the GPU is
- * still draining the previous strip, its tail is fed from the NEW data
- * and every later row shifts sideways ("jumbled strips"). Poll the
- * GPUSTAT ready bits before letting the buffer be reused. Bounded. */
-static void grWaitGpuTransferReady(void)
+/* ROOT CAUSE of the console "rotated strip" glitch: the SDK's queued
+ * LoadImage races the pause menu's concurrent chrome rendering. On real
+ * silicon DrawSync can return before a CPU->VRAM transfer fully drains
+ * (proven during the boot-ship work), so the menu's next GP0 command
+ * words INJECT into the thumbnail pixel stream — every pixel after the
+ * injection point shifts horizontally until the next chunk's fresh
+ * upload command restores alignment. That is exactly a partial-height
+ * "rotated" band at a timing-dependent position, and exactly what
+ * emulators (synchronous transfers) can never reproduce.
+ *
+ * Fix by construction: the explorer paints thumbnails with DIRECT GP0
+ * port writes — no queue, no DMA, nothing to interleave with — after
+ * one DrawSync to quiesce whatever the menu already queued. Same
+ * pattern the boot loading-galleon uses, validated on console. */
+#define GR_SX_GP0     (*(volatile uint32 *)0xBF801810)
+#define GR_SX_GPUSTAT (*(volatile uint32 *)0xBF801814)
+
+static void grSxGpuPace(uint32 readyBit)
 {
-    volatile uint32 *gpustat = (volatile uint32 *)0xBF801814;
     int i;
-    for (i = 0; i < 200000; i++) {
-        uint32 s = *gpustat;
-        if ((s & (1u << 26)) != 0u && (s & (1u << 28)) != 0u)
-            break;
+    for (i = 0; i < 400000; i++) {
+        if (GR_SX_GPUSTAT & readyBit)
+            return;
+    }
+    /* Ceiling hit: keep going — bailing mid-command would desync the
+     * FIFO for real. The next pace call re-checks. */
+}
+
+/* Direct CPU->VRAM rect upload. w must be even (GPU moves pixel pairs). */
+static void grSxBlitRect(int x, int y, int w, int h, const uint16 *src)
+{
+    int i, words = (w * h) / 2;
+
+    grSxGpuPace(1u << 26);
+    GR_SX_GP0 = 0xA0000000u;
+    GR_SX_GP0 = ((uint32)(uint16)y << 16) | (uint16)x;
+    GR_SX_GP0 = ((uint32)(uint16)h << 16) | (uint16)w;
+    for (i = 0; i < words; i++) {
+        if ((i & 15) == 0)
+            grSxGpuPace(1u << 28);
+        GR_SX_GP0 = ((uint32)src[i * 2 + 1] << 16) | src[i * 2];
     }
 }
 
-static void grVerifySceneExplorerStrip(const RECT *strip);
+static void grSxFill(int x, int y, int w, int h)
+{
+    if (w <= 0 || h <= 0)
+        return;
+    grSxGpuPace(1u << 26);
+    GR_SX_GP0 = 0x02000000u;    /* fill, black */
+    GR_SX_GP0 = ((uint32)(uint16)y << 16) | (uint16)x;
+    GR_SX_GP0 = ((uint32)(uint16)h << 16) | (uint16)w;
+}
 
 static void grClearSceneExplorerRect(int x, int y, int w, int h)
 {
-    RECT rect;
-
-    memset(gSceneExplorerThumbChunk, 0, sizeof(gSceneExplorerThumbChunk));
-
-    while (h > 0) {
-        int rows = h;
-        int clearX = x;
-        int remainingW = w;
-
-        if (rows > SCENE_EXPLORER_THUMB_ROWS_PER_READ)
-            rows = SCENE_EXPLORER_THUMB_ROWS_PER_READ;
-
-        while (remainingW > 0) {
-            int chunkW = remainingW;
-            if (chunkW > SCENE_EXPLORER_THUMB_W)
-                chunkW = SCENE_EXPLORER_THUMB_W;
-
-            setRECT(&rect, clearX, y, chunkW, rows);
-            LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
-            DrawSync(0);
-            /* Same buffer-reuse hazard as the strips: the last clear's
-             * transfer must be fully consumed before the first CD chunk
-             * refills this buffer. */
-            grWaitGpuTransferReady();
-
-            clearX += chunkW;
-            remainingW -= chunkW;
-        }
-
-        y += rows;
-        h -= rows;
-    }
+    /* Band coordinates are all multiples of 16, matching the GPU fill
+     * command's column granularity. Direct GP0 — see root-cause note. */
+    grSxFill(x, y, w, h);
 }
 
-int grLoadSceneExplorerThumbnail(const char *slug)
+static int grResolveSceneExplorerFile(const char *slug, CdlFILE *cdfile)
 {
-    CdlFILE cdfile;
     char path[24];
     char family[16];
     int i, fam_len;
     const char *digits;
     const char *abbrev;
-    RECT rect;
 
     if (slug == NULL || slug[0] == '\0')
         return 0;
@@ -113,8 +116,19 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     i = strlen(path);
     if (!grBuildPath3(path + i, sizeof(path) - (size_t)i, digits, ".SCR", ""))
         return 0;
-    if (!ps1_streamResolveFile(path, &cdfile))
+    return ps1_streamResolveFile(path, cdfile);
+}
+
+int grLoadSceneExplorerThumbnail(const char *slug)
+{
+    CdlFILE cdfile;
+
+    if (!grResolveSceneExplorerFile(slug, &cdfile))
         return 0;
+
+    /* Quiesce whatever the menu already queued; from here on we only
+     * touch GP0 directly, so nothing can interleave mid-stream. */
+    DrawSync(0);
 
     /* Clear the four bands around the centered thumbnail to black so
      * the previous menu/scene pixels don't show through. Widths greater
@@ -135,93 +149,15 @@ int grLoadSceneExplorerThumbnail(const char *slug)
                                            (uint8 *)gSceneExplorerThumbChunk))
             return 0;
 
-        setRECT(&rect, 160, 120 + y,
-                SCENE_EXPLORER_THUMB_W,
-                SCENE_EXPLORER_THUMB_ROWS_PER_READ);
-        LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
-        DrawSync(0);
-        grWaitGpuTransferReady();
-        grVerifySceneExplorerStrip(&rect);
-    }
-
-    /* Second LINEAR pass: single strips arrived corrupted IN THE BUFFER
-     * on console (VRAM verify passes — it faithfully matches bad data).
-     * The first cut re-read every chunk back-to-back, which made real
-     * drives ping-pong seek and stall the menu; a sequential second
-     * sweep is one clean linear read. Chunks whose re-read differs from
-     * what VRAM holds get re-uploaded (majority of the time this pass
-     * confirms and touches nothing). */
-    for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
-         y += SCENE_EXPLORER_THUMB_ROWS_PER_READ) {
-        uint32 offset = (uint32)y * SCENE_EXPLORER_THUMB_W * 2UL;
-        uint32 bytes = SCENE_EXPLORER_THUMB_W *
-                       SCENE_EXPLORER_THUMB_ROWS_PER_READ * 2UL;
-        static uint16 vrow[SCENE_EXPLORER_THUMB_W];
-        RECT rr;
-        int rows = SCENE_EXPLORER_THUMB_ROWS_PER_READ, r, diff = 0;
-
-        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
-                                           (uint8 *)gSceneExplorerThumbChunk))
-            break;
-        for (r = 0; r < rows && !diff; r += rows - 1) {
-            setRECT(&rr, 160, (sint16)(120 + y + r),
-                    SCENE_EXPLORER_THUMB_W, 1);
-            StoreImage(&rr, (uint32 *)vrow);
-            DrawSync(0);
-            diff = memcmp(vrow,
-                          gSceneExplorerThumbChunk +
-                              (uint32)r * SCENE_EXPLORER_THUMB_W,
-                          sizeof(vrow)) != 0;
-        }
-        if (diff) {
-            setRECT(&rect, 160, (sint16)(120 + y),
-                    SCENE_EXPLORER_THUMB_W, (sint16)rows);
-            LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
-            DrawSync(0);
-            grWaitGpuTransferReady();
-        }
+        grSxBlitRect(160, 120 + y,
+                     SCENE_EXPLORER_THUMB_W,
+                     SCENE_EXPLORER_THUMB_ROWS_PER_READ,
+                     gSceneExplorerThumbChunk);
     }
 
     return 1;
 }
 
-/* Read the strip's first and last rows back out of VRAM and compare
- * with the source; a shifted/corrupt upload differs and gets
- * re-uploaded (bounded). A shift can begin mid-strip, hence both ends.
- * This makes the console-only "jumbled strips" self-healing regardless
- * of which side (GPU timing, DMA contention) drops the ball — and if
- * the CD data itself arrives shifted, VRAM matches the buffer, the
- * verify passes, and the SQUARE test pattern pins the blame instead. */
-static void grVerifySceneExplorerStrip(const RECT *strip)
-{
-    static uint16 verifyRow[SCENE_EXPLORER_THUMB_W];
-    RECT rowRect;
-    int tries;
-
-    for (tries = 0; tries < 3; tries++) {
-        int lastRow = strip->h - 1;
-        int ok;
-        setRECT(&rowRect, strip->x, strip->y, strip->w, 1);
-        StoreImage(&rowRect, (uint32 *)verifyRow);
-        DrawSync(0);
-        ok = memcmp(verifyRow, gSceneExplorerThumbChunk,
-                    sizeof(verifyRow)) == 0;
-        if (ok && lastRow > 0) {
-            setRECT(&rowRect, strip->x, strip->y + lastRow, strip->w, 1);
-            StoreImage(&rowRect, (uint32 *)verifyRow);
-            DrawSync(0);
-            ok = memcmp(verifyRow,
-                        gSceneExplorerThumbChunk +
-                            (size_t)lastRow * SCENE_EXPLORER_THUMB_W,
-                        sizeof(verifyRow)) == 0;
-        }
-        if (ok)
-            return;
-        LoadImage((RECT *)strip, (uint32 *)gSceneExplorerThumbChunk);
-        DrawSync(0);
-        grWaitGpuTransferReady();
-    }
-}
 
 /* Diagnostic: stream a computed pattern through the exact same chunked
  * upload path the CD thumbnails use, but with RAM-generated data. On
@@ -232,9 +168,9 @@ static void grVerifySceneExplorerStrip(const RECT *strip)
  * attributable to a specific strip. */
 int grLoadSceneExplorerTestPattern(void)
 {
-    RECT rect;
     int strip = 0;
 
+    DrawSync(0);    /* quiesce the menu queue; direct GP0 below */
     for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
          y += SCENE_EXPLORER_THUMB_ROWS_PER_READ, strip++) {
         for (int r = 0; r < SCENE_EXPLORER_THUMB_ROWS_PER_READ; r++) {
@@ -247,13 +183,10 @@ int grLoadSceneExplorerTestPattern(void)
                 gSceneExplorerThumbChunk[r * SCENE_EXPLORER_THUMB_W + x] = c;
             }
         }
-        setRECT(&rect, 160, 120 + y,
-                SCENE_EXPLORER_THUMB_W,
-                SCENE_EXPLORER_THUMB_ROWS_PER_READ);
-        LoadImage(&rect, (uint32 *)gSceneExplorerThumbChunk);
-        DrawSync(0);
-        grWaitGpuTransferReady();
-        grVerifySceneExplorerStrip(&rect);
+        grSxBlitRect(160, 120 + y,
+                     SCENE_EXPLORER_THUMB_W,
+                     SCENE_EXPLORER_THUMB_ROWS_PER_READ,
+                     gSceneExplorerThumbChunk);
     }
 
     return 1;

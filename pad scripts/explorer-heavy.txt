@@ -1,0 +1,34 @@
+# Heavy scene-explorer paging: enter explorer, step through 8 previews
+# with settle time for each (12-frame debounce + load + verify pass),
+# screenshotting each. Reproduces the console "crashes after 2 previews,
+# second preview incorrect" report.
+
+wait 36s
+tap START
+wait 30
+tap DOWN
+tap DOWN
+tap CROSS
+wait 90
+shot prev1 10
+tap RIGHT
+wait 120
+shot prev2 10
+tap RIGHT
+wait 120
+shot prev3 10
+tap RIGHT
+wait 120
+shot prev4 10
+tap RIGHT
+wait 120
+shot prev5 10
+tap RIGHT
+wait 120
+shot prev6 10
+tap RIGHT
+wait 120
+shot prev7 10
+tap RIGHT
+wait 120
+shot prev8 10
