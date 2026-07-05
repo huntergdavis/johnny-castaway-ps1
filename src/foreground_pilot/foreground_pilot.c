@@ -2136,6 +2136,25 @@ fg_setup_retry:
                 pauseMenuRequestLoopScene >= 0) {
                 break;
             }
+
+            /* Persistent CD read failures mid-scene (struggling drive or
+             * marginal burn): abandon the scene instead of retry-looping
+             * forever with the music still playing. Rides the next-scene
+             * request path, so the outer loop performs its normal
+             * between-scene teardown (the "memory wipe") and the next
+             * scene's data lands elsewhere on the disc — often escaping
+             * the unreadable region entirely. */
+            {
+                extern int ps1CdSceneAbortNeeded(void);
+                extern void ps1CdSceneAbortAck(void);
+                if (ps1CdSceneAbortNeeded()) {
+                    printf("JCCD scene-abort: persistent read failures — "
+                           "forcing next scene\n");
+                    ps1CdSceneAbortAck();
+                    pauseMenuRequestNextScene = 1;
+                    break;
+                }
+            }
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             uint16 prepareElapsedVBlanks = 0;

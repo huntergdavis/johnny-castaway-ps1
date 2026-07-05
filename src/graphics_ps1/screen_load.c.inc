@@ -27,6 +27,10 @@ void *grSceneExplorerChunkBorrow(uint32 *bytesOut)
  * pattern the boot loading-galleon uses, validated on console. */
 #define GR_SX_GP0     (*(volatile uint32 *)0xBF801810)
 #define GR_SX_GPUSTAT (*(volatile uint32 *)0xBF801814)
+/* GPU DMA channel (DMA2) control — bit 24 is channel-busy, CPU-side and
+ * immune to the silicon's early "queue drained" reporting. */
+#define GR_SX_D2_CHCR (*(volatile uint32 *)0xBF8010A8)
+
 
 static void grSxGpuPace(uint32 readyBit)
 {
@@ -37,6 +41,22 @@ static void grSxGpuPace(uint32 readyBit)
     }
     /* Ceiling hit: keep going — bailing mid-command would desync the
      * FIFO for real. The next pace call re-checks. */
+}
+
+/* Proper quiesce before direct GP0 writes. DrawSync alone is NOT enough
+ * on real silicon (proven twice now): it can return while the menu's OT
+ * linked-list DMA is still walking, and direct port writes then
+ * interleave with the DMA's words — the "band on every preview" that
+ * survived the first direct-GP0 rewrite. Wait for the DMA2 channel
+ * itself, then the GPU ready bits. Same CPU-side-register pattern that
+ * fixed the SPU transfer races. */
+static void grSxQuiesce(void)
+{
+    int i;
+    DrawSync(0);
+    for (i = 0; i < 400000 && (GR_SX_D2_CHCR & (1u << 24)); i++)
+        ;
+    grSxGpuPace((1u << 26) | (1u << 28));
 }
 
 /* Direct CPU->VRAM rect upload. w must be even (GPU moves pixel pairs). */
@@ -126,9 +146,9 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     if (!grResolveSceneExplorerFile(slug, &cdfile))
         return 0;
 
-    /* Quiesce whatever the menu already queued; from here on we only
-     * touch GP0 directly, so nothing can interleave mid-stream. */
-    DrawSync(0);
+    /* Quiesce the menu's queued rendering AND its in-flight OT DMA;
+     * from here on we only touch GP0 directly. */
+    grSxQuiesce();
 
     /* Clear the four bands around the centered thumbnail to black so
      * the previous menu/scene pixels don't show through. Widths greater
@@ -170,7 +190,7 @@ int grLoadSceneExplorerTestPattern(void)
 {
     int strip = 0;
 
-    DrawSync(0);    /* quiesce the menu queue; direct GP0 below */
+    grSxQuiesce();
     for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
          y += SCENE_EXPLORER_THUMB_ROWS_PER_READ, strip++) {
         for (int r = 0; r < SCENE_EXPLORER_THUMB_ROWS_PER_READ; r++) {

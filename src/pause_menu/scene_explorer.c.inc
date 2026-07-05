@@ -202,6 +202,19 @@ static void sceneExplorerBuildPackLabel(int index, char *dst, int dstSize)
 static int sceneExplorerLoadedCursor = -1;
 static int sceneExplorerFailedCursor = -1;
 static int sceneExplorerSettleFrames = 0;
+/* Circuit breaker: once the drive shows a persistent failure streak,
+ * stop attempting thumbnail loads for the rest of this menu visit.
+ * Each attempt on a struggling drive burns seconds of bounded retries
+ * inside the draw path — the menu looks crashed and inputs land
+ * between stalls (console report: START re-enters the explorer, O
+ * appears dead, next scene load then fails: a read-failure cascade).
+ * Metadata text keeps working; previews just stop updating. */
+static int sceneExplorerThumbsOffline = 0;
+
+void sceneExplorerResetThumbBreaker(void)
+{
+    sceneExplorerThumbsOffline = 0;
+}
 
 static void sceneExplorerEnsureThumbnail(void)
 {
@@ -214,6 +227,15 @@ static void sceneExplorerEnsureThumbnail(void)
         sceneExplorerSettleFrames = 0;
         sceneExplorerFailedCursor = -1;
         return;
+    }
+    if (sceneExplorerThumbsOffline)
+        return;
+    {
+        extern int ps1CdSceneAbortNeeded(void);
+        if (ps1CdSceneAbortNeeded()) {
+            sceneExplorerThumbsOffline = 1;
+            return;
+        }
     }
     if (cur == sceneExplorerLoadedCursor) return;
 

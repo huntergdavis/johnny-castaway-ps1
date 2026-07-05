@@ -42,6 +42,12 @@ void pauseMenuShow(void)
     pmFontUploaded = 0;
     pmUploadFont();
 
+    {
+        /* New menu visit: give thumbnails another chance (the drive may
+         * have recovered since the breaker tripped). */
+        extern void sceneExplorerResetThumbBreaker(void);
+        sceneExplorerResetThumbBreaker();
+    }
     menuVisible           = 1;
     menuCursor            = 0;
     optionsCursor         = 0;

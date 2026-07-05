@@ -789,7 +789,26 @@ void cdromResetState(void)
 #define PS1_CD_FAIL_RESET_THRESHOLD 4
 static int gCdFailStreak = 0;
 static int gCdFailTotal  = 0;
-static void ps1CdNoteReadSuccess(void) { gCdFailStreak = 0; }
+/* Scene-abort escape hatch: a screensaver has no precious scenes. When
+ * reads keep failing mid-scene (struggling drive / marginal burn), the
+ * foreground runtime polls this and force-advances to the next scene —
+ * full between-scene teardown, and the new scene's data lives elsewhere
+ * on the disc, which often escapes the bad region entirely. Threshold
+ * sits BELOW the drive-recovery CdInit threshold so we bail out cheaply
+ * before heavyweight recovery (which can itself stall a weak drive). */
+static int gCdSceneAbortStreak = 0;
+
+int ps1CdSceneAbortNeeded(void)
+{
+    return gCdSceneAbortStreak >= 6;
+}
+
+void ps1CdSceneAbortAck(void)
+{
+    gCdSceneAbortStreak = 0;
+}
+
+static void ps1CdNoteReadSuccess(void) { gCdFailStreak = 0; gCdSceneAbortStreak = 0; }
 
 int ps1CdReadFailureCount(void)
 {
@@ -805,6 +824,7 @@ int ps1CdReadFailureCount(void)
 static void ps1CdNoteReadFailure(void)
 {
     gCdFailTotal++;
+    gCdSceneAbortStreak++;
     if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
         extern int printf(const char *, ...);
         printf("JCCD drive-recover: CdInit reset after %d consecutive failures\n",

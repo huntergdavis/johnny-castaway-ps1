@@ -200,4 +200,9 @@ void ps1_pilotPrearmPackForAds(const char *adsName);
  * On success, *outSize is set to the resource size. */
 uint8_t *ps1PilotLoadPsb(const char *psbName, uint32_t *outSize);
 
+/* Persistent mid-scene read failure: the foreground runtime polls this
+ * and force-advances to the next scene instead of retry-looping forever. */
+int  ps1CdSceneAbortNeeded(void);
+void ps1CdSceneAbortAck(void);
+
 #endif /* CDROM_PS1_H */
