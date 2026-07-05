@@ -266,7 +266,7 @@ int grLoadSceneExplorerThumbnail(const char *slug)
         uint32 thumbSectors = (thumbBytes + 2047u) / 2048u;
         uint32 ringSectors = sizeof(gSceneExplorerThumbChunk) / 2340u;
 
-        if (ps1CdReadContinuousInto(&cdfile, thumbSectors,
+        if (ps1CdReadContinuousInto(&cdfile, 0, thumbSectors,
                                     (uint8 *)gSceneExplorerThumbChunk,
                                     ringSectors, grSxThumbGroupBlit, NULL)) {
             gSxCurrentChunk = -1;

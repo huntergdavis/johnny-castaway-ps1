@@ -216,7 +216,8 @@ int  ps1CdDmaDrainExpiredCount(void);   /* R diag: DMA3 drain bound expiries */
  * (drive-gentle explorer thumbnails). onGroup is called with each
  * ring-sized sector group; return 0 from it to abort. Returns 1 on
  * success, 0 on error/overrun — caller falls back to chunked reads. */
-int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
+int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t startSector,
+                            uint32_t numSectors,
                             uint8_t *ring, uint32_t ringSectors,
                             int (*onGroup)(void *ud, const uint8_t *group,
                                            uint32_t firstSector,

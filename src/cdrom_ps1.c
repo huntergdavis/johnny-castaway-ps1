@@ -1506,6 +1506,7 @@ static volatile uint32 gCdContSectors = 0;   /* fetched by ISR */
 static volatile uint32 gCdContConsumed = 0;  /* consumed by caller */
 static volatile int    gCdContError = 0;
 static volatile int    gCdContOverrun = 0;
+static int             gCdContVerifyFailed = 0;
 static uint8  *gCdContRing = NULL;
 static uint32  gCdContRingSectors = 0;
 static uint32  gCdContTotal = 0;
@@ -1540,7 +1541,8 @@ static void ps1CdContReadyCb(CdlIntrResult event, uint8_t *payload)
     }
 }
 
-int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
+int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t startSector,
+                            uint32_t numSectors,
                             uint8_t *ring, uint32_t ringSectors,
                             int (*onGroup)(void *ud, const uint8_t *group,
                                            uint32_t firstSector,
@@ -1568,11 +1570,13 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
     gCdContConsumed = 0;
     gCdContError = 0;
     gCdContOverrun = 0;
+    gCdContVerifyFailed = 0;
     gCdContRing = ring;
     gCdContRingSectors = ringSectors;
     gCdContTotal = numSectors;
 
-    CdIntToPos((int)(uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos), &loc);
+    CdIntToPos((int)((uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos) +
+                     startSector), &loc);
     oldCb = CdReadyCallback(ps1CdContReadyCb);
 
     if (CdControl(CdlSetmode, &mode, NULL) == 0 ||
@@ -1605,7 +1609,8 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
          * the headers are still in place. */
         {
             uint32_t j;
-            uint32_t base = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
+            uint32_t base = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos) +
+                            startSector;
             for (j = 0; j < target - done; j++) {
                 const uint8_t *sec = ring + j * PS1_CD_RAW_SECTOR_BYTES;
                 CdlLOC want;
@@ -1616,6 +1621,7 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
                            (unsigned long)(done + j),
                            sec[0], sec[1], sec[2],
                            want.minute, want.second, want.sector);
+                    gCdContVerifyFailed = 1;
                     ok = 0;
                     break;
                 }
@@ -1655,54 +1661,17 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
         }
     }
 
-    /* POSITION AUDIT — the failure mode no status bit reports (console
-     * photo, MISCGAG1: the thumbnail's bottom band repeated the top,
-     * moon twice, ALL diag counters clean). A worn drive can hiccup
-     * mid-ReadN; the automatic retry re-seeks and silently RE-DELIVERS
-     * earlier sectors, so our per-IRQ counter finishes while the drive
-     * is physically short of where numSectors unique sectors end.
-     * CdlGetlocL exposes the last actually-read sector: short of the
-     * expected end = duplicates were delivered = the image is wrong.
-     * Return 0 so the caller repaints via the seek-exact chunked path.
-     * (Position PAST the end is normal read-ahead.) */
-    if (ok) {
-        /* STATIC, not stack: CdControl's result is written by the
-         * completion IRQ, which can land after the bounded CdSync wait
-         * below gives up — a stack buffer would then be a dead frame
-         * and the IRQ writes 8 bytes of "bad memory data" into whoever
-         * owns it next (console bt17: garbage clean-rect strips painting
-         * debris bands that followed each scene's action area). */
-        static uint8_t locl[8];
-        if (CdControl(CdlGetlocL, NULL, locl) != 0) {
-            int j;
-            CdlIntrResult s = CdlNoIntr;
-            for (j = 0; j < 1000000; j++) {
-                s = CdSync(1, NULL);
-                if (s == CdlComplete || s == CdlDiskError)
-                    break;
-            }
-            if (s == CdlComplete) {
-                CdlLOC end;
-                uint32_t endLba, expectLba;
-                end.minute = locl[0];
-                end.second = locl[1];
-                end.sector = locl[2];
-                end.track  = 0;
-                endLba = (uint32_t)CdPosToInt(&end);
-                expectLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos) +
-                            numSectors - 1u;
-                if (endLba < expectLba) {
-                    printf("JCCD cont-read short: end=%lu expect=%lu\n",
-                           (unsigned long)endLba, (unsigned long)expectLba);
-                    ok = 0;
-                }
-            }
-        }
-    }
-
+    /* Failure accounting, refined (console 0.9.14-bt1: D incremented
+     * once per preview because the now-removed GetlocL audit vetoed
+     * every good read on real hardware — stale position data after
+     * CdlPause; per-sector header verification supersedes it). Only
+     * REAL drive evidence counts: a disk-error event or a sector that
+     * lied about its address. Overruns and timeouts are benign timing
+     * (the chunked fallback handles them) and must not pollute D or
+     * the drive-recovery streak. */
     if (ok)
         ps1CdNoteReadSuccess();
-    else
+    else if (gCdContError || gCdContVerifyFailed)
         ps1CdNoteReadFailure();
     return ok;
 }

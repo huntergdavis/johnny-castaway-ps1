@@ -364,8 +364,34 @@ static int soundUploadVagEffect(int i, uint8_t *vagData, uint32_t vagSize,
     return 1;
 }
 
+/* Group sink for the verified continuous read: copy payload bytes into
+ * the entry's staging buffer. Pure memcpy — no SPU work in the arrival
+ * window, so the ring can never be lapped. */
+struct SndPackReadCtx {
+    uint8_t *dst;
+    uint32_t cap;
+};
+
+static int soundPackGroupCopy(void *ud, const uint8_t *group,
+                              uint32_t firstSector, uint32_t groupSectors)
+{
+    struct SndPackReadCtx *ctx = (struct SndPackReadCtx *)ud;
+    uint32_t off = firstSector * 2048u;
+    uint32_t bytes = groupSectors * 2048u;
+    if (off >= ctx->cap)
+        return 0;
+    if (bytes > ctx->cap - off)
+        bytes = ctx->cap - off;
+    memcpy(ctx->dst + off, group, bytes);
+    return 1;
+}
+
 /* Effects from SOUNDS.PAK: one locate, then sequential sector-aligned
  * reads of each entry (offsets adjacent on disc — near-zero seek cost).
+ * Entry reads go through the VERIFIED continuous reader when the ring
+ * buffer is available: every sector proves its address before its
+ * bytes can reach the SPU (a silently wrong sector at boot = corrupt
+ * samples forever). Chunked aligned reads remain the fallback.
  * Returns the number of effects loaded; 0 -> caller runs the per-file
  * fallback loop. */
 static int soundLoadEffectsFromPack(uint32_t *spuAddr)
@@ -391,32 +417,57 @@ static int soundLoadEffectsFromPack(uint32_t *spuAddr)
         return 0;
     }
 
-    for (e = 0; e < count; e++) {
-        const uint8_t *ent = hdr + 8 + e * 8;
-        int idx = ent[0];
-        uint32_t offSec = (uint32_t)(ent[2] | (ent[3] << 8));
-        uint32_t size = (uint32_t)ent[4] | ((uint32_t)ent[5] << 8) |
-                        ((uint32_t)ent[6] << 16) | ((uint32_t)ent[7] << 24);
-        uint32_t sizeSect = (size + 2047u) & ~2047u;
-        uint8_t *vagData;
-        int r;
+    /* Ring for the verified reads. malloc'd (the explorer chunk buffer
+     * is busy hosting the boot ship + sound-verify window during this
+     * exact phase); NULL just means every entry uses the chunked path. */
+    {
+        extern int ps1CdReadContinuousInto(const CdlFILE *, uint32_t,
+                                           uint32_t, uint8_t *, uint32_t,
+                                           int (*)(void *, const uint8_t *,
+                                                   uint32_t, uint32_t),
+                                           void *);
+        uint8_t *ring = (uint8_t *)malloc(5u * 2340u);
 
-        if (idx < 0 || idx >= MAX_SOUND_EFFECTS || size == 0 ||
-            sizeSect > 64u * 1024u)
-            continue;
-        vagData = (uint8_t *)malloc(sizeSect);
-        if (vagData == NULL)
-            continue;
-        if (!ps1_streamReadAlignedIntoFile(&pak, offSec * 2048u, sizeSect,
-                                           vagData)) {
-            free(vagData);
-            continue;
+        for (e = 0; e < count; e++) {
+            const uint8_t *ent = hdr + 8 + e * 8;
+            int idx = ent[0];
+            uint32_t offSec = (uint32_t)(ent[2] | (ent[3] << 8));
+            uint32_t size = (uint32_t)ent[4] | ((uint32_t)ent[5] << 8) |
+                            ((uint32_t)ent[6] << 16) | ((uint32_t)ent[7] << 24);
+            uint32_t sizeSect = (size + 2047u) & ~2047u;
+            uint8_t *vagData;
+            int gotData = 0;
+            int r;
+
+            if (idx < 0 || idx >= MAX_SOUND_EFFECTS || size == 0 ||
+                sizeSect > 64u * 1024u)
+                continue;
+            vagData = (uint8_t *)malloc(sizeSect);
+            if (vagData == NULL)
+                continue;
+            if (ring != NULL) {
+                struct SndPackReadCtx ctx;
+                ctx.dst = vagData;
+                ctx.cap = sizeSect;
+                gotData = ps1CdReadContinuousInto(&pak, offSec,
+                                                  sizeSect / 2048u,
+                                                  ring, 5u,
+                                                  soundPackGroupCopy, &ctx);
+            }
+            if (!gotData &&
+                !ps1_streamReadAlignedIntoFile(&pak, offSec * 2048u, sizeSect,
+                                               vagData)) {
+                free(vagData);
+                continue;
+            }
+            r = soundUploadVagEffect(idx, vagData, size, spuAddr);
+            if (r < 0)
+                break;
+            if (r > 0)
+                loaded++;
         }
-        r = soundUploadVagEffect(idx, vagData, size, spuAddr);
-        if (r < 0)
-            break;
-        if (r > 0)
-            loaded++;
+        if (ring != NULL)
+            free(ring);
     }
     free(hdr);
     return loaded;
