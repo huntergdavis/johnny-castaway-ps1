@@ -765,9 +765,17 @@ static void ps1FreeFileBuffer(PS1File *file)
 /* Reset CD state after external CD operations (like title screen loading) */
 void cdromResetState(void)
 {
-    /* Wait for any pending CD operations */
+    /* Wait for any pending CD operations — BOUNDED. This is the
+     * recovery function: if the controller is wedged (missed completion
+     * IRQ on a cold drive), an unbounded CdReadSync(0) here hangs the
+     * recovery itself. Poll non-blocking, then CdInit regardless — the
+     * init is what actually clears a wedged controller. */
     ps1_streamAsyncReadDrain();
-    CdReadSync(0, NULL);
+    {
+        int i;
+        for (i = 0; i < 1000000 && CdReadSync(1, NULL) > 0; i++)
+            ;
+    }
 
     /* Re-initialize the CD subsystem to fully reset state */
     CdInit();
@@ -1011,24 +1019,42 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
     /* Calculate sectors needed */
     int numSectors = (file->bufferSize + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
 
-    /* Position CD head at file location. No settle delay before CdRead:
-     * CdlSetloc only stores the target; CdRead issues the seek (same
-     * Setloc->CdRead pattern the async path has always soaked clean). */
-    CdControl(CdlSetloc, (uint8_t*)&file->cdfile.pos, NULL);
-
-    /* Start CD read */
-    CdRead(numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
-
-    /* Wait for read to complete (blocking) */
-    int sync_result = CdReadSync(0, NULL);
-    if (sync_result >= 0)
-        ps1CdDmaDrainBounded();
-
-    if (sync_result < 0) {
-        ps1FreeFileBuffer(file);
-        file->isOpen = 0;
-        file->filename[0] = '\0';
-        return NULL;  /* Read error */
+    /* Position CD head + read, with PATIENT BOUNDED retries. The old
+     * unbounded CdReadSync(0) parked boot forever when a cold, just-
+     * chainloaded drive missed the completion IRQ during the RESOURCE
+     * catalog load — the console "ship stuck half off-screen" hang
+     * (task #27: always in the first loading stage). ps1CdReadSyncBounded
+     * gives ~4 s per attempt; a controller reset between attempts clears
+     * a wedged command. Final failure returns NULL so the caller can
+     * report something visible instead of hanging. */
+    {
+        int attempt;
+        int readOk = 0;
+        for (attempt = 0; attempt < 3 && !readOk; attempt++) {
+            if (attempt > 0) {
+                extern int printf(const char *, ...);
+                int i;
+                printf("JCCD fopen retry %d %s\n", attempt, filename);
+                /* Controller-only reset: cdromResetState would wipe the
+                 * file pool and free the very buffer we're reading into.
+                 * Bounded drain, then CdInit clears a wedged command. */
+                for (i = 0; i < 1000000 && CdReadSync(1, NULL) > 0; i++)
+                    ;
+                CdInit();
+            }
+            if (CdControl(CdlSetloc, (uint8_t*)&file->cdfile.pos, NULL) == 0)
+                continue;
+            if (CdRead(numSectors, (uint32_t*)file->buffer, CdlModeSpeed) == 0)
+                continue;
+            if (ps1CdReadSyncBounded() == 0)
+                readOk = 1;
+        }
+        if (!readOk) {
+            ps1FreeFileBuffer(file);
+            file->isOpen = 0;
+            file->filename[0] = '\0';
+            return NULL;  /* Read error after bounded retries */
+        }
     }
 
     return file;
@@ -1114,12 +1140,34 @@ static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
     CdlLOC seekLoc;
     CdIntToPos((int)targetLba, &seekLoc);
     /* No settle delay between Setloc and CdRead (see chunked-stream fix:
-     * Setloc only stores the target; CdRead issues the seek). */
-    CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL);
-    CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed);
-    if (CdReadSync(0, NULL) < 0) {
-        cdromResetState();
-        return 0;
+     * Setloc only stores the target; CdRead issues the seek). Bounded
+     * sync + patient retries: this is the RESOURCE.001 boot streaming
+     * path — the old unbounded CdReadSync(0) was the other half of the
+     * "ship stuck half off-screen" boot hang (task #27). Controller-only
+     * reset between attempts (cdromResetState would free file->buffer
+     * out from under us). */
+    {
+        int attempt;
+        int readOk = 0;
+        for (attempt = 0; attempt < 3 && !readOk; attempt++) {
+            if (attempt > 0) {
+                extern int printf(const char *, ...);
+                int i;
+                printf("JCCD refill retry %d lba=%lu\n", attempt,
+                       (unsigned long)targetLba);
+                for (i = 0; i < 1000000 && CdReadSync(1, NULL) > 0; i++)
+                    ;
+                CdInit();
+            }
+            if (CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL) == 0)
+                continue;
+            if (CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed) == 0)
+                continue;
+            if (ps1CdReadSyncBounded() == 0)
+                readOk = 1;
+        }
+        if (!readOk)
+            return 0;
     }
     file->streamBase = startOffset;
     file->streamBytesCached = numSectors * SECTOR;
