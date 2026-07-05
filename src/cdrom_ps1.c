@@ -1576,6 +1576,45 @@ int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
         }
     }
 
+    /* POSITION AUDIT — the failure mode no status bit reports (console
+     * photo, MISCGAG1: the thumbnail's bottom band repeated the top,
+     * moon twice, ALL diag counters clean). A worn drive can hiccup
+     * mid-ReadN; the automatic retry re-seeks and silently RE-DELIVERS
+     * earlier sectors, so our per-IRQ counter finishes while the drive
+     * is physically short of where numSectors unique sectors end.
+     * CdlGetlocL exposes the last actually-read sector: short of the
+     * expected end = duplicates were delivered = the image is wrong.
+     * Return 0 so the caller repaints via the seek-exact chunked path.
+     * (Position PAST the end is normal read-ahead.) */
+    if (ok) {
+        uint8_t locl[8];
+        if (CdControl(CdlGetlocL, NULL, locl) != 0) {
+            int j;
+            CdlIntrResult s = CdlNoIntr;
+            for (j = 0; j < 1000000; j++) {
+                s = CdSync(1, NULL);
+                if (s == CdlComplete || s == CdlDiskError)
+                    break;
+            }
+            if (s == CdlComplete) {
+                CdlLOC end;
+                uint32_t endLba, expectLba;
+                end.minute = locl[0];
+                end.second = locl[1];
+                end.sector = locl[2];
+                end.track  = 0;
+                endLba = (uint32_t)CdPosToInt(&end);
+                expectLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos) +
+                            numSectors - 1u;
+                if (endLba < expectLba) {
+                    printf("JCCD cont-read short: end=%lu expect=%lu\n",
+                           (unsigned long)endLba, (unsigned long)expectLba);
+                    ok = 0;
+                }
+            }
+        }
+    }
+
     if (ok)
         ps1CdNoteReadSuccess();
     else
