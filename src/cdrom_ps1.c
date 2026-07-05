@@ -924,7 +924,11 @@ static void ps1CdNoteReadFailure(void)
  * (seeks) on the drive. Cache the results; repeat locates (explorer
  * thumbnails, scene packs cycling through the rotation) become free.
  * FIFO replacement; survives CdInit (file locations are disc data). */
-#define PS1_CD_LOCATE_CACHE_SIZE 48
+/* 24, not 48: EXE static-image ceiling pressure (each entry ~52 bytes).
+ * The hot set is the current browse neighborhood + rotation packs;
+ * FIFO churn on a full 63-scene sweep just re-walks the directory
+ * once per wrap, which is the pre-cache behavior. */
+#define PS1_CD_LOCATE_CACHE_SIZE 24
 static struct {
     char    name[24];
     CdlFILE file;

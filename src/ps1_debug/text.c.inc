@@ -14,11 +14,11 @@
  * heap ceiling after the relief tier-yield fix; the renderer
  * truncates safely at the limit, so the cost is at most a few
  * unrendered glyphs on a maximally full debug panel. */
-/* Trimmed 23552 -> 20480: the BSOD/debug text screen never came close
- * to filling the original allowance, and the diagnostics-heavy regtest
- * builds were bumping the EXE static-image ceiling by mere dozens of
- * bytes every round (chronic since 0.9.13). 3 KB of breathing room. */
-#define PS1_DEBUG_PRIM_BYTES 20480
+/* Trimmed 23552 -> 20480 -> 18432: the BSOD/debug text screen never
+ * came close to filling the original allowance, and the diagnostics-
+ * heavy regtest builds keep bumping the EXE static-image ceiling
+ * (chronic since 0.9.13; round 2 was the locate cache + sound pack). */
+#define PS1_DEBUG_PRIM_BYTES 18432
 /* 1 KB (was 2 KB): the BSOD panel emits ~15 lines x ~45 chars (~700 B);
  * ps1DebugFlush appends with a hard end-pointer, so an oversized dump
  * truncates instead of overflowing. Freed for libc heap headroom. */
