@@ -376,22 +376,22 @@ static void drawSceneExplorer(void)
      * we stay clear of bottom NTSC overscan). */
     pmTextStart(pmPrintfX, 376);
     pmPrintf(pmText(PMT_SCENE_PACK), packLabel, cur + 1, gSceneExplorerCount);
-    drawSeparator();
-    pmPrintf(pmText(PMT_SCENE_NAV));
-{
+    {
         extern int grSxDiagCeilingHits(void);
         extern int grSxDiagStallChunk(void);
         extern int grSxDiagQuiesceExpired(void);
         extern int ps1CdReadFailureCount(void);
         extern int ps1CdDmaDrainExpiredCount(void);
         extern int gPmShowCount;
-        /* Always shown: "no diag line" from the console reads as weak
-         * evidence; explicit zeros are strong evidence. */
+        /* Always shown, in the separator's slot so the band keeps its
+         * 4-line overscan-safe budget: explicit zeros from the console
+         * are strong evidence; a missing line is weak evidence. */
         pmPrintf(" P%d Q%d R%d c%d D%d S%d\n",
                  grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
                  ps1CdDmaDrainExpiredCount(),
                  grSxDiagStallChunk(),
                  ps1CdReadFailureCount(), gPmShowCount);
     }
-        pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
+    pmPrintf(pmText(PMT_SCENE_NAV));
+    pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }
