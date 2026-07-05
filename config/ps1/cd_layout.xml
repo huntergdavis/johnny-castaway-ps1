@@ -271,6 +271,10 @@
 
             <!-- sound11 and sound13 do not exist in the original game data. -->
             <dir name="SND" source="../../jc_resources/extracted/snd">
+                <!-- SOUNDS.PAK: all SOUNDnn effects behind ONE locate +
+                     sequential sector-aligned reads (build-sound-pack.py).
+                     Individual VAGs stay as the loader fallback. -->
+                <file name="SOUNDS.PAK" type="data" source="../../generated/ps1/snd/SOUNDS.PAK"/>
                 <file name="SOUND00.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND00.VAG"/>
                 <file name="SOUND01.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND01.VAG"/>
                 <file name="SOUND02.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND02.VAG"/>

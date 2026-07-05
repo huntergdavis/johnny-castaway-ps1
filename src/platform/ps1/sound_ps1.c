@@ -297,6 +297,131 @@ static uint32_t readBE32(const uint8_t *p)
            ((uint32_t)p[2] << 8)  | (uint32_t)p[3];
 }
 
+/* Parse one effect VAG and upload it to SPU RAM. Takes ownership of
+ * vagData (always freed). Returns 1 = loaded, 0 = skipped (bad data /
+ * no memory / verify failed -> MISSING), -1 = out of SPU RAM (stop). */
+static int soundUploadVagEffect(int i, uint8_t *vagData, uint32_t vagSize,
+                                uint32_t *spuAddr)
+{
+    if (vagSize <= VAG_HEADER_SIZE) {
+        free(vagData);
+        return 0;
+    }
+
+    /* Parse VAG header — sample rate is big-endian at offset 16 */
+    uint16_t sampleRate = (uint16_t)readBE32(vagData + 16);
+    uint32_t adpcmSize = vagSize - VAG_HEADER_SIZE;
+    /* SPU DMA moves data in 64-byte blocks; pad up or the final ADPCM
+     * flag byte (end-of-sample) gets truncated and the voice never
+     * stops, producing silence or noise instead of our sample. */
+    uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
+
+    if (*spuAddr + dmaSize > SPU_RAM_SIZE_BYTES) {
+        printf("SPU: out of RAM at sound %d\n", i);
+        free(vagData);
+        return -1;
+    }
+
+    uint8_t *dmaBuf = (uint8_t *)malloc(dmaSize);
+    if (!dmaBuf) {
+        free(vagData);
+        return 0;
+    }
+    memcpy(dmaBuf, vagData + VAG_HEADER_SIZE, adpcmSize);
+    if (dmaSize > adpcmSize)
+        memset(dmaBuf + adpcmSize, 0, dmaSize - adpcmSize);
+
+    /* Upload, then read back and compare. Console rounds showed uploads
+     * landing corrupted in ways no completion wait fully excludes; a
+     * sample that never verifies is dropped (MISSING in the sound test)
+     * instead of shipping corrupt. */
+    ps1BootProgress((uint8)(20 + i * 2));
+    {
+        int attempt, uploadOk = 0;
+        for (attempt = 0; attempt < 3 && !uploadOk; attempt++) {
+            if (attempt > 0)
+                gSndDiagUploadRetry++;
+            if (!ps1SpuDmaWrite(*spuAddr, dmaBuf, dmaSize))
+                continue;
+            uploadOk = spuUploadVerify(*spuAddr, dmaBuf, dmaSize);
+        }
+        free(dmaBuf);
+        free(vagData);
+        if (!uploadOk) {
+            gSndDiagUploadBad++;
+            return 0;   /* soundAddresses[i] stays 0 -> MISSING */
+        }
+    }
+
+    soundAddresses[i] = *spuAddr;
+    soundSizes[i] = adpcmSize;
+    soundSampleRates[i] = sampleRate;
+    soundPitches[i] = getSPUSampleRate(sampleRate);
+
+    /* Advance by the DMA-aligned amount so the next sample does not
+     * overlap the padding tail of this one. */
+    *spuAddr += dmaSize;
+    return 1;
+}
+
+/* Effects from SOUNDS.PAK: one locate, then sequential sector-aligned
+ * reads of each entry (offsets adjacent on disc — near-zero seek cost).
+ * Returns the number of effects loaded; 0 -> caller runs the per-file
+ * fallback loop. */
+static int soundLoadEffectsFromPack(uint32_t *spuAddr)
+{
+    CdlFILE pak;
+    uint8_t *hdr;
+    int count, e, loaded = 0;
+
+    if (ps1_cdSearchFileQuiesced(&pak, "\\SND\\SOUNDS.PAK;1") == NULL)
+        return 0;
+    hdr = (uint8_t *)malloc(2048);
+    if (hdr == NULL)
+        return 0;
+    if (!ps1_streamReadAlignedIntoFile(&pak, 0, 2048, hdr) ||
+        hdr[0] != 'J' || hdr[1] != 'C' || hdr[2] != 'S' || hdr[3] != 'P' ||
+        (hdr[4] | (hdr[5] << 8)) != 1) {
+        free(hdr);
+        return 0;
+    }
+    count = hdr[6] | (hdr[7] << 8);
+    if (count <= 0 || count > 64) {
+        free(hdr);
+        return 0;
+    }
+
+    for (e = 0; e < count; e++) {
+        const uint8_t *ent = hdr + 8 + e * 8;
+        int idx = ent[0];
+        uint32_t offSec = (uint32_t)(ent[2] | (ent[3] << 8));
+        uint32_t size = (uint32_t)ent[4] | ((uint32_t)ent[5] << 8) |
+                        ((uint32_t)ent[6] << 16) | ((uint32_t)ent[7] << 24);
+        uint32_t sizeSect = (size + 2047u) & ~2047u;
+        uint8_t *vagData;
+        int r;
+
+        if (idx < 0 || idx >= MAX_SOUND_EFFECTS || size == 0 ||
+            sizeSect > 64u * 1024u)
+            continue;
+        vagData = (uint8_t *)malloc(sizeSect);
+        if (vagData == NULL)
+            continue;
+        if (!ps1_streamReadAlignedIntoFile(&pak, offSec * 2048u, sizeSect,
+                                           vagData)) {
+            free(vagData);
+            continue;
+        }
+        r = soundUploadVagEffect(idx, vagData, size, spuAddr);
+        if (r < 0)
+            break;
+        if (r > 0)
+            loaded++;
+    }
+    free(hdr);
+    return loaded;
+}
+
 /*
  * Initialize SPU audio system and load VAG files from CD into SPU RAM
  */
@@ -322,11 +447,14 @@ void soundInit()
         soundSampleRates[i] = 0;
     }
 
-    /* Load VAG files from CD into SPU RAM */
+    /* Load VAG files from CD into SPU RAM. Pack path first: SOUNDS.PAK
+     * holds all effects behind ONE locate + sequential sector-aligned
+     * reads (23 directory walks + seek cycles per boot -> 1 on a cold
+     * drive). The per-file loop below is the fallback. */
     uint32_t spuAddr = SPU_DATA_START;
-    int loaded = 0;
+    int loaded = soundLoadEffectsFromPack(&spuAddr);
 
-    for (int i = 0; i < MAX_SOUND_EFFECTS; i++) {
+    for (int i = 0; loaded == 0 && i < MAX_SOUND_EFFECTS; i++) {
         char filename[] = "\\SND\\SOUND00.VAG;1";
 
         /* SOUND11/SOUND13 do not exist in the original game data (see
@@ -342,67 +470,13 @@ void soundInit()
         uint8_t *vagData = ps1_loadRawFile(filename, &vagSize);
         if (!vagData) continue;
 
-        if (vagSize <= VAG_HEADER_SIZE) {
-            free(vagData);
-            continue;
-        }
-
-        /* Parse VAG header — sample rate is big-endian at offset 16 */
-        uint16_t sampleRate = (uint16_t)readBE32(vagData + 16);
-        uint32_t adpcmSize = vagSize - VAG_HEADER_SIZE;
-        /* SPU DMA moves data in 64-byte blocks; pad up or the final ADPCM
-         * flag byte (end-of-sample) gets truncated and the voice never
-         * stops, producing silence or noise instead of our sample. */
-        uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
-
-        /* Check SPU RAM overflow (512KB total) */
-        if (spuAddr + dmaSize > SPU_RAM_SIZE_BYTES) {
-            printf("SPU: out of RAM at sound %d\n", i);
-            free(vagData);
-            break;
-        }
-
-        uint8_t *dmaBuf = (uint8_t *)malloc(dmaSize);
-        if (!dmaBuf) {
-            free(vagData);
-            continue;
-        }
-        memcpy(dmaBuf, vagData + VAG_HEADER_SIZE, adpcmSize);
-        if (dmaSize > adpcmSize)
-            memset(dmaBuf + adpcmSize, 0, dmaSize - adpcmSize);
-
-        /* Upload ADPCM data (skip VAG header) to SPU RAM, then read it
-         * back and compare. Console rounds showed uploads landing
-         * corrupted in ways no completion wait fully excludes; a sample
-         * that never verifies is dropped (shows as MISSING in the sound
-         * test) instead of shipping corrupt. */
-        ps1BootProgress((uint8)(20 + i * 2));
         {
-            int attempt, uploadOk = 0;
-            for (attempt = 0; attempt < 3 && !uploadOk; attempt++) {
-                if (attempt > 0)
-                    gSndDiagUploadRetry++;
-                if (!ps1SpuDmaWrite(spuAddr, dmaBuf, dmaSize))
-                    continue;
-                uploadOk = spuUploadVerify(spuAddr, dmaBuf, dmaSize);
-            }
-            free(dmaBuf);
-            free(vagData);
-            if (!uploadOk) {
-                gSndDiagUploadBad++;
-                continue;   /* soundAddresses[i] stays 0 -> MISSING */
-            }
+            int r = soundUploadVagEffect(i, vagData, vagSize, &spuAddr);
+            if (r < 0)
+                break;      /* out of SPU RAM */
+            if (r > 0)
+                loaded++;
         }
-
-        soundAddresses[i] = spuAddr;
-        soundSizes[i] = adpcmSize;
-        soundSampleRates[i] = sampleRate;
-        soundPitches[i] = getSPUSampleRate(sampleRate);
-
-        /* Advance by the DMA-aligned amount so the next sample does not
-         * overlap the padding tail of this one. */
-        spuAddr += dmaSize;
-        loaded++;
     }
 
     if (loaded > 0) {

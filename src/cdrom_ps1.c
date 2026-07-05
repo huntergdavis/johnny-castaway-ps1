@@ -919,9 +919,51 @@ static void ps1CdNoteReadFailure(void)
     }
 }
 
+/* Locate cache: the disc is immutable, so a filename's CdlFILE never
+ * changes — but every CdSearchFile is a physical directory walk
+ * (seeks) on the drive. Cache the results; repeat locates (explorer
+ * thumbnails, scene packs cycling through the rotation) become free.
+ * FIFO replacement; survives CdInit (file locations are disc data). */
+#define PS1_CD_LOCATE_CACHE_SIZE 48
+static struct {
+    char    name[24];
+    CdlFILE file;
+    uint8_t used;
+} gCdLocateCache[PS1_CD_LOCATE_CACHE_SIZE];
+static int gCdLocateCacheNext = 0;
+
+static int ps1CdLocateCacheLookup(const char *filename, CdlFILE *out)
+{
+    int i;
+    for (i = 0; i < PS1_CD_LOCATE_CACHE_SIZE; i++) {
+        if (gCdLocateCache[i].used &&
+            strcmp(gCdLocateCache[i].name, filename) == 0) {
+            *out = gCdLocateCache[i].file;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void ps1CdLocateCacheInsert(const char *filename, const CdlFILE *f)
+{
+    int slot;
+    if (strlen(filename) >= sizeof(gCdLocateCache[0].name))
+        return;
+    slot = gCdLocateCacheNext;
+    gCdLocateCacheNext = (gCdLocateCacheNext + 1) % PS1_CD_LOCATE_CACHE_SIZE;
+    strcpy(gCdLocateCache[slot].name, filename);
+    gCdLocateCache[slot].file = *f;
+    gCdLocateCache[slot].used = 1;
+}
+
 CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
 {
     CdlFILE *found;
+
+    if (filename != NULL && ps1CdLocateCacheLookup(filename, file))
+        return file;
+
     /* PSn00bSDK's CdRead path completes the data transfer, then issues an
      * async CdlPause. Our fast read polling can return before that pause's
      * completion IRQ, and that IRQ resets the CD parameter FIFO. Drain it
@@ -940,6 +982,8 @@ CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
      * "drive can read" signal; a working locate is not. */
     if (found == NULL)
         ps1CdNoteReadFailure();
+    else if (filename != NULL)
+        ps1CdLocateCacheInsert(filename, file);
     return found;
 }
 
