@@ -1,3 +1,27 @@
+/* Bounded GPU drain + self-heal for the menu loop. An unbounded
+ * DrawSync(0) on a wedged GPU freezes the picture forever while the
+ * SPU keeps playing (console: "crashes but background audio still
+ * playing"). Wait bounded for queue-empty + DMA idle + GPU idle; on
+ * expiry, reset the GPU command FIFO (GP1 01h — the canonical
+ * un-wedge) and force a full menu repaint. W on the diag line counts
+ * these recoveries. */
+static int gPmGpuUnwedgeCount = 0;
+int pauseMenuGpuUnwedgeCount(void) { return gPmGpuUnwedgeCount; }
+
+static void pmGpuDrainBounded(void)
+{
+    int i;
+    for (i = 0; i < 2000000; i++) {
+        if (DrawSync(1) <= 0 &&
+            !(*(volatile uint32 *)0xBF8010A8 & (1u << 24)) &&   /* DMA2 idle */
+            (*(volatile uint32 *)0xBF801814 & (1u << 26)))      /* GPU idle  */
+            return;
+    }
+    *(volatile uint32 *)0xBF801814 = 0x01000000u;   /* GP1: reset command buffer */
+    gPmGpuUnwedgeCount++;
+    menuFramebufferPrimed = 0;                      /* repaint next frame */
+}
+
 /* ---------------------------------------------------------------------------
  *  pauseMenuUpdate -- one frame of the overlay
  *
@@ -29,7 +53,7 @@ int pauseMenuUpdate(void)
          * single framebuffer and produces visible scene/menu flicker. */
         grForceFullRedrawNextFrame();
         grDrawBackground();
-        DrawSync(0);
+        pmGpuDrainBounded();
     }
 
     /* Upload our font on first frame. */
@@ -138,7 +162,7 @@ int pauseMenuUpdate(void)
     if (oldState != menuState && keepOpen) {
         grForceFullRedrawNextFrame();
         grDrawBackground();
-        DrawSync(0);
+        pmGpuDrainBounded();
         drawDim = 1;          /* re-dim on transition */
         menuFramebufferPrimed = 0;
     }
@@ -249,7 +273,7 @@ int pauseMenuUpdate(void)
 
     /* Submit the OT to GPU. */
     DrawOTag(&pauseOt[PAUSE_OT_LEN - 1]);
-    DrawSync(0);
+    pmGpuDrainBounded();
     menuFramebufferPrimed = 1;
 
 #if PAUSE_MENU_DIAG_LOGS

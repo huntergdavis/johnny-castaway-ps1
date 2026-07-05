@@ -382,13 +382,15 @@ static void drawSceneExplorer(void)
         extern int grSxDiagQuiesceExpired(void);
         extern int ps1CdReadFailureCount(void);
         extern int ps1CdDmaDrainExpiredCount(void);
+        extern int pauseMenuGpuUnwedgeCount(void);
         extern int gPmShowCount;
         /* Always shown, in the separator's slot so the band keeps its
          * 4-line overscan-safe budget: explicit zeros from the console
          * are strong evidence; a missing line is weak evidence. */
-        pmPrintf(" P%d Q%d R%d c%d D%d S%d\n",
+        pmPrintf(" P%d Q%d R%d W%d c%d D%d S%d\n",
                  grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
                  ps1CdDmaDrainExpiredCount(),
+                 pauseMenuGpuUnwedgeCount(),
                  grSxDiagStallChunk(),
                  ps1CdReadFailureCount(), gPmShowCount);
     }

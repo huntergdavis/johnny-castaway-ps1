@@ -82,7 +82,10 @@ static void grSxQuiesce(void)
         gSxQuiesceExpired++;
         gSxLastStallChunk = gSxCurrentChunk;
     }
-    DrawSync(0);
+    /* No DrawSync(0) here: it is UNBOUNDED and spins forever on a
+     * wedged GPU (console freeze with audio alive). Queue-empty above
+     * plus the CHCR drain and sequential ready-bit waits below cover
+     * everything DrawSync(0) was for, all bounded. */
     for (i = 0; i < 400000 && (GR_SX_D2_CHCR & (1u << 24)); i++)
         ;
     /* Drain expiry is the P0-invisible failure mode: DMA2 still busy

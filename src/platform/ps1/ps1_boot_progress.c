@@ -171,7 +171,18 @@ void ps1BootProgress(uint8 pct)
         return;
     if (pct > 100)
         pct = 100;
-    /* Drain anything the SDK queued before our direct GP0 writes. */
+    /* Drain anything the SDK queued before our direct GP0 writes.
+     * DrawSync(0) alone is NOT enough: the dock call (pct=100) runs at
+     * the first presented scene frame, when the scene's initial
+     * LoadImages sit QUEUED-not-started — invisible to DrawSync(0)'s
+     * early return, they auto-start from the DMA IRQ mid-fill (console:
+     * garbled bottom line on scene start, healed by the menu repaint).
+     * Same queue-first discipline as the explorer quiesce. */
+    {
+        int i;
+        for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+            ;
+    }
     DrawSync(0);
     bow = BOW_MIN + ((BOW_MAX - BOW_MIN) * (int)pct) / 100;
     x = bow - PS1_SHIP_SPRITE_W;          /* ship-left; negative = clipped */
@@ -214,6 +225,12 @@ void ps1BootProgressFinish(void)
 {
     if (!gBootBarActive)
         return;
+    /* Queue-first drain — see ps1BootProgress. */
+    {
+        int i;
+        for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+            ;
+    }
     DrawSync(0);
     /* Clear the whole band (ship + bar) back to black. */
     bootFill(0, SHIP_Y - 2, 640, PS1_SHIP_SPRITE_H + BAR_H + 6, 0, 0, 0);
