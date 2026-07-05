@@ -1393,6 +1393,133 @@ static int ps1CdReadSyncBoundedInner(void)
     return syncResult;
 }
 
+/* ---------------------------------------------------------------------
+ * Continuous sector read (CdlReadN + CdReadyCallback + CdGetSector).
+ *
+ * The chunked readers above issue Setloc+CdRead per small chunk; each
+ * CdRead ends in an async CdlPause, so a 75-sector explorer thumbnail
+ * cost 15 seek + stop/restart cycles — mechanically the hardest
+ * workload in the product for a worn drive. Here the drive seeks ONCE
+ * and reads continuously; the per-sector data-ready IRQ drains each
+ * sector into a small ring and the caller consumes ring-sized groups
+ * between arrivals (~6.7 ms/sector at 2x vs <1 ms per group blit).
+ *
+ * Overrun guard: if the consumer ever falls a full ring behind (fast
+ * emulator timing, degraded main loop), the ISR STOPS fetching and
+ * flags it; the caller aborts and falls back to the chunked path, so
+ * correctness never depends on timing.
+ * ------------------------------------------------------------------- */
+static volatile uint32 gCdContSectors = 0;   /* fetched by ISR */
+static volatile uint32 gCdContConsumed = 0;  /* consumed by caller */
+static volatile int    gCdContError = 0;
+static volatile int    gCdContOverrun = 0;
+static uint8  *gCdContRing = NULL;
+static uint32  gCdContRingSectors = 0;
+static uint32  gCdContTotal = 0;
+
+static void ps1CdContReadyCb(CdlIntrResult event, uint8_t *payload)
+{
+    (void)payload;
+    if (event == CdlDataReady) {
+        if (gCdContRing == NULL || gCdContSectors >= gCdContTotal)
+            return;                      /* trailing sector past the end */
+        if (gCdContSectors >= gCdContConsumed + gCdContRingSectors) {
+            gCdContOverrun = 1;          /* consumer lapped — abort path */
+            return;
+        }
+        CdGetSector(gCdContRing +
+                        (gCdContSectors % gCdContRingSectors) * 2048u,
+                    512);
+        gCdContSectors++;
+    } else if (event == CdlDiskError) {
+        gCdContError = 1;
+    }
+}
+
+int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
+                            uint8_t *ring, uint32_t ringSectors,
+                            int (*onGroup)(void *ud, const uint8_t *group,
+                                           uint32_t firstSector,
+                                           uint32_t groupSectors),
+                            void *ud)
+{
+    CdlLOC loc;
+    CdlCB oldCb;
+    uint8_t mode = CdlModeSpeed;
+    int ok = 1;
+    uint32_t done = 0;
+    int i;
+
+    if (cdfile == NULL || ring == NULL || ringSectors == 0 ||
+        numSectors == 0 || onGroup == NULL)
+        return 0;
+    if (gCdSceneAbortStreak >= 12)
+        return 0;
+    if (!ps1CdEnsureNoAsyncRead())
+        return 0;
+    for (i = 0; i < 1000000 && CdReadSync(1, NULL) > 0; i++)
+        ;
+
+    gCdContSectors = 0;
+    gCdContConsumed = 0;
+    gCdContError = 0;
+    gCdContOverrun = 0;
+    gCdContRing = ring;
+    gCdContRingSectors = ringSectors;
+    gCdContTotal = numSectors;
+
+    CdIntToPos((int)(uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos), &loc);
+    oldCb = CdReadyCallback(ps1CdContReadyCb);
+
+    if (CdControl(CdlSetmode, &mode, NULL) == 0 ||
+        CdControl(CdlSetloc, (uint8_t *)&loc, NULL) == 0 ||
+        CdControl(CdlReadN, (uint8_t *)&loc, NULL) == 0)
+        ok = 0;
+
+    while (ok && done < numSectors) {
+        uint32_t target = done + ringSectors;
+        uint32_t t0 = (uint32_t)VSync(-1);
+        if (target > numSectors)
+            target = numSectors;
+        /* Tight poll (not VSync waits): the ring has zero slack once a
+         * group completes, and sub-ms consumption keeps us 6 ms ahead
+         * of the drive. ~2 s bound per group. */
+        while (gCdContSectors < target && !gCdContError && !gCdContOverrun) {
+            if ((uint32_t)VSync(-1) - t0 > 120)
+                break;
+        }
+        if (gCdContError || gCdContOverrun || gCdContSectors < target) {
+            ok = 0;
+            break;
+        }
+        if (!onGroup(ud, ring, done, target - done)) {
+            ok = 0;
+            break;
+        }
+        done = target;
+        gCdContConsumed = target;
+    }
+
+    /* Stop the read and restore the SDK's callback in every exit path. */
+    gCdContRing = NULL;
+    CdReadyCallback(oldCb);
+    (void)CdControl(CdlPause, NULL, NULL);
+    {
+        int j;
+        for (j = 0; j < 1000000; j++) {
+            CdlIntrResult s = CdSync(1, NULL);
+            if (s == CdlComplete || s == CdlDiskError)
+                break;
+        }
+    }
+
+    if (ok)
+        ps1CdNoteReadSuccess();
+    else
+        ps1CdNoteReadFailure();
+    return ok;
+}
+
 /*
  * Stream read: Read a range of bytes from a file without loading entire file.
  * This is for dynamic loading - reads only the necessary CD sectors.

@@ -209,6 +209,23 @@ static int grResolveSceneExplorerFile(const char *slug, CdlFILE *cdfile)
     return ps1_streamResolveFile(path, cdfile);
 }
 
+/* Continuous-read group blit: 5 sectors = 10240 bytes = exactly 16
+ * thumbnail rows. Runs between sector arrivals (~6.7 ms apart at 2x);
+ * the paced blit + close-out is sub-ms, so the ring never laps. */
+static int grSxThumbGroupBlit(void *ud, const uint8 *group,
+                              uint32 firstSector, uint32 groupSectors)
+{
+    int y = (int)((firstSector * 2048u) / (SCENE_EXPLORER_THUMB_W * 2u));
+    int rows = (int)((groupSectors * 2048u) / (SCENE_EXPLORER_THUMB_W * 2u));
+
+    (void)ud;
+    gSxCurrentChunk = (int)(firstSector / groupSectors);
+    grSxQuiesce();
+    grSxBlitRect(160, 120 + y, SCENE_EXPLORER_THUMB_W, rows,
+                 (const uint16 *)group);
+    return 1;
+}
+
 int grLoadSceneExplorerThumbnail(const char *slug)
 {
     CdlFILE cdfile;
@@ -228,6 +245,26 @@ int grLoadSceneExplorerThumbnail(const char *slug)
     grClearSceneExplorerRect(0, 360, 640, 120);
     grClearSceneExplorerRect(0, 120, 160, 240);
     grClearSceneExplorerRect(480, 120, 160, 240);
+
+    /* Drive-gentle path first: ONE seek + continuous CdlReadN for all
+     * 75 sectors instead of 15 seek + stop/restart chunk cycles. On
+     * any error/overrun it returns 0 and the legacy chunked loop below
+     * re-reads from the top (drawing over whatever partially landed). */
+    {
+        uint32 thumbBytes = (uint32)SCENE_EXPLORER_THUMB_W *
+                            SCENE_EXPLORER_THUMB_H * 2u;
+        uint32 thumbSectors = (thumbBytes + 2047u) / 2048u;
+        uint32 ringSectors = sizeof(gSceneExplorerThumbChunk) / 2048u;
+
+        if (ps1CdReadContinuousInto(&cdfile, thumbSectors,
+                                    (uint8 *)gSceneExplorerThumbChunk,
+                                    ringSectors, grSxThumbGroupBlit, NULL)) {
+            gSxCurrentChunk = -1;
+            return 1;
+        }
+        gSxCurrentChunk = -1;
+        printf("JCSX cont-read fallback %s\n", slug ? slug : "?");
+    }
 
     for (int y = 0; y < SCENE_EXPLORER_THUMB_H;
          y += SCENE_EXPLORER_THUMB_ROWS_PER_READ) {

@@ -212,4 +212,15 @@ void ps1CdSceneAbortAck(void);
 void ps1CdSetCosmeticReads(int on);
 int  ps1CdDmaDrainExpiredCount(void);   /* R diag: DMA3 drain bound expiries */
 
+/* Continuous CdlReadN read: ONE seek, no per-chunk stop/restart cycles
+ * (drive-gentle explorer thumbnails). onGroup is called with each
+ * ring-sized sector group; return 0 from it to abort. Returns 1 on
+ * success, 0 on error/overrun — caller falls back to chunked reads. */
+int ps1CdReadContinuousInto(const CdlFILE *cdfile, uint32_t numSectors,
+                            uint8_t *ring, uint32_t ringSectors,
+                            int (*onGroup)(void *ud, const uint8_t *group,
+                                           uint32_t firstSector,
+                                           uint32_t groupSectors),
+                            void *ud);
+
 #endif /* CDROM_PS1_H */
