@@ -38,8 +38,9 @@
 static Ps1CdReadIdleHook gPs1CdReadIdleHook = NULL;
 static void *gPs1CdReadIdleHookUserData = NULL;
 
-/* Definition near ps1CdReadSyncBounded; see rationale there. */
+/* Definitions near ps1CdReadSyncBounded; see rationale there. */
 static void ps1CdDmaDrainBounded(void);
+static void ps1CdAwaitCommandIdle(void);
 
 static int ps1BuildPath3(char *out, size_t outSize,
                          const char *a, const char *b, const char *c)
@@ -836,6 +837,7 @@ void ps1CdWarmUp(void)
 
     for (attempt = 0; attempt < 3; attempt++) {
         CdIntToPos(16, &loc);
+        ps1CdAwaitCommandIdle();
         if (CdControl(CdlSetloc, (uint8_t *)&loc, NULL) == 0)
             continue;
         if (CdRead(1, (uint32_t *)warmBuf, CdlModeSpeed) == 0)
@@ -1105,6 +1107,7 @@ PS1File* ps1_fopen(const char* filename, const char* mode)
                     ;
                 CdInit();
             }
+            ps1CdAwaitCommandIdle();
             if (CdControl(CdlSetloc, (uint8_t*)&file->cdfile.pos, NULL) == 0)
                 continue;
             if (CdRead(numSectors, (uint32_t*)file->buffer, CdlModeSpeed) == 0)
@@ -1222,6 +1225,7 @@ static int ps1_streamRefill(PS1File* file, uint32_t needBytes)
                     ;
                 CdInit();
             }
+            ps1CdAwaitCommandIdle();
             if (CdControl(CdlSetloc, (uint8_t*)&seekLoc, NULL) == 0)
                 continue;
             if (CdRead((int)numSectors, (uint32_t*)file->buffer, CdlModeSpeed) == 0)
@@ -1411,6 +1415,25 @@ static void ps1CdDmaDrainBounded(void)
      * surfaced as R on the explorer diag line. */
     if (PS1_CD_D3_CHCR & (1u << 24))
         gCdDmaDrainExpired++;
+}
+
+/* Await the controller's LAST COMMAND completion (bounded). Every
+ * CdRead ends with an ASYNC CdlPause whose completion IRQ resets the
+ * CD parameter FIFO — the same race ps1_cdSearchFileQuiesced guards
+ * before directory walks, but the chunk loops' own per-chunk Setloc
+ * calls never did: pause IRQ between Setloc and CdRead = seek target
+ * discarded = the chunk reads from the wrong place. Console bt19: a
+ * few wrong bands per preview, growing as the drive slows through the
+ * session, EVERY diag counter clean (no read "fails" — it just reads
+ * the wrong sectors). */
+static void ps1CdAwaitCommandIdle(void)
+{
+    int i;
+    for (i = 0; i < 500000; i++) {
+        CdlIntrResult s = CdSync(1, NULL);
+        if (s == CdlComplete || s == CdlDiskError)
+            return;
+    }
 }
 
 static int ps1CdReadSyncBoundedInner(void);
@@ -1785,7 +1808,8 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                         printf("JCCD retry chunk lba=%lu\n",
                                (unsigned long)(fileLba + startSector + sectorsRead));
                     }
-                    CdIntToPos(fileLba + startSector + sectorsRead, &loc);
+                    ps1CdAwaitCommandIdle();   /* pause-IRQ vs Setloc race — see helper */
+                CdIntToPos(fileLba + startSector + sectorsRead, &loc);
                     if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0)
                         continue;
                     if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0)
@@ -1856,7 +1880,8 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
                 chunkSectors = chunkLimit;
         }
 
-        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
+        ps1CdAwaitCommandIdle();   /* pause-IRQ vs Setloc race — see helper */
+                CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
@@ -2168,6 +2193,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
                     printf("JCCD retry chunk lba=%lu\n",
                            (unsigned long)(fileLba + startSector + sectorsRead));
                 }
+                ps1CdAwaitCommandIdle();   /* pause-IRQ vs Setloc race — see helper */
                 CdIntToPos(fileLba + startSector + sectorsRead, &loc);
                 if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0)
                     continue;
