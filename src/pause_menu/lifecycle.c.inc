@@ -103,6 +103,14 @@ void pauseMenuHide(void)
     menuFramebufferPrimed = 0;
     /* Sound stays in user's chosen state — no auto-restore. */
     pmMenuTextRelease();
+    {
+        /* Leak guard: the explorer's name-string buffer was freed only
+         * on the three normal exit paths; abnormal exits (the console
+         * flap/degraded states) leaked it per menu visit. Free on every
+         * hide — re-entry re-ensures it. */
+        extern void sceneExplorerReleaseStringDataPublic(void);
+        sceneExplorerReleaseStringDataPublic();
+    }
 }
 
 int pauseMenuIsVisible(void)

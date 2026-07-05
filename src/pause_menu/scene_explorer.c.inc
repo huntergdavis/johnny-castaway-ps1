@@ -211,6 +211,11 @@ static int sceneExplorerSettleFrames = 0;
  * Metadata text keeps working; previews just stop updating. */
 static int sceneExplorerThumbsOffline = 0;
 
+void sceneExplorerReleaseStringDataPublic(void)
+{
+    sceneExplorerReleaseStringData();
+}
+
 void sceneExplorerResetThumbBreaker(void)
 {
     sceneExplorerThumbsOffline = 0;
