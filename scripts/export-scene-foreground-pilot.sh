@@ -327,6 +327,14 @@ if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "suzy2" ]; t
   # replay, the raft body is treated as background and Johnny appears to float.
   KEYED_OVERLAY_INCLUDE_STATIC_BASE="1"
 fi
+if [ -z "$KEYED_OVERLAY_SKIP_VISIBILITY_MASK" ] && [ "$SCENE_SLUG" = "suzy1" ]; then
+  # SUZY 1's thought-bubble connector dots live in the keyed lower band
+  # (they trail up from sleeping Johnny's head) and are thin enough that
+  # the byte-exact visibility mask drops them — the "middle bubbles
+  # missing" console report. Same remedy as FISHING 5: replay the
+  # current ledger directly for keyed captures.
+  KEYED_OVERLAY_SKIP_VISIBILITY_MASK="1"
+fi
 if [ -z "$KEYED_OVERLAY_SKIP_VISIBILITY_MASK" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # FISHING 5's final full-host surface is contaminated, so exact final-frame
   # masking can drop current shark/water pixels. Replay the current ledger
