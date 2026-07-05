@@ -540,8 +540,8 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 <tr><td><code>MARY3LOW.FG2</code></td><td>609,063</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY3LOW.FG2">source</a></td></tr>
 <tr><td><code>MARY4.FG2</code></td><td>440,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4.FG2">source</a></td></tr>
 <tr><td><code>MARY4LOW.FG2</code></td><td>440,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4LOW.FG2">source</a></td></tr>
-<tr><td><code>MARY5.FG2</code></td><td>787,642</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5.FG2">source</a></td></tr>
-<tr><td><code>MARY5LOW.FG2</code></td><td>787,642</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5LOW.FG2">source</a></td></tr>
+<tr><td><code>MARY5.FG2</code></td><td>820,066</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5.FG2">source</a></td></tr>
+<tr><td><code>MARY5LOW.FG2</code></td><td>820,066</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5LOW.FG2">source</a></td></tr>
 <tr><td><code>MISC1LOW.FG2</code></td><td>109,109</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISC1LOW.FG2">source</a></td></tr>
 <tr><td><code>MISC2LOW.FG2</code></td><td>181,655</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISC2LOW.FG2">source</a></td></tr>
 <tr><td><code>MISCGAG1.FG2</code></td><td>109,109</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISCGAG1.FG2">source</a></td></tr>
