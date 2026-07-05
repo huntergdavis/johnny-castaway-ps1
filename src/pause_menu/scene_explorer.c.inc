@@ -237,6 +237,7 @@ void sceneExplorerResetThumbBreaker(void)
 
 static int sceneExplorerRetryLeft = 0;
 static int sceneExplorerRetryWait = 0;
+static int sceneExplorerSettleTarget = 12;
 
 static void sceneExplorerEnsureThumbnail(void)
 {
@@ -283,7 +284,14 @@ static void sceneExplorerEnsureThumbnail(void)
      * cursor has been still for a few frames — the chrome text still
      * updates instantly, emulator behavior is unchanged apart from a
      * ~200 ms settle. */
-    if (sceneExplorerSettleFrames < 12) {
+    /* ADAPTIVE settle. Each preview is 15 chunked reads, each with its
+     * own seek + stop/pause cycle — mechanically the hardest workload
+     * in the product for a worn drive, while emulators do it in a few
+     * vblanks. So let the measured load time pick the debounce:
+     * fast loads (emulator / healthy drive) keep the snappy 12-frame
+     * settle; a slow drive earns 75 (~1.25 s — fast paging then touches
+     * the drive ZERO times); any read failure escalates to 120. */
+    if (sceneExplorerSettleFrames < sceneExplorerSettleTarget) {
         sceneExplorerSettleFrames++;
         return;
     }
@@ -299,10 +307,17 @@ static void sceneExplorerEnsureThumbnail(void)
          * not feed the scene-abort streak (post-menu kick-out) or the
          * freeze beacon (red bar over the live menu). */
         extern void ps1CdSetCosmeticReads(int);
+        extern int ps1CdReadFailureCount(void);
         int ok;
+        int startTick = VSync(-1);
         ps1CdSetCosmeticReads(1);
         ok = grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug);
         ps1CdSetCosmeticReads(0);
+        /* Adapt the settle to what the hardware just showed us. */
+        if (ps1CdReadFailureCount() > 0)
+            sceneExplorerSettleTarget = 120;
+        else if (VSync(-1) - startTick > 30 && sceneExplorerSettleTarget < 75)
+            sceneExplorerSettleTarget = 75;
         if (ok) {
             sceneExplorerLoadedCursor = cur;
         } else {
