@@ -22,6 +22,53 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v1.0.0-ps1` - Johnny Castaway PS1 1.0 — real-hardware golden
+<time datetime="2026-07-05"><em>2026-07-05</em></time>
+
+The 1.0. Every one of the 63 scenes validated pixel-perfect with synced
+SFX, every one of the 126 scene/tide performance rows green, day-long
+zero-crash soaks — and now the whole runtime hardened against *real
+launch-era hardware*: a worn drive, burned CD-Rs, a tonyhax chainload,
+and every lie a 1994 CD controller can tell.
+
+- **The scene explorer, done.** Preview streaming survived a twenty-burntest
+  hardware campaign: direct-GPU painting with full SDK-queue quiesce,
+  per-sector address-verified continuous CD reads (a sector must prove who
+  it is before a byte reaches the screen), adaptive drive-gentle debounce,
+  and GPU self-heal instead of freezes.
+- **Two root causes under a week of symptoms:** a one-byte DMA register
+  mix-up (MADR read where CHCR was meant — the "completed" wait that never
+  waited) and the async CdlPause completion IRQ silently discarding seek
+  targets. Both fixed; both written up for posterity in
+  [real-hardware-testing-lessons]({{ '/source/docs/ps1/real-hardware-testing-lessons/' | relative_url }}).
+- **Drive-gentleness suite:** one seek per preview instead of fifteen,
+  boot sounds behind a single locate (SOUNDS.PAK), a CD locate cache, and
+  I/O-never-halts policy — failures retry, degrade, or skip; they never
+  blue-screen a session.
+- **Release hygiene:** diagnostic UI retired (counters stay dormant in the
+  code), debug bindings removed, boot paths bounded and retry-patient.
+- Known quirk: one scene's rain-dance boat may enter slightly inside the
+  right screen edge (under investigation for a point release).
+
+Ten years from now: burn the .bin/.cue to a CD-R, chainload it on a real
+PlayStation, and Johnny will still be doing absolutely nothing productive,
+perfectly.
+
+[GitHub release]({{ site.github_url }}/releases/tag/v1.0.0-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+### `v0.9.9-ps1` … `v0.9.13-ps1` - the real-hardware campaign
+<time datetime="2026-07-05"><em>2026-07-03 → 2026-07-05</em></time>
+
+Five releases in three days, forged against a real console with a worn
+drive: tonyhax boot hygiene (`v0.9.9`), scene pinning + pack-install fixes
+(`v0.9.11`/`v0.9.12`, incl. the MARY5 per-tide anchor), and the explorer
+stabilization marathon (`v0.9.13` — DMA3 drain register fix, Setloc guards,
+GPU queue quiesce + ResetGraph self-heal, cosmetic-read policy, boot read
+retries). The war story lives in the devlog:
+[what twenty coasters taught us]({{ '/devlog/' | relative_url }}).
+
 ### `v0.9.7-ps1` - visitor3 pixel-perfect under deep-soak pressure
 <time datetime="2026-06-25"><em>2026-06-25</em></time>
 
