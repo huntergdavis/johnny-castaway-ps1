@@ -45,19 +45,10 @@ static int handleSceneExplorerInput(uint16 pressed)
         sceneExplorerReleaseStringData();
         return 0;
     }
-    if (pressed & PAD_SQUARE) {
-        /* Diagnostic: paint a RAM-generated pattern through the exact
-         * thumbnail upload path. Console-only jumbled thumbnails split
-         * cleanly on this: pattern clean -> the CD data path corrupts;
-         * pattern jumbled -> the GPU upload path does. Navigating away
-         * reloads the real thumbnail (loadedCursor reset). */
-        grLoadSceneExplorerTestPattern();
-        sceneExplorerLoadedCursor = -1;
-        /* Latch via the failure mechanism so the real thumbnail doesn't
-         * instantly repaint over the pattern; moving the cursor away
-         * (and back) clears it. */
-        sceneExplorerFailedCursor = pauseMenuExplorerCursor;
-    }
+    /* 1.0: the SQUARE test-pattern binding (RAM pattern through the
+     * thumbnail upload path — the diagnostic that split CD-data vs
+     * GPU-upload corruption in one press) is retired from user input.
+     * grLoadSceneExplorerTestPattern stays available for debug builds. */
     if (pressed & (PAD_CIRCLE | PAD_START)) {
         menuState = PAUSE_MENU_MAIN;
         menuCursor = MENU_SCENE_EXPLORER;

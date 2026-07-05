@@ -404,24 +404,11 @@ static void drawSceneExplorer(void)
      * we stay clear of bottom NTSC overscan). */
     pmTextStart(pmPrintfX, 376);
     pmPrintf(pmText(PMT_SCENE_PACK), packLabel, cur + 1, gSceneExplorerCount);
-    {
-        extern int grSxDiagCeilingHits(void);
-        extern int grSxDiagStallChunk(void);
-        extern int grSxDiagQuiesceExpired(void);
-        extern int ps1CdReadFailureCount(void);
-        extern int ps1CdDmaDrainExpiredCount(void);
-        extern int pauseMenuGpuUnwedgeCount(void);
-        extern int gPmShowCount;
-        /* Always shown, in the separator's slot so the band keeps its
-         * 4-line overscan-safe budget: explicit zeros from the console
-         * are strong evidence; a missing line is weak evidence. */
-        pmPrintf(" P%d Q%d R%d W%d c%d D%d S%d\n",
-                 grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
-                 ps1CdDmaDrainExpiredCount(),
-                 pauseMenuGpuUnwedgeCount(),
-                 grSxDiagStallChunk(),
-                 ps1CdReadFailureCount(), gPmShowCount);
-    }
+    /* 1.0: the P/Q/R/W/c/D/S diag line that lived in this slot through
+     * the 0.9.13/0.9.14 hardware campaign is retired from the display;
+     * the counters remain live (grSxDiag*, ps1Cd*Count,
+     * pauseMenuGpuUnwedgeCount) for the next investigation. */
+    drawSeparator();
     pmPrintf(pmText(PMT_SCENE_NAV));
     pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }
