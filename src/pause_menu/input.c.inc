@@ -124,6 +124,10 @@ static int handleMainInput(uint16 pressed)
         case MENU_SCENE_EXPLORER:
             menuState = PAUSE_MENU_SCENE_EXPLORER;
             sceneExplorerLoadedCursor = -1;  /* force load on first draw */
+            /* Force the settle debounce: the state transition's reprime
+             * queues ~600 KB of bgTile LoadImages THIS frame; streaming
+             * a thumbnail in the same frame raced that queue. */
+            sceneExplorerLastSeenCursor = -1;
             prevButtons = 0xFFFF;
             break;
 

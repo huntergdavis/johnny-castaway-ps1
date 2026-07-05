@@ -68,6 +68,20 @@ static void grSxGpuPace(uint32 readyBit)
 static void grSxQuiesce(void)
 {
     int i;
+    /* SDK QUEUE first — the piece every previous quiesce missed. A
+     * queued-not-yet-started LoadImage (menu reprime bgTiles on
+     * explorer entry) is invisible to BOTH DrawSync(0) (early-returns
+     * on silicon) and the CHCR busy bit (transfer not started yet); it
+     * auto-starts from the DMA IRQ in the middle of our direct
+     * uploads. DrawSync(1) reports the queue length without lying —
+     * wait for empty with a generous bound (a full bgTile reprime is
+     * ~600 KB of DMA, several ms). */
+    for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+        ;
+    if (DrawSync(1) > 0) {
+        gSxQuiesceExpired++;
+        gSxLastStallChunk = gSxCurrentChunk;
+    }
     DrawSync(0);
     for (i = 0; i < 400000 && (GR_SX_D2_CHCR & (1u << 24)); i++)
         ;

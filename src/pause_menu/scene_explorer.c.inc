@@ -114,7 +114,13 @@ static int sceneExplorerEnsureStringData(void)
     if (sceneExplorerStringData != NULL)
         return 0;
 
-    data = (uint8*)ps1_loadRawFile("\\SCEXPL.DAT;1", &size);
+    {
+        /* Browse-time read: same cosmetic policy as thumbnails. */
+        extern void ps1CdSetCosmeticReads(int);
+        ps1CdSetCosmeticReads(1);
+        data = (uint8*)ps1_loadRawFile("\\SCEXPL.DAT;1", &size);
+        ps1CdSetCosmeticReads(0);
+    }
     if (data == NULL)
         return 0;
     if (!sceneExplorerValidateStringData(data, size)) {
@@ -216,19 +222,26 @@ void sceneExplorerReleaseStringDataPublic(void)
     sceneExplorerReleaseStringData();
 }
 
+static int sceneExplorerLastSeenCursor = -1;
+
 void sceneExplorerResetThumbBreaker(void)
 {
     sceneExplorerThumbsOffline = 0;
+    /* Also force the settle debounce on (re-)entry: with the cursor
+     * unchanged from the previous visit, the first explorer frame used
+     * to start streaming IMMEDIATELY — in the SAME frame as the state-
+     * transition reprime that just queued ~600 KB of bgTile LoadImages.
+     * The settle gives the queue 12 real frames to drain first. */
+    sceneExplorerLastSeenCursor = -1;
 }
 
 static void sceneExplorerEnsureThumbnail(void)
 {
-    static int lastSeenCursor = -1;
     int cur = pauseMenuExplorerCursor;
     if (cur < 0 || cur >= gSceneExplorerCount) return;
 
-    if (cur != lastSeenCursor) {
-        lastSeenCursor = cur;
+    if (cur != sceneExplorerLastSeenCursor) {
+        sceneExplorerLastSeenCursor = cur;
         sceneExplorerSettleFrames = 0;
         sceneExplorerFailedCursor = -1;
         return;
@@ -372,14 +385,13 @@ static void drawSceneExplorer(void)
         extern int ps1CdReadFailureCount(void);
         extern int ps1CdDmaDrainExpiredCount(void);
         extern int gPmShowCount;
-        if (grSxDiagCeilingHits() > 0 || grSxDiagQuiesceExpired() > 0 ||
-            ps1CdReadFailureCount() > 0 || ps1CdDmaDrainExpiredCount() > 0 ||
-            gPmShowCount > 1)
-            pmPrintf(" P%d Q%d R%d c%d D%d S%d\n",
-                     grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
-                     ps1CdDmaDrainExpiredCount(),
-                     grSxDiagStallChunk(),
-                     ps1CdReadFailureCount(), gPmShowCount);
+        /* Always shown: "no diag line" from the console reads as weak
+         * evidence; explicit zeros are strong evidence. */
+        pmPrintf(" P%d Q%d R%d c%d D%d S%d\n",
+                 grSxDiagCeilingHits(), grSxDiagQuiesceExpired(),
+                 ps1CdDmaDrainExpiredCount(),
+                 grSxDiagStallChunk(),
+                 ps1CdReadFailureCount(), gPmShowCount);
     }
         pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }
