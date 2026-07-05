@@ -1386,7 +1386,14 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
  * draining. Consuming the buffer in that window reads stale bytes —
  * the explorer's one-chunk "strip" (RAM test pattern clean, CD loads
  * striped). Bounded so a wedged channel can't hang us. */
-#define PS1_CD_D3_CHCR (*(volatile uint32_t *)0xBF8010B0)
+/* 0xB8, NOT 0xB0: DMA3 is MADR=0xB0 BCR=0xB4 CHCR=0xB8. The original
+ * constant read MADR, whose bit 24 is always 0 for RAM addresses — the
+ * drain returned instantly and NEVER ONCE WAITED (R diag: forever 0).
+ * Every downstream symptom followed: stale-tail preview bands on every
+ * build since bt6, and reprogramming a still-ACTIVE channel on the
+ * next CdRead — wild DMA writes into RAM ("bad memory data": dead
+ * ambience + garbage-buzzing re-key, corrupted clean-rect strips). */
+#define PS1_CD_D3_CHCR (*(volatile uint32_t *)0xBF8010B8)
 
 static int gCdDmaDrainExpired = 0;
 
