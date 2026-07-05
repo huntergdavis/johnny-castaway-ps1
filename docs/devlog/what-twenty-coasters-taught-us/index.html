@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="application-name" content="Johnny Castaway PS1" />
+  <meta name="msapplication-TileColor" content="#0000A8" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no, address=no, email=no" /><meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <title>What twenty coasters taught us about real PS1 hardware — July 5, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Real-hardware lessons from the Johnny Castaway PS1 port: why emulators can&#39;t validate hardware, how status registers lie, and the one-byte bug that wore five different disguises." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/" /><meta property="og:title"        content="What twenty coasters taught us about real PS1 hardware — July 5, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Real-hardware lessons from the Johnny Castaway PS1 port: why emulators can&#39;t validate hardware, how status registers lie, and the one-byte bug that wore five different disguises." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-07-05T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Devlog" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/" /><meta property="og:locale"       content="en_US" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="What twenty coasters taught us about real PS1 hardware — July 5, 2026 — Johnny Castaway PS1" />
+  <meta name="twitter:description" content="Real-hardware lessons from the Johnny Castaway PS1 port: why emulators can&#39;t validate hardware, how status registers lie, and the one-byte bug that wore five different disguises." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+  <script defer src="../../assets/js/heading-anchors.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" /><link rel="manifest" href="../../site.webmanifest" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="../../sitemap.xml" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/scene-set-expansion/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "inLanguage": "en",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "What twenty coasters taught us about real PS1 hardware — July 5, 2026", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "What twenty coasters taught us about real PS1 hardware — July 5, 2026",
+  "description": "Real-hardware lessons from the Johnny Castaway PS1 port: why emulators can't validate hardware, how status registers lie, and the one-byte bug that wore five different disguises.",
+  "datePublished": "2026-07-05T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/",
+  "inLanguage": "en",
+  "wordCount": 824,
+  "timeRequired": "PT3M",
+  "articleSection": "Devlog",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../perf/">Perf</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main" tabindex="-1">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-07-05">
+        July 5, 2026
+      </time>
+    </p>
+    <h1>What twenty coasters taught us about real PS1 hardware — July 5, 2026</h1>
+
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~2 min read · 736 words
+    </p>
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> The 0.9.13 release marathon in one devblog: twenty burned CD-Rs chasing graphical bands, dead audio, a horrifying buzz, and freezes that no emulator would reproduce — ending in a one-byte register fix and a testing doctrine we're writing down for every future project.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Version 0.9.13 took twenty burn tests. Not because we shipped twenty
+features — because real PlayStation hardware kept telling us, politely
+and then less politely, that everything our emulator had blessed was
+wrong. This post is the story of that week, and the doctrine we’re
+carrying into every future retro project. The full engineering
+reference lives in <code class="language-plaintext highlighter-rouge">docs/ps1/real-hardware-testing-lessons.md</code>; this is
+the narrative version.</p>
+
+<h2 id="the-setup">The setup</h2>
+
+<p>The scene explorer — a pause-menu screen that streams 150 KB preview
+images off the CD — worked beautifully in DuckStation and produced
+“rotated strips” on a real console. Then it crashed after two previews.
+Then the background ocean died. Then it came back as a buzz loud enough
+to make our tester lunge for the power switch. Every build fixed the
+previous theory’s bug, verified clean in the emulator, and came back
+from the console with a new symptom.</p>
+
+<h2 id="the-villains-in-order-of-unmasking">The villains, in order of unmasking</h2>
+
+<p><strong>DrawSync lies.</strong> The SDK’s “GPU is done” call returns early on real
+silicon. We knew this from the boot-galleon work, and it still bit us
+twice more — once via the draw <em>queue</em>, where a queued-but-not-started
+texture upload is invisible to every hardware status register and then
+starts itself, via interrupt, in the middle of your carefully-serialized
+direct GPU writes.</p>
+
+<p><strong>Drives lie.</strong> A worn drive that hiccups mid-read retries by
+re-seeking — and silently re-delivers sectors it already sent. No
+error. No status. Our tester’s photo of a preview with <em>two moons in
+it</em> — the bottom half repeating the top — was the entire proof. The fix
+that finally stuck: read sectors raw, with their addresses attached,
+and make every sector prove it is who it claims to be before a single
+byte reaches the screen.</p>
+
+<p><strong>Commands evaporate.</strong> Every CD read ends with an asynchronous pause
+command, and its completion interrupt resets the controller’s parameter
+FIFO. Issue a seek in that window and the seek target silently
+vanishes — the next read comes from the wrong place. The race window
+scales with drive fatigue, which is why the bands got <em>worse the longer
+you browsed</em>. We’d guarded one seek against this since 0.9.6. There
+were six more.</p>
+
+<p><strong>And underneath everything: one byte.</strong> The fix we shipped in
+burntest6 — wait for the CD DMA channel to finish before touching its
+buffer — polled address <code class="language-plaintext highlighter-rouge">0xBF8010B0</code>. The channel-busy bit lives at
+<code class="language-plaintext highlighter-rouge">0xBF8010B8</code>. <code class="language-plaintext highlighter-rouge">B0</code> is the channel’s <em>address register</em>, whose bit 24 is
+always zero, so our “wait” returned instantly, every time, for thirteen
+builds. Worse than the stale reads: with no wait, each new read
+reprogrammed a still-active DMA channel, which sprays incoming sectors
+across random RAM. That one byte wore five disguises — preview bands,
+dead ambience, the buzz (a self-healing watchdog re-keying a voice over
+corrupted sound tables), wandering debris bands, and intermittent
+red-screen boots. The diagnostic counter watching that register read
+zero all week. <em>A counter that never fires is a smell, not a comfort.</em></p>
+
+<h2 id="what-actually-worked">What actually worked</h2>
+
+<p>Not cleverness — instrumentation. We put seven counters on the pause
+menu screen and had our tester read them off the CRT like a flight
+recorder: <code class="language-plaintext highlighter-rouge">P0 Q0 R0 W0 c-1 D13 S1</code>. Each report <em>excluded</em> mechanisms.
+A RAM-generated test pattern pushed through the same rendering path
+split the world in one button press: pattern clean means the data path
+corrupts, pattern broken means the render path does. And the tester’s
+own observations were precision instruments — “the band moved to the
+top after tree scenes” identified an entire subsystem (per-scene
+backdrop restoration painting from corrupted buffers) in one sentence.</p>
+
+<p>The other thing that worked: policy. One change per burn. Bounded
+waits everywhere, so failure degrades instead of freezing. I/O errors
+never halt — retry, black-fill, or skip to the next scene. Reads that
+are cosmetic (preview thumbnails) never feed the machinery that resets
+scenes. And when a fix doesn’t change the symptom, prove the fix
+<em>executes</em> before inventing the next theory.</p>
+
+<h2 id="the-doctrine">The doctrine</h2>
+
+<p>Emulators validate logic. Consoles validate reality. Between them sits
+a class of bug that only exists where interrupts have latency, DMA has
+momentum, drives have worn sleds, and status registers were written by
+optimists. You cannot test your way around it from a desk — but you can
+design for it: verify instead of trust, bound instead of wait, degrade
+instead of halt, and put your instruments where the tester can read
+them.</p>
+
+<p>Twenty coasters. One byte. Worth writing down.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
+
+          <a href="../scene-set-expansion/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag"><time datetime="2026-05-03">2026-05-03</time></span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
+      <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/real-hardware-testing-lessons.md">view source on GitHub</a>
+    </p>
+
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (<a href="../../releases/">v1.0.0-ps1</a>)
+        </p>
+        <p class="footer-license">
+          Built with
+          <a href="https://github.com/Lameguy64/PSn00bSDK" rel="noopener">PSn00bSDK</a>
+          and
+          <a href="https://github.com/Lameguy64/mkpsxiso" rel="noopener">mkpsxiso</a>,
+          tested against
+          <a href="https://www.duckstation.org/" rel="noopener">DuckStation</a>.
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+          &nbsp;·&nbsp;
+          <a href="../../docs/feeds/">reference</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-07-05-what-twenty-coasters-taught-us.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer"><ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../archaeology/">Archaeology</a></li>
+          <li><a href="../../docs/glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Glossary — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.13; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -289,7 +289,7 @@
 
 <dl>
 <dt id="ps-exe">PS-EXE</dt>
-<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>v0.9.13-ps1</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
+<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>v1.0.0-ps1</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
 
 <dt id="bin-cue">jcreborn.bin / jcreborn.cue</dt>
 <dd>The shipped CD image, a <code>.bin</code> binary track plus a <code>.cue</code> cuesheet that DuckStation (and real hardware) opens. Both files belong in the same directory. End users never need original Sierra files — the pre-baked FG2 packs are derived data, not Sierra source.</dd>
@@ -329,7 +329,7 @@
 <dd>The TTY printf prefix the runtime uses for boot-related log lines. As of <code>v0.8.7-ps1</code> the runtime emits a <em>single early</em> <code>JCBOOT</code> line at boot-time, naming the boot source, explicit scene, seed, loop mode, tide / night / holiday / raft state, island position, and normalized boot text — <em>before</em> title screens, resource loads, or sound side effects run. Pair with the scene-end <a href="#jcperf">JCPERF2</a> line: <code>JCBOOT</code> says <em>what was asked to play</em>; <code>JCPERF2</code> says <em>what actually played</em>. The headless perf iterator now derives the expected scene from each <code>fgpilot &lt;slug&gt;</code> boot string and rejects any run where <code>JCBOOT</code>'s scene disagrees with <code>JCPERF2</code>'s — catching the "measured the wrong scene" silent-pass failure mode the deterministic-boot release closed.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; raw negative CSV values mean the run finished <em>under</em> the budget. Public reporting caps those faster rows at <code>0.0%</code> so fast scenes do not offset slow-scene debt. The matrix-wide public aggregate at <code>v0.9.13-ps1</code> is <code>+0.3%</code> across the 126 timing-bearing rows.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; raw negative CSV values mean the run finished <em>under</em> the budget. Public reporting caps those faster rows at <code>0.0%</code> so fast scenes do not offset slow-scene debt. The matrix-wide public aggregate at <code>v1.0.0-ps1</code> is <code>+0.3%</code> across the 126 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="../../perf/">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
@@ -430,7 +430,7 @@ that lets a definition stay terse without being curt.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.9.13-ps1</a>)
+          (<a href="../../releases/">v1.0.0-ps1</a>)
         </p>
         <p class="footer-license">
           Built with

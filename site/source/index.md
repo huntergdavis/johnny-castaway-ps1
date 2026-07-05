@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 381 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 382 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -73,6 +73,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/performance-read-candidate-matrix/' | relative_url }}">PS1 Foreground Read Candidate Matrix</a><p><code>docs/ps1/performance-read-candidate-matrix.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/project-history/' | relative_url }}">PS1 Port - Project History</a><p><code>docs/ps1/project-history.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/README/' | relative_url }}">Johnny Reborn — PlayStation 1 Port</a><p><code>docs/ps1/README.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/real-hardware-testing-lessons/' | relative_url }}">Real-Hardware Testing Lessons — PS1</a><p><code>docs/ps1/real-hardware-testing-lessons.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-quickstart/' | relative_url }}">PS1 Headless Regression Testing Harness</a><p><code>docs/ps1/regtest-quickstart.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-0.9.4-and-next-branch-plan/' | relative_url }}">Release 0.9.4 (ps1) + next-branch plan</a><p><code>docs/ps1/release-0.9.4-and-next-branch-plan.md</code></p></li>

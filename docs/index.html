@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Johnny Castaway PS1 — a fan port" />
-  <meta name="twitter:description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.9.13; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -75,12 +75,12 @@
   "applicationCategory": "GameApplication",
   "applicationSubCategory": "Screensaver",
   "operatingSystem": "Sony PlayStation",
-  "softwareVersion": "0.9.13",
+  "softwareVersion": "1.0.0",
   "dateModified": "2026-07-05",
   "isAccessibleForFree": true,
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
   "codeRepository": "https://github.com/huntergdavis/johnny-castaway-ps1",
-  "downloadUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.13-ps1",
+  "downloadUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v1.0.0-ps1",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -91,7 +91,7 @@
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD",
-    "url": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.9.13-ps1"
+    "url": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v1.0.0-ps1"
   }
 }
 </script>
@@ -133,7 +133,7 @@
     </picture>
   </div>
   <div class="hero-text">
-    <p class="hero-eyebrow">A fan port · v0.9.13</p>
+    <p class="hero-eyebrow">A fan port · v1.0.0</p>
     <h1 id="hero-title">Johnny Castaway PS1</h1>
     <p class="tagline">A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
     <div class="hero-cta">
@@ -183,7 +183,7 @@
 </figure>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> <a href="./releases/">v0.9.13-ps1</a> <small>· <time datetime="2026-07-05">2026-07-05</time></small></span>
+  <span><strong>Latest:</strong> <a href="./releases/">v1.0.0-ps1</a> <small>· <time datetime="2026-07-05">2026-07-05</time></small></span>
   <a class="pill pill--ok" href="./scenes/">63 / 63 scenes validated</a>
   <a class="pill pill--ok" href="./perf/">99.8% target speed</a>
   <a class="pill pill--info" href="./docs/build/">PSn00bSDK 0.24</a>
@@ -442,6 +442,15 @@ most recent posts, newest first:</p>
 <ul class="devlog-list">
 
   <li>
+    <time datetime="2026-07-05">2026-07-05</time>
+    <div>
+      <a href="./devlog/what-twenty-coasters-taught-us/">What twenty coasters taught us about real PS1 hardware — July 5, 2026</a>
+      <span class="summary">The 0.9.13 release marathon in one devblog: twenty burned CD-Rs chasing graphical bands, dead audio, a horrifying buzz, and freezes that no emulator would reproduce — ending in a one-byte register fix and a testing doctrine we're writing down for every future project.</span>
+      <span class="summary devlog-read-time">~2 min read · 736 words</span>
+    </div>
+  </li>
+
+  <li>
     <time datetime="2026-05-03">2026-05-03</time>
     <div>
       <a href="./devlog/scene-set-expansion/">Scene Set lineup expands to seven categories — May 3, 2026</a>
@@ -474,15 +483,6 @@ most recent posts, newest first:</p>
       <a href="./devlog/scripted-pad-menu-harness/">Scripted pad input, menu screenshots, and testing the UI like a player</a>
       <span class="summary">The next test harness teaches the PS1 build to press its own controller buttons, capture every major pause-menu screen, and publish the result as player help.</span>
       <span class="summary devlog-read-time">~1 min read · 369 words</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-05-01">2026-05-01</time>
-    <div>
-      <a href="./devlog/freeplay-debug-mode/">Freeplay debug mode — May 1, 2026</a>
-      <span class="summary">Direct-control Johnny moved from design sketch to a playtestable PS1 mode: analog walking, fishing, menu-driven gag/visitor catalogs, immediate world toggles, frog loading transitions, and a stricter no-per-frame-allocation rule.</span>
-      <span class="summary devlog-read-time">~3 min read · 797 words</span>
     </div>
   </li>
 
@@ -524,7 +524,7 @@ the user supplies themselves.</p>
           Code: <a href="./legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./releases/">v0.9.13-ps1</a>)
+          (<a href="./releases/">v1.0.0-ps1</a>)
         </p>
         <p class="footer-license">
           Built with
