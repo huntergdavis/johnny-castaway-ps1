@@ -11,13 +11,22 @@ int pauseMenuGpuUnwedgeCount(void) { return gPmGpuUnwedgeCount; }
 static void pmGpuDrainBounded(void)
 {
     int i;
-    for (i = 0; i < 2000000; i++) {
+    /* Bound sized for FRAMES, not seconds: DrawSync(1) is a function
+     * call, so 2M iterations was ~6 s — and after a raw GP1 reset the
+     * SDK queue counter stays stuck >0 (its completion IRQ never
+     * fires), making EVERY subsequent drain expire: the menu crawled at
+     * ~20 s/frame, which the console read as "shows old menu, then
+     * scene, not moving, stuck". */
+    for (i = 0; i < 200000; i++) {
         if (DrawSync(1) <= 0 &&
             !(*(volatile uint32 *)0xBF8010A8 & (1u << 24)) &&   /* DMA2 idle */
             (*(volatile uint32 *)0xBF801814 & (1u << 26)))      /* GPU idle  */
             return;
     }
-    *(volatile uint32 *)0xBF801814 = 0x01000000u;   /* GP1: reset command buffer */
+    /* SDK-level unwedge: ResetGraph(1) cancels queued ops AND resets
+     * the command FIFO with consistent SDK bookkeeping — unlike a raw
+     * GP1 01h, after which the queue counter lies forever. */
+    ResetGraph(1);
     gPmGpuUnwedgeCount++;
     menuFramebufferPrimed = 0;                      /* repaint next frame */
 }

@@ -235,6 +235,9 @@ void sceneExplorerResetThumbBreaker(void)
     sceneExplorerLastSeenCursor = -1;
 }
 
+static int sceneExplorerRetryLeft = 0;
+static int sceneExplorerRetryWait = 0;
+
 static void sceneExplorerEnsureThumbnail(void)
 {
     int cur = pauseMenuExplorerCursor;
@@ -244,6 +247,8 @@ static void sceneExplorerEnsureThumbnail(void)
         sceneExplorerLastSeenCursor = cur;
         sceneExplorerSettleFrames = 0;
         sceneExplorerFailedCursor = -1;
+        sceneExplorerRetryLeft = 2;
+        sceneExplorerRetryWait = 0;
         return;
     }
     if (sceneExplorerThumbsOffline)
@@ -260,9 +265,17 @@ static void sceneExplorerEnsureThumbnail(void)
     /* A failed load (missing thumbnail on disc, transient read error)
      * must NOT retry every frame: per-frame CdSearchFile + read streams
      * hammer a real drive until it latches an error and the recovery
-     * reset stalls the menu for seconds. Latch the failure; the cursor
-     * moving away and back clears it. */
-    if (cur == sceneExplorerFailedCursor) return;
+     * reset stalls the menu for seconds. But a hard latch left one
+     * transient blip (console D1) as a permanently part-black preview.
+     * Allow two SPACED retries (~0.75 s apart) per cursor, then latch
+     * for good until the cursor moves. */
+    if (cur == sceneExplorerFailedCursor) {
+        if (sceneExplorerRetryLeft <= 0) return;
+        if (++sceneExplorerRetryWait < 45) return;
+        sceneExplorerRetryWait = 0;
+        sceneExplorerRetryLeft--;
+        sceneExplorerFailedCursor = -1;   /* one more attempt below */
+    }
 
     /* Debounce rapid paging: each thumbnail is a full synchronous CD
      * stream (~15 Setloc/Read cycles), so hammering left/right on a

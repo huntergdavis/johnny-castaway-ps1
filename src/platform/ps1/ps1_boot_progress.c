@@ -180,7 +180,7 @@ void ps1BootProgress(uint8 pct)
      * Same queue-first discipline as the explorer quiesce. */
     {
         int i;
-        for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+        for (i = 0; i < 200000 && DrawSync(1) > 0; i++)
             ;
     }
     DrawSync(0);
@@ -228,7 +228,7 @@ void ps1BootProgressFinish(void)
     /* Queue-first drain — see ps1BootProgress. */
     {
         int i;
-        for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+        for (i = 0; i < 200000 && DrawSync(1) > 0; i++)
             ;
     }
     DrawSync(0);

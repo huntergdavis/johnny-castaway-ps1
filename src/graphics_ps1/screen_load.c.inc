@@ -76,11 +76,15 @@ static void grSxQuiesce(void)
      * uploads. DrawSync(1) reports the queue length without lying —
      * wait for empty with a generous bound (a full bgTile reprime is
      * ~600 KB of DMA, several ms). */
-    for (i = 0; i < 2000000 && DrawSync(1) > 0; i++)
+    for (i = 0; i < 200000 && DrawSync(1) > 0; i++)
         ;
     if (DrawSync(1) > 0) {
         gSxQuiesceExpired++;
         gSxLastStallChunk = gSxCurrentChunk;
+        /* Queue stuck = wedged GPU or lying SDK counter; either way
+         * ResetGraph(1) restores a consistent idle state (bounded
+         * recovery, not a crawl — see pmGpuDrainBounded). */
+        ResetGraph(1);
     }
     /* No DrawSync(0) here: it is UNBOUNDED and spins forever on a
      * wedged GPU (console freeze with audio alive). Queue-empty above
@@ -235,6 +239,13 @@ int grLoadSceneExplorerThumbnail(const char *slug)
 
         if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
                                            (uint8 *)gSceneExplorerThumbChunk)) {
+            /* Partial load: black out the rows that never arrived so a
+             * failed read shows as "not loaded" instead of a mix of the
+             * new preview over the previous one (console D1 "one garbled
+             * line"). y is 16-aligned, matching FILL granularity. */
+            grSxQuiesce();
+            grSxFill(160, 120 + y, SCENE_EXPLORER_THUMB_W,
+                     SCENE_EXPLORER_THUMB_H - y);
             gSxCurrentChunk = -1;
             return 0;
         }
