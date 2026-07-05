@@ -965,8 +965,23 @@ CdlFILE *ps1_cdSearchFileQuiesced(CdlFILE *file, const char *filename)
 {
     CdlFILE *found;
 
-    if (filename != NULL && ps1CdLocateCacheLookup(filename, file))
+    if (filename != NULL && ps1CdLocateCacheLookup(filename, file)) {
+        /* The drain below is LOAD-BEARING for callers, not just for
+         * CdSearchFile: "resolve then read" code relies on the resolve
+         * step quiescing any in-flight async read before it issues its
+         * own CdRead. Skipping it on cache hits let a stage-prefetch
+         * read overlap the caller's read — console burntest15: strips
+         * in the first scene's background, half-wrong explorer preview
+         * on the SECOND menu visit (S2 = cache-hit path), soft-lock on
+         * scene load. Cache skips only the directory walk. */
+        (void)ps1CdEnsureNoAsyncRead();
+        {
+            int i;
+            for (i = 0; i < 1000000 && CdReadSync(1, NULL) > 0; i++)
+                ;
+        }
         return file;
+    }
 
     /* PSn00bSDK's CdRead path completes the data transfer, then issues an
      * async CdlPause. Our fast read polling can return before that pause's
