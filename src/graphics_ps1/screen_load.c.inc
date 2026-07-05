@@ -79,7 +79,32 @@ static void grSxQuiesce(void)
         gSxQuiesceExpired++;
         gSxLastStallChunk = gSxCurrentChunk;
     }
-    grSxGpuPace((1u << 26) | (1u << 28));
+    /* SEQUENTIAL ready-bit waits. The old single pace on (26|28)
+     * returned when EITHER bit asserted — during an in-flight transfer
+     * bit 28 (wants data) is set while bit 26 (idle) is not, so the
+     * quiesce could pass mid-transfer. Require idle first, then
+     * DMA-ready. */
+    grSxGpuPace(1u << 26);
+    grSxGpuPace(1u << 28);
+}
+
+/* Close out a direct upload: wait until the GPU has CONSUMED the whole
+ * transfer and is back in command mode (GPUSTAT bit 26). Writing the
+ * last word is not completion — the FIFO still holds the tail, and if
+ * the caller returns and the menu's DrawOTag fires DMA2 into a GPU
+ * still in CPU->VRAM receive mode, real silicon wedges (console: the
+ * SQUARE test pattern froze the menu hard, then DrawSync on the wedged
+ * GPU spun forever on the next swap). Bounded; expiry surfaces on the
+ * Q diag counter. */
+static void grSxCloseUpload(void)
+{
+    int i;
+    for (i = 0; i < 400000; i++) {
+        if (GR_SX_GPUSTAT & (1u << 26))
+            return;
+    }
+    gSxQuiesceExpired++;
+    gSxLastStallChunk = gSxCurrentChunk;
 }
 
 /* Direct CPU->VRAM rect upload. w must be even (GPU moves pixel pairs). */
@@ -96,6 +121,7 @@ static void grSxBlitRect(int x, int y, int w, int h, const uint16 *src)
             grSxGpuPace(1u << 28);
         GR_SX_GP0 = ((uint32)src[i * 2 + 1] << 16) | src[i * 2];
     }
+    grSxCloseUpload();
 }
 
 static void grSxFill(int x, int y, int w, int h)
