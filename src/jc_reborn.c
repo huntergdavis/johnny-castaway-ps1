@@ -2697,6 +2697,10 @@ int main(int argc, char **argv)
             fgLoopClearStageLookahead();
         }
         if (pauseMenuRequestResetLoop) {
+            {
+                extern void ps1CdSceneAbortAck(void);
+                ps1CdSceneAbortAck();   /* lift the CD fail-fast gate */
+            }
             pauseMenuRequestResetLoop = 0;
             explicitScene = NULL;  /* drop pinned scene → next iter random */
             fgLoopClearStageLookahead();

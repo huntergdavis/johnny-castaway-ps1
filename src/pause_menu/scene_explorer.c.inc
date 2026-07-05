@@ -350,5 +350,14 @@ static void drawSceneExplorer(void)
     pmPrintf(pmText(PMT_SCENE_PACK), packLabel, cur + 1, gSceneExplorerCount);
     drawSeparator();
     pmPrintf(pmText(PMT_SCENE_NAV));
-    pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
+{
+        extern int grSxDiagCeilingHits(void);
+        extern int grSxDiagStallChunk(void);
+        extern int ps1CdReadFailureCount(void);
+        if (grSxDiagCeilingHits() > 0 || ps1CdReadFailureCount() > 0)
+            pmPrintf(" P%d c%d D%d\n",
+                     grSxDiagCeilingHits(), grSxDiagStallChunk(),
+                     ps1CdReadFailureCount());
+    }
+        pmPrintf(pmText(PMT_SCENE_PLAY_LOOP));
 }

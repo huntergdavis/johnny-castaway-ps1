@@ -2149,9 +2149,13 @@ fg_setup_retry:
                 extern void ps1CdSceneAbortAck(void);
                 if (ps1CdSceneAbortNeeded()) {
                     printf("JCCD scene-abort: persistent read failures — "
-                           "forcing next scene\n");
+                           "loop reset\n");
                     ps1CdSceneAbortAck();
-                    pauseMenuRequestNextScene = 1;
+                    /* Full reset, not just next-scene: an abort can land
+                     * mid-stage, and half-staged lookahead state can
+                     * fail later allocations. The reset path is the
+                     * real "memory wipe" the policy asked for. */
+                    pauseMenuRequestResetLoop = 1;
                     break;
                 }
             }
@@ -2897,6 +2901,28 @@ void foregroundPilotSetPrefetchWindow(unsigned long bytes)
 
 void foregroundPilotPlay(void)
 {
+    /* Wake the drive first: after minutes of RAM-resident playback it
+     * has spun down, and un-warmed transition reads fail during spin-up
+     * (feeding the abort streak on healthy discs). */
+    {
+        extern void ps1CdWarmUp(void);
+        ps1CdWarmUp();
+    }
+
+    /* A persistent CD failure streak means scene setup is doomed —
+     * request the loop reset (full teardown) instead of starting a
+     * setup that will freeze in the retry path. */
+    {
+        extern int ps1CdSceneAbortNeeded(void);
+        extern void ps1CdSceneAbortAck(void);
+        if (ps1CdSceneAbortNeeded()) {
+            printf("JCCD scene-abort at setup: loop reset\n");
+            ps1CdSceneAbortAck();
+            pauseMenuRequestResetLoop = 1;
+            return;
+        }
+    }
+
     if (fgSceneEquals(gForegroundPilotScene, "freeplay")) {
         freeplayRun();
         return;

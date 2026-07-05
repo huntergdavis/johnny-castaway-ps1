@@ -202,6 +202,7 @@ uint8_t *ps1PilotLoadPsb(const char *psbName, uint32_t *outSize);
 
 /* Persistent mid-scene read failure: the foreground runtime polls this
  * and force-advances to the next scene instead of retry-looping forever. */
+void ps1CdWarmUp(void);   /* wake a spun-down drive before transition reads */
 int  ps1CdSceneAbortNeeded(void);
 void ps1CdSceneAbortAck(void);
 

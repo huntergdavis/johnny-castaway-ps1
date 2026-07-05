@@ -32,6 +32,17 @@ void *grSceneExplorerChunkBorrow(uint32 *bytesOut)
 #define GR_SX_D2_CHCR (*(volatile uint32 *)0xBF8010A8)
 
 
+/* Paint diagnostics, surfaced on the explorer hint line: which chunk
+ * (if any) hit the pace ceiling and how often. A ceiling hit means we
+ * wrote into a full FIFO — words drop, and the pixel stream shifts for
+ * the rest of that chunk: the surviving "middle strip" candidate. */
+static int gSxPaceCeilingHits = 0;
+static int gSxLastStallChunk = -1;
+static int gSxCurrentChunk = -1;
+
+int grSxDiagCeilingHits(void)  { return gSxPaceCeilingHits; }
+int grSxDiagStallChunk(void)   { return gSxLastStallChunk; }
+
 static void grSxGpuPace(uint32 readyBit)
 {
     int i;
@@ -41,6 +52,8 @@ static void grSxGpuPace(uint32 readyBit)
     }
     /* Ceiling hit: keep going — bailing mid-command would desync the
      * FIFO for real. The next pace call re-checks. */
+    gSxPaceCeilingHits++;
+    gSxLastStallChunk = gSxCurrentChunk;
 }
 
 /* Proper quiesce before direct GP0 writes. DrawSync alone is NOT enough

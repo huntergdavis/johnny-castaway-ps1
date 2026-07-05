@@ -798,6 +798,35 @@ static int gCdFailTotal  = 0;
  * before heavyweight recovery (which can itself stall a weak drive). */
 static int gCdSceneAbortStreak = 0;
 
+/* Transition warm-up: scenes play for minutes without disc access and
+ * the drive spins down; the transition's first reads then fail during
+ * spin-up and feed the abort streak — on a slow-spinning old drive
+ * that cascades into scene-aborts on perfectly good discs. Wake the
+ * drive with a patient throwaway read (PVD sector 16, always present)
+ * that does NOT count failures. Cheap no-op when already spinning. */
+static int ps1CdReadSyncBounded(void);
+
+void ps1CdWarmUp(void)
+{
+    static uint8_t warmBuf[2048];
+    CdlLOC loc;
+    int attempt;
+
+    for (attempt = 0; attempt < 3; attempt++) {
+        CdIntToPos(16, &loc);
+        if (CdControl(CdlSetloc, (uint8_t *)&loc, NULL) == 0)
+            continue;
+        if (CdRead(1, (uint32_t *)warmBuf, CdlModeSpeed) == 0)
+            continue;
+        if (ps1CdReadSyncBounded() == 0) {
+            gCdSceneAbortStreak = 0;   /* drive is awake and reading */
+            return;
+        }
+    }
+    /* Still failing after patient attempts: leave the streak alone —
+     * the normal failure tracking takes over from here. */
+}
+
 int ps1CdSceneAbortNeeded(void)
 {
     return gCdSceneAbortStreak >= 6;
@@ -825,6 +854,20 @@ static void ps1CdNoteReadFailure(void)
 {
     gCdFailTotal++;
     gCdSceneAbortStreak++;
+    /* Freeze beacon: a console frozen at a scene transition with music
+     * playing looks identical for CD-retry spins and other stalls. From
+     * streak 3 on, grow a red bar at the top-left via direct GP0 (safe:
+     * rendering has already stalled by the time a streak this long
+     * builds). Frozen + red bar = CD retry storm; frozen without it =
+     * different bug, tell the debugger. */
+    if (gCdSceneAbortStreak >= 3) {
+        volatile uint32 *gp0 = (volatile uint32 *)0xBF801810;
+        int w = gCdSceneAbortStreak * 12;
+        if (w > 192) w = 192;
+        *gp0 = 0x02000040u;                       /* fill, red-ish */
+        *gp0 = 0;                                 /* x=0,y=0 */
+        *gp0 = ((uint32)8 << 16) | (uint32)w;     /* h=8, w */
+    }
     if (++gCdFailStreak >= PS1_CD_FAIL_RESET_THRESHOLD) {
         extern int printf(const char *, ...);
         printf("JCCD drive-recover: CdInit reset after %d consecutive failures\n",
@@ -1710,6 +1753,13 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     if (cdfile == NULL || size == 0 || dstBuffer == NULL)
         return 0;
     if ((offset % CD_SECTOR_SIZE) != 0)
+        return 0;
+    /* Hopeless-streak fail-fast: once reads have failed this many times
+     * consecutively, stop touching the drive at all until the scene
+     * loop acknowledges the abort (ps1CdSceneAbortAck). Upstream
+     * retry loops then fail instantly instead of freezing the game at
+     * a scene transition with the music still playing. */
+    if (gCdSceneAbortStreak >= 12)
         return 0;
     if (!ps1CdEnsureNoAsyncRead())
         return 0;
