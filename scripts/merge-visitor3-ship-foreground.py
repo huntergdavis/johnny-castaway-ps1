@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -378,13 +379,22 @@ def write_visitor3_foreground(
     synth_offset_x = -global_min_x
     synth_offset_y = -global_min_y
 
+    # FG_EXPORT_ANCHOR_Y_DELTA: shift the merged content DOWN by N px
+    # within the canvas (canvas height padded to fit). The pack spans
+    # carry canvas coordinates, so this is the lever that moves a whole
+    # scene group at runtime (mary5's farewell group anchored ~12px too
+    # high — shark torso on the sand). Metadata-offset tweaks are a
+    # no-op: the pack build reads pixels, not scene_offset deltas.
+    anchor_dy = int(os.environ.get("FG_EXPORT_ANCHOR_Y_DELTA", "0") or 0)
+    canvas_h += anchor_dy
+
     for ref_frame, ref_meta, output_pixels in frames:
         merged = Image.new("RGB", (canvas_w, canvas_h), KEY)
         if output_pixels:
             pixels = merged.load()
             for (local_x, local_y), rgb in output_pixels.items():
                 sx = local_x + synth_offset_x
-                sy = local_y + synth_offset_y
+                sy = local_y + synth_offset_y + anchor_dy
                 if 0 <= sx < canvas_w and 0 <= sy < canvas_h:
                     pixels[sx, sy] = rgb
 

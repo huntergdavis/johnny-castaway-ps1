@@ -163,6 +163,14 @@ if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary2" ]; then
   # same backdrop state so foreground pixels that cross the raft are complete.
   CAPTURE_RAFT_STAGE="5"
 fi
+if [ -z "${FG_EXPORT_ANCHOR_Y_DELTA:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
+  # The goodbye group (shark/mermaid/Johnny/raft) anchored ~12px too high
+  # on the island backdrop — shark torso visibly ON the sand. The host
+  # original places the shark's waterline BELOW Johnny's feet at the lower
+  # shore. Uniform 12px drop restores that relative look.
+  FG_EXPORT_ANCHOR_Y_DELTA=12
+fi
+export FG_EXPORT_ANCHOR_Y_DELTA
 if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
   # MARY 5 is flagged NORAFT in story_data.h and carries its own raft art.
   # Capture with the generic raft off so the pack/backdrop match runtime.
@@ -558,6 +566,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
               "$HOST_CAPTURE_LOW_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR" "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR" <<'PY'
 import sys
 import json
+import os
 from pathlib import Path
 from PIL import Image, ImageChops
 
@@ -767,6 +776,13 @@ def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir):
 
     synth_offset_x = -global_min_x
     synth_offset_y = -global_min_y
+    # FG_EXPORT_ANCHOR_Y_DELTA: shift the merged content DOWN by N px
+    # within the canvas (pads the canvas height to fit). The pack spans
+    # carry canvas coordinates, so this is the lever that actually moves
+    # actors at runtime — a metadata-only offset tweak leaves the pack
+    # bytes untouched.
+    anchor_dy = int(os.environ.get("FG_EXPORT_ANCHOR_Y_DELTA", "0") or 0)
+    canvas_h += anchor_dy
 
     for ref_frame, ref_meta, local_pixels in frames:
         merged = Image.new("RGB", (canvas_w, canvas_h), KEY)
@@ -774,7 +790,7 @@ def write_merged_foreground(reference_capture_dir, source_fg_dirs, out_dir):
             pix = merged.load()
             for (local_x, local_y), rgb in local_pixels.items():
                 sx = local_x + synth_offset_x
-                sy = local_y + synth_offset_y
+                sy = local_y + synth_offset_y + anchor_dy
                 if 0 <= sx < canvas_w and 0 <= sy < canvas_h:
                     pix[sx, sy] = rgb
 
