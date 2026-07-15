@@ -28,7 +28,7 @@ wave animation, holiday overlays, controller input, SPU audio).
 
 ## Download and play
 
-Latest release → **[Releases page](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest)** · or read the **[Play page](https://hunterdavis.com/johnny-castaway-ps1/play/)** for the full quickstart with controller map.
+**[Play it in your browser](https://hunterdavis.com/johnny-castaway-ps1/play/online/)** — no emulator or BIOS needed · latest release → **[Releases page](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest)** · or read the **[Play page](https://hunterdavis.com/johnny-castaway-ps1/play/)** for the full quickstart with controller map.
 
 Direct download (auto-tracks the latest tag):
 

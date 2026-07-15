@@ -55,6 +55,37 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      # Browser player disc: pull the latest release BIN/CUE into the Pages
+      # artifact at deploy time, so the repository itself never carries a
+      # disc image. Runs AFTER the static build so Jekyll's cleaner and the
+      # red-team pass never see /game/. Mirrors the Zoomies pages workflow.
+      - name: Add latest playable release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/game
+          gh release download --repo "$GITHUB_REPOSITORY" \
+            --pattern johnnycastawayps1.bin \
+            --pattern johnnycastawayps1.cue \
+            --dir docs/game
+          tag="$(gh release view --repo "$GITHUB_REPOSITORY" \
+            --json tagName --jq .tagName)"
+          bin_size="$(stat -c %s docs/game/johnnycastawayps1.bin)"
+          jq -n \
+            --arg tag "$tag" \
+            --argjson bin_size "$bin_size" \
+            '{
+              bin_size: $bin_size,
+              bin_url: ("../../game/johnnycastawayps1.bin?v=" + $tag),
+              bios: "HLE",
+              build_id: $tag,
+              build_label: ($tag + " public release"),
+              core: "pcsx_rearmed",
+              cue_url: ("../../game/johnnycastawayps1.cue?v=" + $tag)
+            }' > docs/game/metadata.json
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -5,13 +5,76 @@
   <link rel="self" type="application/atom+xml" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/"/>
   <id>https://hunterdavis.com/johnny-castaway-ps1/devlog/</id>
-  <updated>2026-07-05T00:00:00-04:00</updated>
+  <updated>2026-07-14T00:00:00-04:00</updated>
   <generator uri="https://jekyllrb.com/" version="hand-rolled">Jekyll (no plugin)</generator>
   <rights>Code GPL-3.0. Sierra art and the Johnny Castaway character are © Sierra On-Line and not licensed under GPL — see /legal/.</rights>
   <author>
     <name>Hunter Davis</name>
     <uri>https://hunterdavis.com/</uri>
   </author><entry>
+    <title>Johnny now runs in your browser — July 14, 2026</title>
+    <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/play-in-your-browser/"/>
+    <id>https://hunterdavis.com/johnny-castaway-ps1/devlog/play-in-your-browser/</id>
+    <published>2026-07-14T00:00:00-04:00</published>
+    <updated>2026-07-14T00:00:00-04:00</updated>
+    <author>
+      <name>Hunter Davis</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    <summary>Play Johnny Castaway PS1 in the browser: how the EmulatorJS + patched PCSX-ReARMed player works, how deploys pull the release disc, and what the keyboard maps to.</summary>
+    <content type="html"><![CDATA[<p>The shortest path to Johnny just got a lot shorter. As of today the
+<strong><a href="../play/online/">browser player</a></strong> boots the latest
+release disc directly on the website — no emulator install, no BIOS file, no
+download-and-unzip step. Click launch, wait for the ~76 MiB image to
+stream in, and the screensaver starts doing what it has always done best:
+ignoring you, beautifully.</p>
+
+<h2 id="how-its-wired">How it’s wired</h2>
+
+<p>The player is the same system we built for our Zoomies PS1 project, ported
+whole:</p>
+
+<ul>
+  <li><strong>A pinned <a href="https://emulatorjs.org/">EmulatorJS</a> 4.2.3 runtime</strong> with a
+<strong>patched PCSX-ReARMed core</strong>, vendored into the site. The patch matters:
+upstream’s interpreter drops PlayStation hardware writes made through KSEG
+aliases (PSn00bSDK uses those for the SPU), which would leave SPU control
+and volume registers silently at zero in the browser build. The patch also
+repairs Level-A XA decoding and routes the core’s audio through a master
+gain node so the page’s volume and mute controls actually work.</li>
+  <li><strong>An HLE BIOS.</strong> Nothing BIOS-shaped ships with the site or lives in the
+repository — the core’s high-level BIOS emulation boots the disc.</li>
+  <li><strong>Release-time disc delivery.</strong> The repository never carries a disc image.
+At deploy time the Pages workflow downloads the latest GitHub release’s
+<code class="language-plaintext highlighter-rouge">.bin</code>/<code class="language-plaintext highlighter-rouge">.cue</code> into the site artifact and writes a small <code class="language-plaintext highlighter-rouge">metadata.json</code>
+describing the build; the player reads that to know what to stream. Ship a
+new release, and the browser player serves it on the next deploy — nothing
+to remember.</li>
+  <li><strong>A local prototype loop.</strong> <code class="language-plaintext highlighter-rouge">./scripts/run-web.sh</code> in the repo serves the
+site plus the current development disc over the LAN with a fresh build
+identifier per rebuild, so a work-in-progress image is playable in a
+browser tab seconds after <code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> finishes.</li>
+</ul>
+
+<h2 id="controls">Controls</h2>
+
+<p>The screensaver needs no input — watching is the intended API. When you do
+want to drive it, the keyboard maps to the pad: <strong>Enter</strong> opens the pause
+menu (Start), <strong>arrow keys</strong> are the D-pad, <strong>K</strong> is Cross, <strong>L</strong> is Circle,
+<strong>Backspace</strong> is Select, and the Freeplay walk-speed and world-toggle combos
+are listed on the player page. A connected gamepad is picked up
+automatically.</p>
+
+<h2 id="the-honest-caveat">The honest caveat</h2>
+
+<p>This project’s soul is real-hardware fidelity — address-verified CD
+streaming, bounded waits, a launch-era console on the bench. A browser
+WebAssembly core with an HLE BIOS is <em>not</em> that bar, and we’re not claiming
+it is. The <a href="../scenes/">scene ledger</a> bar is still
+judged on hardware and DuckStation. The browser player is the welcome mat:
+the fastest possible way to see why this thing is worth a CD-R.</p>
+]]></content>
+  </entry><entry>
     <title>What twenty coasters taught us about real PS1 hardware — July 5, 2026</title>
     <link rel="alternate" type="text/html" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/"/>
     <id>https://hunterdavis.com/johnny-castaway-ps1/devlog/what-twenty-coasters-taught-us/</id>

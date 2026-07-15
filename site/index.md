@@ -169,7 +169,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/play/' | relative_url }}">Just play it</a>
-    <p>Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart, controller map. Five minutes.</p>
+    <p>Run it <a href="{{ '/play/online/' | relative_url }}">straight in your browser</a> — or grab the latest <code>.bin</code> + <code>.cue</code> with the DuckStation quickstart and controller map. Five minutes.</p>
   </li>
   <li>
     <a href="{{ '/faq/' | relative_url }}">FAQ</a>

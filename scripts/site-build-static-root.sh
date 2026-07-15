@@ -50,6 +50,7 @@ find "$ROOT/docs" -type f -name '*.html' \
   -not -path "$ROOT/docs/archive/*" \
   -not -path "$ROOT/docs/general/*" \
   -not -path "$ROOT/docs/readme/*" \
+  -not -path "$ROOT/docs/vendor/*" \
   -exec perl -pi -e 's|<th>|<th scope="col">|g; s|<th style="([^"]*)">|<th style="$1" scope="col">|g;' {} +
 
 # Whitespace-normalize only the website output, NOT the preserved project
@@ -59,6 +60,7 @@ find "$ROOT/docs" -type f \( -name '*.html' -o -name '*.css' -o -name '*.xml' -o
   -not -path "$ROOT/docs/archive/*" \
   -not -path "$ROOT/docs/general/*" \
   -not -path "$ROOT/docs/readme/*" \
+  -not -path "$ROOT/docs/vendor/*" \
   -exec perl -0pi -e 's/[ \t]+$//mg; s/\n+\z/\n/s' {} +
 
 # Final pass: red-team the website output. Catches broken local links,
@@ -75,4 +77,5 @@ python3 "$ROOT/scripts/site-redteam.py" "$ROOT/docs" \
   --exclude 'ps1/*' \
   --exclude 'archive/*' \
   --exclude 'general/*' \
-  --exclude 'readme/*'
+  --exclude 'readme/*' \
+  --exclude 'vendor/*'

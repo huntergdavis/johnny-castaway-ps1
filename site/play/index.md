@@ -144,6 +144,26 @@ the same directory. Sizes shown are for the
 upload — the `.bin` is ~79&nbsp;MB (~76&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
 payload routed onto the disc.
 
+## Play in your browser {#browser}
+
+The lowest-friction path: the latest release runs **directly in your
+browser** — no emulator install, no BIOS file, no download step. The player
+streams the release `.bin`/`.cue` into a pinned
+[EmulatorJS](https://emulatorjs.org/) build of PCSX-ReARMed running an HLE
+BIOS, with a patched core for correct SPU register writes and Web Audio
+volume control.
+
+<p class="hero-cta" markdown="0">
+  <a class="btn btn--primary" href="online/">Launch in your browser <small>(~76&nbsp;MiB streamed)</small></a>
+</p>
+
+The screensaver needs no input — just watch. To drive the menus from the
+keyboard: **Enter** = Start (pause menu), **arrow keys** = D-pad, **K** =
+Cross, **L** = Circle, **Backspace** = Select. Connected gamepads are picked
+up automatically. The full keyboard map, including the
+[Freeplay](#freeplay-controls) walk-speed and world-toggle combos, is on the
+player page itself.
+
 ## Quickstart (DuckStation) {#emulator}
 
 1. Install [DuckStation](https://www.duckstation.org/) on your

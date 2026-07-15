@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Play — Johnny Castaway PS1" />
-  <meta name="twitter:description" content="Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-14" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -191,6 +191,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest-build" id="markdown-toc-latest-build">Latest build</a></li>
+  <li><a href="#browser" id="markdown-toc-browser">Play in your browser</a></li>
   <li><a href="#emulator" id="markdown-toc-emulator">Quickstart (DuckStation)</a></li>
   <li><a href="#verify-your-download-verifyoptional-but-recommended-if-you-downloaded-the-disc-image-from-a-mirror" id="markdown-toc-verify-your-download-verifyoptional-but-recommended-if-you-downloaded-the-disc-image-from-a-mirror">Verify your download {#verify}Optional but recommended if you downloaded the disc image from a mirror</a></li>
   <li><a href="#original-sierra-data-files" id="markdown-toc-original-sierra-data-files">Original Sierra data files</a></li>
@@ -221,6 +222,26 @@ the same directory. Sizes shown are for the
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v1.0.0-ps1"><code class="language-plaintext highlighter-rouge">v1.0.0-ps1</code></a>
 upload — the <code class="language-plaintext highlighter-rouge">.bin</code> is ~79 MB (~76 MiB), mostly <a href="../docs/glossary/#fg2-pack">FG2 pack</a>
 payload routed onto the disc.</p>
+
+<h2 id="browser">Play in your browser</h2>
+
+<p>The lowest-friction path: the latest release runs <strong>directly in your
+browser</strong> — no emulator install, no BIOS file, no download step. The player
+streams the release <code class="language-plaintext highlighter-rouge">.bin</code>/<code class="language-plaintext highlighter-rouge">.cue</code> into a pinned
+<a href="https://emulatorjs.org/">EmulatorJS</a> build of PCSX-ReARMed running an HLE
+BIOS, with a patched core for correct SPU register writes and Web Audio
+volume control.</p>
+
+<p class="hero-cta">
+  <a class="btn btn--primary" href="online/">Launch in your browser <small>(~76&nbsp;MiB streamed)</small></a>
+</p>
+
+<p>The screensaver needs no input — just watch. To drive the menus from the
+keyboard: <strong>Enter</strong> = Start (pause menu), <strong>arrow keys</strong> = D-pad, <strong>K</strong> =
+Cross, <strong>L</strong> = Circle, <strong>Backspace</strong> = Select. Connected gamepads are picked
+up automatically. The full keyboard map, including the
+<a href="#freeplay-controls">Freeplay</a> walk-speed and world-toggle combos, is on the
+player page itself.</p>
 
 <h2 id="emulator">Quickstart (DuckStation)</h2>
 

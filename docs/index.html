@@ -15,7 +15,7 @@
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:title"       content="Johnny Castaway PS1 — a fan port" />
-  <meta name="twitter:description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-05" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:description" content="A ground-up PlayStation 1 port of Sierra&#39;s 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v1.0.0; built 2026-07-14" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -258,7 +258,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./play/">Just play it</a>
-    <p>Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart, controller map. Five minutes.</p>
+    <p>Run it <a href="./play/online/">straight in your browser</a> — or grab the latest <code>.bin</code> + <code>.cue</code> with the DuckStation quickstart and controller map. Five minutes.</p>
   </li>
   <li>
     <a href="./faq/">FAQ</a>
@@ -442,6 +442,15 @@ most recent posts, newest first:</p>
 <ul class="devlog-list">
 
   <li>
+    <time datetime="2026-07-14">2026-07-14</time>
+    <div>
+      <a href="./devlog/play-in-your-browser/">Johnny now runs in your browser — July 14, 2026</a>
+      <span class="summary">The v1.0.0 disc now boots straight from the website: a pinned EmulatorJS build of PCSX-ReARMed with an HLE BIOS streams the release .bin/.cue into the page, no emulator install and no BIOS hunt. This post covers how the player is wired and what the patched core fixes.</span>
+      <span class="summary devlog-read-time">~1 min read · 410 words</span>
+    </div>
+  </li>
+
+  <li>
     <time datetime="2026-07-05">2026-07-05</time>
     <div>
       <a href="./devlog/what-twenty-coasters-taught-us/">What twenty coasters taught us about real PS1 hardware — July 5, 2026</a>
@@ -474,15 +483,6 @@ most recent posts, newest first:</p>
       <a href="./devlog/ocean-ambience-v0-6/">Ocean Ambience — v0.6.0-ps1 — May 1, 2026</a>
       <span class="summary">A CC0-sourced 20-second ocean loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state. The screensaver's per-VBlank budget is unchanged; the SPU plays + auto-loops in hardware while the screensaver loop runs as before.</span>
       <span class="summary devlog-read-time">~4 min read · 1175 words</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-05-01">2026-05-01</time>
-    <div>
-      <a href="./devlog/scripted-pad-menu-harness/">Scripted pad input, menu screenshots, and testing the UI like a player</a>
-      <span class="summary">The next test harness teaches the PS1 build to press its own controller buttons, capture every major pause-menu screen, and publish the result as player help.</span>
-      <span class="summary devlog-read-time">~1 min read · 369 words</span>
     </div>
   </li>
 
