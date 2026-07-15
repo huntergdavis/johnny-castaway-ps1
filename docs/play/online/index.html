@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0c13">
+  <meta name="description" content="Run the Johnny Castaway PlayStation build in a browser.">
+  <link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/play/online/">
+  <title>Play Johnny Castaway PS1 in Your Browser</title>
+  <link rel="stylesheet" href="player.css">
+  <script src="player.js?v=online-player-1" defer></script>
+</head>
+<body>
+  <header class="player-bar">
+    <a class="player-wordmark" href="../">JOHNNY CASTAWAY</a>
+    <div class="runtime-status" aria-label="Emulator configuration">
+      <span id="build-label">Latest playable build</span>
+      <span class="audio-state" id="audio-state" data-state="pending" aria-live="polite">Audio pending</span>
+      <span class="hle-badge">PCSX-ReARMed HLE</span>
+    </div>
+  </header>
+
+  <main class="player-shell">
+    <div id="game" class="game-surface" aria-label="Johnny Castaway PlayStation emulator"></div>
+
+    <section class="launch-stage" id="launch-stage">
+      <img src="../../readme/fishing1-ps1-raft.png" alt="Johnny Castaway fishing from his raft on the PS1">
+      <div class="launch-shade"></div>
+      <div class="launch-copy">
+        <p class="eyebrow">Playable in your browser</p>
+        <h1>Run the PS1 screensaver.</h1>
+        <button id="launch-button" type="button">Launch Johnny Castaway</button>
+        <p id="launch-status" class="launch-status" role="status">Ready to load the latest release.</p>
+      </div>
+    </section>
+
+    <section class="error-stage" id="error-stage" hidden>
+      <p class="eyebrow">Player unavailable</p>
+      <h1>The game could not be loaded.</h1>
+      <p id="error-message"></p>
+      <button id="retry-button" type="button">Try again</button>
+    </section>
+
+    <div class="audio-gate" id="audio-gate" hidden>
+      <button id="audio-unlock-button" type="button">Enable audio</button>
+    </div>
+  </main>
+
+  <footer class="player-notes">
+    <details>
+      <summary>Keyboard controls</summary>
+      <p>The screensaver needs no input — just watch. Keys map to the PS1 pad:</p>
+      <table>
+        <tr><th>Key</th><th>Pad</th><th>Does</th></tr>
+        <tr><td>Enter</td><td>Start</td><td>Open / close the pause menu</td></tr>
+        <tr><td>Arrow keys</td><td>D-pad</td><td>Move cursor, adjust values, walk Johnny in Freeplay</td></tr>
+        <tr><td>K</td><td>Cross</td><td>Select / apply</td></tr>
+        <tr><td>L</td><td>Circle</td><td>Back · fish (Freeplay)</td></tr>
+        <tr><td>Backspace</td><td>Select</td><td>Clear screen / rebuild island (Freeplay)</td></tr>
+        <tr><td>1 / 3 held</td><td>L2 / R2</td><td>Slow / fast walk (Freeplay)</td></tr>
+        <tr><td>E + arrows</td><td>R1 + D-pad</td><td>Day-night · tide · raft · holiday (Freeplay)</td></tr>
+      </table>
+    </details>
+  </footer>
+</body>
+</html>

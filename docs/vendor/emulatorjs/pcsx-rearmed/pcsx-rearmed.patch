@@ -1,0 +1,196 @@
+diff --git a/libpcsxcore/cdriso.c b/libpcsxcore/cdriso.c
+index 8ac17764..62e43950 100644
+--- a/libpcsxcore/cdriso.c
++++ b/libpcsxcore/cdriso.c
+@@ -26,6 +26,7 @@
+ 
+ #include <assert.h>
+ #include <errno.h>
++#include <stdio.h>
+ #include <zlib.h>
+ #ifdef HAVE_CHD
+ #include <libchdr/chd.h>
+diff --git a/libpcsxcore/decode_xa.c b/libpcsxcore/decode_xa.c
+index 449111cb..1384de08 100644
+--- a/libpcsxcore/decode_xa.c
++++ b/libpcsxcore/decode_xa.c
+@@ -120,13 +120,39 @@ static __inline void ADPCM_DecodeBlock16( ADPCM_Decode_t *decp, u8 filter_range,
+ 	decp->y1 = fy1;
+ }
+ 
++static __inline void ADPCM_DecodeBlock8(ADPCM_Decode_t *decp, u8 filter_range,
++		const u8 *blockp, int src_inc, short *destp, int inc) {
++	int i;
++	int range, filterid;
++	s32 fy0, fy1;
++
++	filterid = (filter_range >> 4) & 0x0f;
++	range = filter_range & 0x0f;
++	fy0 = decp->y0;
++	fy1 = decp->y1;
++
++	for (i = 0; i < BLKSIZ; i++, blockp += src_inc) {
++		s32 sample = (s16)((u16)*blockp << 8) >> range;
++		sample *= 1 << SH;
++		sample -= (IK0(filterid) * fy0 + IK1(filterid) * fy1) >> SHC;
++		fy1 = fy0;
++		fy0 = sample;
++		XACLAMP(sample, (int)(-32768u << SH), 32767 << SH);
++		*destp = sample >> SH;
++		destp += inc;
++	}
++
++	decp->y0 = fy0;
++	decp->y1 = fy1;
++}
++
+ static int headtable[4] = {0,2,8,10};
+ 
+ //===========================================
+ static void xa_decode_data( xa_decode_t *xdp, const unsigned char *srcp ) {
+ 	const u8    *sound_groupsp;
+ 	const u8    *sound_datap, *sound_datap2;
+-	int         i, j, k, nbits;
++	int         i, j, k, nbits, block;
+ 	u16			data[4096], *datap;
+ 	short		*destp;
+ 
+@@ -134,31 +160,17 @@ static void xa_decode_data( xa_decode_t *xdp, const unsigned char *srcp ) {
+ 	nbits = xdp->nbits == 4 ? 4 : 2;
+ 
+ 	if (xdp->stereo) { // stereo
+-		if ((xdp->nbits == 8) && (xdp->freq == 37800)) { // level A
++		if (xdp->nbits == 8) { // level A
+ 			for (j=0; j < 18; j++) {
+ 				sound_groupsp = srcp + j * 128;		// sound groups header
+ 				sound_datap = sound_groupsp + 16;	// sound data just after the header
+ 
+ 				for (i=0; i < nbits; i++) {
+-    				datap = data;
+-    				sound_datap2 = sound_datap + i;
+-
+-					for (k=0; k < 14; k++, sound_datap2 += 8) {
+-        	   				*(datap++) = (u16)sound_datap2[0] |
+-        	               			     (u16)(sound_datap2[4] << 8);
+-					}
+-
+-    				ADPCM_DecodeBlock16( &xdp->left,  sound_groupsp[headtable[i]+0], data,
+-        	           				    destp+0, 2 );
+-
+-        			datap = data;
+-        			sound_datap2 = sound_datap + i;
+-        			for (k=0; k < 14; k++, sound_datap2 += 8) {
+-           					*(datap++) = (u16)sound_datap2[0] |
+-            	          			     (u16)(sound_datap2[4] << 8);
+-					}
+-					ADPCM_DecodeBlock16( &xdp->right,  sound_groupsp[headtable[i]+1], data,
+-                           			    destp+1, 2 );
++					block = i * 2;
++					ADPCM_DecodeBlock8(&xdp->left, sound_groupsp[block],
++						sound_datap + block, 4, destp + 0, 2);
++					ADPCM_DecodeBlock8(&xdp->right, sound_groupsp[block + 1],
++						sound_datap + block + 1, 4, destp + 1, 2);
+ 
+ 	        		destp += 28*2;
+ 				}
+@@ -197,33 +209,15 @@ static void xa_decode_data( xa_decode_t *xdp, const unsigned char *srcp ) {
+ 	    	}
+ 		}
+ 	} else { // mono
+-		if ((xdp->nbits == 8) && (xdp->freq == 37800)) { // level A
++		if (xdp->nbits == 8) { // level A
+ 			for (j=0; j < 18; j++) {
+-    			sound_groupsp = srcp + j * 128;		// sound groups header
+-    			sound_datap = sound_groupsp + 16;	// sound data just after the header
+-
+-    			for (i=0; i < nbits; i++) {
+-        			datap = data;
+-        			sound_datap2 = sound_datap + i;
+-        			for (k=0; k < 14; k++, sound_datap2 += 8) {
+-           					*(datap++) = (u16)sound_datap2[0] |
+-                       				     (u16)(sound_datap2[4] << 8);
+-					}
+-	        		ADPCM_DecodeBlock16( &xdp->left,  sound_groupsp[headtable[i]+0], data,
+-                           			    destp, 1 );
+-
+-	        		destp += 28;
+-
+-	        		datap = data;
+-	        		sound_datap2 = sound_datap + i;
+-        			for (k=0; k < 14; k++, sound_datap2 += 8) {
+-           					*(datap++) = (u16)sound_datap2[0] |
+-                       				     (u16)(sound_datap2[4] << 8);
+-					}
+-	       			ADPCM_DecodeBlock16( &xdp->left,  sound_groupsp[headtable[i]+1], data,
+-                           			    destp, 1 );
++				sound_groupsp = srcp + j * 128;		// sound groups header
++				sound_datap = sound_groupsp + 16;	// sound data just after the header
+ 
+-					destp += 28;
++				for (i=0; i < 4; i++) {
++					ADPCM_DecodeBlock8(&xdp->left, sound_groupsp[i],
++						sound_datap + i, 4, destp, 1);
++					destp += BLKSIZ;
+ 				}
+ 	    	}
+ 		} else { // level B/C
+@@ -326,6 +320,7 @@ static int parse_xa_audio_sector( xa_decode_t *xdp,
+ 
+ 		xdp->nsamples = 18 * 28 * 8;
+ 		if (xdp->stereo == 1) xdp->nsamples /= 2;
++		if (xdp->nbits == 8) xdp->nsamples /= 2;
+     }
+ 	xa_decode_data( xdp, sectorp );
+ 
+diff --git a/libpcsxcore/psxhw.c b/libpcsxcore/psxhw.c
+index 1afa9c61..3f5fc305 100644
+--- a/libpcsxcore/psxhw.c
++++ b/libpcsxcore/psxhw.c
+@@ -160,6 +160,7 @@ u32 sio1ReadStat16(void)
+ 
+ u8 psxHwRead8(u32 add) {
+ 	u8 hard;
++	add &= 0x1fffffff;
+ 
+ 	switch (add & 0xffff) {
+ 	case 0x1040: hard = sioRead8(); break;
+@@ -214,6 +215,7 @@ u8 psxHwRead8(u32 add) {
+ 
+ u16 psxHwRead16(u32 add) {
+ 	unsigned short hard;
++	add &= 0x1fffffff;
+ 
+ 	switch (add & 0xffff) {
+ 	case 0x1040: hard = sioRead8(); break;
+@@ -265,6 +267,7 @@ u16 psxHwRead16(u32 add) {
+ 
+ u32 psxHwRead32(u32 add) {
+ 	u32 hard;
++	add &= 0x1fffffff;
+ 
+ 	switch (add & 0xffff) {
+ 	case 0x1040: hard = sioRead8(); break;
+@@ -305,6 +308,7 @@ u32 psxHwRead32(u32 add) {
+ }
+ 
+ void psxHwWrite8(u32 add, u32 value) {
++	add &= 0x1fffffff;
+ 	switch (add & 0xffff) {
+ 	case 0x1040: sioWrite8(value); return;
+ 	case 0x10f6:
+@@ -331,6 +335,7 @@ void psxHwWrite8(u32 add, u32 value) {
+ }
+ 
+ void psxHwWrite16(u32 add, u32 value) {
++	add &= 0x1fffffff;
+ 	switch (add & 0xffff) {
+ 	case 0x1040: sioWrite8(value); return;
+ 	case 0x1044: sioWriteStat16(value); return;
+@@ -404,6 +409,7 @@ void psxHwWrite16(u32 add, u32 value) {
+ }
+ 
+ void psxHwWrite32(u32 add, u32 value) {
++	add &= 0x1fffffff;
+ 	switch (add & 0xffff) {
+ 	case 0x1040: sioWrite8(value); return;
+ 	case 0x1070: psxHwWriteIstat(value); return;

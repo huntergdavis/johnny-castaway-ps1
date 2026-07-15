@@ -91,6 +91,8 @@ destination: ../docs
 keep_files:
   - ps1
   - archive
+  - play/online
+  - vendor
   - general
   - readme
   - CLEANUP_SUMMARY.md

@@ -1,0 +1,64 @@
+diff --git a/audio/drivers/rwebaudio.c b/audio/drivers/rwebaudio.c
+index 82f8f34..d32c19b 100644
+--- a/audio/drivers/rwebaudio.c
++++ b/audio/drivers/rwebaudio.c
+@@ -109,0 +110,7 @@ static ssize_t rwebaudio_write(void *data, const void *s, size_t len)
++#ifdef EMSCRIPTEN_AUDIO_FAKE_BLOCK
++   if (!rwebaudio->nonblock && RWebAudioResumeCtx()
++         && RWebAudioWriteAvailFrames() >
++            RWebAudioBufferSizeFrames() / 2 + rwebaudio->tmpbuf_offset)
++      platform_emscripten_enter_fake_block(0);
++#endif
++
+diff --git a/configuration.c b/configuration.c
+index 3198f99..db0f23c 100644
+--- a/configuration.c
++++ b/configuration.c
+@@ -588,7 +588,7 @@ static const enum microphone_driver_enum MICROPHONE_DEFAULT_DRIVER = MICROPHONE_
+ 
+ #if defined(RS90) || defined(MIYOO)
+ static const enum audio_resampler_driver_enum AUDIO_DEFAULT_RESAMPLER_DRIVER = AUDIO_RESAMPLER_NEAREST;
+-#elif defined(PSP) || (defined(EMSCRIPTEN) && defined(HAVE_CC_RESAMPLER))
++#elif defined(PSP)
+ static const enum audio_resampler_driver_enum AUDIO_DEFAULT_RESAMPLER_DRIVER = AUDIO_RESAMPLER_CC;
+ #else
+ static const enum audio_resampler_driver_enum AUDIO_DEFAULT_RESAMPLER_DRIVER = AUDIO_RESAMPLER_SINC;
+diff --git a/emscripten/library_rwebaudio.js b/emscripten/library_rwebaudio.js
+index d97bfea..0fd1ab1 100644
+--- a/emscripten/library_rwebaudio.js
++++ b/emscripten/library_rwebaudio.js
+@@ -9,6 +9,7 @@ var LibraryRWebAudio = {
+       EXTRA_LATENCY_SEC_CHROME: 0,
+       PLATFORM_EMSCRIPTEN_BROWSER_CHROMIUM: 1,
+       context: null,
++      gain: null,
+       contextRunning: false,
+       nonblock: false,
+       endTime: 0,
+@@ -38,6 +39,9 @@ var LibraryRWebAudio = {
+       if (!ac) return 0;
+ 
+       RWA.context = new ac();
++      RWA.gain = RWA.context.createGain();
++      RWA.gain.connect(RWA.context.destination);
++      Module["RWA"] = RWA;
+       RWA.currentTimeDiff = performance.now() / 1000 - RWA.context.currentTime;
+       RWA.nonblock = false;
+       RWA.endTime = 0;
+@@ -64,7 +68,7 @@ var LibraryRWebAudio = {
+       buffer.getChannelData(1).set(HEAPF32.subarray(right >> 2, (right >> 2) + num_frames));
+       var bufferSource = RWA.context.createBufferSource();
+       bufferSource.buffer = buffer;
+-      bufferSource.connect(RWA.context.destination);
++      bufferSource.connect(RWA.gain);
+ 
+       var currentTime = RWebAudioGetCurrentTime();
+       /* when empty, start rounded up to nearest 1 ms, add MIN_START_OFFSET_SEC */
+@@ -90,6 +94,7 @@ var LibraryRWebAudio = {
+    RWebAudioFree__deps: ["$RWebAudioStateChangeCB"],
+    RWebAudioFree: function() {
+       RWA.context.removeEventListener("statechange", RWebAudioStateChangeCB);
++      RWA.gain.disconnect();
+       RWA.context.close();
+       RWA.contextRunning = false;
+    },
